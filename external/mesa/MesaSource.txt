@@ -1,0 +1,19 @@
+https://cgit.freedesktop.org/mesa/drm/tree/
+
+Base commit:
+commit dcf46e995dddfba0e0ccf6f4fa3f97d1883d67e8
+Author: Samuel Pitoiset <samuel.pitoiset@gmail.com>
+Date:   Mon Sep 18 11:47:53 2017 +0200
+
+    radv: do not update the number of scissors in vkCmdSetScissor()
+
+    The Vulkan spec (1.0.61) says:
+
+       "The number of scissors used by a pipeline is still specified
+        by the scissorCount member of VkPipelinescissorStateCreateInfo."
+
+    So, the number of scissors is defined at pipeline creation
+    time and shouldn't be updated when they are set dynamically.
+
+    Signed-off-by: Samuel Pitoiset <samuel.pitoiset@gmail.com>
+    Reviewed-by: Dave Airlie <airlied@redhat.com>
