@@ -125,7 +125,7 @@ static char* __IuLogGetModInfo()
 /*****************************************************************************\
 Function:       __IuLogPrint
 
-Description:    Outputs debug information. .
+Description:    Outputs debug information.
 \*****************************************************************************/
 void __IuLogPrint(
     const char* sevTag,

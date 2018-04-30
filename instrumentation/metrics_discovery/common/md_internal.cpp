@@ -2120,6 +2120,7 @@ TCompletionCode CMetricsDevice::OpenFromFile( const char* fileName, bool isInter
         fclose( metricFile );
         return CC_ERROR_INVALID_PARAMETER;
     }
+
     metricFileBuffer = new (std::nothrow) unsigned char[ fileSize ];
     if( metricFileBuffer == NULL )
     {
@@ -2127,6 +2128,7 @@ TCompletionCode CMetricsDevice::OpenFromFile( const char* fileName, bool isInter
         return CC_ERROR_NO_MEMORY;
     }
     memset( metricFileBuffer, 0, fileSize );
+
     MD_LOG( LOG_DEBUG, "Check if file is in MDAPI plain text format");
     if( IsMetricsFileInPlainTextFormat( metricFile ) )
     {

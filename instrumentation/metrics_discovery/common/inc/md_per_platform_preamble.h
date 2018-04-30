@@ -42,7 +42,9 @@
 //   to control the scope of metrics.
 //  If none of the macros is defined all platforms with source support will be included
 //  By defining any of the macros one will automatically exclude all other platforms
-#define MD_INCLUDE_ALL_METRICS ( !(MD_INCLUDE_SKL_GT2_METRICS || \
+#define MD_INCLUDE_ALL_METRICS ( !(MD_INCLUDE_HSW_METRICS || \
+                                   MD_INCLUDE_BDW_METRICS || \
+                                   MD_INCLUDE_SKL_GT2_METRICS || \
                                    MD_INCLUDE_SKL_GT3_METRICS || \
                                    MD_INCLUDE_SKL_GT4_METRICS || \
                                    MD_INCLUDE_BXT_METRICS || \

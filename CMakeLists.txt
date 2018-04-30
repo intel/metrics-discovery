@@ -87,6 +87,8 @@ endif ()
 # generic
 set (LOCAL_SRC_FILES ${LOCAL_SRC_FILES}
     # mdapi metrics definitions
+    ${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen/md_main_HSW.cpp
+    ${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen/md_main_BDW.cpp
     ${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen/md_main_BXT.cpp
     ${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen/md_main_SKL_GT2.cpp
     ${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen/md_main_SKL_GT3.cpp

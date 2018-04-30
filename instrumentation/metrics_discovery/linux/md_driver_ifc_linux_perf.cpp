@@ -1257,12 +1257,12 @@ TCompletionCode CDriverInterfaceLinuxPerf::OpenIoStream( TStreamType streamType,
 
     // 2. SET PARAMS
     uint32_t    timerPeriodExponent = GetTimerPeriodExponent( *nsTimerPeriod );
-    uint32_t    perfReportType      = I915_OA_FORMAT_A32u40_A4u32_B8_C8;
+    uint32_t    perfReportType      = GetPerfReportType( metricSet->GetReportType() );
     int32_t     perfMetricSetId     = -1;
     uint32_t    regCount            = 0;
     TRegister** regVector           = metricSet->GetStartConfiguration( &regCount );
 
-    if( metricSet->GetReportType() != OA_REPORT_TYPE_256B_A45_NOA16 )
+    if( perfReportType == I915_OA_FORMAT_MAX )
     {
         ret = CC_ERROR_NOT_SUPPORTED;
         goto deactivate;
@@ -1679,6 +1679,8 @@ TCompletionCode CDriverInterfaceLinuxPerf::OpenPerfStream( uint32_t perfMetricSe
 
     param.properties_ptr = (uint64_t)properties;
     param.num_properties = sizeof(properties) / 16;
+
+    MD_LOG( LOG_DEBUG, "Opening i915 perf stream with params: perfMetricSetId: %u, perfReportType: %u, timerPeriodExponent: %u", perfMetricSetId, perfReportType, timerPeriodExponent );
 
     perfEventFd = SendIoctl( m_DrmFd, DRM_IOCTL_I915_PERF_OPEN, &param );
     if( perfEventFd == -1 )
@@ -2172,6 +2174,46 @@ bool CDriverInterfaceLinuxPerf::PerfMetricSetExists( const char* guid )
 
     // Check whether the file exists (F_OK)
     return (access( filePath, F_OK ) != -1);
+}
+
+/*****************************************************************************\
+
+Class:
+    CDriverInterfaceLinuxPerf
+
+Method:
+    GetPerfReportType
+
+Description:
+    Returns Perf report format based on MDAPI report type and current platform.
+
+Input:
+    TReportType reportType - MDAPI report type
+
+Output:
+    uint32_t               - Perf report format, I915_OA_FORMAT_MAX if error
+
+\*****************************************************************************/
+uint32_t CDriverInterfaceLinuxPerf::GetPerfReportType( TReportType reportType )
+{
+    // Only one MDAPI type is expected
+    if( reportType != OA_REPORT_TYPE_256B_A45_NOA16 )
+    {
+        MD_LOG( LOG_ERROR, "ERROR: Unsupported report type" );
+        return I915_OA_FORMAT_MAX;
+    }
+
+    // Get platform ID
+    GTDI_PLATFORM_INDEX instrPlatformId = GTDI_PLATFORM_MAX;
+    if( GetInstrPlatformId( &instrPlatformId ) != CC_OK || instrPlatformId == GTDI_PLATFORM_MAX )
+    {
+        MD_LOG( LOG_ERROR, "ERROR: Could not get platform ID" );
+        return I915_OA_FORMAT_MAX;
+    }
+
+    // Perf requires different format for HSW
+    return (instrPlatformId == GENERATION_HSW) ? I915_OA_FORMAT_A45_B8_C8
+                                               : I915_OA_FORMAT_A32u40_A4u32_B8_C8;
 }
 
 /*****************************************************************************\

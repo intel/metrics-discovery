@@ -15,10 +15,15 @@ https://opensource.org/licenses/MIT
 
 ## Supported Platforms
 
-Intel(R) Processors with Gen9 graphics devices:
-- formerly Skylake (SKL),
-- formerly Kabylake (KBL),
-- formerly Apollo Lake/Broxton (APL/BXT).
+- Intel(R) Processors with Gen9 graphics devices (formerly Skylake, Kaby Lake, Apollo Lake/Broxton),
+- Intel(R) Processors with Gen8 graphics devices (formerly Broadwell),
+- Intel(R) Processors with Gen7.5 graphics devices (formerly Haswell).
+
+## Supported Operating Systems
+
+Intel(R) Metrics Discovery Application Programming Interface is supported on Linux family operating systems with minimum kernel version 4.14.
+
+*Exception: for Gen7.5 graphics devices minimum kernel version 4.17 is required*.
 
 ## Building
 

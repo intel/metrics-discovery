@@ -41,7 +41,7 @@ MACRO: IU_DEBUG_LOGS - enabling debug & info logs
        The default logs settings are defined in g_IuLogsControl ->
        (feel free to adjust it according to your needs)
        Here is an example (all available logs with all details):
-          AssertEnable   = FALSE (assert are printed, but without breakpoints)
+          AssertEnable   = false (assert are printed, but without breakpoints)
           LogLayerEnable = IU_DBG_LAYER_ALL,                   // MD & MDAPI & INSTR & IU
           LogLevel       = IU_DBG_SEV_DEBUG | IU_DBG_SHOW_ALL, // severity <= DEBUG
 
@@ -85,101 +85,55 @@ extern IU_LOGS_CONTROL g_IuLogsControl;
 MACROS: related to debug severity, shown fields, debug layers
 \*****************************************************************************/
 // severity
-#define IU_DBG_ALL                   0x0000000F
-#define IU_DBG_OFF                   0x00000000
+#define IU_DBG_ALL                  0x0000000F
+#define IU_DBG_OFF                  0x00000000
 
-#define IU_DBG_SEV_CRITICAL          0x00000001 // unexpected unrecoverable errors, user for asserts only
-#define IU_DBG_SEV_ERROR             0x00000002 // unexpected recoverable errors
-#define IU_DBG_SEV_WARNING           0x00000004 // expected errors & warnings
-#define IU_DBG_SEV_INFO              0x00000008 // information messages
-#define IU_DBG_SEV_DEBUG             0x00000010 // debug messages
-#define IU_DBG_SEV_MASK              0x0000001F // severity mask
-
-// following macros are required for compatibility with current MD/MDAPI logs
-#define _LOG_ERROR                   IU_DBG_SEV_ERROR
-#define _LOG_WARNING                 IU_DBG_SEV_WARNING
-#define _LOG_INFO                    IU_DBG_SEV_INFO
-#define _LOG_DEBUG                   IU_DBG_SEV_DEBUG
-
-#define __LOG_ERROR                  IU_DBG_SEV_ERROR
-#define __LOG_WARNING                IU_DBG_SEV_WARNING
-#define __LOG_INFO                   IU_DBG_SEV_INFO
-#define __LOG_DEBUG                  IU_DBG_SEV_DEBUG
-
-#define _IU_DBG_SEV_CRITICAL         IU_DBG_SEV_CRITICAL
-#define _IU_DBG_SEV_ERROR            IU_DBG_SEV_ERROR
-#define _IU_DBG_SEV_WARNING          IU_DBG_SEV_WARNING
-#define _IU_DBG_SEV_INFO             IU_DBG_SEV_INFO
-#define _IU_DBG_SEV_DEBUG            IU_DBG_SEV_DEBUG
-
-#define __IU_DBG_SEV_CRITICAL        IU_DBG_SEV_CRITICAL
-#define __IU_DBG_SEV_ERROR           IU_DBG_SEV_ERROR
-#define __IU_DBG_SEV_WARNING         IU_DBG_SEV_WARNING
-#define __IU_DBG_SEV_INFO            IU_DBG_SEV_INFO
-#define __IU_DBG_SEV_DEBUG           IU_DBG_SEV_DEBUG
+#define IU_DBG_SEV_CRITICAL         0x00000001 // unexpected unrecoverable errors, user for asserts only
+#define IU_DBG_SEV_ERROR            0x00000002 // unexpected recoverable errors
+#define IU_DBG_SEV_WARNING          0x00000004 // expected errors & warnings
+#define IU_DBG_SEV_INFO             0x00000008 // information messages
+#define IU_DBG_SEV_DEBUG            0x00000010 // debug messages
+#define IU_DBG_SEV_MASK             0x0000001F // severity mask
 
 // if following flag is set, logs will be aligned in output
-#define IU_DBG_ALIGNED               0x08000000
+#define IU_DBG_ALIGNED              0x08000000
 
 // shown fields
-#define IU_DBG_SHOW_TAG              0x04000000
-#define IU_DBG_SHOW_MODULE           0x02000000
-#define IU_DBG_SHOW_FUNCTION         0x01000000
-#define IU_DBG_SHOW_ALL             (IU_DBG_SHOW_TAG    |  \
-                                     IU_DBG_SHOW_MODULE |  \
-                                     IU_DBG_SHOW_FUNCTION)
+#define IU_DBG_SHOW_TAG             0x04000000
+#define IU_DBG_SHOW_MODULE          0x02000000
+#define IU_DBG_SHOW_FUNCTION        0x01000000
+#define IU_DBG_SHOW_ALL            (IU_DBG_SHOW_TAG    |  \
+                                    IU_DBG_SHOW_MODULE |  \
+                                    IU_DBG_SHOW_FUNCTION)
 
 // if following flag is set, logs will be additionally printed on console
-#define IU_DBG_CONSOLE_DUMP          0x80000000
+#define IU_DBG_CONSOLE_DUMP         0x80000000
 
 // layers
-#define IU_DBG_LAYER_INSTR           0x00000001
-#define IU_DBG_LAYER_MD              0x00000002
-#define IU_DBG_LAYER_MDAPI           0x00000004
-#define IU_DBG_LAYER_IU              0x00000008
-#define IU_DBG_LAYER_ALL            (IU_DBG_LAYER_INSTR |   \
-                                     IU_DBG_LAYER_MD    |   \
-                                     IU_DBG_LAYER_MDAPI |   \
-                                     IU_DBG_LAYER_IU)
+#define IU_DBG_LAYER_INSTR          0x00000001
+#define IU_DBG_LAYER_MD             0x00000002
+#define IU_DBG_LAYER_MDAPI          0x00000004
+#define IU_DBG_LAYER_IU             0x00000008
+#define IU_DBG_LAYER_ALL           (IU_DBG_LAYER_INSTR |   \
+                                    IU_DBG_LAYER_MD    |   \
+                                    IU_DBG_LAYER_MDAPI |   \
+                                    IU_DBG_LAYER_IU)
 
 /*****************************************************************************\
 MACROS: related to logs printing
 \*****************************************************************************/
-
 // error & warning logs are available in any driver
-#define F_IU_DBG_SEV_CRITICAL(...)    __IuLogPrint("C", __VA_ARGS__)
-#define F_IU_DBG_SEV_ERROR(...)       __IuLogPrint("E", __VA_ARGS__)
-#define F_IU_DBG_SEV_WARNING(...)     __IuLogPrint("W", __VA_ARGS__)
+#define F_IU_DBG_SEV_CRITICAL(...)  __IuLogPrint("C", __VA_ARGS__)
+#define F_IU_DBG_SEV_ERROR(...)     __IuLogPrint("E", __VA_ARGS__)
+#define F_IU_DBG_SEV_WARNING(...)   __IuLogPrint("W", __VA_ARGS__)
 // debug logs are not available in release driver
 #if IU_DEBUG_LOGS
-    #define F_IU_DBG_SEV_INFO(...)    __IuLogPrint("I", __VA_ARGS__)
-    #define F_IU_DBG_SEV_DEBUG(...)   __IuLogPrint("D", __VA_ARGS__)
+    #define F_IU_DBG_SEV_INFO(...)  __IuLogPrint("I", __VA_ARGS__)
+    #define F_IU_DBG_SEV_DEBUG(...) __IuLogPrint("D", __VA_ARGS__)
 #else
     #define F_IU_DBG_SEV_INFO(...)
     #define F_IU_DBG_SEV_DEBUG(...)
 #endif
-// following macros are required for compatibility with current MD/MDAPI logs
-#define F__LOG_ERROR(...)            F_IU_DBG_SEV_ERROR(__VA_ARGS__)
-#define F__LOG_WARNING(...)          F_IU_DBG_SEV_WARNING(__VA_ARGS__)
-#define F__LOG_INFO(...)             F_IU_DBG_SEV_INFO(__VA_ARGS__)
-#define F__LOG_DEBUG(...)            F_IU_DBG_SEV_DEBUG(__VA_ARGS__)
-
-#define F___LOG_ERROR(...)           F_IU_DBG_SEV_ERROR(__VA_ARGS__)
-#define F___LOG_WARNING(...)         F_IU_DBG_SEV_WARNING(__VA_ARGS__)
-#define F___LOG_INFO(...)            F_IU_DBG_SEV_INFO(__VA_ARGS__)
-#define F___LOG_DEBUG(...)           F_IU_DBG_SEV_DEBUG(__VA_ARGS__)
-
-#define F__IU_DBG_SEV_CRITICAL(...)  F_IU_DBG_SEV_CRITICAL(__VA_ARGS__)
-#define F__IU_DBG_SEV_ERROR(...)     F_IU_DBG_SEV_ERROR(__VA_ARGS__)
-#define F__IU_DBG_SEV_WARNING(...)   F_IU_DBG_SEV_WARNING(__VA_ARGS__)
-#define F__IU_DBG_SEV_INFO(...)      F_IU_DBG_SEV_INFO(__VA_ARGS__)
-#define F__IU_DBG_SEV_DEBUG(...)     F_IU_DBG_SEV_DEBUG(__VA_ARGS__)
-
-#define F___IU_DBG_SEV_CRITICAL(...) F_IU_DBG_SEV_CRITICAL(__VA_ARGS__)
-#define F___IU_DBG_SEV_ERROR(...)    F_IU_DBG_SEV_ERROR(__VA_ARGS__)
-#define F___IU_DBG_SEV_WARNING(...)  F_IU_DBG_SEV_WARNING(__VA_ARGS__)
-#define F___IU_DBG_SEV_INFO(...)     F_IU_DBG_SEV_INFO(__VA_ARGS__)
-#define F___IU_DBG_SEV_DEBUG(...)    F_IU_DBG_SEV_DEBUG(__VA_ARGS__)
 
 // generic
 #define _IU_LOG(F, ...) F(__VA_ARGS__)
@@ -188,15 +142,14 @@ MACROS: related to logs printing
 /*****************************************************************************\
  compiler-dependent definitions for debug macros
 \*****************************************************************************/
-
 // intrinsic functions to cause debug break
 #if defined(_MSC_VER)
-#define IU_DBG_BREAK __debugbreak()
+    #define IU_DBG_BREAK __debugbreak()
 #elif defined(__GNUC__)
-#define IU_DBG_BREAK __builtin_trap()
+    #define IU_DBG_BREAK __builtin_trap()
 #else
-#include <assert.h>
-#define IU_DBG_BREAK assert(false)
+    #include <assert.h>
+    #define IU_DBG_BREAK assert(false)
 #endif
 
 /*****************************************************************************\
@@ -209,15 +162,15 @@ MACRO: IU_ASSERT
 \*****************************************************************************/
 // generic
 #if IU_DEBUG_LOGS
-    #define IU_ASSERT_TAGGED(expr,layer,tag)                               \
-        if( !(expr) )                    \
-    {                                    \
+    #define IU_ASSERT_TAGGED(expr,layer,tag)    \
+        if( !(expr) )                           \
+    {                                           \
         IU_DBG_PRINT_TAGGED(IU_DBG_SEV_CRITICAL, layer, tag, "!!! ASSERTION FAILURE: !!! -> %s:%d", __FILE__, __LINE__ );       \
         IU_DBG_PRINT_TAGGED(IU_DBG_SEV_CRITICAL, layer, tag, "!!! ASSERTION DETAILS: !!! -> %s(): (" #expr ")", __FUNCTION__ ); \
-        if( IU_IS_ASSERT_ENABLED )  \
-        {                           \
-            IU_DBG_BREAK;           \
-        }                           \
+        if( IU_IS_ASSERT_ENABLED )              \
+        {                                       \
+            IU_DBG_BREAK;                       \
+        }                                       \
     }
 #else
     #define IU_ASSERT_TAGGED(expr,layer,tag)
@@ -227,25 +180,19 @@ MACRO: IU_ASSERT
 MACROS: print function enter/exit
 \*****************************************************************************/
 // generic
-#define IU_DBG_FUNCTION_ENTER_TAGGED(level,layer,tag)   IU_DBG_PRINT_TAGGED(_##level, layer, tag, "ENTERED >>>")
-#define IU_DBG_FUNCTION_EXIT_TAGGED(level,layer,tag)    IU_DBG_PRINT_TAGGED(_##level, layer, tag,  "EXITING <<<");
-
-/*****************************************************************************\
-MACRO: unreferenced parameter
-\*****************************************************************************/
-#define IU_UNREFERENCED_PARAMETER(p) (p)
+#define IU_DBG_FUNCTION_ENTER_TAGGED(level,layer,tag) IU_DBG_PRINT_TAGGED(_##level, layer, tag, "ENTERED >>>")
+#define IU_DBG_FUNCTION_EXIT_TAGGED(level,layer,tag)  IU_DBG_PRINT_TAGGED(_##level, layer, tag, "EXITING <<<");
 
 
 /*****************************************************************************\
  INSTRUMENTATION UTILS LAYER LOGS
 \*****************************************************************************/
 #if !defined(IU_LOG_TAG)
-#define IU_LOG_TAG "[IU]"
+    #define IU_LOG_TAG "[IU]"
 #endif
 
-#define IU_DBG_PRINT(level, ...) IU_DBG_PRINT_TAGGED(_##level, IU_DBG_LAYER_IU, IU_LOG_TAG, __VA_ARGS__)
-#define IU_ASSERT(expr) IU_ASSERT_TAGGED(expr, IU_DBG_LAYER_INSTR, IU_LOG_TAG)
-
+#define IU_ASSERT(expr)          IU_ASSERT_TAGGED   (expr,    IU_DBG_LAYER_IU, IU_LOG_TAG)
+#define IU_DBG_PRINT(level, ...) IU_DBG_PRINT_TAGGED(##level, IU_DBG_LAYER_IU, IU_LOG_TAG, __VA_ARGS__)
 
 #if defined(__cplusplus)
 }

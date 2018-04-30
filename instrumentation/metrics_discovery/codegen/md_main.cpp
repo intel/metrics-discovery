@@ -34,6 +34,16 @@
 CMetricsDevice* g_MetricsDevice = NULL;
 
 
+#if (!defined(MD_INCLUDE_HSW_METRICS) && MD_INCLUDE_ALL_METRICS) || MD_INCLUDE_HSW_METRICS
+#define MD_CALL_HSW_METRICS 1
+    TCompletionCode CreateObjectTreeHSW_OA(CConcurrentGroup* aGroup);
+#endif
+
+#if (!defined(MD_INCLUDE_BDW_METRICS) && MD_INCLUDE_ALL_METRICS) || MD_INCLUDE_BDW_METRICS
+#define MD_CALL_BDW_METRICS 1
+    TCompletionCode CreateObjectTreeBDW_OA(CConcurrentGroup* aGroup);
+#endif
+
 #if (!defined(MD_INCLUDE_SKL_GT2_METRICS) && MD_INCLUDE_ALL_METRICS) || MD_INCLUDE_SKL_GT2_METRICS
 #define MD_CALL_SKL_GT2_METRICS 1
     TCompletionCode CreateObjectTreeSKL_GT2_OA(CConcurrentGroup* aGroup);
@@ -372,6 +382,14 @@ TCompletionCode CreateObjectTree( IMetricsDevice_1_5** metricsDevice )
     MD_CHECK_PTR( aGroup );
     
     // Add platform specific metric sets
+#if MD_CALL_HSW_METRICS
+    MD_CHECK_CC( CreateObjectTreeHSW_OA(aGroup) );
+#endif
+  
+#if MD_CALL_BDW_METRICS
+    MD_CHECK_CC( CreateObjectTreeBDW_OA(aGroup) );
+#endif
+  
 #if MD_CALL_SKL_GT2_METRICS
     MD_CHECK_CC( CreateObjectTreeSKL_GT2_OA(aGroup) );
 #endif

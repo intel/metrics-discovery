@@ -166,6 +166,7 @@ private:
     TCompletionCode RemovePerfConfigQuery();
     TCompletionCode GetPerfMetricSetId( const char* guid, uint32_t* perfMetricSetId );
     bool            PerfMetricSetExists( const char* guid );
+    uint32_t        GetPerfReportType( TReportType reportType );
 
     // DRM
     bool            InitializeIntelDrm();

@@ -78,23 +78,6 @@ namespace MetricsDiscoveryInternal
     } TSymbolType;
 
     /******************************************************************************/
-    /* OA report types:                                                           */
-    /******************************************************************************/
-    typedef enum EReportType
-    {
-        OA_REPORT_TYPE_128B_A13_NOA16 = 0,
-        OA_REPORT_TYPE_192B_A29_NOA16,
-        OA_REPORT_TYPE_256B_A45_NOA16,
-        OA_REPORT_TYPE_64B_A13,
-        OA_REPORT_TYPE_128B_A29,
-        OA_REPORT_TYPE_64B_NOA12,
-        OA_REPORT_TYPE_128B_A16_NOA12,
-        OA_REPORT_TYPE_64B_NOA12_2,
-        // ...
-        OA_REPORT_TYPE_LAST,
-    } TReportType;
-
-    /******************************************************************************/
     /* Equation types:                                                            */
     /******************************************************************************/
     typedef enum EEquationType

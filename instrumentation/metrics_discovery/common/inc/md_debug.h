@@ -22,7 +22,7 @@
 
     File Name:  md_debug.h
 
-    Abstract:   C++ header with Metrics Discovery debug functions and macros
+    Abstract:   Header with Metrics Discovery debug functions and macros
 
 \*****************************************************************************/
 #pragma once
@@ -43,3 +43,28 @@
 #define MD_LOG_EXIT()          IU_DBG_FUNCTION_EXIT_TAGGED  (_LOG_DEBUG, IU_DBG_LAYER_MDAPI, MDAPI_LOG_TAG)
 
 #define MD_LOG_INVALID_PARAMETER(level, variable) MD_LOG(level, "invalid parameter: %s", #variable);
+
+
+/*****************************************************************************\
+MACRO: Following macros are required for compatibility between IU debug framework
+       and current MDAPI logs.
+\*****************************************************************************/
+#define _LOG_ERROR             IU_DBG_SEV_ERROR
+#define _LOG_WARNING           IU_DBG_SEV_WARNING
+#define _LOG_INFO              IU_DBG_SEV_INFO
+#define _LOG_DEBUG             IU_DBG_SEV_DEBUG
+
+#define __LOG_ERROR            IU_DBG_SEV_ERROR
+#define __LOG_WARNING          IU_DBG_SEV_WARNING
+#define __LOG_INFO             IU_DBG_SEV_INFO
+#define __LOG_DEBUG            IU_DBG_SEV_DEBUG
+
+#define F__LOG_ERROR(...)      F_IU_DBG_SEV_ERROR(__VA_ARGS__)
+#define F__LOG_WARNING(...)    F_IU_DBG_SEV_WARNING(__VA_ARGS__)
+#define F__LOG_INFO(...)       F_IU_DBG_SEV_INFO(__VA_ARGS__)
+#define F__LOG_DEBUG(...)      F_IU_DBG_SEV_DEBUG(__VA_ARGS__)
+
+#define F___LOG_ERROR(...)     F_IU_DBG_SEV_ERROR(__VA_ARGS__)
+#define F___LOG_WARNING(...)   F_IU_DBG_SEV_WARNING(__VA_ARGS__)
+#define F___LOG_INFO(...)      F_IU_DBG_SEV_INFO(__VA_ARGS__)
+#define F___LOG_DEBUG(...)     F_IU_DBG_SEV_DEBUG(__VA_ARGS__)
