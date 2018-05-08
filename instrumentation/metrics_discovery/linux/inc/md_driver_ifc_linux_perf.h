@@ -212,6 +212,7 @@ private: // Variables
     int32_t                      m_DrmCardNumber;               // Used for SysFs reads / writes
     int32_t                      m_PerfStreamFd;                // Opened Perf stream file descriptor
     int32_t                      m_PerfStreamConfigId;          // Perf configuration ID used for opening Perf stream, needed for config removal
+    std::vector<unsigned char>   m_PerfStreamReportData;        // Preallocated buffer for reading data from Perf stream to avoid new allocations on every read
 
     // Query
     std::vector<int32_t>         m_AddedPerfConfigs;            // IDs of configurations added to Perf for the need of query, needed for later config removal
