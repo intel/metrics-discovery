@@ -206,6 +206,14 @@ endif ()
 set_property(TARGET ${PROJECT_NAME} PROPERTY POSITION_INDEPENDENT_CODE ON)
 
 #################################################################################
+# INSTALL
+#################################################################################
+
+install (TARGETS ${PROJECT_NAME} DESTINATION lib)
+install (DIRECTORY ${BS_DIR_INC}/common/instrumentation/api/
+    DESTINATION include FILES_MATCHING PATTERN "*.h")
+
+#################################################################################
 # DEBUG
 #################################################################################
 
