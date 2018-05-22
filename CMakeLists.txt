@@ -206,6 +206,13 @@ endif ()
 set_property(TARGET ${PROJECT_NAME} PROPERTY POSITION_INDEPENDENT_CODE ON)
 
 #################################################################################
+# INSTALL
+#################################################################################
+
+install (TARGETS ${PROJECT_NAME} DESTINATION lib)
+install (FILES "${BS_DIR_INC}/common/instrumentation/api/metrics_discovery_api.h" DESTINATION include)
+
+#################################################################################
 # DEBUG
 #################################################################################
 
