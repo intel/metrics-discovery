@@ -204,6 +204,9 @@ if ("${PLATFORM}" STREQUAL "linux")
 endif ()
 
 set_property(TARGET ${PROJECT_NAME} PROPERTY POSITION_INDEPENDENT_CODE ON)
+set_metrics_discovery_version()
+set_property(TARGET ${PROJECT_NAME} PROPERTY VERSION ${MD_VERSION})
+set_property(TARGET ${PROJECT_NAME} PROPERTY SOVERSION ${MD_VERSION_MAJOR})
 
 #################################################################################
 # INSTALL
@@ -232,6 +235,7 @@ install (FILES "${BS_DIR_INC}/common/instrumentation/api/metrics_discovery_api.h
 #################################################################################
 
 message ("INFO: PROJECT_NAME           = ${PROJECT_NAME}")
+message ("INFO: VERSION                = ${MD_VERSION}")
 message ("INFO: BUILD_TYPE             = ${BUILD_TYPE}")
 message ("INFO: PLATFORM               = ${PLATFORM}")
 message ("INFO: ARCH                   = ${ARCH}")
