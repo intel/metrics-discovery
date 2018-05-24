@@ -210,7 +210,7 @@ set_property(TARGET ${PROJECT_NAME} PROPERTY POSITION_INDEPENDENT_CODE ON)
 #################################################################################
 
 install (TARGETS ${PROJECT_NAME} DESTINATION lib)
-install (FILES "${BS_DIR_INC}/common/instrumentation/api/metrics_discovery_api.h" DESTINATION include)
+install (FILES "${BS_DIR_INC}/common/instrumentation/api/metrics_discovery_api.h" DESTINATION include/mdapi)
 
 #################################################################################
 # DEBUG
