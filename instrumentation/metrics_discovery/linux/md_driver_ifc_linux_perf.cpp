@@ -1715,8 +1715,8 @@ Input:
     bool*     reportLostOccured - (OUT) true if report lost was reported by Perf
 
 Output:
-    TCompletionCode                 - *CC_OK* means success, BUT IT DOESN'T MEAN ALL REQUESTED DATA WAS READ !!
-                                      (check readBytes for that).
+    TCompletionCode             - *CC_OK* means success, BUT IT DOESN'T MEAN ALL REQUESTED DATA WAS READ !!
+                                  (check readBytes for that).
 
 \*****************************************************************************/
 TCompletionCode CDriverInterfaceLinuxPerf::ReadPerfStream( uint32_t oaReportSize, uint32_t reportsToRead, char* reportData, uint32_t* readBytes, bool* reportLostOccured )
@@ -1727,17 +1727,19 @@ TCompletionCode CDriverInterfaceLinuxPerf::ReadPerfStream( uint32_t oaReportSize
         return CC_ERROR_FILE_NOT_FOUND;
     }
 
-    const size_t               outBufferSize   = oaReportSize * reportsToRead;
-    const size_t               perfReportSize  = sizeof(drm_i915_perf_record_header) + oaReportSize;    // Perf report size is bigger (additional header)
-    const size_t               perfBytesToRead = reportsToRead * perfReportSize;
-    std::vector<unsigned char> perfReportData( perfBytesToRead );
+    const size_t outBufferSize   = oaReportSize * reportsToRead;
+    const size_t perfReportSize  = sizeof(drm_i915_perf_record_header) + oaReportSize;    // Perf report size is bigger (additional header)
+    const size_t perfBytesToRead = reportsToRead * perfReportSize;
+
+    // Resize Perf report buffer if needed
+    m_PerfStreamReportData.resize( perfBytesToRead );
 
     MD_LOG( LOG_DEBUG, "Trying to read %u reports from i915 perf stream, fd: %d", reportsToRead, m_PerfStreamFd );
 
     // #Note May read 1 sample less than requested if ReportLost is returned from kernel
 
     // 1. READ DATA
-    int32_t perfReadBytes = read( m_PerfStreamFd, perfReportData.data(), perfBytesToRead );
+    int32_t perfReadBytes = read( m_PerfStreamFd, m_PerfStreamReportData.data(), perfBytesToRead );
     if( perfReadBytes < 0 )
     {
         *readBytes = 0;
@@ -1756,7 +1758,7 @@ TCompletionCode CDriverInterfaceLinuxPerf::ReadPerfStream( uint32_t oaReportSize
     size_t perfDataOffset = 0;
     while( perfDataOffset < (size_t)perfReadBytes )
     {
-        const iu_i915_perf_record* perfOaRecord = (const iu_i915_perf_record*) (perfReportData.data() + perfDataOffset);
+        const iu_i915_perf_record* perfOaRecord = (const iu_i915_perf_record*) (m_PerfStreamReportData.data() + perfDataOffset);
         if( !perfOaRecord->header.size )
         {
             MD_LOG( LOG_ERROR, "ERROR: 0 header size" );
