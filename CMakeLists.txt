@@ -209,6 +209,13 @@ set_property(TARGET ${PROJECT_NAME} PROPERTY POSITION_INDEPENDENT_CODE ON)
 # INSTALL
 #################################################################################
 
+# libmd.pc for pkg-config
+set(DEST_DIR ${CMAKE_INSTALL_PREFIX})
+set(LIB -l${PROJECT_NAME}) # -lmd
+set(MD_VERSION ${MD_VERSION})
+configure_file(libmd.pc.in ${CMAKE_BINARY_DIR}/libmd.pc @ONLY)
+install (FILES ${CMAKE_BINARY_DIR}/libmd.pc DESTINATION lib/pkgconfig)
+
 install (TARGETS ${PROJECT_NAME} DESTINATION lib)
 install (FILES "${BS_DIR_INC}/common/instrumentation/api/metrics_discovery_api.h" DESTINATION include)
 
