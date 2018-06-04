@@ -209,15 +209,24 @@ set_property(TARGET ${PROJECT_NAME} PROPERTY POSITION_INDEPENDENT_CODE ON)
 # INSTALL
 #################################################################################
 
-# libmd.pc for pkg-config
-set(DEST_DIR ${CMAKE_INSTALL_PREFIX})
-set(LIB -l${PROJECT_NAME}) # -lmd
-set(MD_VERSION ${MD_VERSION})
-configure_file(libmd.pc.in ${CMAKE_BINARY_DIR}/libmd.pc @ONLY)
-install (FILES ${CMAKE_BINARY_DIR}/libmd.pc DESTINATION lib/pkgconfig)
+# pkg-config file
+set (PC_FILE lib${PROJECT_NAME}.pc)
+set (PC_IN ${PC_FILE}.in)
 
-install (TARGETS ${PROJECT_NAME} DESTINATION lib)
-install (FILES "${BS_DIR_INC}/common/instrumentation/api/metrics_discovery_api.h" DESTINATION include)
+set (DEST_DIR ${CMAKE_INSTALL_PREFIX})
+set (LIB -l${PROJECT_NAME})
+set (MD_VERSION ${MD_VERSION})
+
+if ("${LIB_INSTALL_DIR}" STREQUAL "")
+    set (LIB_INSTALL_DIR "${CMAKE_INSTALL_PREFIX}/lib${LIB_SUFFIX}")
+endif()
+set (LIB_DIR ${LIB_INSTALL_DIR})
+configure_file (${PC_IN} ${CMAKE_BINARY_DIR}/${PC_FILE} @ONLY)
+install (FILES ${CMAKE_BINARY_DIR}/${PC_FILE} DESTINATION lib/pkgconfig)
+
+# Library/header
+install (TARGETS ${PROJECT_NAME} DESTINATION ${LIB_INSTALL_DIR})
+install (FILES "${BS_DIR_INC}/common/instrumentation/api/metrics_discovery_api.h" DESTINATION include/mdapi)
 
 #################################################################################
 # DEBUG
