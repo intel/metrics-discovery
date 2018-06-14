@@ -22,6 +22,25 @@
 # HELPER FUNCTIONS
 #################################################################################
 
+##################################################################################
+# set_metrics_discovery_version
+#   Finds version string based on the API version enums in metrics_discovery_api.h
+#   and sets variables MD_VERSION_MAJOR and MD_VERSION in parent context
+##################################################################################
+function(set_metrics_discovery_version)
+    # parse the full version number from metrics_discovery_api.h and set MD_VERSION
+    file(READ ${CMAKE_CURRENT_SOURCE_DIR}/inc/common/instrumentation/api/metrics_discovery_api.h _md_h_contents)
+
+    foreach(VERSION MAJOR MINOR BUILD)
+        string(REGEX MATCH "MD_API_${VERSION}_NUMBER_CURRENT[ \t]*=*[\ t]*[A-Z_]*[0-9]*" _ENUM_LINE ${_md_h_contents})
+        string(REGEX MATCH "[0-9].*" VERSION_NUMBER ${_ENUM_LINE})
+        set(VERSION_${VERSION} ${VERSION_NUMBER})
+    endforeach(VERSION)
+
+    set(MD_VERSION_MAJOR ${VERSION_MAJOR} PARENT_SCOPE)
+    set(MD_VERSION ${VERSION_MAJOR}.${VERSION_MINOR}.${VERSION_BUILD} PARENT_SCOPE)
+endfunction(set_metrics_discovery_version)
+
 #################################################################################
 # clearInputVariables
 #   Clears cached MDAPI input cmake variables. Needed for e.g. the below command scenario:
