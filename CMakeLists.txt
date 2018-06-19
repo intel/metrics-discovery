@@ -209,8 +209,24 @@ set_property(TARGET ${PROJECT_NAME} PROPERTY POSITION_INDEPENDENT_CODE ON)
 # INSTALL
 #################################################################################
 
-install (TARGETS ${PROJECT_NAME} DESTINATION lib)
-install (FILES "${BS_DIR_INC}/common/instrumentation/api/metrics_discovery_api.h" DESTINATION include)
+# pkg-config file
+set (PC_FILE lib${PROJECT_NAME}.pc)
+set (PC_IN ${PC_FILE}.in)
+
+set (DEST_DIR ${CMAKE_INSTALL_PREFIX})
+set (LIB -l${PROJECT_NAME})
+set (MD_VERSION ${MD_VERSION})
+
+if ("${LIB_INSTALL_DIR}" STREQUAL "")
+    set (LIB_INSTALL_DIR "${CMAKE_INSTALL_PREFIX}/lib${LIB_SUFFIX}")
+endif()
+set (LIB_DIR ${LIB_INSTALL_DIR})
+configure_file (${PC_IN} ${CMAKE_BINARY_DIR}/${PC_FILE} @ONLY)
+install (FILES ${CMAKE_BINARY_DIR}/${PC_FILE} DESTINATION lib/pkgconfig)
+
+# Library/header
+install (TARGETS ${PROJECT_NAME} DESTINATION ${LIB_INSTALL_DIR})
+install (FILES "${BS_DIR_INC}/common/instrumentation/api/metrics_discovery_api.h" DESTINATION include/mdapi)
 
 #################################################################################
 # DEBUG

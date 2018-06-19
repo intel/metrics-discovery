@@ -1,0 +1,11 @@
+prefix=@DEST_DIR@
+libdir=@LIB_DIR@/
+libpath=${libdir}
+includedir=${prefix}/include
+
+Name: Intel(R) Metrics Discovery Application Programming Interface
+Description: This software is a user mode library that provides access to GPU performance data.
+Version: @MD_VERSION@
+
+Libs: -L${libpath} @LIB@
+Cflags: -I${includedir}/mdapi
