@@ -1151,13 +1151,13 @@ TTypedValue_1_0 CMetricsCalculator::CalculateReadEquationAndDelta( IEquation_1_0
             case EQUATION_ELEM_RD_40BIT_CNTR:
             {
                 TLargeInteger largeValue;
-                largeValue.LowPart  = *((const uint32_t*)(pRawReportPrev + element->ReadParams.ByteOffset));
-                largeValue.HighPart = (uint32_t)*((const unsigned char*)(pRawReportPrev + element->ReadParams.ByteOffsetExt));
+                largeValue.u.LowPart  = *((const uint32_t*)(pRawReportPrev + element->ReadParams.ByteOffset));
+                largeValue.u.HighPart = (uint32_t)*((const unsigned char*)(pRawReportPrev + element->ReadParams.ByteOffsetExt));
                 typedValuePrev.ValueUInt64 = largeValue.QuadPart;
                 typedValuePrev.ValueType   = VALUE_TYPE_UINT64;
 
-                largeValue.LowPart  = *((const uint32_t *)(pRawReportLast + element->ReadParams.ByteOffset));
-                largeValue.HighPart = (uint32_t)*((const unsigned char *)(pRawReportLast + element->ReadParams.ByteOffsetExt));
+                largeValue.u.LowPart  = *((const uint32_t *)(pRawReportLast + element->ReadParams.ByteOffset));
+                largeValue.u.HighPart = (uint32_t)*((const unsigned char *)(pRawReportLast + element->ReadParams.ByteOffsetExt));
                 typedValueLast.ValueUInt64 = largeValue.QuadPart;
                 typedValueLast.ValueType   = VALUE_TYPE_UINT64;
 

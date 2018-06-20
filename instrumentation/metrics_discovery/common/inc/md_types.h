@@ -140,11 +140,6 @@ namespace MetricsDiscoveryInternal
         {
             uint32_t LowPart;
             int32_t  HighPart;
-        };
-        struct
-        {
-            uint32_t LowPart;
-            int32_t  HighPart;
         } u;
         int64_t QuadPart;
     } TLargeInteger;

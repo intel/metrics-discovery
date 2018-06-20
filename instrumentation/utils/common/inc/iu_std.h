@@ -66,8 +66,6 @@ bool     iu_strcat_s( char* destStr, size_t destSize, const char* srcStr );
 
 char*    iu_strtok_s( char* str, const char* delimiters, char** context );
 
-uint64_t iu_strtoull( const char* str, char** endptr, int32_t base );
-
 int32_t  iu_sprintf_s( char* destStr, size_t destSize, const char* format, ... );
 
 bool     iu_fopen_s( FILE** pFile, const char* filename, const char* mode );

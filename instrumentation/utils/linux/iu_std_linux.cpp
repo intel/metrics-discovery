@@ -221,31 +221,6 @@ Group:
     Instrumentation Utils Standard OS Specific Functions
 
 Method:
-    iu_strtoull
-
-Description:
-    Calls strtoull.
-
-Input:
-    const char* str     - cstring with number
-    char**      endptr  - (out) pointer to the next character after numerical value
-    int32_t     base    - numerical base
-
-Output:
-    uint64_t - converted value, 0 if error
-
-\*****************************************************************************/
-uint64_t iu_strtoull( const char* str, char** endptr, int32_t base )
-{
-    return strtoull( str, endptr, base );
-}
-
-/*****************************************************************************\
-
-Group:
-    Instrumentation Utils Standard OS Specific Functions
-
-Method:
     iu_sprintf_s
 
 Description:

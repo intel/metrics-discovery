@@ -8250,14 +8250,14 @@ bool CEquation::ParseEquationElement( const char* element )
     {
         CEquationElementInternal anElement;
         anElement.Element_1_0.Type            = EQUATION_ELEM_IMM_UINT64;
-        anElement.Element_1_0.ImmediateUInt64 = iu_strtoull( element, NULL, 0 );
+        anElement.Element_1_0.ImmediateUInt64 = strtoull( element, NULL, 0 );
         return AddEquationElement( &anElement );
     }
     else if( element[0] >= '0' && element[0] <= '9' ) //assume decimal integer 64
     {
         CEquationElementInternal anElement;
         anElement.Element_1_0.Type            = EQUATION_ELEM_IMM_UINT64;
-        anElement.Element_1_0.ImmediateUInt64 = iu_strtoull( element, NULL, 10 );
+        anElement.Element_1_0.ImmediateUInt64 = strtoull( element, NULL, 10 );
         return AddEquationElement( &anElement );
     }
 
