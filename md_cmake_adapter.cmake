@@ -78,20 +78,26 @@ if (${CMAKE_VERBOSE_MAKEFILE} STREQUAL ON)
 endif()
 
 # PLATFORM
-if (NOT (MD_PLATFORM AND
-         MD_PLATFORM STREQUAL "linux"))
+if (NOT (MD_PLATFORM))
+    set(PLATFORM "linux")
+    message("-- using PLATFORM = ${PLATFORM}")
+elseif (MD_PLATFORM STREQUAL "linux")
+    set(PLATFORM ${MD_PLATFORM})
+else()
     errorExit("ERROR: Specify correct MD_PLATFORM (-DMD_PLATFORM=linux)")
 endif()
-set(PLATFORM ${MD_PLATFORM})
 
 # BUILD_TYPE
-if (NOT (MD_BUILD_TYPE AND
-         MD_BUILD_TYPE STREQUAL "release" OR
-         MD_BUILD_TYPE STREQUAL "release-internal" OR
-         MD_BUILD_TYPE STREQUAL "debug"))
+if (NOT (MD_BUILD_TYPE))
+    set(BUILD_TYPE "release")
+    message("-- using BUILD_TYPE = ${BUILD_TYPE}")
+elseif (MD_BUILD_TYPE STREQUAL "release" OR
+        MD_BUILD_TYPE STREQUAL "release-internal" OR
+        MD_BUILD_TYPE STREQUAL "debug")
+    set(BUILD_TYPE ${MD_BUILD_TYPE})
+else()
     errorExit("ERROR: Specify correct MD_BUILD_TYPE (-DMD_BUILD_TYPE=release|release-internal|debug)")
 endif()
-set(BUILD_TYPE ${MD_BUILD_TYPE})
 
 # ARCH
 if (NOT (MD_ARCH))
