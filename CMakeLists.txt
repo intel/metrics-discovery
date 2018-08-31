@@ -172,9 +172,12 @@ add_definitions(-DMD_USE_PERF)
 add_definitions(-DMETRICS_DISCOVERY)
 add_definitions(-fno-inline)
 add_definitions(-Wall)
+
 # to enable x86 build on x64 host
 if ("${ARCH}" STREQUAL "32")
+    # flag is needed for both, compiler and linker
     add_definitions(-m32)
+    set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -m32")
 endif ()
 
 #################################################################################
