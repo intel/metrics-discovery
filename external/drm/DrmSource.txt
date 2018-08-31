@@ -1,0 +1,12 @@
+https://cgit.freedesktop.org/mesa/drm/tree/
+
+Base commit:
+commit f3d90e8db42d8d8a839558c0bc4c368c0107a4b9
+Author: Michel Dänzer <michel.daenzer@amd.com>
+Date:   Mon Aug 27 11:48:48 2018 +0200
+
+    amdgpu-symbol-check: Add amdgpu_find_bo_by_cpu_mapping
+
+    Fixes: 4d454424e1f2 ("amdgpu: add a function to find bo by cpu mapping
+                          (v2)"
+
