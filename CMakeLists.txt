@@ -158,8 +158,11 @@ if ("${PLATFORM}" STREQUAL "linux")
     add_definitions(-Wno-unknown-pragmas)
     add_definitions(-Wno-comment)
     add_definitions(-msse)
-    if ("${BUILD_TYPE}" STREQUAL "release")
+    if ("${BUILD_TYPE}" STREQUAL "release" OR
+        "${BUILD_TYPE}" STREQUAL "release-internal")
         add_definitions(-Wformat-security)
+    elseif ("${BUILD_TYPE}" STREQUAL "debug")
+        add_definitions(-g)
     endif ()
     # C++ specific
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-reorder")
