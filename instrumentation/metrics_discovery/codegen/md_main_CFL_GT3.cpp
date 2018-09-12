@@ -20,7 +20,7 @@
     FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
     IN THE SOFTWARE.
 
-    File Name:  md_main_KBL_GT3.cpp
+    File Name:  md_main_CFL_GT3.cpp
 
     Abstract:   C++ automated generated file to stack metrics meta data
 
@@ -31,8 +31,8 @@
 
 
 
-#if ((!defined(MD_INCLUDE_KBL_GT3_METRICS) && MD_INCLUDE_ALL_METRICS) || MD_INCLUDE_KBL_GT3_METRICS)
-TCompletionCode CreateObjectTreeKBL_GT3_OA( CConcurrentGroup* aGroup )
+#if ((!defined(MD_INCLUDE_CFL_GT3_METRICS) && MD_INCLUDE_ALL_METRICS) || MD_INCLUDE_CFL_GT3_METRICS)
+TCompletionCode CreateObjectTreeCFL_GT3_OA( CConcurrentGroup* aGroup )
 {
     MD_LOG_ENTER();
     MD_CHECK_PTR_RET(g_MetricsDevice, CC_ERROR_GENERAL);
@@ -44,7 +44,7 @@ TCompletionCode CreateObjectTreeKBL_GT3_OA( CConcurrentGroup* aGroup )
     const char*       availabilityEquation = NULL;
     uint32_t          platformMask = 0;
   
-    platformMask = PLATFORM_KBL;
+    platformMask = PLATFORM_CFL;
     if( MD_IS_INTERNAL_BUILD || g_MetricsDevice->IsPlatformTypeOf( platformMask, GT_TYPE_GT3 ) )
     {
         aSet = aGroup->AddMetricSet( "RenderBasic", "Render Metrics Basic Gen9", API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
@@ -943,7 +943,7 @@ TCompletionCode CreateObjectTreeKBL_GT3_OA( CConcurrentGroup* aGroup )
         MD_CHECK_CC( aSet->RefreshConfigRegisters() );
     }
      
-    platformMask = PLATFORM_KBL;
+    platformMask = PLATFORM_CFL;
     if( MD_IS_INTERNAL_BUILD || g_MetricsDevice->IsPlatformTypeOf( platformMask, GT_TYPE_GT3 ) )
     {
         aSet = aGroup->AddMetricSet( "ComputeBasic", "Compute Metrics Basic Gen9", API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
@@ -1654,7 +1654,7 @@ TCompletionCode CreateObjectTreeKBL_GT3_OA( CConcurrentGroup* aGroup )
         MD_CHECK_CC( aSet->RefreshConfigRegisters() );
     }
      
-    platformMask = PLATFORM_KBL;
+    platformMask = PLATFORM_CFL;
     if( MD_IS_INTERNAL_BUILD || g_MetricsDevice->IsPlatformTypeOf( platformMask, GT_TYPE_GT3 ) )
     {
         aSet = aGroup->AddMetricSet( "RenderPipeProfile", "Render Metrics for 3D Pipeline Profile Gen9", API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
@@ -2459,7 +2459,7 @@ TCompletionCode CreateObjectTreeKBL_GT3_OA( CConcurrentGroup* aGroup )
         MD_CHECK_CC( aSet->RefreshConfigRegisters() );
     }
      
-    platformMask = PLATFORM_KBL;
+    platformMask = PLATFORM_CFL;
     if( MD_IS_INTERNAL_BUILD || g_MetricsDevice->IsPlatformTypeOf( platformMask, GT_TYPE_GT3 ) )
     {
         aSet = aGroup->AddMetricSet( "MemoryReads", "Memory Reads Distribution Gen9", API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
@@ -3168,7 +3168,7 @@ TCompletionCode CreateObjectTreeKBL_GT3_OA( CConcurrentGroup* aGroup )
         MD_CHECK_CC( aSet->RefreshConfigRegisters() );
     }
      
-    platformMask = PLATFORM_KBL;
+    platformMask = PLATFORM_CFL;
     if( MD_IS_INTERNAL_BUILD || g_MetricsDevice->IsPlatformTypeOf( platformMask, GT_TYPE_GT3 ) )
     {
         aSet = aGroup->AddMetricSet( "MemoryWrites", "Memory Writes Distribution Gen9", API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
@@ -3877,7 +3877,7 @@ TCompletionCode CreateObjectTreeKBL_GT3_OA( CConcurrentGroup* aGroup )
         MD_CHECK_CC( aSet->RefreshConfigRegisters() );
     }
      
-    platformMask = PLATFORM_KBL;
+    platformMask = PLATFORM_CFL;
     if( MD_IS_INTERNAL_BUILD || g_MetricsDevice->IsPlatformTypeOf( platformMask, GT_TYPE_GT3 ) )
     {
         aSet = aGroup->AddMetricSet( "ComputeExtended", "Compute Metrics Extended Gen9", API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
@@ -4560,7 +4560,7 @@ TCompletionCode CreateObjectTreeKBL_GT3_OA( CConcurrentGroup* aGroup )
         MD_CHECK_CC( aSet->RefreshConfigRegisters() );
     }
      
-    platformMask = PLATFORM_KBL;
+    platformMask = PLATFORM_CFL;
     if( MD_IS_INTERNAL_BUILD || g_MetricsDevice->IsPlatformTypeOf( platformMask, GT_TYPE_GT3 ) )
     {
         aSet = aGroup->AddMetricSet( "ComputeL3Cache", "Compute Metrics L3 Cache Gen9", API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
@@ -5487,7 +5487,7 @@ TCompletionCode CreateObjectTreeKBL_GT3_OA( CConcurrentGroup* aGroup )
         MD_CHECK_CC( aSet->RefreshConfigRegisters() );
     }
      
-    platformMask = PLATFORM_KBL;
+    platformMask = PLATFORM_CFL;
     if( MD_IS_INTERNAL_BUILD || g_MetricsDevice->IsPlatformTypeOf( platformMask, GT_TYPE_GT3 ) )
     {
         aSet = aGroup->AddMetricSet( "HDCAndSF", "Metric set HDCAndSF", API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
@@ -6206,7 +6206,7 @@ TCompletionCode CreateObjectTreeKBL_GT3_OA( CConcurrentGroup* aGroup )
         MD_CHECK_CC( aSet->RefreshConfigRegisters() );
     }
      
-    platformMask = PLATFORM_KBL;
+    platformMask = PLATFORM_CFL;
     if( MD_IS_INTERNAL_BUILD || g_MetricsDevice->IsPlatformTypeOf( platformMask, GT_TYPE_GT3 ) )
     {
         aSet = aGroup->AddMetricSet( "L3_1", "Metric set L3_1", API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
@@ -6955,7 +6955,7 @@ TCompletionCode CreateObjectTreeKBL_GT3_OA( CConcurrentGroup* aGroup )
         MD_CHECK_CC( aSet->RefreshConfigRegisters() );
     }
      
-    platformMask = PLATFORM_KBL;
+    platformMask = PLATFORM_CFL;
     if( MD_IS_INTERNAL_BUILD || g_MetricsDevice->IsPlatformTypeOf( platformMask, GT_TYPE_GT3 ) )
     {
         aSet = aGroup->AddMetricSet( "L3_2", "Metric set L3_2", API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
@@ -7635,7 +7635,7 @@ TCompletionCode CreateObjectTreeKBL_GT3_OA( CConcurrentGroup* aGroup )
         MD_CHECK_CC( aSet->RefreshConfigRegisters() );
     }
      
-    platformMask = PLATFORM_KBL;
+    platformMask = PLATFORM_CFL;
     if( MD_IS_INTERNAL_BUILD || g_MetricsDevice->IsPlatformTypeOf( platformMask, GT_TYPE_GT3 ) )
     {
         aSet = aGroup->AddMetricSet( "L3_3", "Metric set L3_3", API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
@@ -8314,7 +8314,7 @@ TCompletionCode CreateObjectTreeKBL_GT3_OA( CConcurrentGroup* aGroup )
         MD_CHECK_CC( aSet->RefreshConfigRegisters() );
     }
      
-    platformMask = PLATFORM_KBL;
+    platformMask = PLATFORM_CFL;
     if( MD_IS_INTERNAL_BUILD || g_MetricsDevice->IsPlatformTypeOf( platformMask, GT_TYPE_GT3 ) )
     {
         aSet = aGroup->AddMetricSet( "RasterizerAndPixelBackend", "Metric set RasterizerAndPixelBackend", API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
@@ -9028,7 +9028,7 @@ TCompletionCode CreateObjectTreeKBL_GT3_OA( CConcurrentGroup* aGroup )
         MD_CHECK_CC( aSet->RefreshConfigRegisters() );
     }
      
-    platformMask = PLATFORM_KBL;
+    platformMask = PLATFORM_CFL;
     if( MD_IS_INTERNAL_BUILD || g_MetricsDevice->IsPlatformTypeOf( platformMask, GT_TYPE_GT3 ) )
     {
         aSet = aGroup->AddMetricSet( "Sampler", "Metric set Sampler", API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
@@ -9799,7 +9799,7 @@ TCompletionCode CreateObjectTreeKBL_GT3_OA( CConcurrentGroup* aGroup )
         MD_CHECK_CC( aSet->RefreshConfigRegisters() );
     }
      
-    platformMask = PLATFORM_KBL;
+    platformMask = PLATFORM_CFL;
     if( MD_IS_INTERNAL_BUILD || g_MetricsDevice->IsPlatformTypeOf( platformMask, GT_TYPE_GT3 ) )
     {
         aSet = aGroup->AddMetricSet( "TDL_1", "Metric set TDL_1", API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
@@ -10575,7 +10575,7 @@ TCompletionCode CreateObjectTreeKBL_GT3_OA( CConcurrentGroup* aGroup )
         MD_CHECK_CC( aSet->RefreshConfigRegisters() );
     }
      
-    platformMask = PLATFORM_KBL;
+    platformMask = PLATFORM_CFL;
     if( MD_IS_INTERNAL_BUILD || g_MetricsDevice->IsPlatformTypeOf( platformMask, GT_TYPE_GT3 ) )
     {
         aSet = aGroup->AddMetricSet( "TDL_2", "Metric set TDL_2", API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
@@ -11313,7 +11313,7 @@ TCompletionCode CreateObjectTreeKBL_GT3_OA( CConcurrentGroup* aGroup )
         MD_CHECK_CC( aSet->RefreshConfigRegisters() );
     }
      
-    platformMask = PLATFORM_KBL;
+    platformMask = PLATFORM_CFL;
     if( MD_IS_INTERNAL_BUILD || g_MetricsDevice->IsPlatformTypeOf( platformMask, GT_TYPE_GT3 ) )
     {
         aSet = aGroup->AddMetricSet( "ComputeExtra", "Compute Metrics Extra Gen9", API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
@@ -11558,7 +11558,7 @@ TCompletionCode CreateObjectTreeKBL_GT3_OA( CConcurrentGroup* aGroup )
         MD_CHECK_CC( aSet->RefreshConfigRegisters() );
     }
      
-    platformMask = PLATFORM_KBL;
+    platformMask = PLATFORM_CFL;
     if( MD_IS_INTERNAL_BUILD || g_MetricsDevice->IsPlatformTypeOf( platformMask, GT_TYPE_GT3 ) )
     {
         aSet = aGroup->AddMetricSet( "VMEPipe", "Media Vme Pipe Gen9", API_TYPE_IOSTREAM,
@@ -11894,7 +11894,7 @@ TCompletionCode CreateObjectTreeKBL_GT3_OA( CConcurrentGroup* aGroup )
         MD_CHECK_CC( aSet->RefreshConfigRegisters() );
     }
      
-    platformMask = PLATFORM_KBL;
+    platformMask = PLATFORM_CFL;
     if( MD_IS_INTERNAL_BUILD || g_MetricsDevice->IsPlatformTypeOf( platformMask, GT_TYPE_GT3 ) )
     {
         aSet = aGroup->AddMetricSet( "GpuBusyness", "Gpu Rings Busyness", API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
@@ -12175,7 +12175,7 @@ TCompletionCode CreateObjectTreeKBL_GT3_OA( CConcurrentGroup* aGroup )
         MD_CHECK_CC( aSet->RefreshConfigRegisters() );
     }
      
-    platformMask = PLATFORM_KBL;
+    platformMask = PLATFORM_CFL;
     if( MD_IS_INTERNAL_BUILD || g_MetricsDevice->IsPlatformTypeOf( platformMask, GT_TYPE_GT3 ) )
     {
         aSet = aGroup->AddMetricSet( "TestOa", "MDAPI testing set Gen9", API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
@@ -12493,7 +12493,7 @@ TCompletionCode CreateObjectTreeKBL_GT3_OA( CConcurrentGroup* aGroup )
         MD_CHECK_CC( aSet->RefreshConfigRegisters() );
     }
      
-    platformMask = PLATFORM_KBL;
+    platformMask = PLATFORM_CFL;
     if( MD_IS_INTERNAL_BUILD || g_MetricsDevice->IsPlatformTypeOf( platformMask, GT_TYPE_GT3 ) )
     {
         aSet = aGroup->AddMetricSet( "PMA_Stall", "Metric set PMA Stall", API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,

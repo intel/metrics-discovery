@@ -329,8 +329,12 @@ typedef enum
     GENERATION_BXT = 10,
     // 11 reserved
     GENERATION_KBL = 12,
-    // 13-18 reserved
+    // 13-17 reserved
+    GENERATION_CFL = 18,
+    // 19-20 reserved
     // ...
+    // DO NOT CHANGE ORDER OF THIS ENUM, ADD NEW PLATFORMS AT THE END!
+    // It has to be synchronized with metric_discovery_internal_api.h file.
     GTDI_PLATFORM_MAX = 0xFFFFFFF
 } GTDI_PLATFORM_INDEX;
 
@@ -505,11 +509,12 @@ typedef enum GTDI_DEVICE_PARAM_ENUM
     // Note: This is not implemented on Windows
     GTDI_DEVICE_PARAM_GPU_TIMESTAMP,
 
-    // ...
     GTDI_DEVICE_PARAM_EDRAM_SIZE,
     GTDI_DEVICE_PARAM_LLC_SIZE,
     GTDI_DEVICE_PARAM_L3_SIZE,
     GTDI_DEVICE_PARAM_OA_BUFFER_EDGE_TRIGGERING_OVERRIDE,
+
+    // ...
     GTDI_DEVICE_PARAM_MAX = 0xFFFFFFFF
 
 } GTDI_DEVICE_PARAM;
@@ -536,7 +541,6 @@ typedef struct GTDIDeviceInfoParamInStruct
     GTDI_DEVICE_PARAM       Param;    // Identifies parameter to get
     uint32_t                Slice;    // slice id
     uint32_t                SubSlice; // subslice id
-
 } GTDIDeviceInfoParamIn;
 
 /******************************************************************************/

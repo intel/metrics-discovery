@@ -5225,8 +5225,9 @@ TCompletionCode CMetricSet::SendStartConfiguration( bool sendQueryConfigFlag )
             AppendToConfiguration( m_startRegsQueryVector, pmRegs, readRegs );
         }
 
-        //Verify if NOA programming is present
-        if( pmRegs->GetCount() == 0 || CheckNoaProgrammingExists( pmRegs ) )
+        // Verify if programming is present
+        // "m_startRegisterSetList may be empty for e.g. PipelineStatistics"
+        if( ( pmRegs->GetCount() > 0 || readRegs->GetCount() > 0 ) || m_startRegisterSetList->GetCount() == 0 )
         {
             // Send configurations
             ret = driverInterface->SendPmRegsConfig( pmRegs->GetMemoryPointer(), pmRegs->GetCount(), m_currentParams->ApiMask );
@@ -5246,7 +5247,7 @@ TCompletionCode CMetricSet::SendStartConfiguration( bool sendQueryConfigFlag )
         }
         else
         {
-            MD_LOG( LOG_ERROR, "NOA programming missing" );
+            MD_LOG( LOG_ERROR, "Programming missing" );
             ret = CC_ERROR_NOT_SUPPORTED;
         }
 
@@ -5298,35 +5299,6 @@ void CMetricSet::AppendToConfiguration( Vector<TRegister*>* sourceRegs, Vector<T
     }
 }
 
-/*****************************************************************************\
-
-Class:
-    CMetricSet
-
-Method:
-    CheckNoaProgrammingExists
-
-Description:
-    Check if NOA regs are present in given vector
-
-Input:
-    Vector<TRegister*>* regVector  - vector to check for NOA regs
-
-Output:
-    bool - false if no NOA regs found in given vector
-
-\*****************************************************************************/
-bool CMetricSet::CheckNoaProgrammingExists( Vector<TRegister*>* regVector )
-{
-    for( uint32_t i = 0; i < regVector->GetCount(); i++ )
-    {
-        if( (*regVector)[i]->type == REGISTER_TYPE_NOA )
-        {
-            return true;
-        }
-    }
-    return false;
-}
 /*****************************************************************************\
 
 Class:

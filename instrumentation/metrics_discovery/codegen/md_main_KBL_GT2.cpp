@@ -12422,6 +12422,204 @@ TCompletionCode CreateObjectTreeKBL_GT2_OA( CConcurrentGroup* aGroup )
         MD_CHECK_CC( aSet->RefreshConfigRegisters() );
     }
      
+    platformMask = PLATFORM_KBL;
+    if( MD_IS_INTERNAL_BUILD || g_MetricsDevice->IsPlatformTypeOf( platformMask, GT_TYPE_GT2 ) )
+    {
+        aSet = aGroup->AddMetricSet( "PMA_Stall", "Metric set PMA Stall", API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+           GPU_RENDER, 256, 672, OA_REPORT_TYPE_256B_A45_NOA16, platformMask, GT_TYPE_GT2 );
+        MD_CHECK_PTR( aSet );
+        
+        MD_CHECK_CC( aSet->SetApiSpecificId("GPAV", 0, 0x40000000, 0x80000203, 0, 0,
+            "Intel Performance Counters for GT Set Dynamic", 0, "Intel_Raw_Hardware_Counters_Set_0_Query", 0) );
+  
+        availabilityEquation = NULL;
+        aMetric = aSet->AddMetric( "GpuTime", "GPU Time Elapsed",
+            "Time elapsed on the GPU during the measurement.",
+            "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_TIER_1|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            METRIC_TYPE_DURATION, RESULT_UINT64, "ns", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
+        if( aMetric )
+        {
+            MD_CHECK_CC( aMetric->SetSnapshotReportReadEquation( "dw@0x04 1000000000 UMUL $GpuTimestampFrequency UDIV" ));
+            MD_CHECK_CC( aMetric->SetDeltaReportReadEquation( "qw@0x00" ));
+            MD_CHECK_CC( aMetric->SetSnapshotReportDeltaFunction( "NS_TIME" ));
+        }
+
+        availabilityEquation = NULL;
+        aMetric = aSet->AddMetric( "GpuCoreClocks", "GPU Core Clocks",
+            "The total number of GPU core clocks elapsed during the measurement.",
+            "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_TIER_1|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            METRIC_TYPE_EVENT, RESULT_UINT64, "cycles", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
+        if( aMetric )
+        {
+            MD_CHECK_CC( aMetric->SetSnapshotReportReadEquation( "dw@0x0c" ));
+            MD_CHECK_CC( aMetric->SetDeltaReportReadEquation( "qw@0x08" ));
+            MD_CHECK_CC( aMetric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
+        }
+
+        availabilityEquation = NULL;
+        aMetric = aSet->AddMetric( "AvgGpuCoreFrequencyMHz", "AVG GPU Core Frequency",
+            "Average GPU Core Frequency in the measurement.",
+            "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_TIER_1|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            METRIC_TYPE_EVENT, RESULT_UINT64, "MHz", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
+        if( aMetric )
+        {
+            
+            MD_CHECK_CC( aMetric->SetNormalizationEquation( "$GpuCoreClocks 1000 UMUL $$GpuTime UDIV" ));
+        }
+
+        availabilityEquation = "$SliceMask 1 AND";
+        if( MD_IS_INTERNAL_BUILD || g_MetricsDevice->IsAvailabilityEquationTrue( availabilityEquation ) )
+        {
+            aMetric = aSet->AddMetric( "StcPMAStall", "STC PMA stall",
+                "Percentage of time when stencil cache line and an overlapping pixel are causing stalls",
+                "GPU/Stencil Cache", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_STC * 0x10000), USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+                METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
+            if( aMetric )
+            {
+                MD_CHECK_CC( aMetric->SetSnapshotReportReadEquation( "dw@0xc0 dw@0xc4 FADD 2 FDIV" ));
+                MD_CHECK_CC( aMetric->SetDeltaReportReadEquation( "qw@0x130 qw@0x138 FADD 2 FDIV" ));
+                MD_CHECK_CC( aMetric->SetNormalizationEquation( "GpuDuration" ));
+                MD_CHECK_CC( aMetric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
+                MD_CHECK_CC( aMetric->SetMaxValueEquation( "100" ));
+            }
+        }
+
+        aInformation = aSet->AddInformation( "QueryBeginTime", "Query Begin Time",
+            "The measurement begin time.",
+            "Report Meta Data", API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            INFORMATION_TYPE_TIMESTAMP, "ns", NULL );
+        if( aInformation )
+        {
+            MD_CHECK_CC( aInformation->SetSnapshotReportReadEquation( "dw@0x04 1000000000 UMUL $GpuTimestampFrequency UDIV" ));
+            MD_CHECK_CC( aInformation->SetDeltaReportReadEquation( "qw@0x1b0" ));
+            MD_CHECK_CC( aInformation->SetOverflowFunction( "NS_TIME" ));
+        }
+
+        aInformation = aSet->AddInformation( "CoreFrequencyMHz", "GPU Core Frequency",
+            "The last GPU core (unslice) frequency in the measurement.",
+            "Report Meta Data", API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            INFORMATION_TYPE_VALUE, "MHz", NULL );
+        if( aInformation )
+        {
+            MD_CHECK_CC( aInformation->SetSnapshotReportReadEquation( "dw@0x0 0x1ff AND 16666 UMUL 1000 UDIV" ));
+            MD_CHECK_CC( aInformation->SetDeltaReportReadEquation( "qw@0x208 1000000 UDIV" ));
+        }
+
+        aInformation = aSet->AddInformation( "EuSliceFrequencyMHz", "EU Slice Frequency",
+            "The last GPU Execution Unit slice frequency in the measurement.",
+            "Report Meta Data", API_TYPE_IOSTREAM,
+            INFORMATION_TYPE_VALUE, "MHz", NULL );
+        if( aInformation )
+        {
+            MD_CHECK_CC( aInformation->SetSnapshotReportReadEquation( "dw@0x0 25 >> dw@0x0 9 >> 0x3 AND OR 16666 UMUL 1000 UDIV" ));
+        }
+
+        aInformation = aSet->AddInformation( "ReportReason", "Report Reason",
+            "The reason of the report.",
+            "Report Meta Data", API_TYPE_IOSTREAM,
+            INFORMATION_TYPE_REPORT_REASON, NULL, NULL );
+        if( aInformation )
+        {
+            MD_CHECK_CC( aInformation->SetSnapshotReportReadEquation( "dw@0x0 19 >> 0x3f AND" ));
+        }
+
+        aInformation = aSet->AddInformation( "ContextId", "Context ID",
+            "The context tag in which report has been taken.",
+            "Report Meta Data", API_TYPE_IOSTREAM,
+            INFORMATION_TYPE_CONTEXT_ID_TAG, NULL, NULL );
+        if( aInformation )
+        {
+            MD_CHECK_CC( aInformation->SetSnapshotReportReadEquation( "dw@0x08 0xfffff AND" ));
+        }
+
+        aInformation = aSet->AddInformation( "CoreFrequencyChanged", "GPU Core Frequency Changed",
+            "The flag indicating that GPU core frequency has changed.",
+            "Exception", API_TYPE_OGL|API_TYPE_OGL4_X,
+            INFORMATION_TYPE_FLAG, NULL, NULL );
+        if( aInformation )
+        {
+            
+            MD_CHECK_CC( aInformation->SetDeltaReportReadEquation( "dw@0x204" ));
+        }
+
+        aInformation = aSet->AddInformation( "QuerySplitOccurred", "Query Split Occurred",
+            "The flag indicating that query has been split during execution on the GPU.",
+            "Exception", API_TYPE_OGL|API_TYPE_OGL4_X,
+            INFORMATION_TYPE_FLAG, NULL, NULL );
+        if( aInformation )
+        {
+            
+            MD_CHECK_CC( aInformation->SetDeltaReportReadEquation( "dw@0x200" ));
+        }
+
+        aInformation = aSet->AddInformation( "ReportId", "Query report id",
+            "Query report identification number.",
+            "Report Meta Data", API_TYPE_OGL|API_TYPE_OGL4_X,
+            INFORMATION_TYPE_VALUE, NULL, NULL );
+        if( aInformation )
+        {
+            
+            MD_CHECK_CC( aInformation->SetDeltaReportReadEquation( "dw@0x210" ));
+        }
+
+        aInformation = aSet->AddInformation( "ReportsCount", "Query reports count",
+            "The number of available query reports.",
+            "Report Meta Data", API_TYPE_OGL|API_TYPE_OGL4_X,
+            INFORMATION_TYPE_VALUE, NULL, NULL );
+        if( aInformation )
+        {
+            
+            MD_CHECK_CC( aInformation->SetDeltaReportReadEquation( "dw@0x214" ));
+        }
+
+        aInformation = aSet->AddInformation( "OverrunOccured", "Query Overrun Occurred",
+            "The flag indicating that Oa buffer has been overran.",
+            "Exception", API_TYPE_OGL|API_TYPE_OGL4_X,
+            INFORMATION_TYPE_FLAG, NULL, NULL );
+        if( aInformation )
+        {
+            
+            MD_CHECK_CC( aInformation->SetDeltaReportReadEquation( "dw@0x1cc" ));
+        }
+
+        MD_CHECK_CC( aSet->AddStartRegisterSet( 0, 0 ));
+        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x9840, 0x00000080, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x9888, 0x122d3080, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x9888, 0x000d2000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x9888, 0x060d8000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x9888, 0x080da000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x9888, 0x0a0da000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x9888, 0x0c0f0800, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x9888, 0x0e0faa00, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x9888, 0x100f0002, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x9888, 0x002d0025, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x9888, 0x062d1300, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x9888, 0x082d16a4, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x9888, 0x0a2d162e, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x9888, 0x102d0000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x9888, 0x1190003f, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x9888, 0x51900000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x9888, 0x41900000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x9888, 0x55900000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x9888, 0x45900000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x9888, 0x47900000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x9888, 0x57900000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x9888, 0x49900000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x9888, 0x37900000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x9888, 0x33900000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2740, 0x00000000, REGISTER_TYPE_OA ));
+        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2710, 0x00000000, REGISTER_TYPE_OA ));
+        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2714, 0x30800000, REGISTER_TYPE_OA ));
+        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2720, 0x00000000, REGISTER_TYPE_OA ));
+        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2724, 0x00800000, REGISTER_TYPE_OA ));
+        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2770, 0x00e00021, REGISTER_TYPE_OA ));
+        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2774, 0x0007fff8, REGISTER_TYPE_OA ));
+        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2778, 0x07000101, REGISTER_TYPE_OA ));
+        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x277c, 0x0038ffc7, REGISTER_TYPE_OA ));
+  
+        MD_CHECK_CC( aSet->RefreshConfigRegisters() );
+    }
+     
     MD_LOG_EXIT();
     return CC_OK;
 

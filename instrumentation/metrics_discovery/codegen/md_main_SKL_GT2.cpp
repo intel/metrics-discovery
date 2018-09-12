@@ -843,24 +843,22 @@ TCompletionCode CreateObjectTreeSKL_GT2_OA( CConcurrentGroup* aGroup )
             MD_CHECK_CC( aInformation->SetDeltaReportReadEquation( "dw@0x1cc" ));
         }
 
-        MD_CHECK_CC( aSet->AddStartRegisterSet( 0, 0 ));
-        MD_CHECK_CC( aSet->AddStartConfigRegister( 0xE458, 0x00005004, REGISTER_TYPE_FLEX ));
-        MD_CHECK_CC( aSet->AddStartConfigRegister( 0xE558, 0x00010003, REGISTER_TYPE_FLEX ));
-        MD_CHECK_CC( aSet->AddStartConfigRegister( 0xE658, 0x00012011, REGISTER_TYPE_FLEX ));
-        MD_CHECK_CC( aSet->AddStartConfigRegister( 0xE758, 0x00015014, REGISTER_TYPE_FLEX ));
-        MD_CHECK_CC( aSet->AddStartConfigRegister( 0xE45c, 0x00051050, REGISTER_TYPE_FLEX ));
-        MD_CHECK_CC( aSet->AddStartConfigRegister( 0xE55c, 0x00053052, REGISTER_TYPE_FLEX ));
-        MD_CHECK_CC( aSet->AddStartConfigRegister( 0xE65c, 0x00055054, REGISTER_TYPE_FLEX ));
-        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2710, 0x00000000, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2714, 0x00800000, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2720, 0x00000000, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2724, 0x00800000, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2740, 0x00000000, REGISTER_TYPE_OA ));
-  
         availabilityEquation = "$SkuRevisionId 0x02 UGTE";
         if( MD_IS_INTERNAL_BUILD || g_MetricsDevice->IsAvailabilityEquationTrue( availabilityEquation ) )
         {
-            MD_CHECK_CC( aSet->AddStartRegisterSet( 1, 1, availabilityEquation ));
+            MD_CHECK_CC( aSet->AddStartRegisterSet( 0, 0, availabilityEquation ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0xE458, 0x00005004, REGISTER_TYPE_FLEX ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0xE558, 0x00010003, REGISTER_TYPE_FLEX ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0xE658, 0x00012011, REGISTER_TYPE_FLEX ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0xE758, 0x00015014, REGISTER_TYPE_FLEX ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0xE45c, 0x00051050, REGISTER_TYPE_FLEX ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0xE55c, 0x00053052, REGISTER_TYPE_FLEX ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0xE65c, 0x00055054, REGISTER_TYPE_FLEX ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2710, 0x00000000, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2714, 0x00800000, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2720, 0x00000000, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2724, 0x00800000, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2740, 0x00000000, REGISTER_TYPE_OA ));
             MD_CHECK_CC( aSet->AddStartConfigRegister( 0x9840, 0x00000080, REGISTER_TYPE_NOA ));
             MD_CHECK_CC( aSet->AddStartConfigRegister( 0x9888, 0x166c01e0, REGISTER_TYPE_NOA ));
             MD_CHECK_CC( aSet->AddStartConfigRegister( 0x9888, 0x12170280, REGISTER_TYPE_NOA ));
@@ -1553,24 +1551,22 @@ TCompletionCode CreateObjectTreeSKL_GT2_OA( CConcurrentGroup* aGroup )
             MD_CHECK_CC( aInformation->SetDeltaReportReadEquation( "dw@0x1cc" ));
         }
 
-        MD_CHECK_CC( aSet->AddStartRegisterSet( 0, 0 ));
-        MD_CHECK_CC( aSet->AddStartConfigRegister( 0xE458, 0x00005004, REGISTER_TYPE_FLEX ));
-        MD_CHECK_CC( aSet->AddStartConfigRegister( 0xE558, 0x00000003, REGISTER_TYPE_FLEX ));
-        MD_CHECK_CC( aSet->AddStartConfigRegister( 0xE658, 0x00002001, REGISTER_TYPE_FLEX ));
-        MD_CHECK_CC( aSet->AddStartConfigRegister( 0xE758, 0x00778008, REGISTER_TYPE_FLEX ));
-        MD_CHECK_CC( aSet->AddStartConfigRegister( 0xE45c, 0x00088078, REGISTER_TYPE_FLEX ));
-        MD_CHECK_CC( aSet->AddStartConfigRegister( 0xE55c, 0x00808708, REGISTER_TYPE_FLEX ));
-        MD_CHECK_CC( aSet->AddStartConfigRegister( 0xE65c, 0x00a08908, REGISTER_TYPE_FLEX ));
-        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2710, 0x00000000, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2714, 0x00800000, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2720, 0x00000000, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2724, 0x00800000, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2740, 0x00000000, REGISTER_TYPE_OA ));
-  
         availabilityEquation = "$SliceMask 0x01 AND $SkuRevisionId 0x02 ULT &&";
         if( MD_IS_INTERNAL_BUILD || g_MetricsDevice->IsAvailabilityEquationTrue( availabilityEquation ) )
         {
-            MD_CHECK_CC( aSet->AddStartRegisterSet( 1, 0, availabilityEquation ));
+            MD_CHECK_CC( aSet->AddStartRegisterSet( 0, 0, availabilityEquation ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0xE458, 0x00005004, REGISTER_TYPE_FLEX ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0xE558, 0x00000003, REGISTER_TYPE_FLEX ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0xE658, 0x00002001, REGISTER_TYPE_FLEX ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0xE758, 0x00778008, REGISTER_TYPE_FLEX ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0xE45c, 0x00088078, REGISTER_TYPE_FLEX ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0xE55c, 0x00808708, REGISTER_TYPE_FLEX ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0xE65c, 0x00a08908, REGISTER_TYPE_FLEX ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2710, 0x00000000, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2714, 0x00800000, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2720, 0x00000000, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2724, 0x00800000, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2740, 0x00000000, REGISTER_TYPE_OA ));
             MD_CHECK_CC( aSet->AddStartConfigRegister( 0x9840, 0x000000A0, REGISTER_TYPE_NOA ));
             MD_CHECK_CC( aSet->AddStartConfigRegister( 0x9888, 0x104F00E0, REGISTER_TYPE_NOA ));
             MD_CHECK_CC( aSet->AddStartConfigRegister( 0x9888, 0x124F1C00, REGISTER_TYPE_NOA ));
@@ -1633,7 +1629,6 @@ TCompletionCode CreateObjectTreeSKL_GT2_OA( CConcurrentGroup* aGroup )
             MD_CHECK_CC( aSet->AddStartConfigRegister( 0x9888, 0x1D900105, REGISTER_TYPE_NOA ));
             MD_CHECK_CC( aSet->AddStartConfigRegister( 0x9888, 0x1F900103, REGISTER_TYPE_NOA ));
             MD_CHECK_CC( aSet->AddStartConfigRegister( 0x9888, 0x35900000, REGISTER_TYPE_NOA ));
-            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x0D28, 0x00000000, REGISTER_TYPE_NOA ));
             MD_CHECK_CC( aSet->AddStartConfigRegister( 0x9888, 0x11900FFF, REGISTER_TYPE_NOA ));
             MD_CHECK_CC( aSet->AddStartConfigRegister( 0x9888, 0x51900000, REGISTER_TYPE_NOA ));
             MD_CHECK_CC( aSet->AddStartConfigRegister( 0x9888, 0x41900840, REGISTER_TYPE_NOA ));
@@ -1654,7 +1649,19 @@ TCompletionCode CreateObjectTreeSKL_GT2_OA( CConcurrentGroup* aGroup )
         availabilityEquation = "$SliceMask 0x01 AND $SkuRevisionId 0x02 UGTE &&";
         if( MD_IS_INTERNAL_BUILD || g_MetricsDevice->IsAvailabilityEquationTrue( availabilityEquation ) )
         {
-            MD_CHECK_CC( aSet->AddStartRegisterSet( 1, 0, availabilityEquation ));
+            MD_CHECK_CC( aSet->AddStartRegisterSet( 0, 0, availabilityEquation ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0xE458, 0x00005004, REGISTER_TYPE_FLEX ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0xE558, 0x00000003, REGISTER_TYPE_FLEX ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0xE658, 0x00002001, REGISTER_TYPE_FLEX ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0xE758, 0x00778008, REGISTER_TYPE_FLEX ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0xE45c, 0x00088078, REGISTER_TYPE_FLEX ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0xE55c, 0x00808708, REGISTER_TYPE_FLEX ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0xE65c, 0x00a08908, REGISTER_TYPE_FLEX ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2710, 0x00000000, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2714, 0x00800000, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2720, 0x00000000, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2724, 0x00800000, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2740, 0x00000000, REGISTER_TYPE_OA ));
             MD_CHECK_CC( aSet->AddStartConfigRegister( 0x9840, 0x000000A0, REGISTER_TYPE_NOA ));
             MD_CHECK_CC( aSet->AddStartConfigRegister( 0x00009888, 0x104F00E0, REGISTER_TYPE_NOA ));
             MD_CHECK_CC( aSet->AddStartConfigRegister( 0x00009888, 0x124F1C00, REGISTER_TYPE_NOA ));
@@ -1734,14 +1741,6 @@ TCompletionCode CreateObjectTreeSKL_GT2_OA( CConcurrentGroup* aGroup )
             MD_CHECK_CC( aSet->AddStartConfigRegister( 0x00009888, 0x43900842, REGISTER_TYPE_NOA ));
             MD_CHECK_CC( aSet->AddStartConfigRegister( 0x00009888, 0x53901111, REGISTER_TYPE_NOA ));
             MD_CHECK_CC( aSet->AddStartConfigRegister( 0x9840, 0x00000080, REGISTER_TYPE_NOA ));
-  
-        }
-  
-        availabilityEquation = "$SliceMask 0x02 AND $SkuRevisionId 0x02 ULT &&";
-        if( MD_IS_INTERNAL_BUILD || g_MetricsDevice->IsAvailabilityEquationTrue( availabilityEquation ) )
-        {
-            MD_CHECK_CC( aSet->AddStartRegisterSet( 1, 2, availabilityEquation ));
-            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x9840, 0x00000000, REGISTER_TYPE_NOA ));
   
         }
   
@@ -2435,24 +2434,22 @@ TCompletionCode CreateObjectTreeSKL_GT2_OA( CConcurrentGroup* aGroup )
             MD_CHECK_CC( aInformation->SetDeltaReportReadEquation( "dw@0x1cc" ));
         }
 
-        MD_CHECK_CC( aSet->AddStartRegisterSet( 0, 0 ));
-        MD_CHECK_CC( aSet->AddStartConfigRegister( 0xE458, 0x00005004, REGISTER_TYPE_FLEX ));
-        MD_CHECK_CC( aSet->AddStartConfigRegister( 0xE558, 0x00015014, REGISTER_TYPE_FLEX ));
-        MD_CHECK_CC( aSet->AddStartConfigRegister( 0xE658, 0x00025024, REGISTER_TYPE_FLEX ));
-        MD_CHECK_CC( aSet->AddStartConfigRegister( 0xE758, 0x00035034, REGISTER_TYPE_FLEX ));
-        MD_CHECK_CC( aSet->AddStartConfigRegister( 0xE45c, 0x00045044, REGISTER_TYPE_FLEX ));
-        MD_CHECK_CC( aSet->AddStartConfigRegister( 0xE55c, 0x00055054, REGISTER_TYPE_FLEX ));
-        MD_CHECK_CC( aSet->AddStartConfigRegister( 0xE65c, 0x00065064, REGISTER_TYPE_FLEX ));
-        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2710, 0x00000000, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2714, 0x00800000, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2720, 0x00000000, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2724, 0x00800000, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2740, 0x00000000, REGISTER_TYPE_OA ));
-  
         availabilityEquation = "$SliceMask 0x01 AND $SkuRevisionId 0x02 UGTE &&";
         if( MD_IS_INTERNAL_BUILD || g_MetricsDevice->IsAvailabilityEquationTrue( availabilityEquation ) )
         {
-            MD_CHECK_CC( aSet->AddStartRegisterSet( 1, 0, availabilityEquation ));
+            MD_CHECK_CC( aSet->AddStartRegisterSet( 0, 0, availabilityEquation ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0xE458, 0x00005004, REGISTER_TYPE_FLEX ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0xE558, 0x00015014, REGISTER_TYPE_FLEX ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0xE658, 0x00025024, REGISTER_TYPE_FLEX ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0xE758, 0x00035034, REGISTER_TYPE_FLEX ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0xE45c, 0x00045044, REGISTER_TYPE_FLEX ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0xE55c, 0x00055054, REGISTER_TYPE_FLEX ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0xE65c, 0x00065064, REGISTER_TYPE_FLEX ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2710, 0x00000000, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2714, 0x00800000, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2720, 0x00000000, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2724, 0x00800000, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2740, 0x00000000, REGISTER_TYPE_OA ));
             MD_CHECK_CC( aSet->AddStartConfigRegister( 0x9840, 0x00000080, REGISTER_TYPE_NOA ));
             MD_CHECK_CC( aSet->AddStartConfigRegister( 0x9888, 0x166c01e0, REGISTER_TYPE_NOA ));
             MD_CHECK_CC( aSet->AddStartConfigRegister( 0x9888, 0x12170280, REGISTER_TYPE_NOA ));
@@ -3187,40 +3184,38 @@ TCompletionCode CreateObjectTreeSKL_GT2_OA( CConcurrentGroup* aGroup )
             MD_CHECK_CC( aInformation->SetDeltaReportReadEquation( "dw@0x1cc" ));
         }
 
-        MD_CHECK_CC( aSet->AddStartRegisterSet( 0, 0 ));
-        MD_CHECK_CC( aSet->AddStartConfigRegister( 0xE458, 0x00005004, REGISTER_TYPE_FLEX ));
-        MD_CHECK_CC( aSet->AddStartConfigRegister( 0xE558, 0x00015014, REGISTER_TYPE_FLEX ));
-        MD_CHECK_CC( aSet->AddStartConfigRegister( 0xE658, 0x00025024, REGISTER_TYPE_FLEX ));
-        MD_CHECK_CC( aSet->AddStartConfigRegister( 0xE758, 0x00035034, REGISTER_TYPE_FLEX ));
-        MD_CHECK_CC( aSet->AddStartConfigRegister( 0xE45c, 0x00045044, REGISTER_TYPE_FLEX ));
-        MD_CHECK_CC( aSet->AddStartConfigRegister( 0xE55c, 0x00055054, REGISTER_TYPE_FLEX ));
-        MD_CHECK_CC( aSet->AddStartConfigRegister( 0xE65c, 0x00065064, REGISTER_TYPE_FLEX ));
-        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2724, 0xf0800000, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2720, 0x00000000, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2714, 0xf0800000, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2710, 0x00000000, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2740, 0x00000000, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2770, 0x0007ffea, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2774, 0x00007ffc, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2778, 0x0007affa, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x277c, 0x0000f5fd, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2780, 0x00079ffa, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2784, 0x0000f3fb, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2788, 0x0007bf7a, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x278c, 0x0000f7e7, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2790, 0x0007fefa, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2794, 0x0000f7cf, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2798, 0x00077ffa, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x279c, 0x0000efdf, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x27a0, 0x0006fffa, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x27a4, 0x0000cfbf, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x27a8, 0x0003fffa, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x27ac, 0x00005f7f, REGISTER_TYPE_OA ));
-  
         availabilityEquation = "$SkuRevisionId 0x02 ULT";
         if( MD_IS_INTERNAL_BUILD || g_MetricsDevice->IsAvailabilityEquationTrue( availabilityEquation ) )
         {
-            MD_CHECK_CC( aSet->AddStartRegisterSet( 1, 0, availabilityEquation ));
+            MD_CHECK_CC( aSet->AddStartRegisterSet( 0, 0, availabilityEquation ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0xE458, 0x00005004, REGISTER_TYPE_FLEX ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0xE558, 0x00015014, REGISTER_TYPE_FLEX ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0xE658, 0x00025024, REGISTER_TYPE_FLEX ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0xE758, 0x00035034, REGISTER_TYPE_FLEX ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0xE45c, 0x00045044, REGISTER_TYPE_FLEX ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0xE55c, 0x00055054, REGISTER_TYPE_FLEX ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0xE65c, 0x00065064, REGISTER_TYPE_FLEX ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2724, 0xf0800000, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2720, 0x00000000, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2714, 0xf0800000, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2710, 0x00000000, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2740, 0x00000000, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2770, 0x0007ffea, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2774, 0x00007ffc, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2778, 0x0007affa, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x277c, 0x0000f5fd, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2780, 0x00079ffa, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2784, 0x0000f3fb, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2788, 0x0007bf7a, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x278c, 0x0000f7e7, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2790, 0x0007fefa, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2794, 0x0000f7cf, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2798, 0x00077ffa, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x279c, 0x0000efdf, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x27a0, 0x0006fffa, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x27a4, 0x0000cfbf, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x27a8, 0x0003fffa, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x27ac, 0x00005f7f, REGISTER_TYPE_OA ));
             MD_CHECK_CC( aSet->AddStartConfigRegister( 0x9840, 0x000000A0, REGISTER_TYPE_NOA ));
             MD_CHECK_CC( aSet->AddStartConfigRegister( 0x9888, 0x0C0E001F, REGISTER_TYPE_NOA ));
             MD_CHECK_CC( aSet->AddStartConfigRegister( 0x9888, 0x0A0F0000, REGISTER_TYPE_NOA ));
@@ -3322,7 +3317,6 @@ TCompletionCode CreateObjectTreeSKL_GT2_OA( CConcurrentGroup* aGroup )
             MD_CHECK_CC( aSet->AddStartConfigRegister( 0x9888, 0x11974000, REGISTER_TYPE_NOA ));
             MD_CHECK_CC( aSet->AddStartConfigRegister( 0x9888, 0x13978000, REGISTER_TYPE_NOA ));
             MD_CHECK_CC( aSet->AddStartConfigRegister( 0x9888, 0x09974000, REGISTER_TYPE_NOA ));
-            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x0D28, 0x00000000, REGISTER_TYPE_NOA ));
             MD_CHECK_CC( aSet->AddStartConfigRegister( 0x9888, 0x1190C080, REGISTER_TYPE_NOA ));
             MD_CHECK_CC( aSet->AddStartConfigRegister( 0x9888, 0x51900000, REGISTER_TYPE_NOA ));
             MD_CHECK_CC( aSet->AddStartConfigRegister( 0x9888, 0x419010A0, REGISTER_TYPE_NOA ));
@@ -3344,7 +3338,35 @@ TCompletionCode CreateObjectTreeSKL_GT2_OA( CConcurrentGroup* aGroup )
         availabilityEquation = "$SkuRevisionId 0x02 UGTE";
         if( MD_IS_INTERNAL_BUILD || g_MetricsDevice->IsAvailabilityEquationTrue( availabilityEquation ) )
         {
-            MD_CHECK_CC( aSet->AddStartRegisterSet( 1, 0, availabilityEquation ));
+            MD_CHECK_CC( aSet->AddStartRegisterSet( 0, 0, availabilityEquation ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0xE458, 0x00005004, REGISTER_TYPE_FLEX ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0xE558, 0x00015014, REGISTER_TYPE_FLEX ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0xE658, 0x00025024, REGISTER_TYPE_FLEX ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0xE758, 0x00035034, REGISTER_TYPE_FLEX ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0xE45c, 0x00045044, REGISTER_TYPE_FLEX ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0xE55c, 0x00055054, REGISTER_TYPE_FLEX ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0xE65c, 0x00065064, REGISTER_TYPE_FLEX ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2724, 0xf0800000, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2720, 0x00000000, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2714, 0xf0800000, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2710, 0x00000000, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2740, 0x00000000, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2770, 0x0007ffea, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2774, 0x00007ffc, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2778, 0x0007affa, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x277c, 0x0000f5fd, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2780, 0x00079ffa, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2784, 0x0000f3fb, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2788, 0x0007bf7a, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x278c, 0x0000f7e7, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2790, 0x0007fefa, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2794, 0x0000f7cf, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2798, 0x00077ffa, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x279c, 0x0000efdf, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x27a0, 0x0006fffa, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x27a4, 0x0000cfbf, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x27a8, 0x0003fffa, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x27ac, 0x00005f7f, REGISTER_TYPE_OA ));
             MD_CHECK_CC( aSet->AddStartConfigRegister( 0x9840, 0x000000A0, REGISTER_TYPE_NOA ));
             MD_CHECK_CC( aSet->AddStartConfigRegister( 0x00009888, 0x0C0E001F, REGISTER_TYPE_NOA ));
             MD_CHECK_CC( aSet->AddStartConfigRegister( 0x00009888, 0x0A0F0000, REGISTER_TYPE_NOA ));
@@ -4083,51 +4105,49 @@ TCompletionCode CreateObjectTreeSKL_GT2_OA( CConcurrentGroup* aGroup )
             MD_CHECK_CC( aInformation->SetDeltaReportReadEquation( "dw@0x1cc" ));
         }
 
-        MD_CHECK_CC( aSet->AddStartRegisterSet( 0, 0 ));
-        MD_CHECK_CC( aSet->AddStartConfigRegister( 0xE458, 0x00005004, REGISTER_TYPE_FLEX ));
-        MD_CHECK_CC( aSet->AddStartConfigRegister( 0xE558, 0x00015014, REGISTER_TYPE_FLEX ));
-        MD_CHECK_CC( aSet->AddStartConfigRegister( 0xE658, 0x00025024, REGISTER_TYPE_FLEX ));
-        MD_CHECK_CC( aSet->AddStartConfigRegister( 0xE758, 0x00035034, REGISTER_TYPE_FLEX ));
-        MD_CHECK_CC( aSet->AddStartConfigRegister( 0xE45c, 0x00045044, REGISTER_TYPE_FLEX ));
-        MD_CHECK_CC( aSet->AddStartConfigRegister( 0xE55c, 0x00055054, REGISTER_TYPE_FLEX ));
-        MD_CHECK_CC( aSet->AddStartConfigRegister( 0xE65c, 0x00065064, REGISTER_TYPE_FLEX ));
-        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x272c, 0xffffffff, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2728, 0xffffffff, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2724, 0xf0800000, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2720, 0x00000000, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x271c, 0xffffffff, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2718, 0xffffffff, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2714, 0xf0800000, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2710, 0x00000000, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x274c, 0x86543210, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2748, 0x86543210, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2744, 0x00006667, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2740, 0x00000000, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x275c, 0x86543210, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2758, 0x86543210, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2754, 0x00006465, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2750, 0x00000000, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2770, 0x0007f81a, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2774, 0x0000fe00, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2778, 0x0007f82a, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x277c, 0x0000fe00, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2780, 0x0007f872, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2784, 0x0000fe00, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2788, 0x0007f8ba, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x278c, 0x0000fe00, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2790, 0x0007f87a, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2794, 0x0000fe00, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2798, 0x0007f8ea, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x279c, 0x0000fe00, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x27a0, 0x0007f8e2, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x27a4, 0x0000fe00, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x27a8, 0x0007f8f2, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x27ac, 0x0000fe00, REGISTER_TYPE_OA ));
-  
         availabilityEquation = "$SliceMask 0x01 AND $SkuRevisionId 0x02 ULT &&";
         if( MD_IS_INTERNAL_BUILD || g_MetricsDevice->IsAvailabilityEquationTrue( availabilityEquation ) )
         {
-            MD_CHECK_CC( aSet->AddStartRegisterSet( 1, 0, availabilityEquation ));
+            MD_CHECK_CC( aSet->AddStartRegisterSet( 0, 0, availabilityEquation ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0xE458, 0x00005004, REGISTER_TYPE_FLEX ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0xE558, 0x00015014, REGISTER_TYPE_FLEX ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0xE658, 0x00025024, REGISTER_TYPE_FLEX ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0xE758, 0x00035034, REGISTER_TYPE_FLEX ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0xE45c, 0x00045044, REGISTER_TYPE_FLEX ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0xE55c, 0x00055054, REGISTER_TYPE_FLEX ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0xE65c, 0x00065064, REGISTER_TYPE_FLEX ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x272c, 0xffffffff, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2728, 0xffffffff, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2724, 0xf0800000, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2720, 0x00000000, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x271c, 0xffffffff, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2718, 0xffffffff, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2714, 0xf0800000, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2710, 0x00000000, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x274c, 0x86543210, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2748, 0x86543210, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2744, 0x00006667, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2740, 0x00000000, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x275c, 0x86543210, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2758, 0x86543210, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2754, 0x00006465, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2750, 0x00000000, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2770, 0x0007f81a, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2774, 0x0000fe00, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2778, 0x0007f82a, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x277c, 0x0000fe00, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2780, 0x0007f872, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2784, 0x0000fe00, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2788, 0x0007f8ba, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x278c, 0x0000fe00, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2790, 0x0007f87a, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2794, 0x0000fe00, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2798, 0x0007f8ea, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x279c, 0x0000fe00, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x27a0, 0x0007f8e2, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x27a4, 0x0000fe00, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x27a8, 0x0007f8f2, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x27ac, 0x0000fe00, REGISTER_TYPE_OA ));
             MD_CHECK_CC( aSet->AddStartConfigRegister( 0x9840, 0x000000A0, REGISTER_TYPE_NOA ));
             MD_CHECK_CC( aSet->AddStartConfigRegister( 0x9888, 0x11810C00, REGISTER_TYPE_NOA ));
             MD_CHECK_CC( aSet->AddStartConfigRegister( 0x9888, 0x1381001A, REGISTER_TYPE_NOA ));
@@ -4176,7 +4196,6 @@ TCompletionCode CreateObjectTreeSKL_GT2_OA( CConcurrentGroup* aGroup )
             MD_CHECK_CC( aSet->AddStartConfigRegister( 0x9888, 0x1B908000, REGISTER_TYPE_NOA ));
             MD_CHECK_CC( aSet->AddStartConfigRegister( 0x9888, 0x1D908000, REGISTER_TYPE_NOA ));
             MD_CHECK_CC( aSet->AddStartConfigRegister( 0x9888, 0x1F908000, REGISTER_TYPE_NOA ));
-            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x0D28, 0x00000000, REGISTER_TYPE_NOA ));
             MD_CHECK_CC( aSet->AddStartConfigRegister( 0x9888, 0x11900000, REGISTER_TYPE_NOA ));
             MD_CHECK_CC( aSet->AddStartConfigRegister( 0x9888, 0x51900000, REGISTER_TYPE_NOA ));
             MD_CHECK_CC( aSet->AddStartConfigRegister( 0x9888, 0x41900C00, REGISTER_TYPE_NOA ));
@@ -4197,7 +4216,46 @@ TCompletionCode CreateObjectTreeSKL_GT2_OA( CConcurrentGroup* aGroup )
         availabilityEquation = "$SkuRevisionId 0x05 ULT $SkuRevisionId 0x02 UGTE &&";
         if( MD_IS_INTERNAL_BUILD || g_MetricsDevice->IsAvailabilityEquationTrue( availabilityEquation ) )
         {
-            MD_CHECK_CC( aSet->AddStartRegisterSet( 1, 0, availabilityEquation ));
+            MD_CHECK_CC( aSet->AddStartRegisterSet( 0, 0, availabilityEquation ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0xE458, 0x00005004, REGISTER_TYPE_FLEX ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0xE558, 0x00015014, REGISTER_TYPE_FLEX ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0xE658, 0x00025024, REGISTER_TYPE_FLEX ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0xE758, 0x00035034, REGISTER_TYPE_FLEX ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0xE45c, 0x00045044, REGISTER_TYPE_FLEX ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0xE55c, 0x00055054, REGISTER_TYPE_FLEX ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0xE65c, 0x00065064, REGISTER_TYPE_FLEX ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x272c, 0xffffffff, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2728, 0xffffffff, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2724, 0xf0800000, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2720, 0x00000000, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x271c, 0xffffffff, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2718, 0xffffffff, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2714, 0xf0800000, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2710, 0x00000000, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x274c, 0x86543210, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2748, 0x86543210, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2744, 0x00006667, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2740, 0x00000000, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x275c, 0x86543210, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2758, 0x86543210, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2754, 0x00006465, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2750, 0x00000000, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2770, 0x0007f81a, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2774, 0x0000fe00, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2778, 0x0007f82a, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x277c, 0x0000fe00, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2780, 0x0007f872, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2784, 0x0000fe00, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2788, 0x0007f8ba, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x278c, 0x0000fe00, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2790, 0x0007f87a, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2794, 0x0000fe00, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2798, 0x0007f8ea, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x279c, 0x0000fe00, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x27a0, 0x0007f8e2, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x27a4, 0x0000fe00, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x27a8, 0x0007f8f2, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x27ac, 0x0000fe00, REGISTER_TYPE_OA ));
             MD_CHECK_CC( aSet->AddStartConfigRegister( 0x9840, 0x000000A0, REGISTER_TYPE_NOA ));
             MD_CHECK_CC( aSet->AddStartConfigRegister( 0x00009888, 0x11810C00, REGISTER_TYPE_NOA ));
             MD_CHECK_CC( aSet->AddStartConfigRegister( 0x00009888, 0x1381001A, REGISTER_TYPE_NOA ));
@@ -4262,7 +4320,46 @@ TCompletionCode CreateObjectTreeSKL_GT2_OA( CConcurrentGroup* aGroup )
         availabilityEquation = "$SkuRevisionId 0x05 UGTE";
         if( MD_IS_INTERNAL_BUILD || g_MetricsDevice->IsAvailabilityEquationTrue( availabilityEquation ) )
         {
-            MD_CHECK_CC( aSet->AddStartRegisterSet( 1, 0, availabilityEquation ));
+            MD_CHECK_CC( aSet->AddStartRegisterSet( 0, 0, availabilityEquation ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0xE458, 0x00005004, REGISTER_TYPE_FLEX ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0xE558, 0x00015014, REGISTER_TYPE_FLEX ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0xE658, 0x00025024, REGISTER_TYPE_FLEX ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0xE758, 0x00035034, REGISTER_TYPE_FLEX ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0xE45c, 0x00045044, REGISTER_TYPE_FLEX ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0xE55c, 0x00055054, REGISTER_TYPE_FLEX ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0xE65c, 0x00065064, REGISTER_TYPE_FLEX ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x272c, 0xffffffff, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2728, 0xffffffff, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2724, 0xf0800000, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2720, 0x00000000, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x271c, 0xffffffff, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2718, 0xffffffff, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2714, 0xf0800000, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2710, 0x00000000, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x274c, 0x86543210, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2748, 0x86543210, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2744, 0x00006667, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2740, 0x00000000, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x275c, 0x86543210, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2758, 0x86543210, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2754, 0x00006465, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2750, 0x00000000, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2770, 0x0007f81a, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2774, 0x0000fe00, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2778, 0x0007f82a, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x277c, 0x0000fe00, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2780, 0x0007f872, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2784, 0x0000fe00, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2788, 0x0007f8ba, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x278c, 0x0000fe00, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2790, 0x0007f87a, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2794, 0x0000fe00, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2798, 0x0007f8ea, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x279c, 0x0000fe00, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x27a0, 0x0007f8e2, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x27a4, 0x0000fe00, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x27a8, 0x0007f8f2, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x27ac, 0x0000fe00, REGISTER_TYPE_OA ));
             MD_CHECK_CC( aSet->AddStartConfigRegister( 0x00009840, 0x00000080, REGISTER_TYPE_NOA ));
             MD_CHECK_CC( aSet->AddStartConfigRegister( 0x00009888, 0x11810C00, REGISTER_TYPE_NOA ));
             MD_CHECK_CC( aSet->AddStartConfigRegister( 0x00009888, 0x1381001A, REGISTER_TYPE_NOA ));
@@ -4934,51 +5031,49 @@ TCompletionCode CreateObjectTreeSKL_GT2_OA( CConcurrentGroup* aGroup )
             MD_CHECK_CC( aInformation->SetDeltaReportReadEquation( "dw@0x1cc" ));
         }
 
-        MD_CHECK_CC( aSet->AddStartRegisterSet( 0, 0 ));
-        MD_CHECK_CC( aSet->AddStartConfigRegister( 0xE458, 0x00005004, REGISTER_TYPE_FLEX ));
-        MD_CHECK_CC( aSet->AddStartConfigRegister( 0xE558, 0x00015014, REGISTER_TYPE_FLEX ));
-        MD_CHECK_CC( aSet->AddStartConfigRegister( 0xE658, 0x00025024, REGISTER_TYPE_FLEX ));
-        MD_CHECK_CC( aSet->AddStartConfigRegister( 0xE758, 0x00035034, REGISTER_TYPE_FLEX ));
-        MD_CHECK_CC( aSet->AddStartConfigRegister( 0xE45c, 0x00045044, REGISTER_TYPE_FLEX ));
-        MD_CHECK_CC( aSet->AddStartConfigRegister( 0xE55c, 0x00055054, REGISTER_TYPE_FLEX ));
-        MD_CHECK_CC( aSet->AddStartConfigRegister( 0xE65c, 0x00065064, REGISTER_TYPE_FLEX ));
-        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x272c, 0xffffffff, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2728, 0xffffffff, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2724, 0xf0800000, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2720, 0x00000000, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x271c, 0xffffffff, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2718, 0xffffffff, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2714, 0xf0800000, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2710, 0x00000000, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x274c, 0x86543210, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2748, 0x86543210, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2744, 0x00006667, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2740, 0x00000000, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x275c, 0x86543210, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2758, 0x86543210, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2754, 0x00006465, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2750, 0x00000000, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2770, 0x0007f81a, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2774, 0x0000fe00, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2778, 0x0007f82a, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x277c, 0x0000fe00, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2780, 0x0007f822, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2784, 0x0000fe00, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2788, 0x0007f8ba, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x278c, 0x0000fe00, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2790, 0x0007f87a, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2794, 0x0000fe00, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2798, 0x0007f8ea, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x279c, 0x0000fe00, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x27a0, 0x0007f8e2, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x27a4, 0x0000fe00, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x27a8, 0x0007f8f2, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x27ac, 0x0000fe00, REGISTER_TYPE_OA ));
-  
         availabilityEquation = "$SliceMask 0x01 AND $SkuRevisionId 0x02 ULT &&";
         if( MD_IS_INTERNAL_BUILD || g_MetricsDevice->IsAvailabilityEquationTrue( availabilityEquation ) )
         {
-            MD_CHECK_CC( aSet->AddStartRegisterSet( 1, 0, availabilityEquation ));
+            MD_CHECK_CC( aSet->AddStartRegisterSet( 0, 0, availabilityEquation ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0xE458, 0x00005004, REGISTER_TYPE_FLEX ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0xE558, 0x00015014, REGISTER_TYPE_FLEX ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0xE658, 0x00025024, REGISTER_TYPE_FLEX ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0xE758, 0x00035034, REGISTER_TYPE_FLEX ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0xE45c, 0x00045044, REGISTER_TYPE_FLEX ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0xE55c, 0x00055054, REGISTER_TYPE_FLEX ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0xE65c, 0x00065064, REGISTER_TYPE_FLEX ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x272c, 0xffffffff, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2728, 0xffffffff, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2724, 0xf0800000, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2720, 0x00000000, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x271c, 0xffffffff, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2718, 0xffffffff, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2714, 0xf0800000, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2710, 0x00000000, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x274c, 0x86543210, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2748, 0x86543210, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2744, 0x00006667, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2740, 0x00000000, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x275c, 0x86543210, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2758, 0x86543210, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2754, 0x00006465, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2750, 0x00000000, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2770, 0x0007f81a, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2774, 0x0000fe00, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2778, 0x0007f82a, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x277c, 0x0000fe00, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2780, 0x0007f822, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2784, 0x0000fe00, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2788, 0x0007f8ba, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x278c, 0x0000fe00, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2790, 0x0007f87a, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2794, 0x0000fe00, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2798, 0x0007f8ea, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x279c, 0x0000fe00, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x27a0, 0x0007f8e2, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x27a4, 0x0000fe00, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x27a8, 0x0007f8f2, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x27ac, 0x0000fe00, REGISTER_TYPE_OA ));
             MD_CHECK_CC( aSet->AddStartConfigRegister( 0x9840, 0x000000A0, REGISTER_TYPE_NOA ));
             MD_CHECK_CC( aSet->AddStartConfigRegister( 0x9888, 0x11810C00, REGISTER_TYPE_NOA ));
             MD_CHECK_CC( aSet->AddStartConfigRegister( 0x9888, 0x1381001A, REGISTER_TYPE_NOA ));
@@ -5027,7 +5122,6 @@ TCompletionCode CreateObjectTreeSKL_GT2_OA( CConcurrentGroup* aGroup )
             MD_CHECK_CC( aSet->AddStartConfigRegister( 0x9888, 0x1B908000, REGISTER_TYPE_NOA ));
             MD_CHECK_CC( aSet->AddStartConfigRegister( 0x9888, 0x1D908000, REGISTER_TYPE_NOA ));
             MD_CHECK_CC( aSet->AddStartConfigRegister( 0x9888, 0x1F908000, REGISTER_TYPE_NOA ));
-            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x0D28, 0x00000000, REGISTER_TYPE_NOA ));
             MD_CHECK_CC( aSet->AddStartConfigRegister( 0x9888, 0x11900000, REGISTER_TYPE_NOA ));
             MD_CHECK_CC( aSet->AddStartConfigRegister( 0x9888, 0x51900000, REGISTER_TYPE_NOA ));
             MD_CHECK_CC( aSet->AddStartConfigRegister( 0x9888, 0x41900C00, REGISTER_TYPE_NOA ));
@@ -5048,7 +5142,46 @@ TCompletionCode CreateObjectTreeSKL_GT2_OA( CConcurrentGroup* aGroup )
         availabilityEquation = "$SkuRevisionId 0x05 ULT $SkuRevisionId 0x02 UGTE &&";
         if( MD_IS_INTERNAL_BUILD || g_MetricsDevice->IsAvailabilityEquationTrue( availabilityEquation ) )
         {
-            MD_CHECK_CC( aSet->AddStartRegisterSet( 1, 0, availabilityEquation ));
+            MD_CHECK_CC( aSet->AddStartRegisterSet( 0, 0, availabilityEquation ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0xE458, 0x00005004, REGISTER_TYPE_FLEX ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0xE558, 0x00015014, REGISTER_TYPE_FLEX ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0xE658, 0x00025024, REGISTER_TYPE_FLEX ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0xE758, 0x00035034, REGISTER_TYPE_FLEX ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0xE45c, 0x00045044, REGISTER_TYPE_FLEX ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0xE55c, 0x00055054, REGISTER_TYPE_FLEX ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0xE65c, 0x00065064, REGISTER_TYPE_FLEX ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x272c, 0xffffffff, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2728, 0xffffffff, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2724, 0xf0800000, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2720, 0x00000000, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x271c, 0xffffffff, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2718, 0xffffffff, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2714, 0xf0800000, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2710, 0x00000000, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x274c, 0x86543210, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2748, 0x86543210, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2744, 0x00006667, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2740, 0x00000000, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x275c, 0x86543210, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2758, 0x86543210, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2754, 0x00006465, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2750, 0x00000000, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2770, 0x0007f81a, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2774, 0x0000fe00, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2778, 0x0007f82a, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x277c, 0x0000fe00, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2780, 0x0007f822, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2784, 0x0000fe00, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2788, 0x0007f8ba, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x278c, 0x0000fe00, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2790, 0x0007f87a, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2794, 0x0000fe00, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2798, 0x0007f8ea, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x279c, 0x0000fe00, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x27a0, 0x0007f8e2, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x27a4, 0x0000fe00, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x27a8, 0x0007f8f2, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x27ac, 0x0000fe00, REGISTER_TYPE_OA ));
             MD_CHECK_CC( aSet->AddStartConfigRegister( 0x9840, 0x000000A0, REGISTER_TYPE_NOA ));
             MD_CHECK_CC( aSet->AddStartConfigRegister( 0x00009888, 0x11810C00, REGISTER_TYPE_NOA ));
             MD_CHECK_CC( aSet->AddStartConfigRegister( 0x00009888, 0x1381001A, REGISTER_TYPE_NOA ));
@@ -5113,6 +5246,45 @@ TCompletionCode CreateObjectTreeSKL_GT2_OA( CConcurrentGroup* aGroup )
         if( MD_IS_INTERNAL_BUILD || g_MetricsDevice->IsAvailabilityEquationTrue( availabilityEquation ) )
         {
             MD_CHECK_CC( aSet->AddStartRegisterSet( 1, 0, availabilityEquation ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0xE458, 0x00005004, REGISTER_TYPE_FLEX ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0xE558, 0x00015014, REGISTER_TYPE_FLEX ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0xE658, 0x00025024, REGISTER_TYPE_FLEX ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0xE758, 0x00035034, REGISTER_TYPE_FLEX ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0xE45c, 0x00045044, REGISTER_TYPE_FLEX ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0xE55c, 0x00055054, REGISTER_TYPE_FLEX ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0xE65c, 0x00065064, REGISTER_TYPE_FLEX ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x272c, 0xffffffff, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2728, 0xffffffff, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2724, 0xf0800000, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2720, 0x00000000, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x271c, 0xffffffff, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2718, 0xffffffff, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2714, 0xf0800000, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2710, 0x00000000, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x274c, 0x86543210, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2748, 0x86543210, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2744, 0x00006667, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2740, 0x00000000, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x275c, 0x86543210, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2758, 0x86543210, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2754, 0x00006465, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2750, 0x00000000, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2770, 0x0007f81a, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2774, 0x0000fe00, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2778, 0x0007f82a, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x277c, 0x0000fe00, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2780, 0x0007f822, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2784, 0x0000fe00, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2788, 0x0007f8ba, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x278c, 0x0000fe00, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2790, 0x0007f87a, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2794, 0x0000fe00, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2798, 0x0007f8ea, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x279c, 0x0000fe00, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x27a0, 0x0007f8e2, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x27a4, 0x0000fe00, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x27a8, 0x0007f8f2, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x27ac, 0x0000fe00, REGISTER_TYPE_OA ));
             MD_CHECK_CC( aSet->AddStartConfigRegister( 0x00009840, 0x00000080, REGISTER_TYPE_NOA ));
             MD_CHECK_CC( aSet->AddStartConfigRegister( 0x00009888, 0x11810C00, REGISTER_TYPE_NOA ));
             MD_CHECK_CC( aSet->AddStartConfigRegister( 0x00009888, 0x1381001A, REGISTER_TYPE_NOA ));
@@ -5744,40 +5916,38 @@ TCompletionCode CreateObjectTreeSKL_GT2_OA( CConcurrentGroup* aGroup )
             MD_CHECK_CC( aInformation->SetDeltaReportReadEquation( "dw@0x1cc" ));
         }
 
-        MD_CHECK_CC( aSet->AddStartRegisterSet( 0, 0 ));
-        MD_CHECK_CC( aSet->AddStartConfigRegister( 0xE458, 0x00005004, REGISTER_TYPE_FLEX ));
-        MD_CHECK_CC( aSet->AddStartConfigRegister( 0xE558, 0x00000003, REGISTER_TYPE_FLEX ));
-        MD_CHECK_CC( aSet->AddStartConfigRegister( 0xE658, 0x00002001, REGISTER_TYPE_FLEX ));
-        MD_CHECK_CC( aSet->AddStartConfigRegister( 0xE758, 0x00778008, REGISTER_TYPE_FLEX ));
-        MD_CHECK_CC( aSet->AddStartConfigRegister( 0xE45c, 0x00088078, REGISTER_TYPE_FLEX ));
-        MD_CHECK_CC( aSet->AddStartConfigRegister( 0xE55c, 0x00808708, REGISTER_TYPE_FLEX ));
-        MD_CHECK_CC( aSet->AddStartConfigRegister( 0xE65c, 0x00a08908, REGISTER_TYPE_FLEX ));
-        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2724, 0xf0800000, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2720, 0x00000000, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2714, 0xf0800000, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2710, 0x00000000, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2740, 0x00000000, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2770, 0x0007fc2a, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2774, 0x0000bf00, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2778, 0x0007fc6a, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x277c, 0x0000bf00, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2780, 0x0007fc92, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2784, 0x0000bf00, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2788, 0x0007fca2, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x278c, 0x0000bf00, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2790, 0x0007fc32, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2794, 0x0000bf00, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2798, 0x0007fc9a, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x279c, 0x0000bf00, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x27a0, 0x0007fe6a, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x27a4, 0x0000bf00, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x27a8, 0x0007fe7a, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x27ac, 0x0000bf00, REGISTER_TYPE_OA ));
-  
         availabilityEquation = "$SubsliceMask 0x01 AND";
         if( MD_IS_INTERNAL_BUILD || g_MetricsDevice->IsAvailabilityEquationTrue( availabilityEquation ) )
         {
-            MD_CHECK_CC( aSet->AddStartRegisterSet( 1, 0, availabilityEquation ));
+            MD_CHECK_CC( aSet->AddStartRegisterSet( 0, 0, availabilityEquation ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0xE458, 0x00005004, REGISTER_TYPE_FLEX ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0xE558, 0x00000003, REGISTER_TYPE_FLEX ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0xE658, 0x00002001, REGISTER_TYPE_FLEX ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0xE758, 0x00778008, REGISTER_TYPE_FLEX ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0xE45c, 0x00088078, REGISTER_TYPE_FLEX ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0xE55c, 0x00808708, REGISTER_TYPE_FLEX ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0xE65c, 0x00a08908, REGISTER_TYPE_FLEX ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2724, 0xf0800000, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2720, 0x00000000, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2714, 0xf0800000, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2710, 0x00000000, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2740, 0x00000000, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2770, 0x0007fc2a, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2774, 0x0000bf00, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2778, 0x0007fc6a, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x277c, 0x0000bf00, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2780, 0x0007fc92, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2784, 0x0000bf00, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2788, 0x0007fca2, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x278c, 0x0000bf00, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2790, 0x0007fc32, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2794, 0x0000bf00, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2798, 0x0007fc9a, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x279c, 0x0000bf00, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x27a0, 0x0007fe6a, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x27a4, 0x0000bf00, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x27a8, 0x0007fe7a, REGISTER_TYPE_OA ));
+            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x27ac, 0x0000bf00, REGISTER_TYPE_OA ));
             MD_CHECK_CC( aSet->AddStartConfigRegister( 0x9840, 0x000000A0, REGISTER_TYPE_NOA ));
             MD_CHECK_CC( aSet->AddStartConfigRegister( 0x9888, 0x106C00E0, REGISTER_TYPE_NOA ));
             MD_CHECK_CC( aSet->AddStartConfigRegister( 0x9888, 0x141C8160, REGISTER_TYPE_NOA ));
@@ -5836,7 +6006,6 @@ TCompletionCode CreateObjectTreeSKL_GT2_OA( CConcurrentGroup* aGroup )
             MD_CHECK_CC( aSet->AddStartConfigRegister( 0x9888, 0x062C8000, REGISTER_TYPE_NOA ));
             MD_CHECK_CC( aSet->AddStartConfigRegister( 0x9888, 0x082C8000, REGISTER_TYPE_NOA ));
             MD_CHECK_CC( aSet->AddStartConfigRegister( 0x9888, 0x0A2C8000, REGISTER_TYPE_NOA ));
-            MD_CHECK_CC( aSet->AddStartConfigRegister( 0x0D28, 0x00000000, REGISTER_TYPE_NOA ));
             MD_CHECK_CC( aSet->AddStartConfigRegister( 0x9888, 0x11907FFF, REGISTER_TYPE_NOA ));
             MD_CHECK_CC( aSet->AddStartConfigRegister( 0x9888, 0x51900000, REGISTER_TYPE_NOA ));
             MD_CHECK_CC( aSet->AddStartConfigRegister( 0x9888, 0x41900040, REGISTER_TYPE_NOA ));
@@ -14314,6 +14483,204 @@ TCompletionCode CreateObjectTreeSKL_GT2_OA( CConcurrentGroup* aGroup )
         MD_CHECK_CC( aSet->AddStartConfigRegister( 0x27a4, 0x0000ffe7, REGISTER_TYPE_OA ));
         MD_CHECK_CC( aSet->AddStartConfigRegister( 0x27a8, 0x00100001, REGISTER_TYPE_OA ));
         MD_CHECK_CC( aSet->AddStartConfigRegister( 0x27ac, 0x0000ffe7, REGISTER_TYPE_OA ));
+  
+        MD_CHECK_CC( aSet->RefreshConfigRegisters() );
+    }
+     
+    platformMask = PLATFORM_SKL;
+    if( MD_IS_INTERNAL_BUILD || g_MetricsDevice->IsPlatformTypeOf( platformMask, GT_TYPE_GT2 ) )
+    {
+        aSet = aGroup->AddMetricSet( "PMA_Stall", "Metric set PMA Stall", API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+           GPU_RENDER, 256, 672, OA_REPORT_TYPE_256B_A45_NOA16, platformMask, GT_TYPE_GT2 );
+        MD_CHECK_PTR( aSet );
+        
+        MD_CHECK_CC( aSet->SetApiSpecificId("GPAV", 0, 0x40000000, 0x80000203, 0, 0,
+            "Intel Performance Counters for GT Set Dynamic", 0, "Intel_Raw_Hardware_Counters_Set_0_Query", 0) );
+  
+        availabilityEquation = NULL;
+        aMetric = aSet->AddMetric( "GpuTime", "GPU Time Elapsed",
+            "Time elapsed on the GPU during the measurement.",
+            "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_TIER_1|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            METRIC_TYPE_DURATION, RESULT_UINT64, "ns", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
+        if( aMetric )
+        {
+            MD_CHECK_CC( aMetric->SetSnapshotReportReadEquation( "dw@0x04 1000000000 UMUL $GpuTimestampFrequency UDIV" ));
+            MD_CHECK_CC( aMetric->SetDeltaReportReadEquation( "qw@0x00" ));
+            MD_CHECK_CC( aMetric->SetSnapshotReportDeltaFunction( "NS_TIME" ));
+        }
+
+        availabilityEquation = NULL;
+        aMetric = aSet->AddMetric( "GpuCoreClocks", "GPU Core Clocks",
+            "The total number of GPU core clocks elapsed during the measurement.",
+            "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_TIER_1|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            METRIC_TYPE_EVENT, RESULT_UINT64, "cycles", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
+        if( aMetric )
+        {
+            MD_CHECK_CC( aMetric->SetSnapshotReportReadEquation( "dw@0x0c" ));
+            MD_CHECK_CC( aMetric->SetDeltaReportReadEquation( "qw@0x08" ));
+            MD_CHECK_CC( aMetric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
+        }
+
+        availabilityEquation = NULL;
+        aMetric = aSet->AddMetric( "AvgGpuCoreFrequencyMHz", "AVG GPU Core Frequency",
+            "Average GPU Core Frequency in the measurement.",
+            "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_TIER_1|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            METRIC_TYPE_EVENT, RESULT_UINT64, "MHz", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
+        if( aMetric )
+        {
+            
+            MD_CHECK_CC( aMetric->SetNormalizationEquation( "$GpuCoreClocks 1000 UMUL $$GpuTime UDIV" ));
+        }
+
+        availabilityEquation = "$SliceMask 1 AND";
+        if( MD_IS_INTERNAL_BUILD || g_MetricsDevice->IsAvailabilityEquationTrue( availabilityEquation ) )
+        {
+            aMetric = aSet->AddMetric( "StcPMAStall", "STC PMA stall",
+                "Percentage of time when stencil cache line and an overlapping pixel are causing stalls",
+                "GPU/Stencil Cache", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_STC * 0x10000), USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+                METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
+            if( aMetric )
+            {
+                MD_CHECK_CC( aMetric->SetSnapshotReportReadEquation( "dw@0xc0 dw@0xc4 FADD 2 FDIV" ));
+                MD_CHECK_CC( aMetric->SetDeltaReportReadEquation( "qw@0x130 qw@0x138 FADD 2 FDIV" ));
+                MD_CHECK_CC( aMetric->SetNormalizationEquation( "GpuDuration" ));
+                MD_CHECK_CC( aMetric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
+                MD_CHECK_CC( aMetric->SetMaxValueEquation( "100" ));
+            }
+        }
+
+        aInformation = aSet->AddInformation( "QueryBeginTime", "Query Begin Time",
+            "The measurement begin time.",
+            "Report Meta Data", API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            INFORMATION_TYPE_TIMESTAMP, "ns", NULL );
+        if( aInformation )
+        {
+            MD_CHECK_CC( aInformation->SetSnapshotReportReadEquation( "dw@0x04 1000000000 UMUL $GpuTimestampFrequency UDIV" ));
+            MD_CHECK_CC( aInformation->SetDeltaReportReadEquation( "qw@0x1b0" ));
+            MD_CHECK_CC( aInformation->SetOverflowFunction( "NS_TIME" ));
+        }
+
+        aInformation = aSet->AddInformation( "CoreFrequencyMHz", "GPU Core Frequency",
+            "The last GPU core (unslice) frequency in the measurement.",
+            "Report Meta Data", API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            INFORMATION_TYPE_VALUE, "MHz", NULL );
+        if( aInformation )
+        {
+            MD_CHECK_CC( aInformation->SetSnapshotReportReadEquation( "dw@0x0 0x1ff AND 16666 UMUL 1000 UDIV" ));
+            MD_CHECK_CC( aInformation->SetDeltaReportReadEquation( "qw@0x208 1000000 UDIV" ));
+        }
+
+        aInformation = aSet->AddInformation( "EuSliceFrequencyMHz", "EU Slice Frequency",
+            "The last GPU Execution Unit slice frequency in the measurement.",
+            "Report Meta Data", API_TYPE_IOSTREAM,
+            INFORMATION_TYPE_VALUE, "MHz", NULL );
+        if( aInformation )
+        {
+            MD_CHECK_CC( aInformation->SetSnapshotReportReadEquation( "dw@0x0 25 >> dw@0x0 9 >> 0x3 AND OR 16666 UMUL 1000 UDIV" ));
+        }
+
+        aInformation = aSet->AddInformation( "ReportReason", "Report Reason",
+            "The reason of the report.",
+            "Report Meta Data", API_TYPE_IOSTREAM,
+            INFORMATION_TYPE_REPORT_REASON, NULL, NULL );
+        if( aInformation )
+        {
+            MD_CHECK_CC( aInformation->SetSnapshotReportReadEquation( "dw@0x0 19 >> 0x3f AND" ));
+        }
+
+        aInformation = aSet->AddInformation( "ContextId", "Context ID",
+            "The context tag in which report has been taken.",
+            "Report Meta Data", API_TYPE_IOSTREAM,
+            INFORMATION_TYPE_CONTEXT_ID_TAG, NULL, NULL );
+        if( aInformation )
+        {
+            MD_CHECK_CC( aInformation->SetSnapshotReportReadEquation( "dw@0x08 0xfffff AND" ));
+        }
+
+        aInformation = aSet->AddInformation( "CoreFrequencyChanged", "GPU Core Frequency Changed",
+            "The flag indicating that GPU core frequency has changed.",
+            "Exception", API_TYPE_OGL|API_TYPE_OGL4_X,
+            INFORMATION_TYPE_FLAG, NULL, NULL );
+        if( aInformation )
+        {
+            
+            MD_CHECK_CC( aInformation->SetDeltaReportReadEquation( "dw@0x204" ));
+        }
+
+        aInformation = aSet->AddInformation( "QuerySplitOccurred", "Query Split Occurred",
+            "The flag indicating that query has been split during execution on the GPU.",
+            "Exception", API_TYPE_OGL|API_TYPE_OGL4_X,
+            INFORMATION_TYPE_FLAG, NULL, NULL );
+        if( aInformation )
+        {
+            
+            MD_CHECK_CC( aInformation->SetDeltaReportReadEquation( "dw@0x200" ));
+        }
+
+        aInformation = aSet->AddInformation( "ReportId", "Query report id",
+            "Query report identification number.",
+            "Report Meta Data", API_TYPE_OGL|API_TYPE_OGL4_X,
+            INFORMATION_TYPE_VALUE, NULL, NULL );
+        if( aInformation )
+        {
+            
+            MD_CHECK_CC( aInformation->SetDeltaReportReadEquation( "dw@0x210" ));
+        }
+
+        aInformation = aSet->AddInformation( "ReportsCount", "Query reports count",
+            "The number of available query reports.",
+            "Report Meta Data", API_TYPE_OGL|API_TYPE_OGL4_X,
+            INFORMATION_TYPE_VALUE, NULL, NULL );
+        if( aInformation )
+        {
+            
+            MD_CHECK_CC( aInformation->SetDeltaReportReadEquation( "dw@0x214" ));
+        }
+
+        aInformation = aSet->AddInformation( "OverrunOccured", "Query Overrun Occurred",
+            "The flag indicating that Oa buffer has been overran.",
+            "Exception", API_TYPE_OGL|API_TYPE_OGL4_X,
+            INFORMATION_TYPE_FLAG, NULL, NULL );
+        if( aInformation )
+        {
+            
+            MD_CHECK_CC( aInformation->SetDeltaReportReadEquation( "dw@0x1cc" ));
+        }
+
+        MD_CHECK_CC( aSet->AddStartRegisterSet( 0, 0 ));
+        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x9840, 0x00000080, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x9888, 0x122d3080, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x9888, 0x000d2000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x9888, 0x060d8000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x9888, 0x080da000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x9888, 0x0a0da000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x9888, 0x0c0f0800, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x9888, 0x0e0faa00, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x9888, 0x100f0002, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x9888, 0x002d0025, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x9888, 0x062d1300, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x9888, 0x082d16a4, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x9888, 0x0a2d162e, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x9888, 0x102d0000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x9888, 0x1190003f, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x9888, 0x51900000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x9888, 0x41900000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x9888, 0x55900000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x9888, 0x45900000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x9888, 0x47900000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x9888, 0x57900000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x9888, 0x49900000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x9888, 0x37900000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x9888, 0x33900000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2740, 0x00000000, REGISTER_TYPE_OA ));
+        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2710, 0x00000000, REGISTER_TYPE_OA ));
+        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2714, 0x30800000, REGISTER_TYPE_OA ));
+        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2720, 0x00000000, REGISTER_TYPE_OA ));
+        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2724, 0x00800000, REGISTER_TYPE_OA ));
+        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2770, 0x00e00021, REGISTER_TYPE_OA ));
+        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2774, 0x0007fff8, REGISTER_TYPE_OA ));
+        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2778, 0x07000101, REGISTER_TYPE_OA ));
+        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x277c, 0x0038ffc7, REGISTER_TYPE_OA ));
   
         MD_CHECK_CC( aSet->RefreshConfigRegisters() );
     }

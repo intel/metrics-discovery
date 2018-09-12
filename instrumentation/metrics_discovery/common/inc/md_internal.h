@@ -555,7 +555,6 @@ Description:
         uint32_t            MetricGroupNameToId( const char* groupName );
         uint32_t            GetPartialGroupId( char* groupName, uint32_t tokenNo );
         bool                GetStartRegSetHiPriority( uint32_t id, CRegisterSet** registerSet );
-        bool                CheckNoaProgrammingExists( Vector<TRegister*>* regVector );
 
     private: // Variables
         TMetricSetParams_1_4    m_params_1_0;
