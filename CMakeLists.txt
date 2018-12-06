@@ -56,7 +56,7 @@ include_directories (
     # external
     ${BS_DIR_EXTERNAL}/mesa/include
     ${BS_DIR_EXTERNAL}/mesa/src
-    ${BS_DIR_EXTERNAL}/mesa/src/intel/common
+    ${BS_DIR_EXTERNAL}/mesa/src/intel/dev
     ${BS_DIR_EXTERNAL}/drm
     # mdapi core
     ${BS_DIR_INSTRUMENTATION}/metrics_discovery/linux/inc
@@ -107,7 +107,7 @@ set (LOCAL_SRC_FILES ${LOCAL_SRC_FILES}
     ${BS_DIR_INSTRUMENTATION}/utils/common/iu_debug.c
     ${BS_DIR_INSTRUMENTATION}/utils/linux/iu_std_linux.cpp
     # external
-    ${BS_DIR_EXTERNAL}/mesa/src/intel/common/gen_device_info.c
+    ${BS_DIR_EXTERNAL}/mesa/src/intel/dev/gen_device_info.c
 )
 
 # mdapi internal files
