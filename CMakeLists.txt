@@ -56,6 +56,7 @@ include_directories (
     # external
     ${BS_DIR_EXTERNAL}/mesa/include
     ${BS_DIR_EXTERNAL}/mesa/src
+    ${BS_DIR_EXTERNAL}/mesa/src/util
     ${BS_DIR_EXTERNAL}/mesa/src/intel/dev
     ${BS_DIR_EXTERNAL}/drm
     # mdapi core
