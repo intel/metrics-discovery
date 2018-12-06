@@ -15,6 +15,7 @@ https://opensource.org/licenses/MIT
 
 ## Supported Platforms
 
+- Intel(R) Processors with Gen11 graphics devices (formerly Icelake),
 - Intel(R) Processors with Gen9 graphics devices (formerly Skylake, Kaby Lake, Apollo Lake/Broxton, Gemini Lake, Coffee Lake),
 - Intel(R) Processors with Gen8 graphics devices (formerly Broadwell),
 - Intel(R) Processors with Gen7.5 graphics devices (formerly Haswell).
@@ -22,17 +23,20 @@ https://opensource.org/licenses/MIT
 ## Supported Operating Systems
 
 Intel(R) Metrics Discovery Application Programming Interface is supported on Linux family operating systems with minimum kernel version 4.14.
+Event based measurements require minimum Mesa version 18.2.
 
-*Exception: for Gen7.5 graphics devices minimum kernel version 4.17 is required*.
+*Exceptions:
+Gen11 graphics devices require minimum kernel version 4.18. Minimum Mesa version 19.1 for event based measurements.
+Gen7.5 graphics devices require minimum kernel version 4.17.*
 
-## Building
+## Build and Install
 
 1\. Download sources.
 
 2\. Run CMake generation:
 
 ```shell
-cmake -DMD_PLATFORM=linux -DMD_BUILD_TYPE=release
+cmake .
 ```
 
 3\. Build:
@@ -40,10 +44,17 @@ cmake -DMD_PLATFORM=linux -DMD_BUILD_TYPE=release
 ```shell
 make -j$(nproc)
 ```
+
 4\. Built library will be here (for 64-bit Linux):
 
 ```shell
 (project_root)/dump/linux64/release/md/libmd.so
+```
+
+5\. Install:
+
+```shell
+sudo make install
 ```
 
 *Note: To clear CMake params remove CMakeCache.txt, then regenerate.*

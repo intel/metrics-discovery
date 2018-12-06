@@ -330,7 +330,8 @@ typedef enum
     // 11 reserved
     GENERATION_KBL = 12,
     GENERATION_GLK = 13,
-    // 14-17 reserved
+    GENERATION_ICL = 14,
+    // 15-17 reserved
     GENERATION_CFL = 18,
     // 19-20 reserved
     // ...

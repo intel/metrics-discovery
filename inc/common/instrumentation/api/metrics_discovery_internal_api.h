@@ -48,7 +48,8 @@ namespace MetricsDiscovery
         // 11 reserved
         PLATFORM_KBL = 1 << 12 /*GENERATION_KBL*/,
         PLATFORM_GLK = 1 << 13 /*GENERATION_GLK*/,
-        // 14-17 reserved
+        PLATFORM_ICL = 1 << 14 /*GENERATION_ICL*/,
+        // 15-17 reserved
         PLATFORM_CFL = 1 << 18 /*GENERATION_CFL*/,
         // 19 reserved
         // ...
