@@ -1376,51 +1376,45 @@ TTypedValue_1_0 CMetricsCalculator::CalculateLocalNormalizationEquation( IEquati
             case EQUATION_ELEM_SELF_COUNTER_VALUE:
                 // Get result of delta equation
                 typedValue = deltaValues[currentMetricIdx];
-                isValid  = EquationStackPush( m_equationStack, typedValue, algorithmCheck );
+                isValid = EquationStackPush( m_equationStack, typedValue, algorithmCheck );
                 break;
 
             case EQUATION_ELEM_LOCAL_COUNTER_SYMBOL:
             {
-                bool found = false;
-                for( uint32_t j = 0; j < metricSet->GetParams()->MetricsCount; j++ )
+                // Cast to get access to MetricsIndexInternal variable
+                CEquationElementInternal* internalElement = ( CEquationElementInternal* )element;
+
+                // The index is higher than or equals 0 if the symbol name was found, otherwise it equals -1
+                if( internalElement->MetricIndexInternal >= 0 )
                 {
-                    // Find symbol by name in the set
-                    IMetric_1_0* metric = metricSet->GetMetric( j );
-                    if( strcmp( element->SymbolName, metric->GetParams()->SymbolName ) == 0 )
-                    {
-                        found = true;
-                        typedValue = deltaValues[ j ];
-                        break;
-                    }
+                    typedValue = deltaValues[internalElement->MetricIndexInternal];
                 }
-                if( !found )
+                else
                 {
                     typedValue.ValueUInt64 = 0;
                     typedValue.ValueType   = VALUE_TYPE_UINT64;
                 }
+
                 isValid = EquationStackPush( m_equationStack, typedValue, algorithmCheck );
                 break;
             }
 
             case EQUATION_ELEM_LOCAL_METRIC_SYMBOL:
             {
-                bool found = false;
-                for( uint32_t j = 0; j < currentMetricIdx; j++ )
+                // Cast to get access to MetricsIndexInternal variable
+                CEquationElementInternal* internalElement = ( CEquationElementInternal* )element;
+
+                // The index is higher than or equals 0 if the symbol name was found, otherwise it equals -1
+                if( internalElement->MetricIndexInternal >= 0 )
                 {
-                    // Find symbol by name in the set
-                    IMetric_1_0* metric = metricSet->GetMetric( j );
-                    if( strcmp( element->SymbolName, metric->GetParams()->SymbolName ) == 0 )
-                    {
-                        found = true;
-                        typedValue = outValues[ j ];
-                        break;
-                    }
+                    typedValue = outValues[internalElement->MetricIndexInternal];
                 }
-                if( !found )
+                else
                 {
                     typedValue.ValueUInt64 = 0;
                     typedValue.ValueType   = VALUE_TYPE_UINT64;
                 }
+
                 isValid = EquationStackPush( m_equationStack, typedValue, algorithmCheck );
                 break;
             }

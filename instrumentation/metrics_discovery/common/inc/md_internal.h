@@ -540,6 +540,7 @@ Description:
         // API filtering
         bool                IsApiFilteringMaskValid( uint32_t apiMask );
         void                EnableApiFiltering( uint32_t apiMask, bool enable );
+        void                UpdateMetricIndicesInEquations();
         void                UseApiFilteredVariables( bool enable );
         void                RefreshCachedMetricsAndInformation();
         void                ClearCachedMetricsAndInformation();
@@ -712,26 +713,6 @@ Description:
         CMetricsDevice*     m_device;
 
         bool                m_isAvailable;
-    };
-
-/*****************************************************************************\
-
-Class:
-    CEquationElementInternal
-
-Description:
-    Class which represents equation element.
-
-\*****************************************************************************/
-    class CEquationElementInternal
-    {
-    public:
-        CEquationElementInternal();
-        CEquationElementInternal( const CEquationElementInternal& element );
-        CEquationElementInternal& operator = ( const CEquationElementInternal& element );
-
-        TEquationElement_1_0 Element_1_0;
-        char                 SymbolNameInternal[32];
     };
 
 /*****************************************************************************\

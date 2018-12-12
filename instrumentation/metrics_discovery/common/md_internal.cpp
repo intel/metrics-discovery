@@ -30,6 +30,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <new>
+#include <unordered_map>
 
 using namespace MetricsDiscovery;
 
@@ -5788,8 +5789,69 @@ void CMetricSet::EnableApiFiltering( uint32_t apiMask, bool enable )
         UseApiFilteredVariables( true );
     }
 
+    UpdateMetricIndicesInEquations();
+
     MD_LOG( LOG_DEBUG, "API filtering %s", m_isFiltered ? "enabled" : "disabled" );
     MD_LOG_EXIT();
+}
+
+/*****************************************************************************\
+
+Class:
+   CMetricSet
+
+Method:
+    UpdateMetricIndicesInEquations
+
+Description:
+    Sets internal indices values depending on whether the symbol name was found
+    in a metric set.
+    These are later used in calculating the normalization equation.
+
+\*****************************************************************************/
+void CMetricSet::UpdateMetricIndicesInEquations()
+{
+    std::unordered_map<std::string, uint32_t> metricsIndexMap( GetParams()->MetricsCount );
+
+    // Update metric indices
+    for( uint32_t i = 0; i < GetParams()->MetricsCount; i++ )
+    {
+        IMetric_1_0* metric = GetMetric( i );
+
+        if( metric )
+        {
+            metricsIndexMap[ metric->GetParams()->SymbolName ] = i;
+
+            if( metric->GetParams()->NormEquation )
+            {
+                // Get an equation
+                IEquation_1_0* equation = metric->GetParams()->NormEquation;
+
+                // Metrics equation can use only preceding metrics' values
+                for( uint32_t j = 0; j < equation->GetEquationElementsCount(); j++ )
+                {
+                    CEquationElementInternal* internalElement = ( CEquationElementInternal* )equation->GetEquationElement( j );
+
+                    if( internalElement->Element_1_0.Type == EQUATION_ELEM_LOCAL_COUNTER_SYMBOL ||
+                        internalElement->Element_1_0.Type == EQUATION_ELEM_LOCAL_METRIC_SYMBOL )
+                    {
+                        // Find if symbol name is in the index map
+                        const auto foundMetric = metricsIndexMap.find( internalElement->Element_1_0.SymbolName );
+
+                        // Check for the results
+                        if( foundMetric != metricsIndexMap.end() )
+                        {
+                            internalElement->MetricIndexInternal = foundMetric->second;
+                        }
+                        else
+                        {
+                            internalElement->MetricIndexInternal = -1;
+                        }
+                    }
+                }
+            }
+        }
+    }
 }
 
 /*****************************************************************************\
@@ -7489,6 +7551,7 @@ CEquationElementInternal::CEquationElementInternal()
     memset( &Element_1_0, 0x0, sizeof( Element_1_0 ) );
     SymbolNameInternal[0] = 0;
     Element_1_0.SymbolName = SymbolNameInternal;
+    MetricIndexInternal = -1;
 }
 
 /*****************************************************************************\
@@ -7508,6 +7571,7 @@ CEquationElementInternal::CEquationElementInternal( const CEquationElementIntern
     Element_1_0 = element.Element_1_0;
     iu_memcpy_s( SymbolNameInternal, sizeof(SymbolNameInternal), element.SymbolNameInternal, sizeof(SymbolNameInternal) );
     Element_1_0.SymbolName = SymbolNameInternal;
+    MetricIndexInternal = element.MetricIndexInternal;
 }
 
 /*****************************************************************************\
@@ -7527,6 +7591,7 @@ CEquationElementInternal& CEquationElementInternal::operator= ( const CEquationE
     Element_1_0 = element.Element_1_0;
     iu_memcpy_s( SymbolNameInternal, sizeof(SymbolNameInternal), element.SymbolNameInternal, sizeof(SymbolNameInternal) );
     Element_1_0.SymbolName = SymbolNameInternal;
+    MetricIndexInternal = element.MetricIndexInternal;
     return *this;
 }
 

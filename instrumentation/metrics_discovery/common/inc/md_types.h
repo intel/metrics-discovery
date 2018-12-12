@@ -36,7 +36,6 @@ using namespace MetricsDiscovery;
 
 namespace MetricsDiscoveryInternal
 {
-
     /******************************************************************************/
     /* OA report types:                                                           */
     /******************************************************************************/
@@ -143,5 +142,27 @@ namespace MetricsDiscoveryInternal
         } u;
         int64_t QuadPart;
     } TLargeInteger;
+
+/*****************************************************************************\
+
+Class:
+    CEquationElementInternal
+
+Description:
+    Class which represents equation element.
+    It's moved here (from md_internal.h) to avoid including md_internal.h in md_calculation.cpp.
+
+\*****************************************************************************/
+    class CEquationElementInternal
+    {
+    public:
+        CEquationElementInternal();
+        CEquationElementInternal( const CEquationElementInternal& element );
+        CEquationElementInternal& operator = ( const CEquationElementInternal& element );
+
+        TEquationElement_1_0 Element_1_0;
+        char                 SymbolNameInternal[32];
+        int32_t              MetricIndexInternal;
+    };
 };
 
