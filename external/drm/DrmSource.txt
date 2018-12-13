@@ -1,5 +1,24 @@
 https://cgit.freedesktop.org/mesa/drm/tree/
 
+Base commit for i915_drm.h:
+(from https://github.com/djdeath/linux/commits/wip/djdeath/oa-interrupts)
+commit 45902f48ed6f97e4f46d947bc77147cd22c834fe (HEAD, origin/wip/djdeath/oa-interrupts)
+Author: Lionel Landwerlin <lionel.g.landwerlin@intel.com>
+Date:   Tue Feb 26 12:11:52 2019 +0000
+
+    drm/i915/perf: bump i915-perf revision
+
+    This makes the following opening parameters available to
+    applications :
+       - DRM_I915_PERF_PROP_POLL_OA_DELAY
+       - DRM_I915_PERF_PROP_OA_ENABLE_INTERRUPT
+
+    As well as this new ioctl on the i915-perf file descriptor :
+       - I915_PERF_IOCTL_FLUSH_DATA
+
+    Signed-off-by: Lionel Landwerlin <lionel.g.landwerlin@intel.com>
+
+
 Base commit:
 commit f3d90e8db42d8d8a839558c0bc4c368c0107a4b9
 Author: Michel Dänzer <michel.daenzer@amd.com>

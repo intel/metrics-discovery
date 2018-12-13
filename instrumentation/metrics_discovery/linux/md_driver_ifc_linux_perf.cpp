@@ -330,6 +330,7 @@ Description:
 CDriverInterfaceLinuxPerf::CDriverInterfaceLinuxPerf()
     : m_DrmFd( -1 )
     , m_DrmCardNumber( -1 )
+    , m_PerfCapabilities{}
     , m_PerfStreamFd( -1 )
     , m_PerfStreamConfigId( -1 )
 {
@@ -373,7 +374,13 @@ Output:
 \*****************************************************************************/
 bool CDriverInterfaceLinuxPerf::CreateContext()
 {
-    return InitializeIntelDrm();
+    if( !InitializeIntelDrm() )
+    {
+        return false;
+    }
+
+    ReadPerfCapabilities();
+    return true;
 }
 
 /*****************************************************************************\
@@ -405,6 +412,7 @@ void CDriverInterfaceLinuxPerf::DeleteContext()
         m_PerfStreamConfigId = -1;
     }
 
+    ResetPerfCapabilities();
     DeinitializeIntelDrm();
 }
 
@@ -1647,6 +1655,75 @@ Class:
     CDriverInterfaceLinuxPerf
 
 Method:
+    ReadPerfCapabilities
+
+Description:
+    Checks whether certain i915 Perf features are supported.
+
+\*****************************************************************************/
+void CDriverInterfaceLinuxPerf::ReadPerfCapabilities()
+{
+    ResetPerfCapabilities();
+
+    int32_t         perfRevision       = -1;
+    TCompletionCode getPerfRevisionRet = GetPerfRevision( &perfRevision );
+
+    auto requirePerfRevision = [=]( int32_t requiredPerfRevision ) {
+                                   return getPerfRevisionRet == CC_OK && perfRevision >= requiredPerfRevision;
+                               };
+
+    // Check capabilities
+    m_PerfCapabilities.IsOaInterruptSupported     = requirePerfRevision( 2 );
+    m_PerfCapabilities.IsFlushPerfStreamSupported = requirePerfRevision( 2 );
+
+    PrintPerfCapabilities();
+}
+
+/*****************************************************************************\
+
+Class:
+    CDriverInterfaceLinuxPerf
+
+Method:
+    ResetPerfCapabilities
+
+Description:
+    Resets all i915 Perf capabilities struct fields to 'false'.
+
+\*****************************************************************************/
+void CDriverInterfaceLinuxPerf::ResetPerfCapabilities()
+{
+    memset( &m_PerfCapabilities, 0, sizeof(m_PerfCapabilities) );
+}
+
+/*****************************************************************************\
+
+Class:
+    CDriverInterfaceLinuxPerf
+
+Method:
+    PrintPerfCapabilities
+
+
+Description:
+    Prints all i915 Perf capabilities. For debug / information purposes.
+
+\*****************************************************************************/
+void CDriverInterfaceLinuxPerf::PrintPerfCapabilities()
+{
+    auto getSupportedString = []( bool supported ) { return supported ? "supported"
+                                                                      : "not supported"; };
+
+    MD_LOG( LOG_INFO, "Oa interrupt: %s",      getSupportedString( m_PerfCapabilities.IsOaInterruptSupported ) );
+    MD_LOG( LOG_INFO, "Flush pref stream: %s", getSupportedString( m_PerfCapabilities.IsFlushPerfStreamSupported) );
+}
+
+/*****************************************************************************\
+
+Class:
+    CDriverInterfaceLinuxPerf
+
+Method:
     OpenPerfStream
 
 Description:
@@ -1660,18 +1737,19 @@ Input:
     uint32_t timerPeriodExponent - timer period exponent
 
 Output:
-    TCompletionCode                  - *CC_OK* means success
+    TCompletionCode              - *CC_OK* means success
 
 \*****************************************************************************/
 TCompletionCode CDriverInterfaceLinuxPerf::OpenPerfStream( uint32_t perfMetricSetId, uint32_t perfReportType, uint32_t timerPeriodExponent )
 {
     int32_t  perfEventFd     = -1;
-    int32_t  ring_id         = I915_EXEC_RENDER; /* RCS */
-    uint64_t properties[]    = { DRM_I915_PERF_PROP_SAMPLE_OA,      true,
-                                 DRM_I915_PERF_PROP_OA_METRICS_SET, perfMetricSetId,
-                                 DRM_I915_PERF_PROP_OA_FORMAT,      perfReportType,
-                                 DRM_I915_PERF_PROP_OA_EXPONENT,    timerPeriodExponent };
-    struct drm_i915_perf_open_param param = {0,};
+    uint64_t properties[]    = { DRM_I915_PERF_PROP_SAMPLE_OA,           true,
+                                 DRM_I915_PERF_PROP_OA_METRICS_SET,      perfMetricSetId,
+                                 DRM_I915_PERF_PROP_OA_FORMAT,           perfReportType,
+                                 DRM_I915_PERF_PROP_OA_EXPONENT,         timerPeriodExponent,
+                                 DRM_I915_PERF_PROP_OA_ENABLE_INTERRUPT, true,
+                                 DRM_I915_PERF_PROP_POLL_OA_DELAY,       0 };   // 0 - disable OA polling by kernel
+    struct drm_i915_perf_open_param param = { 0, };
 
     param.flags = 0;
     param.flags |= I915_PERF_FLAG_FD_CLOEXEC;
@@ -1680,12 +1758,19 @@ TCompletionCode CDriverInterfaceLinuxPerf::OpenPerfStream( uint32_t perfMetricSe
     param.properties_ptr = (uint64_t)properties;
     param.num_properties = sizeof(properties) / 16;
 
+    if( !m_PerfCapabilities.IsOaInterruptSupported )
+    {
+        // Kernel doesn't support OA interrupt feature.
+        // Don't send OA_ENABLE_INTERRUPT and POLL_OA_DELAY parameters to avoid errors.
+        param.num_properties -= 2;
+    }
+
     MD_LOG( LOG_DEBUG, "Opening i915 perf stream with params: perfMetricSetId: %u, perfReportType: %u, timerPeriodExponent: %u", perfMetricSetId, perfReportType, timerPeriodExponent );
 
     perfEventFd = SendIoctl( m_DrmFd, DRM_IOCTL_I915_PERF_OPEN, &param );
     if( perfEventFd == -1 )
     {
-        MD_LOG( LOG_ERROR, "ERROR: opening i915 perf stream failed, fd: %d, errno: %s", perfEventFd, strerror(errno) );
+        MD_LOG( LOG_ERROR, "ERROR: opening i915 perf stream failed, fd: %d, errno: %d (%s)", perfEventFd, errno, strerror(errno) );
         return CC_ERROR_GENERAL;
     }
     m_PerfStreamFd = perfEventFd;
@@ -1728,8 +1813,13 @@ TCompletionCode CDriverInterfaceLinuxPerf::ReadPerfStream( uint32_t oaReportSize
     }
 
     const size_t outBufferSize   = oaReportSize * reportsToRead;
-    const size_t perfReportSize  = sizeof(drm_i915_perf_record_header) + oaReportSize;    // Perf report size is bigger (additional header)
-    const size_t perfBytesToRead = reportsToRead * perfReportSize;
+    const size_t perfHeaderSize  = sizeof(drm_i915_perf_record_header);
+    const size_t perfReportSize  = perfHeaderSize + oaReportSize;                   // Perf report size is bigger (additional header)
+    const size_t perfBytesToRead = reportsToRead * perfReportSize + perfHeaderSize; // Adding header for flag only reports, e.g. for situations where user
+                                                                                    // requests 1 report, but first report from Perf is REPORT_LOST flag.
+
+    // Force kernel to read OA tail / head - needed when using OA interrupt and disabled OA poll delay
+    FlushPerfStream();
 
     // Resize Perf report buffer if needed
     m_PerfStreamReportData.resize( perfBytesToRead );
@@ -1829,6 +1919,46 @@ TCompletionCode CDriverInterfaceLinuxPerf::ClosePerfStream()
         m_PerfStreamFd = -1;
     }
     return CC_OK;
+}
+
+/*****************************************************************************\
+
+Class:
+    CDriverInterfaceLinuxPerf
+
+Method:
+    FlushPerfStream
+
+Description:
+    Flushes previously opened Perf stream - forces kernel to read OA tail / head
+    pointers.
+    It's needed when using OA interrupt with disabled OA poll delay (without kernel
+    periodically checking OA tail / head). Without flushing, 'read' is able to return
+    any data only after interrupt occurred (half OA buffer is full).
+
+Output:
+    TCompletionCode - *CC_OK* means success
+
+\*****************************************************************************/
+TCompletionCode CDriverInterfaceLinuxPerf::FlushPerfStream()
+{
+    TCompletionCode ret = CC_ERROR_NOT_SUPPORTED;
+
+    if( m_PerfCapabilities.IsFlushPerfStreamSupported )
+    {
+        int32_t ioctlResult = SendIoctl( m_PerfStreamFd, I915_PERF_IOCTL_FLUSH_DATA, 0 );
+        if( ioctlResult < 0 )
+        {
+            MD_LOG( LOG_ERROR, "ERROR: Flushing i915 perf stream data failed, errno: %d (%s)", errno, strerror(errno) );
+            ret = CC_ERROR_GENERAL;
+        }
+        else
+        {
+            MD_LOG( LOG_DEBUG, "i915 perf stream data flushed" );
+            ret = CC_OK;
+        }
+    }
+    return ret;
 }
 
 /*****************************************************************************\
@@ -1984,7 +2114,7 @@ TCompletionCode CDriverInterfaceLinuxPerf::AddPerfConfig( TRegister** regVector,
     {
         if( errno != EADDRINUSE ) // errno == 98 (EADDRINUSE) means set with the given GUID is already added
         {
-            MD_LOG( LOG_ERROR, "ERROR: Adding i915 perf configuration failed, errno: %s (%u)", strerror(errno), errno );
+            MD_LOG( LOG_ERROR, "ERROR: Adding i915 perf configuration failed, errno: %s (%d)", strerror(errno), errno );
             ret = CC_ERROR_GENERAL;
         }
         else
@@ -2045,7 +2175,7 @@ TCompletionCode CDriverInterfaceLinuxPerf::RemovePerfConfig( int32_t perfConfigI
             }
             else
             {
-                MD_LOG( LOG_ERROR, "ERROR: Removing perf configuration with id %d failed, errno: %s (%u)", perfConfigId, strerror( errno ), errno );
+                MD_LOG( LOG_ERROR, "ERROR: Removing perf configuration with id %d failed, errno: %d (%s)", perfConfigId, errno, strerror(errno) );
             }
             ret = CC_ERROR_GENERAL;
         }
@@ -2497,7 +2627,7 @@ TCompletionCode CDriverInterfaceLinuxPerf::ReadUInt64FromFile( const char* fileP
 
     if( readBytes < 0 )
     {
-        MD_LOG( LOG_ERROR, "ERROR: Read negative number of bytes, error %s", strerror(errno) );
+        MD_LOG( LOG_ERROR, "ERROR: Read negative number of bytes, error: %d (%s)", errno, strerror(errno) );
         return CC_ERROR_GENERAL;
     }
 
@@ -2777,6 +2907,61 @@ TCompletionCode CDriverInterfaceLinuxPerf::GetInstrPlatformId( GTDI_PLATFORM_IND
     ret = MapMesaToInstrPlatform( mesaDeviceInfo, instrPlatformId );
     MD_CHECK_CC_RET( ret );
 
+    return CC_OK;
+}
+
+/*****************************************************************************\
+
+Class:
+    CDriverInterfaceLinuxPerf
+
+Method:
+    GetPerfRevision
+
+Description:
+    Returns i915 Perf interface revision obtained from kernel using i915_GETPARAM IOCTL.
+    SendGetParamIoctl function isn't used here because kernel error code needs to be checked
+    directly.
+    I915_PARAM_PERF_REVISION was added in revision '2', so not supported error code ('EINVAL')
+    means that it's revision '1'.
+
+Input:
+    int32_t* perfRevision - (OUT) returned perf revision number
+
+Output:
+    TCompletionCode       - *CC_OK* means success
+
+\*****************************************************************************/
+TCompletionCode CDriverInterfaceLinuxPerf::GetPerfRevision( int32_t* perfRevision )
+{
+    MD_CHECK_PTR_RET( perfRevision, CC_ERROR_INVALID_PARAMETER );
+
+    static int32_t cachedPerfRevision = -1;
+    if( cachedPerfRevision == -1 )
+    {
+        drm_i915_getparam_t params = {0,};
+        params.param = I915_PARAM_PERF_REVISION;
+        params.value = &cachedPerfRevision;
+
+        int32_t ioctlRet = SendIoctl( m_DrmFd, DRM_IOCTL_I915_GETPARAM, &params );
+        if( ioctlRet )
+        {
+            if( errno == EINVAL ) // errno == EINVAL means kernel doesn't support I915_PARAM_PERF_REVISION IOCTL, assuming revision 1
+            {
+                MD_LOG( LOG_INFO, "I915_PARAM_PERF_REVISION not supported, assuming revision '1'" );
+                cachedPerfRevision = 1;
+            }
+            else
+            {
+                MD_LOG( LOG_ERROR, "ERROR: Getting i915 perf revision failed, errno: %d (%s)", errno, strerror(errno) );
+                cachedPerfRevision = -1;
+                return CC_ERROR_GENERAL;
+            }
+        }
+        MD_LOG( LOG_DEBUG, "i915 perf revision: %d", cachedPerfRevision );
+    }
+
+    *perfRevision = cachedPerfRevision;
     return CC_OK;
 }
 

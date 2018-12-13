@@ -74,6 +74,21 @@ typedef enum EGfxGtType
 
 /*****************************************************************************\
 
+Struct:
+    TPerfCapabilities
+
+Description:
+    A structure holding information about i915 Perf features support in kernel.
+
+\*****************************************************************************/
+typedef struct SPerfCapabilities
+{
+    bool IsOaInterruptSupported;        // Available since i915 Perf revision '2'
+    bool IsFlushPerfStreamSupported;    // Available since i915 Perf revision '2'
+} TPerfCapabilities;
+
+/*****************************************************************************\
+
 Class:
     CSemaphore
 
@@ -157,9 +172,13 @@ protected:
 
 private:
     // Perf
+    void            ReadPerfCapabilities();
+    void            ResetPerfCapabilities();
+    void            PrintPerfCapabilities();
     TCompletionCode OpenPerfStream( uint32_t perfMetricSetId, uint32_t perfReportType, uint32_t timerPeriodExponent );
     TCompletionCode ReadPerfStream( uint32_t oaReportSize, uint32_t reportsToRead, char* reportData, uint32_t* readBytes, bool* reportLostOccured );
     TCompletionCode ClosePerfStream();
+    TCompletionCode FlushPerfStream();
     TCompletionCode WaitForPerfStreamReports( uint32_t timeoutMs );
     TCompletionCode AddPerfConfig( TRegister** regVector, uint32_t regCount, const char* requestedGuid, int32_t* addedConfigId );
     TCompletionCode RemovePerfConfig( int32_t perfConfigId );
@@ -190,6 +209,7 @@ private:
     TCompletionCode GetMesaDeviceInfo( const gen_device_info** mesaDeviceInfo );
     TCompletionCode GetDeviceId( int32_t* deviceId );
     TCompletionCode GetInstrPlatformId( GTDI_PLATFORM_INDEX* instrPlatformId );
+    TCompletionCode GetPerfRevision( int32_t* perfRevision );
     TCompletionCode GetGpuFrequencyInfo( uint64_t* minFrequency, uint64_t* maxFrequency, uint64_t* actFrequency, uint64_t* boostFrequency );
     TCompletionCode GetGpuTimestampFrequency( uint64_t* gpuTimestampFrequency );
     TCompletionCode GetGpuTimestampPeriodNs( uint64_t* gpuTimestampPeriodNs );
@@ -210,6 +230,9 @@ private:
 private: // Variables
     int32_t                      m_DrmFd;                       // DRM file descriptor, used mostly for sending IOCTLs
     int32_t                      m_DrmCardNumber;               // Used for SysFs reads / writes
+    TPerfCapabilities            m_PerfCapabilities;            // Information about i915 Perf features supported in current kernel
+
+    // Stream
     int32_t                      m_PerfStreamFd;                // Opened Perf stream file descriptor
     int32_t                      m_PerfStreamConfigId;          // Perf configuration ID used for opening Perf stream, needed for config removal
     std::vector<unsigned char>   m_PerfStreamReportData;        // Preallocated buffer for reading data from Perf stream to avoid new allocations on every read
