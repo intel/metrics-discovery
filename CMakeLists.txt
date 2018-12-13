@@ -155,6 +155,7 @@ if ("${PLATFORM}" STREQUAL "linux")
     # linux
     add_definitions(-fdiagnostics-color=auto) # color=auto only to colorize compiler output
     add_definitions(-fstack-protector)
+    add_definitions(-fvisibility=hidden)      # to disable exporting internal symbols (by default gcc exports all symbols)
     add_definitions(-Wno-unused)
     add_definitions(-Wno-strict-aliasing)
     add_definitions(-Wno-unknown-pragmas)
