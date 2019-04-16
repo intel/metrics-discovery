@@ -51,7 +51,8 @@
                                    MD_INCLUDE_KBL_GT2_METRICS || \
                                    MD_INCLUDE_KBL_GT3_METRICS || \
                                    MD_INCLUDE_CFL_GT2_METRICS || \
-                                   MD_INCLUDE_CFL_GT3_METRICS) )
+                                   MD_INCLUDE_CFL_GT3_METRICS || \
+                                   MD_INCLUDE_GLK_METRICS) )
 
 using namespace MetricsDiscovery;
 using namespace MetricsDiscoveryInternal;

@@ -15,7 +15,7 @@ https://opensource.org/licenses/MIT
 
 ## Supported Platforms
 
-- Intel(R) Processors with Gen9 graphics devices (formerly Skylake, Kaby Lake, Apollo Lake/Broxton, Coffee Lake),
+- Intel(R) Processors with Gen9 graphics devices (formerly Skylake, Kaby Lake, Apollo Lake/Broxton, Gemini Lake, Coffee Lake),
 - Intel(R) Processors with Gen8 graphics devices (formerly Broadwell),
 - Intel(R) Processors with Gen7.5 graphics devices (formerly Haswell).
 

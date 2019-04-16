@@ -329,7 +329,8 @@ typedef enum
     GENERATION_BXT = 10,
     // 11 reserved
     GENERATION_KBL = 12,
-    // 13-17 reserved
+    GENERATION_GLK = 13,
+    // 14-17 reserved
     GENERATION_CFL = 18,
     // 19-20 reserved
     // ...

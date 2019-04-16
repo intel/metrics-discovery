@@ -47,7 +47,8 @@ namespace MetricsDiscovery
         PLATFORM_BXT = 1 << 10 /*GENERATION_BXT*/,
         // 11 reserved
         PLATFORM_KBL = 1 << 12 /*GENERATION_KBL*/,
-        // 13-17 reserved
+        PLATFORM_GLK = 1 << 13 /*GENERATION_GLK*/,
+        // 14-17 reserved
         PLATFORM_CFL = 1 << 18 /*GENERATION_CFL*/,
         // 19 reserved
         // ...

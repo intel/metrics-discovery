@@ -3098,6 +3098,7 @@ uint32_t CDriverInterfaceLinuxPerf::GetGtMaxSubslicePerSlice()
         case GENERATION_BXT:
         case GENERATION_KBL:
         case GENERATION_CFL:
+        case GENERATION_GLK:
             return MD_MAX_SUBSLICE_PER_SLICE_OLD;
         default:
             MD_LOG( LOG_WARNING, "WARNING: Unsupported platform, default MaxSubslicePerSlice used" );
@@ -3154,6 +3155,10 @@ TCompletionCode CDriverInterfaceLinuxPerf::MapMesaToInstrPlatform( const gen_dev
     else if( mesaDeviceInfo->is_coffeelake )
     {
         *outInstrPlatformId = GENERATION_CFL;
+    }
+    else if( mesaDeviceInfo->is_geminilake )
+    {
+        *outInstrPlatformId = GENERATION_GLK;
     }
     else
     {
