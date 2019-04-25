@@ -1,11 +1,9 @@
 https://cgit.freedesktop.org/mesa/mesa/tree
 
 Base commit:
-commit 7475d7727f172387ac3d069887f3095dcb884649
-Author: Emil Velikov <emil.velikov@collabora.com>
-Date:   Thu Jan 31 21:08:36 2019 +0000
+commit c8cdee5dc3c6f9856ee73aed2b47cee77d675022 (tag: mesa-19.0.3)
+Author: Dylan Baker <dylan@pnwbakers.com>
+Date:   Wed Apr 24 10:39:04 2019 -0700
 
-    docs: add sha256 checksums for 18.3.3
-
-    Signed-off-by: Emil Velikov <emil.velikov@collabora.com>
+    docs: add relnotes for 19.0.3
 
