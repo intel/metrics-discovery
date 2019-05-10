@@ -538,9 +538,8 @@ TCompletionCode CreateObjectTreeICL_OA( CConcurrentGroup* aGroup )
             METRIC_TYPE_THROUGHPUT, RESULT_UINT64, "bytes", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( aMetric )
         {
-            MD_CHECK_CC( aMetric->SetSnapshotReportReadEquation( "rd40@0x88:0xbe rd40@0x8c:0xbf UADD dw@0x90 UADD 64 UMUL" ));
-            MD_CHECK_CC( aMetric->SetDeltaReportReadEquation( "qw@0x100 qw@0x108 UADD qw@0x110 UADD 64 UMUL" ));
-            MD_CHECK_CC( aMetric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
+            
+            MD_CHECK_CC( aMetric->SetNormalizationEquation( "$$ShaderMemoryAccesses 64 UMUL" ));
             MD_CHECK_CC( aMetric->SetMaxValueEquation( "$GpuCoreClocks 64 UMUL $EuSubslicesTotalCount UMUL" ));
         }
 
@@ -1192,9 +1191,8 @@ TCompletionCode CreateObjectTreeICL_OA( CConcurrentGroup* aGroup )
             METRIC_TYPE_THROUGHPUT, RESULT_UINT64, "bytes", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( aMetric )
         {
-            MD_CHECK_CC( aMetric->SetSnapshotReportReadEquation( "rd40@0x88:0xbe rd40@0x8c:0xbf UADD dw@0x90 UADD 64 UMUL" ));
-            MD_CHECK_CC( aMetric->SetDeltaReportReadEquation( "qw@0x100 qw@0x108 UADD qw@0x110 UADD 64 UMUL" ));
-            MD_CHECK_CC( aMetric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
+            
+            MD_CHECK_CC( aMetric->SetNormalizationEquation( "$$ShaderMemoryAccesses 64 UMUL" ));
             MD_CHECK_CC( aMetric->SetMaxValueEquation( "$GpuCoreClocks 64 UMUL $EuSubslicesTotalCount UMUL" ));
         }
 
@@ -1282,8 +1280,8 @@ TCompletionCode CreateObjectTreeICL_OA( CConcurrentGroup* aGroup )
             METRIC_TYPE_THROUGHPUT, RESULT_UINT64, "bytes", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
         if( aMetric )
         {
-            MD_CHECK_CC( aMetric->SetSnapshotReportReadEquation( "dw@0xc4 dw@0xcc UADD dw@0xdc UADD dw@0xd8 UADD" ));
-            MD_CHECK_CC( aMetric->SetDeltaReportReadEquation( "qw@0x138 qw@0x148 UADD qw@0x168 UADD qw@0x160 UADD" ));
+            MD_CHECK_CC( aMetric->SetSnapshotReportReadEquation( "dw@0xc4 dw@0xcc UADD dw@0xd8 UADD dw@0xdc UADD" ));
+            MD_CHECK_CC( aMetric->SetDeltaReportReadEquation( "qw@0x138 qw@0x148 UADD qw@0x160 UADD qw@0x168 UADD" ));
             MD_CHECK_CC( aMetric->SetNormalizationEquation( "64 $Self UMUL" ));
             MD_CHECK_CC( aMetric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
             MD_CHECK_CC( aMetric->SetMaxValueEquation( "$GpuCoreClocks 64 UMUL" ));
@@ -1490,17 +1488,17 @@ TCompletionCode CreateObjectTreeICL_OA( CConcurrentGroup* aGroup )
         MD_CHECK_CC( aSet->AddStartConfigRegister( 0x9888, 0x1c5c000a, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( aSet->AddStartConfigRegister( 0x9888, 0x001c0097, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( aSet->AddStartConfigRegister( 0x9888, 0x061c9400, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x9888, 0x0c1ca700, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x9888, 0x0c1c00a7, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( aSet->AddStartConfigRegister( 0x9888, 0x101c0000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( aSet->AddStartConfigRegister( 0x9888, 0x081d8100, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x9888, 0x0a1d0020, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x9888, 0x0a1d0010, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( aSet->AddStartConfigRegister( 0x9888, 0x085c9497, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x9888, 0x0c5c00a7, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x9888, 0x0c5ca700, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( aSet->AddStartConfigRegister( 0x9888, 0x105c0000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x9888, 0x0a5d0013, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x9888, 0x0a5d0023, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( aSet->AddStartConfigRegister( 0x9888, 0x181e8000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( aSet->AddStartConfigRegister( 0x9888, 0x1e1e0f80, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x9888, 0x201e000b, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x9888, 0x201e000e, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( aSet->AddStartConfigRegister( 0x9888, 0x301f4000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( aSet->AddStartConfigRegister( 0x9888, 0x501f2524, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( aSet->AddStartConfigRegister( 0x9888, 0x521f2522, REGISTER_TYPE_NOA ));
@@ -2754,18 +2752,6 @@ TCompletionCode CreateObjectTreeICL_OA( CConcurrentGroup* aGroup )
         }
 
         availabilityEquation = NULL;
-        aMetric = aSet->AddMetric( "L3Misses", "L3 Misses",
-            "The total number of L3 misses.",
-            "L3/TAG", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_L3_TAG * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
-            METRIC_TYPE_EVENT, RESULT_UINT64, "messages", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
-        if( aMetric )
-        {
-            MD_CHECK_CC( aMetric->SetSnapshotReportReadEquation( "2 dw@0xd4 dw@0xd0 UADD UMUL" ));
-            MD_CHECK_CC( aMetric->SetDeltaReportReadEquation( "2 qw@0x158 qw@0x150 UADD UMUL" ));
-            MD_CHECK_CC( aMetric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
-        }
-
-        availabilityEquation = NULL;
         aMetric = aSet->AddMetric( "L3SamplerThroughput", "L3 Sampler Throughput",
             "The total number of GPU memory bytes transferred between samplers and L3 caches.",
             "L3/Sampler", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_SAMPLER * 0x10000), USAGE_FLAG_TIER_2|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
@@ -2786,9 +2772,8 @@ TCompletionCode CreateObjectTreeICL_OA( CConcurrentGroup* aGroup )
             METRIC_TYPE_THROUGHPUT, RESULT_UINT64, "bytes", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( aMetric )
         {
-            MD_CHECK_CC( aMetric->SetSnapshotReportReadEquation( "rd40@0x88:0xbe rd40@0x8c:0xbf UADD dw@0x90 UADD 64 UMUL" ));
-            MD_CHECK_CC( aMetric->SetDeltaReportReadEquation( "qw@0x100 qw@0x108 UADD qw@0x110 UADD 64 UMUL" ));
-            MD_CHECK_CC( aMetric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
+            
+            MD_CHECK_CC( aMetric->SetNormalizationEquation( "$$ShaderMemoryAccesses 64 UMUL" ));
             MD_CHECK_CC( aMetric->SetMaxValueEquation( "$GpuCoreClocks 64 UMUL $EuSubslicesTotalCount UMUL" ));
         }
 
@@ -2802,18 +2787,6 @@ TCompletionCode CreateObjectTreeICL_OA( CConcurrentGroup* aGroup )
             
             MD_CHECK_CC( aMetric->SetNormalizationEquation( "$$L3Accesses 64 UMUL" ));
             MD_CHECK_CC( aMetric->SetMaxValueEquation( "$GpuCoreClocks 64 UMUL $EuSlicesTotalCount UMUL" ));
-        }
-
-        availabilityEquation = NULL;
-        aMetric = aSet->AddMetric( "GtiL3Throughput", "GTI L3 Throughput",
-            "The total number of GPU memory bytes transferred between L3 caches and GTI.",
-            "GTI/L3", (METRIC_GROUP_NAME_ID_GTI * 0x1000000) | (METRIC_GROUP_NAME_ID_L3 * 0x10000), USAGE_FLAG_TIER_2|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
-            METRIC_TYPE_THROUGHPUT, RESULT_UINT64, "bytes", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
-        if( aMetric )
-        {
-            
-            MD_CHECK_CC( aMetric->SetNormalizationEquation( "$$L3Misses 64 UMUL" ));
-            MD_CHECK_CC( aMetric->SetMaxValueEquation( "$GpuCoreClocks 64 UMUL" ));
         }
 
         availabilityEquation = NULL;
@@ -2982,23 +2955,19 @@ TCompletionCode CreateObjectTreeICL_OA( CConcurrentGroup* aGroup )
         MD_CHECK_CC( aSet->AddStartConfigRegister( 0x9888, 0x08150000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( aSet->AddStartConfigRegister( 0x9888, 0x0a150000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( aSet->AddStartConfigRegister( 0x9884, 0x00000003, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x9888, 0x0a1473a0, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( aSet->AddStartConfigRegister( 0x9888, 0x1217241c, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x9888, 0x22000550, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x9888, 0x18137c00, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x9888, 0x1a130001, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x9888, 0x061434a0, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x9888, 0x00140000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x9888, 0x22000050, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x9888, 0x18133c00, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( aSet->AddStartConfigRegister( 0x9888, 0x081710b0, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( aSet->AddStartConfigRegister( 0x9888, 0x10170000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( aSet->AddStartConfigRegister( 0x9888, 0x501f1124, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x9888, 0x521f4849, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x9888, 0x521f4801, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( aSet->AddStartConfigRegister( 0x9888, 0x541f0024, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( aSet->AddStartConfigRegister( 0x9888, 0x3a1f8000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( aSet->AddStartConfigRegister( 0x9888, 0x4e1f2400, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( aSet->AddStartConfigRegister( 0x9888, 0x461f3100, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x9888, 0x481f3131, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x9888, 0x4a1f0031, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x9888, 0x481f0031, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x9888, 0x4a1f0000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( aSet->AddStartConfigRegister( 0x9888, 0x4c1f0030, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( aSet->AddStartConfigRegister( 0x9888, 0x181f0000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( aSet->AddStartConfigRegister( 0x9888, 0x301f0000, REGISTER_TYPE_NOA ));
@@ -3356,9 +3325,8 @@ TCompletionCode CreateObjectTreeICL_OA( CConcurrentGroup* aGroup )
             METRIC_TYPE_THROUGHPUT, RESULT_UINT64, "bytes", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( aMetric )
         {
-            MD_CHECK_CC( aMetric->SetSnapshotReportReadEquation( "rd40@0x88:0xbe rd40@0x8c:0xbf UADD dw@0x90 UADD 64 UMUL" ));
-            MD_CHECK_CC( aMetric->SetDeltaReportReadEquation( "qw@0x100 qw@0x108 UADD qw@0x110 UADD 64 UMUL" ));
-            MD_CHECK_CC( aMetric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
+            
+            MD_CHECK_CC( aMetric->SetNormalizationEquation( "$$ShaderMemoryAccesses 64 UMUL" ));
             MD_CHECK_CC( aMetric->SetMaxValueEquation( "$GpuCoreClocks 64 UMUL $EuSubslicesTotalCount UMUL" ));
         }
 
@@ -4255,9 +4223,8 @@ TCompletionCode CreateObjectTreeICL_OA( CConcurrentGroup* aGroup )
             METRIC_TYPE_THROUGHPUT, RESULT_UINT64, "bytes", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( aMetric )
         {
-            MD_CHECK_CC( aMetric->SetSnapshotReportReadEquation( "rd40@0x88:0xbe rd40@0x8c:0xbf UADD dw@0x90 UADD 64 UMUL" ));
-            MD_CHECK_CC( aMetric->SetDeltaReportReadEquation( "qw@0x100 qw@0x108 UADD qw@0x110 UADD 64 UMUL" ));
-            MD_CHECK_CC( aMetric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
+            
+            MD_CHECK_CC( aMetric->SetNormalizationEquation( "$$ShaderMemoryAccesses 64 UMUL" ));
             MD_CHECK_CC( aMetric->SetMaxValueEquation( "$GpuCoreClocks 64 UMUL $EuSubslicesTotalCount UMUL" ));
         }
 
@@ -4998,9 +4965,8 @@ TCompletionCode CreateObjectTreeICL_OA( CConcurrentGroup* aGroup )
             METRIC_TYPE_THROUGHPUT, RESULT_UINT64, "bytes", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( aMetric )
         {
-            MD_CHECK_CC( aMetric->SetSnapshotReportReadEquation( "rd40@0x88:0xbe rd40@0x8c:0xbf UADD dw@0x90 UADD 64 UMUL" ));
-            MD_CHECK_CC( aMetric->SetDeltaReportReadEquation( "qw@0x100 qw@0x108 UADD qw@0x110 UADD 64 UMUL" ));
-            MD_CHECK_CC( aMetric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
+            
+            MD_CHECK_CC( aMetric->SetNormalizationEquation( "$$ShaderMemoryAccesses 64 UMUL" ));
             MD_CHECK_CC( aMetric->SetMaxValueEquation( "$GpuCoreClocks 64 UMUL $EuSubslicesTotalCount UMUL" ));
         }
 
@@ -5798,9 +5764,8 @@ TCompletionCode CreateObjectTreeICL_OA( CConcurrentGroup* aGroup )
             METRIC_TYPE_THROUGHPUT, RESULT_UINT64, "bytes", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( aMetric )
         {
-            MD_CHECK_CC( aMetric->SetSnapshotReportReadEquation( "rd40@0x88:0xbe rd40@0x8c:0xbf UADD dw@0x90 UADD 64 UMUL" ));
-            MD_CHECK_CC( aMetric->SetDeltaReportReadEquation( "qw@0x100 qw@0x108 UADD qw@0x110 UADD 64 UMUL" ));
-            MD_CHECK_CC( aMetric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
+            
+            MD_CHECK_CC( aMetric->SetNormalizationEquation( "$$ShaderMemoryAccesses 64 UMUL" ));
             MD_CHECK_CC( aMetric->SetMaxValueEquation( "$GpuCoreClocks 64 UMUL $EuSubslicesTotalCount UMUL" ));
         }
 
@@ -8821,9 +8786,8 @@ TCompletionCode CreateObjectTreeICL_OA( CConcurrentGroup* aGroup )
             METRIC_TYPE_THROUGHPUT, RESULT_UINT64, "bytes", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( aMetric )
         {
-            MD_CHECK_CC( aMetric->SetSnapshotReportReadEquation( "rd40@0x88:0xbe rd40@0x8c:0xbf UADD dw@0x90 UADD 64 UMUL" ));
-            MD_CHECK_CC( aMetric->SetDeltaReportReadEquation( "qw@0x100 qw@0x108 UADD qw@0x110 UADD 64 UMUL" ));
-            MD_CHECK_CC( aMetric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
+            
+            MD_CHECK_CC( aMetric->SetNormalizationEquation( "$$ShaderMemoryAccesses 64 UMUL" ));
             MD_CHECK_CC( aMetric->SetMaxValueEquation( "$GpuCoreClocks 64 UMUL $EuSubslicesTotalCount UMUL" ));
         }
 
@@ -9719,9 +9683,8 @@ TCompletionCode CreateObjectTreeICL_OA( CConcurrentGroup* aGroup )
             METRIC_TYPE_THROUGHPUT, RESULT_UINT64, "bytes", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( aMetric )
         {
-            MD_CHECK_CC( aMetric->SetSnapshotReportReadEquation( "rd40@0x88:0xbe rd40@0x8c:0xbf UADD dw@0x90 UADD 64 UMUL" ));
-            MD_CHECK_CC( aMetric->SetDeltaReportReadEquation( "qw@0x100 qw@0x108 UADD qw@0x110 UADD 64 UMUL" ));
-            MD_CHECK_CC( aMetric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
+            
+            MD_CHECK_CC( aMetric->SetNormalizationEquation( "$$ShaderMemoryAccesses 64 UMUL" ));
             MD_CHECK_CC( aMetric->SetMaxValueEquation( "$GpuCoreClocks 64 UMUL $EuSubslicesTotalCount UMUL" ));
         }
 
@@ -10688,9 +10651,8 @@ TCompletionCode CreateObjectTreeICL_OA( CConcurrentGroup* aGroup )
             METRIC_TYPE_THROUGHPUT, RESULT_UINT64, "bytes", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( aMetric )
         {
-            MD_CHECK_CC( aMetric->SetSnapshotReportReadEquation( "rd40@0x88:0xbe rd40@0x8c:0xbf UADD dw@0x90 UADD 64 UMUL" ));
-            MD_CHECK_CC( aMetric->SetDeltaReportReadEquation( "qw@0x100 qw@0x108 UADD qw@0x110 UADD 64 UMUL" ));
-            MD_CHECK_CC( aMetric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
+            
+            MD_CHECK_CC( aMetric->SetNormalizationEquation( "$$ShaderMemoryAccesses 64 UMUL" ));
             MD_CHECK_CC( aMetric->SetMaxValueEquation( "$GpuCoreClocks 64 UMUL $EuSubslicesTotalCount UMUL" ));
         }
 
@@ -11606,9 +11568,8 @@ TCompletionCode CreateObjectTreeICL_OA( CConcurrentGroup* aGroup )
             METRIC_TYPE_THROUGHPUT, RESULT_UINT64, "bytes", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( aMetric )
         {
-            MD_CHECK_CC( aMetric->SetSnapshotReportReadEquation( "rd40@0x88:0xbe rd40@0x8c:0xbf UADD dw@0x90 UADD 64 UMUL" ));
-            MD_CHECK_CC( aMetric->SetDeltaReportReadEquation( "qw@0x100 qw@0x108 UADD qw@0x110 UADD 64 UMUL" ));
-            MD_CHECK_CC( aMetric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
+            
+            MD_CHECK_CC( aMetric->SetNormalizationEquation( "$$ShaderMemoryAccesses 64 UMUL" ));
             MD_CHECK_CC( aMetric->SetMaxValueEquation( "$GpuCoreClocks 64 UMUL $EuSubslicesTotalCount UMUL" ));
         }
 
@@ -12461,9 +12422,8 @@ TCompletionCode CreateObjectTreeICL_OA( CConcurrentGroup* aGroup )
             METRIC_TYPE_THROUGHPUT, RESULT_UINT64, "bytes", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( aMetric )
         {
-            MD_CHECK_CC( aMetric->SetSnapshotReportReadEquation( "rd40@0x88:0xbe rd40@0x8c:0xbf UADD dw@0x90 UADD 64 UMUL" ));
-            MD_CHECK_CC( aMetric->SetDeltaReportReadEquation( "qw@0x100 qw@0x108 UADD qw@0x110 UADD 64 UMUL" ));
-            MD_CHECK_CC( aMetric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
+            
+            MD_CHECK_CC( aMetric->SetNormalizationEquation( "$$ShaderMemoryAccesses 64 UMUL" ));
             MD_CHECK_CC( aMetric->SetMaxValueEquation( "$GpuCoreClocks 64 UMUL $EuSubslicesTotalCount UMUL" ));
         }
 

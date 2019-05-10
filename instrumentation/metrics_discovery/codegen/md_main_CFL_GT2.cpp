@@ -1,6 +1,6 @@
 /*****************************************************************************\
 
-    Copyright © 2018, Intel Corporation
+    Copyright © 2019, Intel Corporation
 
     Permission is hereby granted, free of charge, to any person obtaining a
     copy of this software and associated documentation files (the "Software"),
@@ -850,7 +850,7 @@ TCompletionCode CreateObjectTreeCFL_GT2_OA( CConcurrentGroup* aGroup )
         MD_CHECK_CC( aSet->AddStartConfigRegister( 0xE758, 0x00015014, REGISTER_TYPE_FLEX ));
         MD_CHECK_CC( aSet->AddStartConfigRegister( 0xE45c, 0x00051050, REGISTER_TYPE_FLEX ));
         MD_CHECK_CC( aSet->AddStartConfigRegister( 0xE55c, 0x00053052, REGISTER_TYPE_FLEX ));
-        MD_CHECK_CC( aSet->AddStartConfigRegister( 0xE65c, 0x00055054, REGISTER_TYPE_FLEX ));
+        MD_CHECK_CC( aSet->AddStartConfigRegister( 0xE65c, 0x00222222, REGISTER_TYPE_FLEX ));
         MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2710, 0x00000000, REGISTER_TYPE_OA ));
         MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2714, 0x00800000, REGISTER_TYPE_OA ));
         MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2720, 0x00000000, REGISTER_TYPE_OA ));
@@ -11841,6 +11841,265 @@ TCompletionCode CreateObjectTreeCFL_GT2_OA( CConcurrentGroup* aGroup )
         MD_CHECK_CC( aSet->AddStartConfigRegister( 0x279c, 0x0000ff3f, REGISTER_TYPE_OA ));
         MD_CHECK_CC( aSet->AddStartConfigRegister( 0xe458, 0x00005004, REGISTER_TYPE_FLEX ));
         MD_CHECK_CC( aSet->AddStartConfigRegister( 0xe558, 0x00008003, REGISTER_TYPE_FLEX ));
+  
+        MD_CHECK_CC( aSet->RefreshConfigRegisters() );
+    }
+     
+    platformMask = PLATFORM_CFL;
+    if( MD_IS_INTERNAL_BUILD || g_MetricsDevice->IsPlatformTypeOf( platformMask, GT_TYPE_GT2 ) )
+    {
+        aSet = aGroup->AddMetricSet( "GpuBusyness", "Gpu Rings Busyness", API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+           GPU_RENDER|GPU_COMPUTE|GPU_MEDIA|GPU_GENERIC, 256, 672, OA_REPORT_TYPE_256B_A45_NOA16, platformMask, GT_TYPE_GT2 );
+        MD_CHECK_PTR( aSet );
+        
+        MD_CHECK_CC( aSet->SetApiSpecificId("GPAV", 0, 0x40000000, 0x80000203, 0, 0,
+            "Intel Performance Counters for GT Set Dynamic", 0, "Intel_Raw_Hardware_Counters_Set_0_Query", 0) );
+  
+        availabilityEquation = NULL;
+        aMetric = aSet->AddMetric( "GpuTime", "GPU Time Elapsed",
+            "Time elapsed on the GPU during the measurement.",
+            "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_TIER_1|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            METRIC_TYPE_DURATION, RESULT_UINT64, "ns", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
+        if( aMetric )
+        {
+            MD_CHECK_CC( aMetric->SetSnapshotReportReadEquation( "dw@0x04 1000000000 UMUL $GpuTimestampFrequency UDIV" ));
+            MD_CHECK_CC( aMetric->SetDeltaReportReadEquation( "qw@0x00" ));
+            MD_CHECK_CC( aMetric->SetSnapshotReportDeltaFunction( "NS_TIME" ));
+        }
+
+        availabilityEquation = NULL;
+        aMetric = aSet->AddMetric( "GpuCoreClocks", "GPU Core Clocks",
+            "The total number of GPU core clocks elapsed during the measurement.",
+            "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_TIER_1|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            METRIC_TYPE_EVENT, RESULT_UINT64, "cycles", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
+        if( aMetric )
+        {
+            MD_CHECK_CC( aMetric->SetSnapshotReportReadEquation( "dw@0x0c" ));
+            MD_CHECK_CC( aMetric->SetDeltaReportReadEquation( "qw@0x08" ));
+            MD_CHECK_CC( aMetric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
+        }
+
+        availabilityEquation = NULL;
+        aMetric = aSet->AddMetric( "AvgGpuCoreFrequencyMHz", "AVG GPU Core Frequency",
+            "Average GPU Core Frequency in the measurement.",
+            "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_TIER_1|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            METRIC_TYPE_EVENT, RESULT_UINT64, "MHz", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
+        if( aMetric )
+        {
+            
+            MD_CHECK_CC( aMetric->SetNormalizationEquation( "$GpuCoreClocks 1000 UMUL $$GpuTime UDIV" ));
+        }
+
+        availabilityEquation = NULL;
+        aMetric = aSet->AddMetric( "RenderBusy", "Render Ring Busy",
+            "The percentage of time when render command streamer was busy.",
+            "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
+        if( aMetric )
+        {
+            MD_CHECK_CC( aMetric->SetSnapshotReportReadEquation( "dw@0xfc" ));
+            MD_CHECK_CC( aMetric->SetDeltaReportReadEquation( "qw@0x1a8" ));
+            MD_CHECK_CC( aMetric->SetNormalizationEquation( "GpuDuration" ));
+            MD_CHECK_CC( aMetric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
+            MD_CHECK_CC( aMetric->SetMaxValueEquation( "100" ));
+        }
+
+        availabilityEquation = NULL;
+        aMetric = aSet->AddMetric( "Vdbox0Busy", "Vdbox0 Ring Busy",
+            "The percentage of time when Vdbox0 command streamer was busy.",
+            "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
+        if( aMetric )
+        {
+            MD_CHECK_CC( aMetric->SetSnapshotReportReadEquation( "dw@0xf8" ));
+            MD_CHECK_CC( aMetric->SetDeltaReportReadEquation( "qw@0x1a0" ));
+            MD_CHECK_CC( aMetric->SetNormalizationEquation( "GpuDuration" ));
+            MD_CHECK_CC( aMetric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
+            MD_CHECK_CC( aMetric->SetMaxValueEquation( "100" ));
+        }
+
+        availabilityEquation = NULL;
+        aMetric = aSet->AddMetric( "VeboxBusy", "Vebox Ring Busy",
+            "The percentage of time when vebox command streamer was busy.",
+            "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
+        if( aMetric )
+        {
+            MD_CHECK_CC( aMetric->SetSnapshotReportReadEquation( "dw@0xf4" ));
+            MD_CHECK_CC( aMetric->SetDeltaReportReadEquation( "qw@0x198" ));
+            MD_CHECK_CC( aMetric->SetNormalizationEquation( "GpuDuration" ));
+            MD_CHECK_CC( aMetric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
+            MD_CHECK_CC( aMetric->SetMaxValueEquation( "100" ));
+        }
+
+        availabilityEquation = NULL;
+        aMetric = aSet->AddMetric( "BlitterBusy", "Blitter Ring Busy",
+            "The percentage of time when blitter command streamer was busy.",
+            "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
+        if( aMetric )
+        {
+            MD_CHECK_CC( aMetric->SetSnapshotReportReadEquation( "dw@0xf0" ));
+            MD_CHECK_CC( aMetric->SetDeltaReportReadEquation( "qw@0x190" ));
+            MD_CHECK_CC( aMetric->SetNormalizationEquation( "GpuDuration" ));
+            MD_CHECK_CC( aMetric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
+            MD_CHECK_CC( aMetric->SetMaxValueEquation( "100" ));
+        }
+
+        availabilityEquation = NULL;
+        aMetric = aSet->AddMetric( "AnyRingBusy", "AnyRingBusy",
+            "The percentage of time when any command streamer was busy.",
+            "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
+        if( aMetric )
+        {
+            MD_CHECK_CC( aMetric->SetSnapshotReportReadEquation( "dw@0xc0" ));
+            MD_CHECK_CC( aMetric->SetDeltaReportReadEquation( "qw@0x130" ));
+            MD_CHECK_CC( aMetric->SetNormalizationEquation( "GpuDuration" ));
+            MD_CHECK_CC( aMetric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
+            MD_CHECK_CC( aMetric->SetMaxValueEquation( "100" ));
+        }
+
+        aInformation = aSet->AddInformation( "QueryBeginTime", "Query Begin Time",
+            "The measurement begin time.",
+            "Report Meta Data", API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            INFORMATION_TYPE_TIMESTAMP, "ns", NULL );
+        if( aInformation )
+        {
+            MD_CHECK_CC( aInformation->SetSnapshotReportReadEquation( "dw@0x04 1000000000 UMUL $GpuTimestampFrequency UDIV" ));
+            MD_CHECK_CC( aInformation->SetDeltaReportReadEquation( "qw@0x1b0" ));
+            MD_CHECK_CC( aInformation->SetOverflowFunction( "NS_TIME" ));
+        }
+
+        aInformation = aSet->AddInformation( "CoreFrequencyMHz", "GPU Core Frequency",
+            "The last GPU core (unslice) frequency in the measurement.",
+            "Report Meta Data", API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            INFORMATION_TYPE_VALUE, "MHz", NULL );
+        if( aInformation )
+        {
+            MD_CHECK_CC( aInformation->SetSnapshotReportReadEquation( "dw@0x0 0x1ff AND 16666 UMUL 1000 UDIV" ));
+            MD_CHECK_CC( aInformation->SetDeltaReportReadEquation( "qw@0x208 1000000 UDIV" ));
+        }
+
+        aInformation = aSet->AddInformation( "EuSliceFrequencyMHz", "EU Slice Frequency",
+            "The last GPU Execution Unit slice frequency in the measurement.",
+            "Report Meta Data", API_TYPE_IOSTREAM,
+            INFORMATION_TYPE_VALUE, "MHz", NULL );
+        if( aInformation )
+        {
+            MD_CHECK_CC( aInformation->SetSnapshotReportReadEquation( "dw@0x0 25 >> dw@0x0 9 >> 0x3 AND OR 16666 UMUL 1000 UDIV" ));
+        }
+
+        aInformation = aSet->AddInformation( "ReportReason", "Report Reason",
+            "The reason of the report.",
+            "Report Meta Data", API_TYPE_IOSTREAM,
+            INFORMATION_TYPE_REPORT_REASON, NULL, NULL );
+        if( aInformation )
+        {
+            MD_CHECK_CC( aInformation->SetSnapshotReportReadEquation( "dw@0x0 19 >> 0x3f AND" ));
+        }
+
+        aInformation = aSet->AddInformation( "ContextId", "Context ID",
+            "The context tag in which report has been taken.",
+            "Report Meta Data", API_TYPE_IOSTREAM,
+            INFORMATION_TYPE_CONTEXT_ID_TAG, NULL, NULL );
+        if( aInformation )
+        {
+            MD_CHECK_CC( aInformation->SetSnapshotReportReadEquation( "dw@0x08 0xfffff AND" ));
+        }
+
+        aInformation = aSet->AddInformation( "CoreFrequencyChanged", "GPU Core Frequency Changed",
+            "The flag indicating that GPU core frequency has changed.",
+            "Exception", API_TYPE_OGL|API_TYPE_OGL4_X,
+            INFORMATION_TYPE_FLAG, NULL, NULL );
+        if( aInformation )
+        {
+            
+            MD_CHECK_CC( aInformation->SetDeltaReportReadEquation( "dw@0x204" ));
+        }
+
+        aInformation = aSet->AddInformation( "QuerySplitOccurred", "Query Split Occurred",
+            "The flag indicating that query has been split during execution on the GPU.",
+            "Exception", API_TYPE_OGL|API_TYPE_OGL4_X,
+            INFORMATION_TYPE_FLAG, NULL, NULL );
+        if( aInformation )
+        {
+            
+            MD_CHECK_CC( aInformation->SetDeltaReportReadEquation( "dw@0x200" ));
+        }
+
+        aInformation = aSet->AddInformation( "ReportId", "Query report id",
+            "Query report identification number.",
+            "Report Meta Data", API_TYPE_OGL|API_TYPE_OGL4_X,
+            INFORMATION_TYPE_VALUE, NULL, NULL );
+        if( aInformation )
+        {
+            
+            MD_CHECK_CC( aInformation->SetDeltaReportReadEquation( "dw@0x210" ));
+        }
+
+        aInformation = aSet->AddInformation( "ReportsCount", "Query reports count",
+            "The number of available query reports.",
+            "Report Meta Data", API_TYPE_OGL|API_TYPE_OGL4_X,
+            INFORMATION_TYPE_VALUE, NULL, NULL );
+        if( aInformation )
+        {
+            
+            MD_CHECK_CC( aInformation->SetDeltaReportReadEquation( "dw@0x214" ));
+        }
+
+        aInformation = aSet->AddInformation( "OverrunOccured", "Query Overrun Occurred",
+            "The flag indicating that Oa buffer has been overran.",
+            "Exception", API_TYPE_OGL|API_TYPE_OGL4_X,
+            INFORMATION_TYPE_FLAG, NULL, NULL );
+        if( aInformation )
+        {
+            
+            MD_CHECK_CC( aInformation->SetDeltaReportReadEquation( "dw@0x1cc" ));
+        }
+
+        MD_CHECK_CC( aSet->AddStartRegisterSet( 0, 0 ));
+        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x9840, 0x00000080, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x9888, 0x13805800, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x9888, 0x05962c00, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x9888, 0x19950016, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x9888, 0x19c05800, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x9888, 0x07800035, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x9888, 0x11800000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x9888, 0x1d810400, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x9888, 0x07960025, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x9888, 0x21960000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x9888, 0x0b964000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x9888, 0x1b930062, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x9888, 0x17948000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x9888, 0x1b940008, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x9888, 0x05950075, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x9888, 0x1d950000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x9888, 0x07e54000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x9888, 0x09924000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x9888, 0x05982000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x9888, 0x19908000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x9888, 0x1b904000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x9888, 0x1d908000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x9888, 0x1f908000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x9888, 0x09978000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x9888, 0x05c08500, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x9888, 0x25c00000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x9888, 0x1bc00000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x9888, 0x0bc54000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x9888, 0x11900000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x9888, 0x37900000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x9888, 0x53900000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x9888, 0x43900c60, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x9888, 0x45900040, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x9888, 0x33900000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2740, 0x00000000, REGISTER_TYPE_OA ));
+        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2710, 0x00000000, REGISTER_TYPE_OA ));
+        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2714, 0x10800000, REGISTER_TYPE_OA ));
+        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2720, 0x00000000, REGISTER_TYPE_OA ));
+        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2724, 0x00800000, REGISTER_TYPE_OA ));
+        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2770, 0x00078000, REGISTER_TYPE_OA ));
+        MD_CHECK_CC( aSet->AddStartConfigRegister( 0x2774, 0x00000fff, REGISTER_TYPE_OA ));
   
         MD_CHECK_CC( aSet->RefreshConfigRegisters() );
     }

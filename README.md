@@ -25,9 +25,9 @@ https://opensource.org/licenses/MIT
 Intel(R) Metrics Discovery Application Programming Interface is supported on Linux family operating systems with minimum kernel version 4.14.
 Event based measurements require minimum Mesa version 18.2.
 
-*Exceptions:
-Gen11 graphics devices require minimum kernel version 4.18. Minimum Mesa version 19.1 for event based measurements.
-Gen7.5 graphics devices require minimum kernel version 4.17.*
+*Exceptions:*
+*Gen11 graphics devices require minimum kernel version 4.18. Minimum Mesa version 19.1 for event based measurements.*
+*Gen7.5 graphics devices require minimum kernel version 4.17.*
 
 ## Build and Install
 
