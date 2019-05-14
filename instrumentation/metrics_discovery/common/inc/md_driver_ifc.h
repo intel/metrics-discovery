@@ -1,6 +1,6 @@
 /*****************************************************************************\
 
-    Copyright © 2018, Intel Corporation
+    Copyright © 2019, Intel Corporation
 
     Permission is hereby granted, free of charge, to any person obtaining a
     copy of this software and associated documentation files (the "Software"),
@@ -86,7 +86,7 @@ public: // Methods
     virtual const char*            GetDeviceName() = 0;
     virtual bool                   GetNeedSupportEnable() = 0;
     virtual TCompletionCode        SendSupportEnableEscape( bool enable ) = 0;
-    virtual TCompletionCode        SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM param, GTDIDeviceInfoParamOut* out ) = 0;
+    virtual TCompletionCode        SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM param, GTDIDeviceInfoParamExtOut* out ) = 0;
     virtual TCompletionCode        SendPmRegsConfig( TRegister** regVector, uint32_t regCount, uint32_t apiMask ) = 0;
     virtual TCompletionCode        SendReadRegsConfig(TRegister** regVector, uint32_t regCount, uint32_t apiMask ) = 0;
     virtual TCompletionCode        GetPmRegsConfigHandles( uint32_t configId, uint32_t* oaConfigHandle, uint32_t* gpConfigHandle, uint32_t* rrConfigHandle ) = 0;
@@ -107,6 +107,8 @@ public: // Methods
     virtual TCompletionCode        ReadIoStream( TStreamType streamType, IMetricSet_1_0* metricSet, char* reportData, uint32_t* reportsCount, uint32_t readFlags,
         uint32_t* frequency, GTDIReadCounterStreamExceptions* exceptions ) = 0;
     virtual TCompletionCode        CloseIoStream( TStreamType streamType, void** streamEventHandle, const char* concurrentGroupName, CMetricSet* metricSet ) = 0;
+    virtual TCompletionCode        HandleIoStreamExceptions( const char* concurrentGroupName, CMetricSet* metricSet, uint32_t processId,
+        uint32_t* reportCount, GTDIReadCounterStreamExceptions* exceptions ) = 0;
     virtual TCompletionCode        WaitForIoStreamReports( TStreamType streamType, uint32_t milliseconds, void* streamEventHandle ) = 0;
     virtual bool                   IsIoMeasurementInfoAvailable( TIoMeasurementInfoType ioMeasurementInfoType ) = 0;
 
@@ -117,8 +119,8 @@ public: // Methods
     virtual bool                   IsOverrideAvailable( TOverrideType overrideType ) = 0;
 
 protected:
-    virtual bool CreateContext() = 0;
-    virtual void DeleteContext() = 0;
+    virtual bool                   CreateContext() = 0;
+    virtual void                   DeleteContext() = 0;
 };
 
 }

@@ -1,6 +1,6 @@
 /*****************************************************************************\
 
-    Copyright © 2018, Intel Corporation
+    Copyright © 2019, Intel Corporation
 
     Permission is hereby granted, free of charge, to any person obtaining a
     copy of this software and associated documentation files (the "Software"),
@@ -20,9 +20,12 @@
     FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
     IN THE SOFTWARE.
 
-    File Name:  iu_std_linux.cpp
+    File Name:  iu_std.cpp
 
     Abstract:   Instrumentation Utils implementation with Linux/Android specific functions
+
+    Note:       Some functions from the header may be unimplemented - they weren't
+                needed in Linux version at the moment.
 
 \*****************************************************************************/
 #include "iu_std.h"
@@ -31,13 +34,40 @@
 #include <stdlib.h>
 #include <stdarg.h>
 #include <string.h>
-#include <assert.h>
+#include <wchar.h>
 
-#if !defined(ANDROID) && defined(__linux__)
-#include <memory.h>
+#if defined(ANDROID)
+    #include <cutils/log.h>
+#elif defined(__linux__)
+    #include <memory.h>
+    #include <syslog.h>
 #endif
 
 extern "C" {
+
+/*****************************************************************************\
+
+Group:
+    Instrumentation Utils Standard OS Specific Functions
+
+Function:
+    iu_zeromem
+
+Description:
+    Fills the given memory with zeros.
+
+Input:
+    void*  dest     - memory
+    size_t destSize - in bytes
+
+Output:
+    bool - true if success
+
+\*****************************************************************************/
+bool iu_zeromem( void* dest, size_t destSize )
+{
+    return memset( dest, 0, destSize ) != NULL;
+}
 
 /*****************************************************************************\
 
@@ -133,14 +163,9 @@ bool iu_strncpy_s( char* destStr, size_t destSize, const char* srcStr, size_t co
         IU_ASSERT( false );
         return false;
     }
-    size_t srcLen = strlen(srcStr);
-    if( count > srcLen )
-    {
-        count = srcLen;
-    }
     if( destSize <= count )
     {
-        // Buffer to small
+        // Buffer too small
         IU_ASSERT( false );
         return false;
     }
@@ -181,7 +206,7 @@ bool iu_strcat_s( char* destStr, size_t destSize, const char* srcStr )
     size_t destLen = strlen( destStr );
     if( (destSize - destLen) <= srcLen )
     {
-        // Dest to small
+        // Dest too small
         IU_ASSERT( false );
         return false;
     }
@@ -220,6 +245,31 @@ char* iu_strtok_s( char* str, const char* delimiters, char** context )
 Group:
     Instrumentation Utils Standard OS Specific Functions
 
+Function:
+    iu_strnlen_s
+
+Description:
+    Returns length of the given cstring, without '\0'.
+
+Input:
+    const char* str     - cstring
+    size_t      strSize - in bytes
+
+Output:
+    size_t - length of a cstring in characters (without '\0')
+
+\*****************************************************************************/
+size_t iu_strnlen_s( const char* str, size_t strSize )
+{
+    return ( str != NULL ) ? strnlen( str, strSize / sizeof(char) )
+                           : 0;
+}
+
+/*****************************************************************************\
+
+Group:
+    Instrumentation Utils Standard OS Specific Functions
+
 Method:
     iu_sprintf_s
 
@@ -230,7 +280,7 @@ Input:
     char*       destStr     - destination cstring
     size_t      destSize    - size of destination cstring
     const char* format      - format
-    ...                     - 
+    ...                     -
 
 Output:
     int32_t - number of characters written, or -1 if error
@@ -240,7 +290,7 @@ int32_t iu_sprintf_s( char* destStr, size_t destSize, const char * format, ... )
 {
     if( destStr == NULL || format == NULL || destSize == 0 )
     {
-        assert( false );
+        IU_ASSERT( false );
         return 0;
     }
 
@@ -250,6 +300,109 @@ int32_t iu_sprintf_s( char* destStr, size_t destSize, const char * format, ... )
     va_end( ap );
 
     return ret;
+}
+
+/*****************************************************************************\
+
+Group:
+    Instrumentation Utils Standard OS Specific Functions
+
+Method:
+    iu_snprintf
+
+Description:
+    Write formatted data from argument list to a string.
+
+Input:
+    char*       str    - destination cstring
+    size_t      size   - size of destination cstring in bytes
+    const char* format - format string
+    ...                -
+
+Output:
+    bool - true if no error occurred
+
+\*****************************************************************************/
+bool iu_snprintf( char* str, size_t size, const char* format, ... )
+{
+    bool    bRet = false;
+    va_list ap;
+
+    va_start( ap, format );
+    bRet = (-1 != vsnprintf( str, size, format, ap ));
+    va_end( ap );
+
+    return bRet;
+}
+
+/*****************************************************************************\
+
+Group:
+    Instrumentation Utils Standard OS Specific Functions
+
+Method:
+    iu_vsnprintf
+
+Description:
+    Calls vsnprintf.
+
+Input:
+    char*       str    - destination cstring
+    size_t      size   - size of destination cstring in bytes
+    const char* format - format string
+    va_list     ap     - argument list
+
+Output:
+    bool - true if any characters was copied
+
+\*****************************************************************************/
+bool iu_vsnprintf( char* str, size_t size, const char* format, va_list ap )
+{
+    return ( vsnprintf( str, size, format, ap ) >= 0 );
+}
+
+/*****************************************************************************\
+
+Group:
+    Instrumentation Utils Standard OS Specific Functions
+
+Function:
+    iu_log
+
+Description:
+    Prints debug log using OS frameworks.
+
+Input:
+    const char* msg - message to print
+
+\*****************************************************************************/
+void iu_log( const char* msg )
+{
+#if defined(ANDROID)
+    ALOGE( "%s", msg );
+#elif defined(__linux__)
+    syslog( LOG_USER | LOG_ERR, "%s", msg );
+#endif
+}
+
+/*****************************************************************************\
+
+Group:
+    Instrumentation Utils Standard OS Specific Functions
+
+Function:
+    iu_printfln
+
+Description:
+    Debug log printf with new line at the end.
+
+Input:
+    const char* msg - message to print
+
+\*****************************************************************************/
+void iu_printfln( const char* msg )
+{
+    printf( "%s\n", msg );
 }
 
 /*****************************************************************************\
@@ -320,89 +473,6 @@ size_t iu_fread_s( void* buff, size_t buffSize, size_t elemSize, size_t count, F
     }
 
     return fread( buff, elemSize, count, stream );
-}
-
-/*****************************************************************************\
-
-Group:
-    Instrumentation Utils Standard OS Specific Functions
-
-Method:
-    iu_snprintf
-
-Description:
-    Write formatted data from argument list to a string.
-
-Input:
-    char*       str    - destination cstring
-    size_t      size   - size of destination cstring in bytes
-    const char* format - format string
-    ...                - 
-
-Output:
-    bool - true if no error occured
-
-\*****************************************************************************/
-bool iu_snprintf( char* str, size_t size, const char* format, ... )
-{
-    bool    bRet = false;
-    va_list ap;
-
-    va_start( ap, format );
-    bRet = (-1 != vsnprintf( str, size, format, ap ));
-    va_end( ap );
-
-    return bRet;
-}
-
-/*****************************************************************************\
-
-Group:
-    Instrumentation Utils Standard OS Specific Functions
-
-Method:
-    iu_vsnprintf
-
-Description:
-    Calls vsnprintf.
-
-Input:
-    char*       str    - destination cstring
-    size_t      size   - size of destination cstring in bytes
-    const char* format - format string
-    va_list     ap     - argument list
-
-Output:
-    bool - true if any characters was copied
-
-\*****************************************************************************/
-bool iu_vsnprintf( char* str, size_t size, const char* format, va_list ap )
-{
-    return ( vsnprintf( str, size, format, ap ) >= 0 );
-}
-
-/*****************************************************************************\
-
-Group:
-    Instrumentation Utils Standard OS Specific Functions
-
-Method:
-    iu_strlen
-
-Description:
-    Calls strnlen.
-
-Input:
-    const char* str     - cstring
-    size_t      maxSize - in bytes
-
-Output:
-    size_t - length of a cstring in characters (without '\0')
-
-\*****************************************************************************/
-size_t iu_strlen( const char* str, size_t maxSize )
-{
-    return strnlen( str, maxSize / sizeof(char) );
 }
 
 } // extern "C"

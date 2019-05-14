@@ -1,6 +1,6 @@
 /*****************************************************************************\
 
-    Copyright © 2018, Intel Corporation
+    Copyright © 2019, Intel Corporation
 
     Permission is hereby granted, free of charge, to any person obtaining a
     copy of this software and associated documentation files (the "Software"),
@@ -244,7 +244,7 @@ Description:
         TCompletionCode   ReadGlobalSymbolsFromFileBuffer( unsigned char** bufferPtr );
         TCompletionCode   ReadConcurrentGroupsFromFileBuffer( unsigned char** bufferPtr, bool isInternalBuild, SMetricsDeviceParams_1_0::SApiVersion* apiVersion );
         TCompletionCode   ReadMetricSetsFromFileBuffer( unsigned char** bufferPtr, CConcurrentGroup* group, bool isInternalBuild, SMetricsDeviceParams_1_0::SApiVersion* apiVersion );
-        TCompletionCode   ReadMetricsFromFileBuffer( unsigned char** bufferPtr, CMetricSet* set, bool isSetDefault );
+        TCompletionCode   ReadMetricsFromFileBuffer( unsigned char** bufferPtr, CMetricSet* set, bool isSetNew );
         TCompletionCode   ReadInformationFromFileBuffer( unsigned char** bufferPtr, CMetricSet* set );
         TCompletionCode   ReadRegistersFromFileBuffer( unsigned char** bufferPtr, CMetricSet* set );
 
@@ -341,7 +341,7 @@ Description:
         CMetricSet*     AddMetricSet( const char* symbolicName, const char* shortName, uint32_t apiMask, uint32_t categoryMask,
             uint32_t snapshotReportSize, uint32_t deltaReportSize, TReportType reportType, uint32_t platformMask,
             uint32_t gtMask = GT_TYPE_ALL, bool isCustom = false );
-        CMetricSet*     GetMetricSetByName( const char* symbolName );
+        CMetricSet*     GetMatchingMetricSet( const char* symbolName, uint32_t platformMask, uint32_t gtMask );
 
         TCompletionCode Lock();
         TCompletionCode Unlock();

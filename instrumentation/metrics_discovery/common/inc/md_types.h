@@ -1,6 +1,6 @@
 /*****************************************************************************\
 
-    Copyright © 2018, Intel Corporation
+    Copyright © 2019, Intel Corporation
 
     Permission is hereby granted, free of charge, to any person obtaining a
     copy of this software and associated documentation files (the "Software"),
@@ -90,6 +90,9 @@ namespace MetricsDiscoveryInternal
         IO_MEASUREMENT_INFO_SLICE_SHUTDOWN,
         IO_MEASUREMENT_INFO_DATA_OUTSTANDING,
         IO_MEASUREMENT_INFO_REPORT_LOST,
+        IO_MEASUREMENT_INFO_BUFFER_OVERFLOW,
+        IO_MEASUREMENT_INFO_BUFFER_OVERRUN,
+        IO_MEASUREMENT_INFO_COUNTERS_OVERFLOW,
         // ...
         IO_MEASUREMENT_INFO_LAST,
     } TIoMeasurementInfoType;
@@ -101,6 +104,7 @@ namespace MetricsDiscoveryInternal
     {
         CONTEXT_TAG_TYPE_RENDER,  // Should be in sync with instrumentation INSTR_RENDER_CONTEXT_TAG, same for other entries
         CONTEXT_TAG_TYPE_PRESENT,
+        CONTEXT_TAG_TYPE_INTERNAL,
         // ...
         CONTEXT_TAG_TYPE_LAST,
     } TContextTagType;

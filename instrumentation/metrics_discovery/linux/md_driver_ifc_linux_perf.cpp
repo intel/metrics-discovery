@@ -1,6 +1,6 @@
 /*****************************************************************************\
 
-    Copyright © 2018, Intel Corporation
+    Copyright © 2019, Intel Corporation
 
     Permission is hereby granted, free of charge, to any person obtaining a
     copy of this software and associated documentation files (the "Software"),
@@ -304,6 +304,9 @@ Output:
 #if defined(MD_USE_PERF)
 CDriverInterface* CDriverInterface::GetInstance()
 {
+    // Read debug logs settings
+    IuLogGetSettings();
+
     CDriverInterface* driverInterface = new (std::nothrow) CDriverInterfaceLinuxPerf();
     if( ( driverInterface != NULL ) &&
         ( driverInterface->CreateContext() == false ) )
@@ -502,14 +505,14 @@ Description:
     Gets chosen device info param using information from kernel.
 
 Input:
-    GTDI_DEVICE_PARAM param    - chosen param
-    GTDIDeviceInfoParamOut out - (OUT) escape result
+    GTDI_DEVICE_PARAM         param - chosen param
+    GTDIDeviceInfoParamExtOut out   - (OUT) escape result
 
 Output:
-    TCompletionCode            - *CC_OK* means succeess
+    TCompletionCode                 - *CC_OK* means succeess
 
 \*****************************************************************************/
-TCompletionCode CDriverInterfaceLinuxPerf::SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM param, GTDIDeviceInfoParamOut* out )
+TCompletionCode CDriverInterfaceLinuxPerf::SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM param, GTDIDeviceInfoParamExtOut* out )
 {
     MD_CHECK_PTR_RET( out, CC_ERROR_INVALID_PARAMETER );
 
@@ -623,16 +626,16 @@ TCompletionCode CDriverInterfaceLinuxPerf::SendDeviceInfoParamEscape( GTDI_DEVIC
             ret = SendGetParamIoctl( m_DrmFd, I915_PARAM_SLICE_MASK, &sliceMask );
             MD_CHECK_CC_RET( ret );
 
-            out->ValueType   = GTDI_DEVICE_PARAM_VALUE_TYPE_UINT32;
-            out->ValueUint32 = 0;
+            out->ValueType   = GTDI_DEVICE_PARAM_VALUE_TYPE_UINT64;
+            out->ValueUint64 = 0;
 
             for( int32_t i = 0; i < MD_MAX_SLICE; ++i )
             {
                 // If slice enabled
                 if( sliceMask & MD_BIT( i ) )
                 {
-                    int32_t targetSubsliceMask = singleSubsliceMask << (maxSubslicePerSliceCount * i);
-                    out->ValueUint32 |= targetSubsliceMask;
+                    int64_t targetSubsliceMask = singleSubsliceMask << (maxSubslicePerSliceCount * i);
+                    out->ValueUint64 |= targetSubsliceMask;
                 }
             }
             break;
@@ -892,7 +895,7 @@ Method:
 
 Description:
     Retrieves handles to the Oa, Gp and read regs configuration from the driver.
-    !READ REGS NOT SUPPORTED ON ANDROID YET!
+    !READ REGS NOT SUPPORTED ON LINUX YET!
 
 Input:
     uint32_t  configId       - config id
@@ -1423,6 +1426,37 @@ TCompletionCode CDriverInterfaceLinuxPerf::CloseIoStream( TStreamType streamType
     }
 
     return ret;
+}
+
+
+/*****************************************************************************\
+
+Class:
+    CDriverInterfaceLinuxPerf
+
+Method:
+    HandleIoStreamExceptions
+
+Description:
+    !NOT NEEDED ON LINUX!
+    Handles buffer overflow and overrun exceptions.
+
+Input:
+    const char*                      concurrentGroupName - concurrent group symbol name
+    CMetricSet*                      metricSet           - metricSet for which stream was opened
+    uint32_t                         processId           - PID of the measured app (0 is global context)
+    uint32_t*                        reportsCount        - (IN/OUT) reports read/to read from the stream
+    GTDIReadCounterStreamExceptions* exceptions          - (OUT) exceptions from GTDIReadCounterStreamExtOut
+
+Output:
+    TCompletionCode                                      - *CC_OK* means success
+
+\*****************************************************************************/
+TCompletionCode CDriverInterfaceLinuxPerf::HandleIoStreamExceptions( const char* concurrentGroupName, CMetricSet* metricSet, uint32_t processId,
+    uint32_t* reportCount, GTDIReadCounterStreamExceptions* exceptions )
+{
+    // Not needed on Linux Perf - returning CC_OK on purpose
+    return MetricsDiscovery::CC_OK;
 }
 
 /*****************************************************************************\
@@ -2735,7 +2769,7 @@ Output:
     TCompletionCode                  - *CC_OK* means success
 
 \*****************************************************************************/
-TCompletionCode CDriverInterfaceLinuxPerf::SendGetParamIoctl( int32_t drmFd, uint32_t paramId, GTDIDeviceInfoParamOut* outValue )
+TCompletionCode CDriverInterfaceLinuxPerf::SendGetParamIoctl( int32_t drmFd, uint32_t paramId, GTDIDeviceInfoParamExtOut* outValue )
 {
     MD_CHECK_PTR_RET( outValue, CC_ERROR_INVALID_PARAMETER );
 

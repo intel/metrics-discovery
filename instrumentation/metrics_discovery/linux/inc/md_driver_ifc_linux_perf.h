@@ -1,6 +1,6 @@
 /*****************************************************************************\
 
-    Copyright © 2018, Intel Corporation
+    Copyright © 2019, Intel Corporation
 
     Permission is hereby granted, free of charge, to any person obtaining a
     copy of this software and associated documentation files (the "Software"),
@@ -136,7 +136,7 @@ public: // Methods
     virtual const char*             GetDeviceName();
     virtual bool                    GetNeedSupportEnable();
     virtual TCompletionCode         SendSupportEnableEscape( bool enable );
-    virtual TCompletionCode         SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM param, GTDIDeviceInfoParamOut* out );
+    virtual TCompletionCode         SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM param, GTDIDeviceInfoParamExtOut* out );
     virtual TCompletionCode         SendPmRegsConfig( TRegister** regVector, uint32_t regCount, uint32_t apiMask );
     virtual TCompletionCode         SendReadRegsConfig( TRegister** regVector, uint32_t regCount, uint32_t apiMask );
     virtual TCompletionCode         GetPmRegsConfigHandles( uint32_t configId, uint32_t* oaConfigHandle, uint32_t* gpConfigHandle, uint32_t* rrConfigHandle );
@@ -157,6 +157,8 @@ public: // Methods
     virtual TCompletionCode         ReadIoStream( TStreamType streamType, IMetricSet_1_0* metricSet, char* reportData, uint32_t* reportsCount, uint32_t readFlags,
         uint32_t* frequency, GTDIReadCounterStreamExceptions* exceptions );
     virtual TCompletionCode         CloseIoStream( TStreamType streamType, void** openStreamEventHandle, const char* concurrentGroupName, CMetricSet* metricSet );
+    virtual TCompletionCode         HandleIoStreamExceptions( const char* concurrentGroupName, CMetricSet* metricSet, uint32_t processId,
+        uint32_t* reportCount, GTDIReadCounterStreamExceptions* exceptions );
     virtual TCompletionCode         WaitForIoStreamReports( TStreamType streamType, uint32_t milliseconds, void* streamEventHandle );
     virtual bool                    IsIoMeasurementInfoAvailable( TIoMeasurementInfoType ioMeasurementInfoType );
 
@@ -202,7 +204,7 @@ private:
 
     // IOCTLs
     int32_t         SendIoctl( int32_t drmFd, uint32_t request, void* argument );
-    TCompletionCode SendGetParamIoctl( int32_t drmFd, uint32_t paramId, GTDIDeviceInfoParamOut* outValue );
+    TCompletionCode SendGetParamIoctl( int32_t drmFd, uint32_t paramId, GTDIDeviceInfoParamExtOut* outValue );
     TCompletionCode SendGetParamIoctl( int32_t drmFd, uint32_t paramId, int32_t* outValue );
 
     // Device info params

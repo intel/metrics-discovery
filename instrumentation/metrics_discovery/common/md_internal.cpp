@@ -1,6 +1,6 @@
 /*****************************************************************************\
 
-    Copyright © 2018, Intel Corporation
+    Copyright © 2019, Intel Corporation
 
     Permission is hereby granted, free of charge, to any person obtaining a
     copy of this software and associated documentation files (the "Software"),
@@ -988,8 +988,7 @@ CMetricsDevice::CMetricsDevice()
 
     if( m_driverInterface )
     {
-        GTDIDeviceInfoParamOut out;
-        memset( &out, 0, sizeof(out) );
+        GTDIDeviceInfoParamExtOut out = {};
         TCompletionCode ret = m_driverInterface->SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_PLATFORM_INDEX, &out );
         m_platform          = ret == CC_OK ? (TPlatformType)( 1 << out.ValueUint32 ) : PLATFORM_UNKNOWN;
 
@@ -1678,11 +1677,11 @@ TCompletionCode CMetricsDevice::ReadMetricSetsFromFileBuffer( unsigned char** bu
     MD_CHECK_PTR_RET( *bufferPtr, CC_ERROR_INVALID_PARAMETER );
     MD_CHECK_PTR_RET( group, CC_ERROR_INVALID_PARAMETER );
 
-    TCompletionCode         ret             = CC_OK;
-    CMetricSet*             aSet            = NULL;
-    CMetricSet*             defaultSet      = NULL;
-    char*                   symbolicName    = NULL;
-    uint32_t                count           = 0;
+    TCompletionCode         ret          = CC_OK;
+    CMetricSet*             set          = NULL;
+    CMetricSet*             existingSet  = NULL;
+    char*                   symbolicName = NULL;
+    uint32_t                count        = 0;
     TMetricSetParams_1_4    metricSetParams;
     TApiSpecificId_1_0      apiSpecificId;
     TReportType             reportType;
@@ -1691,8 +1690,8 @@ TCompletionCode CMetricsDevice::ReadMetricSetsFromFileBuffer( unsigned char** bu
     uint32_t metricSetsCount = ReadUInt32FromFileBuffer( bufferPtr );
     for( uint32_t j = 0; j < metricSetsCount; j++ )
     {
-        aSet       = NULL;
-        defaultSet = NULL;
+        set         = NULL;
+        existingSet = NULL;
 
         // MetricSetParams
         metricSetParams.SymbolName      = ReadCStringFromFileBuffer( bufferPtr );
@@ -1713,13 +1712,14 @@ TCompletionCode CMetricsDevice::ReadMetricSetsFromFileBuffer( unsigned char** bu
         }
         reportType                      = (TReportType)ReadUInt32FromFileBuffer( bufferPtr );
 
+        // For release builds add sets from current platform only, for internal builds add all
         if( IsPlatformTypeOf( metricSetParams.PlatformMask, metricSetParams.GtMask ) || isInternalBuild )
         {
-            defaultSet = group->GetMetricSetByName( metricSetParams.SymbolName );
-            if( !defaultSet ||
-                ( isInternalBuild && strcmp(defaultSet->GetParams()->ShortName, metricSetParams.ShortName) != 0 ) )
+            // Add new MetricSet if there isn't a set with matching SymbolName, platform and gt masks
+            existingSet = group->GetMatchingMetricSet( metricSetParams.SymbolName, metricSetParams.PlatformMask, metricSetParams.GtMask );
+            if( !existingSet )
             {
-                aSet = group->AddMetricSet(
+                set = group->AddMetricSet(
                     metricSetParams.SymbolName,
                     metricSetParams.ShortName,
                     metricSetParams.ApiMask,
@@ -1730,7 +1730,7 @@ TCompletionCode CMetricsDevice::ReadMetricSetsFromFileBuffer( unsigned char** bu
                     metricSetParams.PlatformMask,
                     metricSetParams.GtMask,
                     true );
-                MD_CHECK_PTR_RET( aSet, CC_ERROR_NO_MEMORY );
+                MD_CHECK_PTR_RET( set, CC_ERROR_NO_MEMORY );
                 MD_LOG(LOG_DEBUG, "adding set: %s", metricSetParams.ShortName);
             }
             else
@@ -1754,21 +1754,21 @@ TCompletionCode CMetricsDevice::ReadMetricSetsFromFileBuffer( unsigned char** bu
         apiSpecificId.OGLQueryARBTargetId   = ReadUInt32FromFileBuffer( bufferPtr );
         apiSpecificId.OCL                   = ReadUInt32FromFileBuffer( bufferPtr );
         apiSpecificId.HwConfigId            = ReadUInt32FromFileBuffer( bufferPtr );
-        if( aSet )
+        if( set )
         {
-            aSet->SetApiSpecificId( apiSpecificId );
+            set->SetApiSpecificId( apiSpecificId );
         }
 
         // Metrics - if set's been existing, add only missing metrics
-        ret = ReadMetricsFromFileBuffer( bufferPtr, defaultSet ? defaultSet : aSet, defaultSet != NULL );
+        ret = ReadMetricsFromFileBuffer( bufferPtr, existingSet ? existingSet : set, existingSet == NULL );
         MD_CHECK_CC_RET( ret );
 
         // Information
-        ret = ReadInformationFromFileBuffer( bufferPtr, aSet );
+        ret = ReadInformationFromFileBuffer( bufferPtr, set );
         MD_CHECK_CC_RET( ret );
 
         // Start and stop registers
-        ret = ReadRegistersFromFileBuffer( bufferPtr, aSet );
+        ret = ReadRegistersFromFileBuffer( bufferPtr, set );
         MD_CHECK_CC_RET( ret );
 
         // ComplementaryMetricSets
@@ -1776,9 +1776,9 @@ TCompletionCode CMetricsDevice::ReadMetricSetsFromFileBuffer( unsigned char** bu
         for( uint32_t k = 0; k < count; k++ )
         {
             symbolicName = ReadCStringFromFileBuffer( bufferPtr );
-            if( aSet )
+            if( set )
             {
-                aSet->AddComplementaryMetricSet( symbolicName );
+                set->AddComplementaryMetricSet( symbolicName );
             }
         }
     }
@@ -1798,23 +1798,23 @@ Description:
     Reads metrics from file buffer, adds them to the set and advances the pointer.
 
 Input:
-    unsigned char** fileBuffer   - file buffer
-    CMetricSet*     set          - parent metric set
-    bool            isSetDefault - if true then add only metrics that don't exist
-                                   in the set. It's to prevent adding duplicated
-                                   default metrics when reading default set with
-                                   custom metrics.
+    unsigned char** fileBuffer - file buffer
+    CMetricSet*     set        - parent metric set
+    bool            isSetNew   - if true, add all metrics, otherwise add only metrics that
+                                 don't exist in the set. It's to prevent adding duplicated
+                                 metrics when reading existing set (e.g. default RenderBasic)
+                                 with added custom metrics.
 
 Output:
     TCompletionCode - result of the operation
 
 \*****************************************************************************/
-TCompletionCode CMetricsDevice::ReadMetricsFromFileBuffer( unsigned char** bufferPtr, CMetricSet* set, bool isSetDefault )
+TCompletionCode CMetricsDevice::ReadMetricsFromFileBuffer( unsigned char** bufferPtr, CMetricSet* set, bool isSetNew )
 {
     MD_CHECK_PTR_RET( bufferPtr, CC_ERROR_INVALID_PARAMETER );
     MD_CHECK_PTR_RET( *bufferPtr, CC_ERROR_INVALID_PARAMETER );
 
-    CMetric*            aMetric        = NULL;
+    CMetric*            metric         = NULL;
     char*               equationString = NULL;
     char*               signalName     = NULL;
     TMetricParams_1_0   metricParams;
@@ -1825,7 +1825,7 @@ TCompletionCode CMetricsDevice::ReadMetricsFromFileBuffer( unsigned char** buffe
     uint32_t metricsCount = ReadUInt32FromFileBuffer( bufferPtr );
     for( uint32_t i = 0; i < metricsCount; i++ )
     {
-        aMetric = NULL;
+        metric = NULL;
 
         // MetricParams
         metricParams.GroupId            = ReadUInt32FromFileBuffer( bufferPtr );
@@ -1847,10 +1847,10 @@ TCompletionCode CMetricsDevice::ReadMetricsFromFileBuffer( unsigned char** buffe
 
         if( !skip )
         {
-            // Add only unique metrics to a default metric set
-            if( !isSetDefault || !set->IsMetricAlreadyAdded( metricParams.SymbolName ) )
+            // Add only unique metrics to an existing metric set
+            if( isSetNew || !set->IsMetricAlreadyAdded( metricParams.SymbolName ) )
             {
-                aMetric = set->AddMetric(
+                metric = set->AddMetric(
                     metricParams.SymbolName,
                     metricParams.ShortName,
                     metricParams.LongName,
@@ -1868,44 +1868,44 @@ TCompletionCode CMetricsDevice::ReadMetricsFromFileBuffer( unsigned char** buffe
                     metricParams.DxToOglAlias,
                     signalName,
                     true );
-                MD_CHECK_PTR_RET( aMetric, CC_ERROR_NO_MEMORY );
+                MD_CHECK_PTR_RET( metric, CC_ERROR_NO_MEMORY );
             }
         }
 
         // Delta function
         deltaFunction.FunctionType = (TDeltaFunctionType)ReadUInt32FromFileBuffer( bufferPtr );
         deltaFunction.BitsCount    = ReadUInt32FromFileBuffer( bufferPtr );
-        if( aMetric )
+        if( metric )
         {
-            aMetric->SetSnapshotReportDeltaFunction( deltaFunction );
+            metric->SetSnapshotReportDeltaFunction( deltaFunction );
         }
 
         // Snapshot report read equation
         equationString = ReadEquationStringFromFile( bufferPtr );
-        if( aMetric )
+        if( metric )
         {
-            aMetric->SetSnapshotReportReadEquation( equationString );
+            metric->SetSnapshotReportReadEquation( equationString );
         }
 
         // Delta report read equation
         equationString = ReadEquationStringFromFile( bufferPtr );
-        if( aMetric )
+        if( metric )
         {
-            aMetric->SetDeltaReportReadEquation( equationString );
+            metric->SetDeltaReportReadEquation( equationString );
         }
 
         // Normalization equation
         equationString = ReadEquationStringFromFile( bufferPtr );
-        if( aMetric )
+        if( metric )
         {
-            aMetric->SetNormalizationEquation( equationString );
+            metric->SetNormalizationEquation( equationString );
         }
 
         // Max value equation
         equationString = ReadEquationStringFromFile( bufferPtr );
-        if( aMetric )
+        if( metric )
         {
-            aMetric->SetMaxValueEquation( equationString );
+            metric->SetMaxValueEquation( equationString );
         }
     }
 
@@ -2834,46 +2834,7 @@ Output:
 \*****************************************************************************/
 bool CConcurrentGroup::MatchingSetExists( const char* symbolName, uint32_t platformMask, uint32_t gtMask )
 {
-    MD_CHECK_PTR_RET( symbolName, false );
-    MD_CHECK_PTR_RET( m_setsVector, false );
-    MD_CHECK_PTR_RET( m_otherSetsList, false );
-
-    // List of available sets
-    for( uint32_t i = 0; i < m_setsVector->GetCount(); i++ )
-    {
-        TMetricSetParams_1_4* setParams = (*m_setsVector)[i] ? (*m_setsVector)[i]->GetParams() : NULL;
-
-        if( setParams && (strcmp( symbolName, setParams->SymbolName ) == 0) )
-        {
-            bool platformMatch = ( platformMask & setParams->PlatformMask ) != 0;
-            bool gtMatch       = ( gtMask       & setParams->GtMask )       != 0;
-
-            if( platformMatch && gtMatch )
-            {
-                return true;
-            }
-        }
-    }
-    // List of unavailable sets for current platform
-    Node<CMetricSet*>* metricSetNode = m_otherSetsList->GetHeadNode();
-    while( metricSetNode != NULL )
-    {
-        TMetricSetParams_1_4* setParams = metricSetNode->value ? metricSetNode->value->GetParams() : NULL;
-
-        if( setParams && strcmp( symbolName, setParams->SymbolName ) == 0 )
-        {
-            bool platformMatch = ( platformMask & setParams->PlatformMask ) != 0;
-            bool gtMatch       = ( gtMask       & setParams->GtMask )       != 0;
-
-            if( platformMatch && gtMatch )
-            {
-                return true;
-            }
-        }
-        metricSetNode = metricSetNode->nextNode;
-    }
-
-    return false;
+    return GetMatchingMetricSet( symbolName, platformMask, gtMask ) != NULL;
 }
 
 /*****************************************************************************\
@@ -3016,38 +2977,61 @@ Class:
     CConcurrentGroup
 
 Method:
-    GetMetricSetByName
+    GetMatchingMetricSet
 
 Description:
-    Returns chosen metric set by name or null if not exists.
+    Looks through concurrent group for an already added metric set with
+    a given name, platform and gt. Returns pointer to a found metric set or
+    null if it doesn't exist.
 
 Input:
-    const char* symbolName - name of a metric set to look for
+    const char* symbolName   - name of a metric set to look for
+    uint32_t    platformMask - platform Id bit mask indicates platforms compatible with set.
+    uint32_t    gtMask       - gt type bit mask indicates platform versions compatible with set.
 
 Output:
-    CMetricSet*            - found metric set or NULL
+    CMetricSet*              - found metric set or NULL
 
 \*****************************************************************************/
-CMetricSet* CConcurrentGroup::GetMetricSetByName( const char* symbolName )
+CMetricSet* CConcurrentGroup::GetMatchingMetricSet( const char* symbolName, uint32_t platformMask, uint32_t gtMask )
 {
     MD_CHECK_PTR_RET( symbolName, NULL );
     MD_CHECK_PTR_RET( m_setsVector, NULL );
     MD_CHECK_PTR_RET( m_otherSetsList, NULL );
 
+    // List of available sets
     for( uint32_t i = 0; i < m_setsVector->GetCount(); i++ )
     {
-        if( ((*m_setsVector)[i]) && (strcmp( symbolName, (*m_setsVector)[i]->GetParams()->SymbolName ) == 0) )
+        CMetricSet*           set       = (*m_setsVector)[i];
+        TMetricSetParams_1_4* setParams = set ? set->GetParams() : NULL;
+
+        if( setParams && (strcmp( symbolName, setParams->SymbolName ) == 0) )
         {
-            return (*m_setsVector)[i];
+            bool platformMatch = ( platformMask & setParams->PlatformMask ) != 0;
+            bool gtMatch       = ( gtMask       & setParams->GtMask )       != 0;
+
+            if( platformMatch && gtMatch )
+            {
+                return set;
+            }
         }
     }
-
+    // List of unavailable sets for current platform
     Node<CMetricSet*>* metricSetNode = m_otherSetsList->GetHeadNode();
     while( metricSetNode != NULL )
     {
-        if( (metricSetNode->value) && (strcmp( symbolName, metricSetNode->value->GetParams()->SymbolName ) == 0) )
+        CMetricSet*           set       = metricSetNode->value;
+        TMetricSetParams_1_4* setParams = set ? set->GetParams() : NULL;
+
+        if( setParams && strcmp( symbolName, setParams->SymbolName ) == 0 )
         {
-            return (metricSetNode->value);
+            bool platformMatch = ( platformMask & setParams->PlatformMask ) != 0;
+            bool gtMatch       = ( gtMask       & setParams->GtMask )       != 0;
+
+            if( platformMatch && gtMatch )
+            {
+                return set;
+            }
         }
         metricSetNode = metricSetNode->nextNode;
     }
@@ -3260,6 +3244,9 @@ TCompletionCode COAConcurrentGroup::OpenIoStream( IMetricSet_1_0* metricSet, uin
     m_processId             = processId;
     m_contextTagsEnabled    = m_ioMetricSet->HasInformation( "ContextId" );
     CMetricsCalculator* mc  = m_ioMetricSet->GetMetricsCalculator();
+    // In case of stream reopen
+    m_ioGpuContextInfoVector->Clear();
+    m_params_1_0.IoGpuContextInformationCount = 0;
     if( mc != NULL )
     {
         mc->DiscardSavedReport();
@@ -3320,6 +3307,8 @@ TCompletionCode COAConcurrentGroup::ReadIoStream( uint32_t* reportCount, char* r
     ret = driverInterface->ReadIoStream( m_streamType, m_ioMetricSet, reportData, reportCount, readFlags, &frequency, &exceptions );
     if( ret == CC_OK || ret == CC_READ_PENDING )
     {
+        driverInterface->HandleIoStreamExceptions( m_params_1_0.SymbolName, m_ioMetricSet, m_processId, reportCount, &exceptions ); 
+
         if( m_ioMeasurementInfoVector )
         {
             // Order (indices) should be in sync with AddIoMeasurementInfoPredefined()
@@ -3330,6 +3319,9 @@ TCompletionCode COAConcurrentGroup::ReadIoStream( uint32_t* reportCount, char* r
             SetIoMeasurementInfoPredefined( IO_MEASUREMENT_INFO_SLICE_SHUTDOWN, exceptions.SliceShutdown, &index );
             SetIoMeasurementInfoPredefined( IO_MEASUREMENT_INFO_REPORT_LOST, exceptions.ReportLost, &index );
             SetIoMeasurementInfoPredefined( IO_MEASUREMENT_INFO_DATA_OUTSTANDING, exceptions.DataOutstanding, &index );
+            SetIoMeasurementInfoPredefined( IO_MEASUREMENT_INFO_BUFFER_OVERFLOW, exceptions.BufferOverflow, &index );
+            SetIoMeasurementInfoPredefined( IO_MEASUREMENT_INFO_BUFFER_OVERRUN, exceptions.BufferOverrun, &index );
+            SetIoMeasurementInfoPredefined( IO_MEASUREMENT_INFO_COUNTERS_OVERFLOW, exceptions.CountersOverflow, &index );
 
             m_params_1_0.IoMeasurementInformationCount = m_ioMeasurementInfoVector->GetCount();
         }
@@ -3390,8 +3382,9 @@ TCompletionCode COAConcurrentGroup::CloseIoStream( void )
         return ret;
     }
 
+    // m_processId is not cleared after close to define if context filtering was used.
+    // Stream reopen will override m_processId
     m_ioMetricSet = NULL;
-    m_processId   = 0;
     MD_LOG_EXIT();
     return ret;
 }
@@ -3541,6 +3534,21 @@ void COAConcurrentGroup::AddIoMeasurementInfoPredefined( void )
         AddIoMeasurementInformation( "DataOutstanding", "Data Outstanding", "The flag indicating that there are still some outstanding data.",
             "Report Meta Data", INFORMATION_TYPE_FLAG, NULL );
     }
+    if( driverInterface->IsIoMeasurementInfoAvailable( IO_MEASUREMENT_INFO_BUFFER_OVERFLOW ) )
+    {
+        AddIoMeasurementInformation( "BufferOverflow", "Buffer Overflow", "The flag indicating that some reports have been overwritten.",
+            "Report Meta Data", INFORMATION_TYPE_FLAG, NULL );
+    }
+    if( driverInterface->IsIoMeasurementInfoAvailable( IO_MEASUREMENT_INFO_BUFFER_OVERRUN ) )
+    {
+        AddIoMeasurementInformation( "BufferOverrun", "Buffer Overrun", "The flag indicating that the buffer is full (n-1 reports).",
+            "Report Meta Data", INFORMATION_TYPE_FLAG, NULL );
+    }
+    if( driverInterface->IsIoMeasurementInfoAvailable( IO_MEASUREMENT_INFO_COUNTERS_OVERFLOW ) )
+    {
+        AddIoMeasurementInformation( "CountersOverflow", "Counters Overflow", "The flag indicating that counters overflows occurred between two consecutive readings.",
+            "Report Meta Data", INFORMATION_TYPE_FLAG, NULL );
+    }
 }
 
 /*****************************************************************************\
@@ -3686,9 +3694,6 @@ TCompletionCode COAConcurrentGroup::ReadGpuContextIdTags()
     uint32_t count = 0;
     do
     {
-        m_ioGpuContextInfoVector->Clear();
-        m_params_1_0.IoGpuContextInformationCount = 0;
-
         ret = TryReadGpuCtxTags();
     }
     while( ret == CC_TRY_AGAIN && ++count < maxReadCount );
@@ -3696,8 +3701,6 @@ TCompletionCode COAConcurrentGroup::ReadGpuContextIdTags()
     if( ret != CC_OK )
     {
         MD_LOG( LOG_DEBUG, "unable to read GPU Context tags, ret: %u", ret );
-        m_ioGpuContextInfoVector->Clear();
-        m_params_1_0.IoGpuContextInformationCount = 0;
         if( ret == CC_TRY_AGAIN )
         {
             ret = CC_ERROR_GENERAL;
@@ -3956,6 +3959,9 @@ TCompletionCode CPerfMonConcurrentGroup::ReadIoStream( uint32_t* reportCount, ch
         SetIoMeasurementInfoPredefined( IO_MEASUREMENT_INFO_SLICE_SHUTDOWN, exceptions.SliceShutdown, &index );
         SetIoMeasurementInfoPredefined( IO_MEASUREMENT_INFO_REPORT_LOST, exceptions.ReportLost, &index );
         SetIoMeasurementInfoPredefined( IO_MEASUREMENT_INFO_DATA_OUTSTANDING, exceptions.DataOutstanding, &index );
+        SetIoMeasurementInfoPredefined( IO_MEASUREMENT_INFO_BUFFER_OVERFLOW, exceptions.BufferOverflow, &index );
+        SetIoMeasurementInfoPredefined( IO_MEASUREMENT_INFO_BUFFER_OVERRUN, exceptions.BufferOverrun, &index );
+        SetIoMeasurementInfoPredefined( IO_MEASUREMENT_INFO_COUNTERS_OVERFLOW, exceptions.CountersOverflow, &index );
 
         m_params_1_0.IoMeasurementInformationCount = m_ioMeasurementInfoVector->GetCount();
     }
@@ -4102,9 +4108,9 @@ CMetricSet::CMetricSet( CMetricsDevice* device, CConcurrentGroup* concurrentGrou
     m_filteredMetricsVector     = new (std::nothrow) Vector<CMetric*>( METRICS_VECTOR_INCREASE );
     m_filteredInformationVector = new (std::nothrow) Vector<CInformation*>( INFORMATION_VECTOR_INCREASE );
     m_metricsCalculator         = new (std::nothrow) CMetricsCalculator( m_device );
-    // Set 'current' variables
+    // Set 'current' variables and mark 'filtered' params as uninitialized
     UseApiFilteredVariables( false );
-    iu_memcpy_s( &m_filteredParams, sizeof(m_filteredParams), &m_params_1_0, sizeof(m_params_1_0) );
+    m_filteredParams.ApiMask = 0;
 }
 
 /*****************************************************************************\
@@ -5693,7 +5699,7 @@ TCompletionCode CMetricSet::SetApiFiltering( uint32_t apiMask )
         return CC_ERROR_INVALID_PARAMETER;
     }
 
-    if( apiMask == 0 || apiMask == API_TYPE_ALL || apiMask == m_params_1_0.ApiMask )
+    if( apiMask == 0 || apiMask == API_TYPE_ALL )
     {
         // Disable API filtering
         MD_LOG( LOG_INFO, "disabling API filtering, apiMask: %u", apiMask );
@@ -5906,9 +5912,9 @@ Description:
 \*****************************************************************************/
 void CMetricSet::RefreshCachedMetricsAndInformation()
 {
-    if( m_filteredParams.ApiMask == m_params_1_0.ApiMask )
+    if( m_filteredParams.ApiMask == 0 )
     {
-        // Nothing to do, return
+        // Filtering uninitialized, nothing to do
         return;
     }
 
@@ -6075,7 +6081,15 @@ TCompletionCode CMetricSet::CalculateMetrics( const unsigned char* rawData, uint
     if( !m_isFiltered )
     {
         MD_LOG( LOG_ERROR, "error: API filtering must be enabled first" );
+        MD_LOG_EXIT();
         return CC_ERROR_GENERAL;
+    }
+    if( (m_currentParams->MetricsCount + m_currentParams->InformationCount) == 0 )
+    {
+        // May happen when unsupported API is used in MetricSet filtering
+        MD_LOG( LOG_WARNING, "nothing to calculate, empty MetricSet" );
+        MD_LOG_EXIT();
+        return CC_OK;
     }
 
     TCompletionCode  ret             = CC_OK;
@@ -6194,10 +6208,12 @@ Output:
 TCompletionCode CMetricSet::ValidateCalculateMetricsParams( uint32_t rawDataSize, uint32_t rawReportSize, uint32_t outSize,
     uint32_t rawReportCount, uint32_t outMaxValuesSize )
 {
-    // size of one individual calculated report in bytes
+    // Size of one individual calculated report in bytes
     uint32_t outReportSize       = (m_currentParams->MetricsCount + m_currentParams->InformationCount) * sizeof(TTypedValue_1_0);
-    // size of one individual calculated max values report in bytes
+    // Size of one individual calculated max values report in bytes
     uint32_t maxValuesReportSize = m_currentParams->MetricsCount * sizeof(TTypedValue_1_0);
+
+    MD_ASSERT( rawReportSize != 0 );
 
     if( rawDataSize % rawReportSize != 0 )
     {
@@ -6205,16 +6221,16 @@ TCompletionCode CMetricSet::ValidateCalculateMetricsParams( uint32_t rawDataSize
         MD_LOG( LOG_DEBUG, "rawDataSize: %u, rawReportSize: %u", rawDataSize, rawReportSize );
         return CC_ERROR_INVALID_PARAMETER;
     }
+    if( outReportSize == 0 )
+    {
+        MD_LOG( LOG_DEBUG, "outReportSize: 0. Nothing to calculate." );
+        return CC_OK;
+    }
     if( outSize % outReportSize != 0 )
     {
         MD_LOG( LOG_ERROR, "error: output buffer has incorrect size" );
         MD_LOG( LOG_DEBUG, "outSize: %u, outReportSize: %u", outSize, outReportSize );
         return CC_ERROR_INVALID_PARAMETER;
-    }
-    if( outReportSize == 0 )
-    {
-        MD_LOG( LOG_DEBUG, "outReportSize: 0. Nothing to calculate." );
-        return CC_OK;
     }
     if( rawReportCount > (outSize / outReportSize) )
     {
@@ -6222,7 +6238,7 @@ TCompletionCode CMetricSet::ValidateCalculateMetricsParams( uint32_t rawDataSize
         MD_LOG( LOG_DEBUG, "rawReportCount: %u, outSize: %u, outReportSize: %u", rawReportCount, outSize, outReportSize );
         return CC_ERROR_INVALID_PARAMETER;
     }
-    if( outMaxValuesSize &&
+    if( outMaxValuesSize && maxValuesReportSize &&
         rawReportCount > (outMaxValuesSize / maxValuesReportSize) )
     {
         MD_LOG( LOG_ERROR, "error: maxValues buffer to small" );
@@ -8540,9 +8556,8 @@ TCompletionCode CSymbolSet::DetectSymbolValue( const char* name, TTypedValue_1_0
 {
     MD_CHECK_PTR_RET( m_driverInterface, CC_ERROR_GENERAL );
 
-    TCompletionCode        ret = CC_OK;
-    GTDIDeviceInfoParamOut out;
-    memset( &out, 0, sizeof(out) );
+    TCompletionCode             ret = CC_OK;
+    GTDIDeviceInfoParamExtOut   out = {};
 
     if( strcmp( name, "EuCoresTotalCount" ) == 0 )
     {
@@ -8585,7 +8600,9 @@ TCompletionCode CSymbolSet::DetectSymbolValue( const char* name, TTypedValue_1_0
     {
         ret = m_driverInterface->SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_SUBSLICES_MASK, &out );
         MD_CHECK_CC_RET( ret );
-        typedValue->ValueUInt32 = out.ValueUint32;
+        typedValue->ValueUInt64 = out.ValueUint64;
+        // TODO: change type of SubsliceMask param to ValueCString, then use following line instead of the above one
+        //iu_memcpy_s(typedValue->ValueCString, sizeof(typedValue->ValueCString), outExt.ValueByteArray, sizeof(outExt.ValueByteArray) );
     }
     else if( strcmp( name, "SliceMask" ) == 0 )
     {

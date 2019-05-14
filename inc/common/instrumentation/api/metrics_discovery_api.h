@@ -1,6 +1,6 @@
 /*****************************************************************************\
 
-    Copyright © 2018, Intel Corporation
+    Copyright © 2019, Intel Corporation
 
     Permission is hereby granted, free of charge, to any person obtaining a
     copy of this software and associated documentation files (the "Software"),
@@ -70,7 +70,7 @@ namespace MetricsDiscovery
 //*****************************************************************************/
 // API build number:
 //*****************************************************************************/
-    #define MD_API_BUILD_NUMBER_CURRENT 107
+    #define MD_API_BUILD_NUMBER_CURRENT 108
 
 //*****************************************************************************/
 // Completion codes:

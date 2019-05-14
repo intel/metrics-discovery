@@ -20,53 +20,57 @@
     FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
     IN THE SOFTWARE.
 
-    File Name:  iu_i915_perf.h
+    File Name:  iu_os.h
 
-    Abstract:   Contains definitions for i915 Perf usage
+    Abstract:   Instrumentation Utils header with OS specific non-standard
+                functions for Linux / Android.
 
 \*****************************************************************************/
 #pragma once
 
-#include <inttypes.h>
+#include <stdint.h>
+#include <wchar.h>
 
+/*****************************************************************************\
+
+Description:
+    Defines related to unit conversion.
+
+\*****************************************************************************/
+#define IU_SECOND_IN_NS             1000000000ULL
+#define IU_SECOND_IN_US             1000000ULL
+
+/*****************************************************************************\
+
+Description:
+    Defines related to reading module and process names functionality.
+
+\*****************************************************************************/
+#define IU_MODULE_NAME_SIZE_MAX     128
+
+/*****************************************************************************\
+
+Description:
+    OS dependent non-standard functions.
+
+\*****************************************************************************/
 #if defined(__cplusplus)
 extern "C" {
 #endif
 
-#include <i915_drm.h>
+void     IuGetModuleInfo(
+    char**    dlName,
+    char**    processName );
 
-/*****************************************************************************\
+void     IuLogGetSystemSettings(
+    bool*     assertEnable,
+    uint32_t* logLayerEnable,
+    uint32_t* logLevel );
 
-Struct:
-    iu_i915_perf_config_register
-
-Description:
-    For adding configs to kernel. Based on i915_oa_reg defined in kernel in i915_drv.h.
-    DRM_IOCTL_I915_PERF_ADD_CONFIG expects just (address, value) tuples.
-
-\*****************************************************************************/
-struct iu_i915_perf_config_register
-{
-    uint32_t address;
-    uint32_t value;
-};
-
-/*****************************************************************************\
-
-Struct:
-    iu_i915_perf_record
-
-Description:
-    For reading reports from kernel. Content of 'data' depends on flags passed to
-    DRM_IOCTL_I915_PERF_OPEN, it may contain multiple different information at once,
-    e.g. PID, CTX, timestamp, OA report.
-
-\*****************************************************************************/
-struct iu_i915_perf_record
-{
-   struct drm_i915_perf_record_header header;
-   uint8_t                            data[];
-};
+void     IuLogGetLocalSettings(
+    bool*     assertEnable,
+    uint32_t* logLayerEnable,
+    uint32_t* logLevel );
 
 #if defined(__cplusplus)
 } // extern "C"

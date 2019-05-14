@@ -113,7 +113,7 @@ TCompletionCode AddGlobalSymbols( CSymbolSet* globalSymbolSet )
   
     globalSymbolSet->AddSymbolUINT32( "EuThreadsCount", 8, SYMBOL_TYPE_DETECT );
   
-    globalSymbolSet->AddSymbolUINT32( "SubsliceMask", 0x1FF, SYMBOL_TYPE_DETECT );
+    globalSymbolSet->AddSymbolUINT64( "SubsliceMask", 0x1FF, SYMBOL_TYPE_DETECT );
   
     globalSymbolSet->AddSymbolUINT32( "SliceMask", 0x7, SYMBOL_TYPE_DETECT );
   
