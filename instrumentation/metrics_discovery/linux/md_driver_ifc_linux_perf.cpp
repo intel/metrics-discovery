@@ -3320,6 +3320,7 @@ uint32_t CDriverInterfaceLinuxPerf::GetGtMaxSubslicePerSlice()
         case GENERATION_GLK:
             return MD_MAX_SUBSLICE_PER_SLICE_OLD;
         case GENERATION_ICL:
+        case GENERATION_EHL:
             return MD_MAX_SUBSLICE_PER_SLICE;
         default:
             MD_LOG( LOG_WARNING, "WARNING: Unsupported platform, default MaxSubslicePerSlice used" );
@@ -3383,7 +3384,15 @@ TCompletionCode CDriverInterfaceLinuxPerf::MapMesaToInstrPlatform( const gen_dev
     }
     else if( mesaDeviceInfo->gen == 11 ) // WA for lack of 'is_icelake' variable
     {
-        *outInstrPlatformId = GENERATION_ICL;
+        // Gen11 devices have to be identified by simulator_id
+        if (mesaDeviceInfo->simulator_id == 28)
+        {
+            *outInstrPlatformId = GENERATION_EHL;
+        }
+        else
+        {
+            *outInstrPlatformId = GENERATION_ICL;
+        }
     }
     else
     {

@@ -342,7 +342,8 @@ typedef enum
     GENERATION_ICL = 14,
     // 15-17 reserved
     GENERATION_CFL = 18,
-    // 19-20 reserved
+    GENERATION_EHL = 19,
+    // 20-21 reserved
     // ...
     // DO NOT CHANGE ORDER OF THIS ENUM, ADD NEW PLATFORMS AT THE END!
     // It has to be synchronized with metric_discovery_internal_api.h file.

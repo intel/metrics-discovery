@@ -15,7 +15,7 @@ https://opensource.org/licenses/MIT
 
 ## Supported Platforms
 
-- Intel(R) Processors with Gen11 graphics devices (formerly Icelake),
+- Intel(R) Processors with Gen11 graphics devices (formerly Ice Lake, Elkhart Lake),
 - Intel(R) Processors with Gen9 graphics devices (formerly Skylake, Kaby Lake, Apollo Lake/Broxton, Gemini Lake, Coffee Lake),
 - Intel(R) Processors with Gen8 graphics devices (formerly Broadwell),
 - Intel(R) Processors with Gen7.5 graphics devices (formerly Haswell).
@@ -25,9 +25,14 @@ https://opensource.org/licenses/MIT
 Intel(R) Metrics Discovery Application Programming Interface is supported on Linux family operating systems with minimum kernel version 4.14.
 Event based measurements require minimum Mesa version 18.2.
 
-*Exceptions:*
-*Gen11 graphics devices require minimum kernel version 4.18. Minimum Mesa version 19.1 for event based measurements.*
-*Gen7.5 graphics devices require minimum kernel version 4.17.*
+### Detailed minimum version requirements
+
+| Platform | Code Name | Minimum Linux Kernel Version | Minimum Mesa Version |
+|--|--|--|--|
+| Gen11 | Elkhart Lake | 5.3 | 19.1 |
+| Gen11 | Ice Lake | 4.18 | 19.1 |
+| Gen9, Gen8 | * | 4.14 | 18.2 |
+| Gen7.5 | Haswell | 4.17 | 18.2 |
 
 ## Build and Install
 

@@ -94,6 +94,11 @@ CMetricsDevice* g_MetricsDevice = NULL;
     TCompletionCode CreateObjectTreeICL_OA(CConcurrentGroup* aGroup);
 #endif
 
+#if (!defined(MD_INCLUDE_EHL_METRICS) && MD_INCLUDE_ALL_METRICS) || MD_INCLUDE_EHL_METRICS
+#define MD_CALL_EHL_METRICS 1
+    TCompletionCode CreateObjectTreeEHL_OA(CConcurrentGroup* aGroup);
+#endif
+
 uint32_t        g_mdRefCounter       = 0;
 void*           g_OpenCloseSemaphore = NULL;
 
@@ -185,7 +190,7 @@ TCompletionCode CreateObjectTree( IMetricsDevice_1_5** metricsDevice )
     aGroup = g_MetricsDevice->AddConcurrentGroup( "OcclusionQueryStats", "Occlusion Query Statistics", MEASUREMENT_TYPE_DELTA_QUERY );
     MD_CHECK_PTR( aGroup );
     
-    platformMask = PLATFORM_HSW|PLATFORM_BDW|PLATFORM_SKL|PLATFORM_BXT|PLATFORM_GLK|PLATFORM_KBL|PLATFORM_CFL|PLATFORM_ICL;
+    platformMask = PLATFORM_HSW|PLATFORM_BDW|PLATFORM_SKL|PLATFORM_BXT|PLATFORM_GLK|PLATFORM_KBL|PLATFORM_CFL|PLATFORM_ICL|PLATFORM_EHL;
     if( MD_IS_INTERNAL_BUILD || g_MetricsDevice->IsPlatformTypeOf( platformMask ) )
     {
         aSet = aGroup->AddMetricSet( "RenderedPixelsStats", "Rendered Pixels Statistics", API_TYPE_OGL4_X,
@@ -209,7 +214,7 @@ TCompletionCode CreateObjectTree( IMetricsDevice_1_5** metricsDevice )
         MD_CHECK_CC( aSet->RefreshConfigRegisters() );
     }
      
-    platformMask = PLATFORM_HSW|PLATFORM_BDW|PLATFORM_SKL|PLATFORM_BXT|PLATFORM_GLK|PLATFORM_KBL|PLATFORM_CFL|PLATFORM_ICL;
+    platformMask = PLATFORM_HSW|PLATFORM_BDW|PLATFORM_SKL|PLATFORM_BXT|PLATFORM_GLK|PLATFORM_KBL|PLATFORM_CFL|PLATFORM_ICL|PLATFORM_EHL;
     if( MD_IS_INTERNAL_BUILD || g_MetricsDevice->IsPlatformTypeOf( platformMask ) )
     {
         aSet = aGroup->AddMetricSet( "RenderedFragmentsStats", "Rendered Fragments Statistics", API_TYPE_OGL|API_TYPE_OGL4_X,
@@ -236,7 +241,7 @@ TCompletionCode CreateObjectTree( IMetricsDevice_1_5** metricsDevice )
     aGroup = g_MetricsDevice->AddConcurrentGroup( "TimestampQuery", "Timestamp Query", MEASUREMENT_TYPE_SNAPSHOT_QUERY );
     MD_CHECK_PTR( aGroup );
     
-    platformMask = PLATFORM_HSW|PLATFORM_BDW|PLATFORM_SKL|PLATFORM_BXT|PLATFORM_GLK|PLATFORM_KBL|PLATFORM_CFL|PLATFORM_ICL;
+    platformMask = PLATFORM_HSW|PLATFORM_BDW|PLATFORM_SKL|PLATFORM_BXT|PLATFORM_GLK|PLATFORM_KBL|PLATFORM_CFL|PLATFORM_ICL|PLATFORM_EHL;
     if( MD_IS_INTERNAL_BUILD || g_MetricsDevice->IsPlatformTypeOf( platformMask ) )
     {
         aSet = aGroup->AddMetricSet( "GPUTimestamp", "GPU Timestamp", API_TYPE_OGL4_X,
@@ -398,6 +403,151 @@ TCompletionCode CreateObjectTree( IMetricsDevice_1_5** metricsDevice )
         MD_CHECK_CC( aSet->RefreshConfigRegisters() );
     }
      
+    platformMask = PLATFORM_ICL|PLATFORM_EHL;
+    if( MD_IS_INTERNAL_BUILD || g_MetricsDevice->IsPlatformTypeOf( platformMask ) )
+    {
+        aSet = aGroup->AddMetricSet( "PipelineStats", "Pipeline Statistics for OGL4", API_TYPE_OGL|API_TYPE_OGL4_X,
+           GPU_RENDER|GPU_COMPUTE, 0, 96, OA_REPORT_TYPE_256B_A45_NOA16, platformMask );
+        MD_CHECK_PTR( aSet );
+        
+        MD_CHECK_CC( aSet->SetApiSpecificId(NULL, 0, 0, 0x80000206, 0, 0,
+            "", 0, "Intel_Raw_Pipeline_Statistics_Query", 0) );
+  
+        availabilityEquation = NULL;
+        aMetric = aSet->AddMetric( "IAVertices", "Input vertices",
+            "The total number of vertices that entered the 3D Pipeline.",
+            "3D Pipe/Input Assembler", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_IA * 0x10000), USAGE_FLAG_TIER_2|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X,
+            METRIC_TYPE_EVENT, RESULT_UINT64, "vertices", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
+        if( aMetric )
+        {
+            
+            MD_CHECK_CC( aMetric->SetDeltaReportReadEquation( "qw@0x00" ));
+        }
+
+        availabilityEquation = NULL;
+        aMetric = aSet->AddMetric( "IAPrimitives", "Input primitives",
+            "The total number of rendering primitives assembled and put into the input assembly stage of the 3D Pipeline.",
+            "3D Pipe/Input Assembler", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_IA * 0x10000), USAGE_FLAG_TIER_2|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X,
+            METRIC_TYPE_EVENT, RESULT_UINT64, "triangles", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
+        if( aMetric )
+        {
+            
+            MD_CHECK_CC( aMetric->SetDeltaReportReadEquation( "qw@0x08" ));
+        }
+
+        availabilityEquation = NULL;
+        aMetric = aSet->AddMetric( "VsInvocations", "VS per vertex invocations",
+            "The total number of times a vertex shader was invoked. 3D rendering invokes the vertex shader once per vertex.",
+            "3D Pipe/Vertex Shader", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_VS * 0x10000), USAGE_FLAG_TIER_2|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X,
+            METRIC_TYPE_EVENT, RESULT_UINT64, "invocations", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
+        if( aMetric )
+        {
+            
+            MD_CHECK_CC( aMetric->SetDeltaReportReadEquation( "qw@0x10" ));
+        }
+
+        availabilityEquation = NULL;
+        aMetric = aSet->AddMetric( "HsInvocations", "HS invocations",
+            "The total number of times a hull shader was invoked.",
+            "3D Pipe/Hull Shader", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_HS * 0x10000), USAGE_FLAG_TIER_2|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X,
+            METRIC_TYPE_EVENT, RESULT_UINT64, "invocations", 0, 0, HW_UNIT_GPU, availabilityEquation, "Hull|Control,HS|TCS", NULL );
+        if( aMetric )
+        {
+            
+            MD_CHECK_CC( aMetric->SetDeltaReportReadEquation( "qw@0x40" ));
+        }
+
+        availabilityEquation = NULL;
+        aMetric = aSet->AddMetric( "DsInvocations", "DS invocations",
+            "The total number of times a domain shader was invoked.",
+            "3D Pipe/Domain Shader", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_DS * 0x10000), USAGE_FLAG_TIER_2|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X,
+            METRIC_TYPE_EVENT, RESULT_UINT64, "invocations", 0, 0, HW_UNIT_GPU, availabilityEquation, "Domain|Evaluation,DS|TES", NULL );
+        if( aMetric )
+        {
+            
+            MD_CHECK_CC( aMetric->SetDeltaReportReadEquation( "qw@0x48" ));
+        }
+
+        availabilityEquation = NULL;
+        aMetric = aSet->AddMetric( "GsInvocations", "GS per triangle invocations",
+            "The total number of times a geometry shader was invoked per triangle.",
+            "3D Pipe/Geometry Shader", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_GS * 0x10000), USAGE_FLAG_TIER_2|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X,
+            METRIC_TYPE_EVENT, RESULT_UINT64, "invocations", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
+        if( aMetric )
+        {
+            
+            MD_CHECK_CC( aMetric->SetDeltaReportReadEquation( "qw@0x18" ));
+        }
+
+        availabilityEquation = NULL;
+        aMetric = aSet->AddMetric( "GsPrimitives", "Post-GS primitives",
+            "The total number of primitives that flowed through from GS to the clipper if GS was enabled.",
+            "3D Pipe/Geometry Shader", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_GS * 0x10000), USAGE_FLAG_TIER_2|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X,
+            METRIC_TYPE_EVENT, RESULT_UINT64, "triangles", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
+        if( aMetric )
+        {
+            
+            MD_CHECK_CC( aMetric->SetDeltaReportReadEquation( "qw@0x20" ));
+        }
+
+        availabilityEquation = NULL;
+        aMetric = aSet->AddMetric( "ClipperInvocations", "Clipper invocations",
+            "The total number of primitives sent to the Clipper.",
+            "3D Pipe/Clipper", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_CL * 0x10000), USAGE_FLAG_TIER_2|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X,
+            METRIC_TYPE_EVENT, RESULT_UINT64, "triangles", 0, 0, HW_UNIT_GPU, availabilityEquation, "Pixel|Fragment,PS|FS,pixel|fragment", NULL );
+        if( aMetric )
+        {
+            
+            MD_CHECK_CC( aMetric->SetDeltaReportReadEquation( "qw@0x28" ));
+        }
+
+        availabilityEquation = NULL;
+        aMetric = aSet->AddMetric( "ClipperPrimitives", "Clipper primitives",
+            "The total number of primitives that flowed out of the Clipper.",
+            "3D Pipe/Clipper", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_CL * 0x10000), USAGE_FLAG_TIER_2|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X,
+            METRIC_TYPE_EVENT, RESULT_UINT64, "triangles", 0, 0, HW_UNIT_GPU, availabilityEquation, "Pixel|Fragment,PS|FS,pixel|fragment", NULL );
+        if( aMetric )
+        {
+            
+            MD_CHECK_CC( aMetric->SetDeltaReportReadEquation( "qw@0x30" ));
+        }
+
+        availabilityEquation = NULL;
+        aMetric = aSet->AddMetric( "PsInvocations", "PS invocations",
+            "The total number of times a pixel shader was invoked. 3D rendering invokes a pixel shader once per pixel or subsample.",
+            "3D Pipe/Pixel Shader", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_PS * 0x10000), USAGE_FLAG_TIER_2|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X,
+            METRIC_TYPE_EVENT, RESULT_UINT64, "invocations", 0, 0, HW_UNIT_GPU, availabilityEquation, "Pixel|Fragment,PS|FS,pixel|fragment", NULL );
+        if( aMetric )
+        {
+            
+            MD_CHECK_CC( aMetric->SetDeltaReportReadEquation( "qw@0x38" ));
+        }
+
+        availabilityEquation = NULL;
+        aMetric = aSet->AddMetric( "CsInvocations", "CS invocations",
+            "The total number of times a compute shader was invoked.",
+            "3D Pipe/Compute Shader", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_CS * 0x10000), USAGE_FLAG_TIER_2|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X,
+            METRIC_TYPE_EVENT, RESULT_UINT64, "invocations", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
+        if( aMetric )
+        {
+            
+            MD_CHECK_CC( aMetric->SetDeltaReportReadEquation( "qw@0x50" ));
+        }
+
+        availabilityEquation = NULL;
+        aMetric = aSet->AddMetric( "CpsInvocations", "CPS invocations",
+            "The total number of times a coarse shader was invoked.",
+            "3D Pipe/Compute Shader", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_CS * 0x10000), USAGE_FLAG_TIER_2|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X,
+            METRIC_TYPE_EVENT, RESULT_UINT64, "invocations", 0, 0, HW_UNIT_GPU, availabilityEquation, "PS|FS", NULL );
+        if( aMetric )
+        {
+            
+            MD_CHECK_CC( aMetric->SetDeltaReportReadEquation( "qw@0x58" ));
+        }
+
+        MD_CHECK_CC( aSet->RefreshConfigRegisters() );
+    }
+     
     aGroup = g_MetricsDevice->AddConcurrentGroup( "OA", "OA Unit Metrics", MEASUREMENT_TYPE_DELTA_QUERY|MEASUREMENT_TYPE_SNAPSHOT_IO );
     MD_CHECK_PTR( aGroup );
     
@@ -448,6 +598,10 @@ TCompletionCode CreateObjectTree( IMetricsDevice_1_5** metricsDevice )
   
 #if MD_CALL_ICL_METRICS
     MD_CHECK_CC( CreateObjectTreeICL_OA(aGroup) );
+#endif
+  
+#if MD_CALL_EHL_METRICS
+    MD_CHECK_CC( CreateObjectTreeEHL_OA(aGroup) );
 #endif
   
 

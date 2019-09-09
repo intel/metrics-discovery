@@ -51,7 +51,8 @@ namespace MetricsDiscovery
         PLATFORM_ICL = 1 << 14 /*GENERATION_ICL*/,
         // 15-17 reserved
         PLATFORM_CFL = 1 << 18 /*GENERATION_CFL*/,
-        // 19 reserved
+        PLATFORM_EHL = 1 << 19 /*GENERATION_EHL*/,
+        // 20-21 reserved
         // ...
         PLATFORM_ALL = 0xFFFFFFFF,
     } TPlatformType;
