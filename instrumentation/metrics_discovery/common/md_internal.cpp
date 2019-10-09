@@ -27,8 +27,8 @@
 \*****************************************************************************/
 #include "md_internal.h"
 
-#include <string.h>
 #include <stdlib.h>
+#include <string>
 #include <new>
 #include <unordered_map>
 
