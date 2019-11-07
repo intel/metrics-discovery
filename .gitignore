@@ -1,0 +1,12 @@
+# Build
+dump/*
+libmd.pc
+
+# CMake
+CMakeFiles/*
+CMakeCache.txt
+cmake_install.cmake
+Makefile
+
+# Other
+.vs/*
