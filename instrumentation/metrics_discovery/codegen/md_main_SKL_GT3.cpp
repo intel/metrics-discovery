@@ -620,7 +620,7 @@ TCompletionCode CreateObjectTreeSKL_GT3_OA( CConcurrentGroup* aGroup )
         if( aMetric )
         {
             
-            MD_CHECK_CC( aMetric->SetNormalizationEquation( "$SlmBytesRead $SlmBytesWritten $ShaderMemoryAccesses 64 UMUL UADD UADD" ));
+            MD_CHECK_CC( aMetric->SetNormalizationEquation( "$SlmBytesRead $SlmBytesWritten $ShaderMemoryAccesses UADD UADD 64 UMUL" ));
             MD_CHECK_CC( aMetric->SetMaxValueEquation( "$GpuCoreClocks 64 UMUL $EuSubslicesTotalCount UMUL" ));
         }
 
@@ -1361,7 +1361,7 @@ TCompletionCode CreateObjectTreeSKL_GT3_OA( CConcurrentGroup* aGroup )
         if( aMetric )
         {
             
-            MD_CHECK_CC( aMetric->SetNormalizationEquation( "$SlmBytesRead $SlmBytesWritten $ShaderMemoryAccesses 64 UMUL UADD UADD" ));
+            MD_CHECK_CC( aMetric->SetNormalizationEquation( "$SlmBytesRead $SlmBytesWritten $ShaderMemoryAccesses UADD UADD 64 UMUL" ));
             MD_CHECK_CC( aMetric->SetMaxValueEquation( "$GpuCoreClocks 64 UMUL $EuSubslicesTotalCount UMUL" ));
         }
 
@@ -1990,7 +1990,7 @@ TCompletionCode CreateObjectTreeSKL_GT3_OA( CConcurrentGroup* aGroup )
         if( aMetric )
         {
             
-            MD_CHECK_CC( aMetric->SetNormalizationEquation( "$SlmBytesRead $SlmBytesWritten $ShaderMemoryAccesses 64 UMUL UADD UADD" ));
+            MD_CHECK_CC( aMetric->SetNormalizationEquation( "$SlmBytesRead $SlmBytesWritten $ShaderMemoryAccesses UADD UADD 64 UMUL" ));
             MD_CHECK_CC( aMetric->SetMaxValueEquation( "$GpuCoreClocks 64 UMUL $EuSubslicesTotalCount UMUL" ));
         }
 
@@ -3504,7 +3504,7 @@ TCompletionCode CreateObjectTreeSKL_GT3_OA( CConcurrentGroup* aGroup )
         if( aMetric )
         {
             
-            MD_CHECK_CC( aMetric->SetNormalizationEquation( "$SlmBytesRead $SlmBytesWritten $ShaderMemoryAccesses 64 UMUL UADD UADD" ));
+            MD_CHECK_CC( aMetric->SetNormalizationEquation( "$SlmBytesRead $SlmBytesWritten $ShaderMemoryAccesses UADD UADD 64 UMUL" ));
             MD_CHECK_CC( aMetric->SetMaxValueEquation( "$GpuCoreClocks 64 UMUL $EuSubslicesTotalCount UMUL" ));
         }
 
@@ -4130,7 +4130,7 @@ TCompletionCode CreateObjectTreeSKL_GT3_OA( CConcurrentGroup* aGroup )
         if( aMetric )
         {
             
-            MD_CHECK_CC( aMetric->SetNormalizationEquation( "$SlmBytesRead $SlmBytesWritten $ShaderMemoryAccesses 64 UMUL UADD UADD" ));
+            MD_CHECK_CC( aMetric->SetNormalizationEquation( "$SlmBytesRead $SlmBytesWritten $ShaderMemoryAccesses UADD UADD 64 UMUL" ));
             MD_CHECK_CC( aMetric->SetMaxValueEquation( "$GpuCoreClocks 64 UMUL $EuSubslicesTotalCount UMUL" ));
         }
 
@@ -5138,7 +5138,7 @@ TCompletionCode CreateObjectTreeSKL_GT3_OA( CConcurrentGroup* aGroup )
         if( aMetric )
         {
             
-            MD_CHECK_CC( aMetric->SetNormalizationEquation( "$SlmBytesRead $SlmBytesWritten $ShaderMemoryAccesses 64 UMUL UADD UADD" ));
+            MD_CHECK_CC( aMetric->SetNormalizationEquation( "$SlmBytesRead $SlmBytesWritten $ShaderMemoryAccesses UADD UADD 64 UMUL" ));
             MD_CHECK_CC( aMetric->SetMaxValueEquation( "$GpuCoreClocks 64 UMUL $EuSubslicesTotalCount UMUL" ));
         }
 
@@ -5935,7 +5935,7 @@ TCompletionCode CreateObjectTreeSKL_GT3_OA( CConcurrentGroup* aGroup )
         if( aMetric )
         {
             
-            MD_CHECK_CC( aMetric->SetNormalizationEquation( "$SlmBytesRead $SlmBytesWritten $ShaderMemoryAccesses 64 UMUL UADD UADD" ));
+            MD_CHECK_CC( aMetric->SetNormalizationEquation( "$SlmBytesRead $SlmBytesWritten $ShaderMemoryAccesses UADD UADD 64 UMUL" ));
             MD_CHECK_CC( aMetric->SetMaxValueEquation( "$GpuCoreClocks 64 UMUL $EuSubslicesTotalCount UMUL" ));
         }
 
@@ -6653,7 +6653,7 @@ TCompletionCode CreateObjectTreeSKL_GT3_OA( CConcurrentGroup* aGroup )
         if( aMetric )
         {
             
-            MD_CHECK_CC( aMetric->SetNormalizationEquation( "$SlmBytesRead $SlmBytesWritten $ShaderMemoryAccesses 64 UMUL UADD UADD" ));
+            MD_CHECK_CC( aMetric->SetNormalizationEquation( "$SlmBytesRead $SlmBytesWritten $ShaderMemoryAccesses UADD UADD 64 UMUL" ));
             MD_CHECK_CC( aMetric->SetMaxValueEquation( "$GpuCoreClocks 64 UMUL $EuSubslicesTotalCount UMUL" ));
         }
 
@@ -7402,7 +7402,7 @@ TCompletionCode CreateObjectTreeSKL_GT3_OA( CConcurrentGroup* aGroup )
         if( aMetric )
         {
             
-            MD_CHECK_CC( aMetric->SetNormalizationEquation( "$SlmBytesRead $SlmBytesWritten $ShaderMemoryAccesses 64 UMUL UADD UADD" ));
+            MD_CHECK_CC( aMetric->SetNormalizationEquation( "$SlmBytesRead $SlmBytesWritten $ShaderMemoryAccesses UADD UADD 64 UMUL" ));
             MD_CHECK_CC( aMetric->SetMaxValueEquation( "$GpuCoreClocks 64 UMUL $EuSubslicesTotalCount UMUL" ));
         }
 
@@ -8082,7 +8082,7 @@ TCompletionCode CreateObjectTreeSKL_GT3_OA( CConcurrentGroup* aGroup )
         if( aMetric )
         {
             
-            MD_CHECK_CC( aMetric->SetNormalizationEquation( "$SlmBytesRead $SlmBytesWritten $ShaderMemoryAccesses 64 UMUL UADD UADD" ));
+            MD_CHECK_CC( aMetric->SetNormalizationEquation( "$SlmBytesRead $SlmBytesWritten $ShaderMemoryAccesses UADD UADD 64 UMUL" ));
             MD_CHECK_CC( aMetric->SetMaxValueEquation( "$GpuCoreClocks 64 UMUL $EuSubslicesTotalCount UMUL" ));
         }
 
@@ -8761,7 +8761,7 @@ TCompletionCode CreateObjectTreeSKL_GT3_OA( CConcurrentGroup* aGroup )
         if( aMetric )
         {
             
-            MD_CHECK_CC( aMetric->SetNormalizationEquation( "$SlmBytesRead $SlmBytesWritten $ShaderMemoryAccesses 64 UMUL UADD UADD" ));
+            MD_CHECK_CC( aMetric->SetNormalizationEquation( "$SlmBytesRead $SlmBytesWritten $ShaderMemoryAccesses UADD UADD 64 UMUL" ));
             MD_CHECK_CC( aMetric->SetMaxValueEquation( "$GpuCoreClocks 64 UMUL $EuSubslicesTotalCount UMUL" ));
         }
 
@@ -9475,7 +9475,7 @@ TCompletionCode CreateObjectTreeSKL_GT3_OA( CConcurrentGroup* aGroup )
         if( aMetric )
         {
             
-            MD_CHECK_CC( aMetric->SetNormalizationEquation( "$SlmBytesRead $SlmBytesWritten $ShaderMemoryAccesses 64 UMUL UADD UADD" ));
+            MD_CHECK_CC( aMetric->SetNormalizationEquation( "$SlmBytesRead $SlmBytesWritten $ShaderMemoryAccesses UADD UADD 64 UMUL" ));
             MD_CHECK_CC( aMetric->SetMaxValueEquation( "$GpuCoreClocks 64 UMUL $EuSubslicesTotalCount UMUL" ));
         }
 
@@ -10246,7 +10246,7 @@ TCompletionCode CreateObjectTreeSKL_GT3_OA( CConcurrentGroup* aGroup )
         if( aMetric )
         {
             
-            MD_CHECK_CC( aMetric->SetNormalizationEquation( "$SlmBytesRead $SlmBytesWritten $ShaderMemoryAccesses 64 UMUL UADD UADD" ));
+            MD_CHECK_CC( aMetric->SetNormalizationEquation( "$SlmBytesRead $SlmBytesWritten $ShaderMemoryAccesses UADD UADD 64 UMUL" ));
             MD_CHECK_CC( aMetric->SetMaxValueEquation( "$GpuCoreClocks 64 UMUL $EuSubslicesTotalCount UMUL" ));
         }
 
@@ -11022,7 +11022,7 @@ TCompletionCode CreateObjectTreeSKL_GT3_OA( CConcurrentGroup* aGroup )
         if( aMetric )
         {
             
-            MD_CHECK_CC( aMetric->SetNormalizationEquation( "$SlmBytesRead $SlmBytesWritten $ShaderMemoryAccesses 64 UMUL UADD UADD" ));
+            MD_CHECK_CC( aMetric->SetNormalizationEquation( "$SlmBytesRead $SlmBytesWritten $ShaderMemoryAccesses UADD UADD 64 UMUL" ));
             MD_CHECK_CC( aMetric->SetMaxValueEquation( "$GpuCoreClocks 64 UMUL $EuSubslicesTotalCount UMUL" ));
         }
 
