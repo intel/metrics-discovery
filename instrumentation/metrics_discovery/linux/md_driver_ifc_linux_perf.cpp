@@ -3111,23 +3111,36 @@ TCompletionCode CDriverInterfaceLinuxPerf::GetGpuTimestampFrequency( uint64_t* g
 {
     MD_CHECK_PTR_RET( gpuTimestampFrequency, CC_ERROR_INVALID_PARAMETER );
     const gen_device_info* mesaDeviceInfo = NULL;
+    int32_t freq = 0;
 
     // 1. Get MesaDeviceInfo
     TCompletionCode ret = GetMesaDeviceInfo( &mesaDeviceInfo );
     MD_CHECK_CC_RET( ret );
 
-    // 2. Copy TimestampFrequency to the output
-    if( mesaDeviceInfo->timestamp_frequency )
+    // 2. Get TimestampFrequency and pass it to the output
+
+    // Try to get the current timestampFrequency value from DRM directly
+    // for the accurate result
+    ret = SendGetParamIoctl( m_DrmFd, I915_PARAM_CS_TIMESTAMP_FREQUENCY, &freq );
+    if( ret == CC_OK )
     {
-        *gpuTimestampFrequency = mesaDeviceInfo->timestamp_frequency;
+        *gpuTimestampFrequency = static_cast<uint64_t>(freq);
     }
-    else
+    else if( mesaDeviceInfo->gen < 10 )
     {
-        MD_LOG( LOG_WARNING, "WARNING: 0 GPU Timestamp Frequency, default value used" );
-        *gpuTimestampFrequency = MD_DEFAULT_GPU_TIMESTAMP_FREQUENCY;
+        if( mesaDeviceInfo->timestamp_frequency )
+        {
+             *gpuTimestampFrequency = mesaDeviceInfo->timestamp_frequency;
+        }
+        else
+        {
+             MD_LOG( LOG_WARNING, "WARNING: 0 GPU Timestamp Frequency, default value used" );
+             *gpuTimestampFrequency = MD_DEFAULT_GPU_TIMESTAMP_FREQUENCY;
+        }
+        ret = CC_OK;
     }
 
-    return CC_OK;
+    return ret;
 }
 
 /*****************************************************************************\
