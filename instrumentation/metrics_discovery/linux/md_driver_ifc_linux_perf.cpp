@@ -1706,9 +1706,9 @@ void CDriverInterfaceLinuxPerf::ReadPerfCapabilities()
                                    return getPerfRevisionRet == CC_OK && perfRevision >= requiredPerfRevision;
                                };
 
-    // Check capabilities
-    m_PerfCapabilities.IsOaInterruptSupported     = requirePerfRevision( 2 );
-    m_PerfCapabilities.IsFlushPerfStreamSupported = requirePerfRevision( 2 );
+    // Check capabilities. Update when OA interrupt will be mergerd.
+    m_PerfCapabilities.IsOaInterruptSupported     = false; //requirePerfRevision( 2 );
+    m_PerfCapabilities.IsFlushPerfStreamSupported = false; //requirePerfRevision( 2 );
 
     PrintPerfCapabilities();
 }
