@@ -4112,6 +4112,7 @@ CMetricSet::CMetricSet( CMetricsDevice* device, CConcurrentGroup* concurrentGrou
     // Set 'current' variables and mark 'filtered' params as uninitialized
     UseApiFilteredVariables( false );
     m_filteredParams.ApiMask = 0;
+    m_filteredParams.GtMask = 0;
 }
 
 /*****************************************************************************\
@@ -7631,6 +7632,7 @@ CEquation::CEquation( CMetricsDevice* device )
 {
     m_elementsVector = new (std::nothrow) Vector<CEquationElementInternal>( EQUATION_VECTOR_INCREASE );
     m_device = device;
+    m_equationString = nullptr;
 }
 
 /*****************************************************************************\

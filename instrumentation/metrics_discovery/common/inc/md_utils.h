@@ -728,6 +728,8 @@ public:
     \*****************************************************************************/
     Vector( uint32_t vectorIncrease )
         : m_vectorIncrease( vectorIncrease )
+        , m_vectorSize( 0 )
+        , m_elementsCount( 0 )
     {
         m_vector = new (std::nothrow) T[ m_vectorIncrease ];
         if ( !m_vector )
