@@ -49,7 +49,9 @@ endfunction(set_metrics_discovery_version)
 #                                                                        but without clearing, it will be still MD_ARCH=32
 #################################################################################
 function(clearInputVariables)
+    unset(CMAKE_SYSTEM_NAME CACHE)
     unset(MD_PLATFORM CACHE)
+    unset(CMAKE_BUILD_TYPE CACHE)
     unset(MD_BUILD_TYPE CACHE)
     unset(MD_ARCH CACHE)
     unset(MD_LIBDRM_SRC CACHE)
@@ -70,47 +72,87 @@ endfunction()
 #################################################################################
 
 if (${CMAKE_VERBOSE_MAKEFILE} STREQUAL ON)
-    message("INFO: Input MD_PLATFORM      = ${MD_PLATFORM}")
-    message("INFO: Input MD_BUILD_TYPE    = ${MD_BUILD_TYPE}")
-    message("INFO: Input MD_ARCH          = ${MD_ARCH}")
-    message("INFO: Input MD_LIBDRM_SRC    = ${MD_LIBDRM_SRC}")
-    message("INFO: Input MD_LINUX_DISTRO  = ${MD_LINUX_DISTRO}")
+    message("INFO: Input CMAKE_SYSTEM_NAME = ${CMAKE_SYSTEM_NAME}")
+    message("INFO: Input MD_PLATFORM       = ${MD_PLATFORM}")
+    message("INFO: Input CMAKE_BUILD_TYPE  = ${CMAKE_BUILD_TYPE}")
+    message("INFO: Input MD_BUILD_TYPE     = ${MD_BUILD_TYPE}")
+    message("INFO: Input MD_ARCH           = ${MD_ARCH}")
+    message("INFO: Input MD_LIBDRM_SRC     = ${MD_LIBDRM_SRC}")
+    message("INFO: Input MD_LINUX_DISTRO   = ${MD_LINUX_DISTRO}")
 endif()
 
 # PLATFORM
-if (NOT (MD_PLATFORM))
-    set(PLATFORM "linux")
-    message("-- using PLATFORM = ${PLATFORM}")
-elseif (MD_PLATFORM STREQUAL "linux")
-    set(PLATFORM ${MD_PLATFORM})
+if (CMAKE_SYSTEM_NAME STREQUAL "Linux")
+    if ((NOT (MD_PLATFORM)) OR (MD_PLATFORM STREQUAL "linux") OR (MD_PLATFORM STREQUAL "Linux"))
+        set(PLATFORM "linux")
+        message("-- using PLATFORM = ${PLATFORM}")
+    else ()
+        errorExit("ERROR: Current platform ${CMAKE_SYSTEM_NAME} contradicts to requested ${MD_PLATFORM}")
+    endif()
 else()
-    errorExit("ERROR: Specify correct MD_PLATFORM (-DMD_PLATFORM=linux)")
+    errorExit("ERROR: Project isn't targeted for ${CMAKE_SYSTEM_NAME}. Please run CMake on Linux.")
 endif()
 
 # BUILD_TYPE
-if (NOT (MD_BUILD_TYPE))
-    set(BUILD_TYPE "release")
+if(NOT (MD_BUILD_TYPE))
+    if (NOT (CMAKE_BUILD_TYPE))
+        set(BUILD_TYPE "release")
+    else()
+        set(BUILD_TYPE ${CMAKE_BUILD_TYPE})
+    endif()
+else()
+    if (NOT (CMAKE_BUILD_TYPE))
+        set(BUILD_TYPE ${MD_BUILD_TYPE})
+    elseif (${MD_BUILD_TYPE} STREQUAL ${CMAKE_BUILD_TYPE})
+        set(BUILD_TYPE ${MD_BUILD_TYPE})
+    else()
+        errorExit("ERROR: -DMD_BUILD_TYPE contradicts to -DCMAKE_BUILD_TYPE.")
+    endif()
+endif()
+
+if (NOT (BUILD_TYPE STREQUAL "release" OR
+         BUILD_TYPE STREQUAL "release-internal" OR
+         BUILD_TYPE STREQUAL "debug"))
+    errorExit("ERROR: Specify correct BUILD_TYPE 'release|release-internal|debug' through -DCMAKE_BUILD_TYPE or -DMD_BUILD_TYPE")
+else()
     message("-- using BUILD_TYPE = ${BUILD_TYPE}")
-elseif (MD_BUILD_TYPE STREQUAL "release" OR
-        MD_BUILD_TYPE STREQUAL "release-internal" OR
-        MD_BUILD_TYPE STREQUAL "debug")
-    set(BUILD_TYPE ${MD_BUILD_TYPE})
-else()
-    errorExit("ERROR: Specify correct MD_BUILD_TYPE (-DMD_BUILD_TYPE=release|release-internal|debug)")
 endif()
 
-# ARCH
-if (NOT (MD_ARCH))
-    set(ARCH "64")
-    message("-- using ARCH = ${ARCH}")
-elseif (MD_ARCH STREQUAL "64" OR
-        MD_ARCH STREQUAL "32")
-    set(ARCH ${MD_ARCH})
-else()
-    errorExit("ERROR: Specify correct MD_ARCH (-DMD_ARCH=64|32)")
+# HOST ARCH
+set(HOST_ARCH "64")   # 64 bits host is setup by default (CMAKE_SIZEOF_VOID_P = 8)
+if(CMAKE_SIZEOF_VOID_P EQUAL 4) # 32 bits
+    set(HOST_ARCH "32")
 endif()
 
-if (ARCH STREQUAL "32")
+# TARGET ARCH
+if (MD_ARCH)
+# User defines ARCH through custom variable
+    if (MD_ARCH STREQUAL "32")
+        set(TARGET_ARCH "32")
+    elseif (MD_ARCH STREQUAL "64")
+        if ((${CMAKE_C_FLAGS} MATCHES "^.*-m32.*$") OR (${CMAKE_CXX_FLAGS} MATCHES "^.*-m32.*$"))
+            errorExit("ERROR: Compiler flags contains -m32 while -DMD_ARCH=64")
+        else()
+            set(TARGET_ARCH "64")
+        endif()
+    else()
+        errorExit("ERROR: Specify correct MD_ARCH (-DMD_ARCH=64|32).")
+    endif()
+else()
+# User defines ARCH through compiler flags
+    if ((${CMAKE_C_FLAGS} MATCHES "^.*-m32.*$") OR (${CMAKE_CXX_FLAGS} MATCHES "^.*-m32.*$"))
+        set(TARGET_ARCH "32")
+    elseif ((${CMAKE_C_FLAGS} MATCHES "^.*-m64.*$") OR (${CMAKE_CXX_FLAGS} MATCHES "^.*-m64.*$"))
+        set(TARGET_ARCH "64")
+    else()
+        # default is required: 0 - if 64-bits host, 1 - if 32-bits host
+        set(TARGET_ARCH ${HOST_ARCH})
+    endif()
+endif()
+
+message("-- using TARGET_ARCH = ${TARGET_ARCH}")
+
+if(TARGET_ARCH STREQUAL "32")
     message("-- !! Compiling 32bit on 64bit host requires gcc (g++) in multilib version !!")
     message("   e.g. sudo apt-get install gcc-4.8-multilib g++-4.8-multilib")
 endif()
@@ -137,7 +179,7 @@ set(DRM_LIB_PATH drm)
 set(BS_DIR_INSTRUMENTATION ${CMAKE_CURRENT_SOURCE_DIR}/instrumentation)
 set(BS_DIR_INC ${CMAKE_CURRENT_SOURCE_DIR}/inc)
 set(BS_DIR_EXTERNAL ${CMAKE_CURRENT_SOURCE_DIR}/external)
-set(DUMP_DIR ${CMAKE_CURRENT_SOURCE_DIR}/dump/${PLATFORM}${ARCH}/${BUILD_TYPE}/${PROJECT_NAME})
+set(DUMP_DIR ${CMAKE_CURRENT_SOURCE_DIR}/dump/${PLATFORM}${TARGET_ARCH}/${BUILD_TYPE}/${PROJECT_NAME})
 
 # OUTPUT
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${DUMP_DIR})

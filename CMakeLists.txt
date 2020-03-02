@@ -185,10 +185,15 @@ add_definitions(-fno-inline)
 add_definitions(-Wall)
 
 # to enable x86 build on x64 host
-if ("${ARCH}" STREQUAL "32")
+if ("${TARGET_ARCH}" STREQUAL "32")
     # flag is needed for both, compiler and linker
     add_definitions(-m32)
     set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -m32")
+# to enable x64 build on x86 host
+elseif("${TARGET_ARCH}" STREQUAL "64" AND ${HOST_ARCH} STREQUAL "32")
+    # flag is needed for both, compiler and linker
+    add_definitions(-m64)
+    set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -m64")
 endif ()
 
 #################################################################################
@@ -204,10 +209,6 @@ set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -Wl,-z,now")
 if ("${PLATFORM}" STREQUAL "linux")
     # linux
     add_library(${PROJECT_NAME} SHARED ${LOCAL_SRC_FILES})
-endif ()
-
-if ("${PLATFORM}" STREQUAL "linux")
-    # linux
     target_link_libraries(
         ${PROJECT_NAME}                 # md
         ${DRM_LIB_PATH}                 # drm
@@ -252,7 +253,8 @@ message ("INFO: PROJECT_NAME           = ${PROJECT_NAME}")
 message ("INFO: VERSION                = ${MD_VERSION}")
 message ("INFO: BUILD_TYPE             = ${BUILD_TYPE}")
 message ("INFO: PLATFORM               = ${PLATFORM}")
-message ("INFO: ARCH                   = ${ARCH}")
+message ("INFO: HOST_ARCH              = ${HOST_ARCH}")
+message ("INFO: TARGET_ARCH            = ${TARGET_ARCH}")
 message ("INFO: LINUX_DISTRO           = ${LINUX_DISTRO}")
 message ("INFO: DUMP_DIR               = ${DUMP_DIR}")
 message ("INFO: LIB_INSTALL_DIR        = ${LIB_INSTALL_DIR}")
