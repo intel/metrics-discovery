@@ -94,6 +94,10 @@ else()
 endif()
 
 # BUILD_TYPE
+if (CMAKE_BUILD_TYPE)
+    string (TOLOWER ${CMAKE_BUILD_TYPE} CMAKE_BUILD_TYPE)
+endif ()
+
 if(NOT (MD_BUILD_TYPE))
     if (NOT (CMAKE_BUILD_TYPE))
         set(BUILD_TYPE "release")
@@ -119,34 +123,25 @@ else()
 endif()
 
 # HOST ARCH
-set(HOST_ARCH "64")   # 64 bits host is setup by default (CMAKE_SIZEOF_VOID_P = 8)
-if(CMAKE_SIZEOF_VOID_P EQUAL 4) # 32 bits
-    set(HOST_ARCH "32")
-endif()
+if (CMAKE_HOST_SYSTEM_PROCESSOR STREQUAL "x86_64") # 64 bits Linux
+    set (HOST_ARCH "64")
+else() # 32 bits Linux
+    set (HOST_ARCH "32")
+endif ()
 
 # TARGET ARCH
 if (MD_ARCH)
 # User defines ARCH through custom variable
-    if (MD_ARCH STREQUAL "32")
-        set(TARGET_ARCH "32")
-    elseif (MD_ARCH STREQUAL "64")
-        if ((${CMAKE_C_FLAGS} MATCHES "^.*-m32.*$") OR (${CMAKE_CXX_FLAGS} MATCHES "^.*-m32.*$"))
-            errorExit("ERROR: Compiler flags contains -m32 while -DMD_ARCH=64")
-        else()
-            set(TARGET_ARCH "64")
-        endif()
+    if (MD_ARCH STREQUAL "32" OR MD_ARCH STREQUAL "64")
+        set(TARGET_ARCH ${MD_ARCH})
     else()
         errorExit("ERROR: Specify correct MD_ARCH (-DMD_ARCH=64|32).")
     endif()
 else()
 # User defines ARCH through compiler flags
-    if ((${CMAKE_C_FLAGS} MATCHES "^.*-m32.*$") OR (${CMAKE_CXX_FLAGS} MATCHES "^.*-m32.*$"))
+    set(TARGET_ARCH "64") # 64 bits by default
+    if (CMAKE_SIZEOF_VOID_P EQUAL 4)
         set(TARGET_ARCH "32")
-    elseif ((${CMAKE_C_FLAGS} MATCHES "^.*-m64.*$") OR (${CMAKE_CXX_FLAGS} MATCHES "^.*-m64.*$"))
-        set(TARGET_ARCH "64")
-    else()
-        # default is required: 0 - if 64-bits host, 1 - if 32-bits host
-        set(TARGET_ARCH ${HOST_ARCH})
     endif()
 endif()
 
