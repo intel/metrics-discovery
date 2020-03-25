@@ -44,6 +44,7 @@ endif (COMMAND cmake_policy)
 
 set (PROJECT_NAME md)
 project (${PROJECT_NAME})
+set (LIB_NAME ${PROJECT_NAME})
 
 include(md_cmake_adapter.cmake)
 
@@ -224,26 +225,109 @@ set_property(TARGET ${PROJECT_NAME} PROPERTY VERSION ${MD_VERSION})
 set_property(TARGET ${PROJECT_NAME} PROPERTY SOVERSION ${MD_VERSION_MAJOR})
 
 #################################################################################
-# INSTALL
+# INSTALLER
 #################################################################################
 
-# pkg-config file
-set (PC_FILE lib${PROJECT_NAME}.pc)
-set (PC_IN ${PC_FILE}.in)
+set (API_HEADER_LOCATION "${BS_DIR_INC}/common/instrumentation/api/metrics_discovery_api.h")
 
-set (DEST_DIR ${CMAKE_INSTALL_PREFIX})
-set (LIB -l${PROJECT_NAME})
+if (${PLATFORM} STREQUAL linux) # linux
+    if (${TARGET_ARCH} STREQUAL 64)
+        set (CPACK_PACKAGE_ARCHITECTURE        "x86_64")
+        set (CPACK_DEBIAN_PACKAGE_ARCHITECTURE "amd64")
+        set (CPACK_RPM_PACKAGE_ARCHITECTURE    "x86_64")
+    else ()
+        set (CPACK_PACKAGE_ARCHITECTURE        "i386")
+        set (CPACK_DEBIAN_PACKAGE_ARCHITECTURE "i386")
+        set (CPACK_RPM_PACKAGE_ARCHITECTURE    "i386")
+    endif ()
 
-if ("${LIB_INSTALL_DIR}" STREQUAL "")
-    set (LIB_INSTALL_DIR "${CMAKE_INSTALL_PREFIX}/lib${LIB_SUFFIX}")
-endif()
-set (LIB_DIR ${LIB_INSTALL_DIR})
-configure_file (${PC_IN} ${CMAKE_BINARY_DIR}/${PC_FILE} @ONLY)
-install (FILES ${CMAKE_BINARY_DIR}/${PC_FILE} DESTINATION lib/pkgconfig)
+    # pkg-config
+    set (PC_FILE lib${LIB_NAME}.pc)
+    set (PC_IN ${PC_FILE}.in)
 
-# Library/header
-install (TARGETS ${PROJECT_NAME} DESTINATION ${LIB_INSTALL_DIR})
-install (FILES "${BS_DIR_INC}/common/instrumentation/api/metrics_discovery_api.h" DESTINATION include/mdapi)
+    set (DEST_DIR ${CMAKE_INSTALL_PREFIX})
+    set (LIB -l${PROJECT_NAME})
+
+    set (LIB_DIR ${CMAKE_INSTALL_PREFIX}/lib/${CPACK_PACKAGE_ARCHITECTURE}-linux-gnu)
+    configure_file (${PC_IN} ${CMAKE_BINARY_DIR}/${PC_FILE} @ONLY)
+
+    install (FILES ${CMAKE_BINARY_DIR}/${PC_FILE}
+        DESTINATION ${CMAKE_INSTALL_PREFIX}/lib/${CPACK_PACKAGE_ARCHITECTURE}-linux-gnu/pkgconfig
+        COMPONENT metrics-discovery-pkgconfig
+    )
+
+    # header
+    install (FILES ${API_HEADER_LOCATION}
+        DESTINATION ${CMAKE_INSTALL_PREFIX}/include
+        COMPONENT metrics-discovery-devel
+    )
+
+    # library
+    install (TARGETS ${LIB_NAME}
+        LIBRARY DESTINATION ${CMAKE_INSTALL_PREFIX}/lib/${CPACK_PACKAGE_ARCHITECTURE}-linux-gnu
+        COMPONENT metrics-discovery
+        NAMELINK_SKIP
+    )
+
+    install (TARGETS ${LIB_NAME}
+        LIBRARY DESTINATION ${CMAKE_INSTALL_PREFIX}/lib/${CPACK_PACKAGE_ARCHITECTURE}-linux-gnu
+        COMPONENT metrics-discovery-devel
+        NAMELINK_ONLY
+    )
+
+    # software package generator
+    if (LIB_CPACK_GENERATOR)
+        set (CPACK_GENERATOR ${LIB_CPACK_GENERATOR})
+    else ()
+        if (EXISTS "/etc/debian_version")
+            set (CPACK_GENERATOR "DEB")
+        elseif (EXISTS "/etc/redhat-release")
+            set (CPACK_GENERATOR "RPM")
+        else ()
+            set (CPACK_GENERATOR   "TXZ")
+            set (CPACK_SET_DESTDIR ON)
+        endif ()
+    endif ()
+
+    set (CPACK_DEBIAN_PACKAGE_MAINTAINER   "intel")
+    set (CPACK_PACKAGE_NAME                "intel")
+    set (CPACK_PACKAGE_VERSION             ${MD_VERSION})
+    set (CPACK_PACKAGE_INSTALL_DIRECTORY   ${CMAKE_INSTALL_PREFIX})
+    set (CPACK_DEBIAN_PACKAGE_DESCRIPTION  "Intel(R) Metrics Discovery Application Programming Interface")
+    set (CPACK_DEBIAN_PACKAGE_SHLIBDEPS    ON)
+    set (CPACK_RPM_PACKAGE_RELOCATABLE     TRUE)
+
+    if (DEFINED LIB_PACKAGE_RELEASE)
+        set (CPACK_DEBIAN_PACKAGE_RELEASE ${LIB_PACKAGE_RELEASE})
+        set (CPACK_RPM_PACKAGE_RELEASE    ${LIB_PACKAGE_RELEASE})
+    else ()
+        set (CPACK_DEBIAN_PACKAGE_RELEASE 1)
+        set (CPACK_RPM_PACKAGE_RELEASE    1)
+    endif ()
+
+    set (CPACK_DEBIAN_METRICS-DISCOVERY-PKGCONFIG_FILE_NAME  "intel-metrics-discovery-pkgconfig-${CPACK_PACKAGE_VERSION}-${CPACK_DEBIAN_PACKAGE_RELEASE}_${CPACK_DEBIAN_PACKAGE_ARCHITECTURE}.deb")
+    set (CPACK_RPM_METRICS-DISCOVERY-PKGCONFIG_FILE_NAME     "intel-metrics-discovery-pkgconfig-${CPACK_PACKAGE_VERSION}-${CPACK_RPM_PACKAGE_RELEASE}.${CPACK_RPM_PACKAGE_ARCHITECTURE}.rpm")
+    set (CPACK_ARCHIVE_METRICS-DISCOVERY-PKGCONFIG_FILE_NAME "intel-metrics-discovery-pkgconfig-${CPACK_PACKAGE_VERSION}-${CPACK_DEBIAN_PACKAGE_RELEASE}.${CPACK_PACKAGE_ARCHITECTURE}")
+
+    set (CPACK_DEBIAN_METRICS-DISCOVERY-DEVEL_FILE_NAME  "intel-metrics-discovery-devel-${CPACK_PACKAGE_VERSION}-${CPACK_DEBIAN_PACKAGE_RELEASE}_${CPACK_DEBIAN_PACKAGE_ARCHITECTURE}.deb")
+    set (CPACK_RPM_METRICS-DISCOVERY-DEVEL_FILE_NAME     "intel-metrics-discovery-devel-${CPACK_PACKAGE_VERSION}-${CPACK_RPM_PACKAGE_RELEASE}.${CPACK_RPM_PACKAGE_ARCHITECTURE}.rpm")
+    set (CPACK_ARCHIVE_METRICS-DISCOVERY-DEVEL_FILE_NAME "intel-metrics-discovery-devel-${CPACK_PACKAGE_VERSION}-${CPACK_DEBIAN_PACKAGE_RELEASE}.${CPACK_PACKAGE_ARCHITECTURE}")
+
+    set (CPACK_DEBIAN_METRICS-DISCOVERY_FILE_NAME  "intel-metrics-discovery-${CPACK_PACKAGE_VERSION}-${CPACK_DEBIAN_PACKAGE_RELEASE}_${CPACK_DEBIAN_PACKAGE_ARCHITECTURE}.deb")
+    set (CPACK_RPM_METRICS-DISCOVERY_FILE_NAME     "intel-metrics-discovery-${CPACK_PACKAGE_VERSION}-${CPACK_RPM_PACKAGE_RELEASE}.${CPACK_RPM_PACKAGE_ARCHITECTURE}.rpm")
+    set (CPACK_ARCHIVE_METRICS-DISCOVERY_FILE_NAME "intel-metrics-discovery-${CPACK_PACKAGE_VERSION}-${CPACK_DEBIAN_PACKAGE_RELEASE}.${CPACK_PACKAGE_ARCHITECTURE}")
+
+    set(CPACK_DEBIAN_METRICS-DISCOVERY-DEVEL_PACKAGE_DEPENDS "intel-metrics-discovery(=${CPACK_PACKAGE_VERSION})")
+    set(CPACK_RPM_METRICS-DISCOVERY-DEVEL_PACKAGE_REQUIRES "intel-metrics-discovery = ${CPACK_PACKAGE_VERSION}")
+
+    set (CPACK_DEB_COMPONENT_INSTALL     ON)
+    set (CPACK_RPM_COMPONENT_INSTALL     ON)
+    set (CPACK_ARCHIVE_COMPONENT_INSTALL ON)
+
+    set (CPACK_COMPONENTS_ALL metrics-discovery-pkgconfig metrics-discovery-devel metrics-discovery)
+
+    include (CPack)
+endif ()
 
 #################################################################################
 # DEBUG
@@ -257,7 +341,7 @@ message ("INFO: HOST_ARCH              = ${HOST_ARCH}")
 message ("INFO: TARGET_ARCH            = ${TARGET_ARCH}")
 message ("INFO: LINUX_DISTRO           = ${LINUX_DISTRO}")
 message ("INFO: DUMP_DIR               = ${DUMP_DIR}")
-message ("INFO: LIB_INSTALL_DIR        = ${LIB_INSTALL_DIR}")
+message ("INFO: LIB_INSTALL_DIR        = ${LIB_DIR}")
 message ("INFO: LIBDRM_SRC             = ${LIBDRM_SRC}")
 message ("INFO: DRM_LIB_PATH           = ${DRM_LIB_PATH}")
 message ("INFO: BS_DIR_INSTRUMENTATION = ${BS_DIR_INSTRUMENTATION}")
