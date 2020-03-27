@@ -41,7 +41,8 @@ Event based measurements require minimum Mesa version 18.2.
 2\. Run CMake generation:
 
 ```shell
-cmake .
+mkdir build && cd build
+cmake ..
 ```
 
 3\. Build:
@@ -60,6 +61,12 @@ make -j$(nproc)
 
 ```shell
 sudo make install
+```
+
+6\. Packaging:
+
+```shell
+make package
 ```
 
 *Note: To clear CMake params remove CMakeCache.txt, then regenerate.*
