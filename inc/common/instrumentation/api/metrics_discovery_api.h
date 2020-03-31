@@ -70,7 +70,7 @@ namespace MetricsDiscovery
 //*****************************************************************************/
 // API build number:
 //*****************************************************************************/
-    #define MD_API_BUILD_NUMBER_CURRENT 114
+    #define MD_API_BUILD_NUMBER_CURRENT 115
 
 //*****************************************************************************/
 // Completion codes:
@@ -935,6 +935,9 @@ Description:
     class IMetricSet_1_5 : public IMetricSet_1_4
     {
     public:
+        // To avoid hiding by 1.5 interface function
+        using IMetricSet_1_1::CalculateMetrics;
+
         // Update to 1.5 interface
         virtual IMetricSet_1_5*       GetComplementaryMetricSet( uint32_t index );
 
