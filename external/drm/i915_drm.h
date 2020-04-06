@@ -566,7 +566,7 @@ typedef struct drm_i915_irq_wait {
  * Revision of the i915-perf uAPI. The value returned helps determine what
  * i915-perf features are available. See drm_i915_perf_property_id.
  */
-#define I915_PARAM_PERF_REVISION	53
+#define I915_PARAM_PERF_REVISION	54
 
 /* Must be kept compact -- no holes and well documented */
 
