@@ -1,11 +1,10 @@
-prefix=@DEST_DIR@
-libdir=@LIB_DIR@/
-libpath=${libdir}
-includedir=${prefix}/include
+prefix=@CMAKE_INSTALL_PREFIX@
+libdir=@CMAKE_INSTALL_FULL_LIBDIR@
+includedir=@CMAKE_INSTALL_FULL_INCLUDEDIR@
 
-Name: Intel(R) Metrics Discovery Application Programming Interface
-Description: This software is a user mode library that provides access to GPU performance data.
+Name: @LIB_NAME@
+Description: Intel(R) Metrics Discovery Application Programming Interface
 Version: @MD_VERSION@
 
-Libs: -L${libpath} @LIB@
-Cflags: -I${includedir}/mdapi
+Libs: -L${libdir} -l@LIB@
+Cflags: -I${includedir}

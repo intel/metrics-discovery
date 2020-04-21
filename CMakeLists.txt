@@ -1,4 +1,4 @@
-# Copyright © 2019, Intel Corporation
+# Copyright © 2020, Intel Corporation
 #
 # Permission is hereby granted, free of charge, to any person obtaining a
 # copy of this software and associated documentation files (the "Software"),
@@ -42,9 +42,11 @@ endif (COMMAND cmake_policy)
 # TARGET
 #################################################################################
 
-set (PROJECT_NAME md)
+set (PROJECT_NAME metrics_discovery)
 project (${PROJECT_NAME})
-set (LIB_NAME ${PROJECT_NAME})
+
+set (LIB md)
+set (LIB_NAME libmd)
 
 include(md_cmake_adapter.cmake)
 
@@ -211,7 +213,7 @@ if ("${PLATFORM}" STREQUAL "linux")
     # linux
     add_library(${PROJECT_NAME} SHARED ${LOCAL_SRC_FILES})
     target_link_libraries(
-        ${PROJECT_NAME}                 # md
+        ${PROJECT_NAME}                 # metrics_discovery
         ${DRM_LIB_PATH}                 # drm
         rt
         pthread
@@ -223,6 +225,7 @@ set_property(TARGET ${PROJECT_NAME} PROPERTY POSITION_INDEPENDENT_CODE ON)
 set_metrics_discovery_version()
 set_property(TARGET ${PROJECT_NAME} PROPERTY VERSION ${MD_VERSION})
 set_property(TARGET ${PROJECT_NAME} PROPERTY SOVERSION ${MD_VERSION_MAJOR})
+set_property(TARGET ${PROJECT_NAME} PROPERTY OUTPUT_NAME ${LIB})
 
 #################################################################################
 # INSTALLER
@@ -231,6 +234,8 @@ set_property(TARGET ${PROJECT_NAME} PROPERTY SOVERSION ${MD_VERSION_MAJOR})
 set (API_HEADER_LOCATION "${BS_DIR_INC}/common/instrumentation/api/metrics_discovery_api.h")
 
 if (${PLATFORM} STREQUAL linux) # linux
+    include(GNUInstallDirs)
+
     if (${TARGET_ARCH} STREQUAL 64)
         set (CPACK_PACKAGE_ARCHITECTURE        "x86_64")
         set (CPACK_DEBIAN_PACKAGE_ARCHITECTURE "amd64")
@@ -242,35 +247,31 @@ if (${PLATFORM} STREQUAL linux) # linux
     endif ()
 
     # pkg-config
-    set (PC_FILE lib${LIB_NAME}.pc)
+    set (PC_FILE ${LIB_NAME}.pc)
     set (PC_IN ${PC_FILE}.in)
 
-    set (DEST_DIR ${CMAKE_INSTALL_PREFIX})
-    set (LIB -l${PROJECT_NAME})
-
-    set (LIB_DIR ${CMAKE_INSTALL_PREFIX}/lib/${CPACK_PACKAGE_ARCHITECTURE}-linux-gnu)
     configure_file (${PC_IN} ${CMAKE_BINARY_DIR}/${PC_FILE} @ONLY)
 
     install (FILES ${CMAKE_BINARY_DIR}/${PC_FILE}
-        DESTINATION ${CMAKE_INSTALL_PREFIX}/lib/${CPACK_PACKAGE_ARCHITECTURE}-linux-gnu/pkgconfig
+        DESTINATION ${CMAKE_INSTALL_LIBDIR}/pkgconfig
         COMPONENT metrics-discovery-pkgconfig
     )
 
     # header
     install (FILES ${API_HEADER_LOCATION}
-        DESTINATION ${CMAKE_INSTALL_PREFIX}/include
+        DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
         COMPONENT metrics-discovery-devel
     )
 
     # library
-    install (TARGETS ${LIB_NAME}
-        LIBRARY DESTINATION ${CMAKE_INSTALL_PREFIX}/lib/${CPACK_PACKAGE_ARCHITECTURE}-linux-gnu
+    install (TARGETS ${PROJECT_NAME}
+        LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
         COMPONENT metrics-discovery
         NAMELINK_SKIP
     )
 
-    install (TARGETS ${LIB_NAME}
-        LIBRARY DESTINATION ${CMAKE_INSTALL_PREFIX}/lib/${CPACK_PACKAGE_ARCHITECTURE}-linux-gnu
+    install (TARGETS ${PROJECT_NAME}
+        LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
         COMPONENT metrics-discovery-devel
         NAMELINK_ONLY
     )
@@ -341,7 +342,7 @@ message ("INFO: HOST_ARCH              = ${HOST_ARCH}")
 message ("INFO: TARGET_ARCH            = ${TARGET_ARCH}")
 message ("INFO: LINUX_DISTRO           = ${LINUX_DISTRO}")
 message ("INFO: DUMP_DIR               = ${DUMP_DIR}")
-message ("INFO: LIB_INSTALL_DIR        = ${LIB_DIR}")
+message ("INFO: LIB_INSTALL_DIR        = ${CMAKE_INSTALL_FULL_LIBDIR}")
 message ("INFO: LIBDRM_SRC             = ${LIBDRM_SRC}")
 message ("INFO: DRM_LIB_PATH           = ${DRM_LIB_PATH}")
 message ("INFO: BS_DIR_INSTRUMENTATION = ${BS_DIR_INSTRUMENTATION}")
