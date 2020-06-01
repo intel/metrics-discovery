@@ -91,21 +91,24 @@ endif ()
 # generic
 set (LOCAL_SRC_FILES ${LOCAL_SRC_FILES}
     # mdapi metrics definitions
-    ${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen/md_main_HSW.cpp
-    ${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen/md_main_BDW.cpp
-    ${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen/md_main_BXT.cpp
-    ${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen/md_main_SKL_GT2.cpp
-    ${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen/md_main_SKL_GT3.cpp
-    ${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen/md_main_SKL_GT4.cpp
-    ${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen/md_main_KBL_GT2.cpp
-    ${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen/md_main_KBL_GT3.cpp
-    ${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen/md_main_CFL_GT2.cpp
-    ${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen/md_main_CFL_GT3.cpp
-    ${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen/md_main_GLK.cpp
-    ${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen/md_main_ICL.cpp
-    ${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen/md_main_EHL.cpp
-    ${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen/md_main.cpp
+    ${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen/md_metrics_HSW.cpp
+    ${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen/md_metrics_BDW.cpp
+    ${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen/md_metrics_BXT.cpp
+    ${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen/md_metrics_SKL_GT2.cpp
+    ${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen/md_metrics_SKL_GT3.cpp
+    ${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen/md_metrics_SKL_GT4.cpp
+    ${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen/md_metrics_KBL_GT2.cpp
+    ${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen/md_metrics_KBL_GT3.cpp
+    ${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen/md_metrics_CFL_GT2.cpp
+    ${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen/md_metrics_CFL_GT3.cpp
+    ${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen/md_metrics_GLK.cpp
+    ${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen/md_metrics_ICL.cpp
+    ${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen/md_metrics_EHL.cpp
+    ${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen/md_metrics_TGL.cpp
+    ${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen/md_metrics_DG1.cpp
+    ${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen/md_metrics.cpp
     # mdapi core
+    ${BS_DIR_INSTRUMENTATION}/metrics_discovery/common/md_main.cpp
     ${BS_DIR_INSTRUMENTATION}/metrics_discovery/common/md_utils.cpp
     ${BS_DIR_INSTRUMENTATION}/metrics_discovery/common/md_internal.cpp
     ${BS_DIR_INSTRUMENTATION}/metrics_discovery/common/md_calculation.cpp

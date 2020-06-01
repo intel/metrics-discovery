@@ -70,7 +70,7 @@ namespace MetricsDiscovery
 //*****************************************************************************/
 // API build number:
 //*****************************************************************************/
-    #define MD_API_BUILD_NUMBER_CURRENT 116
+    #define MD_API_BUILD_NUMBER_CURRENT 118
 
 //*****************************************************************************/
 // Completion codes:
@@ -564,6 +564,7 @@ namespace MetricsDiscovery
         HW_UNIT_SUBSLICE_BANK,
         HW_UNIT_EU_UNIT,
         HW_UNIT_UNCORE,
+        HW_UNIT_DUALSUBSLICE,
         // ...
         HW_UNIT_LAST
 

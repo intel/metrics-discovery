@@ -26,6 +26,7 @@
 
 \*****************************************************************************/
 #include "md_internal.h"
+#include "md_metrics.h"
 
 #include <string.h>
 #include <stdlib.h>
