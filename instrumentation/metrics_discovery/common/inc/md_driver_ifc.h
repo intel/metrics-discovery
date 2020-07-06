@@ -32,6 +32,8 @@
 
 #include "instr_gt_driver_ifc.h"
 
+#include <vector>
+
 #define MD_SEMAPHORE_NAME_MAX_LENGTH 250
 
 using namespace MetricsDiscovery;
@@ -39,6 +41,7 @@ using namespace MetricsDiscovery;
 namespace MetricsDiscoveryInternal
 {
 /* Forward declarations */
+class CAdapterHandle;
 class CMetricSet;
 
 /******************************************************************************/
@@ -62,6 +65,33 @@ typedef enum EOverrideId
     OVERRIDE_ID_FLUSH_GPU_CACHES,
 } TOverrideId;
 
+/******************************************************************************/
+/* Adapter data:                                                              */
+/******************************************************************************/
+typedef struct SAdapterData
+{
+    CAdapterHandle*    Handle;
+    TAdapterParams_1_6 Params;
+} TAdapterData;
+
+/*****************************************************************************\
+
+Class:
+    CAdapterHandle
+
+Description:
+    Abstract adapter handle wrapper class.
+
+\*****************************************************************************/
+class CAdapterHandle
+{
+public:
+    virtual ~CAdapterHandle() = default;
+
+    virtual TCompletionCode Close() = 0;
+    virtual bool            IsValid() const = 0;
+};
+
 /*****************************************************************************\
 
 Class:
@@ -69,7 +99,7 @@ Class:
 
 Description:
     Abstract driver interface class.
-    Each implementation should derive from this class and implement static method GetInstance()
+    Each implementation should derive from this class and implement static method CreateInstance( CAdapterHandle& adapterHandle )
     to return object of this implementation.
 
 \*****************************************************************************/
@@ -79,12 +109,21 @@ public: // Destructor
     virtual ~CDriverInterface() { };
 
 public:
-    static CDriverInterface* GetInstance();
+    // Creation and debug settings static:
+    static CDriverInterface*       CreateInstance( CAdapterHandle& adapterHandle );
+    static void                    ReadDebugLogSettings();
+    static bool                    IsSupportEnableRequired();
 
-public: // Methods
-    // General
-    virtual const char*            GetDeviceName() = 0;
-    virtual bool                   GetNeedSupportEnable() = 0;
+    // Adapter enumeration static:
+    static TCompletionCode         GetAvailableAdapters( std::vector<TAdapterData>& adapters );
+
+    // Synchronization static:
+    static TCompletionCode         SemaphoreCreate( const char* name, void** semaphore );
+    static TSemaphoreWaitResult    SemaphoreWait( uint32_t milliseconds, void* semaphore );
+    static TCompletionCode         SemaphoreRelease( void** semaphore );
+
+    // General:
+    virtual TCompletionCode        ForceSupportDisable() = 0;
     virtual TCompletionCode        SendSupportEnableEscape( bool enable ) = 0;
     virtual TCompletionCode        SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM param, GTDIDeviceInfoParamExtOut* out ) = 0;
     virtual TCompletionCode        SendPmRegsConfig( TRegister** regVector, uint32_t regCount, uint32_t apiMask ) = 0;
@@ -94,12 +133,9 @@ public: // Methods
     virtual TCompletionCode        GetGpuCpuTimestamps( uint64_t* gpuTimestamp, uint64_t* cpuTimestamp, uint32_t* cpuId ) = 0;
     virtual TCompletionCode        SendGetCtxIdTagsEscape( TGetCtxTagsIdParams* params ) = 0;
 
-    // Synchronization
-    virtual TCompletionCode        SemaphoreCreate( const char* name, void** semaphore ) = 0;
-    virtual TSemaphoreWaitResult   SemaphoreWait( uint32_t milliseconds, void* semaphore ) = 0;
-    virtual TCompletionCode        SemaphoreRelease( void** semaphore ) = 0;
-    virtual TCompletionCode        LockConcurrentGroup( const char* name, void**semaphore ) = 0;
-    virtual TCompletionCode        UnlockConcurrentGroup( const char* name, void**semaphore ) = 0;
+    // Synchronization:
+    virtual TCompletionCode         LockConcurrentGroup( const char* name, void** semaphore )   = 0;
+    virtual TCompletionCode         UnlockConcurrentGroup( const char* name, void** semaphore ) = 0;
 
     // Stream
     virtual TCompletionCode        OpenIoStream( TStreamType streamType, CMetricSet* metricSet, const char* concurrentGroupName, uint32_t processId,

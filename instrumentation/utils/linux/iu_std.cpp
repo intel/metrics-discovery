@@ -270,6 +270,49 @@ size_t iu_strnlen_s( const char* str, size_t strSize )
 Group:
     Instrumentation Utils Standard OS Specific Functions
 
+Function:
+    iu_wstrtombs
+
+Description:
+    Converts wide-char cstring 'srcWstr' to standard cstring 'destStr'.
+
+Input:
+    char*          destStr  - destination cstring
+    size_t         destSize - 'destStr' buffer size
+    const wchar_t* wstr2    - wide-char cstring to convert
+    size_t         count    - in wide characters
+
+Output:
+    size_t - number of converted chars
+
+\*****************************************************************************/
+size_t iu_wstrtombs_s( char* destStr, size_t destSize, const wchar_t* srcWstr, size_t count )
+{
+    if( destStr == NULL || destSize == 0 || srcWstr == NULL )
+    {
+        IU_ASSERT( false );
+        return 0;
+    }
+    if( destSize <= count )
+    {
+        // Buffer too small
+        IU_ASSERT( false );
+        return 0;
+    }
+
+    size_t convertedChars = wcstombs( destStr, srcWstr, count );
+    if( convertedChars && convertedChars < destSize )
+    {
+        destStr[convertedChars-1] = '\0';   // Add null-character at the end
+    }
+    return convertedChars;
+}
+
+/*****************************************************************************\
+
+Group:
+    Instrumentation Utils Standard OS Specific Functions
+
 Method:
     iu_sprintf_s
 

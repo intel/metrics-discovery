@@ -92,9 +92,12 @@ using namespace MetricsDiscovery;
 
 namespace MetricsDiscoveryInternal
 {
+TCompletionCode GetNamedSemaphore( const char* semaphoreName, void** semaphorePtr );
+TCompletionCode ReleaseNamedSemaphore( void** semaphorePtr );
 
 int32_t         GetFileSize( FILE* pFile );
 char*           GetCopiedCString( const char* cstring );
+char*           GetCopiedCStringFromWcString( const wchar_t* wcstring );
 
 void            WriteCStringToFile( const char* cstring, FILE* pFile );
 void            WriteTTypedValueToFile( TTypedValue_1_0* typedValue, FILE* pFile );

@@ -38,6 +38,25 @@
   #define MD_STDCALL
 #endif // _MSC_VER
 
+//*****************************************************************************/
+// Helper macro to check required API version.
+// Combines major and minor into one, comparable 64bit value.
+//*****************************************************************************/
+#define MD_API_VERSION_COMBINE_MAJOR_MINOR( version ) \
+    ( ( uint64_t )( version ).MajorNumber << 32 | ( uint64_t )( version ).MinorNumber )
+
+//*****************************************************************************/
+// Macro to check required API version.
+// Uses TApiVersion_1_0 struct.
+//*****************************************************************************/
+#define MD_API_VERSION_AT_LEAST( requiredVersion, currentVersion ) \
+    ( MD_API_VERSION_COMBINE_MAJOR_MINOR( ( currentVersion ) ) > MD_API_VERSION_COMBINE_MAJOR_MINOR( ( requiredVersion ) ) || MD_API_VERSION_COMBINE_MAJOR_MINOR( ( currentVersion ) ) == MD_API_VERSION_COMBINE_MAJOR_MINOR( ( requiredVersion ) ) && ( currentVersion ).BuildNumber >= ( requiredVersion ).BuildNumber )
+
+//*****************************************************************************/
+// API build number:
+//*****************************************************************************/
+#define MD_API_BUILD_NUMBER_CURRENT 121
+
 namespace MetricsDiscovery
 {
 //*****************************************************************************/
@@ -57,24 +76,16 @@ namespace MetricsDiscovery
     typedef enum EMD_API_MINOR_VERSION
     {
         MD_API_MINOR_NUMBER_0       = 0,
-        MD_API_MINOR_NUMBER_1       = 1,         // CalculationAPI
-        MD_API_MINOR_NUMBER_2       = 2,         // OverridesAPI
-        MD_API_MINOR_NUMBER_3       = 3,         // BatchBuffer Sampling (aka DMA Sampling)
-        MD_API_MINOR_NUMBER_4       = 4,         // GT dependent MetricSets
-        MD_API_MINOR_NUMBER_5       = 5,         // MaxValue calculation for CalculationAPI
-        MD_API_MINOR_NUMBER_CURRENT = MD_API_MINOR_NUMBER_5,
+        MD_API_MINOR_NUMBER_1       = 1, // CalculationAPI
+        MD_API_MINOR_NUMBER_2       = 2, // OverridesAPI
+        MD_API_MINOR_NUMBER_3       = 3, // BatchBuffer Sampling (aka DMA Sampling)
+        MD_API_MINOR_NUMBER_4       = 4, // GT dependent MetricSets
+        MD_API_MINOR_NUMBER_5       = 5, // MaxValue calculation for CalculationAPI
+        MD_API_MINOR_NUMBER_6       = 6, // Multi adapter support
+        MD_API_MINOR_NUMBER_CURRENT = MD_API_MINOR_NUMBER_6,
         MD_API_MINOR_NUMBER_CEIL    = 0xFFFFFFFF
-
     } MD_API_MINOR_VERSION;
 
-//*****************************************************************************/
-// API build number:
-//*****************************************************************************/
-    #define MD_API_BUILD_NUMBER_CURRENT 118
-
-//*****************************************************************************/
-// Completion codes:
-//*****************************************************************************/
     typedef enum ECompletionCode
     {
         CC_OK                      = 0,
@@ -196,20 +207,22 @@ namespace MetricsDiscovery
         TTypedValue_1_0 SymbolTypedValue;
 
     } TGlobalSymbol_1_0;
+//*******************************************************************************/
+// API version:
+//*******************************************************************************/
+    typedef struct SApiVersion_1_0
+    {
+        uint32_t MajorNumber;
+        uint32_t MinorNumber;
+        uint32_t BuildNumber;
+    } TApiVersion_1_0;
 
 //*******************************************************************************/
 // Global parameters of Metrics Device:
 //*******************************************************************************/
     typedef struct SMetricsDeviceParams_1_0
     {
-        // API version
-        struct SApiVersion
-        {
-            uint32_t MajorNumber;
-            uint32_t MinorNumber;
-            uint32_t BuildNumber;
-        } Version;
-
+        TApiVersion_1_0 Version;
         uint32_t ConcurrentGroupsCount;
 
         uint32_t GlobalSymbolsCount;
@@ -337,6 +350,94 @@ namespace MetricsDiscovery
     } TOverrideMode;
 
 //*******************************************************************************/
+// Adapter capability flags:
+//*******************************************************************************/
+    typedef enum EAdapterCapability
+    {
+        ADAPTER_CAPABILITY_UNDEFINED        = 0,
+        ADAPTER_CAPABILITY_RENDER_SUPPORTED = 1 << 0,
+    } TAdapterCapability;
+
+//*******************************************************************************/
+    // Adapter types:
+//*******************************************************************************/
+    typedef enum EAdapterType
+    {
+        ADAPTER_TYPE_UNDEFINED = 0,
+        ADAPTER_TYPE_INTEGRATED,
+        ADAPTER_TYPE_DISCRETE,
+    } TAdapterType;
+
+//*******************************************************************************/
+    // Adapter ID types:
+//*******************************************************************************/
+    typedef enum EAdapterIdType
+    {
+        ADAPTER_ID_TYPE_UNDEFINED = 0,
+        ADAPTER_ID_TYPE_LUID,
+        ADAPTER_ID_TYPE_MAJOR_MINOR,
+    } TAdapterIdType;
+
+//*******************************************************************************/
+    // LUID (locally unique identifier) adapter ID:
+//*******************************************************************************/
+    typedef struct SAdapterIdLuid_1_6
+    {
+        uint32_t LowPart;
+        int32_t  HighPart;
+    } TAdapterIdLuid_1_6;
+
+    //////////////////////////////////////////////////////////////////////////////////
+    // Major / minor pair adapter ID:
+    //////////////////////////////////////////////////////////////////////////////////
+    typedef struct SAdapterIdMajorMinor_1_6
+    {
+        int32_t Major;
+        int32_t Minor;
+    } TAdapterIdMajorMinor_1_6;
+
+//*******************************************************************************/
+// Adapter ID:
+//*******************************************************************************/
+    typedef struct SAdapterId_1_6
+    {
+        TAdapterIdType Type;
+        union
+        {
+            TAdapterIdLuid_1_6       Luid;
+            TAdapterIdMajorMinor_1_6 MajorMinor;
+        };
+    } TAdapterId_1_6;
+
+//*******************************************************************************/
+// Global parameters of GPU adapter:
+//*******************************************************************************/
+    typedef struct SAdapterParams_1_6
+    {
+        const char*    ShortName;
+        TAdapterId_1_6 SystemId; // Operating system specific adapter id
+        uint32_t       VendorId;
+        uint32_t       SubVendorId;
+        uint32_t       DeviceId;
+        uint32_t       Platform;
+        uint32_t       BusNumber;
+        uint32_t       DeviceNumber;
+        uint32_t       FunctionNumber;
+        TAdapterType   Type;           // Adapter type, e.g. integrated, discrete
+        uint32_t       CapabilityMask; // Consists of TAdapterCapability flags, e.g. RENDER_SUPPORTED
+    } TAdapterParams_1_6;
+
+//*******************************************************************************/
+// Global parameters of Adapter Group:
+//*******************************************************************************/
+    typedef struct SAdapterGroupParams_1_6
+    {
+        // API version
+        TApiVersion_1_0 Version;
+        uint32_t        AdapterCount;
+    } TAdapterGroupParams_1_6;
+
+//*******************************************************************************/
 // Global parameters of Concurrent Group:
 //*******************************************************************************/
     typedef struct SConcurrentGroupParams_1_0
@@ -403,7 +504,7 @@ namespace MetricsDiscovery
     {
         uint32_t Value;
 
-    } SSetDriverOverrideParams_1_2;
+    } TSetDriverOverrideParams_1_2;
 
 //*******************************************************************************/
 // API specific id:
@@ -944,8 +1045,14 @@ Description:
 
         // CalculateMetrics extended with max values calculation.
         // Optional param 'outMaxValues' should have a memory for at least 'MetricCount * RawReportCount' values, can be NULL.
-        virtual TCompletionCode       CalculateMetrics( const unsigned char* rawData, uint32_t rawDataSize, TTypedValue_1_0* out,
-            uint32_t outSize, uint32_t* outReportCount, TTypedValue_1_0* outMaxValues, uint32_t outMaxValuesSize );
+        virtual TCompletionCode CalculateMetrics(
+            const unsigned char* rawData,
+            uint32_t             rawDataSize,
+            TTypedValue_1_0*     out,
+            uint32_t             outSize,
+            uint32_t*            outReportCount,
+            TTypedValue_1_0*     outMaxValues,
+            uint32_t             outMaxValuesSize );
     };
 
 /*****************************************************************************\
@@ -1153,15 +1260,71 @@ Description:
         virtual IConcurrentGroup_1_5* GetConcurrentGroup( uint32_t index );
     };
 
+/*****************************************************************************\
+
+Class:
+    IAdapter_1_6
+
+Description:
+    Abstract interface for GPU adapter.
+
+    New:
+        - GetParams:                     To get this adapter params
+        - Reset:                         To reset this adapter state
+        - OpenMetricsDevice
+        - OpenMetricsDeviceFromFile
+        - CloseMetricsDevice
+        - SaveMetricsDeviceToFile
+
+\*****************************************************************************/
+    class IAdapter_1_6
+    {
+    public:
+        virtual ~IAdapter_1_6();
+        virtual const TAdapterParams_1_6* GetParams( void ) const;
+        virtual TCompletionCode           Reset();
+        virtual TCompletionCode           OpenMetricsDevice( IMetricsDevice_1_5** metricsDevice );
+        virtual TCompletionCode           OpenMetricsDeviceFromFile( const char* fileName, void* openParams, IMetricsDevice_1_5** metricsDevice );
+        virtual TCompletionCode           CloseMetricsDevice( IMetricsDevice_1_5* metricsDevice );
+        virtual TCompletionCode           SaveMetricsDeviceToFile( const char* fileName, void* saveParams, IMetricsDevice_1_5* metricsDevice );
+    };
+
+/*****************************************************************************\
+
+Class:
+    IAdapterGroup_1_6
+
+Description:
+    Abstract interface for the GPU adapters root object.
+
+    New:
+    - GetParams:                     To get this adapter group params
+    - GetAdapter:                    To enumerate available GPU adapters
+    - Close:                         To close this adapter group
+
+\*****************************************************************************/
+    class IAdapterGroup_1_6
+    {
+    public:
+        virtual ~IAdapterGroup_1_6();
+        virtual const TAdapterGroupParams_1_6* GetParams( void ) const;
+        virtual IAdapter_1_6*                  GetAdapter( uint32_t index );
+        virtual TCompletionCode                Close();
+    };
+
 #ifdef __cplusplus
-    extern "C" {
+    extern "C"
+    {
 #endif
 
-    // Factory functions
-    typedef TCompletionCode (MD_STDCALL *OpenMetricsDevice_fn)(IMetricsDevice_1_5** device);
-    typedef TCompletionCode (MD_STDCALL *OpenMetricsDeviceFromFile_fn)(const char* fileName, void* openParams, IMetricsDevice_1_5** device);
-    typedef TCompletionCode (MD_STDCALL *CloseMetricsDevice_fn)(IMetricsDevice_1_5* device);
-    typedef TCompletionCode (MD_STDCALL *SaveMetricsDeviceToFile_fn)(const char* fileName, void* saveParams, IMetricsDevice_1_5* device);
+        // [Current] Factory functions
+        typedef TCompletionCode( MD_STDCALL* OpenAdapterGroup_fn )( IAdapterGroup_1_6** adapterGroup );
+
+        // [Legacy] Factory functions
+        typedef TCompletionCode( MD_STDCALL* OpenMetricsDevice_fn )( IMetricsDevice_1_5** metricsDevice );
+        typedef TCompletionCode( MD_STDCALL* OpenMetricsDeviceFromFile_fn )( const char* fileName, void* openParams, IMetricsDevice_1_5** metricsDevice );
+        typedef TCompletionCode( MD_STDCALL* CloseMetricsDevice_fn )( IMetricsDevice_1_5* metricsDevice );
+        typedef TCompletionCode( MD_STDCALL* SaveMetricsDeviceToFile_fn )( const char* fileName, void* saveParams, IMetricsDevice_1_5* metricsDevice );
 
 #ifdef __cplusplus
     }

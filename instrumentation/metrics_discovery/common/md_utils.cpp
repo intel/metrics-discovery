@@ -34,6 +34,97 @@ using namespace MetricsDiscovery;
 
 namespace MetricsDiscoveryInternal
 {
+/*****************************************************************************\
+
+Group:
+    Metrics Discovery Utils
+
+Method:
+    GetNamedSemaphore
+
+Description:
+    Creates / Opens semaphore and waits 1s if needed. *CC_OK* if wait was successful.
+
+Input:
+    const char* semaphoreName - semaphore name
+    void**      semaphorePtr  - (out) pointer to the newly created sempahore
+
+Output:
+    TCompletionCode           - result, *CC_OK* means success
+
+\*****************************************************************************/
+TCompletionCode GetNamedSemaphore( const char* semaphoreName, void** semaphorePtr )
+{
+    MD_LOG_ENTER();
+    MD_CHECK_PTR_RET( semaphoreName, CC_ERROR_INVALID_PARAMETER );
+    MD_CHECK_PTR_RET( semaphorePtr, CC_ERROR_INVALID_PARAMETER );
+
+    TCompletionCode retVal = CC_OK;
+
+    if( !(*semaphorePtr) )
+    {
+        if( CDriverInterface::SemaphoreCreate( semaphoreName, semaphorePtr ) != CC_OK )
+        {
+            MD_LOG( LOG_ERROR, "semaphore create failed" );
+            return CC_ERROR_GENERAL;
+        }
+    }
+
+    TSemaphoreWaitResult result = CDriverInterface::SemaphoreWait( 1000L, *semaphorePtr ); // Wait 1 sec
+    switch( result )
+    {
+        case WAIT_RESULT_SUCCESSFUL: // The semaphore object was signaled
+            MD_LOG( LOG_DEBUG, "semaphore wait successful" );
+            retVal = CC_OK;
+            break;
+
+        case WAIT_RESULT_TIMEOUT: // A time-out occurred
+            MD_LOG( LOG_DEBUG, "semaphore wait timeout" );
+            retVal = CC_ERROR_GENERAL;
+            break;
+
+        default:
+            retVal = CC_ERROR_GENERAL;
+            MD_LOG( LOG_ERROR, "semaphore wait error" );
+            break;
+    }
+
+    MD_LOG_EXIT();
+    return retVal;
+}
+
+/*****************************************************************************\
+
+Group:
+    Metrics Discovery Utils
+
+Method:
+    ReleaseNamedSemaphore
+
+Description:
+    Releases semaphore.
+
+Input:
+    void** semaphorePtr - pointer to the semaphore
+
+Output:
+    TCompletionCode     - result, *CC_OK* means success
+
+\*****************************************************************************/
+TCompletionCode ReleaseNamedSemaphore( void** semaphorePtr )
+{
+    MD_LOG_ENTER();
+
+    if( CDriverInterface::SemaphoreRelease( semaphorePtr ) != CC_OK )
+    {
+        // Error while releasing semaphore
+        MD_LOG( LOG_ERROR, "semaphore release failed" );
+        return CC_ERROR_GENERAL;
+    }
+
+    MD_LOG_EXIT();
+    return CC_OK;
+}
 
 /*****************************************************************************\
 
@@ -92,10 +183,46 @@ char* GetCopiedCString( const char* cstring )
         return NULL;
     }
 
-    size_t strLength = strlen( cstring ) + 1;
-    char* copiedCString = new (std::nothrow) char[ strLength ];
+    size_t strLength     = strlen( cstring ) + 1;
+    char*  copiedCString = new (std::nothrow) char[strLength](); // Initialize all to 0
     MD_CHECK_PTR_RET( copiedCString, NULL );
+
     iu_strcpy_s( copiedCString, strLength, cstring );
+
+    return copiedCString;
+}
+
+/*****************************************************************************\
+
+Group:
+    Metrics Discovery Utils
+
+Function:
+    GetCopiedCStringFromWcString
+
+Description:
+    Allocates memory and copies given wide-char cstring. Copy is returned.
+    It HAVE TO be deleted later.
+
+Input:
+    const wchar_t* wcstring - wide-char cstring to be copied
+
+Output:
+    char*                   - copied cstring
+
+\*****************************************************************************/
+char* GetCopiedCStringFromWcString( const wchar_t* wcstring )
+{
+    if( wcstring == NULL )
+    {
+        return NULL;
+    }
+
+    size_t wstrLength    = wcslen( wcstring );
+    char*  copiedCString = new (std::nothrow) char[wstrLength + 1](); // One more for '\0', initialize all to 0
+    MD_CHECK_PTR_RET( copiedCString, NULL );
+
+    iu_wstrtombs_s( copiedCString, wstrLength + 1, wcstring, wstrLength );
 
     return copiedCString;
 }

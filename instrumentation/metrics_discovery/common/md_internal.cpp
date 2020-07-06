@@ -26,6 +26,7 @@
 
 \*****************************************************************************/
 #include "md_internal.h"
+#include "md_per_platform_preamble.h"
 #include "md_metrics.h"
 
 #include <string.h>
@@ -115,9 +116,58 @@ namespace MetricsDiscovery
     IMetricSet_1_5*             IInternalConcurrentGroup::AddCustomMetricSet( TAddCustomMetricSetParams* params, IMetricSet_1_0* referenceMetricSet, bool copyInformationOnly )
                                                                                                         { return NULL; }
 
-    IInternalMetricSet::~IInternalMetricSet() {}
-    IMetric_1_0*                IInternalMetricSet::AddCustomMetric( TAddCustomMetricParams* params )   { return NULL; }
-}
+    IInternalMetricSet::~IInternalMetricSet()
+    {
+    }
+    IMetric_1_0* IInternalMetricSet::AddCustomMetric( TAddCustomMetricParams* params )
+    {
+        return NULL;
+    }
+
+    IAdapterGroup_1_6::~IAdapterGroup_1_6()
+    {
+    }
+    TCompletionCode IAdapterGroup_1_6::Close( void )
+    {
+        return CC_ERROR_NOT_SUPPORTED;
+    }
+    const TAdapterGroupParams_1_6* IAdapterGroup_1_6::GetParams( void ) const
+    {
+        return NULL;
+    }
+    IAdapter_1_6* IAdapterGroup_1_6::GetAdapter( uint32_t index )
+    {
+        return NULL;
+    }
+
+    IAdapter_1_6::~IAdapter_1_6()
+    {
+    }
+    const TAdapterParams_1_6* IAdapter_1_6::GetParams( void ) const
+    {
+        return NULL;
+    }
+    TCompletionCode IAdapter_1_6::Reset( void )
+    {
+        return CC_ERROR_NOT_SUPPORTED;
+    }
+    TCompletionCode IAdapter_1_6::OpenMetricsDevice( IMetricsDevice_1_5** metricsDevice )
+    {
+        return CC_ERROR_NOT_SUPPORTED;
+    }
+    TCompletionCode IAdapter_1_6::OpenMetricsDeviceFromFile( const char* fileName, void* openParams, IMetricsDevice_1_5** metricsDevice )
+    {
+        return CC_ERROR_NOT_SUPPORTED;
+    }
+    TCompletionCode IAdapter_1_6::CloseMetricsDevice( IMetricsDevice_1_5* metricsDevice )
+    {
+        return CC_ERROR_NOT_SUPPORTED;
+    }
+    TCompletionCode IAdapter_1_6::SaveMetricsDeviceToFile( const char* fileName, void* saveParams, IMetricsDevice_1_5* metricsDevice )
+    {
+        return CC_ERROR_NOT_SUPPORTED;
+    }
+} // namespace MetricsDiscovery
 
 namespace MetricsDiscoveryInternal
 {
@@ -181,142 +231,6 @@ static TMetricGroupNameIdPair GroupNamePairs[] = {
         { "Resource Streamer", METRIC_GROUP_NAME_ID_RS,                                                   METRIC_GROUP_LEVEL_2 },
         { "Vertex Fetch",      METRIC_GROUP_NAME_ID_VF,                                                   METRIC_GROUP_LEVEL_2 }
 };
-
-static CDriverInterface* g_driverInterface = NULL;
-
-/*****************************************************************************\
-
-Group:
-    Metrics Discovery Utils
-
-Method:
-    GetDriverInterface
-
-Description:
-    Obtains object to the driver interface.
-
-Output:
-    CDriverInterface* - driver interface
-
-\*****************************************************************************/
-CDriverInterface* GetDriverIfc()
-{
-    if( g_driverInterface == NULL )
-    {
-        g_driverInterface = CDriverInterface::GetInstance();
-    }
-
-    return g_driverInterface;
-}
-
-/*****************************************************************************\
-
-Group:
-    Metrics Discovery Utils
-
-Method:
-    DestoryDriverInterface
-
-Description:
-    Destroys driver interface
-
-\*****************************************************************************/
-void DestroyDriverIfc()
-{
-    MD_SAFE_DELETE( g_driverInterface );
-}
-
-/*****************************************************************************\
-
-Group:
-    Metrics Discovery Utils
-
-Method:
-    GetOpenCloseSemaphore
-
-Description:
-    Creates / Opens semaphore and waits 1s if needed. *CC_OK* if wait was successful.
-
-Input:
-    void** semaphorePtr - (out) pointer to the newly created sempahore
-
-Output:
-    TCompletionCode     - result, *CC_OK* is ok
-
-\*****************************************************************************/
-TCompletionCode GetOpenCloseSemaphore( void** semaphorePtr )
-{
-    MD_LOG_ENTER();
-    TCompletionCode   retVal          = CC_OK;
-    CDriverInterface* driverInterface = GetDriverIfc();
-    MD_CHECK_PTR_RET( driverInterface, CC_ERROR_NO_MEMORY );
-
-    if( !(*semaphorePtr) )
-    {
-        if( driverInterface->SemaphoreCreate( "OpenClose", semaphorePtr ) != CC_OK )
-        {
-            MD_LOG(LOG_ERROR, "semaphore create failed");
-            return CC_ERROR_GENERAL;
-        }
-    }
-
-    TSemaphoreWaitResult result = driverInterface->SemaphoreWait( 1000L, *semaphorePtr ); // Wait 1 sec
-    switch( result )
-    {
-        case WAIT_RESULT_SUCCESSFUL: // The semaphore object was signaled
-            MD_LOG(LOG_DEBUG, "semaphore wait successful");
-            retVal = CC_OK;
-            break;
-
-        case WAIT_RESULT_TIMEOUT: // A time-out occurred
-            MD_LOG(LOG_DEBUG, "semaphore wait timeout");
-            retVal = CC_ERROR_GENERAL;
-            break;
-
-        default:
-            retVal = CC_ERROR_GENERAL;
-            MD_LOG(LOG_ERROR, "semaphore wait error");
-            break;
-    }
-
-    MD_LOG_EXIT();
-    return retVal;
-}
-
-/*****************************************************************************\
-
-Group:
-    Metrics Discovery Utils
-
-Method:
-    ReleaseOpenCloseSemaphore
-
-Description:
-    Releases semaphore.
-
-Input:
-    void** semaphore - pointer to the semaphore
-
-Output:
-    TCompletionCode  - result, *CC_OK* is ok
-
-\*****************************************************************************/
-TCompletionCode ReleaseOpenCloseSemaphore( void** semaphore )
-{
-    MD_LOG_ENTER();
-    CDriverInterface* driverInterface = GetDriverIfc();
-    MD_CHECK_PTR_RET( driverInterface, CC_ERROR_NO_MEMORY );
-
-    if( driverInterface->SemaphoreRelease( semaphore ) != CC_OK )
-    {
-        // ERROR while releasing semaphore
-        MD_LOG(LOG_ERROR, "semaphore release failed");
-        return CC_ERROR_GENERAL;
-    }
-
-    MD_LOG_EXIT();
-    return CC_OK;
-}
 
 /*****************************************************************************\
 
@@ -470,6 +384,1178 @@ static TCompletionCode SetEquation( CMetricsDevice* device, CEquation** equation
     }
 
     return ret;
+}
+
+/*****************************************************************************\
+
+Class:
+    CAdapterGroup
+
+Global variable:
+    m_openCloseSemaphore
+
+Description:
+    Semaphore used for controlling parallel Open/CloseAdapterGroup calls.
+
+\*****************************************************************************/
+void* CAdapterGroup::m_openCloseSemaphore    = NULL;
+
+/*****************************************************************************\
+
+Class:
+    CAdapterGroup
+
+Global variable:
+    m_agRefCounter
+
+Description:
+    Adapter group reference counter.
+
+\*****************************************************************************/
+uint32_t CAdapterGroup::m_agRefCounter       = 0;
+
+/*****************************************************************************\
+
+Class:
+    CAdapterGroup
+
+Global variable:
+    m_adapterGroup
+
+Description:
+    Adapter group global instance.
+
+\*****************************************************************************/
+CAdapterGroup* CAdapterGroup::m_adapterGroup = NULL;
+
+/*****************************************************************************\
+
+Class:
+    CAdapterGroup
+
+Method:
+    CAdapterGroup
+
+Description:
+    Constructor.
+
+\*****************************************************************************/
+CAdapterGroup::CAdapterGroup()
+    : m_params{}
+    , m_defaultAdapter( NULL )
+    , m_adapterVector( NULL )
+{
+    m_params.Version.MajorNumber = MD_API_MAJOR_NUMBER_CURRENT;
+    m_params.Version.MinorNumber = MD_API_MINOR_NUMBER_CURRENT;
+    m_params.Version.BuildNumber = MD_API_BUILD_NUMBER_CURRENT;
+
+    m_adapterVector              = new (std::nothrow) Vector<CAdapter*>( ADAPTER_VECTOR_INCREASE );
+}
+
+/*****************************************************************************\
+
+Class:
+    CAdapterGroup
+
+Method:
+    ~CAdapterGroup
+
+Description:
+    Deallocates memory.
+
+\*****************************************************************************/
+CAdapterGroup::~CAdapterGroup()
+{
+    MD_SAFE_DELETE( m_adapterVector );
+}
+
+/*****************************************************************************\
+
+Class:
+    CAdapterGroup
+
+Method:
+    GetParams
+
+Description:
+    Returns adapter group params.
+
+Output:
+    const TAdapterGroupParams_1_6* - adapter group params
+
+\*****************************************************************************/
+const TAdapterGroupParams_1_6* CAdapterGroup::GetParams() const
+{
+    return &m_params;
+}
+
+/*****************************************************************************\
+
+Class:
+    CAdapterGroup
+
+Method:
+    GetAdapter
+
+Description:
+   Returns chosen adapter or null if index doesn't exist.
+
+Input:
+    uint32_t index - index of a chosen adapter
+
+Output:
+    IAdapter_1_6*  - chosen adapter or null
+
+\*****************************************************************************/
+IAdapter_1_6* CAdapterGroup::GetAdapter( uint32_t index )
+{
+    MD_CHECK_PTR_RET( m_adapterVector, NULL );
+
+    if( index < m_adapterVector->GetCount() )
+    {
+        return (*m_adapterVector)[index];
+    }
+
+    return NULL;
+}
+
+/*****************************************************************************\
+
+Class:
+    CAdapterGroup
+
+Method:
+    Close
+
+Description:
+    Decreases adapter group reference counter and closes it (frees up recourses)
+    if the counter reaches 0.
+
+Output:
+    TCompletionCode - CC_OK or CC_STILL_INITIALIZED means success
+
+\*****************************************************************************/
+TCompletionCode CAdapterGroup::Close()
+{
+    MD_LOG_ENTER();
+    MD_ASSERT( this == m_adapterGroup );
+
+    TCompletionCode retVal = GetOpenCloseSemaphore();
+    if( retVal != CC_OK )
+    {
+        MD_LOG( LOG_ERROR, "Get semaphore failed" );
+        MD_LOG_EXIT();
+        return retVal;
+    }
+
+    if( retVal == CC_OK )
+    {
+        if( m_agRefCounter > 1 )
+        {
+            m_agRefCounter--;
+            retVal = CC_STILL_INITIALIZED;
+        }
+        else if( m_agRefCounter == 1 )
+        {
+            // Important: 'this' (current object) is deleted here
+            MD_SAFE_DELETE( m_adapterGroup );
+            m_agRefCounter = 0;
+            retVal         = CC_OK;
+        }
+        else
+        {
+            retVal = CC_ERROR_GENERAL;
+        }
+    }
+
+    ReleaseOpenCloseSemaphore();
+
+    MD_LOG_EXIT();
+    return retVal;
+}
+
+/*****************************************************************************\
+
+Class:
+    CAdapterGroup
+
+Method:
+    Open
+
+Description:
+    Opens main MDAPI root object - adapter group or retrieves an instance
+    opened before. Only one instance of adapter group may be created, all
+    Open() calls are reference counted.
+
+Input:
+    IAdapterGroup_1_6** adapterGroup - [out] created / retrieved adapter group
+
+Output:
+    TCompletionCode                  - CC_OK or CC_ALREADY_INITIALIZED means success
+
+\*****************************************************************************/
+TCompletionCode CAdapterGroup::Open( IAdapterGroup_1_6** adapterGroup )
+{
+    MD_LOG_ENTER();
+    MD_CHECK_PTR_RET( adapterGroup, CC_ERROR_INVALID_PARAMETER );
+
+    TCompletionCode retVal = GetOpenCloseSemaphore();
+    if( retVal != CC_OK )
+    {
+        MD_LOG( LOG_ERROR, "Get semaphore failed" );
+        MD_LOG_EXIT();
+        return retVal;
+    }
+
+    if( m_adapterGroup )
+    {
+        *adapterGroup = m_adapterGroup;
+        retVal        = CC_ALREADY_INITIALIZED;
+        m_agRefCounter++;
+    }
+    else
+    {
+        // Read global debug log settings
+        CDriverInterface::ReadDebugLogSettings();
+
+        retVal = CreateAdapterGroup( adapterGroup );
+        if( retVal == CC_OK )
+        {
+            m_agRefCounter++;
+        }
+    }
+
+    ReleaseOpenCloseSemaphore();
+
+    MD_LOG_EXIT();
+    return retVal;
+}
+
+
+/*****************************************************************************\
+
+Class:
+    CAdapterGroup
+
+Method:
+    IsOpened
+
+Description:
+    Checks whether adapter group was opened (created) before.
+
+Output:
+    bool - true if adapter group instance exists (was created before)
+
+\*****************************************************************************/
+bool CAdapterGroup::IsOpened()
+{
+    return m_adapterGroup != NULL;
+}
+
+/*****************************************************************************\
+
+Class:
+    CAdapterGroup
+
+Method:
+    Get
+
+Description:
+    Returns static adapter group instance.
+
+Output:
+    CAdapterGroup* - adapter group instance, may be null if it doesn't exists
+
+\*****************************************************************************/
+CAdapterGroup* CAdapterGroup::Get()
+{
+    return m_adapterGroup;
+}
+
+/*****************************************************************************\
+
+Class:
+    CAdapterGroup
+
+Method:
+    GetOpenCloseSemaphore
+
+Description:
+    Acquires semaphore used during adapter group open / close operations.
+
+Output:
+    TCompletionCode - CC_OK means success
+
+\*****************************************************************************/
+TCompletionCode CAdapterGroup::GetOpenCloseSemaphore()
+{
+    return GetNamedSemaphore( "AdOpenClose", &m_openCloseSemaphore );
+}
+
+/*****************************************************************************\
+
+Class:
+    CAdapterGroup
+
+Method:
+    ReleaseOpenCloseSemaphore
+
+Description:
+    Releases semaphore used during adapter group open / close operations.
+
+Output:
+    TCompletionCode - CC_OK means success
+
+\*****************************************************************************/
+TCompletionCode CAdapterGroup::ReleaseOpenCloseSemaphore()
+{
+    return ReleaseNamedSemaphore( &m_openCloseSemaphore );
+}
+
+/*****************************************************************************\
+
+Class:
+    CAdapterGroup
+
+Method:
+    CreateAdapterGroup
+
+Description:
+    Creates adapter group along with the whole adapter tree, including
+    adapter enumeration.
+
+Input:
+    IAdapterGroup_1_6** adapterGroup - [optional] created adapter group
+
+Output:
+    TCompletionCode                  - CC_OK if success
+
+\*****************************************************************************/
+TCompletionCode CAdapterGroup::CreateAdapterGroup( IAdapterGroup_1_6** adapterGroup )
+{
+    MD_ASSERT( m_adapterGroup == NULL );
+
+    m_adapterGroup = new (std::nothrow) CAdapterGroup();
+    MD_CHECK_PTR_RET( m_adapterGroup, CC_ERROR_NO_MEMORY );
+
+    TCompletionCode ret = m_adapterGroup->CreateAdapterTree();
+    if( ret != CC_OK )
+    {
+        MD_SAFE_DELETE( m_adapterGroup );
+        return ret;
+    }
+
+    if( adapterGroup )
+    {
+        *adapterGroup = m_adapterGroup;
+    }
+
+    return ret;
+}
+
+/*****************************************************************************\
+
+Class:
+    CAdapterGroup
+
+Method:
+    GetDefaultAdapter
+
+Description:
+    Returns default adapter chosen during initialization.
+
+Output:
+    CAdapter* - default adapter, may be null if no adapters are available
+
+\*****************************************************************************/
+CAdapter* CAdapterGroup::GetDefaultAdapter()
+{
+    MD_LOG( LOG_DEBUG, "Returned default adapter: %p", m_defaultAdapter );
+    return m_defaultAdapter;
+}
+
+/*****************************************************************************\
+
+Class:
+    CAdapterGroup
+
+Method:
+    CreateAdapterTree
+
+Description:
+    Creates the whole adapter tree. Includes available adapter discovery,
+    creating adapter objects and filling their data.
+
+Output:
+    TCompletionCode - CC_OK means success
+
+\*****************************************************************************/
+TCompletionCode CAdapterGroup::CreateAdapterTree()
+{
+    MD_LOG_ENTER();
+
+    std::vector<TAdapterData> availableAdapters;
+
+    // 1. Get adapter information from OS
+    auto ret = CDriverInterface::GetAvailableAdapters( availableAdapters );
+    MD_CHECK_CC_RET( ret );
+
+    // 2. Create adapter objects
+    for( const auto& adapterData : availableAdapters )
+    {
+        ret = AddAdapter( adapterData );
+        if( ret != CC_OK )
+        {
+            MD_LOG( LOG_ERROR, "Error: failed to add adapter %s", adapterData.Params.ShortName );
+            CleanupAdapters();
+            break;
+        }
+    }
+    MD_ASSERT( m_params.AdapterCount == m_adapterVector->GetCount() );
+
+    // 3. Choose default adapter
+    if( ret == CC_OK )
+    {
+        m_defaultAdapter = ChooseDefaultAdapter();
+        MD_LOG( LOG_INFO, "Default adapter: %s", m_defaultAdapter ? m_defaultAdapter->GetParams()->ShortName : "None" );
+    }
+
+    MD_LOG_EXIT();
+    return ret;
+}
+
+/*****************************************************************************\
+
+Class:
+    CAdapterGroup
+
+Method:
+    AddAdapter
+
+Description:
+    Creates a single adapter and adds it to the adapter vector. Updates
+    adapter count in params respectively.
+    Adapter object becomes owner of the adapter handle (CAdapterHandle object) and
+    params memory (strings).
+
+Input:
+    const TAdapterData& adapterData - input adapter information
+
+Output:
+    TCompletionCode                 - CC_OK means success
+
+\*****************************************************************************/
+TCompletionCode CAdapterGroup::AddAdapter( const TAdapterData& adapterData )
+{
+    MD_CHECK_PTR_RET( adapterData.Handle, CC_ERROR_INVALID_PARAMETER );
+
+    auto adapter = new (std::nothrow) CAdapter( *this, adapterData.Params, *adapterData.Handle );
+    MD_CHECK_PTR_RET( adapter, CC_ERROR_NO_MEMORY );
+
+    m_adapterVector->PushBack( adapter );
+    m_params.AdapterCount = m_adapterVector->GetCount();
+
+        const TAdapterParams_1_6* adapterParams = adapter->GetParams();
+
+        MD_LOG( LOG_INFO, "Adapter %s - added", adapterParams->ShortName );
+        MD_LOG( LOG_INFO, "Platform ID: %u", adapterParams->Platform );
+        MD_LOG( LOG_INFO, "Device ID: %u", adapterParams->DeviceId );
+        return CC_OK;
+    }
+
+/*****************************************************************************\
+
+Class:
+    CAdapterGroup
+
+Method:
+    CleanupAdapters
+
+Description:
+    Cleans all stored adapter. Their handles are closed in their destructors.
+
+\*****************************************************************************/
+void CAdapterGroup::CleanupAdapters()
+{
+    m_defaultAdapter      = NULL;
+    m_params.AdapterCount = 0;
+
+    m_adapterVector->Clear();
+}
+
+/*****************************************************************************\
+
+Class:
+    CAdapterGroup
+
+Method:
+    ChooseDefaultAdapter
+
+Description:
+    Chooses default adapter for usage with legacy OpenMetricsDevice API.
+    Currently default is first external GPU.
+
+Output:
+    CAdapter* - default adapter or NULL if adapter count if 0
+
+\*****************************************************************************/
+CAdapter* CAdapterGroup::ChooseDefaultAdapter()
+{
+    MD_CHECK_PTR_RET( m_adapterVector, NULL );
+    if( !m_adapterVector->GetCount() )
+    {
+        return NULL;
+    }
+
+    // 1. Initialize to first adapter
+    CAdapter* defaultAdapter = (*m_adapterVector)[0];
+
+    // 2. Change to discrete GPU if exists
+    for( uint32_t i = 0; i < m_adapterVector->GetCount(); ++i )
+    {
+        auto adapter = (*m_adapterVector)[i];
+        if( adapter && adapter->GetParams()->Type == ADAPTER_TYPE_DISCRETE )
+        {
+            defaultAdapter = adapter;
+            break;
+        }
+    }
+
+    return defaultAdapter;
+}
+
+/*****************************************************************************\
+
+Class:
+    CAdapter
+
+Method:
+    CAdapter constructor
+
+Description:
+    Constructor.
+    Adapter object becomes owner of the adapter handle (CAdapterHandle object) and
+    params memory (strings).
+
+Input:
+    CAdapterGroup&            adapterGroup  - parent adapter group object
+    const TAdapterParams_1_6& params        - filled adapter params
+    CAdapterHandle&           adapterHandle - adapter handle connected with this adapter
+
+\*****************************************************************************/
+CAdapter::CAdapter( CAdapterGroup& adapterGroup, const TAdapterParams_1_6& params, CAdapterHandle& adapterHandle )
+    : m_params( params )
+    , m_adapterHandle( &adapterHandle )
+    , m_adapterGroup( adapterGroup )
+    , m_mdRefCounter( 0 )
+    , m_openCloseSemaphore( NULL )
+    , m_driverInterface( NULL )
+    , m_metricsDevice( NULL )
+{
+}
+
+/*****************************************************************************\
+
+Class:
+    CAdapter
+
+Method:
+    ~CAdapter
+
+Description:
+    Deallocates memory and closes underlying adapter handle.
+
+\*****************************************************************************/
+CAdapter::~CAdapter()
+{
+    MD_SAFE_DELETE_ARRAY( m_params.ShortName );
+
+    MD_SAFE_DELETE( m_metricsDevice );
+    MD_SAFE_DELETE( m_driverInterface );
+
+    if( m_adapterHandle )
+    {
+        m_adapterHandle->Close();
+        MD_SAFE_DELETE( m_adapterHandle );
+    }
+}
+
+/*****************************************************************************\
+
+Class:
+    CAdapter
+
+Method:
+    GetParams
+
+Description:
+    Returns adapter params.
+
+Output:
+    const TAdapterParams_1_6* - adapter params
+
+\*****************************************************************************/
+const TAdapterParams_1_6* CAdapter::GetParams() const
+{
+    return &m_params;
+}
+
+/*****************************************************************************\
+
+Class:
+    CAdapter
+
+Method:
+    Reset
+
+Description:
+    Tries to disable performance monitoring support. Useful when previous
+    application crashed and left it in the unspecified / initialized state.
+
+    Allowed only if no metrics device objects are open.
+
+Output:
+    TCompletionCode - CC_OK means success
+
+\*****************************************************************************/
+TCompletionCode CAdapter::Reset()
+{
+    MD_LOG_ENTER();
+
+    // 1. Obtain semaphore
+    TCompletionCode retVal = GetOpenCloseSemaphore();
+    if( retVal != CC_OK )
+    {
+        MD_LOG( LOG_ERROR, "Get semaphore failed" );
+        MD_LOG_EXIT();
+        return retVal;
+    }
+
+    // 2. Allow resetting only if no metrics device objects are created
+    if( !m_metricsDevice )
+    {
+        if( CDriverInterface::IsSupportEnableRequired() )
+        {
+            // 3. Create driver interface
+            retVal = CreateDriverInterface();
+            if( retVal == CC_OK )
+            {
+                MD_ASSERT( m_driverInterface != NULL );
+
+                // 4. Force disable performance monitoring support
+                retVal = m_driverInterface->ForceSupportDisable();
+                if( retVal != CC_OK )
+                {
+                    MD_LOG( LOG_ERROR, "Resetting adapter state failed" );
+                }
+
+                DestroyDriverInterface();
+            }
+            else
+            {
+                MD_LOG( LOG_ERROR, "Failed to get driver interface" );
+            }
+        }
+    }
+    else
+    {
+        retVal = CC_ERROR_GENERAL;
+    }
+
+    // 5. Release semaphore
+    ReleaseOpenCloseSemaphore();
+
+    MD_LOG_EXIT();
+    return retVal;
+}
+
+/*****************************************************************************\
+
+Class:
+    CAdapter
+
+Method:
+    OpenMetricsDevice
+
+Description:
+    Opens metrics device or retrieves an instance opened before. Only one
+    instance per adapter may exist. All OpenMetricsDevice() calls are
+    reference counted.
+
+Input:
+    IMetricsDevice_1_5** metricsDevice - [out] created / retrieved metrics device
+
+Output:
+    TCompletionCode                    - CC_OK or CC_ALREADY_INITIALIZED means success
+
+\*****************************************************************************/
+TCompletionCode CAdapter::OpenMetricsDevice( IMetricsDevice_1_5** metricsDevice )
+{
+    MD_LOG_ENTER();
+    MD_CHECK_PTR_RET( metricsDevice, CC_ERROR_INVALID_PARAMETER );
+
+    // 1. Obtain semaphore
+    TCompletionCode retVal = GetOpenCloseSemaphore();
+    if( retVal != CC_OK )
+    {
+        MD_LOG( LOG_ERROR, "Get semaphore failed" );
+        MD_LOG_EXIT();
+        return retVal;
+    }
+
+    // 2. Create or return existing metrics device object
+    if( m_metricsDevice )
+    {
+        *metricsDevice  = m_metricsDevice;
+        retVal          = CC_ALREADY_INITIALIZED;
+        m_mdRefCounter++;
+    }
+    else
+    {
+        retVal = CreateMetricsDevice( metricsDevice );
+        if( retVal == CC_OK )
+        {
+            m_mdRefCounter++;
+        }
+    }
+
+    // 5. Release semaphore
+    ReleaseOpenCloseSemaphore();
+
+    MD_LOG_EXIT();
+    return retVal;
+}
+
+/*****************************************************************************\
+
+Class:
+    CAdapter
+
+Method:
+    OpenMetricsDeviceFromFile
+
+Description:
+    Opens metrics device or uses an instance opened before (just like OpenMetricsDevice),
+    then loads custom metric sets / metrics from a file and merged them into the 'standard'
+    metrics device.
+
+Input:
+    const char*          fileName      - custom metric file
+    void*                openParams    - open params
+    IMetricsDevice_1_5** metricsDevice - [out] created / retrieved metrics device
+
+Output:
+    TCompletionCode                    - CC_OK or CC_ALREADY_INITIALIZED means success
+
+\*****************************************************************************/
+TCompletionCode CAdapter::OpenMetricsDeviceFromFile( const char* fileName, void* openParams, IMetricsDevice_1_5** metricsDevice )
+{
+    MD_LOG_ENTER();
+    MD_CHECK_PTR_RET( fileName, CC_ERROR_INVALID_PARAMETER );
+    MD_CHECK_PTR_RET( metricsDevice, CC_ERROR_INVALID_PARAMETER );
+
+    // 1. Obtain semaphore
+    TCompletionCode retVal = GetOpenCloseSemaphore();
+    if( retVal != CC_OK )
+    {
+        MD_LOG( LOG_ERROR, "Get semaphore failed" );
+        MD_LOG_EXIT();
+        return retVal;
+    }
+
+    // 2. Create 'standard' metrics device object if needed
+    if( !m_metricsDevice )
+    {
+        retVal = CreateMetricsDevice( NULL );
+    }
+    MD_ASSERT( m_driverInterface != NULL );
+
+    // 3. Load from file or return existing metrics device object
+    if( retVal == CC_OK )
+    {
+        if( m_metricsDevice->IsOpenedFromFile() )
+        {
+            *metricsDevice = m_metricsDevice;
+            retVal         = CC_ALREADY_INITIALIZED;
+            m_mdRefCounter++;
+        }
+        else
+        {
+            retVal = m_metricsDevice->OpenFromFile( fileName, MD_IS_INTERNAL_BUILD );
+            if( retVal == CC_OK )
+            {
+                *metricsDevice = m_metricsDevice;
+                m_mdRefCounter++;
+            }
+            else if( !m_mdRefCounter )
+            {
+                // If this was a first call to OpenMetricsDevice
+                DestroyMetricsDevice();
+            }
+        }
+    }
+
+    // 4. Release semaphore
+    ReleaseOpenCloseSemaphore();
+
+    MD_LOG_EXIT();
+    return retVal;
+}
+
+/*****************************************************************************\
+
+Class:
+    CAdapter
+
+Method:
+    CloseMetricsDevice
+
+Description:
+    Decreases metrics device reference counter and closes it (frees up recourses)
+    if the counter reaches 0.
+
+Input:
+    IMetricsDevice_1_5* metricsDevice - metrics device to close
+
+Output:
+    TCompletionCode                   - CC_OK or CC_STILL_INITIALIZED means success
+
+\*****************************************************************************/
+TCompletionCode CAdapter::CloseMetricsDevice( IMetricsDevice_1_5* metricsDevice )
+{
+    MD_LOG_ENTER();
+    MD_CHECK_PTR_RET( metricsDevice, CC_ERROR_INVALID_PARAMETER );
+
+    // 1. Obtain semaphore
+    TCompletionCode retVal = GetOpenCloseSemaphore();
+    if( retVal != CC_OK )
+    {
+        MD_LOG( LOG_ERROR, "Get semaphore failed" );
+        MD_LOG_EXIT();
+        return retVal;
+    }
+
+    // 2. Check driver interface - it should be created during OpenMetricsDevice
+    if( !m_driverInterface )
+    {
+        MD_LOG( LOG_ERROR, "Driver interface not found" );
+        retVal = CC_ERROR_GENERAL;
+    }
+
+    // 3. Check whether correct metrics device was passed
+    if( retVal == CC_OK &&
+        static_cast<CMetricsDevice*>(metricsDevice) != m_metricsDevice )
+    {
+        MD_LOG( LOG_ERROR, "Pointers mismatch" );
+        retVal = CC_ERROR_GENERAL;
+    }
+
+    // 4. Destroy or decrease reference counter for existing metrics device object
+    if( retVal == CC_OK )
+    {
+        if( m_mdRefCounter > 1 )
+        {
+            m_mdRefCounter--;
+            retVal = CC_STILL_INITIALIZED;
+        }
+        else if( m_mdRefCounter == 1 )
+        {
+            DestroyMetricsDevice();
+            m_mdRefCounter = 0;
+            retVal         = CC_OK;
+        }
+        else
+        {
+            retVal = CC_ERROR_GENERAL;
+        }
+    }
+
+    // 5. Release semaphore
+    ReleaseOpenCloseSemaphore();
+
+    MD_LOG_EXIT();
+    return retVal;
+}
+
+/*****************************************************************************\
+
+Class:
+    CAdapter
+
+Method:
+    SaveMetricsDeviceToFile
+
+Description:
+    Creates custom metric file containing only custom metrics - standard ones
+    aren't saved.
+
+Input:
+    const char*         fileName      - target file name
+    void*               saveParams    - save params
+    IMetricsDevice_1_5* metricsDevice - target metrics device
+
+Output:
+    TCompletionCode                   - CC_OK means success
+
+\*****************************************************************************/
+TCompletionCode CAdapter::SaveMetricsDeviceToFile( const char* fileName, void* saveParams, IMetricsDevice_1_5* metricsDevice )
+{
+    MD_LOG_ENTER();
+    MD_CHECK_PTR_RET( fileName, CC_ERROR_INVALID_PARAMETER );
+    MD_CHECK_PTR_RET( metricsDevice, CC_ERROR_INVALID_PARAMETER );
+
+    // 1. Obtain semaphore
+    TCompletionCode retVal = GetOpenCloseSemaphore();
+    if( retVal != CC_OK )
+    {
+        MD_LOG( LOG_ERROR, "Get semaphore failed" );
+        MD_LOG_EXIT();
+        return retVal;
+    }
+
+    // 2. Check whether correct metrics device was passed
+    if( static_cast<CMetricsDevice*>(metricsDevice) != m_metricsDevice )
+    {
+        MD_LOG( LOG_ERROR, "Pointers mismatch" );
+        retVal = CC_ERROR_GENERAL;
+    }
+
+    // 3. Save metrics device object to a file
+    retVal = m_metricsDevice->SaveToFile( fileName );
+    if( retVal != CC_OK )
+    {
+        MD_LOG( LOG_ERROR, "Saving to file failed" );
+    }
+
+    // 4. Release semaphore
+    ReleaseOpenCloseSemaphore();
+
+    MD_LOG_EXIT();
+    return retVal;
+}
+
+/*****************************************************************************\
+
+Class:
+    CAdapter
+
+Method:
+    CreateDriverInterface
+
+Description:
+    Creates an instance of driver interface. Only one driver interface per adapter
+    should be created.
+
+Output:
+    TCompletionCode - CC_OK means success
+
+\*****************************************************************************/
+TCompletionCode CAdapter::CreateDriverInterface()
+{
+    MD_CHECK_PTR_RET( m_adapterHandle, CC_ERROR_GENERAL );
+
+    if( !m_driverInterface )
+    {
+        m_driverInterface = CDriverInterface::CreateInstance( *m_adapterHandle );
+    }
+
+    return m_driverInterface ? CC_OK
+                             : CC_ERROR_NOT_SUPPORTED;
+}
+
+/*****************************************************************************\
+
+Class:
+    CAdapter
+
+Method:
+    DestroyDriverInterface
+
+Description:
+    Destroys driver interface.
+
+\*****************************************************************************/
+void CAdapter::DestroyDriverInterface()
+{
+    MD_SAFE_DELETE( m_driverInterface );
+}
+
+/*****************************************************************************\
+
+Class:
+    CAdapter
+
+Method:
+    GetOpenCloseSemaphore
+
+Description:
+    Acquires semaphore used during Open/CloseMetricsDevice() calls. Use to control
+    parallel access to these functions.
+
+Output:
+    TCompletionCode - CC_OK means success
+
+\*****************************************************************************/
+TCompletionCode CAdapter::GetOpenCloseSemaphore()
+{
+    const char     openClosePrefix[] = "MdOpenClose";
+    const uint32_t spaceFor3Uints    = 33;          // 3 * "max uint string" + 3 * "_"
+
+    // Create a semaphore name: "OpenClose_<BusNumber>_<DeviceNumber>_<FunctionNumber>"
+    char semaphoreName[sizeof(openClosePrefix) + spaceFor3Uints];
+    snprintf( semaphoreName, sizeof(semaphoreName), "%s_%u_%u_%u", openClosePrefix, m_params.BusNumber, m_params.DeviceNumber, m_params.FunctionNumber );
+
+    return GetNamedSemaphore( semaphoreName, &m_openCloseSemaphore );
+}
+
+/*****************************************************************************\
+
+Class:
+    CAdapter
+
+Method:
+    ReleaseOpenCloseSemaphore
+
+Description:
+    Releases semaphore used during Open/CloseMetricsDevice() calls. Use to control
+    parallel access to these functions.
+
+Output:
+    TCompletionCode - CC_OK means success
+
+\*****************************************************************************/
+TCompletionCode CAdapter::ReleaseOpenCloseSemaphore()
+{
+    return ReleaseNamedSemaphore( &m_openCloseSemaphore );
+}
+
+/*****************************************************************************\
+
+Class:
+    CAdapter
+
+Method:
+    CreateMetricsDevice
+
+Description:
+    Creates metrics device along with the whole metric tree and driver interface.
+    May enable instrumentation support if needed.
+
+Input:
+    IMetricsDevice_1_5** metricsDevice - [out][optional] created metrics device
+
+Output:
+    TCompletionCode                    - CC_OK means success
+
+\*****************************************************************************/
+TCompletionCode CAdapter::CreateMetricsDevice( IMetricsDevice_1_5** metricsDevice )
+{
+    MD_ASSERT( m_metricsDevice == NULL );
+
+    // 1. Create driver interface
+    TCompletionCode retVal = CreateDriverInterface();
+    if( retVal != CC_OK )
+    {
+        MD_LOG( LOG_ERROR, "Failed to get driver interface" );
+        return retVal;
+    }
+    MD_ASSERT( m_driverInterface != NULL );
+
+    // 2. Enable instrumentation support if needed
+    retVal = EnableDriverSupport( true );
+    if( retVal != CC_OK )
+    {
+        DestroyDriverInterface();
+        return retVal;
+    }
+
+    // 3. Create metrics device object
+    m_metricsDevice = new (std::nothrow) CMetricsDevice( *this, *m_driverInterface );
+    if( !m_metricsDevice )
+    {
+        EnableDriverSupport( false );
+        DestroyDriverInterface();
+        return CC_ERROR_NO_MEMORY;
+    }
+
+    // 4. Populate metric tree
+    retVal = CreateMetricTree( m_metricsDevice );
+    if( retVal != CC_OK )
+    {
+        MD_SAFE_DELETE( m_metricsDevice );
+        EnableDriverSupport( false );
+        DestroyDriverInterface();
+        return retVal;
+    }
+
+    if( metricsDevice )
+    {
+        *metricsDevice = m_metricsDevice;
+    }
+
+    return retVal;
+}
+
+/*****************************************************************************\
+
+Class:
+    CAdapter
+
+Method:
+    DestroyMetricsDevice
+
+Description:
+    Destroys metrics device for this adapter.
+
+\*****************************************************************************/
+void CAdapter::DestroyMetricsDevice()
+{
+    // 1. Delete metrics device object
+    MD_SAFE_DELETE( m_metricsDevice );
+
+    // 2. Enable instrumentation support if needed
+    EnableDriverSupport( false );
+
+    // 3. Destroy driver interface
+    DestroyDriverInterface();
+}
+
+/*****************************************************************************\
+
+Class:
+    CAdapter
+
+Method:
+    EnableDriverSupport
+
+Description:
+    Enables driver support if driver requires that.
+
+Input:
+    bool enable     - true to enable
+
+Output:
+    TCompletionCode - CC_OK means success
+
+\*****************************************************************************/
+TCompletionCode CAdapter::EnableDriverSupport( bool enable )
+{
+    MD_CHECK_PTR_RET( m_driverInterface, CC_ERROR_NOT_SUPPORTED );
+
+    TCompletionCode retVal      = CC_OK;
+    auto            enablePrint = []( bool enable ) { return enable ? "enabling" : "disabling"; };
+
+    if( m_driverInterface->IsSupportEnableRequired() )
+    {
+        MD_LOG( LOG_INFO, "Driver support %s...", enablePrint( enable ) );
+        retVal = m_driverInterface->SendSupportEnableEscape( enable );
+        if( retVal != CC_OK )
+        {
+            MD_LOG( LOG_ERROR, "Driver support %s failed", enablePrint( enable ) );
+        }
+    }
+
+    return retVal;
 }
 
 /*****************************************************************************\
@@ -749,19 +1835,11 @@ TCompletionCode COverride<OVERRIDE_TYPE_FREQUENCY>::SetOverride( TSetOverridePar
     MD_CHECK_PTR_RET( params, CC_ERROR_INVALID_PARAMETER );
     MD_CHECK_SIZE_RET( paramsSize, TSetFrequencyOverrideParams_1_2, CC_ERROR_INVALID_PARAMETER );
 
-    CDriverInterface* driverInterface = m_device->GetDriverInterface();
-    if( !driverInterface )
-    {
-        MD_LOG( LOG_ERROR, "Error: could not find Driver Interface" );
-        MD_ASSERT( false );
-        MD_LOG_EXIT();
-        return CC_ERROR_GENERAL;
-    }
+    TCompletionCode                  ret                     = CC_OK;
+    CDriverInterface&                driverInterface         = m_device->GetDriverInterface();
+    TSetFrequencyOverrideParams_1_2* frequencyOverrideParams = static_cast<TSetFrequencyOverrideParams_1_2*>( params );
 
-    TCompletionCode ret = CC_OK;
-    TSetFrequencyOverrideParams_1_2* frequencyOverrideParams = static_cast<TSetFrequencyOverrideParams_1_2*>(params);
-
-    ret = driverInterface->SetFrequencyOverride( frequencyOverrideParams );
+    ret = driverInterface.SetFrequencyOverride( frequencyOverrideParams );
     if( ret != CC_OK )
     {
         MD_LOG( LOG_ERROR, "Setting frequency override failed, res: %u", ret );
@@ -804,14 +1882,7 @@ TCompletionCode COverride<OVERRIDE_TYPE_EXTENDED_QUERY>::SetOverride( TSetOverri
     MD_CHECK_PTR_RET( params, CC_ERROR_INVALID_PARAMETER );
     MD_CHECK_SIZE_RET( paramsSize, TSetQueryOverrideParams_1_2, CC_ERROR_INVALID_PARAMETER );
 
-    CDriverInterface* driverInterface = m_device->GetDriverInterface();
-    if( !driverInterface )
-    {
-        MD_LOG( LOG_ERROR, "Error: could not find Driver Interface" );
-        MD_ASSERT( false );
-        MD_LOG_EXIT();
-        return CC_ERROR_GENERAL;
-    }
+    CDriverInterface& driverInterface = m_device->GetDriverInterface();
 
     TTypedValue_1_0* oaBufferSize = m_device->GetGlobalSymbolValueByName( "OABufferMaxSize" );
     if( oaBufferSize == NULL )
@@ -821,7 +1892,7 @@ TCompletionCode COverride<OVERRIDE_TYPE_EXTENDED_QUERY>::SetOverride( TSetOverri
     }
 
     TSetQueryOverrideParams_1_2* queryOverrideParams = static_cast<TSetQueryOverrideParams_1_2*>(params);
-    TCompletionCode ret = driverInterface->SetQueryOverride( OVERRIDE_TYPE_EXTENDED_QUERY, m_device->GetPlatformType(), oaBufferSize->ValueUInt32, queryOverrideParams );
+    TCompletionCode ret = driverInterface.SetQueryOverride( OVERRIDE_TYPE_EXTENDED_QUERY, m_device->GetPlatformType(), oaBufferSize->ValueUInt32, queryOverrideParams );
     if( ret != CC_OK )
     {
         MD_LOG( LOG_ERROR, "Setting extended query override failed, res: %u", ret );
@@ -858,14 +1929,7 @@ TCompletionCode COverride<OVERRIDE_TYPE_MULTISAMPLED_QUERY>::SetOverride( TSetOv
     MD_CHECK_PTR_RET( params, CC_ERROR_INVALID_PARAMETER );
     MD_CHECK_SIZE_RET( paramsSize, TSetQueryOverrideParams_1_2, CC_ERROR_INVALID_PARAMETER );
 
-    CDriverInterface* driverInterface = m_device->GetDriverInterface();
-    if( !driverInterface )
-    {
-        MD_LOG( LOG_ERROR, "Error: could not find Driver Interface" );
-        MD_ASSERT( false );
-        MD_LOG_EXIT();
-        return CC_ERROR_GENERAL;
-    }
+    CDriverInterface& driverInterface = m_device->GetDriverInterface();
 
     TTypedValue_1_0* oaBufferSize = m_device->GetGlobalSymbolValueByName( "OABufferMaxSize" );
     if( oaBufferSize == NULL )
@@ -875,7 +1939,7 @@ TCompletionCode COverride<OVERRIDE_TYPE_MULTISAMPLED_QUERY>::SetOverride( TSetOv
     }
 
     TSetQueryOverrideParams_1_2* queryOverrideParams = static_cast<TSetQueryOverrideParams_1_2*>(params);
-    TCompletionCode ret = driverInterface->SetQueryOverride( OVERRIDE_TYPE_MULTISAMPLED_QUERY, m_device->GetPlatformType(), oaBufferSize->ValueUInt32, queryOverrideParams );
+    TCompletionCode ret = driverInterface.SetQueryOverride( OVERRIDE_TYPE_MULTISAMPLED_QUERY, m_device->GetPlatformType(), oaBufferSize->ValueUInt32, queryOverrideParams );
     if( ret != CC_OK )
     {
         MD_LOG( LOG_ERROR, "Setting multisampled query override failed, res: %u", ret );
@@ -912,16 +1976,9 @@ TCompletionCode COverride<OVERRIDE_TYPE_FREQUENCY_CHANGE_REPORTS>::SetOverride( 
     MD_CHECK_PTR_RET( params, CC_ERROR_INVALID_PARAMETER );
     MD_CHECK_SIZE_RET( paramsSize, TSetOverrideParams_1_2, CC_ERROR_INVALID_PARAMETER );
 
-    CDriverInterface* driverInterface = m_device->GetDriverInterface();
-    if (!driverInterface)
-    {
-        MD_LOG( LOG_ERROR, "Error: could not find Driver Interface" );
-        MD_ASSERT( false );
-        MD_LOG_EXIT();
-        return CC_ERROR_GENERAL;
-    }
+    CDriverInterface& driverInterface = m_device->GetDriverInterface();
 
-    TCompletionCode ret = driverInterface->SetFreqChangeReportsOverride( params->Enable );
+    TCompletionCode ret = driverInterface.SetFreqChangeReportsOverride( params->Enable );
     if (ret != CC_OK)
     {
         MD_LOG( LOG_ERROR, "Setting frequency change reports override failed, res: %u", ret );
@@ -969,10 +2026,17 @@ Description:
     Constructor. Sends DeviceInfoParam escape.
 
 \*****************************************************************************/
-CMetricsDevice::CMetricsDevice()
+CMetricsDevice::CMetricsDevice( CAdapter& adapter, CDriverInterface& driverInterface )
+    : m_params{}
+    , m_groupsVector( NULL )
+    , m_overridesVector( NULL )
+    , m_symbolSet( driverInterface )
+    , m_platform( PLATFORM_UNKNOWN )
+    , m_gtType( GT_TYPE_UNKNOWN )
+    , m_isOpenedFromFile( false )
+    , m_adapter( adapter )
+    , m_driverInterface( driverInterface )
 {
-    m_driverInterface = GetDriverIfc();
-
     m_params.DeltaFunctionsCount       = DELTA_FUNCTION_LAST_1_0;
     m_params.EquationOperationsCount   = EQUATION_OPER_LAST_1_0;
     m_params.EquationElementTypesCount = EQUATION_ELEM_LAST_1_0;
@@ -985,28 +2049,19 @@ CMetricsDevice::CMetricsDevice()
     m_params.ConcurrentGroupsCount     = 0;
     m_params.OverrideCount             = 0;
 
+    m_params.DeviceName                = GetCopiedCString( m_adapter.GetParams()->ShortName );
     m_groupsVector      = new (std::nothrow) Vector<CConcurrentGroup*>( GROUPS_VECTOR_INCREASE );
     m_overridesVector   = new (std::nothrow) Vector<IOverride_1_2*>( OVERRIDES_VECTOR_INCREASE );
 
-    if( m_driverInterface )
+    GTDIDeviceInfoParamExtOut out = {};
+    if( m_driverInterface.SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_PLATFORM_INDEX, &out ) == CC_OK )
     {
-        GTDIDeviceInfoParamExtOut out = {};
-        TCompletionCode ret = m_driverInterface->SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_PLATFORM_INDEX, &out );
-        m_platform          = ret == CC_OK ? (TPlatformType)( 1 << out.ValueUint32 ) : PLATFORM_UNKNOWN;
-
-        m_params.DeviceName = GetCopiedCString( m_driverInterface->GetDeviceName() );
-
-        ret                 = m_driverInterface->SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_GT_TYPE, &out );
-        m_gtType            = ret == CC_OK ? (TGTType)( 1 << out.ValueUint32 ) : GT_TYPE_UNKNOWN;
+        m_platform = (TPlatformType)(1 << out.ValueUint32);
     }
-    else
+    if( m_driverInterface.SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_GT_TYPE, &out ) == CC_OK )
     {
-        m_platform = PLATFORM_UNKNOWN;
-        m_params.DeviceName = NULL;
-        m_gtType = GT_TYPE_UNKNOWN;
+        m_gtType = (TGTType)( 1 << out.ValueUint32 );
     }
-
-    m_isOpenedFromFile = false;
 }
 
 /*****************************************************************************\
@@ -1166,8 +2221,6 @@ Output:
 \*****************************************************************************/
 TCompletionCode CMetricsDevice::GetGpuCpuTimestamps( uint64_t* gpuTimestampNs, uint64_t* cpuTimestampNs, uint32_t* cpuId )
 {
-    MD_CHECK_PTR_RET( m_driverInterface, CC_ERROR_GENERAL );
-
     if( !gpuTimestampNs && !cpuTimestampNs )
     {
         return CC_ERROR_INVALID_PARAMETER;
@@ -1175,7 +2228,7 @@ TCompletionCode CMetricsDevice::GetGpuCpuTimestamps( uint64_t* gpuTimestampNs, u
 
     uint64_t gpuTS = 0, cpuTS = 0;
     uint32_t cpuID = 0;
-    TCompletionCode ret = m_driverInterface->GetGpuCpuTimestamps( &gpuTS, &cpuTS, &cpuID );
+    TCompletionCode ret = m_driverInterface.GetGpuCpuTimestamps( &gpuTS, &cpuTS, &cpuID );
 
     if( ret == CC_OK )
     {
@@ -1327,7 +2380,7 @@ IOverride_1_2* CMetricsDevice::AddOverride( TOverrideType overrideType )
     MD_CHECK_PTR_RET( m_overridesVector, NULL );
 
     // 1. CHECK AVAILABILITY ON CURRENT DRIVER INTERFACE
-    if( !m_driverInterface->IsOverrideAvailable( overrideType ) )
+    if( !m_driverInterface.IsOverrideAvailable( overrideType ) )
     {
         MD_LOG( LOG_INFO, "Override %u not available on the current driver interface", overrideType );
         return NULL;
@@ -1586,15 +2639,19 @@ TCompletionCode CMetricsDevice::ReadGlobalSymbolsFromFileBuffer( unsigned char**
             continue;
         }
 
+        TCompletionCode ret = CC_OK;
         if( globalSymbol.symbolType == SYMBOL_TYPE_DETECT )
         {
-            m_symbolSet.DetectSymbolValue( globalSymbol.symbol_1_0.SymbolName, &globalSymbol.symbol_1_0.SymbolTypedValue );
+            ret = m_symbolSet.DetectSymbolValue( globalSymbol.symbol_1_0.SymbolName, &globalSymbol.symbol_1_0.SymbolTypedValue );
         }
 
-        m_symbolSet.AddSymbol(
-            globalSymbol.symbol_1_0.SymbolName,
-            globalSymbol.symbol_1_0.SymbolTypedValue,
-            globalSymbol.symbolType );
+        if( ret == CC_OK )
+        {
+            m_symbolSet.AddSymbol(
+                globalSymbol.symbol_1_0.SymbolName,
+                globalSymbol.symbol_1_0.SymbolTypedValue,
+                globalSymbol.symbolType );
+        }
     }
 
     m_params.GlobalSymbolsCount = m_symbolSet.GetSymbolCount();
@@ -1620,7 +2677,7 @@ Output:
     TCompletionCode - result of the operation
 
 \*****************************************************************************/
-TCompletionCode CMetricsDevice::ReadConcurrentGroupsFromFileBuffer( unsigned char** bufferPtr, bool isInternalBuild, SMetricsDeviceParams_1_0::SApiVersion* apiVersion )
+TCompletionCode CMetricsDevice::ReadConcurrentGroupsFromFileBuffer( unsigned char** bufferPtr, bool isInternalBuild, TApiVersion_1_0* apiVersion )
 {
     MD_CHECK_PTR_RET( bufferPtr, CC_ERROR_INVALID_PARAMETER );
     MD_CHECK_PTR_RET( *bufferPtr, CC_ERROR_INVALID_PARAMETER );
@@ -1673,7 +2730,7 @@ Output:
     TCompletionCode - result of the operation
 
 \*****************************************************************************/
-TCompletionCode CMetricsDevice::ReadMetricSetsFromFileBuffer( unsigned char** bufferPtr, CConcurrentGroup* group, bool isInternalBuild, SMetricsDeviceParams_1_0::SApiVersion* apiVersion )
+TCompletionCode CMetricsDevice::ReadMetricSetsFromFileBuffer( unsigned char** bufferPtr, CConcurrentGroup* group, bool isInternalBuild, TApiVersion_1_0* apiVersion )
 {
     MD_CHECK_PTR_RET( bufferPtr, CC_ERROR_INVALID_PARAMETER );
     MD_CHECK_PTR_RET( *bufferPtr, CC_ERROR_INVALID_PARAMETER );
@@ -2153,7 +3210,7 @@ TCompletionCode CMetricsDevice::OpenFromFile( const char* fileName, bool isInter
         bufferPtr += sizeof( TPlatformType );
 
         // MetricsDeviceParams
-        SMetricsDeviceParams_1_0::SApiVersion apiVersion;
+        TApiVersion_1_0 apiVersion = {};
         apiVersion.MajorNumber = ReadUInt32FromFileBuffer( &bufferPtr );
         apiVersion.MinorNumber = ReadUInt32FromFileBuffer( &bufferPtr );
         apiVersion.BuildNumber = ReadUInt32FromFileBuffer( &bufferPtr );
@@ -2218,12 +3275,32 @@ Description:
     Returns driver interface.
 
 Output:
-    CDriverInterface*   - pointer to driver interface
+    CDriverInterface& - driver interface reference
 
 \*****************************************************************************/
-CDriverInterface* CMetricsDevice::GetDriverInterface()
+CDriverInterface& CMetricsDevice::GetDriverInterface()
 {
     return m_driverInterface;
+}
+
+/*****************************************************************************\
+
+Class:
+    CMetricsDevice
+
+Method:
+    GetAdapter
+
+Description:
+    Returns underlying adapter reference.
+
+Output:
+    CAdapter& - adapter reference
+
+\*****************************************************************************/
+CAdapter& CMetricsDevice::GetAdapter()
+{
+    return m_adapter;
 }
 
 /*****************************************************************************\
@@ -2706,6 +3783,8 @@ Method:
 
 Description:
     Creates a semaphore on the concurrent group. Waits 1s if needed.
+    Adapter BDF numbers are added to the semaphore name so different
+    adapters won't block each other.
 
 Output:
     TCompletionCode - *CC_OK* if succeeded,
@@ -2714,14 +3793,20 @@ Output:
 \*****************************************************************************/
 TCompletionCode CConcurrentGroup::Lock()
 {
-    CDriverInterface* driverInterface = m_device->GetDriverInterface();
-    if( driverInterface == NULL )
+    // 1. Create semaphore name
+    char semaphoreName[MD_SEMAPHORE_NAME_MAX_LENGTH] = {};
+
+    TCompletionCode ret = FillLockSemaphoreName( semaphoreName, sizeof( semaphoreName ) );
+    if( ret == CC_OK )
     {
-        MD_ASSERT( driverInterface != NULL );
-        return CC_ERROR_GENERAL;
+        // 2. Get driver interface
+        CDriverInterface& driverInterface = m_device->GetDriverInterface();
+
+        // 3. Lock concurrent group
+        ret = driverInterface.LockConcurrentGroup( semaphoreName, &m_semaphore );
     }
 
-    return driverInterface->LockConcurrentGroup( m_params_1_0.SymbolName, &m_semaphore );
+    return ret;
 }
 
 /*****************************************************************************\
@@ -2734,6 +3819,8 @@ Method:
 
 Description:
     Releases the semaphore created on concurrent group.
+    Adapter BDF numbers are added to the semaphore name so different
+    adapters won't block each other.
 
 Output:
     TCompletionCode - result, *CC_OK* is ok
@@ -2741,14 +3828,20 @@ Output:
 \*****************************************************************************/
 TCompletionCode CConcurrentGroup::Unlock()
 {
-    CDriverInterface* driverInterface = m_device->GetDriverInterface();
-    if( driverInterface == NULL )
+    // 1. Create semaphore name
+    char semaphoreName[MD_SEMAPHORE_NAME_MAX_LENGTH] = {};
+
+    TCompletionCode ret = FillLockSemaphoreName( semaphoreName, sizeof( semaphoreName ) );
+    if( ret == CC_OK )
     {
-        MD_ASSERT( driverInterface != NULL );
-        return CC_ERROR_GENERAL;
+        // 2. Get driver interface
+        CDriverInterface& driverInterface = m_device->GetDriverInterface();
+
+        // 3. Unlock concurrent group
+        ret = driverInterface.UnlockConcurrentGroup( semaphoreName, &m_semaphore );
     }
 
-    return driverInterface->UnlockConcurrentGroup( m_params_1_0.SymbolName, &m_semaphore );
+    return ret;
 }
 
 /*****************************************************************************\
@@ -2864,13 +3957,7 @@ Output:
 bool CConcurrentGroup::AreMetricSetParamsValid( const char* symbolName, const char* shortName, uint32_t platformMask,
      uint32_t gtMask, TRegisterSet* startRegSets, uint32_t startRegSetsCount)
 {
-    CDriverInterface* driverInterface = m_device->GetDriverInterface();
-    if( driverInterface == NULL )
-    {
-        MD_LOG( LOG_ERROR, "could not interface with the driver" );
-        MD_ASSERT( false );
-        return false;
-    }
+    CDriverInterface& driverInterface = m_device->GetDriverInterface();
 
     if( ( symbolName == NULL ) || ( strcmp( symbolName, "" ) == 0 ) )
     {
@@ -2915,7 +4002,7 @@ bool CConcurrentGroup::AreMetricSetParamsValid( const char* symbolName, const ch
                 if( platformMask & platform )
                 {
                     MD_LOG( LOG_DEBUG, "validating register offsets for platform: %u", platform );
-                    if( driverInterface->ValidatePmRegsConfig( startRegSets[i].StartConfigRegs, startRegSets[i].StartConfigRegsCount, (TPlatformType)platform ) != CC_OK )
+                    if( driverInterface.ValidatePmRegsConfig( startRegSets[i].StartConfigRegs, startRegSets[i].StartConfigRegsCount, (TPlatformType)platform ) != CC_OK )
                     {
                         MD_LOG( LOG_ERROR, "invalid start register offsets for platform: %u", platform );
                         return false;
@@ -2971,6 +4058,46 @@ uint32_t CConcurrentGroup::GetCustomSetCount()
     }
 
     return customSetCount;
+}
+
+/*****************************************************************************\
+
+Class:
+    CConcurrentGroup
+
+Method:
+    FillLockSemaphoreName
+
+Description:
+    Creates semaphore name for the need of lock / unlock concurrent group
+    calls. Adapter BDF numbers are added to the name so different adapters
+    won't block each other.
+
+Input:
+    char*  name - buffer for the name
+    size_t size - size of the name buffer
+
+Output:
+    TCompletionCode - CC_OK means success
+
+\*****************************************************************************/
+TCompletionCode CConcurrentGroup::FillLockSemaphoreName( char* name, size_t size )
+{
+    MD_ASSERT( name != NULL );
+
+    // Create a semaphore name: "<CcgSymbolName>_<BusNumber>_<DeviceNumber>_<FunctionNumber>"
+    const TAdapterParams_1_6* adapterParams = m_device->GetAdapter().GetParams();
+    MD_CHECK_PTR_RET( adapterParams, CC_ERROR_GENERAL );
+
+    int32_t neededSize = snprintf( name, size, "%s_%u_%u_%u", m_params_1_0.SymbolName, adapterParams->BusNumber, adapterParams->DeviceNumber, adapterParams->FunctionNumber );
+
+    // If snprintf failed or buffer size was too small
+    if( neededSize < 0 || neededSize >= (int32_t)size )
+    {
+        return CC_ERROR_INVALID_PARAMETER;
+    }
+
+    return CC_OK;
 }
 
 /*****************************************************************************\
@@ -3225,16 +4352,9 @@ TCompletionCode COAConcurrentGroup::OpenIoStream( IMetricSet_1_0* metricSet, uin
     MD_CHECK_PTR_RET( oaBufferSize,  CC_ERROR_INVALID_PARAMETER );
 
     TCompletionCode ret = CC_OK;
+    CDriverInterface& driverInterface = m_device->GetDriverInterface();
 
-    CDriverInterface* driverInterface = m_device->GetDriverInterface();
-    if( driverInterface == NULL )
-    {
-        MD_ASSERT( false );
-        MD_LOG_EXIT();
-        return CC_ERROR_GENERAL;
-    }
-
-    ret = driverInterface->OpenIoStream( m_streamType, (CMetricSet*)metricSet, m_params_1_0.SymbolName, processId, nsTimerPeriod, oaBufferSize, &m_streamEventHandle );
+    ret = driverInterface.OpenIoStream( m_streamType, (CMetricSet*)metricSet, m_params_1_0.SymbolName, processId, nsTimerPeriod, oaBufferSize, &m_streamEventHandle );
     if( ret != CC_OK )
     {
         MD_LOG_EXIT();
@@ -3295,21 +4415,15 @@ TCompletionCode COAConcurrentGroup::ReadIoStream( uint32_t* reportCount, char* r
         return CC_OK;
     }
 
-    TCompletionCode                 ret       = CC_OK;
-    uint32_t                        frequency = 0;
-    GTDIReadCounterStreamExceptions exceptions;
+    TCompletionCode                 ret             = CC_OK;
+    CDriverInterface&               driverInterface = m_device->GetDriverInterface();
+    uint32_t                        frequency       = 0;
+    GTDIReadCounterStreamExceptions exceptions      = {};
 
-    CDriverInterface* driverInterface = m_device->GetDriverInterface();
-    if( driverInterface == NULL )
-    {
-        MD_ASSERT( driverInterface != NULL );
-        return CC_ERROR_GENERAL;
-    }
-
-    ret = driverInterface->ReadIoStream( m_streamType, m_ioMetricSet, reportData, reportCount, readFlags, &frequency, &exceptions );
+    ret = driverInterface.ReadIoStream( m_streamType, m_ioMetricSet, reportData, reportCount, readFlags, &frequency, &exceptions );
     if( ret == CC_OK || ret == CC_READ_PENDING )
     {
-        driverInterface->HandleIoStreamExceptions( m_params_1_0.SymbolName, m_ioMetricSet, m_processId, reportCount, &exceptions ); 
+        driverInterface.HandleIoStreamExceptions( m_params_1_0.SymbolName, m_ioMetricSet, m_processId, reportCount, &exceptions ); 
 
         if( m_ioMeasurementInfoVector )
         {
@@ -3369,15 +4483,9 @@ TCompletionCode COAConcurrentGroup::CloseIoStream( void )
     }
 
     TCompletionCode ret = CC_OK;
-    CDriverInterface* driverInterface = m_device->GetDriverInterface();
-    if( driverInterface == NULL )
-    {
-        MD_ASSERT( driverInterface != NULL );
-        MD_LOG_EXIT();
-        return CC_ERROR_GENERAL;
-    }
+    CDriverInterface& driverInterface = m_device->GetDriverInterface();
 
-    ret = driverInterface->CloseIoStream( m_streamType, &m_streamEventHandle, m_params_1_0.SymbolName, m_ioMetricSet );
+    ret = driverInterface.CloseIoStream( m_streamType, &m_streamEventHandle, m_params_1_0.SymbolName, m_ioMetricSet );
     if( ret != CC_OK )
     {
         MD_LOG_EXIT();
@@ -3413,9 +4521,9 @@ Output:
 TCompletionCode COAConcurrentGroup::WaitForReports( uint32_t milliseconds )
 {
     TCompletionCode   retVal          = CC_OK;
-    CDriverInterface* driverInterface = m_device->GetDriverInterface();
+    CDriverInterface& driverInterface = m_device->GetDriverInterface();
 
-    retVal = driverInterface->WaitForIoStreamReports( m_streamType, milliseconds, m_streamEventHandle );
+    retVal = driverInterface.WaitForIoStreamReports( m_streamType, milliseconds, m_streamEventHandle );
 
     return retVal;
 }
@@ -3499,54 +4607,49 @@ Description:
 \*****************************************************************************/
 void COAConcurrentGroup::AddIoMeasurementInfoPredefined( void )
 {
-    CDriverInterface* driverInterface = m_device->GetDriverInterface();
-    if( driverInterface == NULL )
-    {
-        MD_ASSERT( false );
-        return;
-    }
+    CDriverInterface& driverInterface = m_device->GetDriverInterface();
 
-    if( driverInterface->IsIoMeasurementInfoAvailable( IO_MEASUREMENT_INFO_CORE_FREQUENCY_MHZ ) )
+    if( driverInterface.IsIoMeasurementInfoAvailable( IO_MEASUREMENT_INFO_CORE_FREQUENCY_MHZ ) )
     {
         AddIoMeasurementInformation( "CoreFrequencyMHz", "Core Frequency in MHz", "The last core frequency in the measurement.",
             "Report Meta Data", INFORMATION_TYPE_VALUE, "megahertz" );
     }
-    if( driverInterface->IsIoMeasurementInfoAvailable( IO_MEASUREMENT_INFO_FREQUENCY_CHANGED ) )
+    if( driverInterface.IsIoMeasurementInfoAvailable( IO_MEASUREMENT_INFO_FREQUENCY_CHANGED ) )
     {
         AddIoMeasurementInformation( "FrequencyChanged", "Core Frequency Changed", "The flag indicating that core frequency has changed.",
             "Exception", INFORMATION_TYPE_FLAG, NULL );
     }
-    if( driverInterface->IsIoMeasurementInfoAvailable( IO_MEASUREMENT_INFO_FREQUENCY_CHANGED_INVALID ) )
+    if( driverInterface.IsIoMeasurementInfoAvailable( IO_MEASUREMENT_INFO_FREQUENCY_CHANGED_INVALID ) )
     {
         AddIoMeasurementInformation( "FrequencyChangedInvalid", "Core Frequency Changed Invalid", "The flag indicating inability to report freq change due to delayed read.",
             "Exception", INFORMATION_TYPE_FLAG, NULL );
     }
-    if( driverInterface->IsIoMeasurementInfoAvailable( IO_MEASUREMENT_INFO_SLICE_SHUTDOWN ) )
+    if( driverInterface.IsIoMeasurementInfoAvailable( IO_MEASUREMENT_INFO_SLICE_SHUTDOWN ) )
     {
         AddIoMeasurementInformation( "SliceShutdown", "Slice Shutdown Occurred", "The flag indicating that the Slice Shutdown has occurred.",
             "Exception", INFORMATION_TYPE_FLAG, NULL );
     }
-    if( driverInterface->IsIoMeasurementInfoAvailable( IO_MEASUREMENT_INFO_REPORT_LOST ) )
+    if( driverInterface.IsIoMeasurementInfoAvailable( IO_MEASUREMENT_INFO_REPORT_LOST ) )
     {
         AddIoMeasurementInformation( "ReportLost", "Report Lost reported by HW", "The flag indicating that some samples were lost since last Read.",
             "Exception", INFORMATION_TYPE_FLAG, NULL );
     }
-    if( driverInterface->IsIoMeasurementInfoAvailable( IO_MEASUREMENT_INFO_DATA_OUTSTANDING ) )
+    if( driverInterface.IsIoMeasurementInfoAvailable( IO_MEASUREMENT_INFO_DATA_OUTSTANDING ) )
     {
         AddIoMeasurementInformation( "DataOutstanding", "Data Outstanding", "The flag indicating that there are still some outstanding data.",
             "Report Meta Data", INFORMATION_TYPE_FLAG, NULL );
     }
-    if( driverInterface->IsIoMeasurementInfoAvailable( IO_MEASUREMENT_INFO_BUFFER_OVERFLOW ) )
+    if( driverInterface.IsIoMeasurementInfoAvailable( IO_MEASUREMENT_INFO_BUFFER_OVERFLOW ) )
     {
         AddIoMeasurementInformation( "BufferOverflow", "Buffer Overflow", "The flag indicating that some reports have been overwritten.",
             "Report Meta Data", INFORMATION_TYPE_FLAG, NULL );
     }
-    if( driverInterface->IsIoMeasurementInfoAvailable( IO_MEASUREMENT_INFO_BUFFER_OVERRUN ) )
+    if( driverInterface.IsIoMeasurementInfoAvailable( IO_MEASUREMENT_INFO_BUFFER_OVERRUN ) )
     {
         AddIoMeasurementInformation( "BufferOverrun", "Buffer Overrun", "The flag indicating that the buffer is full (n-1 reports).",
             "Report Meta Data", INFORMATION_TYPE_FLAG, NULL );
     }
-    if( driverInterface->IsIoMeasurementInfoAvailable( IO_MEASUREMENT_INFO_COUNTERS_OVERFLOW ) )
+    if( driverInterface.IsIoMeasurementInfoAvailable( IO_MEASUREMENT_INFO_COUNTERS_OVERFLOW ) )
     {
         AddIoMeasurementInformation( "CountersOverflow", "Counters Overflow", "The flag indicating that counters overflows occurred between two consecutive readings.",
             "Report Meta Data", INFORMATION_TYPE_FLAG, NULL );
@@ -3654,15 +4757,15 @@ Input:
 \*****************************************************************************/
 void COAConcurrentGroup::SetIoMeasurementInfoPredefined( TIoMeasurementInfoType ioMeasurementInfoType, uint32_t value, uint32_t* index )
 {
-    CDriverInterface* driverInterface = m_device->GetDriverInterface();
-    if( !driverInterface || !index )
+    if( !index )
     {
-        MD_ASSERT( driverInterface != NULL );
         return;
     }
 
+    CDriverInterface& driverInterface = m_device->GetDriverInterface();
+
     // Set information if available
-    if( driverInterface->IsIoMeasurementInfoAvailable( ioMeasurementInfoType ) )
+    if( driverInterface.IsIoMeasurementInfoAvailable( ioMeasurementInfoType ) )
     {
         (*m_ioMeasurementInfoVector)[(*index)++]->SetInformationValue( value, EQUATION_IO_READ );
     }
@@ -3735,14 +4838,8 @@ TCompletionCode COAConcurrentGroup::TryReadGpuCtxTags()
     TCompletionCode         ret              = CC_OK;
     uint32_t                stateChangeCount = 0;
     uint32_t                offset           = 0;
-    TGetCtxTagsIdParams     params;
-
-    CDriverInterface* driverInterface = m_device->GetDriverInterface();
-    if( driverInterface == NULL )
-    {
-        MD_ASSERT( driverInterface != NULL );
-        return CC_ERROR_GENERAL;
-    }
+    TGetCtxTagsIdParams     params           = {};
+    CDriverInterface&   driverInterface      = m_device->GetDriverInterface();
 
     MD_LOG( LOG_DEBUG, "reading GPU Context tags, pid: %d, offset: %d", m_processId, offset );
 
@@ -3755,7 +4852,7 @@ TCompletionCode COAConcurrentGroup::TryReadGpuCtxTags()
         params.AvailableTags    = 0;
         params.StateChangeCount = 0;
 
-        ret = driverInterface->SendGetCtxIdTagsEscape( &params );
+        ret = driverInterface.SendGetCtxIdTagsEscape( &params );
         if( ret == CC_OK )
         {
             if( offset == 0 )
@@ -3888,16 +4985,10 @@ TCompletionCode CPerfMonConcurrentGroup::OpenIoStream( IMetricSet_1_0* metricSet
     MD_CHECK_PTR_RET( nsTimerPeriod, CC_ERROR_INVALID_PARAMETER );
     MD_CHECK_PTR_RET( sysBufferSize, CC_ERROR_INVALID_PARAMETER );
 
-    TCompletionCode ret = CC_OK;
+    TCompletionCode ret               = CC_OK;
+    CDriverInterface& driverInterface = m_device->GetDriverInterface();
 
-    CDriverInterface* driverInterface = m_device->GetDriverInterface();
-    if( driverInterface == NULL )
-    {
-        MD_ASSERT( false );
-        return CC_ERROR_GENERAL;
-    }
-
-    ret = driverInterface->OpenIoStream( STREAM_TYPE_SYS, (CMetricSet*)metricSet, m_params_1_0.SymbolName, processId, nsTimerPeriod, sysBufferSize, &m_streamEventHandle );
+    ret = driverInterface.OpenIoStream( STREAM_TYPE_SYS, (CMetricSet*)metricSet, m_params_1_0.SymbolName, processId, nsTimerPeriod, sysBufferSize, &m_streamEventHandle );
     if( ret != CC_OK )
     {
         return ret;
@@ -3939,18 +5030,12 @@ TCompletionCode CPerfMonConcurrentGroup::ReadIoStream( uint32_t* reportCount, ch
         return CC_ERROR_GENERAL;
     }
 
-    TCompletionCode                 ret       = CC_OK;
-    uint32_t                        frequency = 0;
-    GTDIReadCounterStreamExceptions exceptions;
+    TCompletionCode                 ret             = CC_OK;
+    uint32_t                        frequency       = 0;
+    GTDIReadCounterStreamExceptions exceptions      = {};
+    CDriverInterface&               driverInterface = m_device->GetDriverInterface();
 
-    CDriverInterface* driverInterface = m_device->GetDriverInterface();
-    if( driverInterface == NULL )
-    {
-        MD_ASSERT( driverInterface != NULL );
-        return CC_ERROR_GENERAL;
-    }
-
-    ret = driverInterface->ReadIoStream( STREAM_TYPE_SYS, m_ioMetricSet, reportData, reportCount, readFlags, &frequency, &exceptions );
+    ret = driverInterface.ReadIoStream( STREAM_TYPE_SYS, m_ioMetricSet, reportData, reportCount, readFlags, &frequency, &exceptions );
     if( m_ioMeasurementInfoVector && ( ret == CC_OK || ret == CC_READ_PENDING ) )
     {
         // Order (indices) should be in sync with AddIoMeasurementInfoPredefined()
@@ -3991,7 +5076,7 @@ Output:
     TCompletionCode - result of operation (*CC_OK* is ok)
 
 \*****************************************************************************/
-TCompletionCode CPerfMonConcurrentGroup::CloseIoStream( void )
+TCompletionCode CPerfMonConcurrentGroup::CloseIoStream()
 {
     if( m_ioMetricSet == NULL )
     {
@@ -4000,14 +5085,9 @@ TCompletionCode CPerfMonConcurrentGroup::CloseIoStream( void )
     }
 
     TCompletionCode ret = CC_OK;
-    CDriverInterface* driverInterface = m_device->GetDriverInterface();
-    if( driverInterface == NULL )
-    {
-        MD_ASSERT( driverInterface != NULL );
-        return CC_ERROR_GENERAL;
-    }
+    CDriverInterface& driverInterface = m_device->GetDriverInterface();
 
-    ret = driverInterface->CloseIoStream( STREAM_TYPE_SYS, &m_streamEventHandle, m_params_1_0.SymbolName, m_ioMetricSet );
+    ret = driverInterface.CloseIoStream( STREAM_TYPE_SYS, &m_streamEventHandle, m_params_1_0.SymbolName, m_ioMetricSet );
     if( ret != CC_OK )
     {
         return ret;
@@ -4038,12 +5118,9 @@ Output:
 \*****************************************************************************/
 TCompletionCode CPerfMonConcurrentGroup::WaitForReports( uint32_t milliseconds )
 {
-    TCompletionCode   retVal          = CC_OK;
-    CDriverInterface* driverInterface = m_device->GetDriverInterface();
+    CDriverInterface& driverInterface = m_device->GetDriverInterface();
 
-    retVal = driverInterface->WaitForIoStreamReports( STREAM_TYPE_SYS, milliseconds, m_streamEventHandle );
-
-    return retVal;
+    return driverInterface.WaitForIoStreamReports( STREAM_TYPE_SYS, milliseconds, m_streamEventHandle );
 }
 
 /*****************************************************************************\
@@ -4318,15 +5395,15 @@ TCompletionCode CMetricSet::Deactivate( void )
 
     if( m_isReadRegsCfgSet )
     {
-        CDriverInterface* driverInterface  = m_device->GetDriverInterface();
+        CDriverInterface& driverInterface  = m_device->GetDriverInterface();
         TRegister         emptyRrConfig    = {0, 0, REGISTER_TYPE_MMIO};
         TRegister*        emptyRrConfigPtr = &emptyRrConfig;                    // Because we will need 'array of pointers'
 
-        ret = driverInterface->SendReadRegsConfig( &emptyRrConfigPtr, 1, m_currentParams->ApiMask );
+        ret = driverInterface.SendReadRegsConfig( &emptyRrConfigPtr, 1, m_currentParams->ApiMask );
         if( ret == CC_OK )
         {
             // Update PmRegsHandles and reset rrSet flag
-            driverInterface->GetPmRegsConfigHandles( m_params_1_0.ApiSpecificId.HwConfigId, &m_pmRegsConfigInfo.OaConfigHandle,
+            driverInterface.GetPmRegsConfigHandles( m_params_1_0.ApiSpecificId.HwConfigId, &m_pmRegsConfigInfo.OaConfigHandle,
                 &m_pmRegsConfigInfo.GpConfigHandle, &m_pmRegsConfigInfo.RrConfigHandle );
             m_isReadRegsCfgSet = false;
         }
@@ -5215,7 +6292,7 @@ TCompletionCode CMetricSet::SendStartConfiguration( bool sendQueryConfigFlag )
     MD_CHECK_PTR_RET( m_startRegsQueryVector, CC_ERROR_GENERAL );
 
     TCompletionCode   ret             = CC_OK;
-    CDriverInterface* driverInterface = m_device->GetDriverInterface();
+    CDriverInterface& driverInterface = m_device->GetDriverInterface();
 
     if( CheckSendConfigRequired( sendQueryConfigFlag ) )
     {
@@ -5240,10 +6317,10 @@ TCompletionCode CMetricSet::SendStartConfiguration( bool sendQueryConfigFlag )
         if( ( pmRegs->GetCount() > 0 || readRegs->GetCount() > 0 ) || m_startRegisterSetList->GetCount() == 0 )
         {
             // Send configurations
-            ret = driverInterface->SendPmRegsConfig( pmRegs->GetMemoryPointer(), pmRegs->GetCount(), m_currentParams->ApiMask );
+            ret = driverInterface.SendPmRegsConfig( pmRegs->GetMemoryPointer(), pmRegs->GetCount(), m_currentParams->ApiMask );
             if( ret == CC_OK && readRegs->GetCount() )
             {
-                ret = driverInterface->SendReadRegsConfig( readRegs->GetMemoryPointer(), readRegs->GetCount(), m_currentParams->ApiMask );
+                ret = driverInterface.SendReadRegsConfig( readRegs->GetMemoryPointer(), readRegs->GetCount(), m_currentParams->ApiMask );
             }
 
             if( ret == CC_OK )
@@ -5251,7 +6328,7 @@ TCompletionCode CMetricSet::SendStartConfiguration( bool sendQueryConfigFlag )
                 m_isReadRegsCfgSet = readRegs->GetCount() > 0;
 
                 m_pmRegsConfigInfo.IsQueryConfig = sendQueryConfigFlag;
-                driverInterface->GetPmRegsConfigHandles( m_params_1_0.ApiSpecificId.HwConfigId, &m_pmRegsConfigInfo.OaConfigHandle,
+                driverInterface.GetPmRegsConfigHandles( m_params_1_0.ApiSpecificId.HwConfigId, &m_pmRegsConfigInfo.OaConfigHandle,
                     &m_pmRegsConfigInfo.GpConfigHandle, &m_pmRegsConfigInfo.RrConfigHandle );
             }
         }
@@ -5328,7 +6405,7 @@ Output:
 bool CMetricSet::CheckSendConfigRequired( bool sendQueryConfigFlag )
 {
     bool ret = true;
-    CDriverInterface* driverInterface = m_device->GetDriverInterface();
+    CDriverInterface& driverInterface = m_device->GetDriverInterface();
 
     // If measurement type didn't change and config handles were checked before
     if( m_pmRegsConfigInfo.IsQueryConfig == sendQueryConfigFlag &&
@@ -5341,7 +6418,7 @@ bool CMetricSet::CheckSendConfigRequired( bool sendQueryConfigFlag )
         uint32_t        rrCfgHandle = 0;
         TCompletionCode retCode     = CC_OK;
 
-        retCode = driverInterface->GetPmRegsConfigHandles( m_params_1_0.ApiSpecificId.HwConfigId,
+        retCode = driverInterface.GetPmRegsConfigHandles( m_params_1_0.ApiSpecificId.HwConfigId,
             &oaCfgHandle, &gpCfgHandle, &rrCfgHandle );
 
         if( retCode == CC_OK &&
@@ -8296,6 +9373,18 @@ bool CEquation::ParseEquationElement( const char* element )
         }
         return AddEquationElement( &anElement );
     }
+    else if( strncmp( element, "i$", sizeof( "i$" ) - 1 ) == 0 )
+    {
+        //Add element
+        CEquationElementInternal anElement;
+
+        iu_strncpy_s( anElement.SymbolNameInternal, sizeof( anElement.SymbolNameInternal ), &element[2], sizeof( anElement.SymbolNameInternal ) - 1 );
+        //finish element
+        anElement.Element_1_0.SymbolName = anElement.SymbolNameInternal;
+        anElement.Element_1_0.Type       = EQUATION_ELEM_INFORMATION_SYMBOL;
+
+        return AddEquationElement( &anElement );
+    }
     else if( strchr( element, '.' ) != NULL ) //assume float number
     {
         CEquationElementInternal anElement;
@@ -8365,9 +9454,10 @@ Description:
     Constructor.
 
 \*****************************************************************************/
-CSymbolSet::CSymbolSet()
+CSymbolSet::CSymbolSet( CDriverInterface& driverInterface )
+    : m_symbolVector( NULL )
+    , m_driverInterface( driverInterface )
 {
-    m_driverInterface = GetDriverIfc();
     m_symbolVector    = new (std::nothrow) Vector<TGlobalSymbol*>( SYMBOLS_VECTOR_INCREASE );
 }
 
@@ -8514,6 +9604,12 @@ TCompletionCode CSymbolSet::AddSymbol( const char* name, TTypedValue_1_0 typedVa
     if( symbolType == SYMBOL_TYPE_DETECT )
     {
         TCompletionCode ret = DetectSymbolValue( name, &typedValue );
+
+        if( ret == CC_ERROR_NOT_SUPPORTED )
+        {
+            return CC_OK;
+        }
+
         MD_CHECK_CC_RET( ret );
     }
 
@@ -8558,51 +9654,49 @@ Output:
 \*****************************************************************************/
 TCompletionCode CSymbolSet::DetectSymbolValue( const char* name, TTypedValue_1_0* typedValue )
 {
-    MD_CHECK_PTR_RET( m_driverInterface, CC_ERROR_GENERAL );
-
     TCompletionCode             ret = CC_OK;
     GTDIDeviceInfoParamExtOut   out = {};
 
     if( strcmp( name, "EuCoresTotalCount" ) == 0 )
     {
-        ret = m_driverInterface->SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_EU_CORES_TOTAL_COUNT, &out );
+        ret = m_driverInterface.SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_EU_CORES_TOTAL_COUNT, &out );
         MD_CHECK_CC_RET( ret );
         typedValue->ValueUInt32 = out.ValueUint32;
     }
     else if( strcmp( name, "EuCoresPerSubsliceCount" ) == 0 )
     {
-        ret = m_driverInterface->SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_EU_CORES_PER_SUBSLICE_COUNT, &out );
+        ret = m_driverInterface.SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_EU_CORES_PER_SUBSLICE_COUNT, &out );
         MD_CHECK_CC_RET( ret );
         typedValue->ValueUInt32 = out.ValueUint32;
     }
     else if( strcmp( name, "EuSubslicesTotalCount" ) == 0 )
     {
-        ret = m_driverInterface->SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_SUBSLICES_TOTAL_COUNT, &out );
+        ret = m_driverInterface.SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_SUBSLICES_TOTAL_COUNT, &out );
         MD_CHECK_CC_RET( ret );
         typedValue->ValueUInt32 = out.ValueUint32;
     }
     else if( strcmp( name, "EuSubslicesPerSliceCount" ) == 0 )
     {
-        ret = m_driverInterface->SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_SUBSLICES_PER_SLICE_COUNT, &out );
+        ret = m_driverInterface.SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_SUBSLICES_PER_SLICE_COUNT, &out );
         MD_CHECK_CC_RET( ret );
         typedValue->ValueUInt32 = out.ValueUint32;
     }
     else if( strcmp( name, "EuSlicesTotalCount" ) == 0 )
     {
-        ret = m_driverInterface->SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_SLICES_COUNT, &out );
+        ret = m_driverInterface.SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_SLICES_COUNT, &out );
         MD_CHECK_CC_RET( ret );
         typedValue->ValueUInt32 = out.ValueUint32;
     }
     else if( strcmp( name, "EuThreadsCount" ) == 0 )
     {
-        ret = m_driverInterface->SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_EU_THREADS_COUNT, &out );
+        ret = m_driverInterface.SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_EU_THREADS_COUNT, &out );
         MD_CHECK_CC_RET( ret );
         typedValue->ValueUInt32 = out.ValueUint32;
     }
 
     else if( strcmp( name, "SubsliceMask" ) == 0 )
     {
-        ret = m_driverInterface->SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_SUBSLICES_MASK, &out );
+        ret = m_driverInterface.SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_SUBSLICES_MASK, &out );
         MD_CHECK_CC_RET( ret );
         typedValue->ValueUInt64 = out.ValueUint64;
         // TODO: change type of SubsliceMask param to ValueCString, then use following line instead of the above one
@@ -8610,14 +9704,14 @@ TCompletionCode CSymbolSet::DetectSymbolValue( const char* name, TTypedValue_1_0
     }
     else if( strcmp( name, "SliceMask" ) == 0 )
     {
-        ret = m_driverInterface->SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_SLICES_MASK, &out );
+        ret = m_driverInterface.SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_SLICES_MASK, &out );
         MD_CHECK_CC_RET( ret );
         typedValue->ValueUInt32 = out.ValueUint32;
     }
 
     else if( strcmp( name, "SamplersTotalCount" ) == 0 )
     {
-        ret = m_driverInterface->SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_SAMPLERS_COUNT, &out );
+        ret = m_driverInterface.SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_SAMPLERS_COUNT, &out );
         MD_CHECK_CC_RET( ret );
         typedValue->ValueUInt32 = out.ValueUint32;
     }
@@ -8629,19 +9723,26 @@ TCompletionCode CSymbolSet::DetectSymbolValue( const char* name, TTypedValue_1_0
 
     else if( strcmp( name, "MemoryPeakThroghputMB" ) == 0 )
     {
-        ret = m_driverInterface->SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_DRAM_PEAK_THROUGHTPUT, &out );
+        ret = m_driverInterface.SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_DRAM_PEAK_THROUGHTPUT, &out );
+
+        if( ret == CC_ERROR_NOT_SUPPORTED )
+        {
+            return ret;
+        }
+
         MD_CHECK_CC_RET( ret );
         typedValue->ValueUInt32 = (uint32_t)( out.ValueUint64 / (uint64_t)(MD_MBYTE) ); // value / MBYTE
     }
     else if( strcmp( name, "MemoryFrequencyMHz" ) == 0 )
     {
-        ret = m_driverInterface->SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_DRAM_FREQUENCY, &out );
+        ret = m_driverInterface.SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_DRAM_FREQUENCY, &out );
         MD_CHECK_CC_RET( ret );
         typedValue->ValueUInt32 = out.ValueUint32 / MD_MHERTZ;
     }
     else if( strcmp( name, "GpuMinFrequencyMHz" ) == 0 )
     {
-        ret = m_driverInterface->SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_GPU_CORE_MIN_FREQUENCY, &out );
+        ret = m_driverInterface.SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_GPU_CORE_MIN_FREQUENCY, &out );
+
         if( ret != CC_OK )
         {
             // Possibly caused by disabled Turbo
@@ -8656,7 +9757,8 @@ TCompletionCode CSymbolSet::DetectSymbolValue( const char* name, TTypedValue_1_0
     }
     else if( strcmp( name, "GpuMaxFrequencyMHz" ) == 0 )
     {
-        ret = m_driverInterface->SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_GPU_CORE_MAX_FREQUENCY, &out );
+        ret = m_driverInterface.SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_GPU_CORE_MAX_FREQUENCY, &out );
+
         if( ret != CC_OK )
         {
             // Possibly caused by disabled Turbo
@@ -8671,101 +9773,101 @@ TCompletionCode CSymbolSet::DetectSymbolValue( const char* name, TTypedValue_1_0
     }
     else if( strcmp( name, "GpuCurrentFrequencyMHz" ) == 0 )
     {
-        ret = m_driverInterface->SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_GPU_CORE_FREQUENCY, &out );
+        ret = m_driverInterface.SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_GPU_CORE_FREQUENCY, &out );
         MD_CHECK_CC_RET( ret );
         typedValue->ValueUInt32 = out.ValueUint32 / MD_MHERTZ;
     }
 
     else if( strcmp( name, "PciDeviceId" ) == 0 )
     {
-        ret = m_driverInterface->SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_PCI_DEVICE_ID, &out );
+        ret = m_driverInterface.SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_PCI_DEVICE_ID, &out );
         MD_CHECK_CC_RET( ret );
         typedValue->ValueUInt32 = out.ValueUint32;
     }
     else if( strcmp( name, "SkuRevisionId" ) == 0 )
     {
-        ret = m_driverInterface->SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_REVISION_ID, &out );
+        ret = m_driverInterface.SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_REVISION_ID, &out );
         MD_CHECK_CC_RET( ret );
         typedValue->ValueUInt32 = out.ValueUint32;
     }
     else if( strcmp( name, "PlatformIndex" ) == 0 )
     {
-        ret = m_driverInterface->SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_PLATFORM_INDEX, &out );
+        ret = m_driverInterface.SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_PLATFORM_INDEX, &out );
         MD_CHECK_CC_RET( ret );
         typedValue->ValueUInt32 = out.ValueUint32;
     }
     else if( strcmp( name, "ApertureSize" ) == 0 )
     {
-        ret = m_driverInterface->SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_APERTURE_SIZE, &out );
+        ret = m_driverInterface.SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_APERTURE_SIZE, &out );
         MD_CHECK_CC_RET( ret );
         typedValue->ValueUInt32 = out.ValueUint32;
     }
     else if( strcmp( name, "Capabilities" ) == 0 )
     {
-        ret = m_driverInterface->SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_CAPABILITIES, &out );
+        ret = m_driverInterface.SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_CAPABILITIES, &out );
         MD_CHECK_CC_RET( ret );
         typedValue->ValueUInt32 = out.ValueUint32;
     }
     else if( strcmp( name, "PavpDisabled" ) == 0 )
     {
-        ret = m_driverInterface->SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_CAPABILITIES, &out );
+        ret = m_driverInterface.SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_CAPABILITIES, &out );
         MD_CHECK_CC_RET( ret );
         typedValue->ValueBool = IsPavpDisabled( out.ValueUint32 );
     }
 
     else if( strcmp( name, "NumberOfRenderOutputUnits" ) == 0 )
     {
-        ret = m_driverInterface->SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_NUMBER_OF_RENDER_OUTPUT_UNITS, &out );
+        ret = m_driverInterface.SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_NUMBER_OF_RENDER_OUTPUT_UNITS, &out );
         MD_CHECK_CC_RET( ret );
         typedValue->ValueUInt32 = out.ValueUint32;
     }
     else if( strcmp( name, "NumberOfShadingUnits" ) == 0 )
     {
-        ret = m_driverInterface->SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_NUMBER_OF_SHADING_UNITS, &out );
+        ret = m_driverInterface.SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_NUMBER_OF_SHADING_UNITS, &out );
         MD_CHECK_CC_RET( ret );
         typedValue->ValueUInt32 = out.ValueUint32;
     }
 
     else if( strcmp( name, "OABufferMinSize" ) == 0 )
     {
-        ret = m_driverInterface->SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_OA_BUFFER_SIZE_MIN, &out );
+        ret = m_driverInterface.SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_OA_BUFFER_SIZE_MIN, &out );
         MD_CHECK_CC_RET( ret );
         typedValue->ValueUInt32 = out.ValueUint32;
     }
     else if( strcmp( name, "OABufferMaxSize" ) == 0 )
     {
-        ret = m_driverInterface->SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_OA_BUFFER_SIZE_MAX, &out );
+        ret = m_driverInterface.SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_OA_BUFFER_SIZE_MAX, &out );
         MD_CHECK_CC_RET( ret );
         typedValue->ValueUInt32 = out.ValueUint32;
     }
 
     else if( strcmp( name, "GpuTimestampFrequency" ) == 0 )
     {
-        ret = m_driverInterface->SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_GPU_TIMESTAMP_FREQUENCY, &out );
+        ret = m_driverInterface.SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_GPU_TIMESTAMP_FREQUENCY, &out );
         MD_CHECK_CC_RET( ret );
         typedValue->ValueUInt32 = (uint32_t)out.ValueUint64;
     }
     else if( strcmp( name, "EdramSize") == 0 )
     {
-        ret = m_driverInterface->SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_EDRAM_SIZE, &out );
+        ret = m_driverInterface.SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_EDRAM_SIZE, &out );
         MD_CHECK_CC_RET( ret );
         typedValue->ValueUInt32 = (uint32_t)out.ValueUint64;
     }
     else if( strcmp( name, "LLCSize") == 0 )
     {
-        ret = m_driverInterface->SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_LLC_SIZE, &out );
+        ret = m_driverInterface.SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_LLC_SIZE, &out );
         MD_CHECK_CC_RET( ret );
         typedValue->ValueUInt32 = (uint32_t)out.ValueUint64;
     }
     else if( strcmp( name, "L3Size") == 0 )
     {
-        ret = m_driverInterface->SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_L3_SIZE, &out );
+        ret = m_driverInterface.SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_L3_SIZE, &out );
         MD_CHECK_CC_RET( ret );
         typedValue->ValueUInt32 = (uint32_t)out.ValueUint64;
     }
     else if( strcmp( name, "MaxTimestamp" ) == 0 )
     {
-        ret = m_driverInterface->SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_GPU_TIMESTAMP_FREQUENCY, &out );
+        ret = m_driverInterface.SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_GPU_TIMESTAMP_FREQUENCY, &out );
         MD_CHECK_CC_RET( ret );
         typedValue->ValueUInt64 = MD_GPU_TIMESTAMP_MASK * MD_SECOND_IN_NS / out.ValueUint64;
     }

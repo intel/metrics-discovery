@@ -47,9 +47,15 @@ using namespace MetricsDiscovery;
 
 namespace MetricsDiscoveryInternal
 {
-    /* Forward declarations */
+    // Forward declarations //
+    struct SAdapterData;
+    typedef SAdapterData TAdapterData;
+
     class CSymbolSet;
+    class CAdapterHandle;
     class CDriverInterface;
+    class CAdapter;
+    class CMetricsDevice;
     class COverrride;
     class CConcurrentGroup;
     class COAConcurrentGroup;
@@ -150,6 +156,121 @@ namespace MetricsDiscoveryInternal
         uint32_t     QueryOverrideId;
     } TOverrideInternalParams;
 
+/*****************************************************************************\
+
+Class:
+    CAdapterGroup
+
+Description:
+    GPU adapters root object. Stores all currently available and supported Intel adapters.
+    One instance for the whole library.
+
+\*****************************************************************************/
+    class CAdapterGroup : public IAdapterGroup_1_6
+    {
+    public:
+        // API 1.6:
+        virtual const TAdapterGroupParams_1_6* GetParams() const;
+        virtual IAdapter_1_6*                  GetAdapter( uint32_t index );
+        virtual TCompletionCode                Close();
+
+    public:
+        // Non-API:
+        CAdapter* GetDefaultAdapter();
+
+        // Non-API static:
+        static TCompletionCode Open( IAdapterGroup_1_6** adapterGroup );
+        static bool            IsOpened();
+        static CAdapterGroup*  Get();
+
+    private:
+        // Constructor & Destructor:
+        CAdapterGroup();
+        virtual ~CAdapterGroup();
+
+        CAdapterGroup( const CAdapterGroup& ) = delete;            // Delete copy-constructor
+        CAdapterGroup& operator=( const CAdapterGroup& ) = delete; // Delete assignment operator
+
+        // Adapter handling:
+        TCompletionCode CreateAdapterTree();
+        TCompletionCode AddAdapter( const TAdapterData& adapterData );
+        void            CleanupAdapters();
+        CAdapter*       ChooseDefaultAdapter();
+
+        // Static:
+        static TCompletionCode GetOpenCloseSemaphore();
+        static TCompletionCode ReleaseOpenCloseSemaphore();
+        static TCompletionCode CreateAdapterGroup( IAdapterGroup_1_6** adapterGroup );
+
+    private:
+        // Variables:
+        TAdapterGroupParams_1_6 m_params;
+        CAdapter*               m_defaultAdapter;
+        Vector<CAdapter*>*      m_adapterVector;
+
+    private:
+        // Static Variables:
+        static void*          m_openCloseSemaphore;
+        static uint32_t       m_agRefCounter;
+        static CAdapterGroup* m_adapterGroup;
+
+        static const uint32_t ADAPTER_VECTOR_INCREASE = 8;
+    };
+
+/*****************************************************************************\
+
+Class:
+    CAdapter
+
+Description:
+    Represents a single GPU adapter.
+
+\*****************************************************************************/
+    class CAdapter : public IAdapter_1_6
+    {
+    public:
+        // API 1.6:
+        virtual const TAdapterParams_1_6* GetParams() const;
+        virtual TCompletionCode           Reset();
+        virtual TCompletionCode           OpenMetricsDevice( IMetricsDevice_1_5** metricsDevice );
+        virtual TCompletionCode           OpenMetricsDeviceFromFile( const char* fileName, void* openParams, IMetricsDevice_1_5** metricsDevice );
+        virtual TCompletionCode           CloseMetricsDevice( IMetricsDevice_1_5* metricsDevice );
+        virtual TCompletionCode           SaveMetricsDeviceToFile( const char* fileName, void* saveParams, IMetricsDevice_1_5* metricsDevice );
+
+    public:
+        // Constructor & Destructor:
+        CAdapter( CAdapterGroup& adapterGroup, const TAdapterParams_1_6& params, CAdapterHandle& adapterHandle );
+        virtual ~CAdapter();
+
+        CAdapter( const CAdapter& ) = delete;            // Delete copy-constructor
+        CAdapter& operator=( const CAdapter& ) = delete; // Delete assignment operator
+
+    private:
+        // Driver interface:
+        TCompletionCode CreateDriverInterface();
+        void            DestroyDriverInterface();
+        TCompletionCode EnableDriverSupport( bool enable );
+
+        // Synchronization:
+        TCompletionCode GetOpenCloseSemaphore();
+        TCompletionCode ReleaseOpenCloseSemaphore();
+
+        // Metrics device:
+        TCompletionCode CreateMetricsDevice( IMetricsDevice_1_5** metricsDevice );
+        void            DestroyMetricsDevice();
+
+    private:
+        // Variables:
+        TAdapterParams_1_6 m_params;        // Adapter information
+        CAdapterHandle*    m_adapterHandle; // OS adapter handle which the given CAdapter object represents
+
+        CDriverInterface* m_driverInterface;    // Driver interface for this adapter
+        CMetricsDevice*   m_metricsDevice;      // Metrics device opened on this adapter
+        uint32_t          m_mdRefCounter;       // Metrics device reference counter
+        void*             m_openCloseSemaphore; // Semaphore used during metrics device operations
+
+        CAdapterGroup& m_adapterGroup; // Parent adapter group
+    };
 
 /*****************************************************************************\
 
@@ -162,14 +283,12 @@ Description:
 \*****************************************************************************/
     class CSymbolSet
     {
-    protected:
-        static const uint32_t SYMBOLS_VECTOR_INCREASE = 32;
-
-    public:// Constructor & Destructor
-        CSymbolSet();
+    public:
+        // Constructor & Destructor:
+        CSymbolSet( CDriverInterface& driverInterface );
         ~CSymbolSet();
 
-    public:
+        // Non-API:
         uint32_t           GetSymbolCount();
         TGlobalSymbol_1_0* GetSymbol( uint32_t index );
         TTypedValue_1_0*   GetSymbolValueByName( const char* name );
@@ -189,7 +308,11 @@ Description:
 
     private: // Variables
         Vector<TGlobalSymbol*>* m_symbolVector;
-        CDriverInterface*       m_driverInterface;
+        CDriverInterface&       m_driverInterface;
+
+    private:
+        // Static variables:
+        static const uint32_t SYMBOLS_VECTOR_INCREASE = 32;
     };
 
 /*****************************************************************************\
@@ -203,27 +326,25 @@ Description:
 \*****************************************************************************/
     class CMetricsDevice: public IMetricsDevice_1_5
     {
-    public: // IMetricsDevice_1_0
+    public:
+        // API 1.0:
         virtual TMetricsDeviceParams_1_2* GetParams( void );
-        // Child objects are of IConcurrentGroup
         virtual IConcurrentGroup_1_5*     GetConcurrentGroup( uint32_t index );
         virtual TGlobalSymbol_1_0*        GetGlobalSymbol( uint32_t index );
         virtual TTypedValue_1_0*          GetGlobalSymbolValueByName( const char* name );
         virtual TCompletionCode           GetLastError();
         virtual TCompletionCode           GetGpuCpuTimestamps( uint64_t* gpuTimestampNs, uint64_t* cpuTimestampNs, uint32_t* cpuId );
-        // IMetricsDevice_1_2
-        virtual IOverride_1_2*            GetOverride( uint32_t index );
-        virtual IOverride_1_2*            GetOverrideByName( const char* symbolName );
 
-    private:
-        static const uint32_t GROUPS_VECTOR_INCREASE    = 16;
-        static const uint32_t OVERRIDES_VECTOR_INCREASE = 8;
-
-    public: // Constructor & Destructor
-        CMetricsDevice();
-        virtual ~CMetricsDevice();
+        // API 1.2:
+        virtual IOverride_1_2* GetOverride( uint32_t index );
+        virtual IOverride_1_2* GetOverrideByName( const char* symbolName );
 
     public:
+        // Constructor & Destructor:
+        CMetricsDevice( CAdapter& adapter, CDriverInterface& driverInterface );
+        virtual ~CMetricsDevice();
+
+        // Non-API:
         CConcurrentGroup* AddConcurrentGroup( const char* symbolicName, const char* shortName, uint32_t measurementTypeMask );
         TCompletionCode   AddOverrides();
         bool              IsPlatformTypeOf( uint32_t hwMask, uint32_t gtMask = GT_TYPE_ALL );
@@ -234,22 +355,23 @@ Description:
         TCompletionCode   OpenFromFile( const char* fileName, bool isInternalBuild );
 
         CConcurrentGroup* GetConcurrentGroupByName( const char* symbolicName );
-        CDriverInterface* GetDriverInterface();
+        CDriverInterface& GetDriverInterface();
+        CAdapter&         GetAdapter();
         CSymbolSet*       GetSymbolSet();
         TPlatformType     GetPlatformType();
         bool              IsOpenedFromFile();
 
     private:
         // Methods to read from file must be used in correct order
-        TCompletionCode   ReadGlobalSymbolsFromFileBuffer( unsigned char** bufferPtr );
-        TCompletionCode   ReadConcurrentGroupsFromFileBuffer( unsigned char** bufferPtr, bool isInternalBuild, SMetricsDeviceParams_1_0::SApiVersion* apiVersion );
-        TCompletionCode   ReadMetricSetsFromFileBuffer( unsigned char** bufferPtr, CConcurrentGroup* group, bool isInternalBuild, SMetricsDeviceParams_1_0::SApiVersion* apiVersion );
-        TCompletionCode   ReadMetricsFromFileBuffer( unsigned char** bufferPtr, CMetricSet* set, bool isSetNew );
-        TCompletionCode   ReadInformationFromFileBuffer( unsigned char** bufferPtr, CMetricSet* set );
-        TCompletionCode   ReadRegistersFromFileBuffer( unsigned char** bufferPtr, CMetricSet* set );
+        TCompletionCode ReadGlobalSymbolsFromFileBuffer( unsigned char** bufferPtr );
+        TCompletionCode ReadConcurrentGroupsFromFileBuffer( unsigned char** bufferPtr, bool isInternalBuild, TApiVersion_1_0* apiVersion );
+        TCompletionCode ReadMetricSetsFromFileBuffer( unsigned char** bufferPtr, CConcurrentGroup* group, bool isInternalBuild, TApiVersion_1_0* apiVersion );
+        TCompletionCode ReadMetricsFromFileBuffer( unsigned char** bufferPtr, CMetricSet* set, bool isSetNew );
+        TCompletionCode ReadInformationFromFileBuffer( unsigned char** bufferPtr, CMetricSet* set );
+        TCompletionCode ReadRegistersFromFileBuffer( unsigned char** bufferPtr, CMetricSet* set );
 
-        IOverride_1_2*    AddOverride( TOverrideType overrideType );
-        bool              IsMetricsFileInPlainTextFormat( FILE* metricFile );
+        IOverride_1_2* AddOverride( TOverrideType overrideType );
+        bool           IsMetricsFileInPlainTextFormat( FILE* metricFile );
 
     private: // Variables
         TMetricsDeviceParams_1_2    m_params;
@@ -258,11 +380,17 @@ Description:
         Vector<IOverride_1_2*>*     m_overridesVector;
         CSymbolSet                  m_symbolSet;
 
-        CDriverInterface*           m_driverInterface;
         TPlatformType               m_platform;
         TGTType                     m_gtType;
         bool                        m_isOpenedFromFile;
 
+        CAdapter&         m_adapter;
+        CDriverInterface& m_driverInterface;
+
+    private:
+        // Static variables:
+        static const uint32_t GROUPS_VECTOR_INCREASE    = 16;
+        static const uint32_t OVERRIDES_VECTOR_INCREASE = 8;
     };
 
 /*****************************************************************************\
@@ -277,6 +405,7 @@ Description:
     class COverrideCommon : public IOverride_1_2
     {
     public:
+        // Non-API:
         const TOverrideInternalParams* GetParamsInternal( void );
 
     protected:  // Constructor
@@ -329,9 +458,6 @@ Description:
             // IInternalConcurrentGroup
         virtual IMetricSet_1_5*             AddCustomMetricSet( TAddCustomMetricSetParams* params, IMetricSet_1_0* referenceMetricSet, bool copyInformationOnly );
 
-    protected:
-        static const uint32_t     SETS_VECTOR_INCREASE           = 16;
-        static const TReportType  DEFAULT_METRIC_SET_REPORT_TYPE = OA_REPORT_TYPE_256B_A45_NOA16;
 
     public: // Constructor & Destructor
         CConcurrentGroup( CMetricsDevice *device, const char* name, const char* longName, uint32_t measurementTypeMask );
@@ -356,6 +482,7 @@ Description:
         bool            AreMetricSetParamsValid( const char* symbolName, const char* shortName, uint32_t platformMask, uint32_t gtMask, TRegisterSet* startRegSets,
             uint32_t startRegSetsCount );
         uint32_t        GetCustomSetCount();
+        TCompletionCode FillLockSemaphoreName( char* name, size_t size );
 
         CMetricSet*     FindSameMetricSetForPlatform(CMetricSet* metricSet, uint32_t platformMask);
 
@@ -368,6 +495,10 @@ Description:
         List<CMetricSet*>*          m_otherSetsList;
 
         CMetricsDevice*             m_device;
+
+    protected:
+        static const uint32_t     SETS_VECTOR_INCREASE           = 16;
+        static const TReportType  DEFAULT_METRIC_SET_REPORT_TYPE = OA_REPORT_TYPE_256B_A45_NOA16;
     };
 
 /*****************************************************************************\
@@ -382,23 +513,25 @@ Description:
 \*****************************************************************************/
     class COAConcurrentGroup: public CConcurrentGroup
     {
-    protected:
-        static const uint32_t EXCEPTIONS_VECTOR_INCREASE   = 16;
-        static const uint32_t GPU_CONTEXTS_VECTOR_INCREASE = 16;
+    public:
+        // API 1.0:
+        virtual TCompletionCode OpenIoStream( IMetricSet_1_0* metricSet, uint32_t processId, uint32_t* nsTimerPeriod, uint32_t* oaBufferSize );
+        virtual TCompletionCode ReadIoStream( uint32_t* reportCount, char* reportData, uint32_t readFlags );
+        virtual TCompletionCode CloseIoStream( void );
+        virtual TCompletionCode WaitForReports( uint32_t milliseconds );
+        IInformation_1_0*       GetIoMeasurementInformation( uint32_t index );
+        IInformation_1_0*       GetIoGpuContextInformation( uint32_t index );
 
-    public:// Constructor & Destructor
-        COAConcurrentGroup( CMetricsDevice *device, const char* name, const char* longName, uint32_t measurementTypeMask );
-        virtual ~COAConcurrentGroup();
+        // API 1.3:
+        virtual TCompletionCode SetIoStreamSamplingType( TSamplingType type );
+
+        // Internal API (IInternalConcurrentGroup):
+        virtual IMetricSet_1_5* AddCustomMetricSet( TAddCustomMetricSetParams* params, IMetricSet_1_0* referenceMetricSet, bool copyInformationOnly = false );
 
     public:
-        virtual IMetricSet_1_5*   AddCustomMetricSet( TAddCustomMetricSetParams* params, IMetricSet_1_0* referenceMetricSet, bool copyInformationOnly = false );
-        virtual TCompletionCode   SetIoStreamSamplingType( TSamplingType type );
-        virtual TCompletionCode   OpenIoStream( IMetricSet_1_0* metricSet, uint32_t processId, uint32_t* nsTimerPeriod, uint32_t* oaBufferSize );
-        virtual TCompletionCode   ReadIoStream( uint32_t* reportCount, char* reportData, uint32_t readFlags );
-        virtual TCompletionCode   CloseIoStream( void );
-        virtual TCompletionCode   WaitForReports( uint32_t milliseconds );
-        IInformation_1_0*         GetIoMeasurementInformation( uint32_t index );
-        IInformation_1_0*         GetIoGpuContextInformation( uint32_t index );
+        // Constructor & Destructor:
+        COAConcurrentGroup( CMetricsDevice* device, const char* name, const char* longName, uint32_t measurementTypeMask );
+        virtual ~COAConcurrentGroup();
 
     protected:
         CInformation*             AddIoMeasurementInformation( const char* name, const char* shortName, const char* longName, const char* group,
@@ -419,6 +552,10 @@ Description:
         void*                   m_streamEventHandle;
         Vector<CInformation*>*  m_ioMeasurementInfoVector;
         Vector<CInformation*>*  m_ioGpuContextInfoVector;
+
+    protected:
+        static const uint32_t EXCEPTIONS_VECTOR_INCREASE   = 16;
+        static const uint32_t GPU_CONTEXTS_VECTOR_INCREASE = 16;
     };
 
 /*****************************************************************************\

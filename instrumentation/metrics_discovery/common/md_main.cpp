@@ -32,260 +32,274 @@
 #include "md_per_platform_preamble.h"
 #include "md_utils.h"
 
-// Global handle to MetricsDevice
-CMetricsDevice* g_MetricsDevice      = NULL;
-uint32_t        g_mdRefCounter       = 0;
-void*           g_OpenCloseSemaphore = NULL;
-
-TCompletionCode CreateObjectTreeFromFile( const char* fileName, IMetricsDevice_1_5** metricsDevice )
-{
-    TCompletionCode retVal = CC_OK;
-
-    MD_CHECK_PTR_RET( g_MetricsDevice, CC_ERROR_GENERAL );
-
-    retVal = g_MetricsDevice->OpenFromFile( fileName, MD_IS_INTERNAL_BUILD );
-    if( retVal == CC_OK )
-    {
-        *metricsDevice = g_MetricsDevice;
-    }
-    else
-    {
-        if( !g_mdRefCounter )
-        {
-            MD_SAFE_DELETE( g_MetricsDevice );
-        }
-        *metricsDevice = NULL;
-    }
-
-    return retVal;
-}
-
-TCompletionCode SaveObjectTreeToFile( const char* fileName, IMetricsDevice_1_5* metricsDevice )
-{
-    TCompletionCode retVal = CC_OK;
-
-    g_MetricsDevice = static_cast<CMetricsDevice*>(metricsDevice);
-    if( g_MetricsDevice == NULL ) return CC_ERROR_INVALID_PARAMETER;
-
-    retVal = g_MetricsDevice->SaveToFile(fileName);
-
-    return retVal;
-}
 
 #ifdef __cplusplus
     extern "C" {
 #endif
 
+/*****************************************************************************\
+
+Group:
+    API Entry
+
+Function:
+    OpenAdapterGroup
+
+Description:
+    Opens main MDAPI root object - adapter group or retrieves an instance
+    opened before. Only one instance of adapter group may be created, all
+    Open() calls are reference counted.
+
+Input:
+    IAdapterGroup_1_6** adapterGroup - [out] created / retrieved adapter group
+
+Output:
+    TCompletionCode                  - CC_OK or CC_ALREADY_INITIALIZED means success
+
+\*****************************************************************************/
+TCompletionCode OpenAdapterGroup( IAdapterGroup_1_6** adapterGroup )
+{
+    MD_LOG_ENTER();
+    MD_CHECK_PTR_RET( adapterGroup, CC_ERROR_INVALID_PARAMETER );
+
+    TCompletionCode retVal = CAdapterGroup::Open( adapterGroup );
+
+    MD_LOG_EXIT();
+    return retVal;
+}
+
+/*****************************************************************************\
+
+Group:
+    API Entry
+
+Function:
+    OpenMetricsDevice
+
+Description:
+    Opens metrics device or retrieves an instance opened before. Only one
+    instance per adapter may exist. All OpenMetricsDevice() calls are
+    reference counted.
+
+    List of operations:
+        1. Get AdapterGroup
+            - Create one if null
+        2. Get default adapter
+        3. OpenMetricsDevice on it
+        4. Destroy anything that was created if error
+
+Input:
+    IMetricsDevice_1_5** metricsDevice - [out] created / retrieved metrics device
+
+Output:
+    TCompletionCode                    - CC_OK or CC_ALREADY_INITIALIZED means success
+
+\*****************************************************************************/
 TCompletionCode OpenMetricsDevice( IMetricsDevice_1_5** metricsDevice )
 {
     MD_LOG_ENTER();
-    TCompletionCode retVal = CC_OK;
+    MD_CHECK_PTR_RET( metricsDevice, CC_ERROR_INVALID_PARAMETER );
 
-    if( metricsDevice == NULL )
+    CAdapterGroup* adapterGroup = NULL;
+
+    TCompletionCode retVal = CAdapterGroup::Open( (IAdapterGroup_1_6**)&adapterGroup );
+    if( retVal != CC_OK && retVal != CC_ALREADY_INITIALIZED )
     {
-        MD_LOG(LOG_DEBUG, "NULL metrics device");
+        MD_LOG( LOG_ERROR, "Failed to open group device" );
         MD_LOG_EXIT();
-        return CC_ERROR_INVALID_PARAMETER;
+        return retVal;
     }
+    MD_CHECK_PTR_RET( adapterGroup, CC_ERROR_GENERAL );
 
-    // Init driver interface if needed
-    CDriverInterface *pDriverInterface = GetDriverIfc();
-    if( !pDriverInterface )
+    CAdapter* defaultAdapter = adapterGroup->GetDefaultAdapter();
+    if( !defaultAdapter )
     {
-        MD_LOG(LOG_ERROR, "failed to get driver interface");
+        MD_LOG( LOG_ERROR, "No adapters available" );
+        adapterGroup->Close();
         MD_LOG_EXIT();
         return CC_ERROR_NOT_SUPPORTED;
     }
 
-    if( pDriverInterface->GetNeedSupportEnable() )
+    retVal = defaultAdapter->OpenMetricsDevice( metricsDevice );
+    if( retVal != CC_OK && retVal != CC_ALREADY_INITIALIZED )
     {
-        MD_LOG(LOG_INFO, "driver support enabling...");
-        retVal = pDriverInterface->SendSupportEnableEscape(true);
-        if( retVal != CC_OK )
-        {
-            MD_LOG(LOG_ERROR, "driver support enabling failed");
-            MD_LOG_EXIT();
-            return retVal;
-        }
+        adapterGroup->Close();
     }
 
-    retVal = GetOpenCloseSemaphore( &g_OpenCloseSemaphore );
-    if( retVal != CC_OK )
-    {
-        MD_LOG(LOG_ERROR, "get semaphore failed");
-        MD_LOG_EXIT();
-        return retVal;
-    }
-
-    if( g_MetricsDevice != NULL )
-    {
-        *metricsDevice  = g_MetricsDevice;
-        retVal          = CC_ALREADY_INITIALIZED;
-        g_mdRefCounter++;
-    }
-    else
-    {
-        
-        g_MetricsDevice = new (std::nothrow) CMetricsDevice();
-        if( g_MetricsDevice == NULL )
-        {
-            retVal = CC_ERROR_NO_MEMORY;
-        }
-        else
-        {
-            retVal = CreateMetricTree( g_MetricsDevice );
-        }
-        if( retVal == CC_OK )
-        {
-            g_mdRefCounter++;
-            *metricsDevice  = g_MetricsDevice;
-        }
-    }
-
-    ReleaseOpenCloseSemaphore( &g_OpenCloseSemaphore );
     MD_LOG_EXIT();
     return retVal;
 }
 
+/*****************************************************************************\
+
+Group:
+    API Entry
+
+Function:
+    OpenMetricsDeviceFromFile
+
+Description:
+    Opens metrics device or uses an instance opened before (just like OpenMetricsDevice),
+    then loads custom metric sets / metrics from a file and merged them into the 'standard'
+    metrics device.
+
+    List of operations:
+        1. Get AdapterGroup
+            - Create one if null
+        2. Get default adapter
+        3. OpenMetricsDeviceFromFile on it
+        4. Destroy anything that was created if error
+
+Input:
+    const char*          fileName      - custom metric file
+    void*                openParams    - open params
+    IMetricsDevice_1_5** metricsDevice - [out] created / retrieved metrics device
+
+Output:
+    TCompletionCode                    - CC_OK or CC_ALREADY_INITIALIZED means success
+
+\*****************************************************************************/
+TCompletionCode OpenMetricsDeviceFromFile( const char* fileName, void* openParams, IMetricsDevice_1_5** metricsDevice )
+{
+    MD_LOG_ENTER();
+    MD_CHECK_PTR_RET( metricsDevice, CC_ERROR_INVALID_PARAMETER );
+
+    CAdapterGroup* adapterGroup = NULL;
+
+    TCompletionCode retVal = CAdapterGroup::Open( (IAdapterGroup_1_6**)&adapterGroup );
+    if( retVal != CC_OK && retVal != CC_ALREADY_INITIALIZED )
+    {
+        MD_LOG( LOG_ERROR, "Failed to open adapter group" );
+        MD_LOG_EXIT();
+        return retVal;
+    }
+    MD_CHECK_PTR_RET( adapterGroup, CC_ERROR_GENERAL );
+
+    CAdapter* defaultAdapter = adapterGroup->GetDefaultAdapter();
+    if( !defaultAdapter )
+    {
+        adapterGroup->Close();
+        MD_LOG( LOG_ERROR, "No adapters available" );
+        MD_LOG_EXIT();
+        return CC_ERROR_NOT_SUPPORTED;
+    }
+
+    retVal = defaultAdapter->OpenMetricsDeviceFromFile( fileName, openParams, metricsDevice );
+    if( retVal != CC_OK && retVal != CC_ALREADY_INITIALIZED )
+    {
+        adapterGroup->Close();
+    }
+
+    MD_LOG_EXIT();
+    return retVal;
+}
+
+/*****************************************************************************\
+
+Group:
+    API Entry
+
+Function:
+    CloseMetricsDevice
+
+Description:
+    Decreases metrics device reference counter and closes it (frees up recourses)
+    if the counter reaches 0.
+
+    List of operations:
+        1. Get AdapterGroup
+            - Return error if null
+        2. Get default adapter
+        3. CloseMetricsDevice on it
+
+Input:
+    IMetricsDevice_1_5* metricsDevice - metrics device to close
+
+Output:
+    TCompletionCode                   - CC_OK or CC_STILL_INITIALIZED means success
+
+\*****************************************************************************/
 TCompletionCode CloseMetricsDevice( IMetricsDevice_1_5* metricsDevice )
 {
     MD_LOG_ENTER();
-    TCompletionCode   retVal           = CC_OK;
-    CDriverInterface* pDriverInterface = GetDriverIfc();
-    if( !pDriverInterface )
+    MD_CHECK_PTR_RET( metricsDevice, CC_ERROR_INVALID_PARAMETER );
+
+    CAdapterGroup* adapterGroup = CAdapterGroup::Get();
+    if( !adapterGroup )
     {
-        MD_LOG(LOG_ERROR, "failed to get driver interface");
+        MD_LOG( LOG_ERROR, "Adapter group not found" );
         MD_LOG_EXIT();
         return CC_ERROR_NOT_SUPPORTED;
     }
 
-    retVal = GetOpenCloseSemaphore( &g_OpenCloseSemaphore );
-    if( retVal != CC_OK )
+    CAdapter* defaultAdapter = adapterGroup->GetDefaultAdapter();
+    if( !defaultAdapter )
     {
-        MD_LOG(LOG_ERROR, "get semaphore failed");
+        MD_LOG( LOG_ERROR, "No adapters available" );
         MD_LOG_EXIT();
-        return retVal;
+        return CC_ERROR_NOT_SUPPORTED;
     }
 
-    if( static_cast<CMetricsDevice*>(metricsDevice) != g_MetricsDevice )
+    TCompletionCode retVal = defaultAdapter->CloseMetricsDevice( metricsDevice );
+    if( retVal == CC_OK || retVal == CC_STILL_INITIALIZED )
     {
-        MD_LOG(LOG_ERROR, "pointers mismatch");
-        retVal = CC_ERROR_GENERAL;
-    }
-
-    if( retVal == CC_OK )
-    {
-        if( g_mdRefCounter > 1 )
-        {
-            g_mdRefCounter--;
-            retVal = CC_STILL_INITIALIZED;
-        }
-        else if( g_mdRefCounter == 1 )
-        {
-            MD_SAFE_DELETE(g_MetricsDevice);
-            g_mdRefCounter = 0;
-            retVal         = CC_OK;
-        }
-        else
-        {
-            retVal = CC_ERROR_GENERAL;
-        }
-    }
-
-    // disable instrumentation support if needed
-    if( pDriverInterface->GetNeedSupportEnable() )
-    {
-        MD_LOG(LOG_INFO, "driver support disabling...");
-        pDriverInterface->SendSupportEnableEscape(false);
-    }
-
-    ReleaseOpenCloseSemaphore( &g_OpenCloseSemaphore );
-    if( !g_mdRefCounter )
-    {
-        DestroyDriverIfc();
+        // Close adapter group only if metrics device existed before calling this API call
+        adapterGroup->Close();
     }
 
     MD_LOG_EXIT();
     return retVal;
 }
 
-TCompletionCode OpenMetricsDeviceFromFile( const char* fileName, void* openParams, IMetricsDevice_1_5** device )
+/*****************************************************************************\
+
+Group:
+    API Entry
+
+Function:
+    SaveMetricsDeviceToFile
+
+Description:
+    Creates custom metric file containing only custom metrics - standard ones
+    aren't saved.
+
+    List of operations:
+        1. Get AdapterGroup
+            - Error if null
+        2. Get default adapter
+        3. SaveMetricsDeviceToFile on it
+
+Input:
+    const char*         fileName      - target file name
+    void*               saveParams    - save params
+    IMetricsDevice_1_5* metricsDevice - target metrics device
+
+Output:
+    TCompletionCode                   - CC_OK means success
+
+\*****************************************************************************/
+TCompletionCode SaveMetricsDeviceToFile( const char* fileName, void* saveParams, IMetricsDevice_1_5* metricsDevice )
 {
     MD_LOG_ENTER();
-    MD_CHECK_PTR_RET( device, CC_ERROR_INVALID_PARAMETER );
+    MD_CHECK_PTR_RET( fileName, CC_ERROR_INVALID_PARAMETER );
+    MD_CHECK_PTR_RET( metricsDevice, CC_ERROR_INVALID_PARAMETER );
 
-    TCompletionCode retVal = CC_OK;
-
-    // Init driver interface if needed
-    CDriverInterface *pDriverInterface = GetDriverIfc();
-    if( !pDriverInterface )
+    CAdapterGroup* adapterGroup = CAdapterGroup::Get();
+    if( !adapterGroup )
     {
-        MD_LOG(LOG_ERROR, "failed to get driver interface");
+        MD_LOG( LOG_ERROR, "Adapter group not found" );
+        return CC_ERROR_NOT_SUPPORTED;
+    }
+
+    CAdapter* defaultAdapter = adapterGroup->GetDefaultAdapter();
+    if( !defaultAdapter )
+    {
+        MD_LOG( LOG_ERROR, "No adapters available" );
         MD_LOG_EXIT();
         return CC_ERROR_NOT_SUPPORTED;
     }
 
-    if( pDriverInterface->GetNeedSupportEnable() )
-    {
-        MD_LOG(LOG_DEBUG, "enabling driver support");
-        retVal = pDriverInterface->SendSupportEnableEscape(true);
-        if( retVal != CC_OK )
-        {
-            MD_LOG(LOG_ERROR, "driver support enabling failed");
-            MD_LOG_EXIT();
-            return retVal;
-        }
-    }
-
-    retVal = GetOpenCloseSemaphore( &g_OpenCloseSemaphore );
-    if( retVal != CC_OK )
-    {
-        MD_LOG(LOG_ERROR, "get semaphore failed");
-        MD_LOG_EXIT();
-        return retVal;
-    }
-
-    if( g_MetricsDevice == NULL )
-    {
-        g_MetricsDevice = new (std::nothrow) CMetricsDevice();
-        if( g_MetricsDevice == NULL )
-        {
-            retVal = CC_ERROR_NO_MEMORY;
-        }
-        else
-        {
-            retVal = CreateMetricTree( g_MetricsDevice );
-        }
-    }
-
-    if( retVal == CC_OK )
-    {
-        if( g_MetricsDevice->IsOpenedFromFile() )
-        {
-            retVal  = CC_ALREADY_INITIALIZED;
-            *device = g_MetricsDevice;
-            g_mdRefCounter++;
-        }
-        else
-        {
-            retVal = CreateObjectTreeFromFile( fileName, device );
-            if( retVal == CC_OK )
-            {
-                g_mdRefCounter++;
-            }
-        }
-    }
-
-    ReleaseOpenCloseSemaphore( &g_OpenCloseSemaphore );
-    MD_LOG_EXIT();
-    return retVal;
-}
-
-TCompletionCode SaveMetricsDeviceToFile(const char* fileName, void* saveParams, IMetricsDevice_1_5* device)
-{
-    MD_LOG_ENTER();
-    TCompletionCode retVal = CC_OK;
-    retVal = SaveObjectTreeToFile(fileName, device);
+    TCompletionCode retVal = defaultAdapter->SaveMetricsDeviceToFile( fileName, saveParams, metricsDevice );
 
     MD_LOG_EXIT();
     return retVal;

@@ -119,6 +119,32 @@ private:
 /*****************************************************************************\
 
 Class:
+    CAdapterHandleLinux
+
+Description:
+    Adapter handle wrapper class for Linux. Keeps DRM file descriptor.
+
+\*****************************************************************************/
+class CAdapterHandleLinux : public CAdapterHandle
+{
+public:
+    CAdapterHandleLinux( int32_t adapterHandle );
+    virtual ~CAdapterHandleLinux();
+
+    virtual TCompletionCode Close();
+    virtual bool            IsValid() const;
+
+    operator int() const;
+
+private:
+    static int32_t InvalidValue;
+
+    int32_t m_handle;
+};
+
+/*****************************************************************************\
+
+Class:
     CDriverInterfaceLinuxPerf
 
 Description:
@@ -128,13 +154,18 @@ Description:
 class CDriverInterfaceLinuxPerf: public CDriverInterface
 {
 public: // Constructor & Destructor
-    CDriverInterfaceLinuxPerf();
+    CDriverInterfaceLinuxPerf( CAdapterHandle& adapterHandle );
     virtual ~CDriverInterfaceLinuxPerf();
 
 public: // Methods
+    // Static
+    static TCompletionCode          GetMesaDeviceInfo( int32_t drmFd, gen_device_info* mesaDeviceInfo );
+    static TAdapterType             GetAdapterType( const gen_device_info* mesaDeviceInfo );
+    static TCompletionCode          MapMesaToInstrPlatform( const gen_device_info* mesaDeviceInfo, GTDI_PLATFORM_INDEX* outInstrPlatformId );
+    static const char*              GetDeviceName( int32_t deviceId );
+
     // General
-    virtual const char*             GetDeviceName();
-    virtual bool                    GetNeedSupportEnable();
+    virtual TCompletionCode         ForceSupportDisable();
     virtual TCompletionCode         SendSupportEnableEscape( bool enable );
     virtual TCompletionCode         SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM param, GTDIDeviceInfoParamExtOut* out );
     virtual TCompletionCode         SendPmRegsConfig( TRegister** regVector, uint32_t regCount, uint32_t apiMask );
@@ -145,9 +176,6 @@ public: // Methods
     virtual TCompletionCode         SendGetCtxIdTagsEscape( TGetCtxTagsIdParams* params );
 
     // Synchronization
-    virtual TCompletionCode         SemaphoreCreate( const char* name, void** semaphore );
-    virtual TSemaphoreWaitResult    SemaphoreWait( uint32_t milliseconds, void* semaphore );
-    virtual TCompletionCode         SemaphoreRelease( void** semaphore );
     virtual TCompletionCode         LockConcurrentGroup( const char* name, void** semaphore );
     virtual TCompletionCode         UnlockConcurrentGroup( const char* name, void** semaphore );
 
@@ -221,7 +249,6 @@ private:
 
     // Device info utils
     uint32_t        GetGtMaxSubslicePerSlice();
-    TCompletionCode MapMesaToInstrPlatform( const gen_device_info* mesaDeviceInfo, GTDI_PLATFORM_INDEX* outInstrPlatformId );
     TGfxGtType      MapMesaToInstrGtType( int32_t mesaGtType );
 
     // General utils
@@ -230,7 +257,8 @@ private:
     uint32_t        GetNsTimerPeriod( uint32_t timerPeriodExponent );
 
 private: // Variables
-    int32_t                      m_DrmFd;                       // DRM file descriptor, used mostly for sending IOCTLs
+    CAdapterHandleLinux&         m_DrmDeviceHandle;             // Adapter handle with which this driver interface communicates.
+                                                                // Important: handle owned by CAdapter object.
     int32_t                      m_DrmCardNumber;               // Used for SysFs reads / writes
     TPerfCapabilities            m_PerfCapabilities;            // Information about i915 Perf features supported in current kernel
 
@@ -241,6 +269,14 @@ private: // Variables
 
     // Query
     std::vector<int32_t>         m_AddedPerfConfigs;            // IDs of configurations added to Perf for the need of query, needed for later config removal
+
+    // Cached values
+    uint64_t                     m_CachedBoostFrequency;
+    uint64_t                     m_CachedMinFrequency;
+    uint64_t                     m_CachedMaxFrequency;
+    gen_device_info              m_CachedMesaDeviceInfo;
+    int32_t                      m_CachedDeviceId;
+    int32_t                      m_CachedPerfRevision;
 };
 
 }

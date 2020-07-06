@@ -32,6 +32,7 @@
 #include <string.h>
 #include <inttypes.h>      // for PRIu64 (printing uint64_t)
 #include <errno.h>
+#include <array>
 #include <vector>
 #include <string>
 #include <functional>      // for std::hash
@@ -302,12 +303,12 @@ Output:
 
 \*****************************************************************************/
 #if defined(MD_USE_PERF)
-CDriverInterface* CDriverInterface::GetInstance()
+CDriverInterface* CDriverInterface::CreateInstance( CAdapterHandle& adapterHandle )
 {
     // Read debug logs settings
     IuLogGetSettings();
 
-    CDriverInterface* driverInterface = new (std::nothrow) CDriverInterfaceLinuxPerf();
+    CDriverInterface* driverInterface = new (std::nothrow) CDriverInterfaceLinuxPerf( adapterHandle );
     if( ( driverInterface != NULL ) &&
         ( driverInterface->CreateContext() == false ) )
     {
@@ -321,6 +322,217 @@ CDriverInterface* CDriverInterface::GetInstance()
 /*****************************************************************************\
 
 Class:
+    CDriverInterface
+
+Method:
+    GetAvailableAdapters
+
+Description:
+    Linux implementation of static function GetAvailableAdapters.
+    Enumerates all available adapters in the system and return Intel ones.
+
+Input:
+    std::vector<TAdapterData>& adapters - [out] available Intel adapters
+
+Output:
+    TCompletionCode - result of operation (*CC_OK* is OK)
+
+\*****************************************************************************/
+TCompletionCode CDriverInterface::GetAvailableAdapters( std::vector<TAdapterData>& adapters )
+{
+    // The maximum number of drm devices is 64, see:
+    // https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/tree/drivers/gpu/drm/drm_drv.c#n110
+    const uint32_t DRM_MAX_DEVICES = 64;
+
+    std::array<drmDevicePtr, DRM_MAX_DEVICES> devices;
+    int32_t availableDevices = drmGetDevices( devices.data(), devices.size() );
+
+    if( availableDevices < 0 )
+    {
+        MD_LOG(LOG_ERROR, "ERROR: Failed to get the list of drm devices");
+        return CC_ERROR_GENERAL;
+    }
+
+#define IS_DRM_NODE_AVAILABLE(_nodes, _node_type) ((_nodes) & (1 << (_node_type)))
+
+    for( int32_t i = 0; i < availableDevices; ++i )
+    {
+        if( devices[i] == nullptr )
+        {
+            MD_LOG(LOG_ERROR, "ERROR: Uninitialized drm device");
+            continue;
+        }
+
+        const drmDevice& device = *devices[i];
+        int32_t drmFd = -1;
+        int32_t minorBase = 0;
+
+        if( IS_DRM_NODE_AVAILABLE( device.available_nodes, DRM_NODE_RENDER ) )
+        {
+            MD_LOG(LOG_DEBUG, "Open render noder '%s'", device.nodes[DRM_NODE_RENDER]);
+            drmFd = open( device.nodes[DRM_NODE_RENDER], O_RDWR );
+            minorBase = DRM_NODE_RENDER * DRM_MAX_DEVICES;
+        }
+
+        if( drmFd == -1 && IS_DRM_NODE_AVAILABLE( device.available_nodes, DRM_NODE_PRIMARY ) )
+        {
+            MD_LOG(LOG_DEBUG, "Open primary noder '%s'", device.nodes[DRM_NODE_PRIMARY]);
+            drmFd = open(device.nodes[DRM_NODE_PRIMARY], O_RDWR);
+            minorBase = DRM_NODE_PRIMARY * DRM_MAX_DEVICES;
+        }
+
+        if( drmFd == -1 )
+        {
+            MD_LOG(LOG_ERROR, "ERROR: Failed to open drm device");
+            continue;
+        }
+
+        drmVersionPtr deviceVersion = drmGetVersion( drmFd );
+
+        if( deviceVersion == nullptr )
+        {
+            MD_LOG(LOG_ERROR, "ERROR: Cannot get version for drm device");
+
+            close(drmFd);
+            continue;
+        }
+
+        if( deviceVersion->name_len != 4 || strncmp(deviceVersion->name, "i915", 4) )
+        {
+            MD_LOG(LOG_DEBUG, "Skip non-Intel device '%s'", (deviceVersion->name_len && deviceVersion->name ? deviceVersion->name : ""));
+
+            drmFreeVersion( deviceVersion );
+            close( drmFd );
+            continue;
+        }
+
+        drmFreeVersion( deviceVersion );
+
+        TAdapterData adapter = {};
+
+        // Get platform info
+        gen_device_info deviceInfo = {};
+        TCompletionCode ret = CDriverInterfaceLinuxPerf::GetMesaDeviceInfo( drmFd, &deviceInfo );
+
+        if( ret != CC_OK )
+        {
+            MD_LOG(LOG_ERROR, "ERROR: Cannot get mesa device info");
+
+            close( drmFd );
+            continue;
+        }
+
+        GTDI_PLATFORM_INDEX platformIdx = GTDI_PLATFORM_MAX;
+        ret = CDriverInterfaceLinuxPerf::MapMesaToInstrPlatform( &deviceInfo, &platformIdx );
+
+        if( ret != CC_OK || platformIdx == GTDI_PLATFORM_MAX )
+        {
+            MD_LOG(LOG_ERROR, "ERROR: Cannot get platform id");
+
+            close( drmFd );
+            continue;
+        }
+
+        adapter.Params.Platform = ( 1 << platformIdx );
+        adapter.Params.Type = CDriverInterfaceLinuxPerf::GetAdapterType( &deviceInfo );
+
+        // Get system id (major/minor pair)
+        struct stat sbuf = {};
+        if( fstat(drmFd, &sbuf) )
+        {
+            MD_LOG(LOG_ERROR, "ERROR: Cannot get system id");
+
+            close( drmFd );
+            continue;
+        }
+
+        adapter.Params.SystemId.Type = ADAPTER_ID_TYPE_MAJOR_MINOR;
+        adapter.Params.SystemId.MajorMinor.Major = major( sbuf.st_rdev );
+        adapter.Params.SystemId.MajorMinor.Minor = minor( sbuf.st_rdev ) - minorBase;
+
+        // Set capabilities
+        adapter.Params.CapabilityMask = IS_DRM_NODE_AVAILABLE( device.available_nodes, DRM_NODE_RENDER )
+            ? ADAPTER_CAPABILITY_RENDER_SUPPORTED
+            : ADAPTER_CAPABILITY_UNDEFINED;
+
+        // Get device info
+        if( devices[i]->bustype == DRM_BUS_PCI )
+        {
+            adapter.Params.BusNumber = device.businfo.pci->bus;
+            adapter.Params.DeviceNumber = device.businfo.pci->dev;
+            adapter.Params.FunctionNumber = device.businfo.pci->func;
+
+            adapter.Params.VendorId = device.deviceinfo.pci->vendor_id;
+            adapter.Params.SubVendorId = device.deviceinfo.pci->subvendor_id;
+            adapter.Params.DeviceId = device.deviceinfo.pci->device_id;
+
+            adapter.Params.ShortName = GetCopiedCString( CDriverInterfaceLinuxPerf::GetDeviceName(device.deviceinfo.pci->device_id) );
+        }
+
+        adapter.Handle = new (std::nothrow) CAdapterHandleLinux( drmFd );    // Important: adapterData.Handle has to be deleted later!
+        if( adapter.Handle == nullptr )
+        {
+            MD_LOG(LOG_ERROR, "ERROR: Cannot create adapter handle");
+
+            close(drmFd);
+            continue;
+        }
+
+        adapters.push_back( std::move(adapter) );
+    }
+
+#undef IS_DRM_NODE_AVAILABLE
+
+    drmFreeDevices( devices.data(), availableDevices );
+
+    return CC_OK;
+}
+
+
+
+/*****************************************************************************\
+
+Class:
+    CDriverInterface
+
+Method:
+    ReadDebugLogSettings()
+
+Description:
+    Reads global debug log settings in instr utils framework.
+
+\*****************************************************************************/
+void CDriverInterface::ReadDebugLogSettings()
+{
+    // Read global debug logs settings
+    IuLogGetSettings();
+}
+
+/*****************************************************************************\
+
+Class:
+    CDriverInterface
+
+Method:
+    IsSupportEnableRequired
+
+Description:
+    Return true if this is metrics discovery library responsibility to call
+    Support Enable.
+
+Output:
+    boolean value indicating whether SupportEnable needs to be called from MD
+    library
+
+\*****************************************************************************/
+bool CDriverInterface::IsSupportEnableRequired()
+{
+    return false;
+}
+
+/*****************************************************************************\
+
+Class:
     CDriverInterfaceLinuxPerf
 
 Method:
@@ -330,12 +542,18 @@ Description:
     Creates driver context.
 
 \*****************************************************************************/
-CDriverInterfaceLinuxPerf::CDriverInterfaceLinuxPerf()
-    : m_DrmFd( -1 )
+CDriverInterfaceLinuxPerf::CDriverInterfaceLinuxPerf( CAdapterHandle& adapterHandle )
+    : m_DrmDeviceHandle( static_cast<CAdapterHandleLinux&>(adapterHandle) )
     , m_DrmCardNumber( -1 )
     , m_PerfCapabilities{}
     , m_PerfStreamFd( -1 )
     , m_PerfStreamConfigId( -1 )
+    , m_CachedBoostFrequency( 0 )
+    , m_CachedMinFrequency ( 0 )
+    , m_CachedMaxFrequency ( 0 )
+    , m_CachedMesaDeviceInfo( { 0, } )
+    , m_CachedDeviceId( -1 )
+    , m_CachedPerfRevision( -1 )
 {
     MD_LOG_ENTER();
     MD_LOG_EXIT();
@@ -430,19 +648,16 @@ Method:
 Description:
     Returns device name, e.g. "Intel HD 6000 Graphics Media Accelerator"
 
+Input:
+    int32_t     - device id
+
 Output:
     const char* - device name
 
 \*****************************************************************************/
-const char* CDriverInterfaceLinuxPerf::GetDeviceName()
+const char* CDriverInterfaceLinuxPerf::GetDeviceName( int32_t deviceId )
 {
-    int32_t     deviceId   = -1;
-    const char* deviceName = NULL;
-
-    if( GetDeviceId( &deviceId ) == CC_OK )
-    {
-        deviceName = gen_get_device_name( deviceId );
-    }
+    const char* deviceName = gen_get_device_name( deviceId );
 
     return (deviceName) ? deviceName : "";
 }
@@ -453,20 +668,19 @@ Class:
     CDriverInterfaceLinuxPerf
 
 Method:
-    GetNeedSupportEnable
+    ForceSupportDisable
 
 Description:
-    Return true if this is metrics discovery library responsibility to call
-    Support Enable.
+    Not needed on Linux.
 
 Output:
-    boolean value indicating whether SupportEnable needs to be called from MD
-    library
+    TCompletionCode - CC_OK means successful reset
 
 \*****************************************************************************/
-bool CDriverInterfaceLinuxPerf::GetNeedSupportEnable()
+TCompletionCode CDriverInterfaceLinuxPerf::ForceSupportDisable()
 {
-    return false;
+    // Intentionally - not supported
+    return MetricsDiscovery::CC_OK;
 }
 
 /*****************************************************************************\
@@ -522,7 +736,7 @@ TCompletionCode CDriverInterfaceLinuxPerf::SendDeviceInfoParamEscape( GTDI_DEVIC
     {
         case GTDI_DEVICE_PARAM_EU_CORES_TOTAL_COUNT:
         {
-            ret = SendGetParamIoctl( m_DrmFd, I915_PARAM_EU_TOTAL, out );
+            ret = SendGetParamIoctl( m_DrmDeviceHandle, I915_PARAM_EU_TOTAL, out );
             break;
         }
 
@@ -532,9 +746,9 @@ TCompletionCode CDriverInterfaceLinuxPerf::SendDeviceInfoParamEscape( GTDI_DEVIC
             int32_t euCoresTotalCount   = 0;
             int32_t subslicesTotalCount = 0;
 
-            ret = SendGetParamIoctl( m_DrmFd, I915_PARAM_EU_TOTAL, &euCoresTotalCount );
+            ret = SendGetParamIoctl( m_DrmDeviceHandle, I915_PARAM_EU_TOTAL, &euCoresTotalCount );
             MD_CHECK_CC_RET(ret);
-            ret = SendGetParamIoctl( m_DrmFd, I915_PARAM_SUBSLICE_TOTAL, &subslicesTotalCount );
+            ret = SendGetParamIoctl( m_DrmDeviceHandle, I915_PARAM_SUBSLICE_TOTAL, &subslicesTotalCount );
             MD_CHECK_CC_RET(ret);
 
             out->ValueType   = GTDI_DEVICE_PARAM_VALUE_TYPE_UINT32;
@@ -545,7 +759,7 @@ TCompletionCode CDriverInterfaceLinuxPerf::SendDeviceInfoParamEscape( GTDI_DEVIC
         case GTDI_DEVICE_PARAM_SUBSLICES_TOTAL_COUNT:
         case GTDI_DEVICE_PARAM_SAMPLERS_COUNT:
         {
-            ret = SendGetParamIoctl( m_DrmFd, I915_PARAM_SUBSLICE_TOTAL, out );
+            ret = SendGetParamIoctl( m_DrmDeviceHandle, I915_PARAM_SUBSLICE_TOTAL, out );
             break;
         }
 
@@ -554,7 +768,7 @@ TCompletionCode CDriverInterfaceLinuxPerf::SendDeviceInfoParamEscape( GTDI_DEVIC
             // Return value is a mask for one slice (assuming it's uniform for each slice)
             int32_t singleSubsliceMask = 0;
 
-            ret = SendGetParamIoctl( m_DrmFd, I915_PARAM_SUBSLICE_MASK, &singleSubsliceMask );
+            ret = SendGetParamIoctl( m_DrmDeviceHandle, I915_PARAM_SUBSLICE_MASK, &singleSubsliceMask );
             MD_CHECK_CC_RET( ret );
 
             out->ValueType   = GTDI_DEVICE_PARAM_VALUE_TYPE_UINT32;
@@ -568,7 +782,7 @@ TCompletionCode CDriverInterfaceLinuxPerf::SendDeviceInfoParamEscape( GTDI_DEVIC
         {
             int32_t sliceMask = 0;
 
-            ret = SendGetParamIoctl( m_DrmFd, I915_PARAM_SLICE_MASK, &sliceMask );
+            ret = SendGetParamIoctl( m_DrmDeviceHandle, I915_PARAM_SLICE_MASK, &sliceMask );
             MD_CHECK_CC_RET( ret );
 
             out->ValueType   = GTDI_DEVICE_PARAM_VALUE_TYPE_UINT32;
@@ -582,7 +796,7 @@ TCompletionCode CDriverInterfaceLinuxPerf::SendDeviceInfoParamEscape( GTDI_DEVIC
         {
             int32_t sliceMask = 0;
 
-            ret = SendGetParamIoctl( m_DrmFd, I915_PARAM_SLICE_MASK, &sliceMask );
+            ret = SendGetParamIoctl( m_DrmDeviceHandle, I915_PARAM_SLICE_MASK, &sliceMask );
             MD_CHECK_CC_RET( ret );
 
             out->ValueType   = GTDI_DEVICE_PARAM_VALUE_TYPE_UINT32;
@@ -621,9 +835,9 @@ TCompletionCode CDriverInterfaceLinuxPerf::SendDeviceInfoParamEscape( GTDI_DEVIC
             int32_t  sliceMask                = 0;
             uint32_t maxSubslicePerSliceCount = GetGtMaxSubslicePerSlice();
 
-            ret = SendGetParamIoctl( m_DrmFd, I915_PARAM_SUBSLICE_MASK, &singleSubsliceMask );
+            ret = SendGetParamIoctl( m_DrmDeviceHandle, I915_PARAM_SUBSLICE_MASK, &singleSubsliceMask );
             MD_CHECK_CC_RET( ret );
-            ret = SendGetParamIoctl( m_DrmFd, I915_PARAM_SLICE_MASK, &sliceMask );
+            ret = SendGetParamIoctl( m_DrmDeviceHandle, I915_PARAM_SLICE_MASK, &sliceMask );
             MD_CHECK_CC_RET( ret );
 
             out->ValueType   = GTDI_DEVICE_PARAM_VALUE_TYPE_UINT64;
@@ -643,7 +857,7 @@ TCompletionCode CDriverInterfaceLinuxPerf::SendDeviceInfoParamEscape( GTDI_DEVIC
 
         case GTDI_DEVICE_PARAM_SLICES_MASK:
         {
-            ret = SendGetParamIoctl( m_DrmFd, I915_PARAM_SLICE_MASK, out );
+            ret = SendGetParamIoctl( m_DrmDeviceHandle, I915_PARAM_SLICE_MASK, out );
             break;
         }
 
@@ -684,7 +898,7 @@ TCompletionCode CDriverInterfaceLinuxPerf::SendDeviceInfoParamEscape( GTDI_DEVIC
 
         case GTDI_DEVICE_PARAM_REVISION_ID:
         {
-            ret = SendGetParamIoctl( m_DrmFd, I915_PARAM_REVISION, out );
+            ret = SendGetParamIoctl( m_DrmDeviceHandle, I915_PARAM_REVISION, out );
             break;
         }
 
@@ -716,7 +930,7 @@ TCompletionCode CDriverInterfaceLinuxPerf::SendDeviceInfoParamEscape( GTDI_DEVIC
         {
             drm_i915_gem_get_aperture getApertureParams = {0,};
 
-            int32_t ioctlRet = SendIoctl( m_DrmFd, DRM_IOCTL_I915_GEM_GET_APERTURE, &getApertureParams );
+            int32_t ioctlRet = SendIoctl( m_DrmDeviceHandle, DRM_IOCTL_I915_GEM_GET_APERTURE, &getApertureParams );
             if( ioctlRet )
             {
                 MD_LOG( LOG_WARNING, "ERROR: Failed to send DRM_I915_GEM_GET_APERTURE ioctl" );
@@ -1015,7 +1229,7 @@ TCompletionCode CDriverInterfaceLinuxPerf::SendGetCtxIdTagsEscape( TGetCtxTagsId
 /*****************************************************************************\
 
 Class:
-    CDriverInterfaceLinuxPerf
+    CDriverInterface
 
 Method:
     SemaphoreCreate
@@ -1031,7 +1245,7 @@ Output:
     TCompletionCode     - *CC_OK* means succeess
 
 \*****************************************************************************/
-TCompletionCode CDriverInterfaceLinuxPerf::SemaphoreCreate( const char* name, void** semaphore )
+TCompletionCode CDriverInterface::SemaphoreCreate( const char* name, void** semaphore )
 {
     MD_LOG_ENTER();
     if( semaphore == NULL )
@@ -1053,7 +1267,7 @@ TCompletionCode CDriverInterfaceLinuxPerf::SemaphoreCreate( const char* name, vo
 /*****************************************************************************\
 
 Class:
-    CDriverInterfaceLinuxPerf
+    CDriverInterface
 
 Method:
     SemaphoreWait
@@ -1068,7 +1282,7 @@ Output:
     TSemaphoreWaitResult  - result of operation
 
 \*****************************************************************************/
-TSemaphoreWaitResult CDriverInterfaceLinuxPerf::SemaphoreWait( uint32_t milliseconds, void* semaphore )
+TSemaphoreWaitResult CDriverInterface::SemaphoreWait( uint32_t milliseconds, void* semaphore )
 {
     MD_LOG_ENTER();
     if( !semaphore )
@@ -1093,7 +1307,7 @@ TSemaphoreWaitResult CDriverInterfaceLinuxPerf::SemaphoreWait( uint32_t millisec
 /*****************************************************************************\
 
 Class:
-    CDriverInterfaceLinuxPerf
+    CDriverInterface
 
 Method:
     SemaphoreRelease
@@ -1105,7 +1319,7 @@ Output:
     TCompletionCode - result of operation (*CC_OK* is OK)
 
 \*****************************************************************************/
-TCompletionCode CDriverInterfaceLinuxPerf::SemaphoreRelease( void** semaphore )
+TCompletionCode CDriverInterface::SemaphoreRelease( void** semaphore )
 {
     MD_LOG_ENTER();
     if( semaphore == NULL || (*semaphore) == NULL )
@@ -1367,7 +1581,7 @@ TCompletionCode CDriverInterfaceLinuxPerf::ReadIoStream( TStreamType streamType,
         if( exceptions )
         {
             uint64_t currentFrequency = 0;
-            if( frequency && GetGpuFrequencyInfo( NULL, NULL, &currentFrequency, NULL ) == CC_OK)
+            if( frequency && GetGpuFrequencyInfo( NULL, NULL, &currentFrequency, NULL ) == CC_OK )
             {
                 *frequency = (uint32_t)currentFrequency / MD_MHERTZ;
             }
@@ -1549,14 +1763,13 @@ TCompletionCode CDriverInterfaceLinuxPerf::SetFrequencyOverride( const TSetFrequ
     uint64_t boostFrequencyToSet = 0;
 
     // Boost frequency needs to be remembered at the beginning for disable
-    static uint64_t boostFrequency    = 0;
-    uint64_t*       boostFrequencyPtr = (boostFrequency) ? NULL : &boostFrequency;
+    uint64_t* boostFrequencyPtr = (m_CachedBoostFrequency) ? NULL : &m_CachedBoostFrequency;
 
     // 1. Read Min/Max and optional Boost frequency
     TCompletionCode ret = GetGpuFrequencyInfo( &minFrequency, &maxFrequency, NULL, boostFrequencyPtr );
     MD_CHECK_CC_RET( ret );
 
-    MD_LOG( LOG_DEBUG, "MinFreq: %llu, MaxFreq: %llu, BoostFreq: %llu MHz", minFrequency, maxFrequency, boostFrequency );
+    MD_LOG( LOG_DEBUG, "MinFreq: %llu, MaxFreq: %llu, BoostFreq: %llu MHz", minFrequency, maxFrequency, m_CachedBoostFrequency );
 
     // 2. Decide frequency values to be set (e.g. check range)
     if( params->Enable )
@@ -1586,7 +1799,7 @@ TCompletionCode CDriverInterfaceLinuxPerf::SetFrequencyOverride( const TSetFrequ
         MD_LOG( LOG_DEBUG, "Disabling frequency override" );
         minFrequencyToSet   = minFrequency;
         maxFrequencyToSet   = maxFrequency;
-        boostFrequencyToSet = boostFrequency;
+        boostFrequencyToSet = m_CachedBoostFrequency;
     }
 
     // 3. Request frequency change (set frequency override)
@@ -1599,7 +1812,7 @@ TCompletionCode CDriverInterfaceLinuxPerf::SetFrequencyOverride( const TSetFrequ
         MD_CHECK_CC_RET( ret );
 
         // If boost frequency file available
-        if( boostFrequency )
+        if( m_CachedBoostFrequency )
         {
             ret = WriteSysFsFile( BOOST_FREQ_OV_FILE_NAME, boostFrequencyToSet );
             MD_CHECK_CC_RET( ret );
@@ -1801,7 +2014,7 @@ TCompletionCode CDriverInterfaceLinuxPerf::OpenPerfStream( uint32_t perfMetricSe
 
     MD_LOG( LOG_DEBUG, "Opening i915 perf stream with params: perfMetricSetId: %u, perfReportType: %u, timerPeriodExponent: %u", perfMetricSetId, perfReportType, timerPeriodExponent );
 
-    perfEventFd = SendIoctl( m_DrmFd, DRM_IOCTL_I915_PERF_OPEN, &param );
+    perfEventFd = SendIoctl( m_DrmDeviceHandle, DRM_IOCTL_I915_PERF_OPEN, &param );
     if( perfEventFd == -1 )
     {
         MD_LOG( LOG_ERROR, "ERROR: opening i915 perf stream failed, fd: %d, errno: %d (%s)", perfEventFd, errno, strerror(errno) );
@@ -2143,7 +2356,7 @@ TCompletionCode CDriverInterfaceLinuxPerf::AddPerfConfig( TRegister** regVector,
     param.n_flex_regs      = (uint32_t)flexRegisters.size();
 
     // 4. ADD CONFIG TO PERF
-    *addedConfigId = SendIoctl( m_DrmFd, DRM_IOCTL_I915_PERF_ADD_CONFIG, &param );
+    *addedConfigId = SendIoctl( m_DrmDeviceHandle, DRM_IOCTL_I915_PERF_ADD_CONFIG, &param );
     if( *addedConfigId == -1 )
     {
         if( errno != EADDRINUSE ) // errno == 98 (EADDRINUSE) means set with the given GUID is already added
@@ -2200,7 +2413,7 @@ TCompletionCode CDriverInterfaceLinuxPerf::RemovePerfConfig( int32_t perfConfigI
         MD_LOG( LOG_DEBUG, "Removing perf configuration with id: %d", perfConfigId );
 
         uint64_t perfConfigId64 = (uint64_t)perfConfigId;
-        int32_t ioctlResult = SendIoctl( m_DrmFd, DRM_IOCTL_I915_PERF_REMOVE_CONFIG, &perfConfigId64 );
+        int32_t ioctlResult = SendIoctl( m_DrmDeviceHandle, DRM_IOCTL_I915_PERF_REMOVE_CONFIG, &perfConfigId64 );
         if( ioctlResult )
         {
             if( errno != ENOENT ) // errno == 2 (ENOENT) means set with the given ID doesn't exist
@@ -2400,22 +2613,12 @@ Output:
 \*****************************************************************************/
 bool CDriverInterfaceLinuxPerf::InitializeIntelDrm()
 {
-    if( m_DrmFd >= 0 )
+    if( !m_DrmDeviceHandle.IsValid() )
     {
-        MD_LOG( LOG_DEBUG, "DRM already initalized, reusing" );
-        return true;
-    }
-    MD_ASSERT( m_DrmFd == -1 );
-    MD_ASSERT( m_DrmCardNumber == -1 );
-
-    m_DrmFd = OpenIntelDrm();
-    if( m_DrmFd < 0 )
-    {
-        MD_LOG( LOG_ERROR, "ERROR: Failed to open render node" );
         return false;
     }
 
-    m_DrmCardNumber = GetDrmCardNumber( m_DrmFd );
+    m_DrmCardNumber = GetDrmCardNumber( m_DrmDeviceHandle );
     if( m_DrmCardNumber < 0 )
     {
         DeinitializeIntelDrm();
@@ -2441,11 +2644,6 @@ Description:
 \*****************************************************************************/
 void CDriverInterfaceLinuxPerf::DeinitializeIntelDrm()
 {
-    if( m_DrmFd >= 0 )
-    {
-        CloseIntelDrm( m_DrmFd );
-        m_DrmFd = -1;
-    }
     m_DrmCardNumber = -1;
     MD_LOG( LOG_DEBUG, "DRM deinitialized" );
 }
@@ -2842,6 +3040,74 @@ Description:
     have any interface allowing querying this information.
 
 Input:
+    int32_t                 drmFd          - drm file descriptor
+    const gen_device_info** mesaDeviceInfo - (OUT) Mesa device info structure
+
+Output:
+    TCompletionCode                        - *CC_OK* means success
+
+\*****************************************************************************/
+TCompletionCode CDriverInterfaceLinuxPerf::GetMesaDeviceInfo( int32_t drmFd, gen_device_info* mesaDeviceInfo )
+{
+    if( drmFd == -1 || mesaDeviceInfo == nullptr )
+    {
+        return CC_ERROR_INVALID_PARAMETER;
+    }
+
+    if( !gen_get_device_info_from_fd( drmFd, mesaDeviceInfo ) )
+    {
+        MD_LOG(LOG_ERROR, "ERROR: DeviceId not supported");
+        return CC_ERROR_NOT_SUPPORTED;
+    }
+
+    return CC_OK;
+}
+
+/*****************************************************************************\
+
+Class:
+    CDriverInterfaceLinuxPerf
+
+Method:
+    GetAdapterType
+
+Description:
+    Returns adapter type based on mesa device info.
+    It can be better to use information about the device type directly from i915 driver.
+    But now 'is_dgfx' property is not available via standard interface:
+    https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/tree/drivers/gpu/drm/i915/intel_device_info.h#n110
+Input:
+    const gen_device_info** mesaDeviceInfo - (OUT) Mesa device info structure
+
+Output:
+    TAdapterType                           - Discrete or integrated.
+
+\*****************************************************************************/
+TAdapterType CDriverInterfaceLinuxPerf::GetAdapterType( const gen_device_info* mesaDeviceInfo )
+{
+    return ( mesaDeviceInfo->is_dg1 )
+            ? ADAPTER_TYPE_DISCRETE
+            : ADAPTER_TYPE_INTEGRATED;
+}
+
+/*****************************************************************************\
+
+Class:
+    CDriverInterfaceLinuxPerf
+
+Method:
+    GetMesaDeviceInfo
+
+Description:
+    Returns Mesa device info structure, based on DeviceId read from kernel.
+    Mesa device info is used for e.g. ChipsetId and Platform matching or
+    getting timestamp frequency.
+    Struct is obtained only once and cached for later use.
+
+    Files containing Mesa device info are compiled into MDAPI - Mesa doesn't
+    have any interface allowing querying this information.
+
+Input:
     const gen_device_info** mesaDeviceInfo - (OUT) Mesa device info structure
 
 Output:
@@ -2850,26 +3116,14 @@ Output:
 \*****************************************************************************/
 TCompletionCode CDriverInterfaceLinuxPerf::GetMesaDeviceInfo( const gen_device_info** mesaDeviceInfo )
 {
-    static bool            isMesaDeviceInfoCached = false;
-    static gen_device_info cachedMesaDeviceInfo   = {0,};
-    int32_t                deviceId               = -1;
-
-    // 1. Get DeviceId
-    TCompletionCode ret = GetDeviceId( &deviceId );
-    MD_CHECK_CC_RET( ret );
-
-    // 2. Get MesaDeviceInfo if not cached already
-    if( !isMesaDeviceInfoCached )
+    // Get MesaDeviceInfo if not cached already
+    if( m_CachedMesaDeviceInfo.gen == 0 )
     {
-        if( !gen_get_device_info( deviceId, &cachedMesaDeviceInfo ) )
-        {
-            MD_LOG( LOG_ERROR, "ERROR: DeviceId not supported" );
-            return CC_ERROR_NOT_SUPPORTED;
-        }
-        isMesaDeviceInfoCached = true;
+        TCompletionCode ret = GetMesaDeviceInfo( m_DrmDeviceHandle, &m_CachedMesaDeviceInfo );
+        MD_CHECK_CC_RET(ret);
     }
 
-    *mesaDeviceInfo = &cachedMesaDeviceInfo;
+    *mesaDeviceInfo = &m_CachedMesaDeviceInfo;
     return CC_OK;
 }
 
@@ -2896,18 +3150,17 @@ TCompletionCode CDriverInterfaceLinuxPerf::GetDeviceId( int32_t* deviceId )
     MD_CHECK_PTR_RET( deviceId, CC_ERROR_INVALID_PARAMETER );
     TCompletionCode ret = CC_OK;
 
-    static int32_t cachedDeviceId = -1;
-    if( cachedDeviceId == -1 )
+    if( m_CachedDeviceId == -1 )
     {
-        ret = SendGetParamIoctl( m_DrmFd, I915_PARAM_CHIPSET_ID, &cachedDeviceId );
+        ret = SendGetParamIoctl( m_DrmDeviceHandle, I915_PARAM_CHIPSET_ID, &m_CachedDeviceId );
         if( ret != CC_OK )
         {
-            cachedDeviceId = -1;
+            m_CachedDeviceId = -1;
             return ret;
         }
     }
 
-    *deviceId = cachedDeviceId;
+    *deviceId = m_CachedDeviceId;
     return ret;
 }
 
@@ -2970,32 +3223,31 @@ TCompletionCode CDriverInterfaceLinuxPerf::GetPerfRevision( int32_t* perfRevisio
 {
     MD_CHECK_PTR_RET( perfRevision, CC_ERROR_INVALID_PARAMETER );
 
-    static int32_t cachedPerfRevision = -1;
-    if( cachedPerfRevision == -1 )
+    if( m_CachedPerfRevision == -1 )
     {
         drm_i915_getparam_t params = {0,};
         params.param = I915_PARAM_PERF_REVISION;
-        params.value = &cachedPerfRevision;
+        params.value = &m_CachedPerfRevision;
 
-        int32_t ioctlRet = SendIoctl( m_DrmFd, DRM_IOCTL_I915_GETPARAM, &params );
+        int32_t ioctlRet = SendIoctl( m_DrmDeviceHandle, DRM_IOCTL_I915_GETPARAM, &params );
         if( ioctlRet )
         {
             if( errno == EINVAL ) // errno == EINVAL means kernel doesn't support I915_PARAM_PERF_REVISION IOCTL, assuming revision 1
             {
                 MD_LOG( LOG_INFO, "I915_PARAM_PERF_REVISION not supported, assuming revision '1'" );
-                cachedPerfRevision = 1;
+                m_CachedPerfRevision = 1;
             }
             else
             {
                 MD_LOG( LOG_ERROR, "ERROR: Getting i915 perf revision failed, errno: %d (%s)", errno, strerror(errno) );
-                cachedPerfRevision = -1;
+                m_CachedPerfRevision = -1;
                 return CC_ERROR_GENERAL;
             }
         }
-        MD_LOG( LOG_DEBUG, "i915 perf revision: %d", cachedPerfRevision );
+        MD_LOG( LOG_DEBUG, "i915 perf revision: %d", m_CachedPerfRevision );
     }
 
-    *perfRevision = cachedPerfRevision;
+    *perfRevision = m_CachedPerfRevision;
     return CC_OK;
 }
 
@@ -3029,28 +3281,27 @@ TCompletionCode CDriverInterfaceLinuxPerf::GetGpuFrequencyInfo( uint64_t* minFre
     // Read minimum frequency
     if( minFrequency )
     {
-        static uint64_t cachedMinFrequency = 0;
-        if( !cachedMinFrequency )
+        if( !m_CachedMinFrequency )
         {
-            ret = ReadSysFsFile( MIN_FREQ_FILE_NAME, &cachedMinFrequency);
+            ret = ReadSysFsFile( MIN_FREQ_FILE_NAME, &m_CachedMinFrequency);
             MD_CHECK_CC_RET( ret );
         }
 
-        *minFrequency = cachedMinFrequency;
+        *minFrequency = m_CachedMinFrequency;
         ret = CC_OK;
     }
 
     // Read maximum frequency
     if( maxFrequency )
     {
-        static uint64_t cachedMaxFrequency = 0;
-        if( !cachedMaxFrequency )
+
+        if( !m_CachedMaxFrequency )
         {
-            ret = ReadSysFsFile( MAX_FREQ_FILE_NAME, &cachedMaxFrequency );
+            ret = ReadSysFsFile( MAX_FREQ_FILE_NAME, &m_CachedMaxFrequency );
             MD_CHECK_CC_RET( ret );
         }
 
-        *maxFrequency = cachedMaxFrequency;
+        *maxFrequency = m_CachedMaxFrequency;
         ret = CC_OK;
     }
 
@@ -3121,7 +3372,7 @@ TCompletionCode CDriverInterfaceLinuxPerf::GetGpuTimestampFrequency( uint64_t* g
 
     // Try to get the current timestampFrequency value from DRM directly
     // for the accurate result
-    ret = SendGetParamIoctl( m_DrmFd, I915_PARAM_CS_TIMESTAMP_FREQUENCY, &freq );
+    ret = SendGetParamIoctl( m_DrmDeviceHandle, I915_PARAM_CS_TIMESTAMP_FREQUENCY, &freq );
     if( ret == CC_OK )
     {
         *gpuTimestampFrequency = static_cast<uint64_t>(freq);
@@ -3250,7 +3501,7 @@ TCompletionCode CDriverInterfaceLinuxPerf::GetGpuTimestampTicks( uint64_t* gpuTi
     regReadParams.offset = MD_TIMESTAMP_LOW_OFFSET | 1; // '| 1' to read low and high part separately. This is how kernel handles
                                                         // flags in REG_READ (kind of hack) - registers are naturally aligned so there's place for flags.
 
-    int32_t ioctlRet = SendIoctl( m_DrmFd, DRM_IOCTL_I915_REG_READ, &regReadParams );
+    int32_t ioctlRet = SendIoctl( m_DrmDeviceHandle, DRM_IOCTL_I915_REG_READ, &regReadParams );
     if( ioctlRet )
     {
         MD_LOG( LOG_WARNING, "ERROR: Failed to send DRM_IOCTL_I915_REG_READ ioctl" );
@@ -3398,13 +3649,24 @@ TCompletionCode CDriverInterfaceLinuxPerf::MapMesaToInstrPlatform( const gen_dev
     else if( mesaDeviceInfo->gen == 11 ) // WA for lack of 'is_icelake' variable
     {
         // Gen11 devices have to be identified by simulator_id
-        if (mesaDeviceInfo->simulator_id == 28)
+        if( mesaDeviceInfo->simulator_id == 28 )
         {
             *outInstrPlatformId = GENERATION_EHL;
         }
         else
         {
             *outInstrPlatformId = GENERATION_ICL;
+        }
+    }
+    else if( mesaDeviceInfo->gen == 12 )
+    {
+        if( mesaDeviceInfo->is_dg1 )
+        {
+            *outInstrPlatformId = GENERATION_DG1;
+        }
+        else
+        {
+            *outInstrPlatformId = GENERATION_TGL;
         }
     }
     else
@@ -3554,5 +3816,115 @@ uint32_t CDriverInterfaceLinuxPerf::GetNsTimerPeriod( uint32_t timerPeriodExpone
     // 2. Compute timer period (StrobePeriod = MinimumTimeStampPeriod * 2^( TimerExponent + 1 ))
     return timestampPeriodNs * (1 << (timerPeriodExponent + 1));
 }
+
+int32_t CAdapterHandleLinux::InvalidValue = -1;
+
+/*****************************************************************************\
+
+Class:
+    CAdapterHandleLinux
+
+Method:
+    CAdapterHandleLinux
+
+Description:
+    Constructor.
+
+Input:
+    int32_t adapterHandle - adapter handle in a system format
+
+\*****************************************************************************/
+CAdapterHandleLinux::CAdapterHandleLinux( int32_t adapterHandle )
+    : m_handle( adapterHandle )
+{
+}
+
+/*****************************************************************************\
+
+Class:
+    CAdapterHandleLinux
+
+Method:
+    ~CAdapterHandleLinux
+
+Description:
+    Destructor (handle not closed on purpose).
+
+\*****************************************************************************/
+CAdapterHandleLinux::~CAdapterHandleLinux()
+{
+}
+
+/*****************************************************************************\
+
+Class:
+    CAdapterHandleLinux
+
+Method:
+    Close
+
+Description:
+    Closes adapter handle.
+
+Output:
+    TCompletionCode - CC_OK means success
+
+\*****************************************************************************/
+TCompletionCode CAdapterHandleLinux::Close()
+{
+    if( IsValid())
+    {
+        if( close( m_handle ) )
+        {
+            MD_LOG(LOG_ERROR, "Closing adapter failed, %d", m_handle);
+            MD_LOG_EXIT();
+            return CC_ERROR_GENERAL;
+        }
+        m_handle = InvalidValue;
+    }
+
+    return CC_OK;
+}
+
+/*****************************************************************************\
+
+Class:
+    CAdapterHandleLinux
+
+Method:
+    IsValid
+
+Description:
+    Checks if the underlying adapter handle is valid.
+
+Output:
+    bool - true if handle is valid
+
+\*****************************************************************************/
+bool CAdapterHandleLinux::IsValid() const
+{
+    return m_handle != InvalidValue;
+}
+
+/*****************************************************************************\
+
+Class:
+    CAdapterHandleLinux
+
+Method:
+    operator int()
+
+Description:
+    Returns adapter handle in the system format.
+
+Output:
+    int32_t - DRM device file descriptor
+
+\*****************************************************************************/
+CAdapterHandleLinux::operator int() const
+{
+    return m_handle;
+}
+
 
 }

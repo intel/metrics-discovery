@@ -63,6 +63,7 @@ bool     iu_wstrncat_s( wchar_t* destWstr, size_t destSize, const wchar_t* srcWs
 bool     iu_wstrncpy_s( wchar_t* destWstr, size_t destSize, const wchar_t* srcWstr, size_t count );
 size_t   iu_wstrnlen( const wchar_t* wstr, size_t wstrSize );
 int32_t  iu_wstrncmp( const wchar_t* wstr1, const wchar_t* wstr2, size_t count );
+size_t   iu_wstrtombs_s( char* destStr, size_t destSize, const wchar_t* srcWstr, size_t count );
 
 // Printing
 int32_t  iu_sprintf_s( char* destStr, size_t destSize, const char* format, ... );

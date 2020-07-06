@@ -45,17 +45,18 @@ extern "C"
 {
 #endif
 
+DllExport TCompletionCode OpenAdapterGroup( IAdapterGroup_1_6** adapterGroup );
 
 DllExport TCompletionCode OpenMetricsDevice( IMetricsDevice_1_5** metricsDevice );
 
 DllExport TCompletionCode CloseMetricsDevice( IMetricsDevice_1_5* metricsDevice );
 
-DllExport TCompletionCode OpenMetricsDeviceFromFile( const char* fileName, void* openParams, IMetricsDevice_1_5** device );
+DllExport TCompletionCode OpenMetricsDeviceFromFile( const char* fileName, void* openParams, IMetricsDevice_1_5** metricsDevice );
 
 
 #if defined(_DEBUG) || defined(_RELEASE_INTERNAL)
 
-DllExport TCompletionCode SaveMetricsDeviceToFile( const char* fileName, void* saveParams, IMetricsDevice_1_5* device );
+DllExport TCompletionCode SaveMetricsDeviceToFile( const char* fileName, void* saveParams, IMetricsDevice_1_5* metricsDevice );
 
 #endif // defined(_DEBUG) || defined(_RELEASE_INTERNAL)
 
