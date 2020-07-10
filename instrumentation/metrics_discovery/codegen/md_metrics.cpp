@@ -1,6 +1,6 @@
 /*****************************************************************************\
 
-    Copyright © 2019, Intel Corporation
+    Copyright © 2019-2020, Intel Corporation
 
     Permission is hereby granted, free of charge, to any person obtaining a
     copy of this software and associated documentation files (the "Software"),
@@ -30,6 +30,81 @@
 #include "md_internal.h"
 #include "md_per_platform_preamble.h"
 
+
+#if (!defined(MD_INCLUDE_HSW_METRICS) && MD_INCLUDE_ALL_METRICS) || MD_INCLUDE_HSW_METRICS
+#define MD_CALL_HSW_METRICS 1
+    TCompletionCode CreateMetricTreeHSW_PipelineStatistics(CMetricsDevice* metricsDevice, CConcurrentGroup* concurrentGroup);
+#endif
+
+#if (!defined(MD_INCLUDE_BDW_METRICS) && MD_INCLUDE_ALL_METRICS) || MD_INCLUDE_BDW_METRICS
+#define MD_CALL_BDW_METRICS 1
+    TCompletionCode CreateMetricTreeBDW_PipelineStatistics(CMetricsDevice* metricsDevice, CConcurrentGroup* concurrentGroup);
+#endif
+
+#if (!defined(MD_INCLUDE_SKL_GT2_METRICS) && MD_INCLUDE_ALL_METRICS) || MD_INCLUDE_SKL_GT2_METRICS
+#define MD_CALL_SKL_GT2_METRICS 1
+    TCompletionCode CreateMetricTreeSKL_GT2_PipelineStatistics(CMetricsDevice* metricsDevice, CConcurrentGroup* concurrentGroup);
+#endif
+
+#if (!defined(MD_INCLUDE_SKL_GT3_METRICS) && MD_INCLUDE_ALL_METRICS) || MD_INCLUDE_SKL_GT3_METRICS
+#define MD_CALL_SKL_GT3_METRICS 1
+    TCompletionCode CreateMetricTreeSKL_GT3_PipelineStatistics(CMetricsDevice* metricsDevice, CConcurrentGroup* concurrentGroup);
+#endif
+
+#if (!defined(MD_INCLUDE_SKL_GT4_METRICS) && MD_INCLUDE_ALL_METRICS) || MD_INCLUDE_SKL_GT4_METRICS
+#define MD_CALL_SKL_GT4_METRICS 1
+    TCompletionCode CreateMetricTreeSKL_GT4_PipelineStatistics(CMetricsDevice* metricsDevice, CConcurrentGroup* concurrentGroup);
+#endif
+
+#if (!defined(MD_INCLUDE_BXT_METRICS) && MD_INCLUDE_ALL_METRICS) || MD_INCLUDE_BXT_METRICS
+#define MD_CALL_BXT_METRICS 1
+    TCompletionCode CreateMetricTreeBXT_PipelineStatistics(CMetricsDevice* metricsDevice, CConcurrentGroup* concurrentGroup);
+#endif
+
+#if (!defined(MD_INCLUDE_KBL_GT2_METRICS) && MD_INCLUDE_ALL_METRICS) || MD_INCLUDE_KBL_GT2_METRICS
+#define MD_CALL_KBL_GT2_METRICS 1
+    TCompletionCode CreateMetricTreeKBL_GT2_PipelineStatistics(CMetricsDevice* metricsDevice, CConcurrentGroup* concurrentGroup);
+#endif
+
+#if (!defined(MD_INCLUDE_KBL_GT3_METRICS) && MD_INCLUDE_ALL_METRICS) || MD_INCLUDE_KBL_GT3_METRICS
+#define MD_CALL_KBL_GT3_METRICS 1
+    TCompletionCode CreateMetricTreeKBL_GT3_PipelineStatistics(CMetricsDevice* metricsDevice, CConcurrentGroup* concurrentGroup);
+#endif
+
+#if (!defined(MD_INCLUDE_CFL_GT2_METRICS) && MD_INCLUDE_ALL_METRICS) || MD_INCLUDE_CFL_GT2_METRICS
+#define MD_CALL_CFL_GT2_METRICS 1
+    TCompletionCode CreateMetricTreeCFL_GT2_PipelineStatistics(CMetricsDevice* metricsDevice, CConcurrentGroup* concurrentGroup);
+#endif
+
+#if (!defined(MD_INCLUDE_CFL_GT3_METRICS) && MD_INCLUDE_ALL_METRICS) || MD_INCLUDE_CFL_GT3_METRICS
+#define MD_CALL_CFL_GT3_METRICS 1
+    TCompletionCode CreateMetricTreeCFL_GT3_PipelineStatistics(CMetricsDevice* metricsDevice, CConcurrentGroup* concurrentGroup);
+#endif
+
+#if (!defined(MD_INCLUDE_GLK_METRICS) && MD_INCLUDE_ALL_METRICS) || MD_INCLUDE_GLK_METRICS
+#define MD_CALL_GLK_METRICS 1
+    TCompletionCode CreateMetricTreeGLK_PipelineStatistics(CMetricsDevice* metricsDevice, CConcurrentGroup* concurrentGroup);
+#endif
+
+#if (!defined(MD_INCLUDE_ICL_METRICS) && MD_INCLUDE_ALL_METRICS) || MD_INCLUDE_ICL_METRICS
+#define MD_CALL_ICL_METRICS 1
+    TCompletionCode CreateMetricTreeICL_PipelineStatistics(CMetricsDevice* metricsDevice, CConcurrentGroup* concurrentGroup);
+#endif
+
+#if (!defined(MD_INCLUDE_EHL_METRICS) && MD_INCLUDE_ALL_METRICS) || MD_INCLUDE_EHL_METRICS
+#define MD_CALL_EHL_METRICS 1
+    TCompletionCode CreateMetricTreeEHL_PipelineStatistics(CMetricsDevice* metricsDevice, CConcurrentGroup* concurrentGroup);
+#endif
+
+#if (!defined(MD_INCLUDE_TGL_METRICS) && MD_INCLUDE_ALL_METRICS) || MD_INCLUDE_TGL_METRICS
+#define MD_CALL_TGL_METRICS 1
+    TCompletionCode CreateMetricTreeTGL_PipelineStatistics(CMetricsDevice* metricsDevice, CConcurrentGroup* concurrentGroup);
+#endif
+
+#if (!defined(MD_INCLUDE_DG1_METRICS) && MD_INCLUDE_ALL_METRICS) || MD_INCLUDE_DG1_METRICS
+#define MD_CALL_DG1_METRICS 1
+    TCompletionCode CreateMetricTreeDG1_PipelineStatistics(CMetricsDevice* metricsDevice, CConcurrentGroup* concurrentGroup);
+#endif
 
 #if (!defined(MD_INCLUDE_HSW_METRICS) && MD_INCLUDE_ALL_METRICS) || MD_INCLUDE_HSW_METRICS
 #define MD_CALL_HSW_METRICS 1
@@ -277,285 +352,67 @@ TCompletionCode CreateMetricTree( CMetricsDevice* metricsDevice )
     concurrentGroup = metricsDevice->AddConcurrentGroup( "PipelineStatistics", "Pipeline Statistics", MEASUREMENT_TYPE_DELTA_QUERY );
     MD_CHECK_PTR( concurrentGroup );
     
-    platformMask = PLATFORM_HSW|PLATFORM_BDW|PLATFORM_SKL|PLATFORM_BXT|PLATFORM_GLK|PLATFORM_KBL|PLATFORM_CFL;
-    if( MD_IS_INTERNAL_BUILD || metricsDevice->IsPlatformTypeOf( platformMask ) )
-    {
-        metricSet = concurrentGroup->AddMetricSet( "PipelineStats", "Pipeline Statistics for OGL4", API_TYPE_OGL|API_TYPE_OGL4_X,
-           GPU_RENDER|GPU_COMPUTE, 0, 88, OA_REPORT_TYPE_256B_A45_NOA16, platformMask );
-        MD_CHECK_PTR( metricSet );
-        
-        MD_CHECK_CC( metricSet->SetApiSpecificId(NULL, 0, 0, 0x80000206, 0, 0,
-            "", 0, "Intel_Raw_Pipeline_Statistics_Query", 0) );
-  
-        availabilityEquation = NULL;
-        metric = metricSet->AddMetric( "IAVertices", "Input vertices",
-            "The total number of vertices that entered the 3D Pipeline.",
-            "3D Pipe/Input Assembler", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_IA * 0x10000), USAGE_FLAG_TIER_2|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X,
-            METRIC_TYPE_EVENT, RESULT_UINT64, "vertices", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
-        if( metric )
-        {
-            
-            MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x00" ));
-        }
+    // Add platform specific metric sets
+#if MD_CALL_HSW_METRICS
+    MD_CHECK_CC( CreateMetricTreeHSW_PipelineStatistics(metricsDevice, concurrentGroup) );
+#endif
 
-        availabilityEquation = NULL;
-        metric = metricSet->AddMetric( "IAPrimitives", "Input primitives",
-            "The total number of rendering primitives assembled and put into the input assembly stage of the 3D Pipeline.",
-            "3D Pipe/Input Assembler", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_IA * 0x10000), USAGE_FLAG_TIER_2|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X,
-            METRIC_TYPE_EVENT, RESULT_UINT64, "triangles", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
-        if( metric )
-        {
-            
-            MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x08" ));
-        }
+#if MD_CALL_BDW_METRICS
+    MD_CHECK_CC( CreateMetricTreeBDW_PipelineStatistics(metricsDevice, concurrentGroup) );
+#endif
 
-        availabilityEquation = NULL;
-        metric = metricSet->AddMetric( "VsInvocations", "VS per vertex invocations",
-            "The total number of times a vertex shader was invoked. 3D rendering invokes the vertex shader once per vertex.",
-            "3D Pipe/Vertex Shader", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_VS * 0x10000), USAGE_FLAG_TIER_2|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X,
-            METRIC_TYPE_EVENT, RESULT_UINT64, "invocations", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
-        if( metric )
-        {
-            
-            MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x10" ));
-        }
+#if MD_CALL_SKL_GT2_METRICS
+    MD_CHECK_CC( CreateMetricTreeSKL_GT2_PipelineStatistics(metricsDevice, concurrentGroup) );
+#endif
 
-        availabilityEquation = NULL;
-        metric = metricSet->AddMetric( "HsInvocations", "HS invocations",
-            "The total number of times a hull shader was invoked.",
-            "3D Pipe/Hull Shader", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_HS * 0x10000), USAGE_FLAG_TIER_2|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X,
-            METRIC_TYPE_EVENT, RESULT_UINT64, "invocations", 0, 0, HW_UNIT_GPU, availabilityEquation, "Hull|Control,HS|TCS", NULL );
-        if( metric )
-        {
-            
-            MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x40" ));
-        }
+#if MD_CALL_SKL_GT3_METRICS
+    MD_CHECK_CC( CreateMetricTreeSKL_GT3_PipelineStatistics(metricsDevice, concurrentGroup) );
+#endif
 
-        availabilityEquation = NULL;
-        metric = metricSet->AddMetric( "DsInvocations", "DS invocations",
-            "The total number of times a domain shader was invoked.",
-            "3D Pipe/Domain Shader", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_DS * 0x10000), USAGE_FLAG_TIER_2|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X,
-            METRIC_TYPE_EVENT, RESULT_UINT64, "invocations", 0, 0, HW_UNIT_GPU, availabilityEquation, "Domain|Evaluation,DS|TES", NULL );
-        if( metric )
-        {
-            
-            MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x48" ));
-        }
+#if MD_CALL_SKL_GT4_METRICS
+    MD_CHECK_CC( CreateMetricTreeSKL_GT4_PipelineStatistics(metricsDevice, concurrentGroup) );
+#endif
 
-        availabilityEquation = NULL;
-        metric = metricSet->AddMetric( "GsInvocations", "GS per triangle invocations",
-            "The total number of times a geometry shader was invoked per triangle.",
-            "3D Pipe/Geometry Shader", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_GS * 0x10000), USAGE_FLAG_TIER_2|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X,
-            METRIC_TYPE_EVENT, RESULT_UINT64, "invocations", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
-        if( metric )
-        {
-            
-            MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x18" ));
-        }
+#if MD_CALL_BXT_METRICS
+    MD_CHECK_CC( CreateMetricTreeBXT_PipelineStatistics(metricsDevice, concurrentGroup) );
+#endif
 
-        availabilityEquation = NULL;
-        metric = metricSet->AddMetric( "GsPrimitives", "Post-GS primitives",
-            "The total number of primitives that flowed through from GS to the clipper if GS was enabled.",
-            "3D Pipe/Geometry Shader", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_GS * 0x10000), USAGE_FLAG_TIER_2|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X,
-            METRIC_TYPE_EVENT, RESULT_UINT64, "triangles", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
-        if( metric )
-        {
-            
-            MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x20" ));
-        }
+#if MD_CALL_KBL_GT2_METRICS
+    MD_CHECK_CC( CreateMetricTreeKBL_GT2_PipelineStatistics(metricsDevice, concurrentGroup) );
+#endif
 
-        availabilityEquation = NULL;
-        metric = metricSet->AddMetric( "ClipperInvocations", "Clipper invocations",
-            "The total number of primitives sent to the Clipper.",
-            "3D Pipe/Clipper", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_CL * 0x10000), USAGE_FLAG_TIER_2|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X,
-            METRIC_TYPE_EVENT, RESULT_UINT64, "triangles", 0, 0, HW_UNIT_GPU, availabilityEquation, "Pixel|Fragment,PS|FS,pixel|fragment", NULL );
-        if( metric )
-        {
-            
-            MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x28" ));
-        }
+#if MD_CALL_KBL_GT3_METRICS
+    MD_CHECK_CC( CreateMetricTreeKBL_GT3_PipelineStatistics(metricsDevice, concurrentGroup) );
+#endif
 
-        availabilityEquation = NULL;
-        metric = metricSet->AddMetric( "ClipperPrimitives", "Clipper primitives",
-            "The total number of primitives that flowed out of the Clipper.",
-            "3D Pipe/Clipper", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_CL * 0x10000), USAGE_FLAG_TIER_2|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X,
-            METRIC_TYPE_EVENT, RESULT_UINT64, "triangles", 0, 0, HW_UNIT_GPU, availabilityEquation, "Pixel|Fragment,PS|FS,pixel|fragment", NULL );
-        if( metric )
-        {
-            
-            MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x30" ));
-        }
+#if MD_CALL_CFL_GT2_METRICS
+    MD_CHECK_CC( CreateMetricTreeCFL_GT2_PipelineStatistics(metricsDevice, concurrentGroup) );
+#endif
 
-        availabilityEquation = NULL;
-        metric = metricSet->AddMetric( "PsInvocations", "PS invocations",
-            "The total number of times a pixel shader was invoked. 3D rendering invokes a pixel shader once per pixel or subsample.",
-            "3D Pipe/Pixel Shader", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_PS * 0x10000), USAGE_FLAG_TIER_2|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X,
-            METRIC_TYPE_EVENT, RESULT_UINT64, "invocations", 0, 0, HW_UNIT_GPU, availabilityEquation, "Pixel|Fragment,PS|FS,pixel|fragment", NULL );
-        if( metric )
-        {
-            
-            MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x38" ));
-        }
+#if MD_CALL_CFL_GT3_METRICS
+    MD_CHECK_CC( CreateMetricTreeCFL_GT3_PipelineStatistics(metricsDevice, concurrentGroup) );
+#endif
 
-        availabilityEquation = NULL;
-        metric = metricSet->AddMetric( "CsInvocations", "CS invocations",
-            "The total number of times a compute shader was invoked.",
-            "3D Pipe/Compute Shader", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_CS * 0x10000), USAGE_FLAG_TIER_2|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X,
-            METRIC_TYPE_EVENT, RESULT_UINT64, "invocations", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
-        if( metric )
-        {
-            
-            MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x50" ));
-        }
+#if MD_CALL_GLK_METRICS
+    MD_CHECK_CC( CreateMetricTreeGLK_PipelineStatistics(metricsDevice, concurrentGroup) );
+#endif
 
-        MD_CHECK_CC( metricSet->RefreshConfigRegisters() );
-    }
-     
-    platformMask = PLATFORM_ICL|PLATFORM_EHL|PLATFORM_TGL|PLATFORM_DG1;
-    if( MD_IS_INTERNAL_BUILD || metricsDevice->IsPlatformTypeOf( platformMask ) )
-    {
-        metricSet = concurrentGroup->AddMetricSet( "PipelineStats", "Pipeline Statistics for OGL4", API_TYPE_OGL|API_TYPE_OGL4_X,
-           GPU_RENDER|GPU_COMPUTE, 0, 96, OA_REPORT_TYPE_256B_A45_NOA16, platformMask );
-        MD_CHECK_PTR( metricSet );
-        
-        MD_CHECK_CC( metricSet->SetApiSpecificId(NULL, 0, 0, 0x80000206, 0, 0,
-            "", 0, "Intel_Raw_Pipeline_Statistics_Query", 0) );
-  
-        availabilityEquation = NULL;
-        metric = metricSet->AddMetric( "IAVertices", "Input vertices",
-            "The total number of vertices that entered the 3D Pipeline.",
-            "3D Pipe/Input Assembler", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_IA * 0x10000), USAGE_FLAG_TIER_2|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X,
-            METRIC_TYPE_EVENT, RESULT_UINT64, "vertices", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
-        if( metric )
-        {
-            
-            MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x00" ));
-        }
+#if MD_CALL_ICL_METRICS
+    MD_CHECK_CC( CreateMetricTreeICL_PipelineStatistics(metricsDevice, concurrentGroup) );
+#endif
 
-        availabilityEquation = NULL;
-        metric = metricSet->AddMetric( "IAPrimitives", "Input primitives",
-            "The total number of rendering primitives assembled and put into the input assembly stage of the 3D Pipeline.",
-            "3D Pipe/Input Assembler", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_IA * 0x10000), USAGE_FLAG_TIER_2|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X,
-            METRIC_TYPE_EVENT, RESULT_UINT64, "triangles", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
-        if( metric )
-        {
-            
-            MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x08" ));
-        }
+#if MD_CALL_EHL_METRICS
+    MD_CHECK_CC( CreateMetricTreeEHL_PipelineStatistics(metricsDevice, concurrentGroup) );
+#endif
 
-        availabilityEquation = NULL;
-        metric = metricSet->AddMetric( "VsInvocations", "VS per vertex invocations",
-            "The total number of times a vertex shader was invoked. 3D rendering invokes the vertex shader once per vertex.",
-            "3D Pipe/Vertex Shader", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_VS * 0x10000), USAGE_FLAG_TIER_2|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X,
-            METRIC_TYPE_EVENT, RESULT_UINT64, "invocations", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
-        if( metric )
-        {
-            
-            MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x10" ));
-        }
+#if MD_CALL_TGL_METRICS
+    MD_CHECK_CC( CreateMetricTreeTGL_PipelineStatistics(metricsDevice, concurrentGroup) );
+#endif
 
-        availabilityEquation = NULL;
-        metric = metricSet->AddMetric( "HsInvocations", "HS invocations",
-            "The total number of times a hull shader was invoked.",
-            "3D Pipe/Hull Shader", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_HS * 0x10000), USAGE_FLAG_TIER_2|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X,
-            METRIC_TYPE_EVENT, RESULT_UINT64, "invocations", 0, 0, HW_UNIT_GPU, availabilityEquation, "Hull|Control,HS|TCS", NULL );
-        if( metric )
-        {
-            
-            MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x40" ));
-        }
+#if MD_CALL_DG1_METRICS
+    MD_CHECK_CC( CreateMetricTreeDG1_PipelineStatistics(metricsDevice, concurrentGroup) );
+#endif
 
-        availabilityEquation = NULL;
-        metric = metricSet->AddMetric( "DsInvocations", "DS invocations",
-            "The total number of times a domain shader was invoked.",
-            "3D Pipe/Domain Shader", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_DS * 0x10000), USAGE_FLAG_TIER_2|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X,
-            METRIC_TYPE_EVENT, RESULT_UINT64, "invocations", 0, 0, HW_UNIT_GPU, availabilityEquation, "Domain|Evaluation,DS|TES", NULL );
-        if( metric )
-        {
-            
-            MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x48" ));
-        }
-
-        availabilityEquation = NULL;
-        metric = metricSet->AddMetric( "GsInvocations", "GS per triangle invocations",
-            "The total number of times a geometry shader was invoked per triangle.",
-            "3D Pipe/Geometry Shader", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_GS * 0x10000), USAGE_FLAG_TIER_2|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X,
-            METRIC_TYPE_EVENT, RESULT_UINT64, "invocations", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
-        if( metric )
-        {
-            
-            MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x18" ));
-        }
-
-        availabilityEquation = NULL;
-        metric = metricSet->AddMetric( "GsPrimitives", "Post-GS primitives",
-            "The total number of primitives that flowed through from GS to the clipper if GS was enabled.",
-            "3D Pipe/Geometry Shader", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_GS * 0x10000), USAGE_FLAG_TIER_2|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X,
-            METRIC_TYPE_EVENT, RESULT_UINT64, "triangles", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
-        if( metric )
-        {
-            
-            MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x20" ));
-        }
-
-        availabilityEquation = NULL;
-        metric = metricSet->AddMetric( "ClipperInvocations", "Clipper invocations",
-            "The total number of primitives sent to the Clipper.",
-            "3D Pipe/Clipper", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_CL * 0x10000), USAGE_FLAG_TIER_2|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X,
-            METRIC_TYPE_EVENT, RESULT_UINT64, "triangles", 0, 0, HW_UNIT_GPU, availabilityEquation, "Pixel|Fragment,PS|FS,pixel|fragment", NULL );
-        if( metric )
-        {
-            
-            MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x28" ));
-        }
-
-        availabilityEquation = NULL;
-        metric = metricSet->AddMetric( "ClipperPrimitives", "Clipper primitives",
-            "The total number of primitives that flowed out of the Clipper.",
-            "3D Pipe/Clipper", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_CL * 0x10000), USAGE_FLAG_TIER_2|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X,
-            METRIC_TYPE_EVENT, RESULT_UINT64, "triangles", 0, 0, HW_UNIT_GPU, availabilityEquation, "Pixel|Fragment,PS|FS,pixel|fragment", NULL );
-        if( metric )
-        {
-            
-            MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x30" ));
-        }
-
-        availabilityEquation = NULL;
-        metric = metricSet->AddMetric( "PsInvocations", "PS invocations",
-            "The total number of times a pixel shader was invoked. 3D rendering invokes a pixel shader once per pixel or subsample.",
-            "3D Pipe/Pixel Shader", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_PS * 0x10000), USAGE_FLAG_TIER_2|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X,
-            METRIC_TYPE_EVENT, RESULT_UINT64, "invocations", 0, 0, HW_UNIT_GPU, availabilityEquation, "Pixel|Fragment,PS|FS,pixel|fragment", NULL );
-        if( metric )
-        {
-            
-            MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x38" ));
-        }
-
-        availabilityEquation = NULL;
-        metric = metricSet->AddMetric( "CsInvocations", "CS invocations",
-            "The total number of times a compute shader was invoked.",
-            "3D Pipe/Compute Shader", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_CS * 0x10000), USAGE_FLAG_TIER_2|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X,
-            METRIC_TYPE_EVENT, RESULT_UINT64, "invocations", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
-        if( metric )
-        {
-            
-            MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x50" ));
-        }
-
-        availabilityEquation = NULL;
-        metric = metricSet->AddMetric( "CpsInvocations", "CPS invocations",
-            "The total number of times a coarse shader was invoked.",
-            "3D Pipe/Compute Shader", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_CS * 0x10000), USAGE_FLAG_TIER_2|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X,
-            METRIC_TYPE_EVENT, RESULT_UINT64, "invocations", 0, 0, HW_UNIT_GPU, availabilityEquation, "PS|FS", NULL );
-        if( metric )
-        {
-            
-            MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x58" ));
-        }
-
-        MD_CHECK_CC( metricSet->RefreshConfigRegisters() );
-    }
-     
     concurrentGroup = metricsDevice->AddConcurrentGroup( "OA", "OA Unit Metrics", MEASUREMENT_TYPE_DELTA_QUERY|MEASUREMENT_TYPE_SNAPSHOT_IO );
     MD_CHECK_PTR( concurrentGroup );
     
