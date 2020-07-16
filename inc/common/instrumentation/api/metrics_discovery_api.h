@@ -55,7 +55,7 @@
 //*****************************************************************************/
 // API build number:
 //*****************************************************************************/
-#define MD_API_BUILD_NUMBER_CURRENT 122
+#define MD_API_BUILD_NUMBER_CURRENT 123
 
 namespace MetricsDiscovery
 {

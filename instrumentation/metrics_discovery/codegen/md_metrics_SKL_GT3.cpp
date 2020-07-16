@@ -45,10 +45,10 @@ TCompletionCode CreateMetricTreeSKL_GT3_PipelineStatistics( CMetricsDevice* metr
     uint32_t          platformMask         = 0;
   
     platformMask = PLATFORM_SKL;
-    if( MD_IS_INTERNAL_BUILD || metricsDevice->IsPlatformTypeOf( platformMask ) )
+    if( MD_IS_INTERNAL_BUILD || metricsDevice->IsPlatformTypeOf( platformMask, GT_TYPE_GT3 ) )
     {
         metricSet = concurrentGroup->AddMetricSet( "PipelineStats", "Pipeline Statistics for OGL4", API_TYPE_OGL|API_TYPE_OGL4_X,
-           GPU_RENDER|GPU_COMPUTE, 0, 88, OA_REPORT_TYPE_256B_A45_NOA16, platformMask );
+           GPU_RENDER|GPU_COMPUTE, 0, 88, OA_REPORT_TYPE_256B_A45_NOA16, platformMask, GT_TYPE_GT3 );
         MD_CHECK_PTR( metricSet );
         
         MD_CHECK_CC( metricSet->SetApiSpecificId(NULL, 0, 0, 0x80000206, 0, 0,
