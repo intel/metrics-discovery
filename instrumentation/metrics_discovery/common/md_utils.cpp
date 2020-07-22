@@ -29,6 +29,7 @@
 #include "md_internal.h"
 
 #include <string.h>
+#include <stdlib.h>
 
 using namespace MetricsDiscovery;
 
@@ -198,6 +199,49 @@ Group:
     Metrics Discovery Utils
 
 Function:
+    GetCopiedByteArray
+
+Description:
+    Allocates memory and copies given byte array (of fixed size).
+    It HAVE TO be deleted later.
+
+Input:
+    const TByteArray_1_0* byteArray - byte array to be copied
+
+Output:
+    TByteArray_1_0*                 - copied byteArray
+
+\*****************************************************************************/
+TByteArray_1_0* GetCopiedByteArray( const TByteArray_1_0* byteArray )
+{
+    if( byteArray == NULL )
+    {
+        return NULL;
+    }
+
+    TByteArray_1_0* copiedByteArray = new( std::nothrow ) TByteArray_1_0;
+    MD_CHECK_PTR_RET( copiedByteArray, NULL );
+
+    copiedByteArray->Size = byteArray->Size;
+    copiedByteArray->Data = new( std::nothrow ) uint8_t[copiedByteArray->Size](); // Initialize all to 0
+    if( copiedByteArray->Data == NULL )
+    {
+        MD_SAFE_DELETE( copiedByteArray );
+        MD_LOG( LOG_DEBUG, "ERROR: null pointer: copiedByteArray->Data" );
+        MD_LOG_EXIT();
+        return NULL;
+    }
+    iu_memcpy_s( copiedByteArray->Data, copiedByteArray->Size, byteArray->Data, byteArray->Size );
+
+    return copiedByteArray;
+}
+
+/*****************************************************************************\
+
+Group:
+    Metrics Discovery Utils
+
+Function:
     GetCopiedCStringFromWcString
 
 Description:
@@ -225,6 +269,52 @@ char* GetCopiedCStringFromWcString( const wchar_t* wcstring )
     iu_wstrtombs_s( copiedCString, wstrLength + 1, wcstring, wstrLength );
 
     return copiedCString;
+}
+
+/*****************************************************************************\
+Group:
+    Metrics Discovery Utils
+
+Function:
+    GetByteArrayFromMask
+
+Description:
+    Converts string into byte array
+
+Input:
+    const char* cstring - cstring to be converted
+
+Output:
+    TByteArray_1_0     - byte array
+
+\*****************************************************************************/
+TByteArray_1_0 GetByteArrayFromMask( const char* cstring )
+{
+    TByteArray_1_0 byteArray = {};
+
+    if( cstring != NULL )
+    {
+        size_t strLength = strlen( cstring );
+        if( strncmp( cstring, "0x", 2 ) == 0 )
+        {
+            // skip hex marker, if exist
+            strLength -= 2;
+            cstring += 2;
+        }
+
+        byteArray.Data = new( std::nothrow ) uint8_t[strLength](); // Initialize all to 0
+        MD_CHECK_PTR_RET( byteArray.Data, byteArray );
+        byteArray.Size = strLength;
+
+        char strChar[2]; // container for single character + /0
+        for( size_t i = 0; i < byteArray.Size; i++ )
+        {
+            iu_snprintf( strChar, sizeof( strChar ), "%c", cstring[i] );
+            byteArray.Data[i] = (uint8_t) strtol( strChar, NULL, 16 );
+        }
+    }
+
+    return byteArray;
 }
 
 /*****************************************************************************\

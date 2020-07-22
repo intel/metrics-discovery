@@ -97,7 +97,9 @@ TCompletionCode ReleaseNamedSemaphore( void** semaphorePtr );
 
 int32_t         GetFileSize( FILE* pFile );
 char*           GetCopiedCString( const char* cstring );
+TByteArray_1_0* GetCopiedByteArray( const TByteArray_1_0* byteArray );
 char*           GetCopiedCStringFromWcString( const wchar_t* wcstring );
+TByteArray_1_0  GetByteArrayFromMask( const char* cstring );
 
 void            WriteCStringToFile( const char* cstring, FILE* pFile );
 void            WriteTTypedValueToFile( TTypedValue_1_0* typedValue, FILE* pFile );
