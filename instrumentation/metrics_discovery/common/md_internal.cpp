@@ -9681,6 +9681,12 @@ TCompletionCode CSymbolSet::DetectSymbolValue( const char* name, TTypedValue_1_0
         MD_CHECK_CC_RET( ret );
         typedValue->ValueUInt32 = out.ValueUint32;
     }
+    else if( strcmp( name, "EuDualSubslicesTotalCount" ) == 0 )
+    {
+        ret = m_driverInterface.SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_DUALSUBSLICES_TOTAL_COUNT, &out );
+        MD_CHECK_CC_RET( ret );
+        typedValue->ValueUInt32 = out.ValueUint32;
+    }
     else if( strcmp( name, "EuSlicesTotalCount" ) == 0 )
     {
         ret = m_driverInterface.SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_SLICES_COUNT, &out );
@@ -9701,6 +9707,12 @@ TCompletionCode CSymbolSet::DetectSymbolValue( const char* name, TTypedValue_1_0
         typedValue->ValueUInt64 = out.ValueUint64;
         // TODO: change type of SubsliceMask param to ValueCString, then use following line instead of the above one
         //iu_memcpy_s(typedValue->ValueCString, sizeof(typedValue->ValueCString), outExt.ValueByteArray, sizeof(outExt.ValueByteArray) );
+    }
+    else if( strcmp( name, "DualSubsliceMask" ) == 0 )
+    {
+        ret = m_driverInterface.SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_DUALSUBSLICES_MASK, &out );
+        MD_CHECK_CC_RET( ret );
+        typedValue->ValueUInt64 = out.ValueUint64;
     }
     else if( strcmp( name, "SliceMask" ) == 0 )
     {

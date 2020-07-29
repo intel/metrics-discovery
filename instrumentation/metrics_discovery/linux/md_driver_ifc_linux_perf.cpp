@@ -111,6 +111,10 @@ Description:
 \*****************************************************************************/
 #define MD_MAX_SUBSLICE_PER_SLICE          8    // Currently max value
 #define MD_MAX_SLICE                       4    // Currently max value
+#define MD_MAX_DUALSLICE                   8    // Currently max value
+#define MD_MAX_DUALSUBSLICE_PER_SLICE      6    // Currently max value
+#define MD_DUALSUBSLICE_PER_SLICE          4    // Current value
+#define MD_BITS_PER_BYTE                   8
 
 using namespace MetricsDiscovery;
 
@@ -731,6 +735,9 @@ TCompletionCode CDriverInterfaceLinuxPerf::SendDeviceInfoParamEscape( GTDI_DEVIC
     MD_CHECK_PTR_RET( out, CC_ERROR_INVALID_PARAMETER );
 
     TCompletionCode ret = CC_OK;
+    GTDI_PLATFORM_INDEX instrPlatformId = GTDI_PLATFORM_MAX;
+    ret = GetInstrPlatformId( &instrPlatformId );
+    MD_CHECK_CC_RET( ret );
 
     switch( param )
     {
@@ -753,6 +760,25 @@ TCompletionCode CDriverInterfaceLinuxPerf::SendDeviceInfoParamEscape( GTDI_DEVIC
 
             out->ValueType   = GTDI_DEVICE_PARAM_VALUE_TYPE_UINT32;
             out->ValueUint32 = euCoresTotalCount / subslicesTotalCount;
+            break;
+        }
+
+        case GTDI_DEVICE_PARAM_DUALSUBSLICES_TOTAL_COUNT:
+        {
+            if( instrPlatformId == GENERATION_TGL || instrPlatformId == GENERATION_DG1 )
+            {
+                int32_t dualSubsliceMask = 0;
+
+                ret = SendGetParamIoctl( m_DrmDeviceHandle, I915_PARAM_SUBSLICE_MASK, &dualSubsliceMask );
+                MD_CHECK_CC_RET( ret );
+
+                out->ValueType   = GTDI_DEVICE_PARAM_VALUE_TYPE_UINT32;
+                out->ValueUint32 = CalculateEnabledBits( dualSubsliceMask, 0xFFFFFFFF );
+            }
+            else
+            {
+                ret = CC_ERROR_INVALID_PARAMETER;
+            }
             break;
         }
 
@@ -780,15 +806,34 @@ TCompletionCode CDriverInterfaceLinuxPerf::SendDeviceInfoParamEscape( GTDI_DEVIC
 
         case GTDI_DEVICE_PARAM_SLICES_COUNT:
         {
-            int32_t sliceMask = 0;
+            if( instrPlatformId == GENERATION_TGL || instrPlatformId == GENERATION_DG1 )
+            {
+                // Return value is a mask of enabled dual subslices
+                int32_t  dualSubsliceMask = 0;
+                out->ValueUint32          = 0;
+                
+                ret = SendGetParamIoctl( m_DrmDeviceHandle, I915_PARAM_SUBSLICE_MASK, &dualSubsliceMask );
+                for( int32_t i = 0; i < MD_MAX_DUALSLICE; ++i )
+                {
+                    if( ( dualSubsliceMask >> MD_DUALSUBSLICE_PER_SLICE * i ) & 0x0F  )
+                    {
+                        out->ValueUint32++;
+                    }
+                }
+            }
+            else
+            {
+                int32_t sliceMask = 0;
 
-            ret = SendGetParamIoctl( m_DrmDeviceHandle, I915_PARAM_SLICE_MASK, &sliceMask );
-            MD_CHECK_CC_RET( ret );
+                ret = SendGetParamIoctl( m_DrmDeviceHandle, I915_PARAM_SLICE_MASK, &sliceMask );
+                MD_CHECK_CC_RET( ret );
 
-            out->ValueType   = GTDI_DEVICE_PARAM_VALUE_TYPE_UINT32;
-            out->ValueUint32 = CalculateEnabledBits( (uint32_t)sliceMask, 0xFFFFFFFF );
+                out->ValueType   = GTDI_DEVICE_PARAM_VALUE_TYPE_UINT32;
+                out->ValueUint32 = CalculateEnabledBits( static_cast<uint32_t>(sliceMask), 0xFFFFFFFF );
 
-            MD_ASSERT( out->ValueUint32 <= MD_MAX_SLICE );
+                MD_ASSERT( out->ValueUint32 <= MD_MAX_SLICE );
+            }
+
             break;
         }
 
@@ -830,34 +875,91 @@ TCompletionCode CDriverInterfaceLinuxPerf::SendDeviceInfoParamEscape( GTDI_DEVIC
 
         case GTDI_DEVICE_PARAM_SUBSLICES_MASK:
         {
-            // Return value is a mask for one slice (assuming it's uniform for each slice)
-            int32_t  singleSubsliceMask       = 0;
-            int32_t  sliceMask                = 0;
-            uint32_t maxSubslicePerSliceCount = GetGtMaxSubslicePerSlice();
+            if( instrPlatformId == GENERATION_TGL || instrPlatformId == GENERATION_DG1 )
+            {
+                ret = CC_ERROR_INVALID_PARAMETER;
+            }
+            else
+            {
+                // Return value is a mask for one slice (assuming it's uniform for each slice)
+                int32_t  singleSubsliceMask       = 0;
+                int32_t  sliceMask                = 0;
+                uint32_t maxSubslicePerSliceCount = GetGtMaxSubslicePerSlice();
 
-            ret = SendGetParamIoctl( m_DrmDeviceHandle, I915_PARAM_SUBSLICE_MASK, &singleSubsliceMask );
-            MD_CHECK_CC_RET( ret );
-            ret = SendGetParamIoctl( m_DrmDeviceHandle, I915_PARAM_SLICE_MASK, &sliceMask );
-            MD_CHECK_CC_RET( ret );
+                ret = SendGetParamIoctl( m_DrmDeviceHandle, I915_PARAM_SUBSLICE_MASK, &singleSubsliceMask );
+                MD_CHECK_CC_RET( ret );
+                ret = SendGetParamIoctl( m_DrmDeviceHandle, I915_PARAM_SLICE_MASK, &sliceMask );
+                MD_CHECK_CC_RET( ret );
 
+                out->ValueType   = GTDI_DEVICE_PARAM_VALUE_TYPE_UINT64;
+                out->ValueUint64 = 0;
+
+                for( int32_t i = 0; i < MD_MAX_SLICE; ++i )
+                {
+                    // If slice enabled
+                    if( sliceMask & MD_BIT( i ) )
+                    {
+                        uint64_t targetSubsliceMask = singleSubsliceMask << ( maxSubslicePerSliceCount * i );
+                        out->ValueUint64 |= targetSubsliceMask;
+                    }
+                }
+            }
+            break;
+        }
+
+        case GTDI_DEVICE_PARAM_DUALSUBSLICES_MASK:
+        {
             out->ValueType   = GTDI_DEVICE_PARAM_VALUE_TYPE_UINT64;
             out->ValueUint64 = 0;
-
-            for( int32_t i = 0; i < MD_MAX_SLICE; ++i )
+            if( instrPlatformId == GENERATION_TGL || instrPlatformId == GENERATION_DG1 )
             {
-                // If slice enabled
-                if( sliceMask & MD_BIT( i ) )
+                // Return value is a mask of enabled dual subslices
+                int32_t  dualSubsliceMask = 0;
+
+                ret = SendGetParamIoctl( m_DrmDeviceHandle, I915_PARAM_SUBSLICE_MASK, &dualSubsliceMask );
+                MD_CHECK_CC_RET( ret );
+                out->ValueUint64 = 0;
+
+                for( int32_t i = 0; i < MD_MAX_DUALSLICE * MD_DUALSUBSLICE_PER_SLICE; ++i )
                 {
-                    int64_t targetSubsliceMask = singleSubsliceMask << (maxSubslicePerSliceCount * i);
-                    out->ValueUint64 |= targetSubsliceMask;
+                    // If dualSubslice enabled
+                    if( dualSubsliceMask & MD_BIT( i ) )
+                    {
+                        int32_t sliceIndex = i / MD_DUALSUBSLICE_PER_SLICE;
+                        int32_t dualSubsliceIndex = i % MD_DUALSUBSLICE_PER_SLICE;
+                        out->ValueUint64 |= ( static_cast<uint64_t>(1) << (dualSubsliceIndex + sliceIndex * MD_MAX_DUALSUBSLICE_PER_SLICE) );
+                    }
                 }
+            }
+            else
+            {
+                ret = CC_ERROR_INVALID_PARAMETER;
             }
             break;
         }
 
         case GTDI_DEVICE_PARAM_SLICES_MASK:
         {
-            ret = SendGetParamIoctl( m_DrmDeviceHandle, I915_PARAM_SLICE_MASK, out );
+            if( instrPlatformId == GENERATION_TGL || instrPlatformId == GENERATION_DG1 )
+            {
+                // Return value is a mask of enabled dual subslices
+                int32_t  dualSubsliceMask = 0;
+                out->ValueUint32          = 0;
+                
+                ret = SendGetParamIoctl( m_DrmDeviceHandle, I915_PARAM_SUBSLICE_MASK, &dualSubsliceMask );
+                for( int32_t i = 0; i < MD_MAX_DUALSLICE; ++i )
+                {
+                    if( ( dualSubsliceMask >> ( MD_DUALSUBSLICE_PER_SLICE * i ) ) & 0x0F )
+                    {
+                        out->ValueUint32 |= MD_BIT( i );
+                    }
+                }
+            }
+            else
+            {
+                ret = SendGetParamIoctl( m_DrmDeviceHandle, I915_PARAM_SLICE_MASK, out );
+            }
+
             break;
         }
 
@@ -904,11 +1006,7 @@ TCompletionCode CDriverInterfaceLinuxPerf::SendDeviceInfoParamEscape( GTDI_DEVIC
 
         case GTDI_DEVICE_PARAM_PLATFORM_INDEX:
         {
-            GTDI_PLATFORM_INDEX platformIndex;
-            ret = GetInstrPlatformId( &platformIndex );
-            MD_CHECK_CC_RET( ret );
-
-            out->ValueUint32 = (uint32_t) platformIndex;
+            out->ValueUint32 = static_cast<uint32_t>(instrPlatformId);
             out->ValueType   = GTDI_DEVICE_PARAM_VALUE_TYPE_UINT32;
             break;
         }
