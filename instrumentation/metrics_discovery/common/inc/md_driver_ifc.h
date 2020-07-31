@@ -1,30 +1,30 @@
-/*****************************************************************************\
-
-    Copyright © 2019, Intel Corporation
-
-    Permission is hereby granted, free of charge, to any person obtaining a
-    copy of this software and associated documentation files (the "Software"),
-    to deal in the Software without restriction, including without limitation
-    the rights to use, copy, modify, merge, publish, distribute, sublicense,
-    and/or sell copies of the Software, and to permit persons to whom the
-    Software is furnished to do so, subject to the following conditions:
-
-    The above copyright notice and this permission notice shall be included
-    in all copies or substantial portions of the Software.
-
-    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-    IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-    FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
-    THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-    LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
-    FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
-    IN THE SOFTWARE.
-
-    File Name:  md_driver_ifc.h
-
-    Abstract:   C++ driver interface header
-
-\*****************************************************************************/
+//////////////////////////////////////////////////////////////////////////////
+//
+//  Copyright © 2019-2020, Intel Corporation
+//
+//  Permission is hereby granted, free of charge, to any person obtaining a
+//  copy of this software and associated documentation files (the "Software"),
+//  to deal in the Software without restriction, including without limitation
+//  the rights to use, copy, modify, merge, publish, distribute, sublicense,
+//  and/or sell copies of the Software, and to permit persons to whom the
+//  Software is furnished to do so, subject to the following conditions:
+//
+//  The above copyright notice and this permission notice shall be included
+//  in all copies or substantial portions of the Software.
+//
+//  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+//  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+//  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
+//  THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+//  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+//  FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
+//  IN THE SOFTWARE.
+//
+//  File Name:  md_driver_ifc.h
+//
+//  Abstract:   C++ driver interface header
+//
+//////////////////////////////////////////////////////////////////////////////
 #pragma once
 
 #include "md_types.h"
@@ -40,123 +40,120 @@ using namespace MetricsDiscovery;
 
 namespace MetricsDiscoveryInternal
 {
-/* Forward declarations */
-class CAdapterHandle;
-class CMetricSet;
+    // Forward declarations //
+    class CAdapterHandle;
+    class CMetricSet;
 
-/******************************************************************************/
-/* Semaphore wait result:                                                     */
-/******************************************************************************/
-typedef enum ESemaphoreWaitResult
-{
-    WAIT_RESULT_SUCCESSFUL,
-    WAIT_RESULT_TIMEOUT,
-    WAIT_RESULT_ERROR_GENERAL,
+    ///////////////////////////////////////////////////////////////////////////////
+    // Semaphore wait result:                                                     //
+    ///////////////////////////////////////////////////////////////////////////////
+    typedef enum ESemaphoreWaitResult
+    {
+        WAIT_RESULT_SUCCESSFUL,
+        WAIT_RESULT_TIMEOUT,
+        WAIT_RESULT_ERROR_GENERAL,
 
-} TSemaphoreWaitResult;
+    } TSemaphoreWaitResult;
 
-/******************************************************************************/
-/* Override ID map to not include instr files in (md)_internal.cpp            */
-/******************************************************************************/
-typedef enum EOverrideId
-{
-    OVERRIDE_ID_NOT_AVAILABLE,
-    OVERRIDE_ID_NULL_HARDWARE,
-    OVERRIDE_ID_FLUSH_GPU_CACHES,
-} TOverrideId;
+    ///////////////////////////////////////////////////////////////////////////////
+    // Override ID map to not include instr files in (md)_internal.cpp            //
+    ///////////////////////////////////////////////////////////////////////////////
+    typedef enum EOverrideId
+    {
+        OVERRIDE_ID_NOT_AVAILABLE,
+        OVERRIDE_ID_NULL_HARDWARE,
+        OVERRIDE_ID_FLUSH_GPU_CACHES,
+    } TOverrideId;
 
-/******************************************************************************/
-/* Adapter data:                                                              */
-/******************************************************************************/
-typedef struct SAdapterData
-{
-    CAdapterHandle*    Handle;
-    TAdapterParams_1_6 Params;
-} TAdapterData;
+    ///////////////////////////////////////////////////////////////////////////////
+    // Adapter data:                                                              //
+    ///////////////////////////////////////////////////////////////////////////////
+    typedef struct SAdapterData
+    {
+        CAdapterHandle*    Handle;
+        TAdapterParams_1_6 Params;
+    } TAdapterData;
 
-/*****************************************************************************\
+    //////////////////////////////////////////////////////////////////////////////
+    //
+    // Class:
+    //     CAdapterHandle
+    //
+    // Description:
+    //     Abstract adapter handle wrapper class.
+    //
+    //////////////////////////////////////////////////////////////////////////////
+    class CAdapterHandle
+    {
+    public:
+        virtual ~CAdapterHandle() = default;
 
-Class:
-    CAdapterHandle
+        virtual TCompletionCode Close()         = 0;
+        virtual bool            IsValid() const = 0;
+    };
 
-Description:
-    Abstract adapter handle wrapper class.
+    //////////////////////////////////////////////////////////////////////////////
+    //
+    // Class:
+    //     CDriverInterface
+    //
+    // Description:
+    //     Abstract driver interface class.
+    //     Each implementation should derive from this class and implement static method GetInstance()
+    //     to return object of this implementation.
+    //
+    //////////////////////////////////////////////////////////////////////////////
+    class CDriverInterface
+    {
+    public: // Destructor:
+        virtual ~CDriverInterface(){};
 
-\*****************************************************************************/
-class CAdapterHandle
-{
-public:
-    virtual ~CAdapterHandle() = default;
+    public:
+        // Creation and debug settings static:
+        static CDriverInterface* CreateInstance( CAdapterHandle& adapterHandle );
+        static void              ReadDebugLogSettings();
+        static bool              IsSupportEnableRequired();
 
-    virtual TCompletionCode Close() = 0;
-    virtual bool            IsValid() const = 0;
-};
+        // Adapter enumeration static:
+        static TCompletionCode GetAvailableAdapters( std::vector<TAdapterData>& adapters );
 
-/*****************************************************************************\
+        // Synchronization static:
+        static TCompletionCode      SemaphoreCreate( const char* name, void** semaphore );
+        static TSemaphoreWaitResult SemaphoreWait( uint32_t milliseconds, void* semaphore );
+        static TCompletionCode      SemaphoreRelease( void** semaphore );
 
-Class:
-    CDriverInterface
+        // General:
+        virtual TCompletionCode ForceSupportDisable()                                                                                                     = 0;
+        virtual TCompletionCode SendSupportEnableEscape( bool enable )                                                                                    = 0;
+        virtual TCompletionCode SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM param, GTDIDeviceInfoParamExtOut* out )                                      = 0;
+        virtual TCompletionCode SendPmRegsConfig( TRegister** regVector, uint32_t regCount, uint32_t apiMask )                                            = 0;
+        virtual TCompletionCode SendReadRegsConfig( TRegister** regVector, uint32_t regCount, uint32_t apiMask )                                          = 0;
+        virtual TCompletionCode GetPmRegsConfigHandles( uint32_t configId, uint32_t* oaConfigHandle, uint32_t* gpConfigHandle, uint32_t* rrConfigHandle ) = 0;
+        virtual TCompletionCode ValidatePmRegsConfig( TRegister* regVector, uint32_t regCount, TPlatformType platform )                                   = 0;
+        virtual TCompletionCode GetGpuCpuTimestamps( uint64_t* gpuTimestamp, uint64_t* cpuTimestamp, uint32_t* cpuId )                                    = 0;
+        virtual TCompletionCode SendGetCtxIdTagsEscape( TGetCtxTagsIdParams* params )                                                                     = 0;
 
-Description:
-    Abstract driver interface class.
-    Each implementation should derive from this class and implement static method CreateInstance( CAdapterHandle& adapterHandle )
-    to return object of this implementation.
+        // Synchronization:
+        virtual TCompletionCode LockConcurrentGroup( const char* name, void** semaphore )   = 0;
+        virtual TCompletionCode UnlockConcurrentGroup( const char* name, void** semaphore ) = 0;
 
-\*****************************************************************************/
-class CDriverInterface
-{
-public: // Destructor
-    virtual ~CDriverInterface() { };
+        // Stream:
+        virtual TCompletionCode OpenIoStream( TStreamType streamType, CMetricSet* metricSet, const char* concurrentGroupName, uint32_t processId, uint32_t* nsTimerPeriod, uint32_t* bufferSize, void** streamEventHandle )       = 0;
+        virtual TCompletionCode ReadIoStream( TStreamType streamType, IMetricSet_1_0* metricSet, char* reportData, uint32_t* reportsCount, uint32_t readFlags, uint32_t* frequency, GTDIReadCounterStreamExceptions* exceptions ) = 0;
+        virtual TCompletionCode CloseIoStream( TStreamType streamType, void** streamEventHandle, const char* concurrentGroupName, CMetricSet* metricSet )                                                                         = 0;
+        virtual TCompletionCode HandleIoStreamExceptions( const char* concurrentGroupName, CMetricSet* metricSet, uint32_t processId, uint32_t* reportCount, GTDIReadCounterStreamExceptions* exceptions )                        = 0;
+        virtual TCompletionCode WaitForIoStreamReports( TStreamType streamType, uint32_t milliseconds, void* streamEventHandle )                                                                                                  = 0;
+        virtual bool            IsIoMeasurementInfoAvailable( TIoMeasurementInfoType ioMeasurementInfoType )                                                                                                                      = 0;
 
-public:
-    // Creation and debug settings static:
-    static CDriverInterface*       CreateInstance( CAdapterHandle& adapterHandle );
-    static void                    ReadDebugLogSettings();
-    static bool                    IsSupportEnableRequired();
+        // Overrides:
+        virtual TCompletionCode SetFrequencyOverride( const TSetFrequencyOverrideParams_1_2* params )                                                                    = 0;
+        virtual TCompletionCode SetQueryOverride( TOverrideType overrideType, TPlatformType platform, uint32_t oaBufferSize, const TSetQueryOverrideParams_1_2* params ) = 0;
+        virtual TCompletionCode SetFreqChangeReportsOverride( bool enable )                                                                                              = 0;
+        virtual bool            IsOverrideAvailable( TOverrideType overrideType )                                                                                        = 0;
 
-    // Adapter enumeration static:
-    static TCompletionCode         GetAvailableAdapters( std::vector<TAdapterData>& adapters );
+    protected:
+        virtual bool CreateContext() = 0;
+        virtual void DeleteContext() = 0;
+    };
 
-    // Synchronization static:
-    static TCompletionCode         SemaphoreCreate( const char* name, void** semaphore );
-    static TSemaphoreWaitResult    SemaphoreWait( uint32_t milliseconds, void* semaphore );
-    static TCompletionCode         SemaphoreRelease( void** semaphore );
-
-    // General:
-    virtual TCompletionCode        ForceSupportDisable() = 0;
-    virtual TCompletionCode        SendSupportEnableEscape( bool enable ) = 0;
-    virtual TCompletionCode        SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM param, GTDIDeviceInfoParamExtOut* out ) = 0;
-    virtual TCompletionCode        SendPmRegsConfig( TRegister** regVector, uint32_t regCount, uint32_t apiMask ) = 0;
-    virtual TCompletionCode        SendReadRegsConfig(TRegister** regVector, uint32_t regCount, uint32_t apiMask ) = 0;
-    virtual TCompletionCode        GetPmRegsConfigHandles( uint32_t configId, uint32_t* oaConfigHandle, uint32_t* gpConfigHandle, uint32_t* rrConfigHandle ) = 0;
-    virtual TCompletionCode        ValidatePmRegsConfig( TRegister* regVector, uint32_t regCount, TPlatformType platform ) = 0;
-    virtual TCompletionCode        GetGpuCpuTimestamps( uint64_t* gpuTimestamp, uint64_t* cpuTimestamp, uint32_t* cpuId ) = 0;
-    virtual TCompletionCode        SendGetCtxIdTagsEscape( TGetCtxTagsIdParams* params ) = 0;
-
-    // Synchronization:
-    virtual TCompletionCode         LockConcurrentGroup( const char* name, void** semaphore )   = 0;
-    virtual TCompletionCode         UnlockConcurrentGroup( const char* name, void** semaphore ) = 0;
-
-    // Stream
-    virtual TCompletionCode        OpenIoStream( TStreamType streamType, CMetricSet* metricSet, const char* concurrentGroupName, uint32_t processId,
-        uint32_t* nsTimerPeriod, uint32_t* bufferSize, void** streamEventHandle ) = 0;
-    virtual TCompletionCode        ReadIoStream( TStreamType streamType, IMetricSet_1_0* metricSet, char* reportData, uint32_t* reportsCount, uint32_t readFlags,
-        uint32_t* frequency, GTDIReadCounterStreamExceptions* exceptions ) = 0;
-    virtual TCompletionCode        CloseIoStream( TStreamType streamType, void** streamEventHandle, const char* concurrentGroupName, CMetricSet* metricSet ) = 0;
-    virtual TCompletionCode        HandleIoStreamExceptions( const char* concurrentGroupName, CMetricSet* metricSet, uint32_t processId,
-        uint32_t* reportCount, GTDIReadCounterStreamExceptions* exceptions ) = 0;
-    virtual TCompletionCode        WaitForIoStreamReports( TStreamType streamType, uint32_t milliseconds, void* streamEventHandle ) = 0;
-    virtual bool                   IsIoMeasurementInfoAvailable( TIoMeasurementInfoType ioMeasurementInfoType ) = 0;
-
-    // Overrides
-    virtual TCompletionCode        SetFrequencyOverride( const TSetFrequencyOverrideParams_1_2* params ) = 0;
-    virtual TCompletionCode        SetQueryOverride( TOverrideType overrideType, TPlatformType platform, uint32_t oaBufferSize, const TSetQueryOverrideParams_1_2* params ) = 0;
-    virtual TCompletionCode        SetFreqChangeReportsOverride( bool enable ) = 0;
-    virtual bool                   IsOverrideAvailable( TOverrideType overrideType ) = 0;
-
-protected:
-    virtual bool                   CreateContext() = 0;
-    virtual void                   DeleteContext() = 0;
-};
-
-}
+} // namespace MetricsDiscoveryInternal

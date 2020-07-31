@@ -1,6 +1,6 @@
 /*****************************************************************************\
 
-    Copyright © 2019, Intel Corporation
+    Copyright © 2019-2020, Intel Corporation
 
     Permission is hereby granted, free of charge, to any person obtaining a
     copy of this software and associated documentation files (the "Software"),
@@ -30,12 +30,11 @@
 #ifndef __GTDI_DRIVER_INTERFACE_H_
 #define __GTDI_DRIVER_INTERFACE_H_
 
-
 /******************************************************************************/
 /* Escapecodes:                                                               */
 /******************************************************************************/
-#define GTDI_ESCAPE_CODE_XP     0x00504349
-#define GTDI_ESCAPE_CODE_VISTA  12
+#define GTDI_ESCAPE_CODE_XP    0x00504349
+#define GTDI_ESCAPE_CODE_VISTA 12
 
 /******************************************************************************/
 /* Shared memory magic:                                                       */
@@ -72,26 +71,23 @@
 /******************************************************************************/
 #define ENABLE_FLAG_SIZE 4
 
-
 /******************************************************************************/
 /* Metric types:                                                              */
 /******************************************************************************/
-#define METRIC_TYPE_NUMBER             0x00000000  // winperf PERF_TYPE_NUMBER
-#define METRIC_TYPE_SIZE_LARGE         0x00000100  // winperf PERF_SIZE_LARGE
-#define METRIC_TYPE_COUNTER            0x00000400  // winperf PERF_TYPE_COUNTER
-#define METRIC_TYPE_COUNTER_RATE       0x00010000  // winperf PERF_COUNTER_RATE
-#define METRIC_TYPE_COUNTER_FRACTION   0x00020000  // winperf PERF_COUNTER_FRACTION
-#define METRIC_TYPE_DELTA_COUNTER      0x00400000  // winperf PERF_DELTA_COUNTER
-
+#define METRIC_TYPE_NUMBER           0x00000000 // winperf PERF_TYPE_NUMBER
+#define METRIC_TYPE_SIZE_LARGE       0x00000100 // winperf PERF_SIZE_LARGE
+#define METRIC_TYPE_COUNTER          0x00000400 // winperf PERF_TYPE_COUNTER
+#define METRIC_TYPE_COUNTER_RATE     0x00010000 // winperf PERF_COUNTER_RATE
+#define METRIC_TYPE_COUNTER_FRACTION 0x00020000 // winperf PERF_COUNTER_FRACTION
+#define METRIC_TYPE_DELTA_COUNTER    0x00400000 // winperf PERF_DELTA_COUNTER
 
 /******************************************************************************/
 /* Display types:                                                             */
 /******************************************************************************/
-#define METRIC_TYPE_DISPLAY_PER_SEC    0x10000000  // winperf PERF_DISPLAY_PER_SEC
-#define METRIC_TYPE_DISPLAY_PERCENT    0x20000000  // winperf PERF_DISPLAY_PERCENT
-#define METRIC_TYPE_DISPLAY_SECONDS    0x30000000  // winperf PERF_DISPLAY_SECONDS
-#define METRIC_TYPE_DISPLAY_KBS        0x50000000  // added - not present in winperf
-
+#define METRIC_TYPE_DISPLAY_PER_SEC 0x10000000 // winperf PERF_DISPLAY_PER_SEC
+#define METRIC_TYPE_DISPLAY_PERCENT 0x20000000 // winperf PERF_DISPLAY_PERCENT
+#define METRIC_TYPE_DISPLAY_SECONDS 0x30000000 // winperf PERF_DISPLAY_SECONDS
+#define METRIC_TYPE_DISPLAY_KBS     0x50000000 // added - not present in winperf
 
 /******************************************************************************/
 /* bool32_t:                                                                  */
@@ -113,11 +109,10 @@ typedef enum GTDI_RETURN_CODE_ENUM
     GTDI_RET_PENDING,
     GTDI_RET_INVALID_CONFIGURATION,
     GTDI_RET_CONCURRENT_API_ENABLED,
-    GTDI_RET_NO_INFORMATION,     // for GTDI_FNC_GET_ERROR_INFO escape only
+    GTDI_RET_NO_INFORMATION, // for GTDI_FNC_GET_ERROR_INFO escape only
     // ...
     GTDI_RET_MAX = 0xFFFFFFFF
 } GTDI_RETURN_CODE;
-
 
 /******************************************************************************/
 /* Escape commands/functions:                                                 */
@@ -125,122 +120,103 @@ typedef enum GTDI_RETURN_CODE_ENUM
 typedef enum GTDI_ESCAPE_FUNCTION_ENUM
 {
     // All GenX architectures
-    GTDI_FNC_DEVICE_INFO                = 0,  // Get device information
-    GTDI_FNC_IGPA_SUPPORT_ENABLE        = 1,  // Initialize drv instrumentation
-    GTDI_FNC_HW_METRICS_ENABLE          = 2,  // Initialize HW metrics support
-    GTDI_FNC_CONNECT                    = 3,  // Connect
-    GTDI_FNC_DISCONNECT                 = 4,  // Disconnect
-    GTDI_FNC_GET_HW_METRIC_SAMPLE       = 5,  // Get HW metrics sample (with optional CHAP reconfiguration) - OBSOLETE FROM GEN6!!!
-    GTDI_FNC_SET_CHAP_CFG               = 6,  // Set CHAP configuration - OBSOLETE FROM GEN6!!!
-    GTDI_FNC_SET_OVERRIDE_CFG           = 7,  // Enable/disable a particular override
-
-    GTDI_FNC_DEVICE_INFO_EXT            = 8,  // Get extended device information. Processing may take up to 0.5s.
-
-    // Gen5.75 only functions to retrieve extended metrics
-    GTDI_FNC_GET_HW_METRIC_SAMPLE_EXT   = 9,  // Get HW metrics sample (with optional CHAP reconfiguration)
-
-    // All GenX architectures (NEW)
-    GTDI_FNC_OVERRIDES_SUPPORT_ENABLE   = 10, // Request Null HW override support for selected context
-
-    // Gen6 - Gen7 only functions to retrieve hw metrics
-    GTDI_FNC_OPEN_COUNTER_STREAM        = 11, // Open UM application stream for reading from OA buffer
-    GTDI_FNC_CLOSE_COUNTER_STREAM       = 12, // Close UM application stream for reading from OA buffer
-    GTDI_FNC_SET_PM_REGS_CFG            = 13, // Set registers for dynamic configuration
-    GTDI_FNC_GET_EU_CORES_INFO          = 14, // GET EU specific information
-    GTDI_FNC_TIMER_MODE_ENABLE          = 15, // Turn timer mode on. Must be called with HardwareAccess flag set to 1.
-    GTDI_FNC_EVENT_MODE_ENABLE          = 16, // Turn event mode on. Must be called with HardwareAccess flag set to 1.
-    GTDI_FNC_READ_COUNTER_STREAM        = 17, // Request asynchronous read from OA buffer providing UM application buffer to copy data to.
-
-    // Gen7+ function to set Kernel Instrumentation options
-    GTDI_FNC_SET_KI_QUERY_CFG           = 18, // Sets query configuration for kernel instrumentation
-    GTDI_FNC_SET_KI_BUILD_CFG           = 19, // Sets build configuration for kernel instrumentation
-
-    GTDI_FNC_SET_OVERRIDE_EU_CFG        = 20, // Overridden limit of threads(per EU) and EU cores used by thread dispatcher.
-
-    // Gen7+ Workarounds settings escape
-    GTDI_FNC_SET_WORKAROUNDS            = 21,
-
-    GTDI_FNC_SET_KI_QUERY_CFG_EX        = 22, // Sets extended query configuration for kernel instrumentation
-    GTDI_FNC_SET_KI_BUILD_CFG_EX        = 23, // Sets extended build configuration for kernel instrumentation
-    GTDI_FNC_SET_KERNEL_DUMP_TYPE       = 24, // Sets the result type of Kernel Dump Query (IL/ISA)
-
-    GTDI_FNC_GET_GPU_CPU_TIMESTAMPS     = 25, // Dedicated function for retrieving GPU and CPU timestamps at the same moment
-    GTDI_FNC_GET_KI_BUILD_INFO          = 26, // Returns kernel instrumentation build description
-
-    GTDI_FNC_GET_ERROR_INFO             = 27, // extended error information
-    GTDI_FNC_DEVICE_INFO_PARAM          = 28,
-    GTDI_FNC_SET_DEVICE_PARAM           = 29,
-    GTDI_FNC_READ_REGS_CFG              = 30, // Get current values from specified registers
-    GTDI_FNC_GET_CTX_ID_TAGS            = 31, // NOT AVAILABLE (removed)
-    GTDI_FNC_VALIDATE_PM_REGS_CFG       = 32, // NOT AVAILABLE (removed)
-    GTDI_FNC_DMA_MODE_ENABLE            = 33, // Turn per DMA sampling mode on. Must be called with HardwareAccess flag set to 1.
-
-    // ...
-    GTDI_FNC_MAX = 0xFFFFFFFF
+    GTDI_FNC_DEVICE_INFO              = 0,  // Get device information
+    GTDI_FNC_IGPA_SUPPORT_ENABLE      = 1,  // Initialize drv instrumentation
+    GTDI_FNC_HW_METRICS_ENABLE        = 2,  // Initialize HW metrics support
+    GTDI_FNC_CONNECT                  = 3,  // Connect
+    GTDI_FNC_DISCONNECT               = 4,  // Disconnect
+    GTDI_FNC_GET_HW_METRIC_SAMPLE     = 5,  // Get HW metrics sample (with optional CHAP reconfiguration) - OBSOLETE FROM GEN6!!!
+    GTDI_FNC_SET_CHAP_CFG             = 6,  // Set CHAP configuration - OBSOLETE FROM GEN6!!!
+    GTDI_FNC_SET_OVERRIDE_CFG         = 7,  // Enable/disable a particular override
+    GTDI_FNC_DEVICE_INFO_EXT          = 8,  // Get extended device information. Processing may take up to 0.5s.
+    GTDI_FNC_GET_HW_METRIC_SAMPLE_EXT = 9,  // Get HW metrics sample (with optional CHAP reconfiguration)
+    GTDI_FNC_OVERRIDES_SUPPORT_ENABLE = 10, // Request Null HW override support for selected context
+    GTDI_FNC_OPEN_COUNTER_STREAM      = 11, // Open UM application stream for reading from OA buffer
+    GTDI_FNC_CLOSE_COUNTER_STREAM     = 12, // Close UM application stream for reading from OA buffer
+    GTDI_FNC_SET_PM_REGS_CFG          = 13, // Set registers for dynamic configuration
+    GTDI_FNC_GET_EU_CORES_INFO        = 14, // GET EU specific information
+    GTDI_FNC_TIMER_MODE_ENABLE        = 15, // Turn timer mode on. Must be called with HardwareAccess flag set to 1.
+    GTDI_FNC_EVENT_MODE_ENABLE        = 16, // Turn event mode on. Must be called with HardwareAccess flag set to 1.
+    GTDI_FNC_READ_COUNTER_STREAM      = 17, // Request asynchronous read from OA buffer providing UM application buffer to copy data to.
+    GTDI_FNC_SET_KI_QUERY_CFG         = 18, // Sets query configuration for kernel instrumentation
+    GTDI_FNC_SET_KI_BUILD_CFG         = 19, // Sets build configuration for kernel instrumentation
+    GTDI_FNC_SET_OVERRIDE_EU_CFG      = 20, // Overridden limit of threads(per EU) and EU cores used by thread dispatcher.
+    GTDI_FNC_SET_WORKAROUNDS          = 21,
+    GTDI_FNC_SET_KI_QUERY_CFG_EX      = 22, // Sets extended query configuration for kernel instrumentation
+    GTDI_FNC_SET_KI_BUILD_CFG_EX      = 23, // Sets extended build configuration for kernel instrumentation
+    GTDI_FNC_SET_KERNEL_DUMP_TYPE     = 24, // Sets the result type of Kernel Dump Query (IL/ISA)
+    GTDI_FNC_GET_GPU_CPU_TIMESTAMPS   = 25, // Dedicated function for retrieving GPU and CPU timestamps at the same moment
+    GTDI_FNC_GET_KI_BUILD_INFO        = 26, // Returns kernel instrumentation build description
+    GTDI_FNC_GET_ERROR_INFO           = 27, // extended error information
+    GTDI_FNC_DEVICE_INFO_PARAM        = 28,
+    GTDI_FNC_SET_DEVICE_PARAM         = 29,
+    GTDI_FNC_READ_REGS_CFG            = 30, // Get current values from specified registers
+    GTDI_FNC_GET_CTX_ID_TAGS          = 31, // NOT AVAILABLE (removed)
+    GTDI_FNC_VALIDATE_PM_REGS_CFG     = 32, // NOT AVAILABLE (removed)
+    GTDI_FNC_DMA_MODE_ENABLE          = 33, // Turn per DMA sampling mode on. Must be called with HardwareAccess flag set to 1.
+    GTDI_FNC_MAX                      = 0xFFFFFFFF
 } GTDI_ESCAPE_FUNCTION;
-
 
 /******************************************************************************/
 /* Interface version:                                                         */
 /******************************************************************************/
-#define GTDI_MAKE_IFC_VER(major, minor)   (((major) << 8) | (minor))
-#define GTDI_GET_MAJOR_IFC_VER(ver)       (ver >> 8)
-#define GTDI_GET_MINOR_IFC_VER(ver)       (ver & 0xFF)
-
+#define GTDI_MAKE_IFC_VER( major, minor ) ( ( ( major ) << 8 ) | ( minor ) )
+#define GTDI_GET_MAJOR_IFC_VER( ver )     ( ver >> 8 )
+#define GTDI_GET_MINOR_IFC_VER( ver )     ( ver & 0xFF )
 
 typedef enum
 {
-    GTDI_IFC_VERSION_2        = 0x00,
-    GTDI_IFC_VERSION_3        = 0x03,
+    GTDI_IFC_VERSION_2 = 0x00,
+    GTDI_IFC_VERSION_3 = 0x03,
     // ...
     GTDI_IFC_VERSION_MAJOR_MAX = 0xFFFFFFFF
 } GTDI_IFC_VERSION_MAJOR;
 
 typedef enum
 {
-    GTDI_IFC_VERSION_2_0      = GTDI_MAKE_IFC_VER(GTDI_IFC_VERSION_2, 1),
-    GTDI_IFC_VERSION_2_1      = GTDI_MAKE_IFC_VER(GTDI_IFC_VERSION_2, 2),
-    GTDI_IFC_VERSION_2_2      = GTDI_MAKE_IFC_VER(GTDI_IFC_VERSION_2, 3),
-    GTDI_IFC_VERSION_3_0      = GTDI_MAKE_IFC_VER(GTDI_IFC_VERSION_3, 0),
-    GTDI_IFC_VERSION_3_1      = GTDI_MAKE_IFC_VER(GTDI_IFC_VERSION_3, 1),
-    GTDI_IFC_VERSION_3_2      = GTDI_MAKE_IFC_VER(GTDI_IFC_VERSION_3, 2),
-    GTDI_IFC_VERSION_3_3      = GTDI_MAKE_IFC_VER(GTDI_IFC_VERSION_3, 3),
-    GTDI_IFC_VERSION_3_4      = GTDI_MAKE_IFC_VER(GTDI_IFC_VERSION_3, 4),
-    GTDI_IFC_VERSION_3_5      = GTDI_MAKE_IFC_VER(GTDI_IFC_VERSION_3, 5),
-    GTDI_IFC_VERSION_3_6      = GTDI_MAKE_IFC_VER(GTDI_IFC_VERSION_3, 6),
-    GTDI_IFC_VERSION_3_7      = GTDI_MAKE_IFC_VER(GTDI_IFC_VERSION_3, 7),
-    GTDI_IFC_VERSION_3_8      = GTDI_MAKE_IFC_VER(GTDI_IFC_VERSION_3, 8),
-    GTDI_IFC_VERSION_3_9      = GTDI_MAKE_IFC_VER(GTDI_IFC_VERSION_3, 9),
-    GTDI_IFC_VERSION_3_10     = GTDI_MAKE_IFC_VER(GTDI_IFC_VERSION_3, 10),
-    GTDI_IFC_VERSION_3_11     = GTDI_MAKE_IFC_VER(GTDI_IFC_VERSION_3, 11),
-    GTDI_IFC_VERSION_3_12     = GTDI_MAKE_IFC_VER(GTDI_IFC_VERSION_3, 12),
-    GTDI_IFC_VERSION_3_13     = GTDI_MAKE_IFC_VER(GTDI_IFC_VERSION_3, 13),
-    GTDI_IFC_VERSION_3_14     = GTDI_MAKE_IFC_VER(GTDI_IFC_VERSION_3, 14),
-    GTDI_IFC_VERSION_3_15     = GTDI_MAKE_IFC_VER(GTDI_IFC_VERSION_3, 15),  // VLV: clock counter on B3
-    GTDI_IFC_VERSION_3_16     = GTDI_MAKE_IFC_VER(GTDI_IFC_VERSION_3, 16),  // VLV: PerfMon memory metrics
-    GTDI_IFC_VERSION_3_17     = GTDI_MAKE_IFC_VER(GTDI_IFC_VERSION_3, 17),  // OCL: PerfCounters unification
-    GTDI_IFC_VERSION_3_18     = GTDI_MAKE_IFC_VER(GTDI_IFC_VERSION_3, 18),  // BDW: Query overrides support
-    GTDI_IFC_VERSION_3_19     = GTDI_MAKE_IFC_VER(GTDI_IFC_VERSION_3, 19),  // Core clock override
-    GTDI_IFC_VERSION_3_20     = GTDI_MAKE_IFC_VER(GTDI_IFC_VERSION_3, 20),  // HW perf counters report layout fix (IVB/HSW)
-    GTDI_IFC_VERSION_3_21     = GTDI_MAKE_IFC_VER(GTDI_IFC_VERSION_3, 21),  // New device params: OA buffer sizes, GPU timestamp freq
-    GTDI_IFC_VERSION_3_22     = GTDI_MAKE_IFC_VER(GTDI_IFC_VERSION_3, 22),  // Registers dump feature (internal drivers only)
-    GTDI_IFC_VERSION_3_23     = GTDI_MAKE_IFC_VER(GTDI_IFC_VERSION_3, 23),  // SKL/BXT base support
-    GTDI_IFC_VERSION_3_24     = GTDI_MAKE_IFC_VER(GTDI_IFC_VERSION_3, 24),  // HSW NOA static cfg update
-    GTDI_IFC_VERSION_3_25     = GTDI_MAKE_IFC_VER(GTDI_IFC_VERSION_3, 25),  // Internal capability flag
-    GTDI_IFC_VERSION_3_26     = GTDI_MAKE_IFC_VER(GTDI_IFC_VERSION_3, 26),  // ValidatePmRegsCfg escape
-    GTDI_IFC_VERSION_3_27     = GTDI_MAKE_IFC_VER(GTDI_IFC_VERSION_3, 27),  // ForceWake device param has been added (set operation only)
-    GTDI_IFC_VERSION_3_28     = GTDI_MAKE_IFC_VER(GTDI_IFC_VERSION_3, 28),  // Cull at BC & PSD for Gen7_5+
-    GTDI_IFC_VERSION_3_29     = GTDI_MAKE_IFC_VER(GTDI_IFC_VERSION_3, 29),  // Support for permanent override
-    GTDI_IFC_VERSION_3_30     = GTDI_MAKE_IFC_VER(GTDI_IFC_VERSION_3, 30),  // Support for next 7 throttling overrides
-    GTDI_IFC_VERSION_3_31     = GTDI_MAKE_IFC_VER(GTDI_IFC_VERSION_3, 31),  // Slice/Unslice frequencies in SKL+ perf counters queries
-    GTDI_IFC_VERSION_3_32     = GTDI_MAKE_IFC_VER(GTDI_IFC_VERSION_3, 32),  // Selective force wake override
-    GTDI_IFC_VERSION_3_33     = GTDI_MAKE_IFC_VER(GTDI_IFC_VERSION_3, 33),  // DMA sampling
-    GTDI_IFC_VERSION_3_34     = GTDI_MAKE_IFC_VER(GTDI_IFC_VERSION_3, 34),  // Mid query events info
-    GTDI_IFC_VERSION_3_35     = GTDI_MAKE_IFC_VER(GTDI_IFC_VERSION_3, 35),  // Byte array added to GTDI_DEVICE_PARAM_VALUE_TYPE
-    GTDI_IFC_VERSION_3_36     = GTDI_MAKE_IFC_VER(GTDI_IFC_VERSION_3, 36),  // New exception flags added to GTDI_FNC_READ_COUNTER_STREAM
+    GTDI_IFC_VERSION_2_0  = GTDI_MAKE_IFC_VER( GTDI_IFC_VERSION_2, 1 ),
+    GTDI_IFC_VERSION_2_1  = GTDI_MAKE_IFC_VER( GTDI_IFC_VERSION_2, 2 ),
+    GTDI_IFC_VERSION_2_2  = GTDI_MAKE_IFC_VER( GTDI_IFC_VERSION_2, 3 ),
+    GTDI_IFC_VERSION_3_0  = GTDI_MAKE_IFC_VER( GTDI_IFC_VERSION_3, 0 ),
+    GTDI_IFC_VERSION_3_1  = GTDI_MAKE_IFC_VER( GTDI_IFC_VERSION_3, 1 ),
+    GTDI_IFC_VERSION_3_2  = GTDI_MAKE_IFC_VER( GTDI_IFC_VERSION_3, 2 ),
+    GTDI_IFC_VERSION_3_3  = GTDI_MAKE_IFC_VER( GTDI_IFC_VERSION_3, 3 ),
+    GTDI_IFC_VERSION_3_4  = GTDI_MAKE_IFC_VER( GTDI_IFC_VERSION_3, 4 ),
+    GTDI_IFC_VERSION_3_5  = GTDI_MAKE_IFC_VER( GTDI_IFC_VERSION_3, 5 ),
+    GTDI_IFC_VERSION_3_6  = GTDI_MAKE_IFC_VER( GTDI_IFC_VERSION_3, 6 ),
+    GTDI_IFC_VERSION_3_7  = GTDI_MAKE_IFC_VER( GTDI_IFC_VERSION_3, 7 ),
+    GTDI_IFC_VERSION_3_8  = GTDI_MAKE_IFC_VER( GTDI_IFC_VERSION_3, 8 ),
+    GTDI_IFC_VERSION_3_9  = GTDI_MAKE_IFC_VER( GTDI_IFC_VERSION_3, 9 ),
+    GTDI_IFC_VERSION_3_10 = GTDI_MAKE_IFC_VER( GTDI_IFC_VERSION_3, 10 ),
+    GTDI_IFC_VERSION_3_11 = GTDI_MAKE_IFC_VER( GTDI_IFC_VERSION_3, 11 ),
+    GTDI_IFC_VERSION_3_12 = GTDI_MAKE_IFC_VER( GTDI_IFC_VERSION_3, 12 ),
+    GTDI_IFC_VERSION_3_13 = GTDI_MAKE_IFC_VER( GTDI_IFC_VERSION_3, 13 ),
+    GTDI_IFC_VERSION_3_14 = GTDI_MAKE_IFC_VER( GTDI_IFC_VERSION_3, 14 ),
+    GTDI_IFC_VERSION_3_15 = GTDI_MAKE_IFC_VER( GTDI_IFC_VERSION_3, 15 ), // VLV: clock counter on B3
+    GTDI_IFC_VERSION_3_16 = GTDI_MAKE_IFC_VER( GTDI_IFC_VERSION_3, 16 ), // VLV: PerfMon memory metrics
+    GTDI_IFC_VERSION_3_17 = GTDI_MAKE_IFC_VER( GTDI_IFC_VERSION_3, 17 ), // OCL: PerfCounters unification
+    GTDI_IFC_VERSION_3_18 = GTDI_MAKE_IFC_VER( GTDI_IFC_VERSION_3, 18 ), // BDW: Query overrides support
+    GTDI_IFC_VERSION_3_19 = GTDI_MAKE_IFC_VER( GTDI_IFC_VERSION_3, 19 ), // Core clock override
+    GTDI_IFC_VERSION_3_20 = GTDI_MAKE_IFC_VER( GTDI_IFC_VERSION_3, 20 ), // HW perf counters report layout fix (IVB/HSW)
+    GTDI_IFC_VERSION_3_21 = GTDI_MAKE_IFC_VER( GTDI_IFC_VERSION_3, 21 ), // New device params: OA buffer sizes, GPU timestamp freq
+    GTDI_IFC_VERSION_3_22 = GTDI_MAKE_IFC_VER( GTDI_IFC_VERSION_3, 22 ), // Registers dump feature (internal drivers only)
+    GTDI_IFC_VERSION_3_23 = GTDI_MAKE_IFC_VER( GTDI_IFC_VERSION_3, 23 ), // SKL/BXT base support
+    GTDI_IFC_VERSION_3_24 = GTDI_MAKE_IFC_VER( GTDI_IFC_VERSION_3, 24 ), // HSW NOA static cfg update
+    GTDI_IFC_VERSION_3_25 = GTDI_MAKE_IFC_VER( GTDI_IFC_VERSION_3, 25 ), // Internal capability flag
+    GTDI_IFC_VERSION_3_26 = GTDI_MAKE_IFC_VER( GTDI_IFC_VERSION_3, 26 ), // ValidatePmRegsCfg escape
+    GTDI_IFC_VERSION_3_27 = GTDI_MAKE_IFC_VER( GTDI_IFC_VERSION_3, 27 ), // ForceWake device param has been added (set operation only)
+    GTDI_IFC_VERSION_3_28 = GTDI_MAKE_IFC_VER( GTDI_IFC_VERSION_3, 28 ), // Cull at BC & PSD for Gen7_5+
+    GTDI_IFC_VERSION_3_29 = GTDI_MAKE_IFC_VER( GTDI_IFC_VERSION_3, 29 ), // Support for permanent override
+    GTDI_IFC_VERSION_3_30 = GTDI_MAKE_IFC_VER( GTDI_IFC_VERSION_3, 30 ), // Support for next 7 throttling overrides
+    GTDI_IFC_VERSION_3_31 = GTDI_MAKE_IFC_VER( GTDI_IFC_VERSION_3, 31 ), // Slice/Unslice frequencies in SKL+ perf counters queries
+    GTDI_IFC_VERSION_3_32 = GTDI_MAKE_IFC_VER( GTDI_IFC_VERSION_3, 32 ), // Selective force wake override
+    GTDI_IFC_VERSION_3_33 = GTDI_MAKE_IFC_VER( GTDI_IFC_VERSION_3, 33 ), // DMA sampling
+    GTDI_IFC_VERSION_3_34 = GTDI_MAKE_IFC_VER( GTDI_IFC_VERSION_3, 34 ), // Mid query events info
+    GTDI_IFC_VERSION_3_35 = GTDI_MAKE_IFC_VER( GTDI_IFC_VERSION_3, 35 ), // Byte array added to GTDI_DEVICE_PARAM_VALUE_TYPE
+    GTDI_IFC_VERSION_3_36 = GTDI_MAKE_IFC_VER( GTDI_IFC_VERSION_3, 36 ), // New exception flags added to GTDI_FNC_READ_COUNTER_STREAM
 
     // ...
-    GTDI_IFC_VERSION_CURRENT  = GTDI_IFC_VERSION_3_36,
+    GTDI_IFC_VERSION_CURRENT = GTDI_IFC_VERSION_3_36,
     // ...
     GTDI_IFC_VERSION_MAX = 0xFFFFFFFF
 } GTDI_IFC_VERSION;
@@ -256,23 +232,22 @@ typedef enum
     GTDI_EU_CONFIG_MAX = 0xFFFFFFFF
 } GTDI_EU_CONFIG_ENTRY_TYPE;
 
-
 /******************************************************************************/
 /* Pipeline stages (used in EU configuration):                                */
 /******************************************************************************/
 typedef enum
 {
     GTDI_VF_VS = 0,
-    GTDI_HS,            // IVB+ only
-    GTDI_DS,            // IVB+ only
+    GTDI_HS, // IVB+ only
+    GTDI_DS, // IVB+ only
     GTDI_GS,
     GTDI_WIZ,
     GTDI_TS,
-    GTDI_CPS,           // TODO: to be verified...
+    GTDI_CPS, // TODO: to be verified...
     // ...
     GTDI_MAX_PIPELINE_STAGES,
     // ...
-   GTDI_PIPELINE_STAGE_MAX = 0xFFFFFFFF
+    GTDI_PIPELINE_STAGE_MAX = 0xFFFFFFFF
 } GTDI_PIPELINE_STAGE;
 
 /******************************************************************************/
@@ -296,34 +271,32 @@ typedef enum
 /******************************************************************************/
 typedef union
 {
-    void             *Pointer;          // Pointer value
-    uint64_t          UmBufferOffset64; // Placeholder
+    void*    Pointer;          // Pointer value
+    uint64_t UmBufferOffset64; // Placeholder
 } GTDIPointer;
 
 /******************************************************************************/
 /* Macro to set pointer in GTDIPointer structure.                             */
 /******************************************************************************/
-#define GTDI_SET_POINTER(GTDIPtr, val) \
-    (GTDIPtr).UmBufferOffset64 = 0;    \
-    (GTDIPtr).Pointer = val;
+#define GTDI_SET_POINTER( GTDIPtr, val ) \
+    ( GTDIPtr ).UmBufferOffset64 = 0;    \
+    ( GTDIPtr ).Pointer          = val;
 
 /******************************************************************************/
 /* GTDIBaseIn:                                                                */
 /******************************************************************************/
 typedef struct GTDIBaseInStruct
 {
-    GTDI_ESCAPE_FUNCTION    Function;
+    GTDI_ESCAPE_FUNCTION Function;
 } GTDIHeaderIn;
-
 
 /******************************************************************************/
 /* GTDIBaseOut:                                                               */
 /******************************************************************************/
 typedef struct GTDIBaseOutStruct
 {
-    GTDI_RETURN_CODE        RetCode; // Result of the operation
+    GTDI_RETURN_CODE RetCode; // Result of the operation
 } GTDIHeaderOut;
-
 
 /******************************************************************************/
 /* GTDI_PLATFORM_INDEX                                                        */
@@ -350,27 +323,26 @@ typedef enum
     GTDI_PLATFORM_MAX = 0xFFFFFFF
 } GTDI_PLATFORM_INDEX;
 
-
 /******************************************************************************/
 /* GTDI_WORKAROUND_ID                                                         */
 /******************************************************************************/
 typedef enum
 {
-    GTDI_IVB_COUNTERS_FREEZE_ON_REPORTING_OFF,  // IVB C0+
+    GTDI_IVB_COUNTERS_FREEZE_ON_REPORTING_OFF, // IVB C0+
     GTDI_WA_ENABLE_IA_FREQUENCY_LIMITER,
     GTDI_HSW_ENABLE_SLICE_SHUTDOWN,
     // ...
     GTDI_WORKAROUND_ID_MAX = 0xFFFFFFFF
 } GTDI_WORKAROUND_ID;
 
-#define GTDI_CAPABILITY_MMIO_BROKEN                         0x0001
-#define GTDI_CAPABILITY_VAR_RC                              0x0002   // TBD: propose better name
-#define GTDI_CAPABILITY_ME_SM_LOCK                          0x0004
-#define GTDI_CAPABILITY_MIN_MAX_FREQ_REPORTING              0x0008
-#define GTDI_CAPABILITY_PAVP_DISABLED                       0x0010
-#define GTDI_CAPABILITY_SLICE_SHUTDOWN                      0x0020
-#define GTDI_CAPABILITY_STREAM_EXCEPTION_FLAGS_REPORTING    0x0040
-#define GTDI_CAPABILITY_INTERNAL_DRV                        0x0080
+#define GTDI_CAPABILITY_MMIO_BROKEN                      0x0001
+#define GTDI_CAPABILITY_VAR_RC                           0x0002 // TBD: propose better name
+#define GTDI_CAPABILITY_ME_SM_LOCK                       0x0004
+#define GTDI_CAPABILITY_MIN_MAX_FREQ_REPORTING           0x0008
+#define GTDI_CAPABILITY_PAVP_DISABLED                    0x0010
+#define GTDI_CAPABILITY_SLICE_SHUTDOWN                   0x0020
+#define GTDI_CAPABILITY_STREAM_EXCEPTION_FLAGS_REPORTING 0x0040
+#define GTDI_CAPABILITY_INTERNAL_DRV                     0x0080
 
 /******************************************************************************/
 /* GTDI_FNC_DEVICE_INFO function structure definitions                        */
@@ -380,82 +352,78 @@ typedef enum
 /******************************************************************************/
 typedef struct GTDIDeviceInfoInStruct
 {
-    GTDI_ESCAPE_FUNCTION  Function;
+    GTDI_ESCAPE_FUNCTION Function;
 } GTDIDeviceInfoIn;
-
 
 typedef struct GTDIDeviceInfoExtInStruct
 {
-    GTDI_ESCAPE_FUNCTION  Function;
+    GTDI_ESCAPE_FUNCTION Function;
 } GTDIDeviceInfoExtIn;
-
 
 /******************************************************************************/
 /* GTDIDeviceInfoOut:                                                         */
 /******************************************************************************/
 typedef struct GTDIDeviceInfoOutStruct
 {
-    GTDI_RETURN_CODE RetCode;     // Result of the operation
-    uint32_t InterfaceVersion;    // Version of the interface supported
-    uint32_t PCIDeviceID;         // The DeviceId of the current adapter
-    uint32_t RevisionID;          // Steping of the HW.
-    uint32_t DisplayFreq;         // Frequency of the Display Controller
-    uint32_t CoreFreq;            // Core Frequency
-    uint32_t SamplerFreq;         // Sampler Frequency
-    uint32_t MemoryFreq;          // Memory Frequency
+    GTDI_RETURN_CODE RetCode;          // Result of the operation
+    uint32_t         InterfaceVersion; // Version of the interface supported
+    uint32_t         PCIDeviceID;      // The DeviceId of the current adapter
+    uint32_t         RevisionID;       // Steping of the HW.
+    uint32_t         DisplayFreq;      // Frequency of the Display Controller
+    uint32_t         CoreFreq;         // Core Frequency
+    uint32_t         SamplerFreq;      // Sampler Frequency
+    uint32_t         MemoryFreq;       // Memory Frequency
 
-    uint32_t ApertureSize;        // Size of the Aperture.
-    GTDI_PLATFORM_INDEX Platform; // Platform type (determines the union choice)
+    uint32_t            ApertureSize; // Size of the Aperture.
+    GTDI_PLATFORM_INDEX Platform;     // Platform type (determines the union choice)
 
     union
     {
         struct
         {
-            uint32_t FSBFreq;     // FSBFrequency - Cantiga, Eaglelake
+            uint32_t FSBFreq; // FSBFrequency - Cantiga, Eaglelake
         } GenCtgElkT;
 
         struct
         {
-            uint32_t CSIFreq;     // Ironlake
+            uint32_t CSIFreq; // Ironlake
         } GenIlkT;
     };
 
 } GTDIDeviceInfoOut;
 
-
 typedef struct GTDIDeviceInfoOutExtStruct
 {
-    GTDI_RETURN_CODE RetCode;     // Result of the operation
-    uint32_t InterfaceVersion;    // Version of the interface supported
-    uint32_t PCIDeviceID;         // The DeviceId of the current adapter
-    uint32_t RevisionID;          // Stepping of the HW.
-    uint32_t DisplayFreq;         // Frequency of the Display Controller
-    uint32_t CoreFreq;            // Core Frequency
-    uint32_t SamplerFreq;         // Sampler Frequency
-    uint32_t MemoryFreq;          // Memory Frequency
+    GTDI_RETURN_CODE RetCode;          // Result of the operation
+    uint32_t         InterfaceVersion; // Version of the interface supported
+    uint32_t         PCIDeviceID;      // The DeviceId of the current adapter
+    uint32_t         RevisionID;       // Stepping of the HW.
+    uint32_t         DisplayFreq;      // Frequency of the Display Controller
+    uint32_t         CoreFreq;         // Core Frequency
+    uint32_t         SamplerFreq;      // Sampler Frequency
+    uint32_t         MemoryFreq;       // Memory Frequency
 
-    uint32_t ApertureSize;        // Size of the Aperture.
-    GTDI_PLATFORM_INDEX Platform; // Platform type (determines the union choice)
-    uint32_t Capabilities;
+    uint32_t            ApertureSize; // Size of the Aperture.
+    GTDI_PLATFORM_INDEX Platform;     // Platform type (determines the union choice)
+    uint32_t            Capabilities;
 
     union
     {
         struct
         {
-            uint32_t FSBFreq;     // FSBFrequency - Cantiga, Eaglelake
+            uint32_t FSBFreq; // FSBFrequency - Cantiga, Eaglelake
         } GenCtgElkT;
 
         struct
         {
-            uint64_t CSIFreq;     // Ironlake
+            uint64_t CSIFreq; // Ironlake
         } GenIlkT;
 
         struct
         {
-            uint32_t MinGPUFreqMHz;   // Sandy Bridge/Ivy Bridge/ Haswell minimal turbo freq in MHz
-            uint32_t MaxGPUFreqMHz;   // Sandy Bridge/Ivy Bridge/ Haswell maximal turbo freq in MHz
+            uint32_t MinGPUFreqMHz; // Sandy Bridge/Ivy Bridge/ Haswell minimal turbo freq in MHz
+            uint32_t MaxGPUFreqMHz; // Sandy Bridge/Ivy Bridge/ Haswell maximal turbo freq in MHz
         } GenGtT;
-
     };
 
 } GTDIDeviceInfoExtOut;
@@ -464,7 +432,7 @@ typedef struct GTDIDeviceInfoOutExtStruct
 /* GTDI_FNC_DEVICE_INFO_PARAM function structure definitions                  */
 /******************************************************************************/
 /******************************************************************************/
-/* GTDI_DEVICE_PARAM:                                                          */
+/* GTDI_DEVICE_PARAM:                                                         */
 /******************************************************************************/
 typedef enum GTDI_DEVICE_PARAM_ENUM
 {
@@ -533,7 +501,7 @@ typedef enum GTDI_DEVICE_PARAM_ENUM
 } GTDI_DEVICE_PARAM;
 
 /******************************************************************************/
-/* GTDI_GTDI_GPU_FORCE_WAKE:                                                          */
+/* GTDI_GTDI_GPU_FORCE_WAKE:                                                  */
 /******************************************************************************/
 typedef enum GTDI_GPU_FORCE_WAKE_ENUM
 {
@@ -544,16 +512,15 @@ typedef enum GTDI_GPU_FORCE_WAKE_ENUM
     GTDI_FORCEWAKE_RENDER  = 4
 } GTDI_GTDI_GPU_FORCE_WAKE;
 
-
 /******************************************************************************/
 /* GTDIDeviceInfoParamIn:                                                     */
 /******************************************************************************/
 typedef struct GTDIDeviceInfoParamInStruct
 {
-    GTDI_ESCAPE_FUNCTION    Function;
-    GTDI_DEVICE_PARAM       Param;    // Identifies parameter to get
-    uint32_t                Slice;    // slice id
-    uint32_t                SubSlice; // subslice id
+    GTDI_ESCAPE_FUNCTION Function;
+    GTDI_DEVICE_PARAM    Param;    // Identifies parameter to get
+    uint32_t             Slice;    // slice id
+    uint32_t             SubSlice; // subslice id
 } GTDIDeviceInfoParamIn;
 
 /******************************************************************************/
@@ -573,8 +540,8 @@ typedef enum GTDI_DEVICE_PARAM_VALUE_TYPE_ENUM
 /******************************************************************************/
 typedef struct GTDIDeviceInfoParamOutStruct
 {
-    GTDI_RETURN_CODE RetCode;    // Result of the operation
-    GTDI_DEVICE_PARAM_VALUE_TYPE ValueType;// Type of value passed as result
+    GTDI_RETURN_CODE             RetCode;   // Result of the operation
+    GTDI_DEVICE_PARAM_VALUE_TYPE ValueType; // Type of value passed as result
     union
     {
         uint32_t ValueUint32;
@@ -588,7 +555,7 @@ typedef struct GTDIDeviceInfoParamOutStruct
 /******************************************************************************/
 typedef struct GTDIDeviceInfoParamExtOutStruct
 {
-    GTDI_RETURN_CODE RetCode;               // Result of the operation
+    GTDI_RETURN_CODE             RetCode;   // Result of the operation
     GTDI_DEVICE_PARAM_VALUE_TYPE ValueType; // Type of value passed as result
     union
     {
@@ -639,7 +606,7 @@ typedef struct GTDISetDeviceParamExtInStruct
 /******************************************************************************/
 typedef struct GTDISetDeviceParamOutStruct
 {
-    GTDI_RETURN_CODE RetCode;    // Result of the operation
+    GTDI_RETURN_CODE RetCode; // Result of the operation
 } GTDISetDeviceParamOut;
 
 /******************************************************************************/
@@ -650,37 +617,35 @@ typedef struct GTDISetDeviceParamOutStruct
 /******************************************************************************/
 typedef struct GTDIIGPASupportEnableInStruct
 {
-    GTDI_ESCAPE_FUNCTION    Function;
-    bool32_t                Enable;  // Flag: True = Enable, False = Disable
+    GTDI_ESCAPE_FUNCTION Function;
+    bool32_t             Enable; // Flag: True = Enable, False = Disable
 
     // The directory where shared memory files will be stored.
     // Driver need to know that value at this stage to create shared memory
     // files with configuration. Typically the value would be %TEMP% environment
     // variable.
-    wchar_t                 SharedMemoryBaseDirectory[GTDI_PATH_LENGTH];
+    wchar_t SharedMemoryBaseDirectory[GTDI_PATH_LENGTH];
 } GTDIIGPASupportEnableIn;
-
 
 /******************************************************************************/
 /* GTDIIGPASupportEnableOut:                                                  */
 /******************************************************************************/
 typedef struct GTDIIGPASupportEnableOutStruct
 {
-    GTDI_RETURN_CODE   RetCode; // Result of the operation
+    GTDI_RETURN_CODE RetCode; // Result of the operation
 
     // Name of the file which contains the metric/overrides/events definition
     // The name is relative to the path given in the GTDIIGPASupportEnableInStruct
     // The file is intended to be written by the driver and read by the IGPA
-     wchar_t           SystemFileName[GTDI_PATH_LENGTH];
+    wchar_t SystemFileName[GTDI_PATH_LENGTH];
 
     // Name of the shared memory file which contains the metric/events
     // configuration. The name is relative to the path given in the
     // GTDIIGPASupportEnableInStruct. The file is intended to be written by
     // IGPA to configure proper driver behavior
-     wchar_t           SharedMemoryConfigFileName[GTDI_PATH_LENGTH];
+    wchar_t SharedMemoryConfigFileName[GTDI_PATH_LENGTH];
 
 } GTDIIGPASupportEnableOut;
-
 
 /******************************************************************************/
 /* GTDI_FNC_SET_OVERRIDE_CFG function structure definitions                   */
@@ -691,48 +656,48 @@ typedef struct GTDIIGPASupportEnableOutStruct
 /******************************************************************************/
 typedef enum
 {
-    GTDI_STALL_LEVEL_NO_STALL,    // No throttling
-    GTDI_STALL_LEVEL_50_PERCENT,  // Stall every other cycle
-    GTDI_STALL_LEVEL_33_PERCENT,  // Stall every third cycle
-    GTDI_STALL_LEVEL_25_PERCENT,  // Stall every fourth cycle
-    GTDI_STALL_LEVEL_20_PERCENT,  // Stall every fifth cycle
-    GTDI_STALL_LEVEL_16_PERCENT,  // Stall every sixth cycle
-    GTDI_STALL_LEVEL_14_PERCENT,  // Stall every seventh cycle
-    GTDI_STALL_LEVEL_12_PERCENT,  // Stall every eight cycle
+    GTDI_STALL_LEVEL_NO_STALL,   // No throttling
+    GTDI_STALL_LEVEL_50_PERCENT, // Stall every other cycle
+    GTDI_STALL_LEVEL_33_PERCENT, // Stall every third cycle
+    GTDI_STALL_LEVEL_25_PERCENT, // Stall every fourth cycle
+    GTDI_STALL_LEVEL_20_PERCENT, // Stall every fifth cycle
+    GTDI_STALL_LEVEL_16_PERCENT, // Stall every sixth cycle
+    GTDI_STALL_LEVEL_14_PERCENT, // Stall every seventh cycle
+    GTDI_STALL_LEVEL_12_PERCENT, // Stall every eight cycle
 
 } GTDI_STALL_LEVEL;
 
 typedef struct GTDISetOverrideCfgInStruct
 {
-    GTDI_ESCAPE_FUNCTION    Function;
+    GTDI_ESCAPE_FUNCTION Function;
     struct
     {
-        uint32_t            OverrideId   : 16; // Id of the override to configure
-        uint32_t            Reserved     : 14;
-        uint32_t            Permanent    : 1;  // 0 - override is enabled/disabled
-                                               // per each command buffer separately
-                                               // 1 - override state is controlled
-                                               // by escape calls only -> DANGEROUS:
-                                               // can lead to system  freeze if given
-                                               // override is located in the global
-                                               // registers
-        uint32_t            QueryControl : 1;  // Determines if override setting
-    };                                         // is for immediate execution
-                                               // (value of 0) or to be applied
-                                               // when override control query
-                                               // begins (value of 1).
+        uint32_t OverrideId : 16; // Id of the override to configure
+        uint32_t Reserved : 14;
+        uint32_t Permanent : 1;    // 0 - override is enabled/disabled
+                                   // per each command buffer separately
+                                   // 1 - override state is controlled
+                                   // by escape calls only -> DANGEROUS:
+                                   // can lead to system  freeze if given
+                                   // override is located in the global
+                                   // registers
+        uint32_t QueryControl : 1; // Determines if override setting
+    };                             // is for immediate execution
+                                   // (value of 0) or to be applied
+                                   // when override control query
+                                   // begins (value of 1).
     union
     {
-        bool32_t            Enable;     // Flag: True = Enable, False = Disable
-        GTDI_STALL_LEVEL    StallLevel; // OBSOLETE
-        uint32_t            Value;      // Warning: most significant byte is
-                                        // reserved for internal driver use
-                                        //
-                                        // Available values for given override are
-                                        // described in its description. To use given
-                                        // value its index should be used instead
-                                        // Example:
-                                        // "Throttling values: 100%/50%/25%" -> index: 0/1/2
+        bool32_t         Enable;     // Flag: True = Enable, False = Disable
+        GTDI_STALL_LEVEL StallLevel; // OBSOLETE
+        uint32_t         Value;      // Warning: most significant byte is
+                                     // reserved for internal driver use
+                                     //
+                                     // Available values for given override are
+                                     // described in its description. To use given
+                                     // value its index should be used instead
+                                     // Example:
+                                     // "Throttling values: 100%/50%/25%" -> index: 0/1/2
     };
 } GTDISetOverrideCfgIn;
 
@@ -741,9 +706,8 @@ typedef struct GTDISetOverrideCfgInStruct
 /******************************************************************************/
 typedef struct GTDISetOverrideCfgOutStruct
 {
-    GTDI_RETURN_CODE   RetCode; // Result of the operation
+    GTDI_RETURN_CODE RetCode; // Result of the operation
 } GTDISetOverrideCfgOut;
-
 
 /******************************************************************************/
 /* GTDI_FNC_CONNECT function structure definitions                            */
@@ -753,26 +717,24 @@ typedef struct GTDISetOverrideCfgOutStruct
 /******************************************************************************/
 typedef struct GTDIConnectInStruct
 {
-    GTDI_ESCAPE_FUNCTION  Function;
-    uint32_t PID;                               // Process id of the application
-                                                // to be profiled
+    GTDI_ESCAPE_FUNCTION Function;
+    uint32_t             PID; // Process id of the application
+                              // to be profiled
 } GTDIConnectIn;
-
 
 /******************************************************************************/
 /* GTDIConnectOut:                                                            */
 /******************************************************************************/
 typedef struct GTDIConnectOutStruct
 {
-    GTDI_RETURN_CODE RetCode;       // Result of the call
+    GTDI_RETURN_CODE RetCode; // Result of the call
 
     // Name of the shared memory file used for collecting driver metrics and
     // query results (relative to the path given in IGPASupportEnable)
-    wchar_t     SharedMemoryContextFileName[GTDI_PATH_LENGTH];
+    wchar_t SharedMemoryContextFileName[GTDI_PATH_LENGTH];
 
-    uint32_t    ContextId;       // Driver id of the context being requested.
+    uint32_t ContextId; // Driver id of the context being requested.
 } GTDIConnectOut;
-
 
 /******************************************************************************/
 /* GTDI_FNC_DISCONNECT function structure definitions                         */
@@ -782,9 +744,9 @@ typedef struct GTDIConnectOutStruct
 /******************************************************************************/
 typedef struct GTDIDisconnectInStruct
 {
-    GTDI_ESCAPE_FUNCTION  Function;
-    uint32_t PID;                               // Process id of the profiled
-                                                // application
+    GTDI_ESCAPE_FUNCTION Function;
+    uint32_t             PID; // Process id of the profiled
+                              // application
 } GTDIDisconnectIn;
 
 /******************************************************************************/
@@ -794,7 +756,6 @@ typedef struct GTDIDisconnectOutStruct
 {
     GTDI_RETURN_CODE RetCode; // Result of the call
 } GTDIDisconnectOut;
-
 
 /******************************************************************************/
 /* Enumeration to distinguish PM configurations                               */
@@ -823,7 +784,7 @@ typedef enum GTDI_CONFIGURATION_SET
 #define GTDI_MAX_PM_REGS_3_13 128
 
 /******************************************************************************/
-/* GTDI_MAX_READ_REGS:                                                          */
+/* GTDI_MAX_READ_REGS:                                                        */
 /******************************************************************************/
 #define GTDI_MAX_READ_REGS 16
 
@@ -835,7 +796,7 @@ typedef enum GTDI_CONFIGURATION_SET
 /******************************************************************************/
 typedef struct GTDISetPmRegsCfgInStruct
 {
-    GTDI_ESCAPE_FUNCTION  Function;
+    GTDI_ESCAPE_FUNCTION Function;
 
     // if offset is set to 0 the corresponding NOA value is ignored
     uint32_t RegOffsets[GTDI_MAX_PM_REGS];
@@ -849,7 +810,7 @@ typedef struct GTDISetPmRegsCfgInStruct
 /*******************************************************************************/
 typedef struct GTDISetPmRegsCfgInStruct_3_13
 {
-    GTDI_ESCAPE_FUNCTION  Function;
+    GTDI_ESCAPE_FUNCTION Function;
 
     // if offset is set to 0 the corresponding NOA value is ignored
     uint32_t RegOffsets[GTDI_MAX_PM_REGS_3_13];
@@ -862,7 +823,6 @@ typedef struct GTDISetPmRegsCfgInStruct_3_13
 /******************************************************************************/
 typedef GTDIHeaderOut GTDISetPmRegsCfgOut;
 
-
 /******************************************************************************/
 /* GTDI_FNC_GET_PM_REGS_CFG function structures definitions                   */
 /******************************************************************************/
@@ -871,7 +831,7 @@ typedef GTDIHeaderOut GTDISetPmRegsCfgOut;
 /******************************************************************************/
 typedef struct GTDIReadRegsCfgInStruct
 {
-    GTDI_ESCAPE_FUNCTION  Function;
+    GTDI_ESCAPE_FUNCTION Function;
 
     uint32_t RegOffsets[GTDI_MAX_READ_REGS];
     uint32_t RegBitSizes[GTDI_MAX_READ_REGS];
@@ -882,8 +842,8 @@ typedef struct GTDIReadRegsCfgInStruct
 /******************************************************************************/
 typedef struct GTDIReadRegsCfgOutStruct
 {
-    GTDI_RETURN_CODE        RetCode; // Result of the operation
-    uint32_t                UserCntrCfgId;
+    GTDI_RETURN_CODE RetCode; // Result of the operation
+    uint32_t         UserCntrCfgId;
 } GTDIReadRegsCfgOut;
 
 /******************************************************************************/
@@ -899,12 +859,11 @@ typedef GTDIHeaderIn GTDIGetEuCoresInfoIn;
 /******************************************************************************/
 typedef struct GTDIGetEuCoresInfoOutStruct
 {
-    GTDI_RETURN_CODE RetCode;         // Result of the call
+    GTDI_RETURN_CODE RetCode; // Result of the call
     uint32_t         PerformanceMode;
     uint32_t         EUCount;
     uint32_t         ThreadsCount;
 } GTDIGetEuCoresInfoOut;
-
 
 /******************************************************************************/
 /* Enumeration to choose high or low resolution sampling type                 */
@@ -918,45 +877,40 @@ typedef enum GTDI_SAMPLING_TYPE_ENUM
     GTDI_SAMPLING_TYPE_MAX = 0xFFFFFFFF
 } GTDI_SAMPLING_TYPE;
 
-
 /******************************************************************************/
 /* Enumeration to choose large or small report size.                          */
 /******************************************************************************/
 typedef enum GTDI_REPORT_TYPE_ENUM
 {
     // PerfCounters report types
-    GTDI_REPORT_TYPE_128B_A13_NOA16 = 0,    // report format is
-                                            //    GTDI_IVB_REPORT_128B_A13_NOA16 or
-                                            //    GTDI_HSW_REPORT_128B_A13_NOA16
-    GTDI_REPORT_TYPE_192B_A29_NOA16,        // OBSOLETE report format is
-                                            //    GTDI_IVB_REPORT_192B_A29_NOA16 or
-                                            //    GTDI_HSW_REPORT_192B_A29_NOA16
-    GTDI_REPORT_TYPE_256B_A45_NOA16,        // report format is
-                                            //    GTDI_IVB_REPORT_256B_A45_NOA16 or
-                                            //    GTDI_HSW_REPORT_256B_A45_NOA16
-    GTDI_REPORT_TYPE_64B_A13,               // report format is
-                                            //     GTDI_HSW_REPORT_64B_A13
-    GTDI_REPORT_TYPE_128B_A29,              // report format is
-                                            //     GTDI_HSW_REPORT_128B_A29
-    GTDI_REPORT_TYPE_64B_NOA12,             // report format is
-                                            //     GTDI_HSW_REPORT_64B_NOA12
-    GTDI_REPORT_TYPE_128B_A16_NOA12,        // report format is
-                                            //     GTDI_HSW_REPORT_128B_A16_NOA12
-    GTDI_REPORT_TYPE_64B_NOA12_2,           // report format is
-                                            //     GTDI_HSW_REPORT_64B_NOA12_2
-    // Extended report types (used in DMA sampling)
-    GTDI_REPORT_TYPE_FULL = 100,            // combo format (timestamp & oa256 & perfmons & mc * user)
-    GTDI_REPORT_TYPE_TIMESTAMP,             // timestamp
-    GTDI_REPORT_TYPE_PERFMONS,              // 2 QWORD perfmon counters
-    GTDI_REPORT_TYPE_MC,                    // memory counters
-    GTDI_REPORT_TYPE_USER,                  // 8 user defined uint32_t counters
-
-
+    GTDI_REPORT_TYPE_128B_A13_NOA16 = 0, // report format is
+                                         //    GTDI_IVB_REPORT_128B_A13_NOA16 or
+                                         //    GTDI_HSW_REPORT_128B_A13_NOA16
+    GTDI_REPORT_TYPE_192B_A29_NOA16,     // OBSOLETE report format is
+                                         //    GTDI_IVB_REPORT_192B_A29_NOA16 or
+                                         //    GTDI_HSW_REPORT_192B_A29_NOA16
+    GTDI_REPORT_TYPE_256B_A45_NOA16,     // report format is
+                                         //    GTDI_IVB_REPORT_256B_A45_NOA16 or
+                                         //    GTDI_HSW_REPORT_256B_A45_NOA16
+    GTDI_REPORT_TYPE_64B_A13,            // report format is
+                                         //     GTDI_HSW_REPORT_64B_A13
+    GTDI_REPORT_TYPE_128B_A29,           // report format is
+                                         //     GTDI_HSW_REPORT_128B_A29
+    GTDI_REPORT_TYPE_64B_NOA12,          // report format is
+                                         //     GTDI_HSW_REPORT_64B_NOA12
+    GTDI_REPORT_TYPE_128B_A16_NOA12,     // report format is
+                                         //     GTDI_HSW_REPORT_128B_A16_NOA12
+    GTDI_REPORT_TYPE_64B_NOA12_2,        // report format is
+                                         //     GTDI_HSW_REPORT_64B_NOA12_2
+                                         // Extended report types (used in DMA sampling)
+    GTDI_REPORT_TYPE_FULL = 100,         // combo format (timestamp & oa256 & perfmons & mc * user)
+    GTDI_REPORT_TYPE_TIMESTAMP,          // timestamp
+    GTDI_REPORT_TYPE_PERFMONS,           // 2 QWORD perfmon counters
+    GTDI_REPORT_TYPE_MC,                 // memory counters
+    GTDI_REPORT_TYPE_USER,               // 8 user defined uint32_t counters
 
     GTDI_REPORT_TYPE_MAX = 0xFFFFFFFF
 } GTDI_REPORT_TYPE;
-
-
 
 /******************************************************************************/
 /* GTDI_FNC_TIMER_MODE_ENABLE function structures definitions                 */
@@ -967,15 +921,15 @@ typedef enum GTDI_REPORT_TYPE_ENUM
 /******************************************************************************/
 typedef struct GTDITimerModeEnableInStruct
 {
-    GTDI_ESCAPE_FUNCTION    Function;
-    bool32_t                Enable;
-    GTDI_SAMPLING_TYPE      SamplingType;
-    GTDI_REPORT_TYPE        ReportType;
-    uint32_t                TimerPeriod;// proposed timer period in nanoseconds
-                                        // hardware will set the most near value
-                                        // allowed in hw not exceeding the proposed
-    uint32_t                OaBufferSize; // proposed OA buffer size
-    GTDI_CONFIGURATION_SET  ConfigurationId; // used only in IOSTREAM sampling type
+    GTDI_ESCAPE_FUNCTION Function;
+    bool32_t             Enable;
+    GTDI_SAMPLING_TYPE   SamplingType;
+    GTDI_REPORT_TYPE     ReportType;
+    uint32_t             TimerPeriod;       // proposed timer period in nanoseconds
+                                            // hardware will set the most near value
+                                            // allowed in hw not exceeding the proposed
+    uint32_t               OaBufferSize;    // proposed OA buffer size
+    GTDI_CONFIGURATION_SET ConfigurationId; // used only in IOSTREAM sampling type
 } GTDITimerModeEnableIn;
 
 /******************************************************************************/
@@ -983,12 +937,12 @@ typedef struct GTDITimerModeEnableInStruct
 /******************************************************************************/
 typedef struct GTDITimerModeEnableOutStruct
 {
-    GTDI_RETURN_CODE        RetCode;       // Result of the call
-    uint32_t                TimerPeriod;   // Timer period in nanoseconds that has been
-                                           // set in hardware
-    uint32_t                OaBufferSize;  // OA buffer size that has been set in hardware. Used only in IOSTREAM sampling type
+    GTDI_RETURN_CODE RetCode;     // Result of the call
+    uint32_t         TimerPeriod; // Timer period in nanoseconds that has been
+                                  // set in hardware
+    uint32_t OaBufferSize;        // OA buffer size that has been set in hardware. Used
+                                  // only in IOSTREAM sampling type
 } GTDITimerModeEnableOut;
-
 
 /******************************************************************************/
 /* GTDI_FNC_EVENT_MODE_ENABLE function structures definitions                 */
@@ -999,12 +953,13 @@ typedef struct GTDITimerModeEnableOutStruct
 /******************************************************************************/
 typedef struct GTDIEventModeEnableInStruct
 {
-    GTDI_ESCAPE_FUNCTION    Function;
-    bool32_t                Enable;
-    GTDI_SAMPLING_TYPE      SamplingType;
-    GTDI_REPORT_TYPE        ReportType;
-    uint32_t                OaBufferSize;    // proposed OA buffer size. Used only in IOSTREAM sampling type
-    GTDI_CONFIGURATION_SET  ConfigurationId; // used only in IOSTREAM sampling type
+    GTDI_ESCAPE_FUNCTION Function;
+    bool32_t             Enable;
+    GTDI_SAMPLING_TYPE   SamplingType;
+    GTDI_REPORT_TYPE     ReportType;
+    uint32_t             OaBufferSize;      // proposed OA buffer size. Used only in IOSTREAM
+                                            // sampling type
+    GTDI_CONFIGURATION_SET ConfigurationId; // used only in IOSTREAM sampling type
 
 } GTDIEventModeEnableIn;
 
@@ -1013,10 +968,9 @@ typedef struct GTDIEventModeEnableInStruct
 /******************************************************************************/
 typedef struct GTDIEventModeEnableOutStruct
 {
-    GTDI_RETURN_CODE        RetCode;       // Result of the call
-    uint32_t                OaBufferSize;  // OA buffer size that has been set in hardware
+    GTDI_RETURN_CODE RetCode;      // Result of the call
+    uint32_t         OaBufferSize; // OA buffer size that has been set in hardware
 } GTDIEventModeEnableOut;
-
 
 /******************************************************************************/
 /* GTDI_FNC_DMA_MODE_ENABLE function structures definitions                   */
@@ -1027,12 +981,12 @@ typedef struct GTDIEventModeEnableOutStruct
 /******************************************************************************/
 typedef struct GTDIDmaModeEnableInStruct
 {
-    GTDI_ESCAPE_FUNCTION    Function;
-    bool32_t                Enable;
-    GTDI_SAMPLING_TYPE      SamplingType;    // only GTDI_IOSTREAM_TYPE allowed
-    GTDI_REPORT_TYPE        ReportType;
-    uint32_t                BufferSize;      // proposed buffer size.
-    GTDI_CONFIGURATION_SET  ConfigurationId;
+    GTDI_ESCAPE_FUNCTION   Function;
+    bool32_t               Enable;
+    GTDI_SAMPLING_TYPE     SamplingType; // only GTDI_IOSTREAM_TYPE allowed
+    GTDI_REPORT_TYPE       ReportType;
+    uint32_t               BufferSize; // proposed buffer size.
+    GTDI_CONFIGURATION_SET ConfigurationId;
 } GTDIDmaModeEnableIn;
 
 /******************************************************************************/
@@ -1040,8 +994,8 @@ typedef struct GTDIDmaModeEnableInStruct
 /******************************************************************************/
 typedef struct GTDIDmaModeEnableOutStruct
 {
-    GTDI_RETURN_CODE        RetCode;       // Result of the call
-    uint32_t                BufferSize;    // Buffer size that has been set in the hardware
+    GTDI_RETURN_CODE RetCode;    // Result of the call
+    uint32_t         BufferSize; // Buffer size that has been set in the hardware
 } GTDIDmaModeEnableOut;
 
 /******************************************************************************/
@@ -1052,8 +1006,8 @@ typedef struct GTDIDmaModeEnableOutStruct
 /******************************************************************************/
 typedef struct GTDIHWMetricsEnableInStruct
 {
-   GTDI_ESCAPE_FUNCTION  Function;
-   bool32_t Enable;      // Flag: True = Enable, False = Disable
+    GTDI_ESCAPE_FUNCTION Function;
+    bool32_t             Enable; // Flag: True = Enable, False = Disable
 } GTDIHWMetricsEnableIn;
 
 /******************************************************************************/
@@ -1085,8 +1039,8 @@ typedef enum GTDI_REGISTER_CONFIG_TYPE_ENUM
 typedef struct GTDIRegisterConfigStruct
 {
     GTDI_REGISTER_CONFIG_TYPE Type;
-    uint32_t   Offset;
-    uint32_t   Value;
+    uint32_t                  Offset;
+    uint32_t                  Value;
 } GTDIRegisterConfig;
 
 /******************************************************************************/
@@ -1094,11 +1048,10 @@ typedef struct GTDIRegisterConfigStruct
 /******************************************************************************/
 typedef struct GTDISetHWMetricConfigurationInStruct
 {
-    GTDI_ESCAPE_FUNCTION  Function;
-    uint32_t RegisterCount;
+    GTDI_ESCAPE_FUNCTION Function;
+    uint32_t             RegisterCount;
     // Followed by RegisterCount number of GTDIRegisterConfig records
 } GTDISetHWMetricConfigurationIn;
-
 
 /******************************************************************************/
 /* GTDISetHWMetricConfigurationIn                                             */
@@ -1106,8 +1059,7 @@ typedef struct GTDISetHWMetricConfigurationInStruct
 typedef struct GTDISetHWMetricConfigurationOutStruct
 {
     GTDI_RETURN_CODE RetCode; // Result of the call
-}GTDISetHWMetricConfigurationOut;
-
+} GTDISetHWMetricConfigurationOut;
 
 /******************************************************************************/
 /* GTDI_FNC_GET_HW_METRIC_SAMPLE function structure definitions               */
@@ -1115,15 +1067,16 @@ typedef struct GTDISetHWMetricConfigurationOutStruct
 /******************************************************************************/
 /* GTDI_NUM_CHAP_REGISTERS                                                    */
 /******************************************************************************/
-#define GTDI_NUM_CHAP_REGISTERS         8
+#define GTDI_NUM_CHAP_REGISTERS 8
 
 /******************************************************************************/
 /* MMIO registers                                                             */
 /******************************************************************************/
-#define GTDI_NUM_MMIO_REGISTERS_GEN_CTGELK  9 //
-#define GTDI_NUM_MMIO_REGISTERS_GEN_ILK     9 //
+#define GTDI_NUM_MMIO_REGISTERS_GEN_CTGELK 9 //
+#define GTDI_NUM_MMIO_REGISTERS_GEN_ILK    9 //
 
-typedef enum {
+typedef enum
+{
     IA_VERTICES_COUNT = 0,
     IA_PRIMITIVES_COUNT,
     VS_INVOCATION_COUNT,
@@ -1142,37 +1095,37 @@ typedef enum {
 /******************************************************************************/
 typedef struct GTDIGetHWMetricSampleInStruct
 {
-    GTDI_ESCAPE_FUNCTION  Function;
-    uint32_t RegisterCount;   // If RegisterCount != 0 then new HW configuration is set
-                           // after retrieving samples.
+    GTDI_ESCAPE_FUNCTION Function;
+    uint32_t             RegisterCount; // If RegisterCount != 0 then new HW configuration is
+                                        // set after retrieving samples.
 
     // Followed by RegisterCount number of GTDIRegisterConfig records
 } GTDIGetHWMetricSampleIn;
 
 typedef struct GTDIGetHWMetricSampleExtInStruct
 {
-    GTDI_ESCAPE_FUNCTION  Function;
-    uint32_t RegisterCount;   // If RegisterCount != 0 then new HW configuration is set
-                              // after retrieving samples.
+    GTDI_ESCAPE_FUNCTION Function;
+    uint32_t             RegisterCount; // If RegisterCount != 0 then new HW configuration is
+                                        // set after retrieving samples.
 
     // Followed by RegisterCount number of GTDIRegisterConfig records
 } GTDIGetHWMetricSampleExtIn;
 
 /******************************************************************************/
-/* GTDIGGetHWMetricsSampleOutStruct                                            */
+/* GTDIGGetHWMetricsSampleOutStruct                                           */
 /******************************************************************************/
 typedef struct GTDIGGetHWMetricsSampleOutStruct
 {
-    GTDI_RETURN_CODE RetCode;    // Result of the call
-    uint64_t LatchTime;          // Timestamp the sample was latched
-    uint32_t ContextId;          // Retrieved contextId value for MMIO metrics
+    GTDI_RETURN_CODE RetCode;   // Result of the call
+    uint64_t         LatchTime; // Timestamp the sample was latched
+    uint32_t         ContextId; // Retrieved contextId value for MMIO metrics
     union
     {
         struct
         {
             uint32_t ChapValues[GTDI_NUM_CHAP_REGISTERS];
             uint64_t MMIOValues[GTDI_NUM_MMIO_REGISTERS_GEN_CTGELK];
-        }GenCtgElk;
+        } GenCtgElk;
         struct
         {
             uint32_t ChapValues[GTDI_NUM_CHAP_REGISTERS];
@@ -1181,12 +1134,11 @@ typedef struct GTDIGGetHWMetricsSampleOutStruct
     };
 } GTDIGetHWMetricsSampleOut;
 
-
 typedef struct GTDIGGetHWMetricsSampleExtOutStruct
 {
-    GTDI_RETURN_CODE RetCode;    // Result of the call
-    uint64_t LatchTime;          // Timestamp the sample was latched
-    uint32_t ContextId;          // Retrieved contextId value for MMIO metrics
+    GTDI_RETURN_CODE RetCode;   // Result of the call
+    uint64_t         LatchTime; // Timestamp the sample was latched
+    uint32_t         ContextId; // Retrieved contextId value for MMIO metrics
     union
     {
         struct
@@ -1194,14 +1146,14 @@ typedef struct GTDIGGetHWMetricsSampleExtOutStruct
             uint32_t ChapValues[GTDI_NUM_CHAP_REGISTERS];
             uint64_t MMIOValues[GTDI_NUM_MMIO_REGISTERS_GEN_CTGELK];
             uint64_t CurrentCoreFreq;
-            uint32_t  FreqContinuityCounter; // incremented each time render clock is changed
-        }GenCtgElk;
+            uint32_t FreqContinuityCounter; // incremented each time render clock is changed
+        } GenCtgElk;
         struct
         {
             uint32_t ChapValues[GTDI_NUM_CHAP_REGISTERS];
             uint64_t MMIOValues[GTDI_NUM_MMIO_REGISTERS_GEN_ILK];
             uint64_t CurrentCoreFreq;
-            uint32_t  FreqContinuityCounter; // incremented each time render clock is changed
+            uint32_t FreqContinuityCounter; // incremented each time render clock is changed
         } GenIlk;
     };
 } GTDIGetHWMetricsSampleExtOut;
@@ -1214,24 +1166,22 @@ typedef struct GTDIGGetHWMetricsSampleExtOutStruct
 /******************************************************************************/
 typedef struct GTDIOpenCounterStreamInStruct
 {
-    GTDI_ESCAPE_FUNCTION  Function;
-    uint32_t              PID; // Process ID of application to collect metrics for.
-                               // If set to 0, all contexts are measured.
-    wchar_t               EventName[GTDI_PATH_LENGTH];  // Name of event object
-                                                        // used by KMD do signal
-                                                        // user when samples are
-                                                        // available.
-}
-GTDIOpenCounterStreamIn;
+    GTDI_ESCAPE_FUNCTION Function;
+    uint32_t             PID;            // Process ID of application to collect metrics for.
+                                         // If set to 0, all contexts are measured.
+    wchar_t EventName[GTDI_PATH_LENGTH]; // Name of event object
+                                         // used by KMD do signal
+                                         // user when samples are
+                                         // available.
+} GTDIOpenCounterStreamIn;
 
 /******************************************************************************/
 /* GTDIOpenCounterStreamOut                                                   */
 /******************************************************************************/
 typedef struct GTDIOpenCounterStreamOutStruct
 {
-    GTDI_RETURN_CODE RetCode;    // Result of the call
-}
-GTDIOpenCounterStreamOut;
+    GTDI_RETURN_CODE RetCode; // Result of the call
+} GTDIOpenCounterStreamOut;
 
 /******************************************************************************/
 /* GTDI_FNC_READ_COUNTER_STREAM function structure definitions                */
@@ -1241,60 +1191,57 @@ GTDIOpenCounterStreamOut;
 /******************************************************************************/
 typedef struct GTDIReadCounterStreamInStruct
 {
-    GTDI_ESCAPE_FUNCTION  Function;
-    uint32_t              BytesToRead;     // Requested data size (in bytes)
-                                           // of data copied to user samples buffer.
-    GTDIPointer           UmBufferPointer; // Pointer to user samples buffer.
-                                           // Use GTDI_SET_POINTER macro to
-                                           // set this field.
-}
-GTDIReadCounterStreamIn;
+    GTDI_ESCAPE_FUNCTION Function;
+    uint32_t             BytesToRead; // Requested data size (in bytes)
+                                      // of data copied to user samples buffer.
+    GTDIPointer UmBufferPointer;      // Pointer to user samples buffer.
+                                      // Use GTDI_SET_POINTER macro to
+                                      // set this field.
+} GTDIReadCounterStreamIn;
 
 /******************************************************************************/
 /* GTDIReadCounterStreamOut                                                   */
 /******************************************************************************/
 typedef struct GTDIReadCounterStreamOutStruct
 {
-    GTDI_RETURN_CODE RetCode;    // Result of the call
+    GTDI_RETURN_CODE RetCode; // Result of the call
     uint32_t         BytesWritten;
     bool32_t         WriteFinished;
-}
-GTDIReadCounterStreamOut;
-
+} GTDIReadCounterStreamOut;
 
 /******************************************************************************/
 /* GTDIReadCounterStreamExceptions                                            */
 /******************************************************************************/
-typedef struct GTDIReadCounterStreamExceptionsStruct {
+typedef struct GTDIReadCounterStreamExceptionsStruct
+{
     // Exception flags
-    uint32_t FrequencyChanged        : 1;   // frequency change between first and last returned sample
-    uint32_t FrequencyChangedInvalid : 1;   // Unable to report freq change due to delayed read. If this exception
-                                            // occurs it will be reported until all available data is read from hardware
-                                            // during current or following reads. Whether there is data outstanding
-                                            // in the buffer after read is indicated by DataOutstanding flag.
-    uint32_t SliceShutdown           : 1;   // slice shutdown occurred
-    uint32_t ReportLost              : 1;   // Report lost reported by HW. This means that there were some samples lost
-                                            // since last Read Stream (not between the first and the last returned sample).
-    uint32_t DataOutstanding         : 1;   // Read Stream left some of the newest samples unread.
-    uint32_t BufferOverflow          : 1;   // This bit is set when some reports have been overwritten
-    uint32_t BufferOverrun           : 1;   // This means that the buffer is full (n-1 reports)
-    uint32_t CountersOverflow        : 1;   // This means that counters overflows occurred between two consecutive readings
-    uint32_t Reserved                : 24;
+    uint32_t FrequencyChanged : 1;        // frequency change between first and last returned sample
+    uint32_t FrequencyChangedInvalid : 1; // Unable to report freq change due to delayed read. If this exception
+                                          // occurs it will be reported until all available data is read from hardware
+                                          // during current or following reads. Whether there is data outstanding
+                                          // in the buffer after read is indicated by DataOutstanding flag.
+    uint32_t SliceShutdown : 1;           // slice shutdown occurred
+    uint32_t ReportLost : 1;              // Report lost reported by HW. This means that there were some samples lost
+                                          // since last Read Stream (not between the first and the last returned sample).
+    uint32_t DataOutstanding : 1;         // Read Stream left some of the newest samples unread.
+    uint32_t BufferOverflow : 1;          // This bit is set when some reports have been overwritten
+    uint32_t BufferOverrun : 1;           // This means that the buffer is full (n-1 reports)
+    uint32_t CountersOverflow : 1;        // This means that counters overflows occurred between two consecutive readings
+    uint32_t Reserved : 24;
 } GTDIReadCounterStreamExceptions;
 
 /******************************************************************************/
-/* GTDIReadCounterStreamExtOut                                                   */
+/* GTDIReadCounterStreamExtOut                                                */
 /******************************************************************************/
 typedef struct GTDIReadCounterStreamExtOutStruct
 {
-    GTDI_RETURN_CODE RetCode;    // Result of the call
+    GTDI_RETURN_CODE RetCode; // Result of the call
     uint32_t         BytesWritten;
     bool32_t         WriteFinished;
-    uint32_t         Frequency;   // in MHz
+    uint32_t         Frequency; // in MHz
 
     GTDIReadCounterStreamExceptions Exceptions;
-}
-GTDIReadCounterStreamExtOut;
+} GTDIReadCounterStreamExtOut;
 
 /******************************************************************************/
 /* GTDI_FNC_CLOSE_COUNTER_STREAM function structure definitions               */
@@ -1304,20 +1251,16 @@ GTDIReadCounterStreamExtOut;
 /******************************************************************************/
 typedef struct GTDICloseCounterStreamInStruct
 {
-    GTDI_ESCAPE_FUNCTION  Function;
-}
-GTDICloseCounterStreamIn;
+    GTDI_ESCAPE_FUNCTION Function;
+} GTDICloseCounterStreamIn;
 
 /******************************************************************************/
 /* GTDICloseCounterStreamOut                                                  */
 /******************************************************************************/
 typedef struct GTDICloseCounterStreamOutStruct
 {
-    GTDI_RETURN_CODE RetCode;    // Result of the call
-}
-GTDICloseCounterStreamOut;
-
-
+    GTDI_RETURN_CODE RetCode; // Result of the call
+} GTDICloseCounterStreamOut;
 
 /******************************************************************************/
 /* GTDI_FUNC_SET_OVERRIDE_EU_CFG function structure definitions               */
@@ -1327,8 +1270,8 @@ GTDICloseCounterStreamOut;
 /******************************************************************************/
 typedef struct GTDISetOverrideEUCfgInStruct
 {
-    GTDI_ESCAPE_FUNCTION       Function;
-    GTDI_EU_CONFIG_ENTRY_TYPE  ConfigEntryType;
+    GTDI_ESCAPE_FUNCTION      Function;
+    GTDI_EU_CONFIG_ENTRY_TYPE ConfigEntryType;
 
     union
     {
@@ -1343,34 +1286,30 @@ typedef struct GTDISetOverrideEUCfgInStruct
                               // last submitted configuration for any slice will
                               // be used for both slices during override enabling.
 
-
-    GTDI_PIPELINE_STAGE   PipelineStage; // Which pipeline stage does EUMask affect. This is
-                                         // for EU masking only.
-    GTDI_PARTITION_ID     PartitionID;   // Which partition does EUMask or ThreadCount affect.
-    uint32_t              Reserved;      // for backwards compatibility
+    GTDI_PIPELINE_STAGE PipelineStage; // Which pipeline stage does EUMask affect. This is
+                                       // for EU masking only.
+    GTDI_PARTITION_ID PartitionID;     // Which partition does EUMask or ThreadCount affect.
+    uint32_t          Reserved;        // for backwards compatibility
 
 } GTDISetOverrideEUCfgIn;
-
 
 /******************************************************************************/
 /* GTDISetOverrideEUCfgOut                                                    */
 /******************************************************************************/
 typedef struct GTDISetOverrideEUCfgOutStruct
 {
-    GTDI_RETURN_CODE    RetCode;
+    GTDI_RETURN_CODE RetCode;
 } GTDISetOverrideEUCfgOut;
-
 
 /******************************************************************************/
 /* GTDI_FNC_SET_WORKAROUNDS function structure definitions                    */
 /******************************************************************************/
 typedef struct GTDISetWorkaroundsInStruct
 {
-    GTDI_ESCAPE_FUNCTION   Function;
-    bool32_t               Enable;       // Enable / disable workaround
-    GTDI_WORKAROUND_ID     Id;           // Workaround id
-}
-GTDISetWorkaroundsIn;
+    GTDI_ESCAPE_FUNCTION Function;
+    bool32_t             Enable; // Enable / disable workaround
+    GTDI_WORKAROUND_ID   Id;     // Workaround id
+} GTDISetWorkaroundsIn;
 
 typedef GTDIHeaderOut GTDISetWorkaroundsOut;
 
@@ -1389,25 +1328,21 @@ typedef struct
 /******************************************************************************/
 typedef struct
 {
-    GTDI_ESCAPE_FUNCTION  Function;
-    bool32_t              Enable;
-    GTDIOverridesHandle   Handle;
+    GTDI_ESCAPE_FUNCTION Function;
+    bool32_t             Enable;
+    GTDIOverridesHandle  Handle;
 } GTDIOverridesSupportEnableIn;
-
 
 /******************************************************************************/
 /* GTDIOverridesSupportEnableOut:                                             */
 /******************************************************************************/
 typedef struct
 {
-    GTDI_RETURN_CODE    RetCode; // Result of the operation
+    GTDI_RETURN_CODE RetCode; // Result of the operation
 } GTDIOverridesSupportEnableOut;
-
-
 
 // Single proprietary query max counters count
 #define GTDI_QUERY_METRIC_COUNT_MAX 32
-
 
 //============================================================================//
 //                     Shared memory part                                     //
@@ -1423,20 +1358,18 @@ typedef struct
 typedef struct GTDI_CONFIG_MEMORY_FILE_HEADER_STRUCT
 {
     uint32_t Magic;
-    uint32_t OffsetMetricEnable;    // Offset of the enable metrics flag block (in bytes)
-    uint32_t MetricCount;           // Number of metrics
+    uint32_t OffsetMetricEnable; // Offset of the enable metrics flag block (in bytes)
+    uint32_t MetricCount;        // Number of metrics
 } GTDI_CONFIG_MEMORY_FILE_HEADER;
-
 
 /******************************************************************************/
 /* GTDI_CONFIG_MEMORY_FILE_STRUCT                                             */
 /******************************************************************************/
 typedef struct GTDI_CONFIG_MEMORY_FILE_STRUCT
 {
-    GTDI_CONFIG_MEMORY_FILE_HEADER    Header;
+    GTDI_CONFIG_MEMORY_FILE_HEADER Header;
     // MetricCount * EnableFlagSize uint32_ts at OffsetMetricEnable offset
 } GTDI_CONFIG_MEMORY_FILE;
-
 
 //============================================================================//
 // System (Metric definition) file structure                                  //
@@ -1447,27 +1380,26 @@ typedef struct GTDI_CONFIG_MEMORY_FILE_STRUCT
 /******************************************************************************/
 typedef struct GTDI_METRIC_INFO_STRUCT
 {
-    wchar_t  URI[GTDI_URI_SIZE];           //
-    wchar_t  Name[GTDI_NAME_SIZE];         //
-    wchar_t  Description[GTDI_DESC_SIZE];  //
-    uint32_t MetricType;                   // As defined in this header
-    uint32_t CounterIndex;                 // Index
-    uint64_t MaxValue;                     // Not used at this time. For future purpose.
+    wchar_t  URI[GTDI_URI_SIZE];          //
+    wchar_t  Name[GTDI_NAME_SIZE];        //
+    wchar_t  Description[GTDI_DESC_SIZE]; //
+    uint32_t MetricType;                  // As defined in this header
+    uint32_t CounterIndex;                // Index
+    uint64_t MaxValue;                    // Not used at this time. For future purpose.
 } GTDI_METRIC_INFO;
-
 
 /******************************************************************************/
 /* GTDI_OVERRIDE_INFO                                                         */
 /******************************************************************************/
 typedef struct GTDI_OVERRIDE_INFO_STRUCT
 {
-    wchar_t URI[GTDI_URI_SIZE];     //
-    wchar_t Name[GTDI_NAME_SIZE];   //
-    wchar_t Desc[GTDI_DESC_SIZE];   //
-    uint32_t Id;                    // Override id used to enable/disable it via
-                                    // escape function
-    bool32_t Dynamic;               // true - dynamic override
-                                    // false - not dynamic
+    wchar_t  URI[GTDI_URI_SIZE];   //
+    wchar_t  Name[GTDI_NAME_SIZE]; //
+    wchar_t  Desc[GTDI_DESC_SIZE]; //
+    uint32_t Id;                   // Override id used to enable/disable it via
+                                   // escape function
+    bool32_t Dynamic;              // true - dynamic override
+                                   // false - not dynamic
 } GTDI_OVERRIDE_INFO;
 
 /******************************************************************************/
@@ -1475,16 +1407,16 @@ typedef struct GTDI_OVERRIDE_INFO_STRUCT
 /******************************************************************************/
 typedef enum GTDI_KI_BUILD_TYPE_ENUM
 {
-    GTDI_KERNEL_REGULAR                 = 0,   //Use that value to switch off kernel build override
-    GTDI_KERNEL_TRACE                   = 1,
-    GTDI_KERNEL_PROFILE                 = 2,
-    GTDI_KERNEL_ISA_PROFILE             = 3,
-    GTDI_KERNEL_PROFILE_AGGREGATED      = 4,
-    GTDI_KERNEL_ISA_PROFILE_AGGREGATED  = 5,
-    GTDI_KERNEL_ISA_COUNTERS            = 6,   // internal user usage
-    GTDI_KERNEL_GT_PIN_COMPILER         = 7,   // internal user usage
-    GTDI_KERNEL_GPGPU_TRACE             = 8,
-    GTDI_NUM_KERNEL_PROFILING_TYPES     = 9,
+    GTDI_KERNEL_REGULAR                = 0, // Use that value to switch off kernel build override
+    GTDI_KERNEL_TRACE                  = 1,
+    GTDI_KERNEL_PROFILE                = 2,
+    GTDI_KERNEL_ISA_PROFILE            = 3,
+    GTDI_KERNEL_PROFILE_AGGREGATED     = 4,
+    GTDI_KERNEL_ISA_PROFILE_AGGREGATED = 5,
+    GTDI_KERNEL_ISA_COUNTERS           = 6, // internal user usage
+    GTDI_KERNEL_GT_PIN_COMPILER        = 7, // internal user usage
+    GTDI_KERNEL_GPGPU_TRACE            = 8,
+    GTDI_NUM_KERNEL_PROFILING_TYPES    = 9,
     // ...
     GTDI_KI_BUILD_TYPE_MAX = 0xFFFFFFFF
 } GTDI_KI_BUILD_TYPE;
@@ -1494,20 +1426,19 @@ typedef enum GTDI_KI_BUILD_TYPE_ENUM
 #define GTDI_MAX_KI_BUILD_CONFIGURATIONS 16
 
 /******************************************************************************/
-/* GTDI_KI_KERNEL_TYPE_MASK_ENUM                                                   */
+/* GTDI_KI_KERNEL_TYPE_MASK_ENUM                                              */
 /******************************************************************************/
 typedef enum GTDI_KERNEL_TYPE_MASK_ENUM
 {
-    GTDI_NONE_KERNEL_PROGRAM        = 0,
-    GTDI_VERTEX_KERNEL_PROGRAM      = 1 << 0,
-    GTDI_GEOMETRY_KERNEL_PROGRAM    = 1 << 1,
-    GTDI_PIXEL_KERNEL_PROGRAM       = 1 << 2,
-    GTDI_HULL_KERNEL_PROGRAM        = 1 << 3,
-    GTDI_DOMAIN_KERNEL_PROGRAM      = 1 << 4,
-    GTDI_COMPUTE_KERNEL_PROGRAM     = 1 << 5,
+    GTDI_NONE_KERNEL_PROGRAM     = 0,
+    GTDI_VERTEX_KERNEL_PROGRAM   = 1 << 0,
+    GTDI_GEOMETRY_KERNEL_PROGRAM = 1 << 1,
+    GTDI_PIXEL_KERNEL_PROGRAM    = 1 << 2,
+    GTDI_HULL_KERNEL_PROGRAM     = 1 << 3,
+    GTDI_DOMAIN_KERNEL_PROGRAM   = 1 << 4,
+    GTDI_COMPUTE_KERNEL_PROGRAM  = 1 << 5,
 
-    GTDI_ALL_KERNEL_PROGRAMS        = GTDI_VERTEX_KERNEL_PROGRAM | GTDI_PIXEL_KERNEL_PROGRAM | GTDI_GEOMETRY_KERNEL_PROGRAM |
-                                      GTDI_HULL_KERNEL_PROGRAM | GTDI_DOMAIN_KERNEL_PROGRAM | GTDI_COMPUTE_KERNEL_PROGRAM,
+    GTDI_ALL_KERNEL_PROGRAMS = GTDI_VERTEX_KERNEL_PROGRAM | GTDI_PIXEL_KERNEL_PROGRAM | GTDI_GEOMETRY_KERNEL_PROGRAM | GTDI_HULL_KERNEL_PROGRAM | GTDI_DOMAIN_KERNEL_PROGRAM | GTDI_COMPUTE_KERNEL_PROGRAM,
     // ...
     GTDI_KI_KERNEL_TYPE_MASK_MAX = 0xFFFFFFFF
 } GTDI_KI_KERNEL_TYPE_MASK;
@@ -1517,12 +1448,12 @@ typedef enum GTDI_KERNEL_TYPE_MASK_ENUM
 /******************************************************************************/
 typedef struct GTDISetKIQueryCfgInStruct
 {
-    GTDI_ESCAPE_FUNCTION        Func;
+    GTDI_ESCAPE_FUNCTION Func;
 
-    GTDI_KI_KERNEL_TYPE_MASK    KernelMask;
-    uint32_t                    ReportCount;
-    bool32_t                    GatherEUTimestampDispersion;
-    GTDI_KI_BUILD_TYPE          QueryType;
+    GTDI_KI_KERNEL_TYPE_MASK KernelMask;
+    uint32_t                 ReportCount;
+    bool32_t                 GatherEUTimestampDispersion;
+    GTDI_KI_BUILD_TYPE       QueryType;
 
 } GTDISetKIQueryCfgIn;
 
@@ -1535,28 +1466,28 @@ typedef struct GTDISetKIQueryCfgOutStruct
 } GTDISetKIQueryCfgOut;
 
 /******************************************************************************/
-/* GTDISetKIQueryCfgExInStruct                                                  */
+/* GTDISetKIQueryCfgExInStruct                                                */
 /******************************************************************************/
 typedef struct GTDISetKIQueryCfgExInStruct
 {
-    GTDI_ESCAPE_FUNCTION        Func;
+    GTDI_ESCAPE_FUNCTION Func;
 
-    GTDI_KI_KERNEL_TYPE_MASK    KernelMask;
-    uint32_t                    ReportCount;
-    bool32_t                    GatherEUTimestampDispersion;
-    GTDI_KI_BUILD_TYPE          QueryType;
+    GTDI_KI_KERNEL_TYPE_MASK KernelMask;
+    uint32_t                 ReportCount;
+    bool32_t                 GatherEUTimestampDispersion;
+    GTDI_KI_BUILD_TYPE       QueryType;
 
-    uint32_t                    VertexShaderID;
-    uint32_t                    PixelShaderID;
-    uint32_t                    GeometryShaderID;
-    uint32_t                    HullShaderID;
-    uint32_t                    DomainShaderID;
-    uint32_t                    ComputeShaderID;
+    uint32_t VertexShaderID;
+    uint32_t PixelShaderID;
+    uint32_t GeometryShaderID;
+    uint32_t HullShaderID;
+    uint32_t DomainShaderID;
+    uint32_t ComputeShaderID;
 
 } GTDISetKIQueryCfgExIn;
 
 /******************************************************************************/
-/* GTDISetKIQueryCfgExOutStruct                                                 */
+/* GTDISetKIQueryCfgExOutStruct                                               */
 /******************************************************************************/
 typedef struct GTDISetKIQueryCfgExOutStruct
 {
@@ -1568,8 +1499,8 @@ typedef struct GTDISetKIQueryCfgExOutStruct
 /******************************************************************************/
 typedef enum GTDI_KERNEL_BUILD_FLAGS_ENUM
 {
-    GTDI_EU_THREAD_MASKS_SUPPORTED          = 1 << 0,
-    GTDI_GPU_TIMESTAMP_READING_SUPPORTED    = 1 << 1,
+    GTDI_EU_THREAD_MASKS_SUPPORTED       = 1 << 0,
+    GTDI_GPU_TIMESTAMP_READING_SUPPORTED = 1 << 1,
 
     GTDI_KERNEL_BUILD_FLAGS_MAX = 0xFFFFFFFF
 } GTDI_KERNEL_BUILD_FLAGS;
@@ -1579,31 +1510,31 @@ typedef enum GTDI_KERNEL_BUILD_FLAGS_ENUM
 /******************************************************************************/
 typedef enum GTDI_KERNEL_PROFILING_POINT_TYPE_ENUM
 {
-    GTDI_PROFILING_POINT_TIMESTAMP_INTEL          =   1 << 0,
-    GTDI_PROFILING_POINT_STALL_COUNTER_INTEL      =   1 << 1,
-    GTDI_PROFILING_POINT_SAMPLER_MESSAGE_INTEL    =   1 << 2,
-    GTDI_PROFILING_POINT_DATA_PORT_MESSAGE_INTEL  =   1 << 3,
-    GTDI_PROFILING_POINT_WORKGROUP_ID_X_INTEL     =   1 << 4,
-    GTDI_PROFILING_POINT_WORKGROUP_ID_Y_INTEL     =   1 << 5,
-    GTDI_PROFILING_POINT_WORKGROUP_ID_Z_INTEL     =   1 << 6,
-    GTDI_PROFILING_POINT_EXECUTION_MASK_INTEL     =   1 << 7,
-    GTDI_PROFILING_POINT_HIT_COUNTER_INTEL        =   1 << 8
+    GTDI_PROFILING_POINT_TIMESTAMP_INTEL         = 1 << 0,
+    GTDI_PROFILING_POINT_STALL_COUNTER_INTEL     = 1 << 1,
+    GTDI_PROFILING_POINT_SAMPLER_MESSAGE_INTEL   = 1 << 2,
+    GTDI_PROFILING_POINT_DATA_PORT_MESSAGE_INTEL = 1 << 3,
+    GTDI_PROFILING_POINT_WORKGROUP_ID_X_INTEL    = 1 << 4,
+    GTDI_PROFILING_POINT_WORKGROUP_ID_Y_INTEL    = 1 << 5,
+    GTDI_PROFILING_POINT_WORKGROUP_ID_Z_INTEL    = 1 << 6,
+    GTDI_PROFILING_POINT_EXECUTION_MASK_INTEL    = 1 << 7,
+    GTDI_PROFILING_POINT_HIT_COUNTER_INTEL       = 1 << 8
 } GTDI_KERNEL_PROFILING_POINT_TYPE;
 
 /******************************************************************************/
-/* GTDISetKIBuildCfgInStruct                                               */
+/* GTDISetKIBuildCfgInStruct                                                  */
 /******************************************************************************/
 typedef struct GTDISetKIBuildCfgInStruct
 {
     GTDI_ESCAPE_FUNCTION Func;
 
-    uint32_t   InstrType;
-    uint32_t   OffsetCount;
-    uint32_t   Offsets[GTDI_MAX_KI_OFFSETS];
-    uint32_t   Flags;
-    uint32_t   PartitionCount;  // Number of partitions to use profiled kernels
-    uint32_t   PartitionEUMask; // Mask of EUs in each partition to use profiled kernels
-    uint32_t   ThreadCount;
+    uint32_t InstrType;
+    uint32_t OffsetCount;
+    uint32_t Offsets[GTDI_MAX_KI_OFFSETS];
+    uint32_t Flags;
+    uint32_t PartitionCount;  // Number of partitions to use profiled kernels
+    uint32_t PartitionEUMask; // Mask of EUs in each partition to use profiled kernels
+    uint32_t ThreadCount;
 
 } GTDISetKIBuildCfgIn;
 
@@ -1616,36 +1547,37 @@ typedef struct GTDISetKIBuildCfgOutStruct
 } GTDISetKIBuildCfgOut;
 
 /******************************************************************************/
-/* GTDISetKIBuildCfgExInStruct                                               */
+/* GTDISetKIBuildCfgExInStruct                                                */
 /******************************************************************************/
 typedef struct GTDISetKIBuildCfgExInStruct
 {
     GTDI_ESCAPE_FUNCTION Func;
 
-    uint32_t   InstrType;
-    uint32_t   OffsetCount;
-    uint32_t   Offsets[GTDI_MAX_KI_OFFSETS];
-    uint32_t   Flags;
-    uint32_t   PartitionCount;  // Number of partitions to use profiled kernels
-    uint32_t   PartitionEUMask; // Mask of EUs in each partition to use profiled kernels
-    uint32_t   ThreadCount;
-    uint32_t   CfgID;
+    uint32_t InstrType;
+    uint32_t OffsetCount;
+    uint32_t Offsets[GTDI_MAX_KI_OFFSETS];
+    uint32_t Flags;
+    uint32_t PartitionCount;  // Number of partitions to use profiled kernels
+    uint32_t PartitionEUMask; // Mask of EUs in each partition to use profiled kernels
+    uint32_t ThreadCount;
+    uint32_t CfgID;
 
 } GTDISetKIBuildCfgExIn;
 
 /******************************************************************************/
-/* GTDI_KERNEL_DUMP_TYPE                                                 */
+/* GTDI_KERNEL_DUMP_TYPE                                                      */
 /******************************************************************************/
-typedef enum GTDI_KERNEL_DUMP_TYPE_ENUM {
+typedef enum GTDI_KERNEL_DUMP_TYPE_ENUM
+{
     GTDI_KERNEL_DUMP_IL         = 0,
     GTDI_KERNEL_DUMP_ISA        = 1,
     GTDI_KERNEL_DUMP_ISA2IL_MAP = 2,
     // ...
     GTDI_KERNEL_DUMP_MAX = 0xFFFFFFFF
-}GTDI_KERNEL_DUMP_TYPE;
+} GTDI_KERNEL_DUMP_TYPE;
 
 /******************************************************************************/
-/* GTDISetKIBuildCfgExOutStruct                                                 */
+/* GTDISetKIBuildCfgExOutStruct                                               */
 /******************************************************************************/
 typedef struct GTDISetKIBuildCfgExOutStruct
 {
@@ -1658,7 +1590,7 @@ typedef struct GTDISetKIBuildCfgExOutStruct
 typedef struct GTDIGetKIBuildInfoInStruct
 {
     GTDI_ESCAPE_FUNCTION Function;
-    GTDI_KI_BUILD_TYPE BuildType;
+    GTDI_KI_BUILD_TYPE   BuildType;
 } GTDIGetKIBuildInfoIn;
 
 /******************************************************************************/
@@ -1666,30 +1598,30 @@ typedef struct GTDIGetKIBuildInfoInStruct
 /******************************************************************************/
 typedef struct GTDIGetKIBuildInfoOutStruct
 {
-    GTDI_RETURN_CODE    RetCode; // Result of the call
+    GTDI_RETURN_CODE RetCode; // Result of the call
 
-    uint32_t   ReportSize;
-    uint32_t   MaxOffsetCount;
-    uint32_t   MaxPartitionCount;
-    uint32_t   MaxEUsInPartition;
-    uint32_t   MaxThreadCount;
-    GTDI_KERNEL_BUILD_FLAGS             BuildFlags;
-    GTDI_KERNEL_PROFILING_POINT_TYPE    ProfilingPointEnumMask;
+    uint32_t                         ReportSize;
+    uint32_t                         MaxOffsetCount;
+    uint32_t                         MaxPartitionCount;
+    uint32_t                         MaxEUsInPartition;
+    uint32_t                         MaxThreadCount;
+    GTDI_KERNEL_BUILD_FLAGS          BuildFlags;
+    GTDI_KERNEL_PROFILING_POINT_TYPE ProfilingPointEnumMask;
 
 } GTDIGetKIBuildInfoOut;
 
 /******************************************************************************/
-/* GTDISetKernelDumpTypeInStruct                                               */
+/* GTDISetKernelDumpTypeInStruct                                              */
 /******************************************************************************/
 typedef struct GTDISetKernelDumpTypeInStruct
 {
-    GTDI_ESCAPE_FUNCTION Func;
+    GTDI_ESCAPE_FUNCTION  Func;
     GTDI_KERNEL_DUMP_TYPE KernelType;
 
 } GTDISetKernelDumpTypeIn;
 
 /******************************************************************************/
-/* GTDISetKIBuildCfgExOutStruct                                                 */
+/* GTDISetKIBuildCfgExOutStruct                                               */
 /******************************************************************************/
 typedef struct GTDISetKernelDumpTypeOutStruct
 {
@@ -1697,7 +1629,7 @@ typedef struct GTDISetKernelDumpTypeOutStruct
 } GTDISetKernelDumpTypeOut;
 
 /******************************************************************************/
-/* GTDIGetGpuCpuTimestampsIn                                               */
+/* GTDIGetGpuCpuTimestampsIn                                                  */
 /******************************************************************************/
 typedef GTDIHeaderIn GTDIGetGpuCpuTimestampsIn;
 
@@ -1706,11 +1638,11 @@ typedef GTDIHeaderIn GTDIGetGpuCpuTimestampsIn;
 /******************************************************************************/
 typedef struct GTDIGetGpuCpuTimestampsOutStruct
 {
-    GTDI_RETURN_CODE RetCode; // Result of the call
-    uint64_t GpuPerfTicks;    // in GPU_timestamp_ticks
-    uint64_t CpuPerfTicks;    // in CPU_timestamp_ticks
-    uint64_t GpuPerfFreq;     // in GPU_timestamp_ticks/s
-    uint64_t CpuPerfFreq;     // in CPU_timestamp_ticks/s
+    GTDI_RETURN_CODE RetCode;      // Result of the call
+    uint64_t         GpuPerfTicks; // in GPU_timestamp_ticks
+    uint64_t         CpuPerfTicks; // in CPU_timestamp_ticks
+    uint64_t         GpuPerfFreq;  // in GPU_timestamp_ticks/s
+    uint64_t         CpuPerfFreq;  // in CPU_timestamp_ticks/s
 } GTDIGetGpuCpuTimestampsOut;
 
 /******************************************************************************/
@@ -1727,7 +1659,7 @@ typedef struct GTDIGetErrorInfoInStruct
 /******************************************************************************/
 typedef struct GTDIGetErrorInfoOutStruct
 {
-    GTDI_RETURN_CODE    RetCode;  // Result of this call
+    GTDI_RETURN_CODE RetCode; // Result of this call
     union ErrorInfo
     {
         struct
@@ -1745,24 +1677,21 @@ typedef struct GTDIGetErrorInfoOutStruct
 typedef struct GTDI_SYSTEM_FILE_HEADER_STRUCT
 {
     uint32_t Magic;
-    uint32_t OffsetMetricInfo;     // Offset of the metrics info block (in bytes)
-    uint32_t MetricCount;          // Number of metrics
-    uint32_t OffsetOverrideInfo;   // Offset of the metrics info block (in bytes)
-    uint32_t OverrideCount;        // Number of overrides
+    uint32_t OffsetMetricInfo;   // Offset of the metrics info block (in bytes)
+    uint32_t MetricCount;        // Number of metrics
+    uint32_t OffsetOverrideInfo; // Offset of the metrics info block (in bytes)
+    uint32_t OverrideCount;      // Number of overrides
 } GTDI_SYSTEM_FILE_HEADER;
-
 
 /******************************************************************************/
 /* GTDI_SYSTEM_FILE_STRUCT                                                    */
 /******************************************************************************/
 typedef struct GTDI_SYSTEM_FILE_STRUCT
 {
-    GTDI_SYSTEM_FILE_HEADER    Header;
+    GTDI_SYSTEM_FILE_HEADER Header;
     // MetricCount * sizeof(GTDI_METRIC_INFO) at OffsetMetricInfo offset
     // OverrideCount * sizeof(GTDI_OVERRIDE_INFO) at OffsetOverrideInfo offset
 } GTDI_SYSTEM_FILE;
-
-
 
 //============================================================================//
 // Context shared memory file structure                                       //
@@ -1780,8 +1709,8 @@ typedef struct GTDI_SYSTEM_FILE_STRUCT
 typedef struct GTDI_STAT_FILE_HEADER_STRUCT
 {
     uint64_t Magic;
-    uint32_t OffsetMetricCounters;    // Offset of the counters block (in bytes from
-                                      // the beginning of file)
+    uint32_t OffsetMetricCounters; // Offset of the counters block (in bytes from
+                                   // the beginning of file)
 } GTDI_STAT_FILE_HEADER;
 
 #endif // __GTDI_DRIVER_INTERFACE_H_
