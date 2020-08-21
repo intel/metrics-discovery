@@ -104,8 +104,10 @@ set (LOCAL_SRC_FILES ${LOCAL_SRC_FILES}
     ${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen/md_metrics_GLK.cpp
     ${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen/md_metrics_ICL.cpp
     ${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen/md_metrics_EHL.cpp
-    ${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen/md_metrics_TGL.cpp
+    ${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen/md_metrics_TGL_GT1.cpp
+    ${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen/md_metrics_TGL_GT2.cpp
     ${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen/md_metrics_DG1.cpp
+    ${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen/md_metrics_RKL.cpp
     ${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen/md_metrics.cpp
     # mdapi core
     ${BS_DIR_INSTRUMENTATION}/metrics_discovery/common/md_main.cpp

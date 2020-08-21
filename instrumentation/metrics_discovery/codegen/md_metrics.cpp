@@ -96,14 +96,24 @@
     TCompletionCode CreateMetricTreeEHL_PipelineStatistics(CMetricsDevice* metricsDevice, CConcurrentGroup* concurrentGroup);
 #endif
 
-#if (!defined(MD_INCLUDE_TGL_METRICS) && MD_INCLUDE_ALL_METRICS) || MD_INCLUDE_TGL_METRICS
-#define MD_CALL_TGL_METRICS 1
-    TCompletionCode CreateMetricTreeTGL_PipelineStatistics(CMetricsDevice* metricsDevice, CConcurrentGroup* concurrentGroup);
+#if (!defined(MD_INCLUDE_TGL_GT1_METRICS) && MD_INCLUDE_ALL_METRICS) || MD_INCLUDE_TGL_GT1_METRICS
+#define MD_CALL_TGL_GT1_METRICS 1
+    TCompletionCode CreateMetricTreeTGL_GT1_PipelineStatistics(CMetricsDevice* metricsDevice, CConcurrentGroup* concurrentGroup);
+#endif
+
+#if (!defined(MD_INCLUDE_TGL_GT2_METRICS) && MD_INCLUDE_ALL_METRICS) || MD_INCLUDE_TGL_GT2_METRICS
+#define MD_CALL_TGL_GT2_METRICS 1
+    TCompletionCode CreateMetricTreeTGL_GT2_PipelineStatistics(CMetricsDevice* metricsDevice, CConcurrentGroup* concurrentGroup);
 #endif
 
 #if (!defined(MD_INCLUDE_DG1_METRICS) && MD_INCLUDE_ALL_METRICS) || MD_INCLUDE_DG1_METRICS
 #define MD_CALL_DG1_METRICS 1
     TCompletionCode CreateMetricTreeDG1_PipelineStatistics(CMetricsDevice* metricsDevice, CConcurrentGroup* concurrentGroup);
+#endif
+
+#if (!defined(MD_INCLUDE_RKL_METRICS) && MD_INCLUDE_ALL_METRICS) || MD_INCLUDE_RKL_METRICS
+#define MD_CALL_RKL_METRICS 1
+    TCompletionCode CreateMetricTreeRKL_PipelineStatistics(CMetricsDevice* metricsDevice, CConcurrentGroup* concurrentGroup);
 #endif
 
 #if (!defined(MD_INCLUDE_HSW_METRICS) && MD_INCLUDE_ALL_METRICS) || MD_INCLUDE_HSW_METRICS
@@ -171,14 +181,24 @@
     TCompletionCode CreateMetricTreeEHL_OA(CMetricsDevice* metricsDevice, CConcurrentGroup* concurrentGroup);
 #endif
 
-#if (!defined(MD_INCLUDE_TGL_METRICS) && MD_INCLUDE_ALL_METRICS) || MD_INCLUDE_TGL_METRICS
-#define MD_CALL_TGL_METRICS 1
-    TCompletionCode CreateMetricTreeTGL_OA(CMetricsDevice* metricsDevice, CConcurrentGroup* concurrentGroup);
+#if (!defined(MD_INCLUDE_TGL_GT1_METRICS) && MD_INCLUDE_ALL_METRICS) || MD_INCLUDE_TGL_GT1_METRICS
+#define MD_CALL_TGL_GT1_METRICS 1
+    TCompletionCode CreateMetricTreeTGL_GT1_OA(CMetricsDevice* metricsDevice, CConcurrentGroup* concurrentGroup);
+#endif
+
+#if (!defined(MD_INCLUDE_TGL_GT2_METRICS) && MD_INCLUDE_ALL_METRICS) || MD_INCLUDE_TGL_GT2_METRICS
+#define MD_CALL_TGL_GT2_METRICS 1
+    TCompletionCode CreateMetricTreeTGL_GT2_OA(CMetricsDevice* metricsDevice, CConcurrentGroup* concurrentGroup);
 #endif
 
 #if (!defined(MD_INCLUDE_DG1_METRICS) && MD_INCLUDE_ALL_METRICS) || MD_INCLUDE_DG1_METRICS
 #define MD_CALL_DG1_METRICS 1
     TCompletionCode CreateMetricTreeDG1_OA(CMetricsDevice* metricsDevice, CConcurrentGroup* concurrentGroup);
+#endif
+
+#if (!defined(MD_INCLUDE_RKL_METRICS) && MD_INCLUDE_ALL_METRICS) || MD_INCLUDE_RKL_METRICS
+#define MD_CALL_RKL_METRICS 1
+    TCompletionCode CreateMetricTreeRKL_OA(CMetricsDevice* metricsDevice, CConcurrentGroup* concurrentGroup);
 #endif
 
 
@@ -273,10 +293,10 @@ TCompletionCode CreateMetricTree( CMetricsDevice* metricsDevice )
     concurrentGroup = metricsDevice->AddConcurrentGroup( "OcclusionQueryStats", "Occlusion Query Statistics", MEASUREMENT_TYPE_DELTA_QUERY );
     MD_CHECK_PTR( concurrentGroup );
     
-    platformMask = PLATFORM_HSW|PLATFORM_BDW|PLATFORM_SKL|PLATFORM_BXT|PLATFORM_GLK|PLATFORM_KBL|PLATFORM_CFL|PLATFORM_ICL|PLATFORM_EHL|PLATFORM_TGL|PLATFORM_DG1;
+    platformMask = PLATFORM_HSW|PLATFORM_BDW|PLATFORM_SKL|PLATFORM_BXT|PLATFORM_GLK|PLATFORM_KBL|PLATFORM_CFL|PLATFORM_ICL|PLATFORM_EHL|PLATFORM_TGL|PLATFORM_DG1|PLATFORM_RKL;
     if( MD_IS_INTERNAL_BUILD || metricsDevice->IsPlatformTypeOf( platformMask ) )
     {
-        metricSet = concurrentGroup->AddMetricSet( "RenderedPixelsStats", "Rendered Pixels Statistics", API_TYPE_OGL4_X,
+        metricSet = concurrentGroup->AddMetricSet( "RenderedPixelsStats", "Rendered Pixels Statistics", API_TYPE_VULKAN|API_TYPE_OGL4_X,
            GPU_RENDER, 0, 8, OA_REPORT_TYPE_256B_A45_NOA16, platformMask );
         MD_CHECK_PTR( metricSet );
         
@@ -286,7 +306,7 @@ TCompletionCode CreateMetricTree( CMetricsDevice* metricsDevice )
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "PixelsRendered", "Depth passed pixels",
             "The total number of pixels that passed depth test. Note: not all rendered pixels are necessarily written to render targets.",
-            "3D Pipe/Output Merger", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_OM * 0x10000), USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X,
+            "3D Pipe/Output Merger", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_OM * 0x10000), USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X,
             METRIC_TYPE_EVENT, RESULT_UINT64, "pixels", 0, 0, HW_UNIT_GPU, availabilityEquation, "Pixel|Fragment,PS|FS,pixel|fragment", NULL );
         if( metric )
         {
@@ -297,7 +317,7 @@ TCompletionCode CreateMetricTree( CMetricsDevice* metricsDevice )
         MD_CHECK_CC( metricSet->RefreshConfigRegisters() );
     }
      
-    platformMask = PLATFORM_HSW|PLATFORM_BDW|PLATFORM_SKL|PLATFORM_BXT|PLATFORM_GLK|PLATFORM_KBL|PLATFORM_CFL|PLATFORM_ICL|PLATFORM_EHL|PLATFORM_TGL|PLATFORM_DG1;
+    platformMask = PLATFORM_HSW|PLATFORM_BDW|PLATFORM_SKL|PLATFORM_BXT|PLATFORM_GLK|PLATFORM_KBL|PLATFORM_CFL|PLATFORM_ICL|PLATFORM_EHL|PLATFORM_TGL|PLATFORM_DG1|PLATFORM_RKL;
     if( MD_IS_INTERNAL_BUILD || metricsDevice->IsPlatformTypeOf( platformMask ) )
     {
         metricSet = concurrentGroup->AddMetricSet( "RenderedFragmentsStats", "Rendered Fragments Statistics", API_TYPE_OGL|API_TYPE_OGL4_X,
@@ -324,10 +344,10 @@ TCompletionCode CreateMetricTree( CMetricsDevice* metricsDevice )
     concurrentGroup = metricsDevice->AddConcurrentGroup( "TimestampQuery", "Timestamp Query", MEASUREMENT_TYPE_SNAPSHOT_QUERY );
     MD_CHECK_PTR( concurrentGroup );
     
-    platformMask = PLATFORM_HSW|PLATFORM_BDW|PLATFORM_SKL|PLATFORM_BXT|PLATFORM_GLK|PLATFORM_KBL|PLATFORM_CFL|PLATFORM_ICL|PLATFORM_EHL|PLATFORM_TGL|PLATFORM_DG1;
+    platformMask = PLATFORM_HSW|PLATFORM_BDW|PLATFORM_SKL|PLATFORM_BXT|PLATFORM_GLK|PLATFORM_KBL|PLATFORM_CFL|PLATFORM_ICL|PLATFORM_EHL|PLATFORM_TGL|PLATFORM_DG1|PLATFORM_RKL;
     if( MD_IS_INTERNAL_BUILD || metricsDevice->IsPlatformTypeOf( platformMask ) )
     {
-        metricSet = concurrentGroup->AddMetricSet( "GPUTimestamp", "GPU Timestamp", API_TYPE_OGL4_X,
+        metricSet = concurrentGroup->AddMetricSet( "GPUTimestamp", "GPU Timestamp", API_TYPE_VULKAN|API_TYPE_OGL4_X,
            GPU_GENERIC, 8, 0, OA_REPORT_TYPE_256B_A45_NOA16, platformMask );
         MD_CHECK_PTR( metricSet );
         
@@ -337,7 +357,7 @@ TCompletionCode CreateMetricTree( CMetricsDevice* metricsDevice )
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "GpuDuration", "GPU Duration",
             "Total GPU duration for selected work items.",
-            "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_TIER_1|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X,
+            "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_TIER_1|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X,
             METRIC_TYPE_DURATION, RESULT_UINT64, "ns", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -405,12 +425,20 @@ TCompletionCode CreateMetricTree( CMetricsDevice* metricsDevice )
     MD_CHECK_CC( CreateMetricTreeEHL_PipelineStatistics(metricsDevice, concurrentGroup) );
 #endif
 
-#if MD_CALL_TGL_METRICS
-    MD_CHECK_CC( CreateMetricTreeTGL_PipelineStatistics(metricsDevice, concurrentGroup) );
+#if MD_CALL_TGL_GT1_METRICS
+    MD_CHECK_CC( CreateMetricTreeTGL_GT1_PipelineStatistics(metricsDevice, concurrentGroup) );
+#endif
+
+#if MD_CALL_TGL_GT2_METRICS
+    MD_CHECK_CC( CreateMetricTreeTGL_GT2_PipelineStatistics(metricsDevice, concurrentGroup) );
 #endif
 
 #if MD_CALL_DG1_METRICS
     MD_CHECK_CC( CreateMetricTreeDG1_PipelineStatistics(metricsDevice, concurrentGroup) );
+#endif
+
+#if MD_CALL_RKL_METRICS
+    MD_CHECK_CC( CreateMetricTreeRKL_PipelineStatistics(metricsDevice, concurrentGroup) );
 #endif
 
     concurrentGroup = metricsDevice->AddConcurrentGroup( "OA", "OA Unit Metrics", MEASUREMENT_TYPE_DELTA_QUERY|MEASUREMENT_TYPE_SNAPSHOT_IO );
@@ -469,12 +497,20 @@ TCompletionCode CreateMetricTree( CMetricsDevice* metricsDevice )
     MD_CHECK_CC( CreateMetricTreeEHL_OA(metricsDevice, concurrentGroup) );
 #endif
 
-#if MD_CALL_TGL_METRICS
-    MD_CHECK_CC( CreateMetricTreeTGL_OA(metricsDevice, concurrentGroup) );
+#if MD_CALL_TGL_GT1_METRICS
+    MD_CHECK_CC( CreateMetricTreeTGL_GT1_OA(metricsDevice, concurrentGroup) );
+#endif
+
+#if MD_CALL_TGL_GT2_METRICS
+    MD_CHECK_CC( CreateMetricTreeTGL_GT2_OA(metricsDevice, concurrentGroup) );
 #endif
 
 #if MD_CALL_DG1_METRICS
     MD_CHECK_CC( CreateMetricTreeDG1_OA(metricsDevice, concurrentGroup) );
+#endif
+
+#if MD_CALL_RKL_METRICS
+    MD_CHECK_CC( CreateMetricTreeRKL_OA(metricsDevice, concurrentGroup) );
 #endif
 
 

@@ -57,8 +57,10 @@
                                     MD_INCLUDE_GLK_METRICS || \
                                     MD_INCLUDE_ICL_METRICS || \
                                     MD_INCLUDE_EHL_METRICS || \
-                                    MD_INCLUDE_TGL_METRICS || \
-                                    MD_INCLUDE_DG1_METRICS ) )
+                                    MD_INCLUDE_TGL_GT1_METRICS || \
+                                    MD_INCLUDE_TGL_GT2_METRICS || \
+                                    MD_INCLUDE_DG1_METRICS || \
+                                    MD_INCLUDE_RKL_METRICS ) )
 
 using namespace MetricsDiscovery;
 using namespace MetricsDiscoveryInternal;

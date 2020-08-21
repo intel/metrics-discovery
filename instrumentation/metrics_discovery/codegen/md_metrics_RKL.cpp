@@ -20,7 +20,7 @@
     FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
     IN THE SOFTWARE.
 
-    File Name:  md_metrics_DG1.cpp
+    File Name:  md_metrics_RKL.cpp
 
     Abstract:   C++ automated generated file to stack metrics meta data
 
@@ -31,8 +31,8 @@
 
 
 
-#if ((!defined(MD_INCLUDE_DG1_METRICS) && MD_INCLUDE_ALL_METRICS) || MD_INCLUDE_DG1_METRICS)
-TCompletionCode CreateMetricTreeDG1_PipelineStatistics( CMetricsDevice* metricsDevice, CConcurrentGroup* concurrentGroup )
+#if ((!defined(MD_INCLUDE_RKL_METRICS) && MD_INCLUDE_ALL_METRICS) || MD_INCLUDE_RKL_METRICS)
+TCompletionCode CreateMetricTreeRKL_PipelineStatistics( CMetricsDevice* metricsDevice, CConcurrentGroup* concurrentGroup )
 {
     MD_LOG_ENTER();
     MD_CHECK_PTR_RET( metricsDevice, CC_ERROR_INVALID_PARAMETER );
@@ -44,7 +44,7 @@ TCompletionCode CreateMetricTreeDG1_PipelineStatistics( CMetricsDevice* metricsD
     const char*       availabilityEquation = NULL;
     uint32_t          platformMask         = 0;
   
-    platformMask = PLATFORM_DG1;
+    platformMask = PLATFORM_RKL;
     if( MD_IS_INTERNAL_BUILD || metricsDevice->IsPlatformTypeOf( platformMask ) )
     {
         metricSet = concurrentGroup->AddMetricSet( "PipelineStats", "Pipeline Statistics for OGL4", API_TYPE_OGL|API_TYPE_OGL4_X,
@@ -199,8 +199,8 @@ TCompletionCode CreateMetricTreeDG1_PipelineStatistics( CMetricsDevice* metricsD
 #endif
 
 
-#if ((!defined(MD_INCLUDE_DG1_METRICS) && MD_INCLUDE_ALL_METRICS) || MD_INCLUDE_DG1_METRICS)
-TCompletionCode CreateMetricTreeDG1_OA( CMetricsDevice* metricsDevice, CConcurrentGroup* concurrentGroup )
+#if ((!defined(MD_INCLUDE_RKL_METRICS) && MD_INCLUDE_ALL_METRICS) || MD_INCLUDE_RKL_METRICS)
+TCompletionCode CreateMetricTreeRKL_OA( CMetricsDevice* metricsDevice, CConcurrentGroup* concurrentGroup )
 {
     MD_LOG_ENTER();
     MD_CHECK_PTR_RET( metricsDevice, CC_ERROR_INVALID_PARAMETER );
@@ -212,7 +212,7 @@ TCompletionCode CreateMetricTreeDG1_OA( CMetricsDevice* metricsDevice, CConcurre
     const char*       availabilityEquation = NULL;
     uint32_t          platformMask         = 0;
   
-    platformMask = PLATFORM_DG1;
+    platformMask = PLATFORM_RKL;
     if( MD_IS_INTERNAL_BUILD || metricsDevice->IsPlatformTypeOf( platformMask ) )
     {
         metricSet = concurrentGroup->AddMetricSet( "RenderBasic", "Render Metrics Basic Gen12", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
@@ -653,7 +653,7 @@ TCompletionCode CreateMetricTreeDG1_OA( CMetricsDevice* metricsDevice, CConcurre
             MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x198 qw@0x190 UADD qw@0x188 UADD qw@0x180 UADD" ));
             MD_CHECK_CC( metric->SetNormalizationEquation( "64 $Self UMUL" ));
             MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
-            MD_CHECK_CC( metric->SetMaxValueEquation( "$GpuCoreClocks 128 UMUL" ));
+            MD_CHECK_CC( metric->SetMaxValueEquation( "$GpuCoreClocks 64 UMUL" ));
         }
 
         availabilityEquation = NULL;
@@ -667,7 +667,7 @@ TCompletionCode CreateMetricTreeDG1_OA( CMetricsDevice* metricsDevice, CConcurre
             MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x178 qw@0x170 UADD" ));
             MD_CHECK_CC( metric->SetNormalizationEquation( "64 $Self UMUL" ));
             MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
-            MD_CHECK_CC( metric->SetMaxValueEquation( "$GpuCoreClocks 128 UMUL" ));
+            MD_CHECK_CC( metric->SetMaxValueEquation( "$GpuCoreClocks 64 UMUL" ));
         }
 
         information = metricSet->AddInformation( "QueryBeginTime", "Query Begin Time",
@@ -825,18 +825,22 @@ TCompletionCode CreateMetricTreeDG1_OA( CMetricsDevice* metricsDevice, CConcurre
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x10150000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x18150000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c150000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x00004000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0e004000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x10004000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x12004000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x00014000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1a012000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c012000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1e012000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c054000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x24050015, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x10088000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c08000e, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x000b4000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0e0b4000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x100b4000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x120b4000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x100c8000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1e0c000e, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x040d4000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0a0d8000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0c0dc000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x000e8000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0e0e8000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x100e8000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x120e8000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x000f4000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x060f8000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x080fc000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9884, 0x00000003, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x05151d47, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x09151536, REGISTER_TYPE_NOA ));
@@ -845,11 +849,13 @@ TCompletionCode CreateMetricTreeDG1_OA( CMetricsDevice* metricsDevice, CConcurre
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x41104000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x5b1050bb, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x5d102c01, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x11148000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1b14e000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x4b114000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x5f11a000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x61110002, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x4b112000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x5f115000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x61110001, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x01128000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0f128000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x11128000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x13128000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1f150137, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x01150000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0f168000, REGISTER_TYPE_NOA ));
@@ -868,10 +874,10 @@ TCompletionCode CreateMetricTreeDG1_OA( CMetricsDevice* metricsDevice, CConcurre
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x51100000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x17100000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x31100000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x55101610, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x57100006, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x49101616, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x4b100616, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x55101810, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x57100008, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x49101818, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x4b100818, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9884, 0x00000003, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x65100002, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9884, 0x00000000, REGISTER_TYPE_NOA ));
@@ -901,7 +907,7 @@ TCompletionCode CreateMetricTreeDG1_OA( CMetricsDevice* metricsDevice, CConcurre
         MD_CHECK_CC( metricSet->RefreshConfigRegisters() );
     }
      
-    platformMask = PLATFORM_DG1;
+    platformMask = PLATFORM_RKL;
     if( MD_IS_INTERNAL_BUILD || metricsDevice->IsPlatformTypeOf( platformMask ) )
     {
         metricSet = concurrentGroup->AddMetricSet( "ComputeBasic", "Compute Metrics Basic", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
@@ -1278,7 +1284,7 @@ TCompletionCode CreateMetricTreeDG1_OA( CMetricsDevice* metricsDevice, CConcurre
             MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x1a8 qw@0x1a0 UADD qw@0x198 UADD qw@0x190 UADD" ));
             MD_CHECK_CC( metric->SetNormalizationEquation( "64 $Self UMUL" ));
             MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
-            MD_CHECK_CC( metric->SetMaxValueEquation( "$GpuCoreClocks 128 UMUL" ));
+            MD_CHECK_CC( metric->SetMaxValueEquation( "$GpuCoreClocks 64 UMUL" ));
         }
 
         availabilityEquation = NULL;
@@ -1292,7 +1298,7 @@ TCompletionCode CreateMetricTreeDG1_OA( CMetricsDevice* metricsDevice, CConcurre
             MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x188 qw@0x180 UADD" ));
             MD_CHECK_CC( metric->SetNormalizationEquation( "64 $Self UMUL" ));
             MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
-            MD_CHECK_CC( metric->SetMaxValueEquation( "$GpuCoreClocks 128 UMUL" ));
+            MD_CHECK_CC( metric->SetMaxValueEquation( "$GpuCoreClocks 64 UMUL" ));
         }
 
         information = metricSet->AddInformation( "QueryBeginTime", "Query Begin Time",
@@ -1480,7 +1486,7 @@ TCompletionCode CreateMetricTreeDG1_OA( CMetricsDevice* metricsDevice, CConcurre
         MD_CHECK_CC( metricSet->RefreshConfigRegisters() );
     }
      
-    platformMask = PLATFORM_DG1;
+    platformMask = PLATFORM_RKL;
     if( MD_IS_INTERNAL_BUILD || metricsDevice->IsPlatformTypeOf( platformMask ) )
     {
         metricSet = concurrentGroup->AddMetricSet( "RenderPipeProfile", "Render Metrics for 3D Pipeline Profile", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
@@ -2198,108 +2204,83 @@ TCompletionCode CreateMetricTreeDG1_OA( CMetricsDevice* metricsDevice, CConcurre
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9840, 0x00000000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9884, 0x00000000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x00123e00, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x060b00b3, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x140b7c00, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c0b4000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x120c0320, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x040d3e00, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x000d0000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x280d0000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x2a0e03e0, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x10087c00, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x060c40b3, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x140c3c00, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c0c0000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x120d0320, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x040e3e00, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x000e0000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x280e0000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x2c0f001f, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1e120002, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x20120000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1e130002, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0e004000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x10004000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x12004000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x34005540, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x36000001, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x02004000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x04004000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x06004000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x08004000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0a004000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0c004000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1a012000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c012000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1e012000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x2a015500, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x2c010005, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x02014000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x04014000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x06014000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x08014000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0a014000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x18012000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x2405ffdf, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x26050001, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x2205fff0, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x08081000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c080200, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x24065155, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x26060015, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x22065400, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c0901f7, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x14098000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1a09f000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0e0c0031, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x180c0092, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1a0c00b1, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x020c0093, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x040c0033, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x100c0000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0c0c0000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x000c0000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0a0d0022, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x100d0000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1e0da5a8, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x200d1a41, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x100e0017, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x160e0013, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c0e0081, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x080e0082, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0a0e0102, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x140e0000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0c0e0000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0e0e0000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x120e0000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0c0f0225, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x200f0000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0e0b4000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0e0b0031, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x180b0092, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1a0b00b1, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x020b0093, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x040b0033, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x200b0000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x100b4000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x140b4000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x120b8000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x160b4000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x180b4000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1a0b4000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c0b4000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x020b4000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x040b4000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x060b4000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1e0b4000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x080b4000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0a0b4000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0c0b4000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0a0c0022, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1e0c0325, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x180c8000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1a0c8000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x100d0017, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x160d0013, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c0d0081, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x080d0082, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0a0d4102, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x140d0000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0c0d0000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0e0d0000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x120d8000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0c0e0215, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x200e0000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1e0e8000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0e0f8000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x060f4000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0c0a8000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x08081000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x16080000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9884, 0x00000003, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x5b105555, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x5d101555, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1b14fc00, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1d14003f, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x13148000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x15148000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x17148000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x5f11aaaa, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x61112aaa, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x4d100002, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x4f100202, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x5110040a, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x53100202, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x55100202, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x5f115555, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x61111555, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0f128000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x11128000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x13128000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x15128000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x17128000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x19128000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1b128000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1d128000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1f128000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x03128000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x05128000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x07128000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x09128000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0b128000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0d128000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x4d101408, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x4f100801, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x51100a08, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x53101118, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x55100801, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x17100000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x31100000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x57100006, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x47100000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x49100202, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x4b100202, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x57100000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x47101000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x49101111, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x4b100801, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9884, 0x00000003, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x65100002, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9884, 0x00000000, REGISTER_TYPE_NOA ));
@@ -2320,10 +2301,10 @@ TCompletionCode CreateMetricTreeDG1_OA( CMetricsDevice* metricsDevice, CConcurre
         MD_CHECK_CC( metricSet->RefreshConfigRegisters() );
     }
      
-    platformMask = PLATFORM_DG1;
+    platformMask = PLATFORM_RKL;
     if( MD_IS_INTERNAL_BUILD || metricsDevice->IsPlatformTypeOf( platformMask ) )
     {
-        metricSet = concurrentGroup->AddMetricSet( "HDCAndSF", "Metric set HDCAndSF (DG1)", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+        metricSet = concurrentGroup->AddMetricSet( "HDCAndSF", "Metric set HDCAndSF", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
            GPU_RENDER|GPU_COMPUTE, 256, 672, OA_REPORT_TYPE_256B_A45_NOA16, platformMask );
         MD_CHECK_PTR( metricSet );
         
@@ -2695,8 +2676,8 @@ TCompletionCode CreateMetricTreeDG1_OA( CMetricsDevice* metricsDevice, CConcurre
                 METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, NULL, NULL );
             if( metric )
             {
-                MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "dw@0x0c dw@0xe8 FSUB" ));
-                MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x08 qw@0x180 FSUB" ));
+                MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "dw@0xc0" ));
+                MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x130" ));
                 MD_CHECK_CC( metric->SetNormalizationEquation( "GpuDuration" ));
                 MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
                 MD_CHECK_CC( metric->SetMaxValueEquation( "100" ));
@@ -2712,76 +2693,8 @@ TCompletionCode CreateMetricTreeDG1_OA( CMetricsDevice* metricsDevice, CConcurre
                 METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, NULL, NULL );
             if( metric )
             {
-                MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "dw@0x0c dw@0xec FSUB" ));
-                MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x08 qw@0x188 FSUB" ));
-                MD_CHECK_CC( metric->SetNormalizationEquation( "GpuDuration" ));
-                MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
-                MD_CHECK_CC( metric->SetMaxValueEquation( "100" ));
-            }
-        }
-
-        availabilityEquation = "$DualSubsliceMask 4 AND";
-        if( MD_IS_INTERNAL_BUILD || metricsDevice->IsAvailabilityEquationTrue( availabilityEquation ) )
-        {
-            metric = metricSet->AddMetric( "NonSamplerShader02AccessStalledOnL3", "Slice0 Dualsubslice2 Non-sampler Shader Access Stalled On L3",
-                "Percentage of time when HDC has messages to L3, but it's stalled due to lack of credits (Slice0 Dualsubslice2)",
-                "GPU/Data Port", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
-                METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, NULL, NULL );
-            if( metric )
-            {
-                MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "dw@0x0c dw@0xf0 FSUB" ));
-                MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x08 qw@0x190 FSUB" ));
-                MD_CHECK_CC( metric->SetNormalizationEquation( "GpuDuration" ));
-                MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
-                MD_CHECK_CC( metric->SetMaxValueEquation( "100" ));
-            }
-        }
-
-        availabilityEquation = "$DualSubsliceMask 8 AND";
-        if( MD_IS_INTERNAL_BUILD || metricsDevice->IsAvailabilityEquationTrue( availabilityEquation ) )
-        {
-            metric = metricSet->AddMetric( "NonSamplerShader03AccessStalledOnL3", "Slice0 Dualsubslice3 Non-sampler Shader Access Stalled On L3",
-                "Percentage of time when HDC has messages to L3, but it's stalled due to lack of credits (Slice0 Dualsubslice3)",
-                "GPU/Data Port", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
-                METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, NULL, NULL );
-            if( metric )
-            {
-                MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "dw@0x0c dw@0xf4 FSUB" ));
-                MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x08 qw@0x198 FSUB" ));
-                MD_CHECK_CC( metric->SetNormalizationEquation( "GpuDuration" ));
-                MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
-                MD_CHECK_CC( metric->SetMaxValueEquation( "100" ));
-            }
-        }
-
-        availabilityEquation = "$DualSubsliceMask 16 AND";
-        if( MD_IS_INTERNAL_BUILD || metricsDevice->IsAvailabilityEquationTrue( availabilityEquation ) )
-        {
-            metric = metricSet->AddMetric( "NonSamplerShader04AccessStalledOnL3", "Slice0 Dualsubslice4 Non-sampler Shader Access Stalled On L3",
-                "Percentage of time when HDC has messages to L3, but it's stalled due to lack of credits (Slice0 Dualsubslice4)",
-                "GPU/Data Port", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
-                METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, NULL, NULL );
-            if( metric )
-            {
-                MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "dw@0x0c dw@0xf8 FSUB" ));
-                MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x08 qw@0x1a0 FSUB" ));
-                MD_CHECK_CC( metric->SetNormalizationEquation( "GpuDuration" ));
-                MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
-                MD_CHECK_CC( metric->SetMaxValueEquation( "100" ));
-            }
-        }
-
-        availabilityEquation = "$DualSubsliceMask 32 AND";
-        if( MD_IS_INTERNAL_BUILD || metricsDevice->IsAvailabilityEquationTrue( availabilityEquation ) )
-        {
-            metric = metricSet->AddMetric( "NonSamplerShader05AccessStalledOnL3", "Slice0 Dualsubslice5 Non-sampler Shader Access Stalled On L3",
-                "Percentage of time when HDC has messages to L3, but it's stalled due to lack of credits (Slice0 Dualsubslice5)",
-                "GPU/Data Port", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
-                METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, NULL, NULL );
-            if( metric )
-            {
-                MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "dw@0x0c dw@0xfc FSUB" ));
-                MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x08 qw@0x1a8 FSUB" ));
+                MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "dw@0xc4" ));
+                MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x138" ));
                 MD_CHECK_CC( metric->SetNormalizationEquation( "GpuDuration" ));
                 MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
                 MD_CHECK_CC( metric->SetMaxValueEquation( "100" ));
@@ -2795,50 +2708,8 @@ TCompletionCode CreateMetricTreeDG1_OA( CMetricsDevice* metricsDevice, CConcurre
             METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
         if( metric )
         {
-            MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "dw@0xc0" ));
-            MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x130" ));
-            MD_CHECK_CC( metric->SetNormalizationEquation( "GpuDuration" ));
-            MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
-            MD_CHECK_CC( metric->SetMaxValueEquation( "100" ));
-        }
-
-        availabilityEquation = NULL;
-        metric = metricSet->AddMetric( "PixelData00Ready", "Slice0 Pipe0 Post-EarlyZ Pixel Data Ready",
-            "The percentage of time in which slice0  pipe0 post-EarlyZ pixel data is ready (after early Z tests have been applied)",
-            "GPU/Rasterizer/Early Depth Test", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_WM * 0x10000) | (METRIC_GROUP_NAME_ID_IZ * 0x100), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
-            METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SLICE, availabilityEquation, NULL, NULL );
-        if( metric )
-        {
-            MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "dw@0xcc" ));
-            MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x148" ));
-            MD_CHECK_CC( metric->SetNormalizationEquation( "GpuDuration" ));
-            MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
-            MD_CHECK_CC( metric->SetMaxValueEquation( "100" ));
-        }
-
-        availabilityEquation = NULL;
-        metric = metricSet->AddMetric( "PixelData01Ready", "Slice0 Pipe1 Post-EarlyZ Pixel Data Ready",
-            "The percentage of time in which slice0  pipe1 post-EarlyZ pixel data is ready (after early Z tests have been applied)",
-            "GPU/Rasterizer/Early Depth Test", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_WM * 0x10000) | (METRIC_GROUP_NAME_ID_IZ * 0x100), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
-            METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SLICE, availabilityEquation, NULL, NULL );
-        if( metric )
-        {
             MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "dw@0xc8" ));
             MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x140" ));
-            MD_CHECK_CC( metric->SetNormalizationEquation( "GpuDuration" ));
-            MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
-            MD_CHECK_CC( metric->SetMaxValueEquation( "100" ));
-        }
-
-        availabilityEquation = NULL;
-        metric = metricSet->AddMetric( "PixelData02Ready", "Slice0 Pipe2 Post-EarlyZ Pixel Data Ready",
-            "The percentage of time in which slice0  pipe2 post-EarlyZ pixel data is ready (after early Z tests have been applied)",
-            "GPU/Rasterizer/Early Depth Test", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_WM * 0x10000) | (METRIC_GROUP_NAME_ID_IZ * 0x100), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
-            METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SLICE, availabilityEquation, NULL, NULL );
-        if( metric )
-        {
-            MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "dw@0xc4" ));
-            MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x138" ));
             MD_CHECK_CC( metric->SetNormalizationEquation( "GpuDuration" ));
             MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
             MD_CHECK_CC( metric->SetMaxValueEquation( "100" ));
@@ -2985,148 +2856,67 @@ TCompletionCode CreateMetricTreeDG1_OA( CMetricsDevice* metricsDevice, CConcurre
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x0d04, 0x00000200, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9840, 0x00000000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9884, 0x00000000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x14112600, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x14312600, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x14512600, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x14712600, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x14912600, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x14b12600, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x120800a0, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x120900a0, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x120a00a0, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x240b0019, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x02110077, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x14112400, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x14312400, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x240a0019, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x00110074, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x10110000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x00110000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x02128000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x12138000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x04310077, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x00128000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x10138000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0e310074, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x10310000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x02310000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x04328000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x14338000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x06510077, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x10510000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x02510000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x06528000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x16538000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x08710077, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x10710000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x04710000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x08728000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x18738000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0a910077, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x10910000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x04910000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0a928000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1a938000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0cb10077, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x10b10000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x06b10000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0cb28000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1cb30100, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x00004000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0e004000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x10004000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x12004000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x34000540, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x02004000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x04004000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x06004000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x08004000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0a004000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0c004000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x00014000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1a012000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c012000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1e012000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x2a011500, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x02014000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x04014000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x06014000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x08014000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0a014000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x18012000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c05c000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x240505ff, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x2205ff90, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0a082300, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0c080022, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c080000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x14088000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c064000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x24060156, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x22064000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x08092300, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0a090022, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c090007, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x10098000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1a09e000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x22078000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x060a2300, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x080a0022, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x100a0000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x180a0180, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1e0d5400, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x200d0001, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0a0ec000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0c0e4000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x080e8000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x000b00f7, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x200b0000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0e0b4000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x100b4000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x060b8000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0a0b4000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0c0b4000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x06310000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0e328000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c330200, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c058000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x000b4000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0e0b8000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x100b8000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x100c8000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x040d4000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x000e8000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x000f4000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x100a00f7, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x140a0000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0a0a8000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0c0a0000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0e084000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x14092000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9884, 0x00000003, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x41104000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x5b105555, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x5d100055, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x11148000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1b14fc00, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1d140007, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x13148000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x15148000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x17148000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x4b114000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x5f11aaaa, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x611100aa, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x47101310, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x4d100002, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x4f101808, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x51101717, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x53100717, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x5b105000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x4b112000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x5f115000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x01128000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0f128000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x11128000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x47100000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x4d100000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x4f100110, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x17100000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x31100000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x49100311, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x4b100a08, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9884, 0x00000003, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x65100002, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9884, 0x00000000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x42000001, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xd920, 0x00000000, REGISTER_TYPE_OA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xd900, 0x00000000, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xd904, 0xf0800000, REGISTER_TYPE_OA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xd904, 0x70800000, REGISTER_TYPE_OA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xd910, 0x00000000, REGISTER_TYPE_OA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xd914, 0x00800000, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xdc40, 0x000f0000, REGISTER_TYPE_OA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xdc40, 0x00070000, REGISTER_TYPE_OA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xd940, 0x00000002, REGISTER_TYPE_OA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xd944, 0x0000fffe, REGISTER_TYPE_OA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xdc00, 0x00000002, REGISTER_TYPE_OA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xdc04, 0x0000fffe, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xd948, 0x00000030, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xd94c, 0x0000fff9, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xdc08, 0x00000030, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xdc0c, 0x0000fff9, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xd950, 0x000000c0, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xd954, 0x0000ffe7, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xdc10, 0x000000c0, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xdc14, 0x0000ffe7, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xd958, 0x00000300, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xd95c, 0x0000ff9f, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xdc18, 0x00000300, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xdc1c, 0x0000ff9f, REGISTER_TYPE_OA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xd948, 0x00000002, REGISTER_TYPE_OA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xd94c, 0x0000fffd, REGISTER_TYPE_OA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xdc08, 0x00000002, REGISTER_TYPE_OA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xdc0c, 0x0000fffd, REGISTER_TYPE_OA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xd950, 0x00000002, REGISTER_TYPE_OA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xd954, 0x0000fffb, REGISTER_TYPE_OA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xdc10, 0x00000002, REGISTER_TYPE_OA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xdc14, 0x0000fffb, REGISTER_TYPE_OA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xe458, 0x00804704, REGISTER_TYPE_FLEX ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xe558, 0x00a04904, REGISTER_TYPE_FLEX ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xe658, 0x00805705, REGISTER_TYPE_FLEX ));
@@ -3137,7 +2927,7 @@ TCompletionCode CreateMetricTreeDG1_OA( CMetricsDevice* metricsDevice, CConcurre
         MD_CHECK_CC( metricSet->RefreshConfigRegisters() );
     }
      
-    platformMask = PLATFORM_DG1;
+    platformMask = PLATFORM_RKL;
     if( MD_IS_INTERNAL_BUILD || metricsDevice->IsPlatformTypeOf( platformMask ) )
     {
         metricSet = concurrentGroup->AddMetricSet( "RasterizerAndPixelBackend", "Metric set RasterizerAndPixelBackend", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
@@ -3529,12 +3319,26 @@ TCompletionCode CreateMetricTreeDG1_OA( CMetricsDevice* metricsDevice, CConcurre
                 METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SLICE, availabilityEquation, NULL, NULL );
             if( metric )
             {
-                MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "dw@0xec" ));
-                MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x188" ));
+                MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "dw@0xf4" ));
+                MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x198" ));
                 MD_CHECK_CC( metric->SetNormalizationEquation( "GpuDuration" ));
                 MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
                 MD_CHECK_CC( metric->SetMaxValueEquation( "100" ));
             }
+        }
+
+        availabilityEquation = NULL;
+        metric = metricSet->AddMetric( "PixelData00Ready", "Slice0 Pipe0 Post-EarlyZ Pixel Data Ready",
+            "The percentage of time in which slice0  pipe0 post-EarlyZ pixel data is ready (after early Z tests have been applied)",
+            "GPU/Rasterizer/Early Depth Test", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_WM * 0x10000) | (METRIC_GROUP_NAME_ID_IZ * 0x100), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SLICE, availabilityEquation, NULL, NULL );
+        if( metric )
+        {
+            MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "dw@0xc4" ));
+            MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x138" ));
+            MD_CHECK_CC( metric->SetNormalizationEquation( "GpuDuration" ));
+            MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
+            MD_CHECK_CC( metric->SetMaxValueEquation( "100" ));
         }
 
         availabilityEquation = NULL;
@@ -3544,36 +3348,8 @@ TCompletionCode CreateMetricTreeDG1_OA( CMetricsDevice* metricsDevice, CConcurre
             METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SLICE, availabilityEquation, NULL, NULL );
         if( metric )
         {
-            MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "dw@0xe8" ));
-            MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x180" ));
-            MD_CHECK_CC( metric->SetNormalizationEquation( "GpuDuration" ));
-            MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
-            MD_CHECK_CC( metric->SetMaxValueEquation( "100" ));
-        }
-
-        availabilityEquation = NULL;
-        metric = metricSet->AddMetric( "PSOutput01Available", "Slice0 Pipe1 PS Output Available",
-            "The percentage of time in which slice0 pipe1 PS output is available",
-            "GPU/3D Pipe", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_3D_PIPE * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
-            METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SLICE, availabilityEquation, NULL, NULL );
-        if( metric )
-        {
-            MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "dw@0xe4" ));
-            MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x178" ));
-            MD_CHECK_CC( metric->SetNormalizationEquation( "GpuDuration" ));
-            MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
-            MD_CHECK_CC( metric->SetMaxValueEquation( "100" ));
-        }
-
-        availabilityEquation = NULL;
-        metric = metricSet->AddMetric( "PSOutput02Available", "Slice0 Pipe2 PS Output Available",
-            "The percentage of time in which slice0 pipe2 PS output is available",
-            "GPU/3D Pipe", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_3D_PIPE * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
-            METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SLICE, availabilityEquation, NULL, NULL );
-        if( metric )
-        {
-            MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "dw@0xe0" ));
-            MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x170" ));
+            MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "dw@0xf8" ));
+            MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x1a0" ));
             MD_CHECK_CC( metric->SetNormalizationEquation( "GpuDuration" ));
             MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
             MD_CHECK_CC( metric->SetMaxValueEquation( "100" ));
@@ -3586,36 +3362,8 @@ TCompletionCode CreateMetricTreeDG1_OA( CMetricsDevice* metricsDevice, CConcurre
             METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SLICE, availabilityEquation, NULL, NULL );
         if( metric )
         {
-            MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "dw@0xdc" ));
-            MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x168" ));
-            MD_CHECK_CC( metric->SetNormalizationEquation( "GpuDuration" ));
-            MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
-            MD_CHECK_CC( metric->SetMaxValueEquation( "100" ));
-        }
-
-        availabilityEquation = NULL;
-        metric = metricSet->AddMetric( "PixelValues01Ready", "Slice0 Pipe1 Pixel Values Ready",
-            "The percentage of time in which slice0 pipe1 pixel values are ready",
-            "GPU/3D Pipe", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_3D_PIPE * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
-            METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SLICE, availabilityEquation, NULL, NULL );
-        if( metric )
-        {
-            MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "dw@0xd8" ));
-            MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x160" ));
-            MD_CHECK_CC( metric->SetNormalizationEquation( "GpuDuration" ));
-            MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
-            MD_CHECK_CC( metric->SetMaxValueEquation( "100" ));
-        }
-
-        availabilityEquation = NULL;
-        metric = metricSet->AddMetric( "PixelValues02Ready", "Slice0 Pipe2 Pixel Values Ready",
-            "The percentage of time in which slice0 pipe2 pixel values are ready",
-            "GPU/3D Pipe", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_3D_PIPE * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
-            METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SLICE, availabilityEquation, NULL, NULL );
-        if( metric )
-        {
-            MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "dw@0xd4" ));
-            MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x158" ));
+            MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "dw@0xfc" ));
+            MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x1a8" ));
             MD_CHECK_CC( metric->SetNormalizationEquation( "GpuDuration" ));
             MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
             MD_CHECK_CC( metric->SetMaxValueEquation( "100" ));
@@ -3642,8 +3390,8 @@ TCompletionCode CreateMetricTreeDG1_OA( CMetricsDevice* metricsDevice, CConcurre
             METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
         if( metric )
         {
-            MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "dw@0xf4" ));
-            MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x198" ));
+            MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "dw@0xec" ));
+            MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x188" ));
             MD_CHECK_CC( metric->SetNormalizationEquation( "GpuDuration" ));
             MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
             MD_CHECK_CC( metric->SetMaxValueEquation( "100" ));
@@ -3656,8 +3404,8 @@ TCompletionCode CreateMetricTreeDG1_OA( CMetricsDevice* metricsDevice, CConcurre
             METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
         if( metric )
         {
-            MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "dw@0xf8" ));
-            MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x1a0" ));
+            MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "dw@0xe8" ));
+            MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x180" ));
             MD_CHECK_CC( metric->SetNormalizationEquation( "GpuDuration" ));
             MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
             MD_CHECK_CC( metric->SetMaxValueEquation( "100" ));
@@ -3670,8 +3418,8 @@ TCompletionCode CreateMetricTreeDG1_OA( CMetricsDevice* metricsDevice, CConcurre
             METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
         if( metric )
         {
-            MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "dw@0xfc" ));
-            MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x1a8" ));
+            MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "dw@0xe4" ));
+            MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x178" ));
             MD_CHECK_CC( metric->SetNormalizationEquation( "GpuDuration" ));
             MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
             MD_CHECK_CC( metric->SetMaxValueEquation( "100" ));
@@ -3820,109 +3568,91 @@ TCompletionCode CreateMetricTreeDG1_OA( CMetricsDevice* metricsDevice, CConcurre
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9884, 0x00000000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1e055000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1a0500c0, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1e065000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1a0600c0, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1e075000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1a0700c0, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x2a0b7300, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x2c0b0000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x00004000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0e004000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x10004000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x34005500, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x36000001, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x02004000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x04004000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x00014000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1a012000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c012000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x2a015400, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x2c010005, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x02014000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x04014000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0c05c000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x00052700, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x10050000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c05c000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x2405cf0f, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x26050003, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x220500c0, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0c0600d0, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0e062700, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x10060000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c064000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x24064140, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x26060010, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x22061000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x10098000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c090366, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1a091000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0a07c000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0e070027, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x10070000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x24070000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1a0a0104, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x200d1040, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0e0e8000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x120e4000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x000b0144, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0e0b0145, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x100b0156, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x040b014f, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x200b0000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x160b4000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c0b4000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x2a0a7300, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x2c0a0000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x120800a0, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x04052700, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x060500c0, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x22050000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c050000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x000b8000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0e0b8000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x100b8000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x120b8000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x140b8000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x080b8000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0a0b8000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0c0b8000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x000a0144, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0e0a4145, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x100a0156, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x080a814f, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x140a0000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x040a0000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0a0a4000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0c0a8000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x08081980, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0a084032, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x10080000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x16080000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0c084000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x14091800, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9884, 0x00000003, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x19151400, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x21152800, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x19351400, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x21352800, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x31152800, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x331500a0, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x31352800, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x333500a0, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x41104000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x5b105fa5, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x5d101550, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x11148000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1b146000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1d14003e, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x13148000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x15148000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x4b114000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x5f11a00a, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x61112aa0, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x5b10556b, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x5d103005, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x4b112000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x5f115540, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x61110005, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x01128000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0f128000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x11128000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x13128000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x15128000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x09128000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0b128000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0d128000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x05150096, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x07150016, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x09150096, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x01150000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x03168000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x05164000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0b350016, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0d350096, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0316c000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1f350096, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x03350016, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x01350000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x05368000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x07364000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x47101800, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x4d100131, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x4f100808, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x51100000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x53101a00, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x55100003, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0f368000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x01368000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x47101600, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x4d100000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x4f100606, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x51100404, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x17100000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x31100000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x5710000a, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x49103803, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x4b103131, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x55101000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x57100002, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x49101212, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x4b100602, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9884, 0x00000003, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x65100002, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9884, 0x00000000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x42000001, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xd920, 0x00000000, REGISTER_TYPE_OA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xd900, 0x00000000, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xd904, 0x10800000, REGISTER_TYPE_OA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xd904, 0x30800000, REGISTER_TYPE_OA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xd910, 0x00000000, REGISTER_TYPE_OA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xd914, 0x00800000, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xdc40, 0x00010000, REGISTER_TYPE_OA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xdc40, 0x00030000, REGISTER_TYPE_OA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xd940, 0x00000038, REGISTER_TYPE_OA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xd944, 0x0000fff8, REGISTER_TYPE_OA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xdc00, 0x00000038, REGISTER_TYPE_OA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xdc04, 0x0000fff8, REGISTER_TYPE_OA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xd948, 0x000000c0, REGISTER_TYPE_OA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xd94c, 0x0000ffe7, REGISTER_TYPE_OA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xdc08, 0x000000c0, REGISTER_TYPE_OA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xdc0c, 0x0000ffe7, REGISTER_TYPE_OA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xe458, 0x00804704, REGISTER_TYPE_FLEX ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xe558, 0x00a04904, REGISTER_TYPE_FLEX ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xe658, 0x00805705, REGISTER_TYPE_FLEX ));
@@ -3933,7 +3663,7 @@ TCompletionCode CreateMetricTreeDG1_OA( CMetricsDevice* metricsDevice, CConcurre
         MD_CHECK_CC( metricSet->RefreshConfigRegisters() );
     }
      
-    platformMask = PLATFORM_DG1;
+    platformMask = PLATFORM_RKL;
     if( MD_IS_INTERNAL_BUILD || metricsDevice->IsPlatformTypeOf( platformMask ) )
     {
         metricSet = concurrentGroup->AddMetricSet( "L3_1", "Gen12LP L3_1", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
@@ -4115,8 +3845,8 @@ TCompletionCode CreateMetricTreeDG1_OA( CMetricsDevice* metricsDevice, CConcurre
                 METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SLICE, availabilityEquation, NULL, NULL );
             if( metric )
             {
-                MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "dw@0xfc dw@0xf8 FADD dw@0xf4 FADD dw@0xf0 FADD 4 FDIV" ));
-                MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x1a8 qw@0x1a0 FADD qw@0x198 FADD qw@0x190 FADD 4 FDIV" ));
+                MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "dw@0xe0 dw@0xe4 FADD dw@0xe8 FADD dw@0xec FADD 4 FDIV" ));
+                MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x170 qw@0x178 FADD qw@0x180 FADD qw@0x188 FADD 4 FDIV" ));
                 MD_CHECK_CC( metric->SetNormalizationEquation( "GpuDuration" ));
                 MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
                 MD_CHECK_CC( metric->SetMaxValueEquation( "100" ));
@@ -4132,42 +3862,8 @@ TCompletionCode CreateMetricTreeDG1_OA( CMetricsDevice* metricsDevice, CConcurre
                 METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SLICE, availabilityEquation, NULL, NULL );
             if( metric )
             {
-                MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "dw@0xec dw@0xe8 FADD dw@0xe4 FADD dw@0xe0 FADD 4 FDIV" ));
-                MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x188 qw@0x180 FADD qw@0x178 FADD qw@0x170 FADD 4 FDIV" ));
-                MD_CHECK_CC( metric->SetNormalizationEquation( "GpuDuration" ));
-                MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
-                MD_CHECK_CC( metric->SetMaxValueEquation( "100" ));
-            }
-        }
-
-        availabilityEquation = "$SliceMask 1 AND";
-        if( MD_IS_INTERNAL_BUILD || metricsDevice->IsAvailabilityEquationTrue( availabilityEquation ) )
-        {
-            metric = metricSet->AddMetric( "L30Bank4InputAvailable", "Slice0 L3 Bank4 Input Available",
-                "The percentage of time in which slice0 L3 bank4 has input available",
-                "GTI/L3", (METRIC_GROUP_NAME_ID_GTI * 0x1000000) | (METRIC_GROUP_NAME_ID_L3 * 0x10000), USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
-                METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SLICE, availabilityEquation, NULL, NULL );
-            if( metric )
-            {
-                MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "dw@0xcc dw@0xc8 FADD dw@0xc4 FADD dw@0xc0 FADD 4 FDIV" ));
-                MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x148 qw@0x140 FADD qw@0x138 FADD qw@0x130 FADD 4 FDIV" ));
-                MD_CHECK_CC( metric->SetNormalizationEquation( "GpuDuration" ));
-                MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
-                MD_CHECK_CC( metric->SetMaxValueEquation( "100" ));
-            }
-        }
-
-        availabilityEquation = "$SliceMask 1 AND";
-        if( MD_IS_INTERNAL_BUILD || metricsDevice->IsAvailabilityEquationTrue( availabilityEquation ) )
-        {
-            metric = metricSet->AddMetric( "L30Bank5InputAvailable", "Slice0 L3 Bank5 Input Available",
-                "The percentage of time in which slice0 L3 bank5 has input available",
-                "GTI/L3", (METRIC_GROUP_NAME_ID_GTI * 0x1000000) | (METRIC_GROUP_NAME_ID_L3 * 0x10000), USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
-                METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SLICE, availabilityEquation, NULL, NULL );
-            if( metric )
-            {
-                MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "dw@0xdc dw@0xd8 FADD dw@0xd4 FADD dw@0xd0 FADD 4 FDIV" ));
-                MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x168 qw@0x160 FADD qw@0x158 FADD qw@0x150 FADD 4 FDIV" ));
+                MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "dw@0xf0 dw@0xf4 FADD dw@0xf8 FADD dw@0xfc FADD 4 FDIV" ));
+                MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x190 qw@0x198 FADD qw@0x1a0 FADD qw@0x1a8 FADD 4 FDIV" ));
                 MD_CHECK_CC( metric->SetNormalizationEquation( "GpuDuration" ));
                 MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
                 MD_CHECK_CC( metric->SetMaxValueEquation( "100" ));
@@ -4315,89 +4011,56 @@ TCompletionCode CreateMetricTreeDG1_OA( CMetricsDevice* metricsDevice, CConcurre
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x0d04, 0x00000200, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9840, 0x00000000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9884, 0x00000000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x04022000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x06022800, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x04002827, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0600202c, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x00020024, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0e020025, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x10020026, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x12020027, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1402002c, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1602002d, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1802002e, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1a02002f, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x2e020000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x2c020000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c000024, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1e000025, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x02000026, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0800002d, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0a00002e, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0c00002f, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x3a000000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x00004000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0e004000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x10004000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x12004000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x34001540, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x36000000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x00014000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1a012000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c012000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1e012000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x2a015500, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c05c000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x24053fff, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c064000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x24065540, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x26060005, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x10098000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c0900fe, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c074000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x24071555, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x160a1000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x180a5400, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1a0a0055, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1e0d4001, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x200d0555, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x040e4000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0a0e8000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0c0ec000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0e0ec000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x100ec000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x000b4000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0e0b4000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x100b4000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x120b4000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x140b4000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x160b4000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x180b4000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1a0b4000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x04002024, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0600282f, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c0b8000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1e0b8000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x020b8000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x040b8000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x060b8000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x080b8000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0a0b8000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0c0b8000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x120ac000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x040a8000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x060ac000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x080ac000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0a0a4000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1608a000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x02088000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x04088000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x06088000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x08088000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0a088000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0c088000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c000027, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1e000026, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x02000025, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0800002e, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0a00002d, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0c00002c, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x2e000000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9884, 0x00000003, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x41104000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x5b105555, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x5d101555, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x11148000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1b14fc00, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1d14003f, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x13148000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x15148000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x17148000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x4b114000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x5f11aaaa, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x61112aaa, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x47101000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x4d100919, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x4f100000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x51100000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x53100000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x55101910, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x5d101400, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x5b100555, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x61111400, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x5f110555, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1d128000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1f128000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x03128000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x05128000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x07128000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x09128000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0b128000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0d128000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x17100000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x55100000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x57100000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x47100000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x49100000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x4b100000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x4d100000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x31100000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x57100009, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x49101919, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x4b101919, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9884, 0x00000003, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x65100002, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9884, 0x00000000, REGISTER_TYPE_NOA ));
@@ -4418,7 +4081,7 @@ TCompletionCode CreateMetricTreeDG1_OA( CMetricsDevice* metricsDevice, CConcurre
         MD_CHECK_CC( metricSet->RefreshConfigRegisters() );
     }
      
-    platformMask = PLATFORM_DG1;
+    platformMask = PLATFORM_RKL;
     if( MD_IS_INTERNAL_BUILD || metricsDevice->IsPlatformTypeOf( platformMask ) )
     {
         metricSet = concurrentGroup->AddMetricSet( "L3_2", "Gen12LP L3_2", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
@@ -4625,40 +4288,6 @@ TCompletionCode CreateMetricTreeDG1_OA( CMetricsDevice* metricsDevice, CConcurre
             }
         }
 
-        availabilityEquation = "$SliceMask 1 AND";
-        if( MD_IS_INTERNAL_BUILD || metricsDevice->IsAvailabilityEquationTrue( availabilityEquation ) )
-        {
-            metric = metricSet->AddMetric( "L30Bank6InputAvailable", "Slice0 L3 Bank6 Input Available",
-                "The percentage of time in which slice0 L3 bank6 has input available",
-                "GTI/L3", (METRIC_GROUP_NAME_ID_GTI * 0x1000000) | (METRIC_GROUP_NAME_ID_L3 * 0x10000), USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
-                METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SLICE, availabilityEquation, NULL, NULL );
-            if( metric )
-            {
-                MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "dw@0xec dw@0xe8 FADD dw@0xe4 FADD dw@0xe0 FADD 4 FDIV" ));
-                MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x188 qw@0x180 FADD qw@0x178 FADD qw@0x170 FADD 4 FDIV" ));
-                MD_CHECK_CC( metric->SetNormalizationEquation( "GpuDuration" ));
-                MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
-                MD_CHECK_CC( metric->SetMaxValueEquation( "100" ));
-            }
-        }
-
-        availabilityEquation = "$SliceMask 1 AND";
-        if( MD_IS_INTERNAL_BUILD || metricsDevice->IsAvailabilityEquationTrue( availabilityEquation ) )
-        {
-            metric = metricSet->AddMetric( "L30Bank7InputAvailable", "Slice0 L3 Bank7 Input Available",
-                "The percentage of time in which slice0 L3 bank7 has input available",
-                "GTI/L3", (METRIC_GROUP_NAME_ID_GTI * 0x1000000) | (METRIC_GROUP_NAME_ID_L3 * 0x10000), USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
-                METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SLICE, availabilityEquation, NULL, NULL );
-            if( metric )
-            {
-                MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "dw@0xfc dw@0xf8 FADD dw@0xf4 FADD dw@0xf0 FADD 4 FDIV" ));
-                MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x1a8 qw@0x1a0 FADD qw@0x198 FADD qw@0x190 FADD 4 FDIV" ));
-                MD_CHECK_CC( metric->SetNormalizationEquation( "GpuDuration" ));
-                MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
-                MD_CHECK_CC( metric->SetMaxValueEquation( "100" ));
-            }
-        }
-
         information = metricSet->AddInformation( "QueryBeginTime", "Query Begin Time",
             "The measurement begin time.",
             "Report Meta Data", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
@@ -4800,18 +4429,24 @@ TCompletionCode CreateMetricTreeDG1_OA( CMetricsDevice* metricsDevice, CConcurre
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x0d04, 0x00000200, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9840, 0x00000000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9884, 0x00000000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x04023027, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0602382c, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x04007000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x06007800, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c020024, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1e020025, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x02020026, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0802002d, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0a02002e, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0c02002f, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x2e020000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x2c020000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x04003000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x06003800, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x000b8000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0e0b8000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x100b8000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x120b8000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x140b8000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x160b8000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x180b8000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1a0b8000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x040a4000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0a0a8000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0c0ac000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0e0ac000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x100ac000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x00088000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0e088000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x16080aaa, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x00000024, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0e000025, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x10000026, REGISTER_TYPE_NOA ));
@@ -4820,74 +4455,31 @@ TCompletionCode CreateMetricTreeDG1_OA( CMetricsDevice* metricsDevice, CConcurre
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1600002d, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1800002e, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1a00002f, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x3a000000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x34004000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x36000001, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x02004000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x08004000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0a004000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0c004000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x2c010005, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x02014000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x04014000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x06014000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x08014000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0a014000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x18012000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x2405c000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x26050003, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x2205fff0, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x26060050, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x22065400, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x24060015, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c090301, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x14098000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1a09f000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x24074000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x26070001, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x22075550, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1a0a0500, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x160a4000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x180a0155, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x200d5000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1e0d1554, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x120ec000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x040e8000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x060ec000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x080ec000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0a0e4000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c0b4000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1e0b4000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x020b4000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x040b4000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x060b4000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x080b4000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0a0b4000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0c0b4000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x2e000000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x2c000000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9884, 0x00000003, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x41104000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x5b105555, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x5d101555, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x11148000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1b14fc00, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1d14003f, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x13148000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x15148000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x17148000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x4b114000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x5f11aaaa, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x61112aaa, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x47100910, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x4d101000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x4f101919, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x51101919, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x53101919, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x55100009, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x5b105000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x5d100155, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x4b112000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x5f115000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x61110155, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x01128000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0f128000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x11128000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x13128000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x15128000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x17128000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x19128000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1b128000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x47100000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x4d100000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x4f100000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x51100000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x53100000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x55100000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x17100000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x31100000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x57100000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x49100000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x4b100000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9884, 0x00000003, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x65100002, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9884, 0x00000000, REGISTER_TYPE_NOA ));
@@ -4908,7 +4500,7 @@ TCompletionCode CreateMetricTreeDG1_OA( CMetricsDevice* metricsDevice, CConcurre
         MD_CHECK_CC( metricSet->RefreshConfigRegisters() );
     }
      
-    platformMask = PLATFORM_DG1;
+    platformMask = PLATFORM_RKL;
     if( MD_IS_INTERNAL_BUILD || metricsDevice->IsPlatformTypeOf( platformMask ) )
     {
         metricSet = concurrentGroup->AddMetricSet( "L3_3", "Gen12LP L3_3", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
@@ -5098,23 +4690,6 @@ TCompletionCode CreateMetricTreeDG1_OA( CMetricsDevice* metricsDevice, CConcurre
             }
         }
 
-        availabilityEquation = "$SliceMask 1 AND";
-        if( MD_IS_INTERNAL_BUILD || metricsDevice->IsAvailabilityEquationTrue( availabilityEquation ) )
-        {
-            metric = metricSet->AddMetric( "L30Bank4OutputReady", "Slice0 L3 Bank4 Output Ready",
-                "The percentage of time in which slice0 L3 bank4 output is ready",
-                "GTI/L3", (METRIC_GROUP_NAME_ID_GTI * 0x1000000) | (METRIC_GROUP_NAME_ID_L3 * 0x10000), USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
-                METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SLICE, availabilityEquation, NULL, NULL );
-            if( metric )
-            {
-                MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "dw@0xf4 dw@0xf0 FADD 4 FDIV" ));
-                MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x198 qw@0x190 FADD 4 FDIV" ));
-                MD_CHECK_CC( metric->SetNormalizationEquation( "GpuDuration" ));
-                MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
-                MD_CHECK_CC( metric->SetMaxValueEquation( "100" ));
-            }
-        }
-
         information = metricSet->AddInformation( "QueryBeginTime", "Query Begin Time",
             "The measurement begin time.",
             "Report Meta Data", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
@@ -5256,38 +4831,25 @@ TCompletionCode CreateMetricTreeDG1_OA( CMetricsDevice* metricsDevice, CConcurre
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x0d04, 0x00000200, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9840, 0x00000000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9884, 0x00000000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x04020200, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x06020020, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x04000200, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x06004000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x08020028, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x2e020000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x06000000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0a0b8000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0c0b8000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x080a8000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0a0a4000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0a088000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0c088000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0a000020, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0c000028, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x3a000000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x08004000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x06014000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x08014000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x22050f00, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x22064000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x24060001, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1a096000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x22070500, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x180a0014, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1e0d0140, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x060e8000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x080e4000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x060b4000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x080b4000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x2e000000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9884, 0x00000003, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x5b100550, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x17148000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1b141c00, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x5f110aa0, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x5b100500, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x5f110500, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0b128000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0d128000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x17100000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x49100000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x4b101000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x4d100919, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x4b100000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x4d100000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x31100000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9884, 0x00000003, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x65100002, REGISTER_TYPE_NOA ));
@@ -5309,7 +4871,7 @@ TCompletionCode CreateMetricTreeDG1_OA( CMetricsDevice* metricsDevice, CConcurre
         MD_CHECK_CC( metricSet->RefreshConfigRegisters() );
     }
      
-    platformMask = PLATFORM_DG1;
+    platformMask = PLATFORM_RKL;
     if( MD_IS_INTERNAL_BUILD || metricsDevice->IsPlatformTypeOf( platformMask ) )
     {
         metricSet = concurrentGroup->AddMetricSet( "L3_4", "Gen12LP L3_4", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
@@ -5499,23 +5061,6 @@ TCompletionCode CreateMetricTreeDG1_OA( CMetricsDevice* metricsDevice, CConcurre
             }
         }
 
-        availabilityEquation = "$SliceMask 1 AND";
-        if( MD_IS_INTERNAL_BUILD || metricsDevice->IsAvailabilityEquationTrue( availabilityEquation ) )
-        {
-            metric = metricSet->AddMetric( "L30Bank5OutputReady", "Slice0 L3 Bank5 Output Ready",
-                "The percentage of time in which slice0 L3 bank5 output is ready",
-                "GTI/L3", (METRIC_GROUP_NAME_ID_GTI * 0x1000000) | (METRIC_GROUP_NAME_ID_L3 * 0x10000), USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
-                METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SLICE, availabilityEquation, NULL, NULL );
-            if( metric )
-            {
-                MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "dw@0xfc dw@0xf8 FADD 4 FDIV" ));
-                MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x1a8 qw@0x1a0 FADD 4 FDIV" ));
-                MD_CHECK_CC( metric->SetNormalizationEquation( "GpuDuration" ));
-                MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
-                MD_CHECK_CC( metric->SetMaxValueEquation( "100" ));
-            }
-        }
-
         information = metricSet->AddInformation( "QueryBeginTime", "Query Begin Time",
             "The measurement begin time.",
             "Report Meta Data", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
@@ -5657,39 +5202,24 @@ TCompletionCode CreateMetricTreeDG1_OA( CMetricsDevice* metricsDevice, CConcurre
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x0d04, 0x00000200, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9840, 0x00000000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9884, 0x00000000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x04020a00, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x06020800, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x04000a00, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x06000820, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0a020020, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0c020028, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x2e020000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x060b8000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x080b8000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x060a8000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x080a4000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x06088000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x08088000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x08000028, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x3a000000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0a004000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0c004000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0a014000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x18012000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x2205f000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x24060014, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1a098000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c090001, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x22075000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x180a0140, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1e0d1400, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x080e8000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0a0e4000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0a0b4000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0c0b4000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x2e000000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9884, 0x00000003, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x5b100550, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x17148000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1b141c00, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x5f110aa0, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x5b100050, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x5f110050, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x07128000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x09128000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x17100000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x49101000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x4b100919, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x4d100000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x49100000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x4b100000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x31100000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9884, 0x00000003, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x65100002, REGISTER_TYPE_NOA ));
@@ -5711,7 +5241,7 @@ TCompletionCode CreateMetricTreeDG1_OA( CMetricsDevice* metricsDevice, CConcurre
         MD_CHECK_CC( metricSet->RefreshConfigRegisters() );
     }
      
-    platformMask = PLATFORM_DG1;
+    platformMask = PLATFORM_RKL;
     if( MD_IS_INTERNAL_BUILD || metricsDevice->IsPlatformTypeOf( platformMask ) )
     {
         metricSet = concurrentGroup->AddMetricSet( "L3_5", "Gen12LP L3_5", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
@@ -5901,23 +5431,6 @@ TCompletionCode CreateMetricTreeDG1_OA( CMetricsDevice* metricsDevice, CConcurre
             }
         }
 
-        availabilityEquation = "$SliceMask 1 AND";
-        if( MD_IS_INTERNAL_BUILD || metricsDevice->IsAvailabilityEquationTrue( availabilityEquation ) )
-        {
-            metric = metricSet->AddMetric( "L30Bank6OutputReady", "Slice0 L3 Bank6 Output Ready",
-                "The percentage of time in which slice0 L3 bank6 output is ready",
-                "GTI/L3", (METRIC_GROUP_NAME_ID_GTI * 0x1000000) | (METRIC_GROUP_NAME_ID_L3 * 0x10000), USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
-                METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SLICE, availabilityEquation, NULL, NULL );
-            if( metric )
-            {
-                MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "dw@0xfc dw@0xf8 FADD 4 FDIV" ));
-                MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x1a8 qw@0x1a0 FADD 4 FDIV" ));
-                MD_CHECK_CC( metric->SetNormalizationEquation( "GpuDuration" ));
-                MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
-                MD_CHECK_CC( metric->SetMaxValueEquation( "100" ));
-            }
-        }
-
         information = metricSet->AddInformation( "QueryBeginTime", "Query Begin Time",
             "The measurement begin time.",
             "Report Meta Data", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
@@ -6059,39 +5572,24 @@ TCompletionCode CreateMetricTreeDG1_OA( CMetricsDevice* metricsDevice, CConcurre
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x0d04, 0x00000200, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9840, 0x00000000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9884, 0x00000000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x04021200, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x06021000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x04001200, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x06001020, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0a020020, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0c020028, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x2e020000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x060b8000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x080b8000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x060a8000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x080a4000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x06088000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x08088000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x08000028, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x3a000000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0a004000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0c004000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0a014000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x18012000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x2205f000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x24060014, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1a098000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c090001, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x22075000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x180a0140, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1e0d1400, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x080e8000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0a0e4000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0a0b4000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0c0b4000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x2e000000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9884, 0x00000003, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x5b100550, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x17148000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1b141c00, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x5f110aa0, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x5b100050, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x5f110050, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x07128000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x09128000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x17100000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x49101000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x4b100919, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x4d100000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x49100000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x4b100000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x31100000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9884, 0x00000003, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x65100002, REGISTER_TYPE_NOA ));
@@ -6113,7 +5611,7 @@ TCompletionCode CreateMetricTreeDG1_OA( CMetricsDevice* metricsDevice, CConcurre
         MD_CHECK_CC( metricSet->RefreshConfigRegisters() );
     }
      
-    platformMask = PLATFORM_DG1;
+    platformMask = PLATFORM_RKL;
     if( MD_IS_INTERNAL_BUILD || metricsDevice->IsPlatformTypeOf( platformMask ) )
     {
         metricSet = concurrentGroup->AddMetricSet( "L3_6", "Gen12LP L3_6", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
@@ -6303,23 +5801,6 @@ TCompletionCode CreateMetricTreeDG1_OA( CMetricsDevice* metricsDevice, CConcurre
             }
         }
 
-        availabilityEquation = "$SliceMask 1 AND";
-        if( MD_IS_INTERNAL_BUILD || metricsDevice->IsAvailabilityEquationTrue( availabilityEquation ) )
-        {
-            metric = metricSet->AddMetric( "L30Bank7OutputReady", "Slice0 L3 Bank7 Output Ready",
-                "The percentage of time in which slice0 L3 bank7 output is ready",
-                "GTI/L3", (METRIC_GROUP_NAME_ID_GTI * 0x1000000) | (METRIC_GROUP_NAME_ID_L3 * 0x10000), USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
-                METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SLICE, availabilityEquation, NULL, NULL );
-            if( metric )
-            {
-                MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "dw@0xfc dw@0xf8 FADD 4 FDIV" ));
-                MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x1a8 qw@0x1a0 FADD 4 FDIV" ));
-                MD_CHECK_CC( metric->SetNormalizationEquation( "GpuDuration" ));
-                MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
-                MD_CHECK_CC( metric->SetMaxValueEquation( "100" ));
-            }
-        }
-
         information = metricSet->AddInformation( "QueryBeginTime", "Query Begin Time",
             "The measurement begin time.",
             "Report Meta Data", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
@@ -6461,39 +5942,24 @@ TCompletionCode CreateMetricTreeDG1_OA( CMetricsDevice* metricsDevice, CConcurre
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x0d04, 0x00000200, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9840, 0x00000000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9884, 0x00000000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x04021a00, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x06021800, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x04001a00, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x06001820, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0a020020, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0c020028, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x2e020000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x060b8000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x080b8000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x060a8000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x080a4000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x06088000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x08088000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x08000028, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x3a000000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0a004000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0c004000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0a014000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x18012000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x2205f000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x24060014, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1a098000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c090001, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x22075000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x180a0140, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1e0d1400, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x080e8000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0a0e4000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0a0b4000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0c0b4000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x2e000000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9884, 0x00000003, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x5b100550, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x17148000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1b141c00, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x5f110aa0, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x5b100050, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x5f110050, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x07128000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x09128000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x17100000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x49101000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x4b100919, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x4d100000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x49100000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x4b100000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x31100000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9884, 0x00000003, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x65100002, REGISTER_TYPE_NOA ));
@@ -6515,7 +5981,7 @@ TCompletionCode CreateMetricTreeDG1_OA( CMetricsDevice* metricsDevice, CConcurre
         MD_CHECK_CC( metricSet->RefreshConfigRegisters() );
     }
      
-    platformMask = PLATFORM_DG1;
+    platformMask = PLATFORM_RKL;
     if( MD_IS_INTERNAL_BUILD || metricsDevice->IsPlatformTypeOf( platformMask ) )
     {
         metricSet = concurrentGroup->AddMetricSet( "Sampler_1", "Sampler_1", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
@@ -6697,8 +6163,8 @@ TCompletionCode CreateMetricTreeDG1_OA( CMetricsDevice* metricsDevice, CConcurre
                 METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_DUALSUBSLICE, availabilityEquation, NULL, NULL );
             if( metric )
             {
-                MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "dw@0xd4" ));
-                MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x158" ));
+                MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "dw@0xc0" ));
+                MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x130" ));
                 MD_CHECK_CC( metric->SetNormalizationEquation( "GpuDuration" ));
                 MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
                 MD_CHECK_CC( metric->SetMaxValueEquation( "100" ));
@@ -6714,560 +6180,12 @@ TCompletionCode CreateMetricTreeDG1_OA( CMetricsDevice* metricsDevice, CConcurre
                 METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_DUALSUBSLICE, availabilityEquation, NULL, NULL );
             if( metric )
             {
-                MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "dw@0xd0" ));
-                MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x150" ));
-                MD_CHECK_CC( metric->SetNormalizationEquation( "GpuDuration" ));
-                MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
-                MD_CHECK_CC( metric->SetMaxValueEquation( "100" ));
-            }
-        }
-
-        availabilityEquation = "$DualSubsliceMask 4 AND";
-        if( MD_IS_INTERNAL_BUILD || metricsDevice->IsAvailabilityEquationTrue( availabilityEquation ) )
-        {
-            metric = metricSet->AddMetric( "Sampler02InputAvailable", "Slice0 DualSubslice2 Input Available",
-                "The percentage of time in which slice0 dualsubslice2 sampler input is available",
-                "GPU/Sampler", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_SAMPLER * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
-                METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_DUALSUBSLICE, availabilityEquation, NULL, NULL );
-            if( metric )
-            {
-                MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "dw@0xcc" ));
-                MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x148" ));
-                MD_CHECK_CC( metric->SetNormalizationEquation( "GpuDuration" ));
-                MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
-                MD_CHECK_CC( metric->SetMaxValueEquation( "100" ));
-            }
-        }
-
-        availabilityEquation = "$DualSubsliceMask 8 AND";
-        if( MD_IS_INTERNAL_BUILD || metricsDevice->IsAvailabilityEquationTrue( availabilityEquation ) )
-        {
-            metric = metricSet->AddMetric( "Sampler03InputAvailable", "Slice0 DualSubslice3 Input Available",
-                "The percentage of time in which slice0 dualsubslice3 sampler input is available",
-                "GPU/Sampler", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_SAMPLER * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
-                METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_DUALSUBSLICE, availabilityEquation, NULL, NULL );
-            if( metric )
-            {
-                MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "dw@0xc8" ));
-                MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x140" ));
-                MD_CHECK_CC( metric->SetNormalizationEquation( "GpuDuration" ));
-                MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
-                MD_CHECK_CC( metric->SetMaxValueEquation( "100" ));
-            }
-        }
-
-        availabilityEquation = "$DualSubsliceMask 16 AND";
-        if( MD_IS_INTERNAL_BUILD || metricsDevice->IsAvailabilityEquationTrue( availabilityEquation ) )
-        {
-            metric = metricSet->AddMetric( "Sampler04InputAvailable", "Slice0 DualSubslice4 Input Available",
-                "The percentage of time in which slice0 dualsubslice4 sampler input is available",
-                "GPU/Sampler", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_SAMPLER * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
-                METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_DUALSUBSLICE, availabilityEquation, NULL, NULL );
-            if( metric )
-            {
                 MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "dw@0xc4" ));
                 MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x138" ));
                 MD_CHECK_CC( metric->SetNormalizationEquation( "GpuDuration" ));
                 MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
                 MD_CHECK_CC( metric->SetMaxValueEquation( "100" ));
             }
-        }
-
-        availabilityEquation = "$DualSubsliceMask 32 AND";
-        if( MD_IS_INTERNAL_BUILD || metricsDevice->IsAvailabilityEquationTrue( availabilityEquation ) )
-        {
-            metric = metricSet->AddMetric( "Sampler05InputAvailable", "Slice0 DualSubslice5 Input Available",
-                "The percentage of time in which slice0 dualsubslice5 sampler input is available",
-                "GPU/Sampler", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_SAMPLER * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
-                METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_DUALSUBSLICE, availabilityEquation, NULL, NULL );
-            if( metric )
-            {
-                MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "dw@0xc0" ));
-                MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x130" ));
-                MD_CHECK_CC( metric->SetNormalizationEquation( "GpuDuration" ));
-                MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
-                MD_CHECK_CC( metric->SetMaxValueEquation( "100" ));
-            }
-        }
-
-        information = metricSet->AddInformation( "QueryBeginTime", "Query Begin Time",
-            "The measurement begin time.",
-            "Report Meta Data", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
-            INFORMATION_TYPE_TIMESTAMP, "ns", NULL );
-        if( information )
-        {
-            MD_CHECK_CC( information->SetSnapshotReportReadEquation( "dw@0x04 1000000000 UMUL $GpuTimestampFrequency UDIV" ));
-            MD_CHECK_CC( information->SetDeltaReportReadEquation( "qw@0x1b0" ));
-            MD_CHECK_CC( information->SetOverflowFunction( "NS_TIME" ));
-        }
-
-        information = metricSet->AddInformation( "CoreFrequencyMHz", "GPU Core Frequency",
-            "The last GPU core (unslice) frequency in the measurement.",
-            "Report Meta Data", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
-            INFORMATION_TYPE_VALUE, "MHz", NULL );
-        if( information )
-        {
-            MD_CHECK_CC( information->SetSnapshotReportReadEquation( "dw@0x0 0x1ff AND 16666 UMUL 1000 UDIV" ));
-            MD_CHECK_CC( information->SetDeltaReportReadEquation( "qw@0x208 1000000 UDIV" ));
-        }
-
-        information = metricSet->AddInformation( "EuSliceFrequencyMHz", "EU Slice Frequency",
-            "The last GPU Execution Unit slice frequency in the measurement.",
-            "Report Meta Data", API_TYPE_IOSTREAM,
-            INFORMATION_TYPE_VALUE, "MHz", NULL );
-        if( information )
-        {
-            MD_CHECK_CC( information->SetSnapshotReportReadEquation( "dw@0x0 25 >> dw@0x0 9 >> 0x3 AND OR 16666 UMUL 1000 UDIV" ));
-        }
-
-        information = metricSet->AddInformation( "ReportReason", "Report Reason",
-            "The reason of the report.",
-            "Report Meta Data", API_TYPE_IOSTREAM,
-            INFORMATION_TYPE_REPORT_REASON, NULL, NULL );
-        if( information )
-        {
-            MD_CHECK_CC( information->SetSnapshotReportReadEquation( "dw@0x0 19 >> 0x3f AND" ));
-        }
-
-        information = metricSet->AddInformation( "ContextIdValid", "Context ID Valid",
-            "When set indicates render context is valid",
-            "Report Meta Data", API_TYPE_IOSTREAM,
-            INFORMATION_TYPE_FLAG, NULL, NULL );
-        if( information )
-        {
-            MD_CHECK_CC( information->SetSnapshotReportReadEquation( "dw@0x0 16 >> 0x1 AND" ));
-        }
-
-        information = metricSet->AddInformation( "ContextId", "Context ID",
-            "The context tag in which report has been taken.",
-            "Report Meta Data", API_TYPE_IOSTREAM,
-            INFORMATION_TYPE_CONTEXT_ID_TAG, NULL, NULL );
-        if( information )
-        {
-            MD_CHECK_CC( information->SetSnapshotReportReadEquation( "dw@0x08 0xfffff AND dw@0x0 16 >> 0x1 AND UMUL" ));
-        }
-
-        information = metricSet->AddInformation( "CoreFrequencyChanged", "GPU Core Frequency Changed",
-            "The flag indicating that GPU core frequency has changed.",
-            "Exception", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
-            INFORMATION_TYPE_FLAG, NULL, NULL );
-        if( information )
-        {
-            
-            MD_CHECK_CC( information->SetDeltaReportReadEquation( "dw@0x204" ));
-        }
-
-        information = metricSet->AddInformation( "QuerySplitOccurred", "Query Split Occurred",
-            "The flag indicating that query has been split during execution on the GPU.",
-            "Exception", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
-            INFORMATION_TYPE_FLAG, NULL, NULL );
-        if( information )
-        {
-            
-            MD_CHECK_CC( information->SetDeltaReportReadEquation( "dw@0x200" ));
-        }
-
-        information = metricSet->AddInformation( "ReportId", "Query report id",
-            "Query report identification number.",
-            "Report Meta Data", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
-            INFORMATION_TYPE_VALUE, NULL, NULL );
-        if( information )
-        {
-            
-            MD_CHECK_CC( information->SetDeltaReportReadEquation( "dw@0x210" ));
-        }
-
-        information = metricSet->AddInformation( "ReportsCount", "Query reports count",
-            "The number of available query reports.",
-            "Report Meta Data", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
-            INFORMATION_TYPE_VALUE, NULL, NULL );
-        if( information )
-        {
-            
-            MD_CHECK_CC( information->SetDeltaReportReadEquation( "dw@0x214" ));
-        }
-
-        information = metricSet->AddInformation( "OverrunOccured", "Query Overrun Occurred",
-            "The flag indicating that Oa buffer has been overran.",
-            "Exception", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
-            INFORMATION_TYPE_FLAG, NULL, NULL );
-        if( information )
-        {
-            
-            MD_CHECK_CC( information->SetDeltaReportReadEquation( "dw@0x1cc" ));
-        }
-
-        information = metricSet->AddInformation( "ReportError", "Query report error",
-            "An error in the query execution, the received report should be ignored.",
-            "Report Meta Data", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
-            INFORMATION_TYPE_FLAG, NULL, NULL );
-        if( information )
-        {
-            
-            MD_CHECK_CC( information->SetDeltaReportReadEquation( "dw@0x29c 0x03 AND" ));
-        }
-
-        information = metricSet->AddInformation( "ReportLost", "Query report lost",
-            "Begin or end query report has not been triggered due to hw limitations.",
-            "Report Meta Data", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
-            INFORMATION_TYPE_FLAG, NULL, NULL );
-        if( information )
-        {
-            
-            MD_CHECK_CC( information->SetDeltaReportReadEquation( "dw@0x29c 0x01 AND" ));
-        }
-
-        information = metricSet->AddInformation( "ReportInconsistent", "Query report inconsistent",
-            "The contextId inconsistency in the Oa buffer within the query window.",
-            "Report Meta Data", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
-            INFORMATION_TYPE_FLAG, NULL, NULL );
-        if( information )
-        {
-            
-            MD_CHECK_CC( information->SetDeltaReportReadEquation( "dw@0x29c 0x02 AND" ));
-        }
-
-        MD_CHECK_CC( metricSet->AddStartRegisterSet( 0, 0 ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x0d04, 0x00000200, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9840, 0x00000000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9884, 0x00000000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c121600, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x18141600, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c325600, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x18341600, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c521600, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x185416a6, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c721600, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x18741600, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c921600, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x18941600, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1cb21600, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x18b41600, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x04120086, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x20120000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x02124000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x12138000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x14138000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x021400a6, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x10140000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x00140000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1a150020, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1e320086, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x20320000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1e330003, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c3400a6, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x10340000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0e340000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c358000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1a520086, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x20520000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x18524000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c53c000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x10540000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0c540000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c550800, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x16720086, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x20720000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x14724000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c733000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x147400a6, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x10740000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0a740000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c750080, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x12920086, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x20920000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x10924000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c930c00, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x109400a6, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x08940000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c950008, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0eb20086, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x20b20000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x00b24000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x10b38000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1cb30200, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x00b400a6, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x10b40000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x18b58000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x00004000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0e004000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x10004000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x12004000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x34005540, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x36000001, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x02004000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x04004000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x00014000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1a012000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c012000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1e012000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x2a015500, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x2c010005, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x02014000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x04014000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c05c000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x2405bfff, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x26050002, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x22050050, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x14088000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1a081000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c064000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x2406a540, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x26060005, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x10098000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c0900fe, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c078000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x24070002, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x160a1000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x180aa400, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1e0d4001, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x200d0005, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x040e4000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0a0e8000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0c0ec000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x000b4000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0e0b4000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x100b4000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x120b4000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x180b8000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1a0b8000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9884, 0x00000003, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x41104000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x5b105005, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x5d101555, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x11148000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1b14e000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1d14003f, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x13148000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x15148000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x4b114000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x5f11a00a, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x61112aaa, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x47101000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x4d100000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x4f100204, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x51101a06, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x53101803, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x55101311, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x17100000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x31100000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x57100007, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x49100511, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9884, 0x00000003, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x65100002, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9884, 0x00000000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x42000001, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xd920, 0x00000000, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xd900, 0x00000000, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xd904, 0xf0800000, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xd910, 0x00000000, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xd914, 0x30800000, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xdc40, 0x003f0000, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xd940, 0x00000018, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xd944, 0x0000fffc, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xdc00, 0x00000018, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xdc04, 0x0000fffc, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xd948, 0x00000060, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xd94c, 0x0000fff3, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xdc08, 0x00000060, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xdc0c, 0x0000fff3, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xd950, 0x00000180, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xd954, 0x0000ffcf, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xdc10, 0x00000180, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xdc14, 0x0000ffcf, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xd958, 0x00000600, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xd95c, 0x0000ff3f, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xdc18, 0x00000600, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xdc1c, 0x0000ff3f, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xd960, 0x00001800, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xd964, 0x0000fcff, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xdc20, 0x00001800, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xdc24, 0x0000fcff, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xd968, 0x00006000, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xd96c, 0x0000f3ff, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xdc28, 0x00006000, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xdc2c, 0x0000f3ff, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xe458, 0x00804704, REGISTER_TYPE_FLEX ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xe558, 0x00a04904, REGISTER_TYPE_FLEX ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xe658, 0x00805705, REGISTER_TYPE_FLEX ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xe758, 0x00a05905, REGISTER_TYPE_FLEX ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xe45c, 0x00808708, REGISTER_TYPE_FLEX ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xe55c, 0x00a08908, REGISTER_TYPE_FLEX ));
-  
-        MD_CHECK_CC( metricSet->RefreshConfigRegisters() );
-    }
-     
-    platformMask = PLATFORM_DG1;
-    if( MD_IS_INTERNAL_BUILD || metricsDevice->IsPlatformTypeOf( platformMask ) )
-    {
-        metricSet = concurrentGroup->AddMetricSet( "Sampler_2", "Sampler_2", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
-           GPU_RENDER|GPU_COMPUTE|GPU_MEDIA|GPU_GENERIC, 256, 672, OA_REPORT_TYPE_256B_A45_NOA16, platformMask );
-        MD_CHECK_PTR( metricSet );
-        
-        MD_CHECK_CC( metricSet->SetApiSpecificId("GPAV", 0, 0x40000000, 0x80000203, 0, 0,
-            "Intel Performance Counters for GT Set Dynamic", 0, "Intel_Raw_Hardware_Counters_Set_0_Query", 0) );
-  
-        availabilityEquation = NULL;
-        metric = metricSet->AddMetric( "GpuTime", "GPU Time Elapsed",
-            "Time elapsed on the GPU during the measurement.",
-            "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_TIER_1|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
-            METRIC_TYPE_DURATION, RESULT_UINT64, "ns", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
-        if( metric )
-        {
-            MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "dw@0x04 1000000000 UMUL $GpuTimestampFrequency UDIV" ));
-            MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x00" ));
-            MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "NS_TIME" ));
-        }
-
-        availabilityEquation = NULL;
-        metric = metricSet->AddMetric( "GpuCoreClocks", "GPU Core Clocks",
-            "The total number of GPU core clocks elapsed during the measurement.",
-            "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_TIER_1|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
-            METRIC_TYPE_EVENT, RESULT_UINT64, "cycles", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
-        if( metric )
-        {
-            MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "dw@0x0c" ));
-            MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x08" ));
-            MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
-        }
-
-        availabilityEquation = NULL;
-        metric = metricSet->AddMetric( "AvgGpuCoreFrequencyMHz", "AVG GPU Core Frequency",
-            "Average GPU Core Frequency in the measurement.",
-            "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_TIER_1|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
-            METRIC_TYPE_EVENT, RESULT_UINT64, "MHz", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
-        if( metric )
-        {
-            
-            MD_CHECK_CC( metric->SetNormalizationEquation( "$GpuCoreClocks 1000 UMUL $$GpuTime UDIV" ));
-        }
-
-        availabilityEquation = NULL;
-        metric = metricSet->AddMetric( "GpuBusy", "GPU Busy",
-            "The percentage of time in which the GPU has been processing GPU commands.",
-            "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_TIER_1|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
-            METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
-        if( metric )
-        {
-            MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "rd40@0x10:0xa0" ));
-            MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x10" ));
-            MD_CHECK_CC( metric->SetNormalizationEquation( "GpuDuration" ));
-            MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 40" ));
-            MD_CHECK_CC( metric->SetMaxValueEquation( "100" ));
-        }
-
-        availabilityEquation = NULL;
-        metric = metricSet->AddMetric( "VsThreads", "VS Threads Dispatched",
-            "The total number of vertex shader hardware threads dispatched.",
-            "EU Array/Vertex Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_VS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
-            METRIC_TYPE_EVENT, RESULT_UINT64, "threads", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
-        if( metric )
-        {
-            MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "rd40@0x14:0xa1" ));
-            MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x18" ));
-            MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 40" ));
-        }
-
-        availabilityEquation = NULL;
-        metric = metricSet->AddMetric( "HsThreads", "HS Threads Dispatched",
-            "The total number of hull shader hardware threads dispatched.",
-            "EU Array/Hull Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_HS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
-            METRIC_TYPE_EVENT, RESULT_UINT64, "threads", 0, 0, HW_UNIT_GPU, availabilityEquation, "Hull|Control,hull|control,HS|TCS", "oa.fixed" );
-        if( metric )
-        {
-            MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "rd40@0x18:0xa2" ));
-            MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x20" ));
-            MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 40" ));
-        }
-
-        availabilityEquation = NULL;
-        metric = metricSet->AddMetric( "DsThreads", "DS Threads Dispatched",
-            "The total number of domain shader hardware threads dispatched.",
-            "EU Array/Domain Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_DS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
-            METRIC_TYPE_EVENT, RESULT_UINT64, "threads", 0, 0, HW_UNIT_GPU, availabilityEquation, "Domain|Evaluation,domain|evaluation,DS|TES", "oa.fixed" );
-        if( metric )
-        {
-            MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "rd40@0x1c:0xa3" ));
-            MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x28" ));
-            MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 40" ));
-        }
-
-        availabilityEquation = NULL;
-        metric = metricSet->AddMetric( "GsThreads", "GS Threads Dispatched",
-            "The total number of geometry shader hardware threads dispatched.",
-            "EU Array/Geometry Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_GS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
-            METRIC_TYPE_EVENT, RESULT_UINT64, "threads", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
-        if( metric )
-        {
-            MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "rd40@0x24:0xa5" ));
-            MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x38" ));
-            MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 40" ));
-        }
-
-        availabilityEquation = NULL;
-        metric = metricSet->AddMetric( "PsThreads", "PS Threads Dispatched",
-            "The total number of pixel shader hardware threads dispatched.",
-            "EU Array/Pixel Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_PS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
-            METRIC_TYPE_EVENT, RESULT_UINT64, "threads", 0, 0, HW_UNIT_GPU, availabilityEquation, "Pixel|Fragment,PS|FS,pixel|fragment", "oa.fixed" );
-        if( metric )
-        {
-            MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "rd40@0x28:0xa6" ));
-            MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x40" ));
-            MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 40" ));
-        }
-
-        availabilityEquation = NULL;
-        metric = metricSet->AddMetric( "CsThreads", "CS Threads Dispatched",
-            "The total number of compute shader hardware threads dispatched.",
-            "EU Array/Compute Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_CS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
-            METRIC_TYPE_EVENT, RESULT_UINT64, "threads", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
-        if( metric )
-        {
-            MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "rd40@0x20:0xa4" ));
-            MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x30" ));
-            MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 40" ));
-        }
-
-        availabilityEquation = NULL;
-        metric = metricSet->AddMetric( "EuActive", "EU Active",
-            "The percentage of time in which the Execution Units were actively processing.",
-            "EU Array", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000), USAGE_FLAG_TIER_2|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
-            METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
-        if( metric )
-        {
-            MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "rd40@0x2c:0xa7 rd40@0x30:0xa8 FADD rd40@0x34:0xa9 FADD rd40@0x38:0xaa FADD" ));
-            MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x48 qw@0x50 FADD qw@0x58 FADD qw@0x60 FADD" ));
-            MD_CHECK_CC( metric->SetNormalizationEquation( "EuAggrDuration" ));
-            MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 40" ));
-            MD_CHECK_CC( metric->SetMaxValueEquation( "100" ));
-        }
-
-        availabilityEquation = NULL;
-        metric = metricSet->AddMetric( "EuStall", "EU Stall",
-            "The percentage of time in which the Execution Units were stalled.",
-            "EU Array", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000), USAGE_FLAG_TIER_2|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
-            METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
-        if( metric )
-        {
-            MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "rd40@0x3c:0xab rd40@0x40:0xac FADD rd40@0x44:0xad FADD rd40@0x48:0xae FADD" ));
-            MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x68 qw@0x70 FADD qw@0x78 FADD qw@0x80 FADD" ));
-            MD_CHECK_CC( metric->SetNormalizationEquation( "EuAggrDuration" ));
-            MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 40" ));
-            MD_CHECK_CC( metric->SetMaxValueEquation( "100" ));
-        }
-
-        availabilityEquation = NULL;
-        metric = metricSet->AddMetric( "EuThreadOccupancy", "EU Thread Occupancy",
-            "The percentage of time in which hardware threads occupied EUs.",
-            "EU Array", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000), USAGE_FLAG_TIER_2|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
-            METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
-        if( metric )
-        {
-            MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "8 rd40@0x4c:0xaf rd40@0x50:0xb0 FADD rd40@0x54:0xb1 FADD rd40@0x58:0xb2 FADD FMUL $EuThreadsCount FDIV" ));
-            MD_CHECK_CC( metric->SetDeltaReportReadEquation( "8 qw@0x88 qw@0x90 FADD qw@0x98 FADD qw@0xa0 FADD FMUL $EuThreadsCount FDIV" ));
-            MD_CHECK_CC( metric->SetNormalizationEquation( "EuAggrDuration" ));
-            MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 40" ));
-            MD_CHECK_CC( metric->SetMaxValueEquation( "100" ));
         }
 
         availabilityEquation = "$DualSubsliceMask 1 AND";
@@ -7279,8 +6197,8 @@ TCompletionCode CreateMetricTreeDG1_OA( CMetricsDevice* metricsDevice, CConcurre
                 METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, NULL, NULL );
             if( metric )
             {
-                MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "dw@0xd4" ));
-                MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x158" ));
+                MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "dw@0xcc" ));
+                MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x148" ));
                 MD_CHECK_CC( metric->SetNormalizationEquation( "GpuDuration" ));
                 MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
                 MD_CHECK_CC( metric->SetMaxValueEquation( "100" ));
@@ -7296,76 +6214,8 @@ TCompletionCode CreateMetricTreeDG1_OA( CMetricsDevice* metricsDevice, CConcurre
                 METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, NULL, NULL );
             if( metric )
             {
-                MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "dw@0xd0" ));
-                MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x150" ));
-                MD_CHECK_CC( metric->SetNormalizationEquation( "GpuDuration" ));
-                MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
-                MD_CHECK_CC( metric->SetMaxValueEquation( "100" ));
-            }
-        }
-
-        availabilityEquation = "$DualSubsliceMask 4 AND";
-        if( MD_IS_INTERNAL_BUILD || metricsDevice->IsAvailabilityEquationTrue( availabilityEquation ) )
-        {
-            metric = metricSet->AddMetric( "Sampler02OutputReady", "Slice0 DualSubslice2 Sampler Output Ready",
-                "The percentage of time in which slice0 dualsubslice2 sampler output is ready",
-                "GPU/Sampler", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_SAMPLER * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
-                METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, NULL, NULL );
-            if( metric )
-            {
-                MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "dw@0xcc" ));
-                MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x148" ));
-                MD_CHECK_CC( metric->SetNormalizationEquation( "GpuDuration" ));
-                MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
-                MD_CHECK_CC( metric->SetMaxValueEquation( "100" ));
-            }
-        }
-
-        availabilityEquation = "$DualSubsliceMask 8 AND";
-        if( MD_IS_INTERNAL_BUILD || metricsDevice->IsAvailabilityEquationTrue( availabilityEquation ) )
-        {
-            metric = metricSet->AddMetric( "Sampler03OutputReady", "Slice0 DualSubslice3 Sampler Output Ready",
-                "The percentage of time in which slice0 dualsubslice3 sampler output is ready",
-                "GPU/Sampler", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_SAMPLER * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
-                METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, NULL, NULL );
-            if( metric )
-            {
                 MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "dw@0xc8" ));
                 MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x140" ));
-                MD_CHECK_CC( metric->SetNormalizationEquation( "GpuDuration" ));
-                MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
-                MD_CHECK_CC( metric->SetMaxValueEquation( "100" ));
-            }
-        }
-
-        availabilityEquation = "$DualSubsliceMask 16 AND";
-        if( MD_IS_INTERNAL_BUILD || metricsDevice->IsAvailabilityEquationTrue( availabilityEquation ) )
-        {
-            metric = metricSet->AddMetric( "Sampler04OutputReady", "Slice0 DualSubslice4 Sampler Output Ready",
-                "The percentage of time in which slice0 dualsubslice4 sampler output is ready",
-                "GPU/Sampler", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_SAMPLER * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
-                METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, NULL, NULL );
-            if( metric )
-            {
-                MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "dw@0xc4" ));
-                MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x138" ));
-                MD_CHECK_CC( metric->SetNormalizationEquation( "GpuDuration" ));
-                MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
-                MD_CHECK_CC( metric->SetMaxValueEquation( "100" ));
-            }
-        }
-
-        availabilityEquation = "$DualSubsliceMask 32 AND";
-        if( MD_IS_INTERNAL_BUILD || metricsDevice->IsAvailabilityEquationTrue( availabilityEquation ) )
-        {
-            metric = metricSet->AddMetric( "Sampler05OutputReady", "Slice0 DualSubslice5 Sampler Output Ready",
-                "The percentage of time in which slice0 dualsubslice5 sampler output is ready",
-                "GPU/Sampler", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_SAMPLER * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
-                METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, NULL, NULL );
-            if( metric )
-            {
-                MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "dw@0xc0" ));
-                MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x130" ));
                 MD_CHECK_CC( metric->SetNormalizationEquation( "GpuDuration" ));
                 MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
                 MD_CHECK_CC( metric->SetMaxValueEquation( "100" ));
@@ -7514,129 +6364,85 @@ TCompletionCode CreateMetricTreeDG1_OA( CMetricsDevice* metricsDevice, CConcurre
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9840, 0x00000000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9884, 0x00000000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0c123e00, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c121600, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x04143e00, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x18141613, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0c323e00, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c321600, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x04343e00, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0c523e00, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x04543e00, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0c723e00, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x04743e00, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0c923e00, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x04943e00, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0cb23e00, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x04b43e00, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x04120033, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x18341600, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0e120086, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1a120033, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x20120000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x02124000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x12138000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x14138000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x02140013, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x00124000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x18124000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x10138000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c13c200, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x001400a6, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x10140000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x00140000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1a150020, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1e320033, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0c140000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x18158000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c150800, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x12320086, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x16320033, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x20320000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c324000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1e330003, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c340013, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x10340000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0e340000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c358000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1a520033, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x20520000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x18524000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c53c000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x18540013, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x10540000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0c540000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c550800, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x16720033, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x20720000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x14724000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c733000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x14740013, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x10740000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0a740000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c750080, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x12920033, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x20920000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x10924000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c930c00, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x10940013, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x08940000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c950008, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0eb20033, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x20b20000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x00b24000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x10b38000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1cb30200, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x00b40013, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x10b40000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x18b58000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x00004000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0e004000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x10004000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x12004000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x34005540, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x36000001, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x02004000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x04004000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x00014000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1a012000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c012000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1e012000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x2a015500, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x2c010005, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x02014000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x04014000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c05c000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x2405bfff, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x26050002, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x22050050, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x14088000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1a081000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c064000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x2406a540, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x26060005, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x10098000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c0900fe, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c078000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x24070002, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x160a1000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x180aa400, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1e0d4001, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x200d0005, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x040e4000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0a0e8000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0c0ec000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x10324000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x14324000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c333c00, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x103400a6, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x14340013, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x08340000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0a340000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c350088, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x220500f0, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x000b4000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0e0b4000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x100b4000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x120b4000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x180b8000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1a0b8000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x100b8000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x120b8000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x140b8000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x160b8000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x180b4000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1a0b4000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x100c8000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1e0c00c2, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x040d4000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0a0d8000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x100dc000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x000e8000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0e0e8000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x180e8000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1a0e8000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x000f4000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x060f8000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0c0fc000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0c0ac000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0e0ac000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x16080055, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1409c000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x16090003, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9884, 0x00000003, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x41104000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x5b105005, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x5d101555, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x11148000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1b14e000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1d14003f, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x13148000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x15148000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x4b114000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x5f11a00a, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x61112aaa, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x47101000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x5b105000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x5d100155, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x4b112000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x5f115000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x61110155, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x01128000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0f128000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x11128000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x13128000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x15128000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x17128000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x19128000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1b128000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x47100000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x4d100000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x4f100204, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x51101a06, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x53101803, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x55101311, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x4f100004, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x51100004, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x53100004, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x55100004, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x17100000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x31100000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x57100007, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x49100511, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9884, 0x00000003, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x65100002, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9884, 0x00000000, REGISTER_TYPE_NOA ));
@@ -7645,8 +6451,8 @@ TCompletionCode CreateMetricTreeDG1_OA( CMetricsDevice* metricsDevice, CConcurre
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xd900, 0x00000000, REGISTER_TYPE_OA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xd904, 0xf0800000, REGISTER_TYPE_OA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xd910, 0x00000000, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xd914, 0x30800000, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xdc40, 0x003f0000, REGISTER_TYPE_OA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xd914, 0x00800000, REGISTER_TYPE_OA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xdc40, 0x000f0000, REGISTER_TYPE_OA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xd940, 0x00000018, REGISTER_TYPE_OA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xd944, 0x0000fffc, REGISTER_TYPE_OA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xdc00, 0x00000018, REGISTER_TYPE_OA ));
@@ -7663,14 +6469,6 @@ TCompletionCode CreateMetricTreeDG1_OA( CMetricsDevice* metricsDevice, CConcurre
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xd95c, 0x0000ff3f, REGISTER_TYPE_OA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xdc18, 0x00000600, REGISTER_TYPE_OA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xdc1c, 0x0000ff3f, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xd960, 0x00001800, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xd964, 0x0000fcff, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xdc20, 0x00001800, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xdc24, 0x0000fcff, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xd968, 0x00006000, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xd96c, 0x0000f3ff, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xdc28, 0x00006000, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xdc2c, 0x0000f3ff, REGISTER_TYPE_OA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xe458, 0x00804704, REGISTER_TYPE_FLEX ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xe558, 0x00a04904, REGISTER_TYPE_FLEX ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xe658, 0x00805705, REGISTER_TYPE_FLEX ));
@@ -7681,7 +6479,7 @@ TCompletionCode CreateMetricTreeDG1_OA( CMetricsDevice* metricsDevice, CConcurre
         MD_CHECK_CC( metricSet->RefreshConfigRegisters() );
     }
      
-    platformMask = PLATFORM_DG1;
+    platformMask = PLATFORM_RKL;
     if( MD_IS_INTERNAL_BUILD || metricsDevice->IsPlatformTypeOf( platformMask ) )
     {
         metricSet = concurrentGroup->AddMetricSet( "TDL_1", "TDL_1", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
@@ -7863,8 +6661,8 @@ TCompletionCode CreateMetricTreeDG1_OA( CMetricsDevice* metricsDevice, CConcurre
                 METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_DUALSUBSLICE, availabilityEquation, NULL, NULL );
             if( metric )
             {
-                MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "dw@0xd4" ));
-                MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x158" ));
+                MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "dw@0xcc" ));
+                MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x148" ));
                 MD_CHECK_CC( metric->SetNormalizationEquation( "GpuDuration" ));
                 MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
                 MD_CHECK_CC( metric->SetMaxValueEquation( "100" ));
@@ -7880,743 +6678,12 @@ TCompletionCode CreateMetricTreeDG1_OA( CMetricsDevice* metricsDevice, CConcurre
                 METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_DUALSUBSLICE, availabilityEquation, NULL, NULL );
             if( metric )
             {
-                MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "dw@0xd0" ));
-                MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x150" ));
-                MD_CHECK_CC( metric->SetNormalizationEquation( "GpuDuration" ));
-                MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
-                MD_CHECK_CC( metric->SetMaxValueEquation( "100" ));
-            }
-        }
-
-        availabilityEquation = "$DualSubsliceMask 4 AND";
-        if( MD_IS_INTERNAL_BUILD || metricsDevice->IsAvailabilityEquationTrue( availabilityEquation ) )
-        {
-            metric = metricSet->AddMetric( "NonPSThread02ReadyForDispatch", "Non-PS Thread Ready For Dispatch on Slice0 DualSubslice2 Thread Dispatcher",
-                "The percentage of time in which non-PS thread is ready for dispatch on slice0 dualsubslice2 thread dispatcher",
-                "GPU/Thread Dispatcher", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_TD * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
-                METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_DUALSUBSLICE, availabilityEquation, NULL, NULL );
-            if( metric )
-            {
-                MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "dw@0xcc" ));
-                MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x148" ));
-                MD_CHECK_CC( metric->SetNormalizationEquation( "GpuDuration" ));
-                MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
-                MD_CHECK_CC( metric->SetMaxValueEquation( "100" ));
-            }
-        }
-
-        availabilityEquation = "$DualSubsliceMask 8 AND";
-        if( MD_IS_INTERNAL_BUILD || metricsDevice->IsAvailabilityEquationTrue( availabilityEquation ) )
-        {
-            metric = metricSet->AddMetric( "NonPSThread03ReadyForDispatch", "Non-PS Thread Ready For Dispatch on Slice0 DualSubslice3 Thread Dispatcher",
-                "The percentage of time in which non-PS thread is ready for dispatch on slice0 dualsubslice3 thread dispatcher",
-                "GPU/Thread Dispatcher", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_TD * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
-                METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_DUALSUBSLICE, availabilityEquation, NULL, NULL );
-            if( metric )
-            {
                 MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "dw@0xc8" ));
                 MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x140" ));
                 MD_CHECK_CC( metric->SetNormalizationEquation( "GpuDuration" ));
                 MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
                 MD_CHECK_CC( metric->SetMaxValueEquation( "100" ));
             }
-        }
-
-        availabilityEquation = "$DualSubsliceMask 16 AND";
-        if( MD_IS_INTERNAL_BUILD || metricsDevice->IsAvailabilityEquationTrue( availabilityEquation ) )
-        {
-            metric = metricSet->AddMetric( "NonPSThread04ReadyForDispatch", "Non-PS Thread Ready For Dispatch on Slice0 DualSubslice4 Thread Dispatcher",
-                "The percentage of time in which non-PS thread is ready for dispatch on slice0 dualsubslice4 thread dispatcher",
-                "GPU/Thread Dispatcher", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_TD * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
-                METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_DUALSUBSLICE, availabilityEquation, NULL, NULL );
-            if( metric )
-            {
-                MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "dw@0xc4" ));
-                MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x138" ));
-                MD_CHECK_CC( metric->SetNormalizationEquation( "GpuDuration" ));
-                MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
-                MD_CHECK_CC( metric->SetMaxValueEquation( "100" ));
-            }
-        }
-
-        availabilityEquation = "$DualSubsliceMask 32 AND";
-        if( MD_IS_INTERNAL_BUILD || metricsDevice->IsAvailabilityEquationTrue( availabilityEquation ) )
-        {
-            metric = metricSet->AddMetric( "NonPSThread05ReadyForDispatch", "Non-PS Thread Ready For Dispatch on Slice0 DualSubslice5 Thread Dispatcher",
-                "The percentage of time in which non-PS thread is ready for dispatch on slice0 dualsubslice5 thread dispatcher",
-                "GPU/Thread Dispatcher", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_TD * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
-                METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_DUALSUBSLICE, availabilityEquation, NULL, NULL );
-            if( metric )
-            {
-                MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "dw@0xc0" ));
-                MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x130" ));
-                MD_CHECK_CC( metric->SetNormalizationEquation( "GpuDuration" ));
-                MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
-                MD_CHECK_CC( metric->SetMaxValueEquation( "100" ));
-            }
-        }
-
-        availabilityEquation = "$DualSubsliceMask 1 AND";
-        if( MD_IS_INTERNAL_BUILD || metricsDevice->IsAvailabilityEquationTrue( availabilityEquation ) )
-        {
-            metric = metricSet->AddMetric( "ThreadHeader00ReadyPort0", "Thread Header Ready on Slice0 DualSubslice0 Thread Dispatcher Port 0",
-                "The percentage of time in which thread header is ready on slice0 dualsubslice0 thread dispatcher port 0",
-                "GPU/Thread Dispatcher", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_TD * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
-                METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_DUALSUBSLICE, availabilityEquation, NULL, NULL );
-            if( metric )
-            {
-                MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "dw@0xe0" ));
-                MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x170" ));
-                MD_CHECK_CC( metric->SetNormalizationEquation( "GpuDuration" ));
-                MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
-                MD_CHECK_CC( metric->SetMaxValueEquation( "100" ));
-            }
-        }
-
-        availabilityEquation = "$DualSubsliceMask 1 AND";
-        if( MD_IS_INTERNAL_BUILD || metricsDevice->IsAvailabilityEquationTrue( availabilityEquation ) )
-        {
-            metric = metricSet->AddMetric( "ThreadHeader00ReadyPort1", "Thread Header Ready on Slice0 DualSubslice0 Thread Dispatcher Port 1",
-                "The percentage of time in which thread header is ready on slice0 dualsubslice0 thread dispatcher port 1",
-                "GPU/Thread Dispatcher", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_TD * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
-                METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_DUALSUBSLICE, availabilityEquation, NULL, NULL );
-            if( metric )
-            {
-                MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "dw@0xe4" ));
-                MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x178" ));
-                MD_CHECK_CC( metric->SetNormalizationEquation( "GpuDuration" ));
-                MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
-                MD_CHECK_CC( metric->SetMaxValueEquation( "100" ));
-            }
-        }
-
-        availabilityEquation = "$DualSubsliceMask 1 AND";
-        if( MD_IS_INTERNAL_BUILD || metricsDevice->IsAvailabilityEquationTrue( availabilityEquation ) )
-        {
-            metric = metricSet->AddMetric( "ThreadHeader00ReadyPort2", "Thread Header Ready on Slice0 DualSubslice0 Thread Dispatcher Port 2",
-                "The percentage of time in which thread header is ready on slice0 dualsubslice0 thread dispatcher port 2",
-                "GPU/Thread Dispatcher", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_TD * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
-                METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_DUALSUBSLICE, availabilityEquation, NULL, NULL );
-            if( metric )
-            {
-                MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "dw@0xe8" ));
-                MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x180" ));
-                MD_CHECK_CC( metric->SetNormalizationEquation( "GpuDuration" ));
-                MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
-                MD_CHECK_CC( metric->SetMaxValueEquation( "100" ));
-            }
-        }
-
-        availabilityEquation = "$DualSubsliceMask 1 AND";
-        if( MD_IS_INTERNAL_BUILD || metricsDevice->IsAvailabilityEquationTrue( availabilityEquation ) )
-        {
-            metric = metricSet->AddMetric( "ThreadHeader00ReadyPort3", "Thread Header Ready on Slice0 DualSubslice0 Thread Dispatcher Port 3",
-                "The percentage of time in which thread header is ready on slice0 dualsubslice0 thread dispatcher port 3",
-                "GPU/Thread Dispatcher", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_TD * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
-                METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_DUALSUBSLICE, availabilityEquation, NULL, NULL );
-            if( metric )
-            {
-                MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "dw@0xec" ));
-                MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x188" ));
-                MD_CHECK_CC( metric->SetNormalizationEquation( "GpuDuration" ));
-                MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
-                MD_CHECK_CC( metric->SetMaxValueEquation( "100" ));
-            }
-        }
-
-        availabilityEquation = "$DualSubsliceMask 2 AND";
-        if( MD_IS_INTERNAL_BUILD || metricsDevice->IsAvailabilityEquationTrue( availabilityEquation ) )
-        {
-            metric = metricSet->AddMetric( "ThreadHeader01ReadyPort0", "Thread Header Ready on Slice0 DualSubslice1 Thread Dispatcher Port 0",
-                "The percentage of time in which thread header is ready on slice0 dualsubslice1 thread dispatcher port 0",
-                "GPU/Thread Dispatcher", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_TD * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
-                METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_DUALSUBSLICE, availabilityEquation, NULL, NULL );
-            if( metric )
-            {
-                MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "dw@0xf0" ));
-                MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x190" ));
-                MD_CHECK_CC( metric->SetNormalizationEquation( "GpuDuration" ));
-                MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
-                MD_CHECK_CC( metric->SetMaxValueEquation( "100" ));
-            }
-        }
-
-        availabilityEquation = "$DualSubsliceMask 2 AND";
-        if( MD_IS_INTERNAL_BUILD || metricsDevice->IsAvailabilityEquationTrue( availabilityEquation ) )
-        {
-            metric = metricSet->AddMetric( "ThreadHeader01ReadyPort1", "Thread Header Ready on Slice0 DualSubslice1 Thread Dispatcher Port 1",
-                "The percentage of time in which thread header is ready on slice0 dualsubslice1 thread dispatcher port 1",
-                "GPU/Thread Dispatcher", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_TD * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
-                METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_DUALSUBSLICE, availabilityEquation, NULL, NULL );
-            if( metric )
-            {
-                MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "dw@0xf4" ));
-                MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x198" ));
-                MD_CHECK_CC( metric->SetNormalizationEquation( "GpuDuration" ));
-                MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
-                MD_CHECK_CC( metric->SetMaxValueEquation( "100" ));
-            }
-        }
-
-        availabilityEquation = "$DualSubsliceMask 2 AND";
-        if( MD_IS_INTERNAL_BUILD || metricsDevice->IsAvailabilityEquationTrue( availabilityEquation ) )
-        {
-            metric = metricSet->AddMetric( "ThreadHeader01ReadyPort2", "Thread Header Ready on Slice0 DualSubslice1 Thread Dispatcher Port 2",
-                "The percentage of time in which thread header is ready on slice0 dualsubslice1 thread dispatcher port 2",
-                "GPU/Thread Dispatcher", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_TD * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
-                METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_DUALSUBSLICE, availabilityEquation, NULL, NULL );
-            if( metric )
-            {
-                MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "dw@0xf8" ));
-                MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x1a0" ));
-                MD_CHECK_CC( metric->SetNormalizationEquation( "GpuDuration" ));
-                MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
-                MD_CHECK_CC( metric->SetMaxValueEquation( "100" ));
-            }
-        }
-
-        availabilityEquation = "$DualSubsliceMask 2 AND";
-        if( MD_IS_INTERNAL_BUILD || metricsDevice->IsAvailabilityEquationTrue( availabilityEquation ) )
-        {
-            metric = metricSet->AddMetric( "ThreadHeader01ReadyPort3", "Thread Header Ready on Slice0 DualSubslice1 Thread Dispatcher Port 3",
-                "The percentage of time in which thread header is ready on slice0 dualsubslice1 thread dispatcher port 3",
-                "GPU/Thread Dispatcher", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_TD * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
-                METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_DUALSUBSLICE, availabilityEquation, NULL, NULL );
-            if( metric )
-            {
-                MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "dw@0xfc" ));
-                MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x1a8" ));
-                MD_CHECK_CC( metric->SetNormalizationEquation( "GpuDuration" ));
-                MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
-                MD_CHECK_CC( metric->SetMaxValueEquation( "100" ));
-            }
-        }
-
-        availabilityEquation = "$DualSubsliceMask 1 AND";
-        if( MD_IS_INTERNAL_BUILD || metricsDevice->IsAvailabilityEquationTrue( availabilityEquation ) )
-        {
-            metric = metricSet->AddMetric( "ThreadHeader00Ready", "Thread Header Ready on Slice0 DualSubslice0 Thread Dispatcher",
-                "The percentage of time in which thread header is ready on slice0 dualsubslice0 thread dispatcher",
-                "GPU/Thread Dispatcher", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_TD * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
-                METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_DUALSUBSLICE, availabilityEquation, NULL, NULL );
-            if( metric )
-            {
-                MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "dw@0xd8" ));
-                MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x160" ));
-                MD_CHECK_CC( metric->SetNormalizationEquation( "GpuDuration" ));
-                MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
-                MD_CHECK_CC( metric->SetMaxValueEquation( "100" ));
-            }
-        }
-
-        availabilityEquation = "$DualSubsliceMask 2 AND";
-        if( MD_IS_INTERNAL_BUILD || metricsDevice->IsAvailabilityEquationTrue( availabilityEquation ) )
-        {
-            metric = metricSet->AddMetric( "ThreadHeader01Ready", "Thread Header Ready on Slice0 DualSubslice1 Thread Dispatcher",
-                "The percentage of time in which thread header is ready on slice0 dualsubslice1 thread dispatcher",
-                "GPU/Thread Dispatcher", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_TD * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
-                METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_DUALSUBSLICE, availabilityEquation, NULL, NULL );
-            if( metric )
-            {
-                MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "dw@0xdc" ));
-                MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x168" ));
-                MD_CHECK_CC( metric->SetNormalizationEquation( "GpuDuration" ));
-                MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
-                MD_CHECK_CC( metric->SetMaxValueEquation( "100" ));
-            }
-        }
-
-        information = metricSet->AddInformation( "QueryBeginTime", "Query Begin Time",
-            "The measurement begin time.",
-            "Report Meta Data", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
-            INFORMATION_TYPE_TIMESTAMP, "ns", NULL );
-        if( information )
-        {
-            MD_CHECK_CC( information->SetSnapshotReportReadEquation( "dw@0x04 1000000000 UMUL $GpuTimestampFrequency UDIV" ));
-            MD_CHECK_CC( information->SetDeltaReportReadEquation( "qw@0x1b0" ));
-            MD_CHECK_CC( information->SetOverflowFunction( "NS_TIME" ));
-        }
-
-        information = metricSet->AddInformation( "CoreFrequencyMHz", "GPU Core Frequency",
-            "The last GPU core (unslice) frequency in the measurement.",
-            "Report Meta Data", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
-            INFORMATION_TYPE_VALUE, "MHz", NULL );
-        if( information )
-        {
-            MD_CHECK_CC( information->SetSnapshotReportReadEquation( "dw@0x0 0x1ff AND 16666 UMUL 1000 UDIV" ));
-            MD_CHECK_CC( information->SetDeltaReportReadEquation( "qw@0x208 1000000 UDIV" ));
-        }
-
-        information = metricSet->AddInformation( "EuSliceFrequencyMHz", "EU Slice Frequency",
-            "The last GPU Execution Unit slice frequency in the measurement.",
-            "Report Meta Data", API_TYPE_IOSTREAM,
-            INFORMATION_TYPE_VALUE, "MHz", NULL );
-        if( information )
-        {
-            MD_CHECK_CC( information->SetSnapshotReportReadEquation( "dw@0x0 25 >> dw@0x0 9 >> 0x3 AND OR 16666 UMUL 1000 UDIV" ));
-        }
-
-        information = metricSet->AddInformation( "ReportReason", "Report Reason",
-            "The reason of the report.",
-            "Report Meta Data", API_TYPE_IOSTREAM,
-            INFORMATION_TYPE_REPORT_REASON, NULL, NULL );
-        if( information )
-        {
-            MD_CHECK_CC( information->SetSnapshotReportReadEquation( "dw@0x0 19 >> 0x3f AND" ));
-        }
-
-        information = metricSet->AddInformation( "ContextIdValid", "Context ID Valid",
-            "When set indicates render context is valid",
-            "Report Meta Data", API_TYPE_IOSTREAM,
-            INFORMATION_TYPE_FLAG, NULL, NULL );
-        if( information )
-        {
-            MD_CHECK_CC( information->SetSnapshotReportReadEquation( "dw@0x0 16 >> 0x1 AND" ));
-        }
-
-        information = metricSet->AddInformation( "ContextId", "Context ID",
-            "The context tag in which report has been taken.",
-            "Report Meta Data", API_TYPE_IOSTREAM,
-            INFORMATION_TYPE_CONTEXT_ID_TAG, NULL, NULL );
-        if( information )
-        {
-            MD_CHECK_CC( information->SetSnapshotReportReadEquation( "dw@0x08 0xfffff AND dw@0x0 16 >> 0x1 AND UMUL" ));
-        }
-
-        information = metricSet->AddInformation( "CoreFrequencyChanged", "GPU Core Frequency Changed",
-            "The flag indicating that GPU core frequency has changed.",
-            "Exception", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
-            INFORMATION_TYPE_FLAG, NULL, NULL );
-        if( information )
-        {
-            
-            MD_CHECK_CC( information->SetDeltaReportReadEquation( "dw@0x204" ));
-        }
-
-        information = metricSet->AddInformation( "QuerySplitOccurred", "Query Split Occurred",
-            "The flag indicating that query has been split during execution on the GPU.",
-            "Exception", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
-            INFORMATION_TYPE_FLAG, NULL, NULL );
-        if( information )
-        {
-            
-            MD_CHECK_CC( information->SetDeltaReportReadEquation( "dw@0x200" ));
-        }
-
-        information = metricSet->AddInformation( "ReportId", "Query report id",
-            "Query report identification number.",
-            "Report Meta Data", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
-            INFORMATION_TYPE_VALUE, NULL, NULL );
-        if( information )
-        {
-            
-            MD_CHECK_CC( information->SetDeltaReportReadEquation( "dw@0x210" ));
-        }
-
-        information = metricSet->AddInformation( "ReportsCount", "Query reports count",
-            "The number of available query reports.",
-            "Report Meta Data", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
-            INFORMATION_TYPE_VALUE, NULL, NULL );
-        if( information )
-        {
-            
-            MD_CHECK_CC( information->SetDeltaReportReadEquation( "dw@0x214" ));
-        }
-
-        information = metricSet->AddInformation( "OverrunOccured", "Query Overrun Occurred",
-            "The flag indicating that Oa buffer has been overran.",
-            "Exception", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
-            INFORMATION_TYPE_FLAG, NULL, NULL );
-        if( information )
-        {
-            
-            MD_CHECK_CC( information->SetDeltaReportReadEquation( "dw@0x1cc" ));
-        }
-
-        information = metricSet->AddInformation( "ReportError", "Query report error",
-            "An error in the query execution, the received report should be ignored.",
-            "Report Meta Data", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
-            INFORMATION_TYPE_FLAG, NULL, NULL );
-        if( information )
-        {
-            
-            MD_CHECK_CC( information->SetDeltaReportReadEquation( "dw@0x29c 0x03 AND" ));
-        }
-
-        information = metricSet->AddInformation( "ReportLost", "Query report lost",
-            "Begin or end query report has not been triggered due to hw limitations.",
-            "Report Meta Data", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
-            INFORMATION_TYPE_FLAG, NULL, NULL );
-        if( information )
-        {
-            
-            MD_CHECK_CC( information->SetDeltaReportReadEquation( "dw@0x29c 0x01 AND" ));
-        }
-
-        information = metricSet->AddInformation( "ReportInconsistent", "Query report inconsistent",
-            "The contextId inconsistency in the Oa buffer within the query window.",
-            "Report Meta Data", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
-            INFORMATION_TYPE_FLAG, NULL, NULL );
-        if( information )
-        {
-            
-            MD_CHECK_CC( information->SetDeltaReportReadEquation( "dw@0x29c 0x02 AND" ));
-        }
-
-        MD_CHECK_CC( metricSet->AddStartRegisterSet( 0, 0 ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x0d04, 0x00000200, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9840, 0x00000000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9884, 0x00000000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x2611001c, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x2631001c, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x2651001c, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x2671001c, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x2691001c, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x26b1001c, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x16110103, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c110104, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1e110105, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x02110106, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x04110107, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x10110000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0a110000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0e110000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x00110000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x16128000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c128000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1e128000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x02128000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x04128000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c132000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1e130003, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x12138000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x14138000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x14310103, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x06310104, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x08310105, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0a310106, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0c310107, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x10310000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x02310000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x04310000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x14328000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x06328000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x08328000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0a328000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0c328000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c331100, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x16338000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x18338000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1a338000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x12510103, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x10510000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x08510000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x12528000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c530800, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x10710103, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x08710000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x10728000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c730400, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0e910103, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x10910000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x06910000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0e928000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c930200, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x00b10103, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x10b10000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x00b28000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x10b38000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x00004000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0e004000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x10004000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x12004000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x34004140, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x36000001, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x02004000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x04004000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x06004000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x08004000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0a004000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0c004000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x00014000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1a012000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c012000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1e012000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x2a010500, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x2c010005, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x02014000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x04014000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x06014000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x08014000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0a014000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x18012000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c05c000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x240541bf, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x26050001, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x2205aa50, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c080320, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x14088000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1a081000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c064000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x24060640, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x10098000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c09000e, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c078000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x160a1000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x180a0800, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1e0d4001, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x040e4000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0a0e8000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x000b4000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0e0b4000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x120b8000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9884, 0x00000003, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x41104000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x5b105555, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x5d101415, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x11148000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1b14fc00, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1d140033, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x13148000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x15148000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x17148000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x4b114000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x5f11aaaa, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x6111282a, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x47101000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x4d100313, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x4f100a02, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x51101318, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x53100001, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x17100000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x31100000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x55101110, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x57100001, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x49101111, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x4b101313, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9884, 0x00000003, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x65100002, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9884, 0x00000000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x42000001, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xd920, 0x00000000, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xd900, 0x00000000, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xd904, 0xf0800000, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xd910, 0x00000000, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xd914, 0xf0800000, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xdc40, 0x00ff0000, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xd940, 0x00000002, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xd944, 0x0000fffe, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xdc00, 0x00000002, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xdc04, 0x0000fffe, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xd948, 0x00000002, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xd94c, 0x0000fffd, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xdc08, 0x00000002, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xdc0c, 0x0000fffd, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xd950, 0x00000002, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xd954, 0x0000fffb, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xdc10, 0x00000002, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xdc14, 0x0000fffb, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xd958, 0x00000002, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xd95c, 0x0000fff7, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xdc18, 0x00000002, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xdc1c, 0x0000fff7, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xd960, 0x00000002, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xd964, 0x0000ffef, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xdc20, 0x00000002, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xdc24, 0x0000ffef, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xd968, 0x00000002, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xd96c, 0x0000ffdf, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xdc28, 0x00000002, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xdc2c, 0x0000ffdf, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xd970, 0x00007800, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xd974, 0x0000f0ff, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xdc30, 0x00007800, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xdc34, 0x0000f0ff, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xd978, 0x00078000, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xd97c, 0x00000fff, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xdc38, 0x00078000, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xdc3c, 0x00000fff, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xe458, 0x00804704, REGISTER_TYPE_FLEX ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xe558, 0x00a04904, REGISTER_TYPE_FLEX ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xe658, 0x00805705, REGISTER_TYPE_FLEX ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xe758, 0x00a05905, REGISTER_TYPE_FLEX ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xe45c, 0x00808708, REGISTER_TYPE_FLEX ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xe55c, 0x00a08908, REGISTER_TYPE_FLEX ));
-  
-        MD_CHECK_CC( metricSet->RefreshConfigRegisters() );
-    }
-     
-    platformMask = PLATFORM_DG1;
-    if( MD_IS_INTERNAL_BUILD || metricsDevice->IsPlatformTypeOf( platformMask ) )
-    {
-        metricSet = concurrentGroup->AddMetricSet( "TDL_2", "TDL_2", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
-           GPU_RENDER|GPU_COMPUTE|GPU_MEDIA|GPU_GENERIC, 256, 672, OA_REPORT_TYPE_256B_A45_NOA16, platformMask );
-        MD_CHECK_PTR( metricSet );
-        
-        MD_CHECK_CC( metricSet->SetApiSpecificId("GPAV", 0, 0x40000000, 0x80000203, 0, 0,
-            "Intel Performance Counters for GT Set Dynamic", 0, "Intel_Raw_Hardware_Counters_Set_0_Query", 0) );
-  
-        availabilityEquation = NULL;
-        metric = metricSet->AddMetric( "GpuTime", "GPU Time Elapsed",
-            "Time elapsed on the GPU during the measurement.",
-            "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_TIER_1|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
-            METRIC_TYPE_DURATION, RESULT_UINT64, "ns", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
-        if( metric )
-        {
-            MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "dw@0x04 1000000000 UMUL $GpuTimestampFrequency UDIV" ));
-            MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x00" ));
-            MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "NS_TIME" ));
-        }
-
-        availabilityEquation = NULL;
-        metric = metricSet->AddMetric( "GpuCoreClocks", "GPU Core Clocks",
-            "The total number of GPU core clocks elapsed during the measurement.",
-            "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_TIER_1|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
-            METRIC_TYPE_EVENT, RESULT_UINT64, "cycles", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
-        if( metric )
-        {
-            MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "dw@0x0c" ));
-            MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x08" ));
-            MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
-        }
-
-        availabilityEquation = NULL;
-        metric = metricSet->AddMetric( "AvgGpuCoreFrequencyMHz", "AVG GPU Core Frequency",
-            "Average GPU Core Frequency in the measurement.",
-            "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_TIER_1|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
-            METRIC_TYPE_EVENT, RESULT_UINT64, "MHz", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
-        if( metric )
-        {
-            
-            MD_CHECK_CC( metric->SetNormalizationEquation( "$GpuCoreClocks 1000 UMUL $$GpuTime UDIV" ));
-        }
-
-        availabilityEquation = NULL;
-        metric = metricSet->AddMetric( "GpuBusy", "GPU Busy",
-            "The percentage of time in which the GPU has been processing GPU commands.",
-            "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_TIER_1|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
-            METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
-        if( metric )
-        {
-            MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "rd40@0x10:0xa0" ));
-            MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x10" ));
-            MD_CHECK_CC( metric->SetNormalizationEquation( "GpuDuration" ));
-            MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 40" ));
-            MD_CHECK_CC( metric->SetMaxValueEquation( "100" ));
-        }
-
-        availabilityEquation = NULL;
-        metric = metricSet->AddMetric( "VsThreads", "VS Threads Dispatched",
-            "The total number of vertex shader hardware threads dispatched.",
-            "EU Array/Vertex Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_VS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
-            METRIC_TYPE_EVENT, RESULT_UINT64, "threads", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
-        if( metric )
-        {
-            MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "rd40@0x14:0xa1" ));
-            MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x18" ));
-            MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 40" ));
-        }
-
-        availabilityEquation = NULL;
-        metric = metricSet->AddMetric( "HsThreads", "HS Threads Dispatched",
-            "The total number of hull shader hardware threads dispatched.",
-            "EU Array/Hull Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_HS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
-            METRIC_TYPE_EVENT, RESULT_UINT64, "threads", 0, 0, HW_UNIT_GPU, availabilityEquation, "Hull|Control,hull|control,HS|TCS", "oa.fixed" );
-        if( metric )
-        {
-            MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "rd40@0x18:0xa2" ));
-            MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x20" ));
-            MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 40" ));
-        }
-
-        availabilityEquation = NULL;
-        metric = metricSet->AddMetric( "DsThreads", "DS Threads Dispatched",
-            "The total number of domain shader hardware threads dispatched.",
-            "EU Array/Domain Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_DS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
-            METRIC_TYPE_EVENT, RESULT_UINT64, "threads", 0, 0, HW_UNIT_GPU, availabilityEquation, "Domain|Evaluation,domain|evaluation,DS|TES", "oa.fixed" );
-        if( metric )
-        {
-            MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "rd40@0x1c:0xa3" ));
-            MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x28" ));
-            MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 40" ));
-        }
-
-        availabilityEquation = NULL;
-        metric = metricSet->AddMetric( "GsThreads", "GS Threads Dispatched",
-            "The total number of geometry shader hardware threads dispatched.",
-            "EU Array/Geometry Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_GS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
-            METRIC_TYPE_EVENT, RESULT_UINT64, "threads", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
-        if( metric )
-        {
-            MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "rd40@0x24:0xa5" ));
-            MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x38" ));
-            MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 40" ));
-        }
-
-        availabilityEquation = NULL;
-        metric = metricSet->AddMetric( "PsThreads", "PS Threads Dispatched",
-            "The total number of pixel shader hardware threads dispatched.",
-            "EU Array/Pixel Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_PS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
-            METRIC_TYPE_EVENT, RESULT_UINT64, "threads", 0, 0, HW_UNIT_GPU, availabilityEquation, "Pixel|Fragment,PS|FS,pixel|fragment", "oa.fixed" );
-        if( metric )
-        {
-            MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "rd40@0x28:0xa6" ));
-            MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x40" ));
-            MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 40" ));
-        }
-
-        availabilityEquation = NULL;
-        metric = metricSet->AddMetric( "CsThreads", "CS Threads Dispatched",
-            "The total number of compute shader hardware threads dispatched.",
-            "EU Array/Compute Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_CS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
-            METRIC_TYPE_EVENT, RESULT_UINT64, "threads", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
-        if( metric )
-        {
-            MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "rd40@0x20:0xa4" ));
-            MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x30" ));
-            MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 40" ));
-        }
-
-        availabilityEquation = NULL;
-        metric = metricSet->AddMetric( "EuActive", "EU Active",
-            "The percentage of time in which the Execution Units were actively processing.",
-            "EU Array", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000), USAGE_FLAG_TIER_2|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
-            METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
-        if( metric )
-        {
-            MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "rd40@0x2c:0xa7 rd40@0x30:0xa8 FADD rd40@0x34:0xa9 FADD rd40@0x38:0xaa FADD" ));
-            MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x48 qw@0x50 FADD qw@0x58 FADD qw@0x60 FADD" ));
-            MD_CHECK_CC( metric->SetNormalizationEquation( "EuAggrDuration" ));
-            MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 40" ));
-            MD_CHECK_CC( metric->SetMaxValueEquation( "100" ));
-        }
-
-        availabilityEquation = NULL;
-        metric = metricSet->AddMetric( "EuStall", "EU Stall",
-            "The percentage of time in which the Execution Units were stalled.",
-            "EU Array", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000), USAGE_FLAG_TIER_2|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
-            METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
-        if( metric )
-        {
-            MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "rd40@0x3c:0xab rd40@0x40:0xac FADD rd40@0x44:0xad FADD rd40@0x48:0xae FADD" ));
-            MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x68 qw@0x70 FADD qw@0x78 FADD qw@0x80 FADD" ));
-            MD_CHECK_CC( metric->SetNormalizationEquation( "EuAggrDuration" ));
-            MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 40" ));
-            MD_CHECK_CC( metric->SetMaxValueEquation( "100" ));
-        }
-
-        availabilityEquation = NULL;
-        metric = metricSet->AddMetric( "EuThreadOccupancy", "EU Thread Occupancy",
-            "The percentage of time in which hardware threads occupied EUs.",
-            "EU Array", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000), USAGE_FLAG_TIER_2|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
-            METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
-        if( metric )
-        {
-            MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "8 rd40@0x4c:0xaf rd40@0x50:0xb0 FADD rd40@0x54:0xb1 FADD rd40@0x58:0xb2 FADD FMUL $EuThreadsCount FDIV" ));
-            MD_CHECK_CC( metric->SetDeltaReportReadEquation( "8 qw@0x88 qw@0x90 FADD qw@0x98 FADD qw@0xa0 FADD FMUL $EuThreadsCount FDIV" ));
-            MD_CHECK_CC( metric->SetNormalizationEquation( "EuAggrDuration" ));
-            MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 40" ));
-            MD_CHECK_CC( metric->SetMaxValueEquation( "100" ));
         }
 
         availabilityEquation = "$DualSubsliceMask 1 AND";
@@ -8628,8 +6695,8 @@ TCompletionCode CreateMetricTreeDG1_OA( CMetricsDevice* metricsDevice, CConcurre
                 METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_DUALSUBSLICE, availabilityEquation, NULL, NULL );
             if( metric )
             {
-                MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "dw@0xd4" ));
-                MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x158" ));
+                MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "dw@0xc0" ));
+                MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x130" ));
                 MD_CHECK_CC( metric->SetNormalizationEquation( "GpuDuration" ));
                 MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
                 MD_CHECK_CC( metric->SetMaxValueEquation( "100" ));
@@ -8645,57 +6712,6 @@ TCompletionCode CreateMetricTreeDG1_OA( CMetricsDevice* metricsDevice, CConcurre
                 METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_DUALSUBSLICE, availabilityEquation, NULL, NULL );
             if( metric )
             {
-                MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "dw@0xd0" ));
-                MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x150" ));
-                MD_CHECK_CC( metric->SetNormalizationEquation( "GpuDuration" ));
-                MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
-                MD_CHECK_CC( metric->SetMaxValueEquation( "100" ));
-            }
-        }
-
-        availabilityEquation = "$DualSubsliceMask 4 AND";
-        if( MD_IS_INTERNAL_BUILD || metricsDevice->IsAvailabilityEquationTrue( availabilityEquation ) )
-        {
-            metric = metricSet->AddMetric( "PSThread02ReadyForDispatch", "PS Thread Ready For Dispatch on Slice0 Dualsubslice2 Thread Dispatcher",
-                "The percentage of time in which PS thread is ready for dispatch on slice0 dualsubslice2 thread dispatcher",
-                "GPU/Thread Dispatcher", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_TD * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
-                METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_DUALSUBSLICE, availabilityEquation, NULL, NULL );
-            if( metric )
-            {
-                MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "dw@0xcc" ));
-                MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x148" ));
-                MD_CHECK_CC( metric->SetNormalizationEquation( "GpuDuration" ));
-                MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
-                MD_CHECK_CC( metric->SetMaxValueEquation( "100" ));
-            }
-        }
-
-        availabilityEquation = "$DualSubsliceMask 8 AND";
-        if( MD_IS_INTERNAL_BUILD || metricsDevice->IsAvailabilityEquationTrue( availabilityEquation ) )
-        {
-            metric = metricSet->AddMetric( "PSThread03ReadyForDispatch", "PS Thread Ready For Dispatch on Slice0 Dualsubslice3 Thread Dispatcher",
-                "The percentage of time in which PS thread is ready for dispatch on slice0 dualsubslice3 thread dispatcher",
-                "GPU/Thread Dispatcher", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_TD * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
-                METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_DUALSUBSLICE, availabilityEquation, NULL, NULL );
-            if( metric )
-            {
-                MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "dw@0xc8" ));
-                MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x140" ));
-                MD_CHECK_CC( metric->SetNormalizationEquation( "GpuDuration" ));
-                MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
-                MD_CHECK_CC( metric->SetMaxValueEquation( "100" ));
-            }
-        }
-
-        availabilityEquation = "$DualSubsliceMask 16 AND";
-        if( MD_IS_INTERNAL_BUILD || metricsDevice->IsAvailabilityEquationTrue( availabilityEquation ) )
-        {
-            metric = metricSet->AddMetric( "PSThread04ReadyForDispatch", "PS Thread Ready For Dispatch on Slice0 Dualsubslice4 Thread Dispatcher",
-                "The percentage of time in which PS thread is ready for dispatch on slice0 dualsubslice4 thread dispatcher",
-                "GPU/Thread Dispatcher", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_TD * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
-                METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_DUALSUBSLICE, availabilityEquation, NULL, NULL );
-            if( metric )
-            {
                 MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "dw@0xc4" ));
                 MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x138" ));
                 MD_CHECK_CC( metric->SetNormalizationEquation( "GpuDuration" ));
@@ -8704,79 +6720,28 @@ TCompletionCode CreateMetricTreeDG1_OA( CMetricsDevice* metricsDevice, CConcurre
             }
         }
 
-        availabilityEquation = "$DualSubsliceMask 32 AND";
+        availabilityEquation = "$DualSubsliceMask 1 AND";
         if( MD_IS_INTERNAL_BUILD || metricsDevice->IsAvailabilityEquationTrue( availabilityEquation ) )
         {
-            metric = metricSet->AddMetric( "PSThread05ReadyForDispatch", "PS Thread Ready For Dispatch on Slice0 Dualsubslice5 Thread Dispatcher",
-                "The percentage of time in which PS thread is ready for dispatch on slice0 dualsubslice5 thread dispatcher",
+            metric = metricSet->AddMetric( "ThreadHeader00ReadyPort0", "Thread Header Ready on Slice0 DualSubslice0 Thread Dispatcher Port 0",
+                "The percentage of time in which thread header is ready on slice0 dualsubslice0 thread dispatcher port 0",
                 "GPU/Thread Dispatcher", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_TD * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
                 METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_DUALSUBSLICE, availabilityEquation, NULL, NULL );
             if( metric )
             {
-                MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "dw@0xc0" ));
-                MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x130" ));
+                MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "dw@0xfc" ));
+                MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x1a8" ));
                 MD_CHECK_CC( metric->SetNormalizationEquation( "GpuDuration" ));
                 MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
                 MD_CHECK_CC( metric->SetMaxValueEquation( "100" ));
             }
         }
 
-        availabilityEquation = "$DualSubsliceMask 32 AND";
+        availabilityEquation = "$DualSubsliceMask 1 AND";
         if( MD_IS_INTERNAL_BUILD || metricsDevice->IsAvailabilityEquationTrue( availabilityEquation ) )
         {
-            metric = metricSet->AddMetric( "ThreadHeader05Ready", "Thread Header Ready on Slice0 DualSubslice5 Thread Dispatcher",
-                "The percentage of time in which thread header is ready on slice0 dualsubslice5 thread dispatcher",
-                "GPU/Thread Dispatcher", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_TD * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
-                METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_DUALSUBSLICE, availabilityEquation, NULL, NULL );
-            if( metric )
-            {
-                MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "dw@0xd8" ));
-                MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x160" ));
-                MD_CHECK_CC( metric->SetNormalizationEquation( "GpuDuration" ));
-                MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
-                MD_CHECK_CC( metric->SetMaxValueEquation( "100" ));
-            }
-        }
-
-        availabilityEquation = "$DualSubsliceMask 32 AND";
-        if( MD_IS_INTERNAL_BUILD || metricsDevice->IsAvailabilityEquationTrue( availabilityEquation ) )
-        {
-            metric = metricSet->AddMetric( "ThreadHeader05ReadyPort0", "Thread Header Ready on Slice0 DualSubslice5 Thread Dispatcher Port 0",
-                "The percentage of time in which thread header is ready on slice0 dualsubslice5 thread dispatcher port 0",
-                "GPU/Thread Dispatcher", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_TD * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
-                METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_DUALSUBSLICE, availabilityEquation, NULL, NULL );
-            if( metric )
-            {
-                MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "dw@0xf0" ));
-                MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x190" ));
-                MD_CHECK_CC( metric->SetNormalizationEquation( "GpuDuration" ));
-                MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
-                MD_CHECK_CC( metric->SetMaxValueEquation( "100" ));
-            }
-        }
-
-        availabilityEquation = "$DualSubsliceMask 32 AND";
-        if( MD_IS_INTERNAL_BUILD || metricsDevice->IsAvailabilityEquationTrue( availabilityEquation ) )
-        {
-            metric = metricSet->AddMetric( "ThreadHeader05ReadyPort1", "Thread Header Ready on Slice0 DualSubslice5 Thread Dispatcher Port 1",
-                "The percentage of time in which thread header is ready on slice0 dualsubslice5 thread dispatcher port 1",
-                "GPU/Thread Dispatcher", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_TD * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
-                METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_DUALSUBSLICE, availabilityEquation, NULL, NULL );
-            if( metric )
-            {
-                MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "dw@0xf4" ));
-                MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x198" ));
-                MD_CHECK_CC( metric->SetNormalizationEquation( "GpuDuration" ));
-                MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
-                MD_CHECK_CC( metric->SetMaxValueEquation( "100" ));
-            }
-        }
-
-        availabilityEquation = "$DualSubsliceMask 32 AND";
-        if( MD_IS_INTERNAL_BUILD || metricsDevice->IsAvailabilityEquationTrue( availabilityEquation ) )
-        {
-            metric = metricSet->AddMetric( "ThreadHeader05ReadyPort2", "Thread Header Ready on Slice0 DualSubslice5 Thread Dispatcher Port 2",
-                "The percentage of time in which thread header is ready on slice0 dualsubslice5 thread dispatcher port 2",
+            metric = metricSet->AddMetric( "ThreadHeader00ReadyPort1", "Thread Header Ready on Slice0 DualSubslice0 Thread Dispatcher Port 1",
+                "The percentage of time in which thread header is ready on slice0 dualsubslice0 thread dispatcher port 1",
                 "GPU/Thread Dispatcher", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_TD * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
                 METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_DUALSUBSLICE, availabilityEquation, NULL, NULL );
             if( metric )
@@ -8789,17 +6754,136 @@ TCompletionCode CreateMetricTreeDG1_OA( CMetricsDevice* metricsDevice, CConcurre
             }
         }
 
-        availabilityEquation = "$DualSubsliceMask 32 AND";
+        availabilityEquation = "$DualSubsliceMask 1 AND";
         if( MD_IS_INTERNAL_BUILD || metricsDevice->IsAvailabilityEquationTrue( availabilityEquation ) )
         {
-            metric = metricSet->AddMetric( "ThreadHeader05ReadyPort3", "Thread Header Ready on Slice0 DualSubslice5 Thread Dispatcher Port 3",
-                "The percentage of time in which thread header is ready on slice0 dualsubslice5 thread dispatcher port 3",
+            metric = metricSet->AddMetric( "ThreadHeader00ReadyPort2", "Thread Header Ready on Slice0 DualSubslice0 Thread Dispatcher Port 2",
+                "The percentage of time in which thread header is ready on slice0 dualsubslice0 thread dispatcher port 2",
                 "GPU/Thread Dispatcher", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_TD * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
                 METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_DUALSUBSLICE, availabilityEquation, NULL, NULL );
             if( metric )
             {
-                MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "dw@0xfc" ));
-                MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x1a8" ));
+                MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "dw@0xf4" ));
+                MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x198" ));
+                MD_CHECK_CC( metric->SetNormalizationEquation( "GpuDuration" ));
+                MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
+                MD_CHECK_CC( metric->SetMaxValueEquation( "100" ));
+            }
+        }
+
+        availabilityEquation = "$DualSubsliceMask 1 AND";
+        if( MD_IS_INTERNAL_BUILD || metricsDevice->IsAvailabilityEquationTrue( availabilityEquation ) )
+        {
+            metric = metricSet->AddMetric( "ThreadHeader00ReadyPort3", "Thread Header Ready on Slice0 DualSubslice0 Thread Dispatcher Port 3",
+                "The percentage of time in which thread header is ready on slice0 dualsubslice0 thread dispatcher port 3",
+                "GPU/Thread Dispatcher", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_TD * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+                METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_DUALSUBSLICE, availabilityEquation, NULL, NULL );
+            if( metric )
+            {
+                MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "dw@0xf0" ));
+                MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x190" ));
+                MD_CHECK_CC( metric->SetNormalizationEquation( "GpuDuration" ));
+                MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
+                MD_CHECK_CC( metric->SetMaxValueEquation( "100" ));
+            }
+        }
+
+        availabilityEquation = "$DualSubsliceMask 2 AND";
+        if( MD_IS_INTERNAL_BUILD || metricsDevice->IsAvailabilityEquationTrue( availabilityEquation ) )
+        {
+            metric = metricSet->AddMetric( "ThreadHeader01ReadyPort0", "Thread Header Ready on Slice0 DualSubslice1 Thread Dispatcher Port 0",
+                "The percentage of time in which thread header is ready on slice0 dualsubslice1 thread dispatcher port 0",
+                "GPU/Thread Dispatcher", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_TD * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+                METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_DUALSUBSLICE, availabilityEquation, NULL, NULL );
+            if( metric )
+            {
+                MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "dw@0xec" ));
+                MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x188" ));
+                MD_CHECK_CC( metric->SetNormalizationEquation( "GpuDuration" ));
+                MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
+                MD_CHECK_CC( metric->SetMaxValueEquation( "100" ));
+            }
+        }
+
+        availabilityEquation = "$DualSubsliceMask 2 AND";
+        if( MD_IS_INTERNAL_BUILD || metricsDevice->IsAvailabilityEquationTrue( availabilityEquation ) )
+        {
+            metric = metricSet->AddMetric( "ThreadHeader01ReadyPort1", "Thread Header Ready on Slice0 DualSubslice1 Thread Dispatcher Port 1",
+                "The percentage of time in which thread header is ready on slice0 dualsubslice1 thread dispatcher port 1",
+                "GPU/Thread Dispatcher", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_TD * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+                METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_DUALSUBSLICE, availabilityEquation, NULL, NULL );
+            if( metric )
+            {
+                MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "dw@0xe8" ));
+                MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x180" ));
+                MD_CHECK_CC( metric->SetNormalizationEquation( "GpuDuration" ));
+                MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
+                MD_CHECK_CC( metric->SetMaxValueEquation( "100" ));
+            }
+        }
+
+        availabilityEquation = "$DualSubsliceMask 2 AND";
+        if( MD_IS_INTERNAL_BUILD || metricsDevice->IsAvailabilityEquationTrue( availabilityEquation ) )
+        {
+            metric = metricSet->AddMetric( "ThreadHeader01ReadyPort2", "Thread Header Ready on Slice0 DualSubslice1 Thread Dispatcher Port 2",
+                "The percentage of time in which thread header is ready on slice0 dualsubslice1 thread dispatcher port 2",
+                "GPU/Thread Dispatcher", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_TD * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+                METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_DUALSUBSLICE, availabilityEquation, NULL, NULL );
+            if( metric )
+            {
+                MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "dw@0xe4" ));
+                MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x178" ));
+                MD_CHECK_CC( metric->SetNormalizationEquation( "GpuDuration" ));
+                MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
+                MD_CHECK_CC( metric->SetMaxValueEquation( "100" ));
+            }
+        }
+
+        availabilityEquation = "$DualSubsliceMask 2 AND";
+        if( MD_IS_INTERNAL_BUILD || metricsDevice->IsAvailabilityEquationTrue( availabilityEquation ) )
+        {
+            metric = metricSet->AddMetric( "ThreadHeader01ReadyPort3", "Thread Header Ready on Slice0 DualSubslice1 Thread Dispatcher Port 3",
+                "The percentage of time in which thread header is ready on slice0 dualsubslice1 thread dispatcher port 3",
+                "GPU/Thread Dispatcher", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_TD * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+                METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_DUALSUBSLICE, availabilityEquation, NULL, NULL );
+            if( metric )
+            {
+                MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "dw@0xe0" ));
+                MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x170" ));
+                MD_CHECK_CC( metric->SetNormalizationEquation( "GpuDuration" ));
+                MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
+                MD_CHECK_CC( metric->SetMaxValueEquation( "100" ));
+            }
+        }
+
+        availabilityEquation = "$DualSubsliceMask 1 AND";
+        if( MD_IS_INTERNAL_BUILD || metricsDevice->IsAvailabilityEquationTrue( availabilityEquation ) )
+        {
+            metric = metricSet->AddMetric( "ThreadHeader00Ready", "Thread Header Ready on Slice0 DualSubslice0 Thread Dispatcher",
+                "The percentage of time in which thread header is ready on slice0 dualsubslice0 thread dispatcher",
+                "GPU/Thread Dispatcher", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_TD * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+                METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_DUALSUBSLICE, availabilityEquation, NULL, NULL );
+            if( metric )
+            {
+                MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "dw@0xd0" ));
+                MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x150" ));
+                MD_CHECK_CC( metric->SetNormalizationEquation( "GpuDuration" ));
+                MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
+                MD_CHECK_CC( metric->SetMaxValueEquation( "100" ));
+            }
+        }
+
+        availabilityEquation = "$DualSubsliceMask 2 AND";
+        if( MD_IS_INTERNAL_BUILD || metricsDevice->IsAvailabilityEquationTrue( availabilityEquation ) )
+        {
+            metric = metricSet->AddMetric( "ThreadHeader01Ready", "Thread Header Ready on Slice0 DualSubslice1 Thread Dispatcher",
+                "The percentage of time in which thread header is ready on slice0 dualsubslice1 thread dispatcher",
+                "GPU/Thread Dispatcher", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_TD * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+                METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_DUALSUBSLICE, availabilityEquation, NULL, NULL );
+            if( metric )
+            {
+                MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "dw@0xd4" ));
+                MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x158" ));
                 MD_CHECK_CC( metric->SetNormalizationEquation( "GpuDuration" ));
                 MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
                 MD_CHECK_CC( metric->SetMaxValueEquation( "100" ));
@@ -8948,149 +7032,133 @@ TCompletionCode CreateMetricTreeDG1_OA( CMetricsDevice* metricsDevice, CConcurre
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9840, 0x00000000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9884, 0x00000000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x24110340, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x2611001c, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x24310340, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x24510340, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x24710340, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x24910340, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x24b10340, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x26b1001c, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x021100f3, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x041100f2, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x2631001c, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x001100f3, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0e1100f2, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x16110103, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x06110107, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x08110106, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0a110105, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0c110104, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x10110000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x00110000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x02128000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x04128000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x12138000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x14138000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c3100f3, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1e3100f2, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x10310000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x02110000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x04110000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x00128000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0e128000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x16128000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x06128000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x08128000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0a128000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0c128000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x10138000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c132300, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x16138000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x18138000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1a138000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x103100f3, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x123100f2, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x14310103, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c310107, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1e310106, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x02310105, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x04310104, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x08310000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0a310000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0e310000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x00310000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x10328000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x12328000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x14328000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c328000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1e328000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x02328000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x04328000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c331c00, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1e330003, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x185100f3, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1a5100f2, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x10510000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0c510000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x18528000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1a528000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c53c000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x147100f3, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x167100f2, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x10710000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0a710000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x14728000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x16728000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c733000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x109100f3, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x129100f2, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x08910000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x10928000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x12928000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c930c00, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x00b100f3, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0eb100f2, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x06b10104, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x08b10105, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0ab10106, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0cb10107, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x10b10000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x02b10000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x04b10000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x00b28000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0eb28000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x06b28000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x08b28000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0ab28000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0cb28000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x10b38000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1cb30300, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x16b38000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x18b38000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1ab38000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x00004000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0e004000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x10004000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x12004000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x34005540, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x36000001, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x02004000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x04004000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x06004000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x08004000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0a004000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0c004000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x00014000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1a012000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c012000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1e012000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x2a015500, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x2c010005, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x02014000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x04014000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x06014000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x08014000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0a014000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x18012000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c05c000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x2405bfff, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x26050002, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x2205ff50, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x14088000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1a081000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c064000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x2406a555, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x26060005, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x22064000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x10098000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c0900ff, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1a09e000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c078000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x24070002, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x2207aa00, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x160a1000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x180aa554, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1e0d5541, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x200d0005, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x040e4000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0a0ec000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0c0ec000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x060e8000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x080ec000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x12338000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x14338000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x22050c70, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x12058000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x14058000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x000b4000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0e0b4000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x100b4000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x120b4000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x180b8000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1a0b8000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x100b8000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x120b8000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x140b8000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x160b4000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c0b8000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1e0b8000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x020b8000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x040b8000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x060b4000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x080b4000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0a0b4000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0c0b4000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x100c8000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1e0c0023, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x160c8000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x180c8000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1a0c8000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x040d4000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0a0dc000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0e0d8000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x060d8000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x080dc000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x000e8000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0e0e8000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x160e8000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x060e8000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x080e8000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0a0e8000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0c0e8000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x000f4000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x060fc000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0a0f8000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x020f8000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x040fc000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0c0ac000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0e0a4000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x120ac000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x040a8000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x060a4000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x16085015, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x02084000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x04084000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1409c180, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x16090031, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9884, 0x00000003, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x41104000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x5b105555, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x5d101555, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x11148000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1b14fc00, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1d14003f, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x13148000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x15148000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x17148000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x4b114000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x5f11aaaa, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x61112aaa, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x47101000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x5d101415, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x4b112000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x5f115555, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x61111415, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x01128000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0f128000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x11128000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x13128000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x15128000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x17128000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1d128000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1f128000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x03128000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x05128000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x07128000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x09128000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0b128000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0d128000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x47100000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x4d100000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x4f100200, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x51100a02, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x5310080a, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x55101318, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x4f100000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x51100000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x53100000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x17100000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x31100000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x57100003, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x49100111, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x55100000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x57100000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x49100000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x4b100000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9884, 0x00000003, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x65100002, REGISTER_TYPE_NOA ));
@@ -9100,8 +7168,8 @@ TCompletionCode CreateMetricTreeDG1_OA( CMetricsDevice* metricsDevice, CConcurre
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xd900, 0x00000000, REGISTER_TYPE_OA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xd904, 0xf0800000, REGISTER_TYPE_OA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xd910, 0x00000000, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xd914, 0x70800000, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xdc40, 0x007f0000, REGISTER_TYPE_OA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xd914, 0x30800000, REGISTER_TYPE_OA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xdc40, 0x003f0000, REGISTER_TYPE_OA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xd940, 0x00000000, REGISTER_TYPE_OA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xd944, 0x0000fffc, REGISTER_TYPE_OA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xdc00, 0x00000000, REGISTER_TYPE_OA ));
@@ -9110,26 +7178,22 @@ TCompletionCode CreateMetricTreeDG1_OA( CMetricsDevice* metricsDevice, CConcurre
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xd94c, 0x0000fff3, REGISTER_TYPE_OA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xdc08, 0x00000000, REGISTER_TYPE_OA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xdc0c, 0x0000fff3, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xd950, 0x00000000, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xd954, 0x0000ffcf, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xdc10, 0x00000000, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xdc14, 0x0000ffcf, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xd958, 0x00000000, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xd95c, 0x0000ff3f, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xdc18, 0x00000000, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xdc1c, 0x0000ff3f, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xd960, 0x00000000, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xd964, 0x0000fcff, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xdc20, 0x00000000, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xdc24, 0x0000fcff, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xd968, 0x00000000, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xd96c, 0x0000f3ff, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xdc28, 0x00000000, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xdc2c, 0x0000f3ff, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xd970, 0x00078000, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xd974, 0x00000fff, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xdc30, 0x00078000, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xdc34, 0x00000fff, REGISTER_TYPE_OA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xd950, 0x00000002, REGISTER_TYPE_OA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xd954, 0x0000ffef, REGISTER_TYPE_OA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xdc10, 0x00000002, REGISTER_TYPE_OA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xdc14, 0x0000ffef, REGISTER_TYPE_OA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xd958, 0x00000002, REGISTER_TYPE_OA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xd95c, 0x0000ffdf, REGISTER_TYPE_OA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xdc18, 0x00000002, REGISTER_TYPE_OA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xdc1c, 0x0000ffdf, REGISTER_TYPE_OA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xd960, 0x00078000, REGISTER_TYPE_OA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xd964, 0x00000fff, REGISTER_TYPE_OA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xdc20, 0x00078000, REGISTER_TYPE_OA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xdc24, 0x00000fff, REGISTER_TYPE_OA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xd968, 0x00007800, REGISTER_TYPE_OA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xd96c, 0x0000f0ff, REGISTER_TYPE_OA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xdc28, 0x00007800, REGISTER_TYPE_OA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xdc2c, 0x0000f0ff, REGISTER_TYPE_OA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xe458, 0x00804704, REGISTER_TYPE_FLEX ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xe558, 0x00a04904, REGISTER_TYPE_FLEX ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xe658, 0x00805705, REGISTER_TYPE_FLEX ));
@@ -9140,709 +7204,7 @@ TCompletionCode CreateMetricTreeDG1_OA( CMetricsDevice* metricsDevice, CConcurre
         MD_CHECK_CC( metricSet->RefreshConfigRegisters() );
     }
      
-    platformMask = PLATFORM_DG1;
-    if( MD_IS_INTERNAL_BUILD || metricsDevice->IsPlatformTypeOf( platformMask ) )
-    {
-        metricSet = concurrentGroup->AddMetricSet( "TDL_3", "TDL_3", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
-           GPU_RENDER|GPU_COMPUTE|GPU_MEDIA|GPU_GENERIC, 256, 672, OA_REPORT_TYPE_256B_A45_NOA16, platformMask );
-        MD_CHECK_PTR( metricSet );
-        
-        MD_CHECK_CC( metricSet->SetApiSpecificId("GPAV", 0, 0x40000000, 0x80000203, 0, 0,
-            "Intel Performance Counters for GT Set Dynamic", 0, "Intel_Raw_Hardware_Counters_Set_0_Query", 0) );
-  
-        availabilityEquation = NULL;
-        metric = metricSet->AddMetric( "GpuTime", "GPU Time Elapsed",
-            "Time elapsed on the GPU during the measurement.",
-            "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_TIER_1|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
-            METRIC_TYPE_DURATION, RESULT_UINT64, "ns", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
-        if( metric )
-        {
-            MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "dw@0x04 1000000000 UMUL $GpuTimestampFrequency UDIV" ));
-            MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x00" ));
-            MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "NS_TIME" ));
-        }
-
-        availabilityEquation = NULL;
-        metric = metricSet->AddMetric( "GpuCoreClocks", "GPU Core Clocks",
-            "The total number of GPU core clocks elapsed during the measurement.",
-            "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_TIER_1|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
-            METRIC_TYPE_EVENT, RESULT_UINT64, "cycles", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
-        if( metric )
-        {
-            MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "dw@0x0c" ));
-            MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x08" ));
-            MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
-        }
-
-        availabilityEquation = NULL;
-        metric = metricSet->AddMetric( "AvgGpuCoreFrequencyMHz", "AVG GPU Core Frequency",
-            "Average GPU Core Frequency in the measurement.",
-            "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_TIER_1|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
-            METRIC_TYPE_EVENT, RESULT_UINT64, "MHz", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
-        if( metric )
-        {
-            
-            MD_CHECK_CC( metric->SetNormalizationEquation( "$GpuCoreClocks 1000 UMUL $$GpuTime UDIV" ));
-        }
-
-        availabilityEquation = NULL;
-        metric = metricSet->AddMetric( "GpuBusy", "GPU Busy",
-            "The percentage of time in which the GPU has been processing GPU commands.",
-            "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_TIER_1|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
-            METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
-        if( metric )
-        {
-            MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "rd40@0x10:0xa0" ));
-            MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x10" ));
-            MD_CHECK_CC( metric->SetNormalizationEquation( "GpuDuration" ));
-            MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 40" ));
-            MD_CHECK_CC( metric->SetMaxValueEquation( "100" ));
-        }
-
-        availabilityEquation = NULL;
-        metric = metricSet->AddMetric( "VsThreads", "VS Threads Dispatched",
-            "The total number of vertex shader hardware threads dispatched.",
-            "EU Array/Vertex Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_VS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
-            METRIC_TYPE_EVENT, RESULT_UINT64, "threads", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
-        if( metric )
-        {
-            MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "rd40@0x14:0xa1" ));
-            MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x18" ));
-            MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 40" ));
-        }
-
-        availabilityEquation = NULL;
-        metric = metricSet->AddMetric( "HsThreads", "HS Threads Dispatched",
-            "The total number of hull shader hardware threads dispatched.",
-            "EU Array/Hull Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_HS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
-            METRIC_TYPE_EVENT, RESULT_UINT64, "threads", 0, 0, HW_UNIT_GPU, availabilityEquation, "Hull|Control,hull|control,HS|TCS", "oa.fixed" );
-        if( metric )
-        {
-            MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "rd40@0x18:0xa2" ));
-            MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x20" ));
-            MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 40" ));
-        }
-
-        availabilityEquation = NULL;
-        metric = metricSet->AddMetric( "DsThreads", "DS Threads Dispatched",
-            "The total number of domain shader hardware threads dispatched.",
-            "EU Array/Domain Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_DS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
-            METRIC_TYPE_EVENT, RESULT_UINT64, "threads", 0, 0, HW_UNIT_GPU, availabilityEquation, "Domain|Evaluation,domain|evaluation,DS|TES", "oa.fixed" );
-        if( metric )
-        {
-            MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "rd40@0x1c:0xa3" ));
-            MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x28" ));
-            MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 40" ));
-        }
-
-        availabilityEquation = NULL;
-        metric = metricSet->AddMetric( "GsThreads", "GS Threads Dispatched",
-            "The total number of geometry shader hardware threads dispatched.",
-            "EU Array/Geometry Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_GS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
-            METRIC_TYPE_EVENT, RESULT_UINT64, "threads", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
-        if( metric )
-        {
-            MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "rd40@0x24:0xa5" ));
-            MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x38" ));
-            MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 40" ));
-        }
-
-        availabilityEquation = NULL;
-        metric = metricSet->AddMetric( "PsThreads", "PS Threads Dispatched",
-            "The total number of pixel shader hardware threads dispatched.",
-            "EU Array/Pixel Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_PS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
-            METRIC_TYPE_EVENT, RESULT_UINT64, "threads", 0, 0, HW_UNIT_GPU, availabilityEquation, "Pixel|Fragment,PS|FS,pixel|fragment", "oa.fixed" );
-        if( metric )
-        {
-            MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "rd40@0x28:0xa6" ));
-            MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x40" ));
-            MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 40" ));
-        }
-
-        availabilityEquation = NULL;
-        metric = metricSet->AddMetric( "CsThreads", "CS Threads Dispatched",
-            "The total number of compute shader hardware threads dispatched.",
-            "EU Array/Compute Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_CS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
-            METRIC_TYPE_EVENT, RESULT_UINT64, "threads", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
-        if( metric )
-        {
-            MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "rd40@0x20:0xa4" ));
-            MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x30" ));
-            MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 40" ));
-        }
-
-        availabilityEquation = NULL;
-        metric = metricSet->AddMetric( "EuActive", "EU Active",
-            "The percentage of time in which the Execution Units were actively processing.",
-            "EU Array", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000), USAGE_FLAG_TIER_2|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
-            METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
-        if( metric )
-        {
-            MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "rd40@0x2c:0xa7 rd40@0x30:0xa8 FADD rd40@0x34:0xa9 FADD rd40@0x38:0xaa FADD" ));
-            MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x48 qw@0x50 FADD qw@0x58 FADD qw@0x60 FADD" ));
-            MD_CHECK_CC( metric->SetNormalizationEquation( "EuAggrDuration" ));
-            MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 40" ));
-            MD_CHECK_CC( metric->SetMaxValueEquation( "100" ));
-        }
-
-        availabilityEquation = NULL;
-        metric = metricSet->AddMetric( "EuStall", "EU Stall",
-            "The percentage of time in which the Execution Units were stalled.",
-            "EU Array", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000), USAGE_FLAG_TIER_2|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
-            METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
-        if( metric )
-        {
-            MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "rd40@0x3c:0xab rd40@0x40:0xac FADD rd40@0x44:0xad FADD rd40@0x48:0xae FADD" ));
-            MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x68 qw@0x70 FADD qw@0x78 FADD qw@0x80 FADD" ));
-            MD_CHECK_CC( metric->SetNormalizationEquation( "EuAggrDuration" ));
-            MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 40" ));
-            MD_CHECK_CC( metric->SetMaxValueEquation( "100" ));
-        }
-
-        availabilityEquation = NULL;
-        metric = metricSet->AddMetric( "EuThreadOccupancy", "EU Thread Occupancy",
-            "The percentage of time in which hardware threads occupied EUs.",
-            "EU Array", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000), USAGE_FLAG_TIER_2|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
-            METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
-        if( metric )
-        {
-            MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "8 rd40@0x4c:0xaf rd40@0x50:0xb0 FADD rd40@0x54:0xb1 FADD rd40@0x58:0xb2 FADD FMUL $EuThreadsCount FDIV" ));
-            MD_CHECK_CC( metric->SetDeltaReportReadEquation( "8 qw@0x88 qw@0x90 FADD qw@0x98 FADD qw@0xa0 FADD FMUL $EuThreadsCount FDIV" ));
-            MD_CHECK_CC( metric->SetNormalizationEquation( "EuAggrDuration" ));
-            MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 40" ));
-            MD_CHECK_CC( metric->SetMaxValueEquation( "100" ));
-        }
-
-        availabilityEquation = "$DualSubsliceMask 4 AND";
-        if( MD_IS_INTERNAL_BUILD || metricsDevice->IsAvailabilityEquationTrue( availabilityEquation ) )
-        {
-            metric = metricSet->AddMetric( "ThreadHeader02Ready", "Thread Header Ready on Slice0 DualSubslice2 Thread Dispatcher",
-                "The percentage of time in which thread header is ready on slice0 dualsubslice2 thread dispatcher",
-                "GPU/Thread Dispatcher", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_TD * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
-                METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_DUALSUBSLICE, availabilityEquation, NULL, NULL );
-            if( metric )
-            {
-                MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "dw@0xc0" ));
-                MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x130" ));
-                MD_CHECK_CC( metric->SetNormalizationEquation( "GpuDuration" ));
-                MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
-                MD_CHECK_CC( metric->SetMaxValueEquation( "100" ));
-            }
-        }
-
-        availabilityEquation = "$DualSubsliceMask 8 AND";
-        if( MD_IS_INTERNAL_BUILD || metricsDevice->IsAvailabilityEquationTrue( availabilityEquation ) )
-        {
-            metric = metricSet->AddMetric( "ThreadHeader03Ready", "Thread Header Ready on Slice0 DualSubslice3 Thread Dispatcher",
-                "The percentage of time in which thread header is ready on slice0 dualsubslice3 thread dispatcher",
-                "GPU/Thread Dispatcher", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_TD * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
-                METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_DUALSUBSLICE, availabilityEquation, NULL, NULL );
-            if( metric )
-            {
-                MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "dw@0xc4" ));
-                MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x138" ));
-                MD_CHECK_CC( metric->SetNormalizationEquation( "GpuDuration" ));
-                MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
-                MD_CHECK_CC( metric->SetMaxValueEquation( "100" ));
-            }
-        }
-
-        availabilityEquation = "$DualSubsliceMask 16 AND";
-        if( MD_IS_INTERNAL_BUILD || metricsDevice->IsAvailabilityEquationTrue( availabilityEquation ) )
-        {
-            metric = metricSet->AddMetric( "ThreadHeader04Ready", "Thread Header Ready on Slice0 DualSubslice4 Thread Dispatcher",
-                "The percentage of time in which thread header is ready on slice0 dualsubslice4 thread dispatcher",
-                "GPU/Thread Dispatcher", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_TD * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
-                METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_DUALSUBSLICE, availabilityEquation, NULL, NULL );
-            if( metric )
-            {
-                MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "dw@0xc8" ));
-                MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x140" ));
-                MD_CHECK_CC( metric->SetNormalizationEquation( "GpuDuration" ));
-                MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
-                MD_CHECK_CC( metric->SetMaxValueEquation( "100" ));
-            }
-        }
-
-        availabilityEquation = "$DualSubsliceMask 4 AND";
-        if( MD_IS_INTERNAL_BUILD || metricsDevice->IsAvailabilityEquationTrue( availabilityEquation ) )
-        {
-            metric = metricSet->AddMetric( "ThreadHeader02ReadyPort0", "Thread Header Ready on Slice0 DualSubslice2 Thread Dispatcher Port 0",
-                "The percentage of time in which thread header is ready on slice0 dualsubslice2 thread dispatcher port 0",
-                "GPU/Thread Dispatcher", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_TD * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
-                METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_DUALSUBSLICE, availabilityEquation, NULL, NULL );
-            if( metric )
-            {
-                MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "dw@0xfc" ));
-                MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x1a8" ));
-                MD_CHECK_CC( metric->SetNormalizationEquation( "GpuDuration" ));
-                MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
-                MD_CHECK_CC( metric->SetMaxValueEquation( "100" ));
-            }
-        }
-
-        availabilityEquation = "$DualSubsliceMask 4 AND";
-        if( MD_IS_INTERNAL_BUILD || metricsDevice->IsAvailabilityEquationTrue( availabilityEquation ) )
-        {
-            metric = metricSet->AddMetric( "ThreadHeader02ReadyPort1", "Thread Header Ready on Slice0 DualSubslice2 Thread Dispatcher Port 1",
-                "The percentage of time in which thread header is ready on slice0 dualsubslice2 thread dispatcher port 1",
-                "GPU/Thread Dispatcher", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_TD * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
-                METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_DUALSUBSLICE, availabilityEquation, NULL, NULL );
-            if( metric )
-            {
-                MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "dw@0xf8" ));
-                MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x1a0" ));
-                MD_CHECK_CC( metric->SetNormalizationEquation( "GpuDuration" ));
-                MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
-                MD_CHECK_CC( metric->SetMaxValueEquation( "100" ));
-            }
-        }
-
-        availabilityEquation = "$DualSubsliceMask 4 AND";
-        if( MD_IS_INTERNAL_BUILD || metricsDevice->IsAvailabilityEquationTrue( availabilityEquation ) )
-        {
-            metric = metricSet->AddMetric( "ThreadHeader02ReadyPort2", "Thread Header Ready on Slice0 DualSubslice2 Thread Dispatcher Port 2",
-                "The percentage of time in which thread header is ready on slice0 dualsubslice2 thread dispatcher port 2",
-                "GPU/Thread Dispatcher", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_TD * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
-                METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_DUALSUBSLICE, availabilityEquation, NULL, NULL );
-            if( metric )
-            {
-                MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "dw@0xf4" ));
-                MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x198" ));
-                MD_CHECK_CC( metric->SetNormalizationEquation( "GpuDuration" ));
-                MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
-                MD_CHECK_CC( metric->SetMaxValueEquation( "100" ));
-            }
-        }
-
-        availabilityEquation = "$DualSubsliceMask 4 AND";
-        if( MD_IS_INTERNAL_BUILD || metricsDevice->IsAvailabilityEquationTrue( availabilityEquation ) )
-        {
-            metric = metricSet->AddMetric( "ThreadHeader02ReadyPort3", "Thread Header Ready on Slice0 DualSubslice2 Thread Dispatcher Port 3",
-                "The percentage of time in which thread header is ready on slice0 dualsubslice2 thread dispatcher port 3",
-                "GPU/Thread Dispatcher", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_TD * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
-                METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_DUALSUBSLICE, availabilityEquation, NULL, NULL );
-            if( metric )
-            {
-                MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "dw@0xf0" ));
-                MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x190" ));
-                MD_CHECK_CC( metric->SetNormalizationEquation( "GpuDuration" ));
-                MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
-                MD_CHECK_CC( metric->SetMaxValueEquation( "100" ));
-            }
-        }
-
-        availabilityEquation = "$DualSubsliceMask 8 AND";
-        if( MD_IS_INTERNAL_BUILD || metricsDevice->IsAvailabilityEquationTrue( availabilityEquation ) )
-        {
-            metric = metricSet->AddMetric( "ThreadHeader03ReadyPort0", "Thread Header Ready on Slice0 DualSubslice3 Thread Dispatcher Port 0",
-                "The percentage of time in which thread header is ready on slice0 dualsubslice3 thread dispatcher port 0",
-                "GPU/Thread Dispatcher", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_TD * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
-                METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_DUALSUBSLICE, availabilityEquation, NULL, NULL );
-            if( metric )
-            {
-                MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "dw@0xec" ));
-                MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x188" ));
-                MD_CHECK_CC( metric->SetNormalizationEquation( "GpuDuration" ));
-                MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
-                MD_CHECK_CC( metric->SetMaxValueEquation( "100" ));
-            }
-        }
-
-        availabilityEquation = "$DualSubsliceMask 8 AND";
-        if( MD_IS_INTERNAL_BUILD || metricsDevice->IsAvailabilityEquationTrue( availabilityEquation ) )
-        {
-            metric = metricSet->AddMetric( "ThreadHeader03ReadyPort1", "Thread Header Ready on Slice0 DualSubslice3 Thread Dispatcher Port 1",
-                "The percentage of time in which thread header is ready on slice0 dualsubslice3 thread dispatcher port 1",
-                "GPU/Thread Dispatcher", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_TD * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
-                METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_DUALSUBSLICE, availabilityEquation, NULL, NULL );
-            if( metric )
-            {
-                MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "dw@0xe8" ));
-                MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x180" ));
-                MD_CHECK_CC( metric->SetNormalizationEquation( "GpuDuration" ));
-                MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
-                MD_CHECK_CC( metric->SetMaxValueEquation( "100" ));
-            }
-        }
-
-        availabilityEquation = "$DualSubsliceMask 8 AND";
-        if( MD_IS_INTERNAL_BUILD || metricsDevice->IsAvailabilityEquationTrue( availabilityEquation ) )
-        {
-            metric = metricSet->AddMetric( "ThreadHeader03ReadyPort2", "Thread Header Ready on Slice0 DualSubslice3 Thread Dispatcher Port 2",
-                "The percentage of time in which thread header is ready on slice0 dualsubslice3 thread dispatcher port 2",
-                "GPU/Thread Dispatcher", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_TD * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
-                METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_DUALSUBSLICE, availabilityEquation, NULL, NULL );
-            if( metric )
-            {
-                MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "dw@0xe4" ));
-                MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x178" ));
-                MD_CHECK_CC( metric->SetNormalizationEquation( "GpuDuration" ));
-                MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
-                MD_CHECK_CC( metric->SetMaxValueEquation( "100" ));
-            }
-        }
-
-        availabilityEquation = "$DualSubsliceMask 8 AND";
-        if( MD_IS_INTERNAL_BUILD || metricsDevice->IsAvailabilityEquationTrue( availabilityEquation ) )
-        {
-            metric = metricSet->AddMetric( "ThreadHeader03ReadyPort3", "Thread Header Ready on Slice0 DualSubslice3 Thread Dispatcher Port 3",
-                "The percentage of time in which thread header is ready on slice0 dualsubslice3 thread dispatcher port 3",
-                "GPU/Thread Dispatcher", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_TD * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
-                METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_DUALSUBSLICE, availabilityEquation, NULL, NULL );
-            if( metric )
-            {
-                MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "dw@0xe0" ));
-                MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x170" ));
-                MD_CHECK_CC( metric->SetNormalizationEquation( "GpuDuration" ));
-                MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
-                MD_CHECK_CC( metric->SetMaxValueEquation( "100" ));
-            }
-        }
-
-        availabilityEquation = "$DualSubsliceMask 16 AND";
-        if( MD_IS_INTERNAL_BUILD || metricsDevice->IsAvailabilityEquationTrue( availabilityEquation ) )
-        {
-            metric = metricSet->AddMetric( "ThreadHeader04ReadyPort0", "Thread Header Ready on Slice0 DualSubslice4 Thread Dispatcher Port 0",
-                "The percentage of time in which thread header is ready on slice0 dualsubslice4 thread dispatcher port 0",
-                "GPU/Thread Dispatcher", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_TD * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
-                METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_DUALSUBSLICE, availabilityEquation, NULL, NULL );
-            if( metric )
-            {
-                MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "dw@0xdc" ));
-                MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x168" ));
-                MD_CHECK_CC( metric->SetNormalizationEquation( "GpuDuration" ));
-                MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
-                MD_CHECK_CC( metric->SetMaxValueEquation( "100" ));
-            }
-        }
-
-        availabilityEquation = "$DualSubsliceMask 16 AND";
-        if( MD_IS_INTERNAL_BUILD || metricsDevice->IsAvailabilityEquationTrue( availabilityEquation ) )
-        {
-            metric = metricSet->AddMetric( "ThreadHeader04ReadyPort1", "Thread Header Ready on Slice0 DualSubslice4 Thread Dispatcher Port 1",
-                "The percentage of time in which thread header is ready on slice0 dualsubslice4 thread dispatcher port 1",
-                "GPU/Thread Dispatcher", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_TD * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
-                METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_DUALSUBSLICE, availabilityEquation, NULL, NULL );
-            if( metric )
-            {
-                MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "dw@0xd8" ));
-                MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x160" ));
-                MD_CHECK_CC( metric->SetNormalizationEquation( "GpuDuration" ));
-                MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
-                MD_CHECK_CC( metric->SetMaxValueEquation( "100" ));
-            }
-        }
-
-        availabilityEquation = "$DualSubsliceMask 16 AND";
-        if( MD_IS_INTERNAL_BUILD || metricsDevice->IsAvailabilityEquationTrue( availabilityEquation ) )
-        {
-            metric = metricSet->AddMetric( "ThreadHeader04ReadyPort2", "Thread Header Ready on Slice0 DualSubslice4 Thread Dispatcher Port 2",
-                "The percentage of time in which thread header is ready on slice0 dualsubslice4 thread dispatcher port 2",
-                "GPU/Thread Dispatcher", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_TD * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
-                METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_DUALSUBSLICE, availabilityEquation, NULL, NULL );
-            if( metric )
-            {
-                MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "dw@0xd4" ));
-                MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x158" ));
-                MD_CHECK_CC( metric->SetNormalizationEquation( "GpuDuration" ));
-                MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
-                MD_CHECK_CC( metric->SetMaxValueEquation( "100" ));
-            }
-        }
-
-        availabilityEquation = "$DualSubsliceMask 16 AND";
-        if( MD_IS_INTERNAL_BUILD || metricsDevice->IsAvailabilityEquationTrue( availabilityEquation ) )
-        {
-            metric = metricSet->AddMetric( "ThreadHeader04ReadyPort3", "Thread Header Ready on Slice0 DualSubslice4 Thread Dispatcher Port 3",
-                "The percentage of time in which thread header is ready on slice0 dualsubslice4 thread dispatcher port 3",
-                "GPU/Thread Dispatcher", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_TD * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
-                METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_DUALSUBSLICE, availabilityEquation, NULL, NULL );
-            if( metric )
-            {
-                MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "dw@0xd0" ));
-                MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x150" ));
-                MD_CHECK_CC( metric->SetNormalizationEquation( "GpuDuration" ));
-                MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
-                MD_CHECK_CC( metric->SetMaxValueEquation( "100" ));
-            }
-        }
-
-        information = metricSet->AddInformation( "QueryBeginTime", "Query Begin Time",
-            "The measurement begin time.",
-            "Report Meta Data", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
-            INFORMATION_TYPE_TIMESTAMP, "ns", NULL );
-        if( information )
-        {
-            MD_CHECK_CC( information->SetSnapshotReportReadEquation( "dw@0x04 1000000000 UMUL $GpuTimestampFrequency UDIV" ));
-            MD_CHECK_CC( information->SetDeltaReportReadEquation( "qw@0x1b0" ));
-            MD_CHECK_CC( information->SetOverflowFunction( "NS_TIME" ));
-        }
-
-        information = metricSet->AddInformation( "CoreFrequencyMHz", "GPU Core Frequency",
-            "The last GPU core (unslice) frequency in the measurement.",
-            "Report Meta Data", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
-            INFORMATION_TYPE_VALUE, "MHz", NULL );
-        if( information )
-        {
-            MD_CHECK_CC( information->SetSnapshotReportReadEquation( "dw@0x0 0x1ff AND 16666 UMUL 1000 UDIV" ));
-            MD_CHECK_CC( information->SetDeltaReportReadEquation( "qw@0x208 1000000 UDIV" ));
-        }
-
-        information = metricSet->AddInformation( "EuSliceFrequencyMHz", "EU Slice Frequency",
-            "The last GPU Execution Unit slice frequency in the measurement.",
-            "Report Meta Data", API_TYPE_IOSTREAM,
-            INFORMATION_TYPE_VALUE, "MHz", NULL );
-        if( information )
-        {
-            MD_CHECK_CC( information->SetSnapshotReportReadEquation( "dw@0x0 25 >> dw@0x0 9 >> 0x3 AND OR 16666 UMUL 1000 UDIV" ));
-        }
-
-        information = metricSet->AddInformation( "ReportReason", "Report Reason",
-            "The reason of the report.",
-            "Report Meta Data", API_TYPE_IOSTREAM,
-            INFORMATION_TYPE_REPORT_REASON, NULL, NULL );
-        if( information )
-        {
-            MD_CHECK_CC( information->SetSnapshotReportReadEquation( "dw@0x0 19 >> 0x3f AND" ));
-        }
-
-        information = metricSet->AddInformation( "ContextIdValid", "Context ID Valid",
-            "When set indicates render context is valid",
-            "Report Meta Data", API_TYPE_IOSTREAM,
-            INFORMATION_TYPE_FLAG, NULL, NULL );
-        if( information )
-        {
-            MD_CHECK_CC( information->SetSnapshotReportReadEquation( "dw@0x0 16 >> 0x1 AND" ));
-        }
-
-        information = metricSet->AddInformation( "ContextId", "Context ID",
-            "The context tag in which report has been taken.",
-            "Report Meta Data", API_TYPE_IOSTREAM,
-            INFORMATION_TYPE_CONTEXT_ID_TAG, NULL, NULL );
-        if( information )
-        {
-            MD_CHECK_CC( information->SetSnapshotReportReadEquation( "dw@0x08 0xfffff AND dw@0x0 16 >> 0x1 AND UMUL" ));
-        }
-
-        information = metricSet->AddInformation( "CoreFrequencyChanged", "GPU Core Frequency Changed",
-            "The flag indicating that GPU core frequency has changed.",
-            "Exception", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
-            INFORMATION_TYPE_FLAG, NULL, NULL );
-        if( information )
-        {
-            
-            MD_CHECK_CC( information->SetDeltaReportReadEquation( "dw@0x204" ));
-        }
-
-        information = metricSet->AddInformation( "QuerySplitOccurred", "Query Split Occurred",
-            "The flag indicating that query has been split during execution on the GPU.",
-            "Exception", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
-            INFORMATION_TYPE_FLAG, NULL, NULL );
-        if( information )
-        {
-            
-            MD_CHECK_CC( information->SetDeltaReportReadEquation( "dw@0x200" ));
-        }
-
-        information = metricSet->AddInformation( "ReportId", "Query report id",
-            "Query report identification number.",
-            "Report Meta Data", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
-            INFORMATION_TYPE_VALUE, NULL, NULL );
-        if( information )
-        {
-            
-            MD_CHECK_CC( information->SetDeltaReportReadEquation( "dw@0x210" ));
-        }
-
-        information = metricSet->AddInformation( "ReportsCount", "Query reports count",
-            "The number of available query reports.",
-            "Report Meta Data", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
-            INFORMATION_TYPE_VALUE, NULL, NULL );
-        if( information )
-        {
-            
-            MD_CHECK_CC( information->SetDeltaReportReadEquation( "dw@0x214" ));
-        }
-
-        information = metricSet->AddInformation( "OverrunOccured", "Query Overrun Occurred",
-            "The flag indicating that Oa buffer has been overran.",
-            "Exception", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
-            INFORMATION_TYPE_FLAG, NULL, NULL );
-        if( information )
-        {
-            
-            MD_CHECK_CC( information->SetDeltaReportReadEquation( "dw@0x1cc" ));
-        }
-
-        information = metricSet->AddInformation( "ReportError", "Query report error",
-            "An error in the query execution, the received report should be ignored.",
-            "Report Meta Data", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
-            INFORMATION_TYPE_FLAG, NULL, NULL );
-        if( information )
-        {
-            
-            MD_CHECK_CC( information->SetDeltaReportReadEquation( "dw@0x29c 0x03 AND" ));
-        }
-
-        information = metricSet->AddInformation( "ReportLost", "Query report lost",
-            "Begin or end query report has not been triggered due to hw limitations.",
-            "Report Meta Data", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
-            INFORMATION_TYPE_FLAG, NULL, NULL );
-        if( information )
-        {
-            
-            MD_CHECK_CC( information->SetDeltaReportReadEquation( "dw@0x29c 0x01 AND" ));
-        }
-
-        information = metricSet->AddInformation( "ReportInconsistent", "Query report inconsistent",
-            "The contextId inconsistency in the Oa buffer within the query window.",
-            "Report Meta Data", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
-            INFORMATION_TYPE_FLAG, NULL, NULL );
-        if( information )
-        {
-            
-            MD_CHECK_CC( information->SetDeltaReportReadEquation( "dw@0x29c 0x02 AND" ));
-        }
-
-        MD_CHECK_CC( metricSet->AddStartRegisterSet( 0, 0 ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x0d04, 0x00000200, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9840, 0x00000000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9884, 0x00000000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x2651001c, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x2671001c, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x2691001c, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x06510107, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x08510106, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0a510105, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0c510104, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x10510000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x02510000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x04510000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x06528000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x08528000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0a528000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0c528000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x16538000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x18538000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1a538000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c530100, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c710107, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1e710106, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x02710105, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x04710104, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x10710000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0e710000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x00710000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c728000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1e728000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x02728000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x04728000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1e730003, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x12738000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x14738000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x14910107, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x16910106, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x18910105, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1a910104, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x10910000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0a910000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0c910000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x14928000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x16928000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x18928000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1a928000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c93f000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x34005540, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x36000001, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x02004000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x04004000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x06004000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x08004000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0a004000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0c004000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x2a015500, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x2c010005, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x02014000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x04014000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x06014000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x08014000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0a014000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x18012000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x2405ffc0, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x26050003, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x2205fff0, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x24065015, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x260600a5, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x22066800, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c0903f1, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x14098000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1a09f000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1a0a00aa, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x200d0550, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0e0ec000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x100ec000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x140b4000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x160b4000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x180b4000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1a0b4000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x060b8000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x080b8000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0a0b8000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0c0b8000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9884, 0x00000003, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x5d101554, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x5b100555, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1d14003f, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x13148000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x15148000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x17148000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1b141c00, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x61112aa8, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x5f110aaa, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x51100000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x53100000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x55100800, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x17100000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x31100000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x57100008, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x47100000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x49100808, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x4b100606, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x4d100606, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9884, 0x00000003, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x65100002, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9884, 0x00000000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x42000001, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xd920, 0x00000000, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xd900, 0x00000000, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xd904, 0x70800000, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xd910, 0x00000000, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xd914, 0x00800000, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xdc40, 0x00070000, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xd940, 0x00078000, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xd944, 0x00000fff, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xdc00, 0x00078000, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xdc04, 0x00000fff, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xd948, 0x00007800, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xd94c, 0x0000f0ff, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xdc08, 0x00007800, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xdc0c, 0x0000f0ff, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xd950, 0x00000780, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xd954, 0x0000ff0f, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xdc10, 0x00000780, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xdc14, 0x0000ff0f, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xe458, 0x00804704, REGISTER_TYPE_FLEX ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xe558, 0x00a04904, REGISTER_TYPE_FLEX ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xe658, 0x00805705, REGISTER_TYPE_FLEX ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xe758, 0x00a05905, REGISTER_TYPE_FLEX ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xe45c, 0x00808708, REGISTER_TYPE_FLEX ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xe55c, 0x00a08908, REGISTER_TYPE_FLEX ));
-  
-        MD_CHECK_CC( metricSet->RefreshConfigRegisters() );
-    }
-     
-    platformMask = PLATFORM_DG1;
+    platformMask = PLATFORM_RKL;
     if( MD_IS_INTERNAL_BUILD || metricsDevice->IsPlatformTypeOf( platformMask ) )
     {
         metricSet = concurrentGroup->AddMetricSet( "GpuBusyness", "GpuBusyness", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
@@ -10100,20 +7462,6 @@ TCompletionCode CreateMetricTreeDG1_OA( CMetricsDevice* metricsDevice, CConcurre
         }
 
         availabilityEquation = NULL;
-        metric = metricSet->AddMetric( "Vdbox1Busy", "Vdbox1 Ring Busy",
-            "The percentage of time when Vdbox1 command streamer was busy.",
-            "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH, API_TYPE_IOSTREAM,
-            METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
-        if( metric )
-        {
-            MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "dw@0xe8" ));
-            MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x180" ));
-            MD_CHECK_CC( metric->SetNormalizationEquation( "GpuDuration" ));
-            MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
-            MD_CHECK_CC( metric->SetMaxValueEquation( "100" ));
-        }
-
-        availabilityEquation = NULL;
         metric = metricSet->AddMetric( "RenderAndComputeBusy", "Render and compute engines are simultaneously busy",
             "The percentage of time when render and compute engines are simultaneously busy",
             "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
@@ -10282,62 +7630,50 @@ TCompletionCode CreateMetricTreeDG1_OA( CMetricsDevice* metricsDevice, CConcurre
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x0d04, 0x00000200, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9840, 0x00000000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9884, 0x00000000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0e0f2400, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0e0e2400, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x220e0009, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x220f0009, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x22100009, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x04004000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x08004000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0a004000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x04014000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x08014000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0a014000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x22053cc0, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x22061000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x24060005, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1a09d000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x020c4000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x040cc000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1e0d0a20, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x040f0043, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0a0f00b3, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x200f0000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x080f8000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x081000a3, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x00100000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x040b4000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x080b4000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0a0b4000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x140c8000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x180c8000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1a0c8000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x060d4000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x080dc000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x040e0043, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0a0e00b3, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x200e0000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x080f00a3, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x100f0000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x020f4000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x040f8000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9884, 0x00000003, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x15102400, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x230b0120, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x15182400, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x232b0120, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x17100023, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x11100000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x5d101000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x5b100545, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x15148000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1b140c00, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x61113000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x5f110e89, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x5b100544, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x61112000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x5f110944, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x05128000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x13138000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x09128000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0b128000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1b0d0040, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0d0dc000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1f0b00d3, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x210b0000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1b170002, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0d174000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x190b0000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x170b0000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x07174000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x071800a3, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x11180000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x032d4000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x032b00d3, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x212b0000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x55101000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x57100007, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x47101000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x49103203, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x4b100005, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x4d100912, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x55100000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x5710000a, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x49101000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x4b100206, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x4d100800, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x31100000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9884, 0x00000003, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x65100002, REGISTER_TYPE_NOA ));
@@ -10353,10 +7689,10 @@ TCompletionCode CreateMetricTreeDG1_OA( CMetricsDevice* metricsDevice, CConcurre
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xd944, 0x0000b7ff, REGISTER_TYPE_OA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xdc00, 0x00024002, REGISTER_TYPE_OA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xdc04, 0x0000b7ff, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xd948, 0x0007f000, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xd94c, 0x000001ff, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xdc08, 0x0007f000, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xdc0c, 0x000001ff, REGISTER_TYPE_OA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xd948, 0x0007d000, REGISTER_TYPE_OA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xd94c, 0x000005ff, REGISTER_TYPE_OA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xdc08, 0x0007d000, REGISTER_TYPE_OA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xdc0c, 0x000005ff, REGISTER_TYPE_OA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xe458, 0x00804704, REGISTER_TYPE_FLEX ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xe558, 0x00a04904, REGISTER_TYPE_FLEX ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xe658, 0x00805705, REGISTER_TYPE_FLEX ));
@@ -10367,7 +7703,7 @@ TCompletionCode CreateMetricTreeDG1_OA( CMetricsDevice* metricsDevice, CConcurre
         MD_CHECK_CC( metricSet->RefreshConfigRegisters() );
     }
      
-    platformMask = PLATFORM_DG1;
+    platformMask = PLATFORM_RKL;
     if( MD_IS_INTERNAL_BUILD || metricsDevice->IsPlatformTypeOf( platformMask ) )
     {
         metricSet = concurrentGroup->AddMetricSet( "EuActivity1", "EuActivity1", API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
@@ -10551,7 +7887,7 @@ TCompletionCode CreateMetricTreeDG1_OA( CMetricsDevice* metricsDevice, CConcurre
             MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x1a8 qw@0x1a0 UADD qw@0x198 UADD qw@0x190 UADD" ));
             MD_CHECK_CC( metric->SetNormalizationEquation( "64 $Self UMUL" ));
             MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
-            MD_CHECK_CC( metric->SetMaxValueEquation( "$GpuCoreClocks 128 UMUL" ));
+            MD_CHECK_CC( metric->SetMaxValueEquation( "$GpuCoreClocks 64 UMUL" ));
         }
 
         availabilityEquation = NULL;
@@ -10565,7 +7901,7 @@ TCompletionCode CreateMetricTreeDG1_OA( CMetricsDevice* metricsDevice, CConcurre
             MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x188 qw@0x180 UADD" ));
             MD_CHECK_CC( metric->SetNormalizationEquation( "64 $Self UMUL" ));
             MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
-            MD_CHECK_CC( metric->SetMaxValueEquation( "$GpuCoreClocks 128 UMUL" ));
+            MD_CHECK_CC( metric->SetMaxValueEquation( "$GpuCoreClocks 64 UMUL" ));
         }
 
         availabilityEquation = NULL;
@@ -10751,22 +8087,16 @@ TCompletionCode CreateMetricTreeDG1_OA( CMetricsDevice* metricsDevice, CConcurre
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x0d04, 0x00000200, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9840, 0x00000000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9884, 0x00000000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0e0f2400, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x220f0009, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x34004000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x36000001, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x2c010005, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x2405c000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x26050003, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x26060050, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c090300, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0e0cc000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x200da000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c0f0043, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1e0f00b3, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x200f0000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0e0e2400, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x220e0009, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c0b4000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1e0b4000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1e0c0300, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x120dc000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c0e0043, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1e0e00b3, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x200e0000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0e0fc000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9884, 0x00000003, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x05151d37, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x09151547, REGISTER_TYPE_NOA ));
@@ -10774,8 +8104,9 @@ TCompletionCode CreateMetricTreeDG1_OA( CMetricsDevice* metricsDevice, CConcurre
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x09351400, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x5d101400, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x5b100bbb, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1d140030, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x61112800, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x61111400, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1d128000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1f128000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0d150136, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x01150000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x03164000, REGISTER_TYPE_NOA ));
@@ -10792,9 +8123,9 @@ TCompletionCode CreateMetricTreeDG1_OA( CMetricsDevice* metricsDevice, CConcurre
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x55100000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x57100000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x47101000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x49101a1a, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x4b101a1a, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x4d100a1a, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x49101212, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x4b101212, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x4d100212, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x31100000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9884, 0x00000003, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x65100002, REGISTER_TYPE_NOA ));
@@ -10820,7 +8151,7 @@ TCompletionCode CreateMetricTreeDG1_OA( CMetricsDevice* metricsDevice, CConcurre
         MD_CHECK_CC( metricSet->RefreshConfigRegisters() );
     }
      
-    platformMask = PLATFORM_DG1;
+    platformMask = PLATFORM_RKL;
     if( MD_IS_INTERNAL_BUILD || metricsDevice->IsPlatformTypeOf( platformMask ) )
     {
         metricSet = concurrentGroup->AddMetricSet( "EuActivity2", "EuActivity2", API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
@@ -11004,7 +8335,7 @@ TCompletionCode CreateMetricTreeDG1_OA( CMetricsDevice* metricsDevice, CConcurre
             MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x1a8 qw@0x1a0 UADD qw@0x198 UADD qw@0x190 UADD" ));
             MD_CHECK_CC( metric->SetNormalizationEquation( "64 $Self UMUL" ));
             MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
-            MD_CHECK_CC( metric->SetMaxValueEquation( "$GpuCoreClocks 128 UMUL" ));
+            MD_CHECK_CC( metric->SetMaxValueEquation( "$GpuCoreClocks 64 UMUL" ));
         }
 
         availabilityEquation = NULL;
@@ -11018,7 +8349,7 @@ TCompletionCode CreateMetricTreeDG1_OA( CMetricsDevice* metricsDevice, CConcurre
             MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x188 qw@0x180 UADD" ));
             MD_CHECK_CC( metric->SetNormalizationEquation( "64 $Self UMUL" ));
             MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
-            MD_CHECK_CC( metric->SetMaxValueEquation( "$GpuCoreClocks 128 UMUL" ));
+            MD_CHECK_CC( metric->SetMaxValueEquation( "$GpuCoreClocks 64 UMUL" ));
         }
 
         availabilityEquation = NULL;
@@ -11204,22 +8535,16 @@ TCompletionCode CreateMetricTreeDG1_OA( CMetricsDevice* metricsDevice, CConcurre
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x0d04, 0x00000200, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9840, 0x00000000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9884, 0x00000000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0e0f2400, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x220f0009, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x34004000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x36000001, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x2c010005, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x2405c000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x26050003, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x26060050, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c090300, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0e0cc000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x200da000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c0f0043, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1e0f00b3, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x200f0000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0e0e2400, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x220e0009, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c0b4000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1e0b4000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1e0c0300, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x120dc000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c0e0043, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1e0e00b3, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x200e0000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0e0fc000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9884, 0x00000003, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x05151d37, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x09151547, REGISTER_TYPE_NOA ));
@@ -11227,8 +8552,9 @@ TCompletionCode CreateMetricTreeDG1_OA( CMetricsDevice* metricsDevice, CConcurre
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x09351400, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x5d101400, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x5b100bbb, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1d140030, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x61112800, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x61111400, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1d128000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1f128000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0d150136, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x01150000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x03164000, REGISTER_TYPE_NOA ));
@@ -11245,9 +8571,9 @@ TCompletionCode CreateMetricTreeDG1_OA( CMetricsDevice* metricsDevice, CConcurre
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x55100000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x57100000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x47101000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x49101a1a, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x4b101a1a, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x4d100a1a, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x49101212, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x4b101212, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x4d100212, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x31100000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9884, 0x00000003, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x65100002, REGISTER_TYPE_NOA ));
@@ -11273,7 +8599,7 @@ TCompletionCode CreateMetricTreeDG1_OA( CMetricsDevice* metricsDevice, CConcurre
         MD_CHECK_CC( metricSet->RefreshConfigRegisters() );
     }
      
-    platformMask = PLATFORM_DG1;
+    platformMask = PLATFORM_RKL;
     if( MD_IS_INTERNAL_BUILD || metricsDevice->IsPlatformTypeOf( platformMask ) )
     {
         metricSet = concurrentGroup->AddMetricSet( "EuActivity3", "EuActivity3", API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
@@ -11457,7 +8783,7 @@ TCompletionCode CreateMetricTreeDG1_OA( CMetricsDevice* metricsDevice, CConcurre
             MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x1a8 qw@0x1a0 UADD qw@0x198 UADD qw@0x190 UADD" ));
             MD_CHECK_CC( metric->SetNormalizationEquation( "64 $Self UMUL" ));
             MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
-            MD_CHECK_CC( metric->SetMaxValueEquation( "$GpuCoreClocks 128 UMUL" ));
+            MD_CHECK_CC( metric->SetMaxValueEquation( "$GpuCoreClocks 64 UMUL" ));
         }
 
         availabilityEquation = NULL;
@@ -11471,7 +8797,7 @@ TCompletionCode CreateMetricTreeDG1_OA( CMetricsDevice* metricsDevice, CConcurre
             MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x188 qw@0x180 UADD" ));
             MD_CHECK_CC( metric->SetNormalizationEquation( "64 $Self UMUL" ));
             MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
-            MD_CHECK_CC( metric->SetMaxValueEquation( "$GpuCoreClocks 128 UMUL" ));
+            MD_CHECK_CC( metric->SetMaxValueEquation( "$GpuCoreClocks 64 UMUL" ));
         }
 
         availabilityEquation = NULL;
@@ -11657,22 +8983,16 @@ TCompletionCode CreateMetricTreeDG1_OA( CMetricsDevice* metricsDevice, CConcurre
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x0d04, 0x00000200, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9840, 0x00000000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9884, 0x00000000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0e0f2400, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x220f0009, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x34004000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x36000001, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x2c010005, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x2405c000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x26050003, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x26060050, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c090300, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0e0cc000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x200da000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c0f0043, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1e0f00b3, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x200f0000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0e0e2400, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x220e0009, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c0b4000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1e0b4000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1e0c0300, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x120dc000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c0e0043, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1e0e00b3, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x200e0000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0e0fc000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9884, 0x00000003, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x05151d37, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x09151547, REGISTER_TYPE_NOA ));
@@ -11680,8 +9000,9 @@ TCompletionCode CreateMetricTreeDG1_OA( CMetricsDevice* metricsDevice, CConcurre
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x09351400, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x5d101400, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x5b100bbb, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1d140030, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x61112800, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x61111400, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1d128000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1f128000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0d150136, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x01150000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x03164000, REGISTER_TYPE_NOA ));
@@ -11698,9 +9019,9 @@ TCompletionCode CreateMetricTreeDG1_OA( CMetricsDevice* metricsDevice, CConcurre
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x55100000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x57100000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x47101000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x49101a1a, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x4b101a1a, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x4d100a1a, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x49101212, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x4b101212, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x4d100212, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x31100000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9884, 0x00000003, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x65100002, REGISTER_TYPE_NOA ));
@@ -11726,7 +9047,7 @@ TCompletionCode CreateMetricTreeDG1_OA( CMetricsDevice* metricsDevice, CConcurre
         MD_CHECK_CC( metricSet->RefreshConfigRegisters() );
     }
      
-    platformMask = PLATFORM_DG1;
+    platformMask = PLATFORM_RKL;
     if( MD_IS_INTERNAL_BUILD || metricsDevice->IsPlatformTypeOf( platformMask ) )
     {
         metricSet = concurrentGroup->AddMetricSet( "EuActivity4", "EuActivity4", API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
@@ -11910,7 +9231,7 @@ TCompletionCode CreateMetricTreeDG1_OA( CMetricsDevice* metricsDevice, CConcurre
             MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x1a8 qw@0x1a0 UADD qw@0x198 UADD qw@0x190 UADD" ));
             MD_CHECK_CC( metric->SetNormalizationEquation( "64 $Self UMUL" ));
             MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
-            MD_CHECK_CC( metric->SetMaxValueEquation( "$GpuCoreClocks 128 UMUL" ));
+            MD_CHECK_CC( metric->SetMaxValueEquation( "$GpuCoreClocks 64 UMUL" ));
         }
 
         availabilityEquation = NULL;
@@ -11924,7 +9245,7 @@ TCompletionCode CreateMetricTreeDG1_OA( CMetricsDevice* metricsDevice, CConcurre
             MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x188 qw@0x180 UADD" ));
             MD_CHECK_CC( metric->SetNormalizationEquation( "64 $Self UMUL" ));
             MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
-            MD_CHECK_CC( metric->SetMaxValueEquation( "$GpuCoreClocks 128 UMUL" ));
+            MD_CHECK_CC( metric->SetMaxValueEquation( "$GpuCoreClocks 64 UMUL" ));
         }
 
         availabilityEquation = NULL;
@@ -12110,22 +9431,16 @@ TCompletionCode CreateMetricTreeDG1_OA( CMetricsDevice* metricsDevice, CConcurre
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x0d04, 0x00000200, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9840, 0x00000000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9884, 0x00000000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0e0f2400, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x220f0009, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x34004000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x36000001, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x2c010005, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x2405c000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x26050003, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x26060050, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c090300, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0e0cc000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x200da000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c0f0043, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1e0f00b3, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x200f0000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0e0e2400, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x220e0009, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c0b4000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1e0b4000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1e0c0300, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x120dc000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c0e0043, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1e0e00b3, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x200e0000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0e0fc000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9884, 0x00000003, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x05151d37, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x09151547, REGISTER_TYPE_NOA ));
@@ -12133,8 +9448,9 @@ TCompletionCode CreateMetricTreeDG1_OA( CMetricsDevice* metricsDevice, CConcurre
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x09351400, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x5d101400, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x5b100bbb, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1d140030, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x61112800, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x61111400, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1d128000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1f128000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0d150136, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x01150000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x03164000, REGISTER_TYPE_NOA ));
@@ -12151,9 +9467,9 @@ TCompletionCode CreateMetricTreeDG1_OA( CMetricsDevice* metricsDevice, CConcurre
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x55100000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x57100000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x47101000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x49101a1a, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x4b101a1a, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x4d100a1a, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x49101212, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x4b101212, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x4d100212, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x31100000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9884, 0x00000003, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x65100002, REGISTER_TYPE_NOA ));
@@ -12179,7 +9495,7 @@ TCompletionCode CreateMetricTreeDG1_OA( CMetricsDevice* metricsDevice, CConcurre
         MD_CHECK_CC( metricSet->RefreshConfigRegisters() );
     }
      
-    platformMask = PLATFORM_DG1;
+    platformMask = PLATFORM_RKL;
     if( MD_IS_INTERNAL_BUILD || metricsDevice->IsPlatformTypeOf( platformMask ) )
     {
         metricSet = concurrentGroup->AddMetricSet( "EuActivity5", "EuActivity5", API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
@@ -12363,7 +9679,7 @@ TCompletionCode CreateMetricTreeDG1_OA( CMetricsDevice* metricsDevice, CConcurre
             MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x1a8 qw@0x1a0 UADD qw@0x198 UADD qw@0x190 UADD" ));
             MD_CHECK_CC( metric->SetNormalizationEquation( "64 $Self UMUL" ));
             MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
-            MD_CHECK_CC( metric->SetMaxValueEquation( "$GpuCoreClocks 128 UMUL" ));
+            MD_CHECK_CC( metric->SetMaxValueEquation( "$GpuCoreClocks 64 UMUL" ));
         }
 
         availabilityEquation = NULL;
@@ -12377,7 +9693,7 @@ TCompletionCode CreateMetricTreeDG1_OA( CMetricsDevice* metricsDevice, CConcurre
             MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x188 qw@0x180 UADD" ));
             MD_CHECK_CC( metric->SetNormalizationEquation( "64 $Self UMUL" ));
             MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
-            MD_CHECK_CC( metric->SetMaxValueEquation( "$GpuCoreClocks 128 UMUL" ));
+            MD_CHECK_CC( metric->SetMaxValueEquation( "$GpuCoreClocks 64 UMUL" ));
         }
 
         availabilityEquation = NULL;
@@ -12563,22 +9879,16 @@ TCompletionCode CreateMetricTreeDG1_OA( CMetricsDevice* metricsDevice, CConcurre
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x0d04, 0x00000200, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9840, 0x00000000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9884, 0x00000000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0e0f2400, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x220f0009, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x34004000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x36000001, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x2c010005, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x2405c000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x26050003, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x26060050, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c090300, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0e0cc000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x200da000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c0f0043, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1e0f00b3, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x200f0000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0e0e2400, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x220e0009, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c0b4000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1e0b4000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1e0c0300, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x120dc000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c0e0043, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1e0e00b3, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x200e0000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0e0fc000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9884, 0x00000003, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x05151d37, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x09151547, REGISTER_TYPE_NOA ));
@@ -12586,8 +9896,9 @@ TCompletionCode CreateMetricTreeDG1_OA( CMetricsDevice* metricsDevice, CConcurre
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x09351400, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x5d101400, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x5b100bbb, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1d140030, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x61112800, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x61111400, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1d128000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1f128000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0d150136, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x01150000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x03164000, REGISTER_TYPE_NOA ));
@@ -12604,9 +9915,9 @@ TCompletionCode CreateMetricTreeDG1_OA( CMetricsDevice* metricsDevice, CConcurre
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x55100000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x57100000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x47101000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x49101a1a, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x4b101a1a, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x4d100a1a, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x49101212, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x4b101212, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x4d100212, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x31100000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9884, 0x00000003, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x65100002, REGISTER_TYPE_NOA ));
@@ -12632,7 +9943,7 @@ TCompletionCode CreateMetricTreeDG1_OA( CMetricsDevice* metricsDevice, CConcurre
         MD_CHECK_CC( metricSet->RefreshConfigRegisters() );
     }
      
-    platformMask = PLATFORM_DG1;
+    platformMask = PLATFORM_RKL;
     if( MD_IS_INTERNAL_BUILD || metricsDevice->IsPlatformTypeOf( platformMask ) )
     {
         metricSet = concurrentGroup->AddMetricSet( "EuActivity6", "EuActivity6", API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
@@ -12816,7 +10127,7 @@ TCompletionCode CreateMetricTreeDG1_OA( CMetricsDevice* metricsDevice, CConcurre
             MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x1a8 qw@0x1a0 UADD qw@0x198 UADD qw@0x190 UADD" ));
             MD_CHECK_CC( metric->SetNormalizationEquation( "64 $Self UMUL" ));
             MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
-            MD_CHECK_CC( metric->SetMaxValueEquation( "$GpuCoreClocks 128 UMUL" ));
+            MD_CHECK_CC( metric->SetMaxValueEquation( "$GpuCoreClocks 64 UMUL" ));
         }
 
         availabilityEquation = NULL;
@@ -12830,7 +10141,7 @@ TCompletionCode CreateMetricTreeDG1_OA( CMetricsDevice* metricsDevice, CConcurre
             MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x188 qw@0x180 UADD" ));
             MD_CHECK_CC( metric->SetNormalizationEquation( "64 $Self UMUL" ));
             MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
-            MD_CHECK_CC( metric->SetMaxValueEquation( "$GpuCoreClocks 128 UMUL" ));
+            MD_CHECK_CC( metric->SetMaxValueEquation( "$GpuCoreClocks 64 UMUL" ));
         }
 
         availabilityEquation = NULL;
@@ -13016,22 +10327,16 @@ TCompletionCode CreateMetricTreeDG1_OA( CMetricsDevice* metricsDevice, CConcurre
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x0d04, 0x00000200, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9840, 0x00000000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9884, 0x00000000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0e0f2400, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x220f0009, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x34004000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x36000001, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x2c010005, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x2405c000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x26050003, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x26060050, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c090300, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0e0cc000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x200da000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c0f0043, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1e0f00b3, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x200f0000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0e0e2400, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x220e0009, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c0b4000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1e0b4000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1e0c0300, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x120dc000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c0e0043, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1e0e00b3, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x200e0000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0e0fc000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9884, 0x00000003, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x05151d37, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x09151547, REGISTER_TYPE_NOA ));
@@ -13039,8 +10344,9 @@ TCompletionCode CreateMetricTreeDG1_OA( CMetricsDevice* metricsDevice, CConcurre
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x09351400, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x5d101400, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x5b100bbb, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1d140030, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x61112800, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x61111400, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1d128000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1f128000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0d150136, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x01150000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x03164000, REGISTER_TYPE_NOA ));
@@ -13057,9 +10363,9 @@ TCompletionCode CreateMetricTreeDG1_OA( CMetricsDevice* metricsDevice, CConcurre
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x55100000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x57100000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x47101000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x49101a1a, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x4b101a1a, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x4d100a1a, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x49101212, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x4b101212, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x4d100212, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x31100000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9884, 0x00000003, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x65100002, REGISTER_TYPE_NOA ));
@@ -13085,7 +10391,7 @@ TCompletionCode CreateMetricTreeDG1_OA( CMetricsDevice* metricsDevice, CConcurre
         MD_CHECK_CC( metricSet->RefreshConfigRegisters() );
     }
      
-    platformMask = PLATFORM_DG1;
+    platformMask = PLATFORM_RKL;
     if( MD_IS_INTERNAL_BUILD || metricsDevice->IsPlatformTypeOf( platformMask ) )
     {
         metricSet = concurrentGroup->AddMetricSet( "EuActivity7", "EuActivity7", API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
@@ -13323,7 +10629,7 @@ TCompletionCode CreateMetricTreeDG1_OA( CMetricsDevice* metricsDevice, CConcurre
             MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x1a8 qw@0x1a0 UADD qw@0x198 UADD qw@0x190 UADD" ));
             MD_CHECK_CC( metric->SetNormalizationEquation( "64 $Self UMUL" ));
             MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
-            MD_CHECK_CC( metric->SetMaxValueEquation( "$GpuCoreClocks 128 UMUL" ));
+            MD_CHECK_CC( metric->SetMaxValueEquation( "$GpuCoreClocks 64 UMUL" ));
         }
 
         availabilityEquation = NULL;
@@ -13337,7 +10643,7 @@ TCompletionCode CreateMetricTreeDG1_OA( CMetricsDevice* metricsDevice, CConcurre
             MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x188 qw@0x180 UADD" ));
             MD_CHECK_CC( metric->SetNormalizationEquation( "64 $Self UMUL" ));
             MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
-            MD_CHECK_CC( metric->SetMaxValueEquation( "$GpuCoreClocks 128 UMUL" ));
+            MD_CHECK_CC( metric->SetMaxValueEquation( "$GpuCoreClocks 64 UMUL" ));
         }
 
         information = metricSet->AddInformation( "QueryBeginTime", "Query Begin Time",
@@ -13481,22 +10787,16 @@ TCompletionCode CreateMetricTreeDG1_OA( CMetricsDevice* metricsDevice, CConcurre
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x0d04, 0x00000200, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9840, 0x00000000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9884, 0x00000000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0e0f2400, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x220f0009, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x34004000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x36000001, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x2c010005, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x2405c000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x26050003, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x26060050, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c090300, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0e0cc000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x200da000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c0f0043, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1e0f00b3, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x200f0000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0e0e2400, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x220e0009, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c0b4000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1e0b4000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1e0c0300, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x120dc000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c0e0043, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1e0e00b3, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x200e0000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0e0fc000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9884, 0x00000003, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x05151d37, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x09151547, REGISTER_TYPE_NOA ));
@@ -13504,8 +10804,9 @@ TCompletionCode CreateMetricTreeDG1_OA( CMetricsDevice* metricsDevice, CConcurre
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x09351400, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x5d101400, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x5b100bbb, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1d140030, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x61112800, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x61111400, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1d128000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1f128000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0d150136, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x01150000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x03164000, REGISTER_TYPE_NOA ));
@@ -13522,9 +10823,9 @@ TCompletionCode CreateMetricTreeDG1_OA( CMetricsDevice* metricsDevice, CConcurre
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x55100000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x57100000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x47101000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x49101a1a, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x4b101a1a, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x4d100a1a, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x49101212, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x4b101212, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x4d100212, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x31100000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9884, 0x00000003, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x65100002, REGISTER_TYPE_NOA ));
@@ -13550,7 +10851,7 @@ TCompletionCode CreateMetricTreeDG1_OA( CMetricsDevice* metricsDevice, CConcurre
         MD_CHECK_CC( metricSet->RefreshConfigRegisters() );
     }
      
-    platformMask = PLATFORM_DG1;
+    platformMask = PLATFORM_RKL;
     if( MD_IS_INTERNAL_BUILD || metricsDevice->IsPlatformTypeOf( platformMask ) )
     {
         metricSet = concurrentGroup->AddMetricSet( "EuActivity8", "EuActivity8", API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
@@ -13734,7 +11035,7 @@ TCompletionCode CreateMetricTreeDG1_OA( CMetricsDevice* metricsDevice, CConcurre
             MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x1a8 qw@0x1a0 UADD qw@0x198 UADD qw@0x190 UADD" ));
             MD_CHECK_CC( metric->SetNormalizationEquation( "64 $Self UMUL" ));
             MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
-            MD_CHECK_CC( metric->SetMaxValueEquation( "$GpuCoreClocks 128 UMUL" ));
+            MD_CHECK_CC( metric->SetMaxValueEquation( "$GpuCoreClocks 64 UMUL" ));
         }
 
         availabilityEquation = NULL;
@@ -13748,7 +11049,7 @@ TCompletionCode CreateMetricTreeDG1_OA( CMetricsDevice* metricsDevice, CConcurre
             MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x188 qw@0x180 UADD" ));
             MD_CHECK_CC( metric->SetNormalizationEquation( "64 $Self UMUL" ));
             MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
-            MD_CHECK_CC( metric->SetMaxValueEquation( "$GpuCoreClocks 128 UMUL" ));
+            MD_CHECK_CC( metric->SetMaxValueEquation( "$GpuCoreClocks 64 UMUL" ));
         }
 
         availabilityEquation = NULL;
@@ -13906,22 +11207,16 @@ TCompletionCode CreateMetricTreeDG1_OA( CMetricsDevice* metricsDevice, CConcurre
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x0d04, 0x00000200, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9840, 0x00000000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9884, 0x00000000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0e0f2400, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x220f0009, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x34004000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x36000001, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x2c010005, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x2405c000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x26050003, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x26060050, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c090300, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0e0cc000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x200da000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c0f0043, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1e0f00b3, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x200f0000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0e0e2400, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x220e0009, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c0b4000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1e0b4000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1e0c0300, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x120dc000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c0e0043, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1e0e00b3, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x200e0000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0e0fc000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9884, 0x00000003, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x05151d37, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x09151547, REGISTER_TYPE_NOA ));
@@ -13929,8 +11224,9 @@ TCompletionCode CreateMetricTreeDG1_OA( CMetricsDevice* metricsDevice, CConcurre
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x09351400, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x5d101400, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x5b100bbb, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1d140030, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x61112800, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x61111400, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1d128000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1f128000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0d150136, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x01150000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x03164000, REGISTER_TYPE_NOA ));
@@ -13947,9 +11243,9 @@ TCompletionCode CreateMetricTreeDG1_OA( CMetricsDevice* metricsDevice, CConcurre
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x55100000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x57100000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x47101000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x49101a1a, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x4b101a1a, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x4d100a1a, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x49101212, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x4b101212, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x4d100212, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x31100000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9884, 0x00000003, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x65100002, REGISTER_TYPE_NOA ));
@@ -13971,11 +11267,11 @@ TCompletionCode CreateMetricTreeDG1_OA( CMetricsDevice* metricsDevice, CConcurre
         MD_CHECK_CC( metricSet->RefreshConfigRegisters() );
     }
      
-    platformMask = PLATFORM_DG1;
+    platformMask = PLATFORM_RKL;
     if( MD_IS_INTERNAL_BUILD || metricsDevice->IsPlatformTypeOf( platformMask ) )
     {
         metricSet = concurrentGroup->AddMetricSet( "TestOa", "Metric set TestOa", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
-           GPU_RENDER|GPU_COMPUTE|GPU_MEDIA|GPU_GENERIC, 256, 672, OA_REPORT_TYPE_256B_A45_NOA16, platformMask );
+           GPU_RENDER|GPU_COMPUTE, 256, 672, OA_REPORT_TYPE_256B_A45_NOA16, platformMask );
         MD_CHECK_PTR( metricSet );
         
         MD_CHECK_CC( metricSet->SetApiSpecificId("GPAV", 0, 0x40000000, 0x80000203, 0, 0,
@@ -14127,7 +11423,7 @@ TCompletionCode CreateMetricTreeDG1_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "Counter9", "TestCounter9 - OAR enable",
             "HW test counter 9. Should be equal to 1 in query.",
-            "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_VULKAN,
+            "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "events", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -14277,27 +11573,22 @@ TCompletionCode CreateMetricTreeDG1_OA( CMetricsDevice* metricsDevice, CConcurre
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x0d04, 0x00000200, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9840, 0x00000000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9884, 0x00000000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x04100000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x36000001, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x2c010004, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x26050003, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x26060040, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c090200, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0e0c8000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x200d8000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1e0f8000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1e100017, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x00100000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x040f0000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1e0b4000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1e0c0200, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x120d8000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1e0f0017, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x100f0000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0e0f0000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9884, 0x00000003, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x49110000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x5d101400, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1d140020, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1d1103a3, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x01110000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x61112000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x61111000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1f128000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x17100000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x55100230, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x55100110, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x57100000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x31100000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9884, 0x00000003, REGISTER_TYPE_NOA ));

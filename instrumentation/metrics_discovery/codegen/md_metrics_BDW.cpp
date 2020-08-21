@@ -204,7 +204,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
     platformMask = PLATFORM_BDW;
     if( MD_IS_INTERNAL_BUILD || metricsDevice->IsPlatformTypeOf( platformMask ) )
     {
-        metricSet = concurrentGroup->AddMetricSet( "RenderBasic", "Render Metrics Basic Gen8", API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+        metricSet = concurrentGroup->AddMetricSet( "RenderBasic", "Render Metrics Basic Gen8", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
            GPU_RENDER|GPU_COMPUTE, 256, 536, OA_REPORT_TYPE_256B_A45_NOA16, platformMask );
         MD_CHECK_PTR( metricSet );
         
@@ -214,7 +214,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "GpuTime", "GPU Time Elapsed",
             "Time elapsed on the GPU during the measurement.",
-            "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_TIER_1|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_TIER_1|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_DURATION, RESULT_UINT64, "ns", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -226,7 +226,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "GpuCoreClocks", "GPU Core Clocks",
             "The total number of GPU core clocks elapsed during the measurement.",
-            "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_TIER_1|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_TIER_1|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "cycles", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -238,7 +238,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "AvgGpuCoreFrequencyMHz", "AVG GPU Core Frequency",
             "Average GPU Core Frequency in the measurement.",
-            "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_TIER_1|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_TIER_1|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "MHz", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -249,7 +249,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "VsThreads", "VS Threads Dispatched",
             "The total number of vertex shader hardware threads dispatched.",
-            "EU Array/Vertex Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_VS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Vertex Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_VS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "threads", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -261,7 +261,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "HsThreads", "HS Threads Dispatched",
             "The total number of hull shader hardware threads dispatched.",
-            "EU Array/Hull Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_HS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Hull Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_HS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "threads", 0, 0, HW_UNIT_GPU, availabilityEquation, "Hull|Control,hull|control,HS|TCS", "oa.fixed" );
         if( metric )
         {
@@ -273,7 +273,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "DsThreads", "DS Threads Dispatched",
             "The total number of domain shader hardware threads dispatched.",
-            "EU Array/Domain Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_DS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Domain Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_DS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "threads", 0, 0, HW_UNIT_GPU, availabilityEquation, "Domain|Evaluation,domain|evaluation,DS|TES", "oa.fixed" );
         if( metric )
         {
@@ -285,7 +285,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "GsThreads", "GS Threads Dispatched",
             "The total number of geometry shader hardware threads dispatched.",
-            "EU Array/Geometry Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_GS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Geometry Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_GS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "threads", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -297,7 +297,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "PsThreads", "PS Threads Dispatched",
             "The total number of pixel shader hardware threads dispatched.",
-            "EU Array/Pixel Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_PS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Pixel Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_PS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "threads", 0, 0, HW_UNIT_GPU, availabilityEquation, "Pixel|Fragment,PS|FS,pixel|fragment", "oa.fixed" );
         if( metric )
         {
@@ -309,7 +309,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "CsThreads", "CS Threads Dispatched",
             "The total number of compute shader hardware threads dispatched.",
-            "EU Array/Compute Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_CS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Compute Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_CS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "threads", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -321,7 +321,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "GpuBusy", "GPU Busy",
             "The percentage of time in which the GPU has been processing GPU commands.",
-            "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_TIER_1|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_TIER_1|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -335,7 +335,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "EuActive", "EU Active",
             "The percentage of time in which the Execution Units were actively processing.",
-            "EU Array", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000), USAGE_FLAG_TIER_2|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000), USAGE_FLAG_TIER_2|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -349,7 +349,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "EuStall", "EU Stall",
             "The percentage of time in which the Execution Units were stalled.",
-            "EU Array", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000), USAGE_FLAG_TIER_2|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000), USAGE_FLAG_TIER_2|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -363,7 +363,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "EuFpuBothActive", "EU Both FPU Pipes Active",
             "The percentage of time in which both EU FPU pipelines were actively processing.",
-            "EU Array/Pipes", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_EU_PIPES * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Pipes", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_EU_PIPES * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -377,7 +377,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "VsFpu0Active", "VS FPU0 Pipe Active",
             "The percentage of time in which EU FPU0 pipeline was actively processing a vertex shader instruction.",
-            "EU Array/Vertex Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_VS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Vertex Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_VS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -391,7 +391,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "VsFpu1Active", "VS FPU1 Pipe Active",
             "The percentage of time in which EU FPU1 pipeline was actively processing a vertex shader instruction.",
-            "EU Array/Vertex Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_VS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Vertex Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_VS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -405,7 +405,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "VsSendActive", "VS Send Pipe Active",
             "The percentage of time in which EU send pipeline was actively processing a vertex shader instruction.",
-            "EU Array/Vertex Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_VS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Vertex Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_VS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -419,7 +419,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "PsFpu0Active", "PS FPU0 Pipe Active",
             "The percentage of time in which EU FPU0 pipeline was actively processing a pixel shader instruction.",
-            "EU Array/Pixel Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_PS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Pixel Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_PS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, "Pixel|Fragment,PS|FS,pixel|fragment", NULL );
         if( metric )
         {
@@ -433,7 +433,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "PsFpu1Active", "PS FPU1 Pipe Active",
             "The percentage of time in which EU FPU1 pipeline was actively processing a pixel shader instruction.",
-            "EU Array/Pixel Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_PS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Pixel Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_PS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, "Pixel|Fragment,PS|FS,pixel|fragment", NULL );
         if( metric )
         {
@@ -447,7 +447,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "PsSendActive", "PS Send Pipeline Active",
             "The percentage of time in which EU send pipeline was actively processing a pixel shader instruction.",
-            "EU Array/Pixel Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_PS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Pixel Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_PS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, "Pixel|Fragment,PS|FS,pixel|fragment", NULL );
         if( metric )
         {
@@ -461,7 +461,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "PsEuBothFpuActive", "PS Both FPU Active",
             "The percentage of time in which pixel shaders were processed actively on the both FPUs.",
-            "3D Pipe/Pixel Shader", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_PS * 0x10000), USAGE_FLAG_TIER_4|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "3D Pipe/Pixel Shader", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_PS * 0x10000), USAGE_FLAG_TIER_4|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, "Pixel|Fragment,PS|FS,pixel|fragment", NULL );
         if( metric )
         {
@@ -477,7 +477,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         {
             metric = metricSet->AddMetric( "Sampler0Busy", "Sampler 0 Busy",
                 "The percentage of time in which Sampler 0 has been processing EU requests.",
-                "Sampler", (METRIC_GROUP_NAME_ID_SAMPLER * 0x1000000), USAGE_FLAG_TIER_3|USAGE_FLAG_BATCH|USAGE_FLAG_FRAME|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+                "Sampler", (METRIC_GROUP_NAME_ID_SAMPLER * 0x1000000), USAGE_FLAG_TIER_3|USAGE_FLAG_BATCH|USAGE_FLAG_FRAME|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
                 METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, NULL, NULL );
             if( metric )
             {
@@ -494,7 +494,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         {
             metric = metricSet->AddMetric( "Sampler1Busy", "Sampler 1 Busy",
                 "The percentage of time in which Sampler 1 has been processing EU requests.",
-                "Sampler", (METRIC_GROUP_NAME_ID_SAMPLER * 0x1000000), USAGE_FLAG_TIER_3|USAGE_FLAG_BATCH|USAGE_FLAG_FRAME|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+                "Sampler", (METRIC_GROUP_NAME_ID_SAMPLER * 0x1000000), USAGE_FLAG_TIER_3|USAGE_FLAG_BATCH|USAGE_FLAG_FRAME|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
                 METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, NULL, NULL );
             if( metric )
             {
@@ -509,7 +509,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "SamplersBusy", "Samplers Busy",
             "The percentage of time in which samplers have been processing EU requests.",
-            "Sampler", (METRIC_GROUP_NAME_ID_SAMPLER * 0x1000000), USAGE_FLAG_TIER_2|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "Sampler", (METRIC_GROUP_NAME_ID_SAMPLER * 0x1000000), USAGE_FLAG_TIER_2|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SLICE, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -524,7 +524,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         {
             metric = metricSet->AddMetric( "Sampler0Bottleneck", "Sampler 0 Bottleneck",
                 "The percentage of time in which Sampler 0 has been slowing down the pipe when processing EU requests.",
-                "Sampler", (METRIC_GROUP_NAME_ID_SAMPLER * 0x1000000), USAGE_FLAG_TIER_3|USAGE_FLAG_INDICATE|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+                "Sampler", (METRIC_GROUP_NAME_ID_SAMPLER * 0x1000000), USAGE_FLAG_TIER_3|USAGE_FLAG_INDICATE|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
                 METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 5, 15, HW_UNIT_SUBSLICE, availabilityEquation, NULL, NULL );
             if( metric )
             {
@@ -541,7 +541,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         {
             metric = metricSet->AddMetric( "Sampler1Bottleneck", "Sampler 1 Bottleneck",
                 "The percentage of time in which Sampler 1 has been slowing down the pipe when processing EU requests.",
-                "Sampler", (METRIC_GROUP_NAME_ID_SAMPLER * 0x1000000), USAGE_FLAG_TIER_3|USAGE_FLAG_INDICATE|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+                "Sampler", (METRIC_GROUP_NAME_ID_SAMPLER * 0x1000000), USAGE_FLAG_TIER_3|USAGE_FLAG_INDICATE|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
                 METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 5, 15, HW_UNIT_SUBSLICE, availabilityEquation, NULL, NULL );
             if( metric )
             {
@@ -556,7 +556,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "SamplesWritten", "Samples Written",
             "The total number of samples or pixels written to all render targets.",
-            "3D Pipe/Output Merger", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_OM * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "3D Pipe/Output Merger", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_OM * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "pixels", 0, 0, HW_UNIT_GPU, availabilityEquation, "Pixel|Fragment,PS|FS,pixel|fragment", "oa.fixed" );
         if( metric )
         {
@@ -569,7 +569,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "SamplesBlended", "Samples Blended",
             "The total number of blended samples or pixels written to all render targets.",
-            "3D Pipe/Output Merger", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_OM * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "3D Pipe/Output Merger", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_OM * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "pixels", 0, 0, HW_UNIT_GPU, availabilityEquation, "Pixel|Fragment,PS|FS,pixel|fragment", "oa.fixed" );
         if( metric )
         {
@@ -582,7 +582,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "SamplerTexels", "Sampler Texels",
             "The total number of texels seen on input (with 2x2 accuracy) in all sampler units.",
-            "Sampler/Sampler Input", (METRIC_GROUP_NAME_ID_SAMPLER * 0x1000000) | (METRIC_GROUP_NAME_ID_SAMPLER_IN * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "Sampler/Sampler Input", (METRIC_GROUP_NAME_ID_SAMPLER * 0x1000000) | (METRIC_GROUP_NAME_ID_SAMPLER_IN * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "texels", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -595,7 +595,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "SamplerTexelMisses", "Sampler Texels Misses",
             "The total number of texels lookups (with 2x2 accuracy) that missed L1 sampler cache.",
-            "Sampler/Sampler Cache", (METRIC_GROUP_NAME_ID_SAMPLER * 0x1000000) | (METRIC_GROUP_NAME_ID_SAMPLER_CACHE * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_BATCH|USAGE_FLAG_FRAME|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "Sampler/Sampler Cache", (METRIC_GROUP_NAME_ID_SAMPLER * 0x1000000) | (METRIC_GROUP_NAME_ID_SAMPLER_CACHE * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_BATCH|USAGE_FLAG_FRAME|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "texels", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -608,7 +608,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "SamplerL1Misses", "Sampler Cache Misses",
             "The total number of sampler cache misses in all LODs in all sampler units.",
-            "Sampler/Sampler Cache", (METRIC_GROUP_NAME_ID_SAMPLER * 0x1000000) | (METRIC_GROUP_NAME_ID_SAMPLER_CACHE * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_BATCH|USAGE_FLAG_FRAME|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "Sampler/Sampler Cache", (METRIC_GROUP_NAME_ID_SAMPLER * 0x1000000) | (METRIC_GROUP_NAME_ID_SAMPLER_CACHE * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_BATCH|USAGE_FLAG_FRAME|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "messages", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -620,7 +620,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "RasterizedPixels", "Rasterized Pixels",
             "The total number of rasterized pixels.",
-            "3D Pipe/Rasterizer", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_WM * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "3D Pipe/Rasterizer", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_WM * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "pixels", 0, 0, HW_UNIT_GPU, availabilityEquation, "Pixel|Fragment,PS|FS,pixel|fragment", "oa.fixed" );
         if( metric )
         {
@@ -633,7 +633,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "HiDepthTestFails", "Early Hi-Depth Test Fails",
             "The total number of pixels dropped on early hierarchical depth test.",
-            "3D Pipe/Rasterizer/Hi-Depth Test", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_WM * 0x10000) | (METRIC_GROUP_NAME_ID_HZ * 0x100), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "3D Pipe/Rasterizer/Hi-Depth Test", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_WM * 0x10000) | (METRIC_GROUP_NAME_ID_HZ * 0x100), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "pixels", 0, 0, HW_UNIT_GPU, availabilityEquation, "Pixel|Fragment,PS|FS,pixel|fragment", "oa.fixed" );
         if( metric )
         {
@@ -646,7 +646,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "EarlyDepthTestFails", "Early Depth Test Fails",
             "The total number of pixels dropped on early depth test.",
-            "3D Pipe/Rasterizer/Early Depth Test", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_WM * 0x10000) | (METRIC_GROUP_NAME_ID_IZ * 0x100), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "3D Pipe/Rasterizer/Early Depth Test", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_WM * 0x10000) | (METRIC_GROUP_NAME_ID_IZ * 0x100), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "pixels", 0, 0, HW_UNIT_GPU, availabilityEquation, "Pixel|Fragment,PS|FS,pixel|fragment", "oa.fixed" );
         if( metric )
         {
@@ -659,7 +659,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "SamplesKilledInPs", "Samples Killed in PS",
             "The total number of samples or pixels dropped in pixel shaders.",
-            "3D Pipe/Pixel Shader", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_PS * 0x10000), USAGE_FLAG_TIER_4|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "3D Pipe/Pixel Shader", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_PS * 0x10000), USAGE_FLAG_TIER_4|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "pixels", 0, 0, HW_UNIT_GPU, availabilityEquation, "Pixel|Fragment,PS|FS,pixel|fragment", "oa.fixed" );
         if( metric )
         {
@@ -672,7 +672,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "PixelsFailingPostPsTests", "Pixels Failing Tests",
             "The total number of pixels dropped on post-PS alpha, stencil, or depth tests.",
-            "3D Pipe/Output Merger", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_OM * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "3D Pipe/Output Merger", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_OM * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "pixels", 0, 0, HW_UNIT_GPU, availabilityEquation, "Pixel|Fragment,PS|FS,pixel|fragment", "oa.fixed" );
         if( metric )
         {
@@ -685,7 +685,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "SlmBytesRead", "SLM Bytes Read",
             "The total number of GPU memory bytes read from shared local memory.",
-            "L3/Data Port/SLM", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000) | (METRIC_GROUP_NAME_ID_SLM * 0x100), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "L3/Data Port/SLM", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000) | (METRIC_GROUP_NAME_ID_SLM * 0x100), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_THROUGHPUT, RESULT_UINT64, "bytes", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -699,7 +699,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "SlmBytesWritten", "SLM Bytes Written",
             "The total number of GPU memory bytes written into shared local memory.",
-            "L3/Data Port/SLM", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000) | (METRIC_GROUP_NAME_ID_SLM * 0x100), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "L3/Data Port/SLM", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000) | (METRIC_GROUP_NAME_ID_SLM * 0x100), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_THROUGHPUT, RESULT_UINT64, "bytes", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -713,7 +713,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "ShaderMemoryAccesses", "Shader Memory Accesses",
             "The total number of shader memory accesses to L3.",
-            "L3/Data Port", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "L3/Data Port", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "messages", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -725,7 +725,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "ShaderAtomics", "Shader Atomic Memory Accesses",
             "The total number of shader atomic memory accesses.",
-            "L3/Data Port/Atomics", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000) | (METRIC_GROUP_NAME_ID_ATOMICS * 0x100), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "L3/Data Port/Atomics", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000) | (METRIC_GROUP_NAME_ID_ATOMICS * 0x100), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "messages", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -737,7 +737,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "L3Lookups", "L3 Lookup Accesses w/o IC",
             "The total number of L3 cache lookup accesses w/o IC.",
-            "L3/TAG", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_L3_TAG * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "L3/TAG", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_L3_TAG * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "messages", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -748,7 +748,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "L3Misses", "L3 Misses",
             "The total number of L3 misses.",
-            "L3/TAG", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_L3_TAG * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "L3/TAG", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_L3_TAG * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "messages", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -760,7 +760,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "L3SamplerThroughput", "L3 Sampler Throughput",
             "The total number of GPU memory bytes transferred between samplers and L3 caches.",
-            "L3/Sampler", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_SAMPLER * 0x10000), USAGE_FLAG_TIER_2|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "L3/Sampler", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_SAMPLER * 0x10000), USAGE_FLAG_TIER_2|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_THROUGHPUT, RESULT_UINT64, "bytes", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -772,7 +772,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "L3ShaderThroughput", "L3 Shader Throughput",
             "The total number of GPU memory bytes transferred between shaders and L3 caches w/o URB.",
-            "L3/Data Port", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000), USAGE_FLAG_TIER_2|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "L3/Data Port", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000), USAGE_FLAG_TIER_2|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_THROUGHPUT, RESULT_UINT64, "bytes", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -784,7 +784,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "ShaderBarriers", "Shader Barrier Messages",
             "The total number of shader barrier messages.",
-            "EU Array/Barrier", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_EU_BARRIER * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Barrier", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_EU_BARRIER * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "messages", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -796,7 +796,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "GtiVfThroughput", "GTI Fixed Pipe Throughput",
             "The total number of GPU memory bytes transferred between 3D Pipeline (Command Dispatch, Input Assembly and Stream Output) and GTI.",
-            "GTI/3D Pipe", (METRIC_GROUP_NAME_ID_GTI * 0x1000000) | (METRIC_GROUP_NAME_ID_3D_PIPE * 0x10000), USAGE_FLAG_TIER_2|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "GTI/3D Pipe", (METRIC_GROUP_NAME_ID_GTI * 0x1000000) | (METRIC_GROUP_NAME_ID_3D_PIPE * 0x10000), USAGE_FLAG_TIER_2|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_THROUGHPUT, RESULT_UINT64, "bytes", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -810,7 +810,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "GtiDepthThroughput", "GTI Depth Throughput",
             "The total number of GPU memory bytes transferred between depth caches and GTI.",
-            "GTI/Depth Cache", (METRIC_GROUP_NAME_ID_GTI * 0x1000000) | (METRIC_GROUP_NAME_ID_RCZ * 0x10000), USAGE_FLAG_TIER_2|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "GTI/Depth Cache", (METRIC_GROUP_NAME_ID_GTI * 0x1000000) | (METRIC_GROUP_NAME_ID_RCZ * 0x10000), USAGE_FLAG_TIER_2|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_THROUGHPUT, RESULT_UINT64, "bytes", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -824,7 +824,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "GtiRccThroughput", "GTI RCC Throughput",
             "The total number of GPU memory bytes transferred between render color caches and GTI.",
-            "GTI/Color Cache", (METRIC_GROUP_NAME_ID_GTI * 0x1000000) | (METRIC_GROUP_NAME_ID_RCC * 0x10000), USAGE_FLAG_TIER_2|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "GTI/Color Cache", (METRIC_GROUP_NAME_ID_GTI * 0x1000000) | (METRIC_GROUP_NAME_ID_RCC * 0x10000), USAGE_FLAG_TIER_2|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_THROUGHPUT, RESULT_UINT64, "bytes", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -838,7 +838,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "GtiL3Throughput", "GTI L3 Throughput",
             "The total number of GPU memory bytes transferred between L3 caches and GTI.",
-            "GTI/L3", (METRIC_GROUP_NAME_ID_GTI * 0x1000000) | (METRIC_GROUP_NAME_ID_L3 * 0x10000), USAGE_FLAG_TIER_2|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "GTI/L3", (METRIC_GROUP_NAME_ID_GTI * 0x1000000) | (METRIC_GROUP_NAME_ID_L3 * 0x10000), USAGE_FLAG_TIER_2|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_THROUGHPUT, RESULT_UINT64, "bytes", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -850,7 +850,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "GtiHdcLookupsThroughput", "GTI HDC TLB Lookup Throughput",
             "The total number of GPU memory bytes transferred between GTI and HDC, when HDC is doing TLB lookups.",
-            "GTI/L3", (METRIC_GROUP_NAME_ID_GTI * 0x1000000) | (METRIC_GROUP_NAME_ID_L3 * 0x10000), USAGE_FLAG_TIER_2|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "GTI/L3", (METRIC_GROUP_NAME_ID_GTI * 0x1000000) | (METRIC_GROUP_NAME_ID_L3 * 0x10000), USAGE_FLAG_TIER_2|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_THROUGHPUT, RESULT_UINT64, "bytes", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -864,7 +864,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "GtiReadThroughput", "GTI Read Throughput",
             "The total number of GPU memory bytes read from GTI.",
-            "GTI", (METRIC_GROUP_NAME_ID_GTI * 0x1000000), USAGE_FLAG_TIER_1|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "GTI", (METRIC_GROUP_NAME_ID_GTI * 0x1000000), USAGE_FLAG_TIER_1|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_THROUGHPUT, RESULT_UINT64, "bytes", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -878,7 +878,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "GtiWriteThroughput", "GTI Write Throughput",
             "The total number of GPU memory bytes written to GTI.",
-            "GTI", (METRIC_GROUP_NAME_ID_GTI * 0x1000000), USAGE_FLAG_TIER_1|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "GTI", (METRIC_GROUP_NAME_ID_GTI * 0x1000000), USAGE_FLAG_TIER_1|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_THROUGHPUT, RESULT_UINT64, "bytes", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -892,7 +892,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "SamplerBottleneck", "Samplers Bottleneck",
             "The percentage of time in which samplers have been slowing down the pipe when processing EU requests.",
-            "Sampler", (METRIC_GROUP_NAME_ID_SAMPLER * 0x1000000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_INDICATE|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "Sampler", (METRIC_GROUP_NAME_ID_SAMPLER * 0x1000000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_INDICATE|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 5, 15, HW_UNIT_SLICE, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -904,7 +904,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
 
         information = metricSet->AddInformation( "CoreFrequencyChanged", "Core Frequency Changed",
             "The flag indicating that core frequency has changed.",
-            "Exception", API_TYPE_OGL|API_TYPE_OGL4_X,
+            "Exception", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
             INFORMATION_TYPE_FLAG, NULL, NULL );
         if( information )
         {
@@ -914,7 +914,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
 
         information = metricSet->AddInformation( "QueryBeginTime", "Query Begin Time",
             "The measurement begin time.",
-            "Report Meta Data", API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "Report Meta Data", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             INFORMATION_TYPE_TIMESTAMP, "ns", NULL );
         if( information )
         {
@@ -925,7 +925,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
 
         information = metricSet->AddInformation( "CoreFrequencyMHz", "GPU Core Frequency",
             "The last core frequency in the measurement.",
-            "Report Meta Data", API_TYPE_OGL|API_TYPE_OGL4_X,
+            "Report Meta Data", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
             INFORMATION_TYPE_VALUE, "MHz", NULL );
         if( information )
         {
@@ -953,7 +953,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
 
         information = metricSet->AddInformation( "QuerySplitOccurred", "Query Split Occurred",
             "The flag indicating that query has been split during execution on the GPU.",
-            "Exception", API_TYPE_OGL|API_TYPE_OGL4_X,
+            "Exception", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
             INFORMATION_TYPE_FLAG, NULL, NULL );
         if( information )
         {
@@ -963,7 +963,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
 
         information = metricSet->AddInformation( "ReportId", "Query report id",
             "Query report identification number.",
-            "Report Meta Data", API_TYPE_OGL|API_TYPE_OGL4_X,
+            "Report Meta Data", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
             INFORMATION_TYPE_VALUE, NULL, NULL );
         if( information )
         {
@@ -973,7 +973,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
 
         information = metricSet->AddInformation( "ReportsCount", "Query reports count",
             "The number of available query reports.",
-            "Report Meta Data", API_TYPE_OGL|API_TYPE_OGL4_X,
+            "Report Meta Data", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
             INFORMATION_TYPE_VALUE, NULL, NULL );
         if( information )
         {
@@ -983,7 +983,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
 
         information = metricSet->AddInformation( "OverrunOccured", "Query Overrun Occurred",
             "The flag indicating that Oa buffer has been overran.",
-            "Exception", API_TYPE_OGL|API_TYPE_OGL4_X,
+            "Exception", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
             INFORMATION_TYPE_FLAG, NULL, NULL );
         if( information )
         {
@@ -1254,7 +1254,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
     platformMask = PLATFORM_BDW;
     if( MD_IS_INTERNAL_BUILD || metricsDevice->IsPlatformTypeOf( platformMask ) )
     {
-        metricSet = concurrentGroup->AddMetricSet( "ComputeBasic", "Compute Metrics Basic Gen8", API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+        metricSet = concurrentGroup->AddMetricSet( "ComputeBasic", "Compute Metrics Basic Gen8", API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
            GPU_RENDER|GPU_COMPUTE, 256, 536, OA_REPORT_TYPE_256B_A45_NOA16, platformMask );
         MD_CHECK_PTR( metricSet );
         
@@ -1264,7 +1264,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "GpuTime", "GPU Time Elapsed",
             "Time elapsed on the GPU during the measurement.",
-            "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_TIER_1|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_TIER_1|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_DURATION, RESULT_UINT64, "ns", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -1276,7 +1276,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "GpuCoreClocks", "GPU Core Clocks",
             "The total number of GPU core clocks elapsed during the measurement.",
-            "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_TIER_1|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_TIER_1|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "cycles", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -1288,7 +1288,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "AvgGpuCoreFrequencyMHz", "AVG GPU Core Frequency",
             "Average GPU Core Frequency in the measurement.",
-            "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_TIER_1|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_TIER_1|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "MHz", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -1299,7 +1299,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "GpuBusy", "GPU Busy",
             "The percentage of time in which the GPU has been processing GPU commands.",
-            "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_TIER_1|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_TIER_1|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -1313,7 +1313,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "VsThreads", "VS Threads Dispatched",
             "The total number of vertex shader hardware threads dispatched.",
-            "EU Array/Vertex Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_VS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Vertex Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_VS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "threads", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -1325,7 +1325,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "HsThreads", "HS Threads Dispatched",
             "The total number of hull shader hardware threads dispatched.",
-            "EU Array/Hull Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_HS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Hull Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_HS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "threads", 0, 0, HW_UNIT_GPU, availabilityEquation, "Hull|Control,hull|control,HS|TCS", "oa.fixed" );
         if( metric )
         {
@@ -1337,7 +1337,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "DsThreads", "DS Threads Dispatched",
             "The total number of domain shader hardware threads dispatched.",
-            "EU Array/Domain Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_DS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Domain Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_DS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "threads", 0, 0, HW_UNIT_GPU, availabilityEquation, "Domain|Evaluation,domain|evaluation,DS|TES", "oa.fixed" );
         if( metric )
         {
@@ -1349,7 +1349,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "GsThreads", "GS Threads Dispatched",
             "The total number of geometry shader hardware threads dispatched.",
-            "EU Array/Geometry Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_GS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Geometry Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_GS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "threads", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -1361,7 +1361,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "PsThreads", "PS Threads Dispatched",
             "The total number of pixel shader hardware threads dispatched.",
-            "EU Array/Pixel Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_PS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Pixel Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_PS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "threads", 0, 0, HW_UNIT_GPU, availabilityEquation, "Pixel|Fragment,PS|FS,pixel|fragment", "oa.fixed" );
         if( metric )
         {
@@ -1373,7 +1373,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "CsThreads", "CS Threads Dispatched",
             "The total number of compute shader hardware threads dispatched.",
-            "EU Array/Compute Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_CS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Compute Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_CS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "threads", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -1385,7 +1385,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "EuActive", "EU Active",
             "The percentage of time in which the Execution Units were actively processing.",
-            "EU Array", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000), USAGE_FLAG_TIER_2|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000), USAGE_FLAG_TIER_2|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -1399,7 +1399,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "EuStall", "EU Stall",
             "The percentage of time in which the Execution Units were stalled.",
-            "EU Array", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000), USAGE_FLAG_TIER_2|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000), USAGE_FLAG_TIER_2|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -1411,21 +1411,9 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         }
 
         availabilityEquation = NULL;
-        metric = metricSet->AddMetric( "EuAvgIpcRate", "EU AVG IPC Rate",
-            "The average rate of IPC calculated for 2 FPU pipelines.",
-            "EU Array", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000), USAGE_FLAG_TIER_4|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
-            METRIC_TYPE_RATIO, RESULT_FLOAT, "number", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
-        if( metric )
-        {
-            
-            MD_CHECK_CC( metric->SetNormalizationEquation( "$EuFpuBothActive $Fpu0Active $Fpu1Active UADD $EuFpuBothActive USUB FDIV 1 FADD" ));
-            MD_CHECK_CC( metric->SetMaxValueEquation( "2" ));
-        }
-
-        availabilityEquation = NULL;
         metric = metricSet->AddMetric( "EuFpuBothActive", "EU Both FPU Pipes Active",
             "The percentage of time in which both EU FPU pipelines were actively processing.",
-            "EU Array/Pipes", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_EU_PIPES * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Pipes", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_EU_PIPES * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -1439,7 +1427,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "Fpu0Active", "EU FPU0 Pipe Active",
             "The percentage of time in which EU FPU0 pipeline was actively processing.",
-            "EU Array/Pipes", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_EU_PIPES * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Pipes", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_EU_PIPES * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -1453,7 +1441,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "Fpu1Active", "EU FPU1 Pipe Active",
             "The percentage of time in which EU FPU1 pipeline was actively processing.",
-            "EU Array/Pipes", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_EU_PIPES * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Pipes", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_EU_PIPES * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -1465,9 +1453,21 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         }
 
         availabilityEquation = NULL;
+        metric = metricSet->AddMetric( "EuAvgIpcRate", "EU AVG IPC Rate",
+            "The average rate of IPC calculated for 2 FPU pipelines.",
+            "EU Array", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000), USAGE_FLAG_TIER_4|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            METRIC_TYPE_RATIO, RESULT_FLOAT, "number", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
+        if( metric )
+        {
+            
+            MD_CHECK_CC( metric->SetNormalizationEquation( "$EuFpuBothActive $Fpu0Active $Fpu1Active UADD $EuFpuBothActive USUB FDIV 1 FADD" ));
+            MD_CHECK_CC( metric->SetMaxValueEquation( "2" ));
+        }
+
+        availabilityEquation = NULL;
         metric = metricSet->AddMetric( "EuSendActive", "EU Send Pipe Active",
             "The percentage of time in which EU send pipeline was actively processing.",
-            "EU Array/Pipes", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_EU_PIPES * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Pipes", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_EU_PIPES * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -1481,7 +1481,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "EuThreadOccupancy", "EU Thread Occupancy",
             "The percentage of time in which hardware threads occupied EUs.",
-            "EU Array", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000), USAGE_FLAG_TIER_2|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000), USAGE_FLAG_TIER_2|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -1495,7 +1495,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "RasterizedPixels", "Rasterized Pixels",
             "The total number of rasterized pixels.",
-            "3D Pipe/Rasterizer", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_WM * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "3D Pipe/Rasterizer", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_WM * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "pixels", 0, 0, HW_UNIT_GPU, availabilityEquation, "Pixel|Fragment,PS|FS,pixel|fragment", "oa.fixed" );
         if( metric )
         {
@@ -1508,7 +1508,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "HiDepthTestFails", "Early Hi-Depth Test Fails",
             "The total number of pixels dropped on early hierarchical depth test.",
-            "3D Pipe/Rasterizer/Hi-Depth Test", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_WM * 0x10000) | (METRIC_GROUP_NAME_ID_HZ * 0x100), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "3D Pipe/Rasterizer/Hi-Depth Test", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_WM * 0x10000) | (METRIC_GROUP_NAME_ID_HZ * 0x100), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "pixels", 0, 0, HW_UNIT_GPU, availabilityEquation, "Pixel|Fragment,PS|FS,pixel|fragment", "oa.fixed" );
         if( metric )
         {
@@ -1521,7 +1521,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "EarlyDepthTestFails", "Early Depth Test Fails",
             "The total number of pixels dropped on early depth test.",
-            "3D Pipe/Rasterizer/Early Depth Test", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_WM * 0x10000) | (METRIC_GROUP_NAME_ID_IZ * 0x100), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "3D Pipe/Rasterizer/Early Depth Test", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_WM * 0x10000) | (METRIC_GROUP_NAME_ID_IZ * 0x100), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "pixels", 0, 0, HW_UNIT_GPU, availabilityEquation, "Pixel|Fragment,PS|FS,pixel|fragment", "oa.fixed" );
         if( metric )
         {
@@ -1534,7 +1534,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "SamplesKilledInPs", "Samples Killed in PS",
             "The total number of samples or pixels dropped in pixel shaders.",
-            "3D Pipe/Pixel Shader", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_PS * 0x10000), USAGE_FLAG_TIER_4|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "3D Pipe/Pixel Shader", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_PS * 0x10000), USAGE_FLAG_TIER_4|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "pixels", 0, 0, HW_UNIT_GPU, availabilityEquation, "Pixel|Fragment,PS|FS,pixel|fragment", "oa.fixed" );
         if( metric )
         {
@@ -1547,7 +1547,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "PixelsFailingPostPsTests", "Pixels Failing Tests",
             "The total number of pixels dropped on post-PS alpha, stencil, or depth tests.",
-            "3D Pipe/Output Merger", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_OM * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "3D Pipe/Output Merger", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_OM * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "pixels", 0, 0, HW_UNIT_GPU, availabilityEquation, "Pixel|Fragment,PS|FS,pixel|fragment", "oa.fixed" );
         if( metric )
         {
@@ -1560,7 +1560,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "SamplesWritten", "Samples Written",
             "The total number of samples or pixels written to all render targets.",
-            "3D Pipe/Output Merger", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_OM * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "3D Pipe/Output Merger", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_OM * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "pixels", 0, 0, HW_UNIT_GPU, availabilityEquation, "Pixel|Fragment,PS|FS,pixel|fragment", "oa.fixed" );
         if( metric )
         {
@@ -1573,7 +1573,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "SamplesBlended", "Samples Blended",
             "The total number of blended samples or pixels written to all render targets.",
-            "3D Pipe/Output Merger", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_OM * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "3D Pipe/Output Merger", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_OM * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "pixels", 0, 0, HW_UNIT_GPU, availabilityEquation, "Pixel|Fragment,PS|FS,pixel|fragment", "oa.fixed" );
         if( metric )
         {
@@ -1586,7 +1586,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "SamplerTexels", "Sampler Texels",
             "The total number of texels seen on input (with 2x2 accuracy) in all sampler units.",
-            "Sampler/Sampler Input", (METRIC_GROUP_NAME_ID_SAMPLER * 0x1000000) | (METRIC_GROUP_NAME_ID_SAMPLER_IN * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "Sampler/Sampler Input", (METRIC_GROUP_NAME_ID_SAMPLER * 0x1000000) | (METRIC_GROUP_NAME_ID_SAMPLER_IN * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "texels", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -1599,7 +1599,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "SamplerTexelMisses", "Sampler Texels Misses",
             "The total number of texels lookups (with 2x2 accuracy) that missed L1 sampler cache.",
-            "Sampler/Sampler Cache", (METRIC_GROUP_NAME_ID_SAMPLER * 0x1000000) | (METRIC_GROUP_NAME_ID_SAMPLER_CACHE * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_BATCH|USAGE_FLAG_FRAME|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "Sampler/Sampler Cache", (METRIC_GROUP_NAME_ID_SAMPLER * 0x1000000) | (METRIC_GROUP_NAME_ID_SAMPLER_CACHE * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_BATCH|USAGE_FLAG_FRAME|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "texels", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -1612,7 +1612,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "SlmBytesRead", "SLM Bytes Read",
             "The total number of GPU memory bytes read from shared local memory.",
-            "L3/Data Port/SLM", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000) | (METRIC_GROUP_NAME_ID_SLM * 0x100), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "L3/Data Port/SLM", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000) | (METRIC_GROUP_NAME_ID_SLM * 0x100), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_THROUGHPUT, RESULT_UINT64, "bytes", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -1626,7 +1626,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "SlmBytesWritten", "SLM Bytes Written",
             "The total number of GPU memory bytes written into shared local memory.",
-            "L3/Data Port/SLM", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000) | (METRIC_GROUP_NAME_ID_SLM * 0x100), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "L3/Data Port/SLM", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000) | (METRIC_GROUP_NAME_ID_SLM * 0x100), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_THROUGHPUT, RESULT_UINT64, "bytes", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -1640,7 +1640,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "ShaderMemoryAccesses", "Shader Memory Accesses",
             "The total number of shader memory accesses to L3.",
-            "L3/Data Port", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "L3/Data Port", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "messages", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -1652,7 +1652,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "ShaderAtomics", "Shader Atomic Memory Accesses",
             "The total number of shader atomic memory accesses.",
-            "L3/Data Port/Atomics", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000) | (METRIC_GROUP_NAME_ID_ATOMICS * 0x100), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "L3/Data Port/Atomics", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000) | (METRIC_GROUP_NAME_ID_ATOMICS * 0x100), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "messages", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -1664,7 +1664,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "L3ShaderThroughput", "L3 Shader Throughput",
             "The total number of GPU memory bytes transferred between shaders and L3 caches w/o URB.",
-            "L3/Data Port", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000), USAGE_FLAG_TIER_2|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "L3/Data Port", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000), USAGE_FLAG_TIER_2|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_THROUGHPUT, RESULT_UINT64, "bytes", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -1676,7 +1676,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "ShaderBarriers", "Shader Barrier Messages",
             "The total number of shader barrier messages.",
-            "EU Array/Barrier", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_EU_BARRIER * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Barrier", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_EU_BARRIER * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "messages", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -1688,7 +1688,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "TypedBytesRead", "Typed Bytes Read",
             "The total number of typed memory bytes read via Data Port.",
-            "L3/Data Port", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "L3/Data Port", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_THROUGHPUT, RESULT_UINT64, "bytes", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -1702,7 +1702,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "TypedBytesWritten", "Typed Bytes Written",
             "The total number of typed memory bytes written via Data Port.",
-            "L3/Data Port", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "L3/Data Port", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_THROUGHPUT, RESULT_UINT64, "bytes", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -1716,7 +1716,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "UntypedBytesRead", "Untyped Bytes Read",
             "The total number of typed memory bytes read via Data Port.",
-            "L3/Data Port", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "L3/Data Port", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_THROUGHPUT, RESULT_UINT64, "bytes", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -1730,7 +1730,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "UntypedBytesWritten", "Untyped Writes",
             "The total number of untyped memory bytes written via Data Port.",
-            "L3/Data Port", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "L3/Data Port", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_THROUGHPUT, RESULT_UINT64, "bytes", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -1744,7 +1744,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "GtiReadThroughput", "GTI Read Throughput",
             "The total number of GPU memory bytes read from GTI.",
-            "GTI", (METRIC_GROUP_NAME_ID_GTI * 0x1000000), USAGE_FLAG_TIER_1|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "GTI", (METRIC_GROUP_NAME_ID_GTI * 0x1000000), USAGE_FLAG_TIER_1|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_THROUGHPUT, RESULT_UINT64, "bytes", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -1758,7 +1758,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "GtiWriteThroughput", "GTI Write Throughput",
             "The total number of GPU memory bytes written to GTI.",
-            "GTI", (METRIC_GROUP_NAME_ID_GTI * 0x1000000), USAGE_FLAG_TIER_1|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "GTI", (METRIC_GROUP_NAME_ID_GTI * 0x1000000), USAGE_FLAG_TIER_1|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_THROUGHPUT, RESULT_UINT64, "bytes", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -1771,7 +1771,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
 
         information = metricSet->AddInformation( "QueryBeginTime", "Query Begin Time",
             "The measurement begin time.",
-            "Report Meta Data", API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "Report Meta Data", API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             INFORMATION_TYPE_TIMESTAMP, "ns", NULL );
         if( information )
         {
@@ -1782,7 +1782,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
 
         information = metricSet->AddInformation( "CoreFrequencyMHz", "GPU Core Frequency",
             "The last core frequency in the measurement.",
-            "Report Meta Data", API_TYPE_OGL|API_TYPE_OGL4_X,
+            "Report Meta Data", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
             INFORMATION_TYPE_VALUE, "MHz", NULL );
         if( information )
         {
@@ -1810,7 +1810,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
 
         information = metricSet->AddInformation( "CoreFrequencyChanged", "Core Frequency Changed",
             "The flag indicating that core frequency has changed.",
-            "Exception", API_TYPE_OGL|API_TYPE_OGL4_X,
+            "Exception", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
             INFORMATION_TYPE_FLAG, NULL, NULL );
         if( information )
         {
@@ -1820,7 +1820,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
 
         information = metricSet->AddInformation( "QuerySplitOccurred", "Query Split Occurred",
             "The flag indicating that query has been split during execution on the GPU.",
-            "Exception", API_TYPE_OGL|API_TYPE_OGL4_X,
+            "Exception", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
             INFORMATION_TYPE_FLAG, NULL, NULL );
         if( information )
         {
@@ -1830,7 +1830,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
 
         information = metricSet->AddInformation( "ReportId", "Query report id",
             "Query report identification number.",
-            "Report Meta Data", API_TYPE_OGL|API_TYPE_OGL4_X,
+            "Report Meta Data", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
             INFORMATION_TYPE_VALUE, NULL, NULL );
         if( information )
         {
@@ -1840,7 +1840,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
 
         information = metricSet->AddInformation( "ReportsCount", "Query reports count",
             "The number of available query reports.",
-            "Report Meta Data", API_TYPE_OGL|API_TYPE_OGL4_X,
+            "Report Meta Data", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
             INFORMATION_TYPE_VALUE, NULL, NULL );
         if( information )
         {
@@ -1850,7 +1850,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
 
         information = metricSet->AddInformation( "OverrunOccured", "Query Overrun Occurred",
             "The flag indicating that Oa buffer has been overran.",
-            "Exception", API_TYPE_OGL|API_TYPE_OGL4_X,
+            "Exception", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
             INFORMATION_TYPE_FLAG, NULL, NULL );
         if( information )
         {
@@ -2084,7 +2084,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
     platformMask = PLATFORM_BDW;
     if( MD_IS_INTERNAL_BUILD || metricsDevice->IsPlatformTypeOf( platformMask ) )
     {
-        metricSet = concurrentGroup->AddMetricSet( "RenderDX1x", "Render Metrics DX1x Gen8", API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+        metricSet = concurrentGroup->AddMetricSet( "RenderDX1x", "Render Metrics DX1x Gen8", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
            GPU_RENDER, 256, 536, OA_REPORT_TYPE_256B_A45_NOA16, platformMask );
         MD_CHECK_PTR( metricSet );
         
@@ -2094,7 +2094,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "GpuTime", "GPU Time Elapsed",
             "Time elapsed on the GPU during the measurement.",
-            "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_TIER_1|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_TIER_1|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_DURATION, RESULT_UINT64, "ns", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -2106,7 +2106,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "GpuCoreClocks", "GPU Core Clocks",
             "The total number of GPU core clocks elapsed during the measurement.",
-            "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_TIER_1|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_TIER_1|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "cycles", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -2118,7 +2118,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "AvgGpuCoreFrequencyMHz", "AVG GPU Core Frequency",
             "Average GPU Core Frequency in the measurement.",
-            "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_TIER_1|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_TIER_1|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "MHz", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -2129,7 +2129,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "GpuBusy", "GPU Busy",
             "The percentage of time in which the GPU has been processing GPU commands.",
-            "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_TIER_1|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_TIER_1|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -2143,7 +2143,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "VsThreads", "VS Threads Dispatched",
             "The total number of vertex shader hardware threads dispatched.",
-            "EU Array/Vertex Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_VS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Vertex Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_VS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "threads", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -2155,7 +2155,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "HsThreads", "HS Threads Dispatched",
             "The total number of hull shader hardware threads dispatched.",
-            "EU Array/Hull Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_HS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Hull Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_HS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "threads", 0, 0, HW_UNIT_GPU, availabilityEquation, "Hull|Control,hull|control,HS|TCS", "oa.fixed" );
         if( metric )
         {
@@ -2167,7 +2167,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "DsThreads", "DS Threads Dispatched",
             "The total number of domain shader hardware threads dispatched.",
-            "EU Array/Domain Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_DS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Domain Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_DS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "threads", 0, 0, HW_UNIT_GPU, availabilityEquation, "Domain|Evaluation,domain|evaluation,DS|TES", "oa.fixed" );
         if( metric )
         {
@@ -2179,7 +2179,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "GsThreads", "GS Threads Dispatched",
             "The total number of geometry shader hardware threads dispatched.",
-            "EU Array/Geometry Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_GS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Geometry Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_GS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "threads", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -2191,7 +2191,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "PsThreads", "PS Threads Dispatched",
             "The total number of pixel shader hardware threads dispatched.",
-            "EU Array/Pixel Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_PS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Pixel Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_PS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "threads", 0, 0, HW_UNIT_GPU, availabilityEquation, "Pixel|Fragment,PS|FS,pixel|fragment", "oa.fixed" );
         if( metric )
         {
@@ -2203,7 +2203,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "CsThreads", "CS Threads Dispatched",
             "The total number of compute shader hardware threads dispatched.",
-            "EU Array/Compute Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_CS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Compute Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_CS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "threads", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -2215,7 +2215,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "EuActive", "EU Active",
             "The percentage of time in which the Execution Units were actively processing.",
-            "EU Array", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000), USAGE_FLAG_TIER_2|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000), USAGE_FLAG_TIER_2|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -2229,7 +2229,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "EuStall", "EU Stall",
             "The percentage of time in which the Execution Units were stalled.",
-            "EU Array", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000), USAGE_FLAG_TIER_2|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000), USAGE_FLAG_TIER_2|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -2243,7 +2243,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "RasterizedPixels", "Rasterized Pixels",
             "The total number of rasterized pixels.",
-            "3D Pipe/Rasterizer", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_WM * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "3D Pipe/Rasterizer", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_WM * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "pixels", 0, 0, HW_UNIT_GPU, availabilityEquation, "Pixel|Fragment,PS|FS,pixel|fragment", "oa.fixed" );
         if( metric )
         {
@@ -2256,7 +2256,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "HiDepthTestFails", "Early Hi-Depth Test Fails",
             "The total number of pixels dropped on early hierarchical depth test.",
-            "3D Pipe/Rasterizer/Hi-Depth Test", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_WM * 0x10000) | (METRIC_GROUP_NAME_ID_HZ * 0x100), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "3D Pipe/Rasterizer/Hi-Depth Test", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_WM * 0x10000) | (METRIC_GROUP_NAME_ID_HZ * 0x100), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "pixels", 0, 0, HW_UNIT_GPU, availabilityEquation, "Pixel|Fragment,PS|FS,pixel|fragment", "oa.fixed" );
         if( metric )
         {
@@ -2269,7 +2269,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "EarlyDepthTestFails", "Early Depth Test Fails",
             "The total number of pixels dropped on early depth test.",
-            "3D Pipe/Rasterizer/Early Depth Test", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_WM * 0x10000) | (METRIC_GROUP_NAME_ID_IZ * 0x100), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "3D Pipe/Rasterizer/Early Depth Test", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_WM * 0x10000) | (METRIC_GROUP_NAME_ID_IZ * 0x100), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "pixels", 0, 0, HW_UNIT_GPU, availabilityEquation, "Pixel|Fragment,PS|FS,pixel|fragment", "oa.fixed" );
         if( metric )
         {
@@ -2282,7 +2282,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "SamplesKilledInPs", "Samples Killed in PS",
             "The total number of samples or pixels dropped in pixel shaders.",
-            "3D Pipe/Pixel Shader", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_PS * 0x10000), USAGE_FLAG_TIER_4|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "3D Pipe/Pixel Shader", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_PS * 0x10000), USAGE_FLAG_TIER_4|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "pixels", 0, 0, HW_UNIT_GPU, availabilityEquation, "Pixel|Fragment,PS|FS,pixel|fragment", "oa.fixed" );
         if( metric )
         {
@@ -2295,7 +2295,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "PixelsFailingPostPsTests", "Pixels Failing Tests",
             "The total number of pixels dropped on post-PS alpha, stencil, or depth tests.",
-            "3D Pipe/Output Merger", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_OM * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "3D Pipe/Output Merger", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_OM * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "pixels", 0, 0, HW_UNIT_GPU, availabilityEquation, "Pixel|Fragment,PS|FS,pixel|fragment", "oa.fixed" );
         if( metric )
         {
@@ -2308,7 +2308,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "SamplesWritten", "Samples Written",
             "The total number of samples or pixels written to all render targets.",
-            "3D Pipe/Output Merger", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_OM * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "3D Pipe/Output Merger", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_OM * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "pixels", 0, 0, HW_UNIT_GPU, availabilityEquation, "Pixel|Fragment,PS|FS,pixel|fragment", "oa.fixed" );
         if( metric )
         {
@@ -2321,7 +2321,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "SamplesBlended", "Samples Blended",
             "The total number of blended samples or pixels written to all render targets.",
-            "3D Pipe/Output Merger", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_OM * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "3D Pipe/Output Merger", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_OM * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "pixels", 0, 0, HW_UNIT_GPU, availabilityEquation, "Pixel|Fragment,PS|FS,pixel|fragment", "oa.fixed" );
         if( metric )
         {
@@ -2334,7 +2334,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "SamplerTexels", "Sampler Texels",
             "The total number of texels seen on input (with 2x2 accuracy) in all sampler units.",
-            "Sampler/Sampler Input", (METRIC_GROUP_NAME_ID_SAMPLER * 0x1000000) | (METRIC_GROUP_NAME_ID_SAMPLER_IN * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "Sampler/Sampler Input", (METRIC_GROUP_NAME_ID_SAMPLER * 0x1000000) | (METRIC_GROUP_NAME_ID_SAMPLER_IN * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "texels", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -2347,7 +2347,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "SamplerTexelMisses", "Sampler Texels Misses",
             "The total number of texels lookups (with 2x2 accuracy) that missed L1 sampler cache.",
-            "Sampler/Sampler Cache", (METRIC_GROUP_NAME_ID_SAMPLER * 0x1000000) | (METRIC_GROUP_NAME_ID_SAMPLER_CACHE * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_BATCH|USAGE_FLAG_FRAME|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "Sampler/Sampler Cache", (METRIC_GROUP_NAME_ID_SAMPLER * 0x1000000) | (METRIC_GROUP_NAME_ID_SAMPLER_CACHE * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_BATCH|USAGE_FLAG_FRAME|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "texels", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -2360,7 +2360,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "SamplerL1Misses", "Sampler Cache Misses",
             "The total number of sampler cache misses in all LODs in all sampler units.",
-            "Sampler/Sampler Cache", (METRIC_GROUP_NAME_ID_SAMPLER * 0x1000000) | (METRIC_GROUP_NAME_ID_SAMPLER_CACHE * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_BATCH|USAGE_FLAG_FRAME|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "Sampler/Sampler Cache", (METRIC_GROUP_NAME_ID_SAMPLER * 0x1000000) | (METRIC_GROUP_NAME_ID_SAMPLER_CACHE * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_BATCH|USAGE_FLAG_FRAME|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "messages", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -2372,7 +2372,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "SlmBytesRead", "SLM Bytes Read",
             "The total number of GPU memory bytes read from shared local memory.",
-            "L3/Data Port/SLM", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000) | (METRIC_GROUP_NAME_ID_SLM * 0x100), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "L3/Data Port/SLM", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000) | (METRIC_GROUP_NAME_ID_SLM * 0x100), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_THROUGHPUT, RESULT_UINT64, "bytes", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -2386,7 +2386,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "SlmBytesWritten", "SLM Bytes Written",
             "The total number of GPU memory bytes written into shared local memory.",
-            "L3/Data Port/SLM", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000) | (METRIC_GROUP_NAME_ID_SLM * 0x100), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "L3/Data Port/SLM", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000) | (METRIC_GROUP_NAME_ID_SLM * 0x100), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_THROUGHPUT, RESULT_UINT64, "bytes", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -2400,7 +2400,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "ShaderMemoryAccesses", "Shader Memory Accesses",
             "The total number of shader memory accesses to L3.",
-            "L3/Data Port", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "L3/Data Port", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "messages", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -2412,7 +2412,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "ShaderAtomics", "Shader Atomic Memory Accesses",
             "The total number of shader atomic memory accesses.",
-            "L3/Data Port/Atomics", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000) | (METRIC_GROUP_NAME_ID_ATOMICS * 0x100), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "L3/Data Port/Atomics", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000) | (METRIC_GROUP_NAME_ID_ATOMICS * 0x100), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "messages", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -2424,7 +2424,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "L3Lookups", "L3 Lookup Accesses w/o IC",
             "The total number of L3 cache lookup accesses w/o IC.",
-            "L3/TAG", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_L3_TAG * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "L3/TAG", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_L3_TAG * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "messages", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -2435,7 +2435,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "L3Misses", "L3 Misses",
             "The total number of L3 misses.",
-            "L3/TAG", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_L3_TAG * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "L3/TAG", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_L3_TAG * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "messages", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -2447,7 +2447,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "L3SamplerThroughput", "L3 Sampler Throughput",
             "The total number of GPU memory bytes transferred between samplers and L3 caches.",
-            "L3/Sampler", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_SAMPLER * 0x10000), USAGE_FLAG_TIER_2|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "L3/Sampler", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_SAMPLER * 0x10000), USAGE_FLAG_TIER_2|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_THROUGHPUT, RESULT_UINT64, "bytes", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -2459,7 +2459,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "L3ShaderThroughput", "L3 Shader Throughput",
             "The total number of GPU memory bytes transferred between shaders and L3 caches w/o URB.",
-            "L3/Data Port", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000), USAGE_FLAG_TIER_2|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "L3/Data Port", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000), USAGE_FLAG_TIER_2|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_THROUGHPUT, RESULT_UINT64, "bytes", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -2471,7 +2471,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "ShaderBarriers", "Shader Barrier Messages",
             "The total number of shader barrier messages.",
-            "EU Array/Barrier", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_EU_BARRIER * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Barrier", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_EU_BARRIER * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "messages", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -2485,7 +2485,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         {
             metric = metricSet->AddMetric( "Sampler0Busy", "Sampler 0 Busy",
                 "The percentage of time in which Sampler 0 has been processing EU requests.",
-                "Sampler", (METRIC_GROUP_NAME_ID_SAMPLER * 0x1000000), USAGE_FLAG_TIER_3|USAGE_FLAG_BATCH|USAGE_FLAG_FRAME|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+                "Sampler", (METRIC_GROUP_NAME_ID_SAMPLER * 0x1000000), USAGE_FLAG_TIER_3|USAGE_FLAG_BATCH|USAGE_FLAG_FRAME|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
                 METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, NULL, NULL );
             if( metric )
             {
@@ -2502,7 +2502,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         {
             metric = metricSet->AddMetric( "Sampler1Busy", "Sampler 1 Busy",
                 "The percentage of time in which Sampler 1 has been processing EU requests.",
-                "Sampler", (METRIC_GROUP_NAME_ID_SAMPLER * 0x1000000), USAGE_FLAG_TIER_3|USAGE_FLAG_BATCH|USAGE_FLAG_FRAME|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+                "Sampler", (METRIC_GROUP_NAME_ID_SAMPLER * 0x1000000), USAGE_FLAG_TIER_3|USAGE_FLAG_BATCH|USAGE_FLAG_FRAME|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
                 METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, NULL, NULL );
             if( metric )
             {
@@ -2517,7 +2517,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "SamplersBusy", "Samplers Busy",
             "The percentage of time in which samplers have been processing EU requests.",
-            "Sampler", (METRIC_GROUP_NAME_ID_SAMPLER * 0x1000000), USAGE_FLAG_TIER_2|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "Sampler", (METRIC_GROUP_NAME_ID_SAMPLER * 0x1000000), USAGE_FLAG_TIER_2|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SLICE, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -2532,7 +2532,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         {
             metric = metricSet->AddMetric( "Sampler0Bottleneck", "Sampler 0 Bottleneck",
                 "The percentage of time in which Sampler 0 has been slowing down the pipe when processing EU requests.",
-                "Sampler", (METRIC_GROUP_NAME_ID_SAMPLER * 0x1000000), USAGE_FLAG_TIER_3|USAGE_FLAG_INDICATE|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+                "Sampler", (METRIC_GROUP_NAME_ID_SAMPLER * 0x1000000), USAGE_FLAG_TIER_3|USAGE_FLAG_INDICATE|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
                 METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 5, 15, HW_UNIT_SUBSLICE, availabilityEquation, NULL, NULL );
             if( metric )
             {
@@ -2549,7 +2549,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         {
             metric = metricSet->AddMetric( "Sampler1Bottleneck", "Sampler 1 Bottleneck",
                 "The percentage of time in which Sampler 1 has been slowing down the pipe when processing EU requests.",
-                "Sampler", (METRIC_GROUP_NAME_ID_SAMPLER * 0x1000000), USAGE_FLAG_TIER_3|USAGE_FLAG_INDICATE|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+                "Sampler", (METRIC_GROUP_NAME_ID_SAMPLER * 0x1000000), USAGE_FLAG_TIER_3|USAGE_FLAG_INDICATE|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
                 METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 5, 15, HW_UNIT_SUBSLICE, availabilityEquation, NULL, NULL );
             if( metric )
             {
@@ -2564,7 +2564,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "SamplerBottleneck", "Samplers Bottleneck",
             "The percentage of time in which samplers have been slowing down the pipe when processing EU requests.",
-            "Sampler", (METRIC_GROUP_NAME_ID_SAMPLER * 0x1000000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_INDICATE|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "Sampler", (METRIC_GROUP_NAME_ID_SAMPLER * 0x1000000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_INDICATE|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 5, 15, HW_UNIT_SLICE, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -2577,7 +2577,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "GtiVfThroughput", "GTI Fixed Pipe Throughput",
             "The total number of GPU memory bytes transferred between 3D Pipeline (Command Dispatch, Input Assembly and Stream Output) and GTI.",
-            "GTI/3D Pipe", (METRIC_GROUP_NAME_ID_GTI * 0x1000000) | (METRIC_GROUP_NAME_ID_3D_PIPE * 0x10000), USAGE_FLAG_TIER_2|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "GTI/3D Pipe", (METRIC_GROUP_NAME_ID_GTI * 0x1000000) | (METRIC_GROUP_NAME_ID_3D_PIPE * 0x10000), USAGE_FLAG_TIER_2|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_THROUGHPUT, RESULT_UINT64, "bytes", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -2591,7 +2591,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "GtiDepthThroughput", "GTI Depth Throughput",
             "The total number of GPU memory bytes transferred between depth caches and GTI.",
-            "GTI/Depth Cache", (METRIC_GROUP_NAME_ID_GTI * 0x1000000) | (METRIC_GROUP_NAME_ID_RCZ * 0x10000), USAGE_FLAG_TIER_2|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "GTI/Depth Cache", (METRIC_GROUP_NAME_ID_GTI * 0x1000000) | (METRIC_GROUP_NAME_ID_RCZ * 0x10000), USAGE_FLAG_TIER_2|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_THROUGHPUT, RESULT_UINT64, "bytes", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -2605,7 +2605,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "GtiRccThroughput", "GTI RCC Throughput",
             "The total number of GPU memory bytes transferred between render color caches and GTI.",
-            "GTI/Color Cache", (METRIC_GROUP_NAME_ID_GTI * 0x1000000) | (METRIC_GROUP_NAME_ID_RCC * 0x10000), USAGE_FLAG_TIER_2|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "GTI/Color Cache", (METRIC_GROUP_NAME_ID_GTI * 0x1000000) | (METRIC_GROUP_NAME_ID_RCC * 0x10000), USAGE_FLAG_TIER_2|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_THROUGHPUT, RESULT_UINT64, "bytes", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -2619,7 +2619,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "GtiL3Throughput", "GTI L3 Throughput",
             "The total number of GPU memory bytes transferred between L3 caches and GTI.",
-            "GTI/L3", (METRIC_GROUP_NAME_ID_GTI * 0x1000000) | (METRIC_GROUP_NAME_ID_L3 * 0x10000), USAGE_FLAG_TIER_2|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "GTI/L3", (METRIC_GROUP_NAME_ID_GTI * 0x1000000) | (METRIC_GROUP_NAME_ID_L3 * 0x10000), USAGE_FLAG_TIER_2|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_THROUGHPUT, RESULT_UINT64, "bytes", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -2631,7 +2631,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "GtiHdcLookupsThroughput", "GTI HDC TLB Lookup Throughput",
             "The total number of GPU memory bytes transferred between GTI and HDC, when HDC is doing TLB lookups.",
-            "GTI/L3", (METRIC_GROUP_NAME_ID_GTI * 0x1000000) | (METRIC_GROUP_NAME_ID_L3 * 0x10000), USAGE_FLAG_TIER_2|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "GTI/L3", (METRIC_GROUP_NAME_ID_GTI * 0x1000000) | (METRIC_GROUP_NAME_ID_L3 * 0x10000), USAGE_FLAG_TIER_2|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_THROUGHPUT, RESULT_UINT64, "bytes", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -2645,7 +2645,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "GtiReadThroughput", "GTI Read Throughput",
             "The total number of GPU memory bytes read from GTI.",
-            "GTI", (METRIC_GROUP_NAME_ID_GTI * 0x1000000), USAGE_FLAG_TIER_1|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "GTI", (METRIC_GROUP_NAME_ID_GTI * 0x1000000), USAGE_FLAG_TIER_1|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_THROUGHPUT, RESULT_UINT64, "bytes", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -2659,7 +2659,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "GtiWriteThroughput", "GTI Write Throughput",
             "The total number of GPU memory bytes written to GTI.",
-            "GTI", (METRIC_GROUP_NAME_ID_GTI * 0x1000000), USAGE_FLAG_TIER_1|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "GTI", (METRIC_GROUP_NAME_ID_GTI * 0x1000000), USAGE_FLAG_TIER_1|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_THROUGHPUT, RESULT_UINT64, "bytes", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -2672,7 +2672,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
 
         information = metricSet->AddInformation( "QueryBeginTime", "Query Begin Time",
             "The measurement begin time.",
-            "Report Meta Data", API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "Report Meta Data", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             INFORMATION_TYPE_TIMESTAMP, "ns", NULL );
         if( information )
         {
@@ -2683,7 +2683,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
 
         information = metricSet->AddInformation( "CoreFrequencyMHz", "GPU Core Frequency",
             "The last core frequency in the measurement.",
-            "Report Meta Data", API_TYPE_OGL|API_TYPE_OGL4_X,
+            "Report Meta Data", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
             INFORMATION_TYPE_VALUE, "MHz", NULL );
         if( information )
         {
@@ -2711,7 +2711,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
 
         information = metricSet->AddInformation( "CoreFrequencyChanged", "Core Frequency Changed",
             "The flag indicating that core frequency has changed.",
-            "Exception", API_TYPE_OGL|API_TYPE_OGL4_X,
+            "Exception", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
             INFORMATION_TYPE_FLAG, NULL, NULL );
         if( information )
         {
@@ -2721,7 +2721,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
 
         information = metricSet->AddInformation( "QuerySplitOccurred", "Query Split Occurred",
             "The flag indicating that query has been split during execution on the GPU.",
-            "Exception", API_TYPE_OGL|API_TYPE_OGL4_X,
+            "Exception", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
             INFORMATION_TYPE_FLAG, NULL, NULL );
         if( information )
         {
@@ -2731,7 +2731,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
 
         information = metricSet->AddInformation( "ReportId", "Query report id",
             "Query report identification number.",
-            "Report Meta Data", API_TYPE_OGL|API_TYPE_OGL4_X,
+            "Report Meta Data", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
             INFORMATION_TYPE_VALUE, NULL, NULL );
         if( information )
         {
@@ -2741,7 +2741,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
 
         information = metricSet->AddInformation( "ReportsCount", "Query reports count",
             "The number of available query reports.",
-            "Report Meta Data", API_TYPE_OGL|API_TYPE_OGL4_X,
+            "Report Meta Data", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
             INFORMATION_TYPE_VALUE, NULL, NULL );
         if( information )
         {
@@ -2751,7 +2751,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
 
         information = metricSet->AddInformation( "OverrunOccured", "Query Overrun Occurred",
             "The flag indicating that Oa buffer has been overran.",
-            "Exception", API_TYPE_OGL|API_TYPE_OGL4_X,
+            "Exception", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
             INFORMATION_TYPE_FLAG, NULL, NULL );
         if( information )
         {
@@ -3022,7 +3022,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
     platformMask = PLATFORM_BDW;
     if( MD_IS_INTERNAL_BUILD || metricsDevice->IsPlatformTypeOf( platformMask ) )
     {
-        metricSet = concurrentGroup->AddMetricSet( "RenderPipeProfile", "Render Metrics for 3D Pipeline Profile", API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+        metricSet = concurrentGroup->AddMetricSet( "RenderPipeProfile", "Render Metrics for 3D Pipeline Profile", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
            GPU_RENDER, 256, 536, OA_REPORT_TYPE_256B_A45_NOA16, platformMask );
         MD_CHECK_PTR( metricSet );
         
@@ -3032,7 +3032,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "GpuTime", "GPU Time Elapsed",
             "Time elapsed on the GPU during the measurement.",
-            "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_TIER_1|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_TIER_1|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_DURATION, RESULT_UINT64, "ns", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -3044,7 +3044,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "GpuCoreClocks", "GPU Core Clocks",
             "The total number of GPU core clocks elapsed during the measurement.",
-            "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_TIER_1|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_TIER_1|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "cycles", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -3056,7 +3056,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "AvgGpuCoreFrequencyMHz", "AVG GPU Core Frequency",
             "Average GPU Core Frequency in the measurement.",
-            "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_TIER_1|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_TIER_1|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "MHz", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -3067,7 +3067,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "GpuBusy", "GPU Busy",
             "The percentage of time in which the GPU has been processing GPU commands.",
-            "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_TIER_1|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_TIER_1|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -3081,7 +3081,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "VsThreads", "VS Threads Dispatched",
             "The total number of vertex shader hardware threads dispatched.",
-            "EU Array/Vertex Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_VS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Vertex Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_VS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "threads", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -3093,7 +3093,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "HsThreads", "HS Threads Dispatched",
             "The total number of hull shader hardware threads dispatched.",
-            "EU Array/Hull Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_HS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Hull Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_HS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "threads", 0, 0, HW_UNIT_GPU, availabilityEquation, "Hull|Control,hull|control,HS|TCS", "oa.fixed" );
         if( metric )
         {
@@ -3105,7 +3105,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "DsThreads", "DS Threads Dispatched",
             "The total number of domain shader hardware threads dispatched.",
-            "EU Array/Domain Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_DS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Domain Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_DS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "threads", 0, 0, HW_UNIT_GPU, availabilityEquation, "Domain|Evaluation,domain|evaluation,DS|TES", "oa.fixed" );
         if( metric )
         {
@@ -3117,7 +3117,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "GsThreads", "GS Threads Dispatched",
             "The total number of geometry shader hardware threads dispatched.",
-            "EU Array/Geometry Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_GS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Geometry Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_GS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "threads", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -3129,7 +3129,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "PsThreads", "PS Threads Dispatched",
             "The total number of pixel shader hardware threads dispatched.",
-            "EU Array/Pixel Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_PS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Pixel Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_PS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "threads", 0, 0, HW_UNIT_GPU, availabilityEquation, "Pixel|Fragment,PS|FS,pixel|fragment", "oa.fixed" );
         if( metric )
         {
@@ -3141,7 +3141,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "CsThreads", "CS Threads Dispatched",
             "The total number of compute shader hardware threads dispatched.",
-            "EU Array/Compute Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_CS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Compute Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_CS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "threads", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -3153,7 +3153,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "EuActive", "EU Active",
             "The percentage of time in which the Execution Units were actively processing.",
-            "EU Array", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000), USAGE_FLAG_TIER_2|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000), USAGE_FLAG_TIER_2|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -3167,7 +3167,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "EuStall", "EU Stall",
             "The percentage of time in which the Execution Units were stalled.",
-            "EU Array", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000), USAGE_FLAG_TIER_2|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000), USAGE_FLAG_TIER_2|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -3181,7 +3181,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "RasterizedPixels", "Rasterized Pixels",
             "The total number of rasterized pixels.",
-            "3D Pipe/Rasterizer", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_WM * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "3D Pipe/Rasterizer", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_WM * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "pixels", 0, 0, HW_UNIT_GPU, availabilityEquation, "Pixel|Fragment,PS|FS,pixel|fragment", "oa.fixed" );
         if( metric )
         {
@@ -3194,7 +3194,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "HiDepthTestFails", "Early Hi-Depth Test Fails",
             "The total number of pixels dropped on early hierarchical depth test.",
-            "3D Pipe/Rasterizer/Hi-Depth Test", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_WM * 0x10000) | (METRIC_GROUP_NAME_ID_HZ * 0x100), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "3D Pipe/Rasterizer/Hi-Depth Test", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_WM * 0x10000) | (METRIC_GROUP_NAME_ID_HZ * 0x100), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "pixels", 0, 0, HW_UNIT_GPU, availabilityEquation, "Pixel|Fragment,PS|FS,pixel|fragment", "oa.fixed" );
         if( metric )
         {
@@ -3207,7 +3207,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "EarlyDepthTestFails", "Early Depth Test Fails",
             "The total number of pixels dropped on early depth test.",
-            "3D Pipe/Rasterizer/Early Depth Test", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_WM * 0x10000) | (METRIC_GROUP_NAME_ID_IZ * 0x100), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "3D Pipe/Rasterizer/Early Depth Test", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_WM * 0x10000) | (METRIC_GROUP_NAME_ID_IZ * 0x100), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "pixels", 0, 0, HW_UNIT_GPU, availabilityEquation, "Pixel|Fragment,PS|FS,pixel|fragment", "oa.fixed" );
         if( metric )
         {
@@ -3220,7 +3220,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "SamplesKilledInPs", "Samples Killed in PS",
             "The total number of samples or pixels dropped in pixel shaders.",
-            "3D Pipe/Pixel Shader", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_PS * 0x10000), USAGE_FLAG_TIER_4|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "3D Pipe/Pixel Shader", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_PS * 0x10000), USAGE_FLAG_TIER_4|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "pixels", 0, 0, HW_UNIT_GPU, availabilityEquation, "Pixel|Fragment,PS|FS,pixel|fragment", "oa.fixed" );
         if( metric )
         {
@@ -3233,7 +3233,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "PixelsFailingPostPsTests", "Pixels Failing Tests",
             "The total number of pixels dropped on post-PS alpha, stencil, or depth tests.",
-            "3D Pipe/Output Merger", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_OM * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "3D Pipe/Output Merger", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_OM * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "pixels", 0, 0, HW_UNIT_GPU, availabilityEquation, "Pixel|Fragment,PS|FS,pixel|fragment", "oa.fixed" );
         if( metric )
         {
@@ -3246,7 +3246,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "SamplesWritten", "Samples Written",
             "The total number of samples or pixels written to all render targets.",
-            "3D Pipe/Output Merger", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_OM * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "3D Pipe/Output Merger", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_OM * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "pixels", 0, 0, HW_UNIT_GPU, availabilityEquation, "Pixel|Fragment,PS|FS,pixel|fragment", "oa.fixed" );
         if( metric )
         {
@@ -3259,7 +3259,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "SamplesBlended", "Samples Blended",
             "The total number of blended samples or pixels written to all render targets.",
-            "3D Pipe/Output Merger", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_OM * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "3D Pipe/Output Merger", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_OM * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "pixels", 0, 0, HW_UNIT_GPU, availabilityEquation, "Pixel|Fragment,PS|FS,pixel|fragment", NULL );
         if( metric )
         {
@@ -3272,7 +3272,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "SamplerAccesses", "Sampler Accesses",
             "The total number of messages send to samplers.",
-            "Sampler", (METRIC_GROUP_NAME_ID_SAMPLER * 0x1000000), USAGE_FLAG_TIER_3|USAGE_FLAG_BATCH|USAGE_FLAG_FRAME|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "Sampler", (METRIC_GROUP_NAME_ID_SAMPLER * 0x1000000), USAGE_FLAG_TIER_3|USAGE_FLAG_BATCH|USAGE_FLAG_FRAME|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "messages", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -3284,7 +3284,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "SamplerTexels", "Sampler Texels",
             "The total number of texels seen on input (with 2x2 accuracy) in all sampler units.",
-            "Sampler/Sampler Input", (METRIC_GROUP_NAME_ID_SAMPLER * 0x1000000) | (METRIC_GROUP_NAME_ID_SAMPLER_IN * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "Sampler/Sampler Input", (METRIC_GROUP_NAME_ID_SAMPLER * 0x1000000) | (METRIC_GROUP_NAME_ID_SAMPLER_IN * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "texels", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -3297,7 +3297,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "SamplerTexelMisses", "Sampler Texels Misses",
             "The total number of texels lookups (with 2x2 accuracy) that missed L1 sampler cache.",
-            "Sampler/Sampler Cache", (METRIC_GROUP_NAME_ID_SAMPLER * 0x1000000) | (METRIC_GROUP_NAME_ID_SAMPLER_CACHE * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_BATCH|USAGE_FLAG_FRAME|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "Sampler/Sampler Cache", (METRIC_GROUP_NAME_ID_SAMPLER * 0x1000000) | (METRIC_GROUP_NAME_ID_SAMPLER_CACHE * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_BATCH|USAGE_FLAG_FRAME|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "texels", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -3310,7 +3310,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "SlmBytesRead", "SLM Bytes Read",
             "The total number of GPU memory bytes read from shared local memory.",
-            "L3/Data Port/SLM", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000) | (METRIC_GROUP_NAME_ID_SLM * 0x100), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "L3/Data Port/SLM", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000) | (METRIC_GROUP_NAME_ID_SLM * 0x100), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_THROUGHPUT, RESULT_UINT64, "bytes", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -3324,7 +3324,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "SlmBytesWritten", "SLM Bytes Written",
             "The total number of GPU memory bytes written into shared local memory.",
-            "L3/Data Port/SLM", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000) | (METRIC_GROUP_NAME_ID_SLM * 0x100), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "L3/Data Port/SLM", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000) | (METRIC_GROUP_NAME_ID_SLM * 0x100), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_THROUGHPUT, RESULT_UINT64, "bytes", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -3338,7 +3338,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "ShaderMemoryAccesses", "Shader Memory Accesses",
             "The total number of shader memory accesses to L3.",
-            "L3/Data Port", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "L3/Data Port", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "messages", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -3350,7 +3350,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "ShaderAtomics", "Shader Atomic Memory Accesses",
             "The total number of shader atomic memory accesses.",
-            "L3/Data Port/Atomics", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000) | (METRIC_GROUP_NAME_ID_ATOMICS * 0x100), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "L3/Data Port/Atomics", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000) | (METRIC_GROUP_NAME_ID_ATOMICS * 0x100), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "messages", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -3362,7 +3362,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "L3ShaderThroughput", "L3 Shader Throughput",
             "The total number of GPU memory bytes transferred between shaders and L3 caches w/o URB.",
-            "L3/Data Port", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000), USAGE_FLAG_TIER_2|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "L3/Data Port", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000), USAGE_FLAG_TIER_2|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_THROUGHPUT, RESULT_UINT64, "bytes", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -3374,7 +3374,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "ShaderBarriers", "Shader Barrier Messages",
             "The total number of shader barrier messages.",
-            "EU Array/Barrier", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_EU_BARRIER * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Barrier", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_EU_BARRIER * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "messages", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -3386,7 +3386,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "VfBottleneck", "VF Bottleneck",
             "The percentage of time in which vertex fetch pipeline stage was slowing down the 3D pipeline.",
-            "3D Pipe/Input Assembler", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_IA * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_INDICATE|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "3D Pipe/Input Assembler", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_IA * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_INDICATE|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 5, 15, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -3399,7 +3399,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "VsBottleneck", "VS Bottleneck",
             "The percentage of time in which vertex shader pipeline stage was slowing down the 3D pipeline.",
-            "3D Pipe/Vertex Shader", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_VS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_INDICATE|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "3D Pipe/Vertex Shader", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_VS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_INDICATE|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 10, 30, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -3412,7 +3412,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "HsBottleneck", "HS Bottleneck",
             "The percentage of time in which hull shader pipeline stage was slowing down the 3D pipeline.",
-            "3D Pipe/Hull Shader", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_HS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_INDICATE|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "3D Pipe/Hull Shader", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_HS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_INDICATE|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 3, 9, HW_UNIT_GPU, availabilityEquation, "Hull|Control,hull|control,HS|TCS", NULL );
         if( metric )
         {
@@ -3425,7 +3425,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "DsBottleneck", "DS Bottleneck",
             "The percentage of time in which domain shader pipeline stage was slowing down the 3D pipeline.",
-            "3D Pipe/Domain Shader", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_DS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_INDICATE|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "3D Pipe/Domain Shader", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_DS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_INDICATE|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 5, 15, HW_UNIT_GPU, availabilityEquation, "Domain|Evaluation,domain|evaluation,DS|TES", NULL );
         if( metric )
         {
@@ -3438,7 +3438,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "GsBottleneck", "GS Bottleneck",
             "The percentage of time in which geometry shader pipeline stage was slowing down the 3D pipeline.",
-            "3D Pipe/Geometry Shader", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_GS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_INDICATE|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "3D Pipe/Geometry Shader", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_GS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_INDICATE|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 5, 15, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -3451,7 +3451,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "SoBottleneck", "SO Bottleneck",
             "The percentage of time in which stream output pipeline stage was slowing down the 3D pipeline.",
-            "3D Pipe/Stream Output", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_SO * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_INDICATE|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "3D Pipe/Stream Output", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_SO * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_INDICATE|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 5, 15, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -3464,7 +3464,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "ClBottleneck", "Clipper Bottleneck",
             "The percentage of time in which clipper pipeline stage was slowing down the 3D pipeline.",
-            "3D Pipe/Clipper", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_CL * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_INDICATE|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "3D Pipe/Clipper", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_CL * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_INDICATE|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 10, 30, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -3477,7 +3477,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "SfBottleneck", "Strip-Fans Bottleneck",
             "The percentage of time in which strip-fans pipeline stage was slowing down the 3D pipeline.",
-            "3D Pipe/Rasterizer/Strip-Fans", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_WM * 0x10000) | (METRIC_GROUP_NAME_ID_SF * 0x100), USAGE_FLAG_TIER_3|USAGE_FLAG_INDICATE|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "3D Pipe/Rasterizer/Strip-Fans", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_WM * 0x10000) | (METRIC_GROUP_NAME_ID_SF * 0x100), USAGE_FLAG_TIER_3|USAGE_FLAG_INDICATE|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 5, 10, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -3490,7 +3490,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "HiDepthBottleneck", "Hi-Depth Bottleneck",
             "The percentage of time in which early hierarchical depth test pipeline stage was slowing down the 3D pipeline.",
-            "3D Pipe/Rasterizer/Hi-Depth Test", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_WM * 0x10000) | (METRIC_GROUP_NAME_ID_HZ * 0x100), USAGE_FLAG_TIER_3|USAGE_FLAG_INDICATE|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "3D Pipe/Rasterizer/Hi-Depth Test", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_WM * 0x10000) | (METRIC_GROUP_NAME_ID_HZ * 0x100), USAGE_FLAG_TIER_3|USAGE_FLAG_INDICATE|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 5, 15, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -3503,7 +3503,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "EarlyDepthBottleneck", "Early Depth Bottleneck",
             "The percentage of time in which early depth test pipeline stage was slowing down the 3D pipeline.",
-            "3D Pipe/Rasterizer/Early Depth Test", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_WM * 0x10000) | (METRIC_GROUP_NAME_ID_IZ * 0x100), USAGE_FLAG_TIER_3|USAGE_FLAG_INDICATE|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "3D Pipe/Rasterizer/Early Depth Test", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_WM * 0x10000) | (METRIC_GROUP_NAME_ID_IZ * 0x100), USAGE_FLAG_TIER_3|USAGE_FLAG_INDICATE|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 10, 30, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -3516,7 +3516,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "BcBottleneck", "BC Bottleneck",
             "The percentage of time in which barycentric coordinates calculation pipeline stage was slowing down the 3D pipeline.",
-            "3D Pipe/Rasterizer/Barycentric Calc", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_WM * 0x10000) | (METRIC_GROUP_NAME_ID_BC * 0x100), USAGE_FLAG_TIER_3|USAGE_FLAG_INDICATE|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "3D Pipe/Rasterizer/Barycentric Calc", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_WM * 0x10000) | (METRIC_GROUP_NAME_ID_BC * 0x100), USAGE_FLAG_TIER_3|USAGE_FLAG_INDICATE|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 5, 15, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -3529,7 +3529,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "HsStall", "HS Stall",
             "The percentage of time in which hull stall pipeline stage was stalled.",
-            "3D Pipe/Hull Shader", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_HS * 0x10000), USAGE_FLAG_TIER_4|USAGE_FLAG_CORRELATE|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "3D Pipe/Hull Shader", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_HS * 0x10000), USAGE_FLAG_TIER_4|USAGE_FLAG_CORRELATE|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, "Hull|Control,hull|control,HS|TCS", NULL );
         if( metric )
         {
@@ -3542,7 +3542,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "DsStall", "DS Stall",
             "The percentage of time in which domain shader pipeline stage was stalled.",
-            "3D Pipe/Domain Shader", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_DS * 0x10000), USAGE_FLAG_TIER_4|USAGE_FLAG_CORRELATE|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "3D Pipe/Domain Shader", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_DS * 0x10000), USAGE_FLAG_TIER_4|USAGE_FLAG_CORRELATE|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, "Domain|Evaluation,domain|evaluation,DS|TES", NULL );
         if( metric )
         {
@@ -3555,7 +3555,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "SoStall", "SO Stall",
             "The percentage of time in which stream-output pipeline stage was stalled.",
-            "3D Pipe/Stream Output", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_SO * 0x10000), USAGE_FLAG_TIER_4|USAGE_FLAG_CORRELATE|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "3D Pipe/Stream Output", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_SO * 0x10000), USAGE_FLAG_TIER_4|USAGE_FLAG_CORRELATE|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -3568,7 +3568,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "ClStall", "CL Stall",
             "The percentage of time in which clipper pipeline stage was stalled.",
-            "3D Pipe/Clipper", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_CL * 0x10000), USAGE_FLAG_TIER_4|USAGE_FLAG_CORRELATE|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "3D Pipe/Clipper", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_CL * 0x10000), USAGE_FLAG_TIER_4|USAGE_FLAG_CORRELATE|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -3581,7 +3581,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "SfStall", "SF Stall",
             "The percentage of time in which strip-fans pipeline stage was stalled.",
-            "3D Pipe/Rasterizer/Strip-Fans", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_WM * 0x10000) | (METRIC_GROUP_NAME_ID_SF * 0x100), USAGE_FLAG_TIER_4|USAGE_FLAG_CORRELATE|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "3D Pipe/Rasterizer/Strip-Fans", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_WM * 0x10000) | (METRIC_GROUP_NAME_ID_SF * 0x100), USAGE_FLAG_TIER_4|USAGE_FLAG_CORRELATE|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -3593,7 +3593,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
 
         information = metricSet->AddInformation( "QueryBeginTime", "Query Begin Time",
             "The measurement begin time.",
-            "Report Meta Data", API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "Report Meta Data", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             INFORMATION_TYPE_TIMESTAMP, "ns", NULL );
         if( information )
         {
@@ -3604,7 +3604,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
 
         information = metricSet->AddInformation( "CoreFrequencyMHz", "GPU Core Frequency",
             "The last core frequency in the measurement.",
-            "Report Meta Data", API_TYPE_OGL|API_TYPE_OGL4_X,
+            "Report Meta Data", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
             INFORMATION_TYPE_VALUE, "MHz", NULL );
         if( information )
         {
@@ -3632,7 +3632,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
 
         information = metricSet->AddInformation( "CoreFrequencyChanged", "Core Frequency Changed",
             "The flag indicating that core frequency has changed.",
-            "Exception", API_TYPE_OGL|API_TYPE_OGL4_X,
+            "Exception", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
             INFORMATION_TYPE_FLAG, NULL, NULL );
         if( information )
         {
@@ -3642,7 +3642,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
 
         information = metricSet->AddInformation( "QuerySplitOccurred", "Query Split Occurred",
             "The flag indicating that query has been split during execution on the GPU.",
-            "Exception", API_TYPE_OGL|API_TYPE_OGL4_X,
+            "Exception", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
             INFORMATION_TYPE_FLAG, NULL, NULL );
         if( information )
         {
@@ -3652,7 +3652,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
 
         information = metricSet->AddInformation( "ReportId", "Query report id",
             "Query report identification number.",
-            "Report Meta Data", API_TYPE_OGL|API_TYPE_OGL4_X,
+            "Report Meta Data", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
             INFORMATION_TYPE_VALUE, NULL, NULL );
         if( information )
         {
@@ -3662,7 +3662,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
 
         information = metricSet->AddInformation( "ReportsCount", "Query reports count",
             "The number of available query reports.",
-            "Report Meta Data", API_TYPE_OGL|API_TYPE_OGL4_X,
+            "Report Meta Data", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
             INFORMATION_TYPE_VALUE, NULL, NULL );
         if( information )
         {
@@ -3672,7 +3672,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
 
         information = metricSet->AddInformation( "OverrunOccured", "Query Overrun Occurred",
             "The flag indicating that Oa buffer has been overran.",
-            "Exception", API_TYPE_OGL|API_TYPE_OGL4_X,
+            "Exception", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
             INFORMATION_TYPE_FLAG, NULL, NULL );
         if( information )
         {
@@ -3827,7 +3827,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
     platformMask = PLATFORM_BDW;
     if( MD_IS_INTERNAL_BUILD || metricsDevice->IsPlatformTypeOf( platformMask ) )
     {
-        metricSet = concurrentGroup->AddMetricSet( "MemoryReads", "Memory Reads Distribution Gen8", API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+        metricSet = concurrentGroup->AddMetricSet( "MemoryReads", "Memory Reads Distribution Gen8", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
            GPU_RENDER|GPU_COMPUTE, 256, 536, OA_REPORT_TYPE_256B_A45_NOA16, platformMask );
         MD_CHECK_PTR( metricSet );
         
@@ -3837,7 +3837,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "GpuTime", "GPU Time Elapsed",
             "Time elapsed on the GPU during the measurement.",
-            "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_TIER_1|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_TIER_1|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_DURATION, RESULT_UINT64, "ns", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -3849,7 +3849,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "GpuCoreClocks", "GPU Core Clocks",
             "The total number of GPU core clocks elapsed during the measurement.",
-            "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_TIER_1|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_TIER_1|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "cycles", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -3861,7 +3861,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "AvgGpuCoreFrequencyMHz", "AVG GPU Core Frequency",
             "Average GPU Core Frequency in the measurement.",
-            "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_TIER_1|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_TIER_1|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "MHz", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -3872,7 +3872,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "GpuBusy", "GPU Busy",
             "The percentage of time in which the GPU has been processing GPU commands.",
-            "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_TIER_1|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_TIER_1|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -3886,7 +3886,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "VsThreads", "VS Threads Dispatched",
             "The total number of vertex shader hardware threads dispatched.",
-            "EU Array/Vertex Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_VS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Vertex Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_VS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "threads", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -3898,7 +3898,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "HsThreads", "HS Threads Dispatched",
             "The total number of hull shader hardware threads dispatched.",
-            "EU Array/Hull Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_HS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Hull Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_HS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "threads", 0, 0, HW_UNIT_GPU, availabilityEquation, "Hull|Control,hull|control,HS|TCS", "oa.fixed" );
         if( metric )
         {
@@ -3910,7 +3910,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "DsThreads", "DS Threads Dispatched",
             "The total number of domain shader hardware threads dispatched.",
-            "EU Array/Domain Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_DS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Domain Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_DS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "threads", 0, 0, HW_UNIT_GPU, availabilityEquation, "Domain|Evaluation,domain|evaluation,DS|TES", "oa.fixed" );
         if( metric )
         {
@@ -3922,7 +3922,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "GsThreads", "GS Threads Dispatched",
             "The total number of geometry shader hardware threads dispatched.",
-            "EU Array/Geometry Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_GS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Geometry Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_GS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "threads", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -3934,7 +3934,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "PsThreads", "PS Threads Dispatched",
             "The total number of pixel shader hardware threads dispatched.",
-            "EU Array/Pixel Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_PS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Pixel Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_PS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "threads", 0, 0, HW_UNIT_GPU, availabilityEquation, "Pixel|Fragment,PS|FS,pixel|fragment", "oa.fixed" );
         if( metric )
         {
@@ -3946,7 +3946,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "CsThreads", "CS Threads Dispatched",
             "The total number of compute shader hardware threads dispatched.",
-            "EU Array/Compute Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_CS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Compute Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_CS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "threads", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -3958,7 +3958,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "EuActive", "EU Active",
             "The percentage of time in which the Execution Units were actively processing.",
-            "EU Array", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000), USAGE_FLAG_TIER_2|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000), USAGE_FLAG_TIER_2|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -3972,7 +3972,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "EuStall", "EU Stall",
             "The percentage of time in which the Execution Units were stalled.",
-            "EU Array", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000), USAGE_FLAG_TIER_2|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000), USAGE_FLAG_TIER_2|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -3986,7 +3986,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "RasterizedPixels", "Rasterized Pixels",
             "The total number of rasterized pixels.",
-            "3D Pipe/Rasterizer", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_WM * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "3D Pipe/Rasterizer", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_WM * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "pixels", 0, 0, HW_UNIT_GPU, availabilityEquation, "Pixel|Fragment,PS|FS,pixel|fragment", "oa.fixed" );
         if( metric )
         {
@@ -3999,7 +3999,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "HiDepthTestFails", "Early Hi-Depth Test Fails",
             "The total number of pixels dropped on early hierarchical depth test.",
-            "3D Pipe/Rasterizer/Hi-Depth Test", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_WM * 0x10000) | (METRIC_GROUP_NAME_ID_HZ * 0x100), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "3D Pipe/Rasterizer/Hi-Depth Test", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_WM * 0x10000) | (METRIC_GROUP_NAME_ID_HZ * 0x100), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "pixels", 0, 0, HW_UNIT_GPU, availabilityEquation, "Pixel|Fragment,PS|FS,pixel|fragment", "oa.fixed" );
         if( metric )
         {
@@ -4012,7 +4012,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "EarlyDepthTestFails", "Early Depth Test Fails",
             "The total number of pixels dropped on early depth test.",
-            "3D Pipe/Rasterizer/Early Depth Test", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_WM * 0x10000) | (METRIC_GROUP_NAME_ID_IZ * 0x100), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "3D Pipe/Rasterizer/Early Depth Test", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_WM * 0x10000) | (METRIC_GROUP_NAME_ID_IZ * 0x100), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "pixels", 0, 0, HW_UNIT_GPU, availabilityEquation, "Pixel|Fragment,PS|FS,pixel|fragment", "oa.fixed" );
         if( metric )
         {
@@ -4025,7 +4025,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "SamplesKilledInPs", "Samples Killed in PS",
             "The total number of samples or pixels dropped in pixel shaders.",
-            "3D Pipe/Pixel Shader", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_PS * 0x10000), USAGE_FLAG_TIER_4|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "3D Pipe/Pixel Shader", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_PS * 0x10000), USAGE_FLAG_TIER_4|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "pixels", 0, 0, HW_UNIT_GPU, availabilityEquation, "Pixel|Fragment,PS|FS,pixel|fragment", "oa.fixed" );
         if( metric )
         {
@@ -4038,7 +4038,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "PixelsFailingPostPsTests", "Pixels Failing Tests",
             "The total number of pixels dropped on post-PS alpha, stencil, or depth tests.",
-            "3D Pipe/Output Merger", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_OM * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "3D Pipe/Output Merger", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_OM * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "pixels", 0, 0, HW_UNIT_GPU, availabilityEquation, "Pixel|Fragment,PS|FS,pixel|fragment", "oa.fixed" );
         if( metric )
         {
@@ -4051,7 +4051,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "SamplesWritten", "Samples Written",
             "The total number of samples or pixels written to all render targets.",
-            "3D Pipe/Output Merger", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_OM * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "3D Pipe/Output Merger", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_OM * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "pixels", 0, 0, HW_UNIT_GPU, availabilityEquation, "Pixel|Fragment,PS|FS,pixel|fragment", "oa.fixed" );
         if( metric )
         {
@@ -4064,7 +4064,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "SamplesBlended", "Samples Blended",
             "The total number of blended samples or pixels written to all render targets.",
-            "3D Pipe/Output Merger", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_OM * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "3D Pipe/Output Merger", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_OM * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "pixels", 0, 0, HW_UNIT_GPU, availabilityEquation, "Pixel|Fragment,PS|FS,pixel|fragment", NULL );
         if( metric )
         {
@@ -4077,7 +4077,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "SamplerTexels", "Sampler Texels",
             "The total number of texels seen on input (with 2x2 accuracy) in all sampler units.",
-            "Sampler/Sampler Input", (METRIC_GROUP_NAME_ID_SAMPLER * 0x1000000) | (METRIC_GROUP_NAME_ID_SAMPLER_IN * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "Sampler/Sampler Input", (METRIC_GROUP_NAME_ID_SAMPLER * 0x1000000) | (METRIC_GROUP_NAME_ID_SAMPLER_IN * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "texels", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -4090,7 +4090,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "SamplerTexelMisses", "Sampler Texels Misses",
             "The total number of texels lookups (with 2x2 accuracy) that missed L1 sampler cache.",
-            "Sampler/Sampler Cache", (METRIC_GROUP_NAME_ID_SAMPLER * 0x1000000) | (METRIC_GROUP_NAME_ID_SAMPLER_CACHE * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_BATCH|USAGE_FLAG_FRAME|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "Sampler/Sampler Cache", (METRIC_GROUP_NAME_ID_SAMPLER * 0x1000000) | (METRIC_GROUP_NAME_ID_SAMPLER_CACHE * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_BATCH|USAGE_FLAG_FRAME|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "texels", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -4103,7 +4103,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "SlmBytesRead", "SLM Bytes Read",
             "The total number of GPU memory bytes read from shared local memory.",
-            "L3/Data Port/SLM", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000) | (METRIC_GROUP_NAME_ID_SLM * 0x100), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "L3/Data Port/SLM", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000) | (METRIC_GROUP_NAME_ID_SLM * 0x100), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_THROUGHPUT, RESULT_UINT64, "bytes", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -4117,7 +4117,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "SlmBytesWritten", "SLM Bytes Written",
             "The total number of GPU memory bytes written into shared local memory.",
-            "L3/Data Port/SLM", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000) | (METRIC_GROUP_NAME_ID_SLM * 0x100), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "L3/Data Port/SLM", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000) | (METRIC_GROUP_NAME_ID_SLM * 0x100), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_THROUGHPUT, RESULT_UINT64, "bytes", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -4131,7 +4131,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "ShaderMemoryAccesses", "Shader Memory Accesses",
             "The total number of shader memory accesses to L3.",
-            "L3/Data Port", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "L3/Data Port", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "messages", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -4143,7 +4143,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "ShaderAtomics", "Shader Atomic Memory Accesses",
             "The total number of shader atomic memory accesses.",
-            "L3/Data Port/Atomics", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000) | (METRIC_GROUP_NAME_ID_ATOMICS * 0x100), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "L3/Data Port/Atomics", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000) | (METRIC_GROUP_NAME_ID_ATOMICS * 0x100), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "messages", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -4155,7 +4155,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "ShaderBarriers", "Shader Barrier Messages",
             "The total number of shader barrier messages.",
-            "EU Array/Barrier", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_EU_BARRIER * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Barrier", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_EU_BARRIER * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "messages", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -4167,7 +4167,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "L3ShaderThroughput", "L3 Shader Throughput",
             "The total number of GPU memory bytes transferred between shaders and L3 caches w/o URB.",
-            "L3/Data Port", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000), USAGE_FLAG_TIER_2|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "L3/Data Port", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000), USAGE_FLAG_TIER_2|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_THROUGHPUT, RESULT_UINT64, "bytes", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -4179,7 +4179,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "GtiCmdStreamerMemoryReads", "GtiCmdStreamerMemoryReads",
             "The total number of GTI memory reads from Command Streamer.",
-            "GTI/3D Pipe/Command Streamer", (METRIC_GROUP_NAME_ID_GTI * 0x1000000) | (METRIC_GROUP_NAME_ID_3D_PIPE * 0x10000) | (METRIC_GROUP_NAME_ID_RCS * 0x100), USAGE_FLAG_TIER_2|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "GTI/3D Pipe/Command Streamer", (METRIC_GROUP_NAME_ID_GTI * 0x1000000) | (METRIC_GROUP_NAME_ID_3D_PIPE * 0x10000) | (METRIC_GROUP_NAME_ID_RCS * 0x100), USAGE_FLAG_TIER_2|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "messages", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -4191,7 +4191,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "GtiRsMemoryReads", "GtiRsMemoryReads",
             "The total number of GTI memory reads from Resource Streamer.",
-            "GTI/3D Pipe/Resource Streamer", (METRIC_GROUP_NAME_ID_GTI * 0x1000000) | (METRIC_GROUP_NAME_ID_3D_PIPE * 0x10000) | (METRIC_GROUP_NAME_ID_RS * 0x100), USAGE_FLAG_TIER_2|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "GTI/3D Pipe/Resource Streamer", (METRIC_GROUP_NAME_ID_GTI * 0x1000000) | (METRIC_GROUP_NAME_ID_3D_PIPE * 0x10000) | (METRIC_GROUP_NAME_ID_RS * 0x100), USAGE_FLAG_TIER_2|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "messages", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -4203,7 +4203,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "GtiVfMemoryReads", "GtiVfMemoryReads",
             "The total number of GTI memory reads from Vertex Fetch.",
-            "GTI/3D Pipe/Vertex Fetch", (METRIC_GROUP_NAME_ID_GTI * 0x1000000) | (METRIC_GROUP_NAME_ID_3D_PIPE * 0x10000) | (METRIC_GROUP_NAME_ID_VF * 0x100), USAGE_FLAG_TIER_2|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "GTI/3D Pipe/Vertex Fetch", (METRIC_GROUP_NAME_ID_GTI * 0x1000000) | (METRIC_GROUP_NAME_ID_3D_PIPE * 0x10000) | (METRIC_GROUP_NAME_ID_VF * 0x100), USAGE_FLAG_TIER_2|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "messages", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -4215,7 +4215,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "GtiRccMemoryReads", "GtiRccMemoryReads",
             "The total number of GTI memory reads from Render Color Cache (Render Color Cache misses).",
-            "GTI/Color Cache", (METRIC_GROUP_NAME_ID_GTI * 0x1000000) | (METRIC_GROUP_NAME_ID_RCC * 0x10000), USAGE_FLAG_TIER_2|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "GTI/Color Cache", (METRIC_GROUP_NAME_ID_GTI * 0x1000000) | (METRIC_GROUP_NAME_ID_RCC * 0x10000), USAGE_FLAG_TIER_2|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "messages", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -4227,7 +4227,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "GtiMscMemoryReads", "GtiMscMemoryReads",
             "The total number of GTI memory reads from Multisampling Color Cache (Multisampling Color Cache misses).",
-            "GTI/Color Cache", (METRIC_GROUP_NAME_ID_GTI * 0x1000000) | (METRIC_GROUP_NAME_ID_RCC * 0x10000), USAGE_FLAG_TIER_2|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "GTI/Color Cache", (METRIC_GROUP_NAME_ID_GTI * 0x1000000) | (METRIC_GROUP_NAME_ID_RCC * 0x10000), USAGE_FLAG_TIER_2|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "messages", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -4239,7 +4239,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "GtiHizMemoryReads", "GtiHizMemoryReads",
             "The total number of GTI memory reads from Hierarchical Depth Cache (Hi-Depth Cache misses).",
-            "GTI/Depth Cache", (METRIC_GROUP_NAME_ID_GTI * 0x1000000) | (METRIC_GROUP_NAME_ID_RCZ * 0x10000), USAGE_FLAG_TIER_2|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "GTI/Depth Cache", (METRIC_GROUP_NAME_ID_GTI * 0x1000000) | (METRIC_GROUP_NAME_ID_RCZ * 0x10000), USAGE_FLAG_TIER_2|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "messages", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -4251,7 +4251,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "GtiStcMemoryReads", "GtiStcMemoryReads",
             "The total number of GTI memory reads from Stencil Cache (Stencil Cache misses).",
-            "GTI/Depth Cache", (METRIC_GROUP_NAME_ID_GTI * 0x1000000) | (METRIC_GROUP_NAME_ID_RCZ * 0x10000), USAGE_FLAG_TIER_2|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "GTI/Depth Cache", (METRIC_GROUP_NAME_ID_GTI * 0x1000000) | (METRIC_GROUP_NAME_ID_RCZ * 0x10000), USAGE_FLAG_TIER_2|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "messages", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -4263,7 +4263,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "GtiRczMemoryReads", "GtiRczMemoryReads",
             "The total number of GTI memory reads from Render Depth Cache (Render Depth Cache misses).",
-            "GTI/Depth Cache", (METRIC_GROUP_NAME_ID_GTI * 0x1000000) | (METRIC_GROUP_NAME_ID_RCZ * 0x10000), USAGE_FLAG_TIER_2|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "GTI/Depth Cache", (METRIC_GROUP_NAME_ID_GTI * 0x1000000) | (METRIC_GROUP_NAME_ID_RCZ * 0x10000), USAGE_FLAG_TIER_2|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "messages", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -4275,7 +4275,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "GtiMemoryReads", "GtiMemoryReads",
             "The total number of GTI memory reads.",
-            "GTI", (METRIC_GROUP_NAME_ID_GTI * 0x1000000), USAGE_FLAG_TIER_2|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "GTI", (METRIC_GROUP_NAME_ID_GTI * 0x1000000), USAGE_FLAG_TIER_2|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "messages", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -4287,7 +4287,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "GtiL3Bank0Reads", "GtiL3Bank0Reads",
             "The total number of GTI memory reads from L3 Bank 0 (L3 Cache misses).",
-            "GTI/L3", (METRIC_GROUP_NAME_ID_GTI * 0x1000000) | (METRIC_GROUP_NAME_ID_L3 * 0x10000), USAGE_FLAG_TIER_2|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "GTI/L3", (METRIC_GROUP_NAME_ID_GTI * 0x1000000) | (METRIC_GROUP_NAME_ID_L3 * 0x10000), USAGE_FLAG_TIER_2|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "messages", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -4299,7 +4299,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "GtiL3Bank1Reads", "GtiL3Bank1Reads",
             "The total number of GTI memory reads from L3 Bank 1 (L3 Cache misses).",
-            "GTI/L3", (METRIC_GROUP_NAME_ID_GTI * 0x1000000) | (METRIC_GROUP_NAME_ID_L3 * 0x10000), USAGE_FLAG_TIER_2|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "GTI/L3", (METRIC_GROUP_NAME_ID_GTI * 0x1000000) | (METRIC_GROUP_NAME_ID_L3 * 0x10000), USAGE_FLAG_TIER_2|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "messages", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -4311,7 +4311,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "GtiL3Bank2Reads", "GtiL3Bank2Reads",
             "The total number of GTI memory reads from L3 Bank 2 (L3 Cache misses).",
-            "GTI/L3", (METRIC_GROUP_NAME_ID_GTI * 0x1000000) | (METRIC_GROUP_NAME_ID_L3 * 0x10000), USAGE_FLAG_TIER_2|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "GTI/L3", (METRIC_GROUP_NAME_ID_GTI * 0x1000000) | (METRIC_GROUP_NAME_ID_L3 * 0x10000), USAGE_FLAG_TIER_2|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "messages", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -4323,7 +4323,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "GtiL3Bank3Reads", "GtiL3Bank3Reads",
             "The total number of GTI memory reads from L3 Bank 3 (L3 Cache misses).",
-            "GTI/L3", (METRIC_GROUP_NAME_ID_GTI * 0x1000000) | (METRIC_GROUP_NAME_ID_L3 * 0x10000), USAGE_FLAG_TIER_2|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "GTI/L3", (METRIC_GROUP_NAME_ID_GTI * 0x1000000) | (METRIC_GROUP_NAME_ID_L3 * 0x10000), USAGE_FLAG_TIER_2|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "messages", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -4335,7 +4335,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "GtiL3Reads", "GtiL3Reads",
             "The total number of GTI memory reads from L3 (L3 Cache misses).",
-            "GTI/L3", (METRIC_GROUP_NAME_ID_GTI * 0x1000000) | (METRIC_GROUP_NAME_ID_L3 * 0x10000), USAGE_FLAG_TIER_2|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "GTI/L3", (METRIC_GROUP_NAME_ID_GTI * 0x1000000) | (METRIC_GROUP_NAME_ID_L3 * 0x10000), USAGE_FLAG_TIER_2|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "messages", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -4346,7 +4346,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "GtiRingAccesses", "GtiRingAccesses",
             "The total number of all accesses from GTI to the ring.",
-            "GTI", (METRIC_GROUP_NAME_ID_GTI * 0x1000000), USAGE_FLAG_TIER_2|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "GTI", (METRIC_GROUP_NAME_ID_GTI * 0x1000000), USAGE_FLAG_TIER_2|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "messages", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -4358,7 +4358,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
 
         information = metricSet->AddInformation( "QueryBeginTime", "Query Begin Time",
             "The measurement begin time.",
-            "Report Meta Data", API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "Report Meta Data", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             INFORMATION_TYPE_TIMESTAMP, "ns", NULL );
         if( information )
         {
@@ -4369,7 +4369,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
 
         information = metricSet->AddInformation( "CoreFrequencyMHz", "GPU Core Frequency",
             "The last core frequency in the measurement.",
-            "Report Meta Data", API_TYPE_OGL|API_TYPE_OGL4_X,
+            "Report Meta Data", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
             INFORMATION_TYPE_VALUE, "MHz", NULL );
         if( information )
         {
@@ -4397,7 +4397,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
 
         information = metricSet->AddInformation( "CoreFrequencyChanged", "Core Frequency Changed",
             "The flag indicating that core frequency has changed.",
-            "Exception", API_TYPE_OGL|API_TYPE_OGL4_X,
+            "Exception", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
             INFORMATION_TYPE_FLAG, NULL, NULL );
         if( information )
         {
@@ -4407,7 +4407,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
 
         information = metricSet->AddInformation( "QuerySplitOccurred", "Query Split Occurred",
             "The flag indicating that query has been split during execution on the GPU.",
-            "Exception", API_TYPE_OGL|API_TYPE_OGL4_X,
+            "Exception", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
             INFORMATION_TYPE_FLAG, NULL, NULL );
         if( information )
         {
@@ -4417,7 +4417,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
 
         information = metricSet->AddInformation( "ReportId", "Query report id",
             "Query report identification number.",
-            "Report Meta Data", API_TYPE_OGL|API_TYPE_OGL4_X,
+            "Report Meta Data", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
             INFORMATION_TYPE_VALUE, NULL, NULL );
         if( information )
         {
@@ -4427,7 +4427,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
 
         information = metricSet->AddInformation( "ReportsCount", "Query reports count",
             "The number of available query reports.",
-            "Report Meta Data", API_TYPE_OGL|API_TYPE_OGL4_X,
+            "Report Meta Data", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
             INFORMATION_TYPE_VALUE, NULL, NULL );
         if( information )
         {
@@ -4437,7 +4437,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
 
         information = metricSet->AddInformation( "OverrunOccured", "Query Overrun Occurred",
             "The flag indicating that Oa buffer has been overran.",
-            "Exception", API_TYPE_OGL|API_TYPE_OGL4_X,
+            "Exception", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
             INFORMATION_TYPE_FLAG, NULL, NULL );
         if( information )
         {
@@ -4538,7 +4538,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
     platformMask = PLATFORM_BDW;
     if( MD_IS_INTERNAL_BUILD || metricsDevice->IsPlatformTypeOf( platformMask ) )
     {
-        metricSet = concurrentGroup->AddMetricSet( "MemoryWrites", "Memory Writes Distribution Gen8", API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+        metricSet = concurrentGroup->AddMetricSet( "MemoryWrites", "Memory Writes Distribution Gen8", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
            GPU_RENDER|GPU_COMPUTE, 256, 536, OA_REPORT_TYPE_256B_A45_NOA16, platformMask );
         MD_CHECK_PTR( metricSet );
         
@@ -4548,7 +4548,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "GpuTime", "GPU Time Elapsed",
             "Time elapsed on the GPU during the measurement.",
-            "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_TIER_1|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_TIER_1|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_DURATION, RESULT_UINT64, "ns", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -4560,7 +4560,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "GpuCoreClocks", "GPU Core Clocks",
             "The total number of GPU core clocks elapsed during the measurement.",
-            "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_TIER_1|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_TIER_1|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "cycles", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -4572,7 +4572,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "AvgGpuCoreFrequencyMHz", "AVG GPU Core Frequency",
             "Average GPU Core Frequency in the measurement.",
-            "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_TIER_1|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_TIER_1|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "MHz", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -4583,7 +4583,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "GpuBusy", "GPU Busy",
             "The percentage of time in which the GPU has been processing GPU commands.",
-            "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_TIER_1|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_TIER_1|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -4597,7 +4597,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "VsThreads", "VS Threads Dispatched",
             "The total number of vertex shader hardware threads dispatched.",
-            "EU Array/Vertex Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_VS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Vertex Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_VS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "threads", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -4609,7 +4609,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "HsThreads", "HS Threads Dispatched",
             "The total number of hull shader hardware threads dispatched.",
-            "EU Array/Hull Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_HS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Hull Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_HS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "threads", 0, 0, HW_UNIT_GPU, availabilityEquation, "Hull|Control,hull|control,HS|TCS", "oa.fixed" );
         if( metric )
         {
@@ -4621,7 +4621,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "DsThreads", "DS Threads Dispatched",
             "The total number of domain shader hardware threads dispatched.",
-            "EU Array/Domain Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_DS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Domain Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_DS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "threads", 0, 0, HW_UNIT_GPU, availabilityEquation, "Domain|Evaluation,domain|evaluation,DS|TES", "oa.fixed" );
         if( metric )
         {
@@ -4633,7 +4633,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "GsThreads", "GS Threads Dispatched",
             "The total number of geometry shader hardware threads dispatched.",
-            "EU Array/Geometry Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_GS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Geometry Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_GS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "threads", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -4645,7 +4645,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "PsThreads", "PS Threads Dispatched",
             "The total number of pixel shader hardware threads dispatched.",
-            "EU Array/Pixel Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_PS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Pixel Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_PS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "threads", 0, 0, HW_UNIT_GPU, availabilityEquation, "Pixel|Fragment,PS|FS,pixel|fragment", "oa.fixed" );
         if( metric )
         {
@@ -4657,7 +4657,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "CsThreads", "CS Threads Dispatched",
             "The total number of compute shader hardware threads dispatched.",
-            "EU Array/Compute Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_CS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Compute Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_CS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "threads", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -4669,7 +4669,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "EuActive", "EU Active",
             "The percentage of time in which the Execution Units were actively processing.",
-            "EU Array", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000), USAGE_FLAG_TIER_2|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000), USAGE_FLAG_TIER_2|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -4683,7 +4683,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "EuStall", "EU Stall",
             "The percentage of time in which the Execution Units were stalled.",
-            "EU Array", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000), USAGE_FLAG_TIER_2|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000), USAGE_FLAG_TIER_2|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -4697,7 +4697,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "RasterizedPixels", "Rasterized Pixels",
             "The total number of rasterized pixels.",
-            "3D Pipe/Rasterizer", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_WM * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "3D Pipe/Rasterizer", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_WM * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "pixels", 0, 0, HW_UNIT_GPU, availabilityEquation, "Pixel|Fragment,PS|FS,pixel|fragment", "oa.fixed" );
         if( metric )
         {
@@ -4710,7 +4710,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "HiDepthTestFails", "Early Hi-Depth Test Fails",
             "The total number of pixels dropped on early hierarchical depth test.",
-            "3D Pipe/Rasterizer/Hi-Depth Test", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_WM * 0x10000) | (METRIC_GROUP_NAME_ID_HZ * 0x100), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "3D Pipe/Rasterizer/Hi-Depth Test", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_WM * 0x10000) | (METRIC_GROUP_NAME_ID_HZ * 0x100), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "pixels", 0, 0, HW_UNIT_GPU, availabilityEquation, "Pixel|Fragment,PS|FS,pixel|fragment", "oa.fixed" );
         if( metric )
         {
@@ -4723,7 +4723,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "EarlyDepthTestFails", "Early Depth Test Fails",
             "The total number of pixels dropped on early depth test.",
-            "3D Pipe/Rasterizer/Early Depth Test", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_WM * 0x10000) | (METRIC_GROUP_NAME_ID_IZ * 0x100), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "3D Pipe/Rasterizer/Early Depth Test", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_WM * 0x10000) | (METRIC_GROUP_NAME_ID_IZ * 0x100), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "pixels", 0, 0, HW_UNIT_GPU, availabilityEquation, "Pixel|Fragment,PS|FS,pixel|fragment", "oa.fixed" );
         if( metric )
         {
@@ -4736,7 +4736,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "SamplesKilledInPs", "Samples Killed in PS",
             "The total number of samples or pixels dropped in pixel shaders.",
-            "3D Pipe/Pixel Shader", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_PS * 0x10000), USAGE_FLAG_TIER_4|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "3D Pipe/Pixel Shader", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_PS * 0x10000), USAGE_FLAG_TIER_4|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "pixels", 0, 0, HW_UNIT_GPU, availabilityEquation, "Pixel|Fragment,PS|FS,pixel|fragment", "oa.fixed" );
         if( metric )
         {
@@ -4749,7 +4749,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "PixelsFailingPostPsTests", "Pixels Failing Tests",
             "The total number of pixels dropped on post-PS alpha, stencil, or depth tests.",
-            "3D Pipe/Output Merger", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_OM * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "3D Pipe/Output Merger", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_OM * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "pixels", 0, 0, HW_UNIT_GPU, availabilityEquation, "Pixel|Fragment,PS|FS,pixel|fragment", "oa.fixed" );
         if( metric )
         {
@@ -4762,7 +4762,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "SamplesWritten", "Samples Written",
             "The total number of samples or pixels written to all render targets.",
-            "3D Pipe/Output Merger", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_OM * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "3D Pipe/Output Merger", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_OM * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "pixels", 0, 0, HW_UNIT_GPU, availabilityEquation, "Pixel|Fragment,PS|FS,pixel|fragment", "oa.fixed" );
         if( metric )
         {
@@ -4775,7 +4775,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "SamplesBlended", "Samples Blended",
             "The total number of blended samples or pixels written to all render targets.",
-            "3D Pipe/Output Merger", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_OM * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "3D Pipe/Output Merger", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_OM * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "pixels", 0, 0, HW_UNIT_GPU, availabilityEquation, "Pixel|Fragment,PS|FS,pixel|fragment", NULL );
         if( metric )
         {
@@ -4788,7 +4788,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "SamplerTexels", "Sampler Texels",
             "The total number of texels seen on input (with 2x2 accuracy) in all sampler units.",
-            "Sampler/Sampler Input", (METRIC_GROUP_NAME_ID_SAMPLER * 0x1000000) | (METRIC_GROUP_NAME_ID_SAMPLER_IN * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "Sampler/Sampler Input", (METRIC_GROUP_NAME_ID_SAMPLER * 0x1000000) | (METRIC_GROUP_NAME_ID_SAMPLER_IN * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "texels", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -4801,7 +4801,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "SamplerTexelMisses", "Sampler Texels Misses",
             "The total number of texels lookups (with 2x2 accuracy) that missed L1 sampler cache.",
-            "Sampler/Sampler Cache", (METRIC_GROUP_NAME_ID_SAMPLER * 0x1000000) | (METRIC_GROUP_NAME_ID_SAMPLER_CACHE * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_BATCH|USAGE_FLAG_FRAME|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "Sampler/Sampler Cache", (METRIC_GROUP_NAME_ID_SAMPLER * 0x1000000) | (METRIC_GROUP_NAME_ID_SAMPLER_CACHE * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_BATCH|USAGE_FLAG_FRAME|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "texels", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -4814,7 +4814,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "SlmBytesRead", "SLM Bytes Read",
             "The total number of GPU memory bytes read from shared local memory.",
-            "L3/Data Port/SLM", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000) | (METRIC_GROUP_NAME_ID_SLM * 0x100), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "L3/Data Port/SLM", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000) | (METRIC_GROUP_NAME_ID_SLM * 0x100), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_THROUGHPUT, RESULT_UINT64, "bytes", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -4828,7 +4828,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "SlmBytesWritten", "SLM Bytes Written",
             "The total number of GPU memory bytes written into shared local memory.",
-            "L3/Data Port/SLM", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000) | (METRIC_GROUP_NAME_ID_SLM * 0x100), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "L3/Data Port/SLM", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000) | (METRIC_GROUP_NAME_ID_SLM * 0x100), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_THROUGHPUT, RESULT_UINT64, "bytes", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -4842,7 +4842,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "ShaderMemoryAccesses", "Shader Memory Accesses",
             "The total number of shader memory accesses to L3.",
-            "L3/Data Port", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "L3/Data Port", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "messages", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -4854,7 +4854,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "ShaderAtomics", "Shader Atomic Memory Accesses",
             "The total number of shader atomic memory accesses.",
-            "L3/Data Port/Atomics", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000) | (METRIC_GROUP_NAME_ID_ATOMICS * 0x100), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "L3/Data Port/Atomics", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000) | (METRIC_GROUP_NAME_ID_ATOMICS * 0x100), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "messages", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -4866,7 +4866,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "L3ShaderThroughput", "L3 Shader Throughput",
             "The total number of GPU memory bytes transferred between shaders and L3 caches w/o URB.",
-            "L3/Data Port", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000), USAGE_FLAG_TIER_2|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "L3/Data Port", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000), USAGE_FLAG_TIER_2|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_THROUGHPUT, RESULT_UINT64, "bytes", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -4878,7 +4878,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "ShaderBarriers", "Shader Barrier Messages",
             "The total number of shader barrier messages.",
-            "EU Array/Barrier", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_EU_BARRIER * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Barrier", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_EU_BARRIER * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "messages", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -4890,7 +4890,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "GtiCmdStreamerMemoryWrites", "GtiCmdStreamerMemoryWrites",
             "The total number of GTI memory writes from Command Streamer.",
-            "GTI/3D Pipe/Command Streamer", (METRIC_GROUP_NAME_ID_GTI * 0x1000000) | (METRIC_GROUP_NAME_ID_3D_PIPE * 0x10000) | (METRIC_GROUP_NAME_ID_RCS * 0x100), USAGE_FLAG_TIER_2|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "GTI/3D Pipe/Command Streamer", (METRIC_GROUP_NAME_ID_GTI * 0x1000000) | (METRIC_GROUP_NAME_ID_3D_PIPE * 0x10000) | (METRIC_GROUP_NAME_ID_RCS * 0x100), USAGE_FLAG_TIER_2|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "messages", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -4902,7 +4902,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "GtiSoMemoryWrites", "GtiSoMemoryWrites",
             "The total number of GTI memory writes from Stream Output.",
-            "GTI/3D Pipe/Stream Output", (METRIC_GROUP_NAME_ID_GTI * 0x1000000) | (METRIC_GROUP_NAME_ID_3D_PIPE * 0x10000) | (METRIC_GROUP_NAME_ID_SO * 0x100), USAGE_FLAG_TIER_2|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "GTI/3D Pipe/Stream Output", (METRIC_GROUP_NAME_ID_GTI * 0x1000000) | (METRIC_GROUP_NAME_ID_3D_PIPE * 0x10000) | (METRIC_GROUP_NAME_ID_SO * 0x100), USAGE_FLAG_TIER_2|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "messages", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -4914,7 +4914,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "GtiRccMemoryWrites", "GtiRccMemoryWrites",
             "The total number of GTI memory writes from Render Color Cache (Render Color Cache invalidations).",
-            "GTI/Color Cache", (METRIC_GROUP_NAME_ID_GTI * 0x1000000) | (METRIC_GROUP_NAME_ID_RCC * 0x10000), USAGE_FLAG_TIER_2|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "GTI/Color Cache", (METRIC_GROUP_NAME_ID_GTI * 0x1000000) | (METRIC_GROUP_NAME_ID_RCC * 0x10000), USAGE_FLAG_TIER_2|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "messages", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -4926,7 +4926,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "GtiMscMemoryWrites", "GtiMscMemoryWrites",
             "The total number of GTI memory writes from Multisampling Color Cache (Multisampling Color Cache invalidations).",
-            "GTI/Color Cache", (METRIC_GROUP_NAME_ID_GTI * 0x1000000) | (METRIC_GROUP_NAME_ID_RCC * 0x10000), USAGE_FLAG_TIER_2|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "GTI/Color Cache", (METRIC_GROUP_NAME_ID_GTI * 0x1000000) | (METRIC_GROUP_NAME_ID_RCC * 0x10000), USAGE_FLAG_TIER_2|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "messages", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -4938,7 +4938,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "GtiHizMemoryWrites", "GtiHizMemoryWrites",
             "The total number of GTI memory writes from Hierarchical Depth Cache.",
-            "GTI/Depth Cache", (METRIC_GROUP_NAME_ID_GTI * 0x1000000) | (METRIC_GROUP_NAME_ID_RCZ * 0x10000), USAGE_FLAG_TIER_2|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "GTI/Depth Cache", (METRIC_GROUP_NAME_ID_GTI * 0x1000000) | (METRIC_GROUP_NAME_ID_RCZ * 0x10000), USAGE_FLAG_TIER_2|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "messages", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -4950,7 +4950,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "GtiStcMemoryWrites", "GtiStcMemoryWrites",
             "The total number of GTI memory writes from Stencil Cache.",
-            "GTI/Depth Cache", (METRIC_GROUP_NAME_ID_GTI * 0x1000000) | (METRIC_GROUP_NAME_ID_RCZ * 0x10000), USAGE_FLAG_TIER_2|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "GTI/Depth Cache", (METRIC_GROUP_NAME_ID_GTI * 0x1000000) | (METRIC_GROUP_NAME_ID_RCZ * 0x10000), USAGE_FLAG_TIER_2|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "messages", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -4962,7 +4962,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "GtiRczMemoryWrites", "GtiRczMemoryWrites",
             "The total number of GTI memory writes from Render Depth Cache.",
-            "GTI/Depth Cache", (METRIC_GROUP_NAME_ID_GTI * 0x1000000) | (METRIC_GROUP_NAME_ID_RCZ * 0x10000), USAGE_FLAG_TIER_2|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "GTI/Depth Cache", (METRIC_GROUP_NAME_ID_GTI * 0x1000000) | (METRIC_GROUP_NAME_ID_RCZ * 0x10000), USAGE_FLAG_TIER_2|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "messages", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -4974,7 +4974,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "GtiMemoryWrites", "GtiMemoryWrites",
             "The total number of GTI memory writes.",
-            "GTI", (METRIC_GROUP_NAME_ID_GTI * 0x1000000), USAGE_FLAG_TIER_2|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "GTI", (METRIC_GROUP_NAME_ID_GTI * 0x1000000), USAGE_FLAG_TIER_2|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "messages", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -4986,7 +4986,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "GtiL3Bank0Writes", "GtiL3Bank0Writes",
             "The total number of GTI memory writes from L3 Bank 0 (L3 Bank 0 invalidations).",
-            "GTI/L3", (METRIC_GROUP_NAME_ID_GTI * 0x1000000) | (METRIC_GROUP_NAME_ID_L3 * 0x10000), USAGE_FLAG_TIER_2|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "GTI/L3", (METRIC_GROUP_NAME_ID_GTI * 0x1000000) | (METRIC_GROUP_NAME_ID_L3 * 0x10000), USAGE_FLAG_TIER_2|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "messages", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -4998,7 +4998,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "GtiL3Bank1Writes", "GtiL3Bank1Writes",
             "The total number of GTI memory writes from L3 Bank 1 (L3 Bank 1 invalidations).",
-            "GTI/L3", (METRIC_GROUP_NAME_ID_GTI * 0x1000000) | (METRIC_GROUP_NAME_ID_L3 * 0x10000), USAGE_FLAG_TIER_2|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "GTI/L3", (METRIC_GROUP_NAME_ID_GTI * 0x1000000) | (METRIC_GROUP_NAME_ID_L3 * 0x10000), USAGE_FLAG_TIER_2|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "messages", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -5010,7 +5010,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "GtiL3Bank2Writes", "GtiL3Bank2Writes",
             "The total number of GTI memory writes from L3 Bank 2 (L3 Bank 2 invalidations).",
-            "GTI/L3", (METRIC_GROUP_NAME_ID_GTI * 0x1000000) | (METRIC_GROUP_NAME_ID_L3 * 0x10000), USAGE_FLAG_TIER_2|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "GTI/L3", (METRIC_GROUP_NAME_ID_GTI * 0x1000000) | (METRIC_GROUP_NAME_ID_L3 * 0x10000), USAGE_FLAG_TIER_2|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "messages", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -5022,7 +5022,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "GtiL3Bank3Writes", "GtiL3Bank3Writes",
             "The total number of GTI memory writes from L3 Bank 3 (L3 Bank 3 invalidations).",
-            "GTI/L3", (METRIC_GROUP_NAME_ID_GTI * 0x1000000) | (METRIC_GROUP_NAME_ID_L3 * 0x10000), USAGE_FLAG_TIER_2|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "GTI/L3", (METRIC_GROUP_NAME_ID_GTI * 0x1000000) | (METRIC_GROUP_NAME_ID_L3 * 0x10000), USAGE_FLAG_TIER_2|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "messages", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -5034,7 +5034,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "GtiL3Writes", "GtiL3Writes",
             "The total number of GTI memory writes from L3 (L3 invalidations).",
-            "GTI/L3", (METRIC_GROUP_NAME_ID_GTI * 0x1000000) | (METRIC_GROUP_NAME_ID_L3 * 0x10000), USAGE_FLAG_TIER_2|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "GTI/L3", (METRIC_GROUP_NAME_ID_GTI * 0x1000000) | (METRIC_GROUP_NAME_ID_L3 * 0x10000), USAGE_FLAG_TIER_2|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "messages", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -5045,7 +5045,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "GtiRingAccesses", "GtiRingAccesses",
             "The total number of all GTI accesses to the ring.",
-            "GTI", (METRIC_GROUP_NAME_ID_GTI * 0x1000000), USAGE_FLAG_TIER_2|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "GTI", (METRIC_GROUP_NAME_ID_GTI * 0x1000000), USAGE_FLAG_TIER_2|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "messages", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -5057,7 +5057,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
 
         information = metricSet->AddInformation( "QueryBeginTime", "Query Begin Time",
             "The measurement begin time.",
-            "Report Meta Data", API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "Report Meta Data", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             INFORMATION_TYPE_TIMESTAMP, "ns", NULL );
         if( information )
         {
@@ -5068,7 +5068,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
 
         information = metricSet->AddInformation( "CoreFrequencyMHz", "GPU Core Frequency",
             "The last core frequency in the measurement.",
-            "Report Meta Data", API_TYPE_OGL|API_TYPE_OGL4_X,
+            "Report Meta Data", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
             INFORMATION_TYPE_VALUE, "MHz", NULL );
         if( information )
         {
@@ -5096,7 +5096,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
 
         information = metricSet->AddInformation( "CoreFrequencyChanged", "Core Frequency Changed",
             "The flag indicating that core frequency has changed.",
-            "Exception", API_TYPE_OGL|API_TYPE_OGL4_X,
+            "Exception", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
             INFORMATION_TYPE_FLAG, NULL, NULL );
         if( information )
         {
@@ -5106,7 +5106,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
 
         information = metricSet->AddInformation( "QuerySplitOccurred", "Query Split Occurred",
             "The flag indicating that query has been split during execution on the GPU.",
-            "Exception", API_TYPE_OGL|API_TYPE_OGL4_X,
+            "Exception", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
             INFORMATION_TYPE_FLAG, NULL, NULL );
         if( information )
         {
@@ -5116,7 +5116,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
 
         information = metricSet->AddInformation( "ReportId", "Query report id",
             "Query report identification number.",
-            "Report Meta Data", API_TYPE_OGL|API_TYPE_OGL4_X,
+            "Report Meta Data", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
             INFORMATION_TYPE_VALUE, NULL, NULL );
         if( information )
         {
@@ -5126,7 +5126,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
 
         information = metricSet->AddInformation( "ReportsCount", "Query reports count",
             "The number of available query reports.",
-            "Report Meta Data", API_TYPE_OGL|API_TYPE_OGL4_X,
+            "Report Meta Data", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
             INFORMATION_TYPE_VALUE, NULL, NULL );
         if( information )
         {
@@ -5136,7 +5136,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
 
         information = metricSet->AddInformation( "OverrunOccured", "Query Overrun Occurred",
             "The flag indicating that Oa buffer has been overran.",
-            "Exception", API_TYPE_OGL|API_TYPE_OGL4_X,
+            "Exception", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
             INFORMATION_TYPE_FLAG, NULL, NULL );
         if( information )
         {
@@ -5236,7 +5236,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
     platformMask = PLATFORM_BDW;
     if( MD_IS_INTERNAL_BUILD || metricsDevice->IsPlatformTypeOf( platformMask ) )
     {
-        metricSet = concurrentGroup->AddMetricSet( "ComputeExtended", "Compute Metrics Extended Gen8", API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+        metricSet = concurrentGroup->AddMetricSet( "ComputeExtended", "Compute Metrics Extended Gen8", API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
            GPU_COMPUTE, 256, 536, OA_REPORT_TYPE_256B_A45_NOA16, platformMask );
         MD_CHECK_PTR( metricSet );
         
@@ -5246,7 +5246,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "GpuTime", "GPU Time Elapsed",
             "Time elapsed on the GPU during the measurement.",
-            "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_TIER_1|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_TIER_1|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_DURATION, RESULT_UINT64, "ns", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -5258,7 +5258,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "GpuCoreClocks", "GPU Core Clocks",
             "The total number of GPU core clocks elapsed during the measurement.",
-            "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_TIER_1|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_TIER_1|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "cycles", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -5270,7 +5270,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "AvgGpuCoreFrequencyMHz", "AVG GPU Core Frequency",
             "Average GPU Core Frequency in the measurement.",
-            "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_TIER_1|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_TIER_1|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "MHz", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -5281,7 +5281,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "CsThreads", "CS Threads Dispatched",
             "The total number of compute shader hardware threads dispatched.",
-            "EU Array/Compute Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_CS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Compute Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_CS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "threads", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -5293,7 +5293,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "EuActive", "EU Active",
             "The percentage of time in which the Execution Units were actively processing.",
-            "EU Array", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000), USAGE_FLAG_TIER_2|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000), USAGE_FLAG_TIER_2|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -5307,7 +5307,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "EuStall", "EU Stall",
             "The percentage of time in which the Execution Units were stalled.",
-            "EU Array", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000), USAGE_FLAG_TIER_2|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000), USAGE_FLAG_TIER_2|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -5319,21 +5319,9 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         }
 
         availabilityEquation = NULL;
-        metric = metricSet->AddMetric( "EuAvgIpcRate", "EU AVG IPC Rate",
-            "The average rate of IPC calculated for 2 FPU pipelines.",
-            "EU Array", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000), USAGE_FLAG_TIER_4|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
-            METRIC_TYPE_RATIO, RESULT_FLOAT, "number", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
-        if( metric )
-        {
-            
-            MD_CHECK_CC( metric->SetNormalizationEquation( "$EuFpuBothActive $Fpu0Active $Fpu1Active UADD $EuFpuBothActive USUB FDIV 1 FADD" ));
-            MD_CHECK_CC( metric->SetMaxValueEquation( "2" ));
-        }
-
-        availabilityEquation = NULL;
         metric = metricSet->AddMetric( "EuFpuBothActive", "EU Both FPU Pipes Active",
             "The percentage of time in which both EU FPU pipelines were actively processing.",
-            "EU Array/Pipes", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_EU_PIPES * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Pipes", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_EU_PIPES * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -5347,7 +5335,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "Fpu0Active", "EU FPU0 Pipe Active",
             "The percentage of time in which EU FPU0 pipeline was actively processing.",
-            "EU Array/Pipes", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_EU_PIPES * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Pipes", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_EU_PIPES * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -5361,7 +5349,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "Fpu1Active", "EU FPU1 Pipe Active",
             "The percentage of time in which EU FPU1 pipeline was actively processing.",
-            "EU Array/Pipes", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_EU_PIPES * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Pipes", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_EU_PIPES * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -5373,9 +5361,21 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         }
 
         availabilityEquation = NULL;
+        metric = metricSet->AddMetric( "EuAvgIpcRate", "EU AVG IPC Rate",
+            "The average rate of IPC calculated for 2 FPU pipelines.",
+            "EU Array", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000), USAGE_FLAG_TIER_4|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            METRIC_TYPE_RATIO, RESULT_FLOAT, "number", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
+        if( metric )
+        {
+            
+            MD_CHECK_CC( metric->SetNormalizationEquation( "$EuFpuBothActive $Fpu0Active $Fpu1Active UADD $EuFpuBothActive USUB FDIV 1 FADD" ));
+            MD_CHECK_CC( metric->SetMaxValueEquation( "2" ));
+        }
+
+        availabilityEquation = NULL;
         metric = metricSet->AddMetric( "EuSendActive", "EU Send Pipe Active",
             "The percentage of time in which EU send pipeline was actively processing.",
-            "EU Array/Pipes", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_EU_PIPES * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Pipes", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_EU_PIPES * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -5389,7 +5389,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "EuThreadOccupancy", "EU Thread Occupancy",
             "The percentage of time in which hardware threads occupied EUs.",
-            "EU Array", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000), USAGE_FLAG_TIER_2|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000), USAGE_FLAG_TIER_2|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -5403,7 +5403,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "SamplerTexels", "Sampler Texels",
             "The total number of texels seen on input (with 2x2 accuracy) in all sampler units.",
-            "Sampler/Sampler Input", (METRIC_GROUP_NAME_ID_SAMPLER * 0x1000000) | (METRIC_GROUP_NAME_ID_SAMPLER_IN * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "Sampler/Sampler Input", (METRIC_GROUP_NAME_ID_SAMPLER * 0x1000000) | (METRIC_GROUP_NAME_ID_SAMPLER_IN * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "texels", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -5416,7 +5416,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "SamplerTexelMisses", "Sampler Texels Misses",
             "The total number of texels lookups (with 2x2 accuracy) that missed L1 sampler cache.",
-            "Sampler/Sampler Cache", (METRIC_GROUP_NAME_ID_SAMPLER * 0x1000000) | (METRIC_GROUP_NAME_ID_SAMPLER_CACHE * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_BATCH|USAGE_FLAG_FRAME|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "Sampler/Sampler Cache", (METRIC_GROUP_NAME_ID_SAMPLER * 0x1000000) | (METRIC_GROUP_NAME_ID_SAMPLER_CACHE * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_BATCH|USAGE_FLAG_FRAME|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "texels", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -5429,7 +5429,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "SlmBytesRead", "SLM Bytes Read",
             "The total number of GPU memory bytes read from shared local memory.",
-            "L3/Data Port/SLM", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000) | (METRIC_GROUP_NAME_ID_SLM * 0x100), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "L3/Data Port/SLM", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000) | (METRIC_GROUP_NAME_ID_SLM * 0x100), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_THROUGHPUT, RESULT_UINT64, "bytes", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -5443,7 +5443,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "SlmBytesWritten", "SLM Bytes Written",
             "The total number of GPU memory bytes written into shared local memory.",
-            "L3/Data Port/SLM", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000) | (METRIC_GROUP_NAME_ID_SLM * 0x100), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "L3/Data Port/SLM", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000) | (METRIC_GROUP_NAME_ID_SLM * 0x100), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_THROUGHPUT, RESULT_UINT64, "bytes", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -5457,7 +5457,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "ShaderMemoryAccesses", "Shader Memory Accesses",
             "The total number of shader memory accesses to L3.",
-            "L3/Data Port", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "L3/Data Port", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "messages", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -5469,7 +5469,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "ShaderAtomics", "Shader Atomic Memory Accesses",
             "The total number of shader atomic memory accesses.",
-            "L3/Data Port/Atomics", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000) | (METRIC_GROUP_NAME_ID_ATOMICS * 0x100), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "L3/Data Port/Atomics", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000) | (METRIC_GROUP_NAME_ID_ATOMICS * 0x100), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "messages", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -5481,7 +5481,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "L3ShaderThroughput", "L3 Shader Throughput",
             "The total number of GPU memory bytes transferred between shaders and L3 caches w/o URB.",
-            "L3/Data Port", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000), USAGE_FLAG_TIER_2|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "L3/Data Port", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000), USAGE_FLAG_TIER_2|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_THROUGHPUT, RESULT_UINT64, "bytes", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -5493,7 +5493,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "ShaderBarriers", "Shader Barrier Messages",
             "The total number of shader barrier messages.",
-            "EU Array/Barrier", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_EU_BARRIER * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Barrier", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_EU_BARRIER * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "messages", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -5505,7 +5505,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "EuUntypedReads0", "EuUntypedReads0",
             "The subslice 0 EU Untyped Reads subslice 0.",
-            "L3/Data Port", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "L3/Data Port", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "messages", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -5517,7 +5517,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "EuTypedReads0", "EuTypedReads0",
             "The subslice 0 EU Typed Reads subslice 0.",
-            "L3/Data Port", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "L3/Data Port", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "messages", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -5529,7 +5529,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "EuUntypedWrites0", "EuUntypedWrites0",
             "The subslice 0 EU Untyped Writes subslice 0.",
-            "L3/Data Port", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "L3/Data Port", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "messages", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -5541,7 +5541,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "EuTypedWrites0", "EuTypedWrites0",
             "The subslice 0 EU Typed Writes subslice 0.",
-            "L3/Data Port", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "L3/Data Port", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "messages", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -5553,7 +5553,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "EuUntypedAtomics0", "EuUntypedAtomics0",
             "The subslice 0 EU Untyped Atomics subslice 0.",
-            "L3/Data Port", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "L3/Data Port", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "messages", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -5565,7 +5565,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "EuTypedAtomics0", "EuTypedAtomics0",
             "The subslice 0 EU Typed Atomics subslice 0.",
-            "L3/Data Port", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "L3/Data Port", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "messages", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -5577,7 +5577,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "EuA64UntypedReads0", "EuA64UntypedReads0",
             "The subslice 0 EU A64 Untyped Reads subslice 0.",
-            "L3/Data Port", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "L3/Data Port", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "messages", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -5589,7 +5589,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "EuA64UntypedWrites0", "EuA64UntypedWrites0",
             "The subslice 0 EU A64 Untyped Writes subslice 0.",
-            "L3/Data Port", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "L3/Data Port", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "messages", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -5601,7 +5601,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "TypedReads0", "Typed Reads 0",
             "The subslice 0 typed reads.",
-            "L3/Data Port", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "L3/Data Port", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "messages", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -5613,7 +5613,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "TypedWrites0", "Typed Writes 0",
             "The subslice 0 typed writes.",
-            "L3/Data Port", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "L3/Data Port", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "messages", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -5625,7 +5625,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "UntypedReads0", "Untyped Reads 0",
             "The subslice 0 untyped reads (including SLM reads).",
-            "L3/Data Port", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "L3/Data Port", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "messages", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -5637,7 +5637,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "UntypedWrites0", "Untyped Writes 0",
             "The subslice 0 untyped writes (including SLM writes).",
-            "L3/Data Port", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "L3/Data Port", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "messages", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -5649,7 +5649,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "TypedAtomics0", "Typed Atomics 0",
             "The subslice 0 typed atomics.",
-            "L3/Data Port", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "L3/Data Port", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "messages", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -5661,7 +5661,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "TypedReadsPerCacheLine", "TypedReadsPerCacheLine",
             "Ratio of EU typed read requests to L3 cache line reads.",
-            "L3/Data Port", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000), USAGE_FLAG_TIER_2|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "L3/Data Port", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000), USAGE_FLAG_TIER_2|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_RATIO, RESULT_FLOAT, "EU requests to L3 cache lines", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -5672,7 +5672,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "TypedWritesPerCacheLine", "TypedWritesPerCacheLine",
             "Ratio of EU typed write requests to L3 cache line writes.",
-            "L3/Data Port", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000), USAGE_FLAG_TIER_2|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "L3/Data Port", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000), USAGE_FLAG_TIER_2|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_RATIO, RESULT_FLOAT, "EU requests to L3 cache lines", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -5683,7 +5683,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "UntypedReadsPerCacheLine", "UntypedReadsPerCacheLine",
             "Ratio of EU untyped read requests to L3 cache line reads.",
-            "L3/Data Port", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000), USAGE_FLAG_TIER_2|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "L3/Data Port", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000), USAGE_FLAG_TIER_2|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_RATIO, RESULT_FLOAT, "EU requests to L3 cache lines", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -5694,7 +5694,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "UntypedWritesPerCacheLine", "UntypedWritesPerCacheLine",
             "Ratio of EU untyped write requests to L3 cache line writes.",
-            "L3/Data Port", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000), USAGE_FLAG_TIER_2|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "L3/Data Port", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000), USAGE_FLAG_TIER_2|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_RATIO, RESULT_FLOAT, "EU requests to L3 cache lines", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -5705,7 +5705,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "TypedAtomicsPerCacheLine", "TypedAtomicsPerCacheLine",
             "Ratio of EU typed atomics requests to L3 cache line writes.",
-            "L3/Data Port", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000), USAGE_FLAG_TIER_2|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "L3/Data Port", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000), USAGE_FLAG_TIER_2|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_RATIO, RESULT_FLOAT, "EU atomic requests to L3 cache lines", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -5715,7 +5715,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
 
         information = metricSet->AddInformation( "QueryBeginTime", "Query Begin Time",
             "The measurement begin time.",
-            "Report Meta Data", API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "Report Meta Data", API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             INFORMATION_TYPE_TIMESTAMP, "ns", NULL );
         if( information )
         {
@@ -5726,7 +5726,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
 
         information = metricSet->AddInformation( "CoreFrequencyMHz", "GPU Core Frequency",
             "The last core frequency in the measurement.",
-            "Report Meta Data", API_TYPE_OGL|API_TYPE_OGL4_X,
+            "Report Meta Data", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
             INFORMATION_TYPE_VALUE, "MHz", NULL );
         if( information )
         {
@@ -5754,7 +5754,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
 
         information = metricSet->AddInformation( "CoreFrequencyChanged", "Core Frequency Changed",
             "The flag indicating that core frequency has changed.",
-            "Exception", API_TYPE_OGL|API_TYPE_OGL4_X,
+            "Exception", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
             INFORMATION_TYPE_FLAG, NULL, NULL );
         if( information )
         {
@@ -5764,7 +5764,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
 
         information = metricSet->AddInformation( "QuerySplitOccurred", "Query Split Occurred",
             "The flag indicating that query has been split during execution on the GPU.",
-            "Exception", API_TYPE_OGL|API_TYPE_OGL4_X,
+            "Exception", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
             INFORMATION_TYPE_FLAG, NULL, NULL );
         if( information )
         {
@@ -5774,7 +5774,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
 
         information = metricSet->AddInformation( "ReportId", "Query report id",
             "Query report identification number.",
-            "Report Meta Data", API_TYPE_OGL|API_TYPE_OGL4_X,
+            "Report Meta Data", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
             INFORMATION_TYPE_VALUE, NULL, NULL );
         if( information )
         {
@@ -5784,7 +5784,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
 
         information = metricSet->AddInformation( "ReportsCount", "Query reports count",
             "The number of available query reports.",
-            "Report Meta Data", API_TYPE_OGL|API_TYPE_OGL4_X,
+            "Report Meta Data", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
             INFORMATION_TYPE_VALUE, NULL, NULL );
         if( information )
         {
@@ -5794,7 +5794,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
 
         information = metricSet->AddInformation( "OverrunOccured", "Query Overrun Occurred",
             "The flag indicating that Oa buffer has been overran.",
-            "Exception", API_TYPE_OGL|API_TYPE_OGL4_X,
+            "Exception", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
             INFORMATION_TYPE_FLAG, NULL, NULL );
         if( information )
         {
@@ -6666,7 +6666,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
     platformMask = PLATFORM_BDW;
     if( MD_IS_INTERNAL_BUILD || metricsDevice->IsPlatformTypeOf( platformMask ) )
     {
-        metricSet = concurrentGroup->AddMetricSet( "ComputeL3Cache", "Compute Metrics L3 Cache Gen8", API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+        metricSet = concurrentGroup->AddMetricSet( "ComputeL3Cache", "Compute Metrics L3 Cache Gen8", API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
            GPU_RENDER|GPU_COMPUTE, 256, 536, OA_REPORT_TYPE_256B_A45_NOA16, platformMask );
         MD_CHECK_PTR( metricSet );
         
@@ -6676,7 +6676,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "GpuTime", "GPU Time Elapsed",
             "Time elapsed on the GPU during the measurement.",
-            "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_TIER_1|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_TIER_1|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_DURATION, RESULT_UINT64, "ns", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -6688,7 +6688,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "GpuCoreClocks", "GPU Core Clocks",
             "The total number of GPU core clocks elapsed during the measurement.",
-            "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_TIER_1|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_TIER_1|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "cycles", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -6700,7 +6700,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "AvgGpuCoreFrequencyMHz", "AVG GPU Core Frequency",
             "Average GPU Core Frequency in the measurement.",
-            "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_TIER_1|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_TIER_1|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "MHz", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -6711,7 +6711,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "GpuBusy", "GPU Busy",
             "The percentage of time in which the GPU has been processing GPU commands.",
-            "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_TIER_1|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_TIER_1|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -6725,7 +6725,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "VsThreads", "VS Threads Dispatched",
             "The total number of vertex shader hardware threads dispatched.",
-            "EU Array/Vertex Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_VS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Vertex Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_VS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "threads", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -6737,7 +6737,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "HsThreads", "HS Threads Dispatched",
             "The total number of hull shader hardware threads dispatched.",
-            "EU Array/Hull Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_HS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Hull Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_HS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "threads", 0, 0, HW_UNIT_GPU, availabilityEquation, "Hull|Control,hull|control,HS|TCS", "oa.fixed" );
         if( metric )
         {
@@ -6749,7 +6749,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "DsThreads", "DS Threads Dispatched",
             "The total number of domain shader hardware threads dispatched.",
-            "EU Array/Domain Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_DS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Domain Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_DS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "threads", 0, 0, HW_UNIT_GPU, availabilityEquation, "Domain|Evaluation,domain|evaluation,DS|TES", "oa.fixed" );
         if( metric )
         {
@@ -6761,7 +6761,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "GsThreads", "GS Threads Dispatched",
             "The total number of geometry shader hardware threads dispatched.",
-            "EU Array/Geometry Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_GS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Geometry Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_GS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "threads", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -6773,7 +6773,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "PsThreads", "PS Threads Dispatched",
             "The total number of pixel shader hardware threads dispatched.",
-            "EU Array/Pixel Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_PS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Pixel Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_PS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "threads", 0, 0, HW_UNIT_GPU, availabilityEquation, "Pixel|Fragment,PS|FS,pixel|fragment", "oa.fixed" );
         if( metric )
         {
@@ -6785,7 +6785,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "CsThreads", "CS Threads Dispatched",
             "The total number of compute shader hardware threads dispatched.",
-            "EU Array/Compute Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_CS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Compute Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_CS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "threads", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -6797,7 +6797,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "EuActive", "EU Active",
             "The percentage of time in which the Execution Units were actively processing.",
-            "EU Array", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000), USAGE_FLAG_TIER_2|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000), USAGE_FLAG_TIER_2|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -6811,7 +6811,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "EuStall", "EU Stall",
             "The percentage of time in which the Execution Units were stalled.",
-            "EU Array", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000), USAGE_FLAG_TIER_2|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000), USAGE_FLAG_TIER_2|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -6823,21 +6823,9 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         }
 
         availabilityEquation = NULL;
-        metric = metricSet->AddMetric( "EuAvgIpcRate", "EU AVG IPC Rate",
-            "The average rate of IPC calculated for 2 FPU pipelines.",
-            "EU Array", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000), USAGE_FLAG_TIER_4|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
-            METRIC_TYPE_RATIO, RESULT_FLOAT, "number", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
-        if( metric )
-        {
-            
-            MD_CHECK_CC( metric->SetNormalizationEquation( "$EuFpuBothActive $Fpu0Active $Fpu1Active UADD $EuFpuBothActive USUB FDIV 1 FADD" ));
-            MD_CHECK_CC( metric->SetMaxValueEquation( "2" ));
-        }
-
-        availabilityEquation = NULL;
         metric = metricSet->AddMetric( "EuFpuBothActive", "EU Both FPU Pipes Active",
             "The percentage of time in which both EU FPU pipelines were actively processing.",
-            "EU Array/Pipes", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_EU_PIPES * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Pipes", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_EU_PIPES * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -6851,7 +6839,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "Fpu0Active", "EU FPU0 Pipe Active",
             "The percentage of time in which EU FPU0 pipeline was actively processing.",
-            "EU Array/Pipes", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_EU_PIPES * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Pipes", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_EU_PIPES * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -6865,7 +6853,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "Fpu1Active", "EU FPU1 Pipe Active",
             "The percentage of time in which EU FPU1 pipeline was actively processing.",
-            "EU Array/Pipes", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_EU_PIPES * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Pipes", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_EU_PIPES * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -6877,9 +6865,21 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         }
 
         availabilityEquation = NULL;
+        metric = metricSet->AddMetric( "EuAvgIpcRate", "EU AVG IPC Rate",
+            "The average rate of IPC calculated for 2 FPU pipelines.",
+            "EU Array", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000), USAGE_FLAG_TIER_4|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            METRIC_TYPE_RATIO, RESULT_FLOAT, "number", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
+        if( metric )
+        {
+            
+            MD_CHECK_CC( metric->SetNormalizationEquation( "$EuFpuBothActive $Fpu0Active $Fpu1Active UADD $EuFpuBothActive USUB FDIV 1 FADD" ));
+            MD_CHECK_CC( metric->SetMaxValueEquation( "2" ));
+        }
+
+        availabilityEquation = NULL;
         metric = metricSet->AddMetric( "EuSendActive", "EU Send Pipe Active",
             "The percentage of time in which EU send pipeline was actively processing.",
-            "EU Array/Pipes", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_EU_PIPES * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Pipes", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_EU_PIPES * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -6893,7 +6893,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "EuHybridFpu0Instruction", "EU FPU0 Hybrid Instruction",
             "The percentage of time in which execution units were actively processing hybrid instructions on FPU0.",
-            "EU Array/Pipes/Instructions", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_EU_PIPES * 0x10000) | (METRIC_GROUP_NAME_ID_EU_INSTR * 0x100), USAGE_FLAG_TIER_4|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Pipes/Instructions", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_EU_PIPES * 0x10000) | (METRIC_GROUP_NAME_ID_EU_INSTR * 0x100), USAGE_FLAG_TIER_4|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -6907,7 +6907,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "EuHybridFpu1Instruction", "EU FPU1 Hybrid Instruction",
             "The percentage of time in which execution units were actively processing hybrid instructions on FPU1.",
-            "EU Array/Pipes/Instructions", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_EU_PIPES * 0x10000) | (METRIC_GROUP_NAME_ID_EU_INSTR * 0x100), USAGE_FLAG_TIER_4|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Pipes/Instructions", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_EU_PIPES * 0x10000) | (METRIC_GROUP_NAME_ID_EU_INSTR * 0x100), USAGE_FLAG_TIER_4|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -6921,7 +6921,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "EuTernaryFpu0Instruction", "EU FPU0 Ternary Instruction",
             "The percentage of time in which execution units were actively processing ternary instructions on FPU0.",
-            "EU Array/Pipes/Instructions", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_EU_PIPES * 0x10000) | (METRIC_GROUP_NAME_ID_EU_INSTR * 0x100), USAGE_FLAG_TIER_4|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Pipes/Instructions", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_EU_PIPES * 0x10000) | (METRIC_GROUP_NAME_ID_EU_INSTR * 0x100), USAGE_FLAG_TIER_4|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -6935,7 +6935,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "EuTernaryFpu1Instruction", "EU FPU1 Ternary Instruction",
             "The percentage of time in which execution units were actively processing ternary instructions on FPU1.",
-            "EU Array/Pipes/Instructions", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_EU_PIPES * 0x10000) | (METRIC_GROUP_NAME_ID_EU_INSTR * 0x100), USAGE_FLAG_TIER_4|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Pipes/Instructions", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_EU_PIPES * 0x10000) | (METRIC_GROUP_NAME_ID_EU_INSTR * 0x100), USAGE_FLAG_TIER_4|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -6949,7 +6949,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "EuBinaryFpu0Instruction", "EU FPU0 Binary Instruction",
             "The percentage of time in which execution units were actively processing binary instructions on FPU0.",
-            "EU Array/Pipes/Instructions", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_EU_PIPES * 0x10000) | (METRIC_GROUP_NAME_ID_EU_INSTR * 0x100), USAGE_FLAG_TIER_4|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Pipes/Instructions", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_EU_PIPES * 0x10000) | (METRIC_GROUP_NAME_ID_EU_INSTR * 0x100), USAGE_FLAG_TIER_4|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -6963,7 +6963,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "EuBinaryFpu1Instruction", "EU FPU1 Binary Instruction",
             "The percentage of time in which execution units were actively processing binary instructions on FPU1.",
-            "EU Array/Pipes/Instructions", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_EU_PIPES * 0x10000) | (METRIC_GROUP_NAME_ID_EU_INSTR * 0x100), USAGE_FLAG_TIER_4|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Pipes/Instructions", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_EU_PIPES * 0x10000) | (METRIC_GROUP_NAME_ID_EU_INSTR * 0x100), USAGE_FLAG_TIER_4|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -6977,7 +6977,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "EuMoveFpu0Instruction", "EU FPU0 Move Instruction",
             "The percentage of time in which execution units were actively processing move instructions on FPU0.",
-            "EU Array/Pipes/Instructions", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_EU_PIPES * 0x10000) | (METRIC_GROUP_NAME_ID_EU_INSTR * 0x100), USAGE_FLAG_TIER_4|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Pipes/Instructions", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_EU_PIPES * 0x10000) | (METRIC_GROUP_NAME_ID_EU_INSTR * 0x100), USAGE_FLAG_TIER_4|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -6991,7 +6991,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "EuMoveFpu1Instruction", "EU FPU1 Move Instruction",
             "The percentage of time in which execution units were actively processing move instructions on FPU1.",
-            "EU Array/Pipes/Instructions", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_EU_PIPES * 0x10000) | (METRIC_GROUP_NAME_ID_EU_INSTR * 0x100), USAGE_FLAG_TIER_4|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Pipes/Instructions", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_EU_PIPES * 0x10000) | (METRIC_GROUP_NAME_ID_EU_INSTR * 0x100), USAGE_FLAG_TIER_4|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -7005,7 +7005,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "RasterizedPixels", "Rasterized Pixels",
             "The total number of rasterized pixels.",
-            "3D Pipe/Rasterizer", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_WM * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "3D Pipe/Rasterizer", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_WM * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "pixels", 0, 0, HW_UNIT_GPU, availabilityEquation, "Pixel|Fragment,PS|FS,pixel|fragment", "oa.fixed" );
         if( metric )
         {
@@ -7018,7 +7018,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "HiDepthTestFails", "Early Hi-Depth Test Fails",
             "The total number of pixels dropped on early hierarchical depth test.",
-            "3D Pipe/Rasterizer/Hi-Depth Test", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_WM * 0x10000) | (METRIC_GROUP_NAME_ID_HZ * 0x100), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "3D Pipe/Rasterizer/Hi-Depth Test", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_WM * 0x10000) | (METRIC_GROUP_NAME_ID_HZ * 0x100), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "pixels", 0, 0, HW_UNIT_GPU, availabilityEquation, "Pixel|Fragment,PS|FS,pixel|fragment", "oa.fixed" );
         if( metric )
         {
@@ -7031,7 +7031,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "EarlyDepthTestFails", "Early Depth Test Fails",
             "The total number of pixels dropped on early depth test.",
-            "3D Pipe/Rasterizer/Early Depth Test", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_WM * 0x10000) | (METRIC_GROUP_NAME_ID_IZ * 0x100), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "3D Pipe/Rasterizer/Early Depth Test", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_WM * 0x10000) | (METRIC_GROUP_NAME_ID_IZ * 0x100), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "pixels", 0, 0, HW_UNIT_GPU, availabilityEquation, "Pixel|Fragment,PS|FS,pixel|fragment", "oa.fixed" );
         if( metric )
         {
@@ -7044,7 +7044,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "SamplesKilledInPs", "Samples Killed in PS",
             "The total number of samples or pixels dropped in pixel shaders.",
-            "3D Pipe/Pixel Shader", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_PS * 0x10000), USAGE_FLAG_TIER_4|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "3D Pipe/Pixel Shader", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_PS * 0x10000), USAGE_FLAG_TIER_4|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "pixels", 0, 0, HW_UNIT_GPU, availabilityEquation, "Pixel|Fragment,PS|FS,pixel|fragment", "oa.fixed" );
         if( metric )
         {
@@ -7057,7 +7057,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "PixelsFailingPostPsTests", "Pixels Failing Tests",
             "The total number of pixels dropped on post-PS alpha, stencil, or depth tests.",
-            "3D Pipe/Output Merger", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_OM * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "3D Pipe/Output Merger", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_OM * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "pixels", 0, 0, HW_UNIT_GPU, availabilityEquation, "Pixel|Fragment,PS|FS,pixel|fragment", "oa.fixed" );
         if( metric )
         {
@@ -7070,7 +7070,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "SamplesWritten", "Samples Written",
             "The total number of samples or pixels written to all render targets.",
-            "3D Pipe/Output Merger", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_OM * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "3D Pipe/Output Merger", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_OM * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "pixels", 0, 0, HW_UNIT_GPU, availabilityEquation, "Pixel|Fragment,PS|FS,pixel|fragment", "oa.fixed" );
         if( metric )
         {
@@ -7083,7 +7083,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "SamplesBlended", "Samples Blended",
             "The total number of blended samples or pixels written to all render targets.",
-            "3D Pipe/Output Merger", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_OM * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "3D Pipe/Output Merger", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_OM * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "pixels", 0, 0, HW_UNIT_GPU, availabilityEquation, "Pixel|Fragment,PS|FS,pixel|fragment", "oa.fixed" );
         if( metric )
         {
@@ -7096,7 +7096,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "SamplerTexels", "Sampler Texels",
             "The total number of texels seen on input (with 2x2 accuracy) in all sampler units.",
-            "Sampler/Sampler Input", (METRIC_GROUP_NAME_ID_SAMPLER * 0x1000000) | (METRIC_GROUP_NAME_ID_SAMPLER_IN * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "Sampler/Sampler Input", (METRIC_GROUP_NAME_ID_SAMPLER * 0x1000000) | (METRIC_GROUP_NAME_ID_SAMPLER_IN * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "texels", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -7109,7 +7109,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "SamplerTexelMisses", "Sampler Texels Misses",
             "The total number of texels lookups (with 2x2 accuracy) that missed L1 sampler cache.",
-            "Sampler/Sampler Cache", (METRIC_GROUP_NAME_ID_SAMPLER * 0x1000000) | (METRIC_GROUP_NAME_ID_SAMPLER_CACHE * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_BATCH|USAGE_FLAG_FRAME|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "Sampler/Sampler Cache", (METRIC_GROUP_NAME_ID_SAMPLER * 0x1000000) | (METRIC_GROUP_NAME_ID_SAMPLER_CACHE * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_BATCH|USAGE_FLAG_FRAME|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "texels", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -7122,7 +7122,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "SlmBytesRead", "SLM Bytes Read",
             "The total number of GPU memory bytes read from shared local memory.",
-            "L3/Data Port/SLM", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000) | (METRIC_GROUP_NAME_ID_SLM * 0x100), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "L3/Data Port/SLM", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000) | (METRIC_GROUP_NAME_ID_SLM * 0x100), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_THROUGHPUT, RESULT_UINT64, "bytes", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -7136,7 +7136,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "SlmBytesWritten", "SLM Bytes Written",
             "The total number of GPU memory bytes written into shared local memory.",
-            "L3/Data Port/SLM", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000) | (METRIC_GROUP_NAME_ID_SLM * 0x100), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "L3/Data Port/SLM", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000) | (METRIC_GROUP_NAME_ID_SLM * 0x100), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_THROUGHPUT, RESULT_UINT64, "bytes", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -7150,7 +7150,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "ShaderMemoryAccesses", "Shader Memory Accesses",
             "The total number of shader memory accesses to L3.",
-            "L3/Data Port", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "L3/Data Port", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "messages", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -7162,7 +7162,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "ShaderAtomics", "Shader Atomic Memory Accesses",
             "The total number of shader atomic memory accesses.",
-            "L3/Data Port/Atomics", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000) | (METRIC_GROUP_NAME_ID_ATOMICS * 0x100), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "L3/Data Port/Atomics", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000) | (METRIC_GROUP_NAME_ID_ATOMICS * 0x100), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "messages", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -7174,7 +7174,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "L3Accesses", "L3 Accesses",
             "The total number of L3 accesses from all entities.",
-            "L3", (METRIC_GROUP_NAME_ID_L3 * 0x1000000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "L3", (METRIC_GROUP_NAME_ID_L3 * 0x1000000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "messages", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -7187,7 +7187,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "L3Misses", "L3 Misses",
             "The total number of L3 misses.",
-            "L3/TAG", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_L3_TAG * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "L3/TAG", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_L3_TAG * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "messages", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -7199,7 +7199,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "L3ShaderThroughput", "L3 Shader Throughput",
             "The total number of GPU memory bytes transferred between shaders and L3 caches w/o URB.",
-            "L3/Data Port", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000), USAGE_FLAG_TIER_2|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "L3/Data Port", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000), USAGE_FLAG_TIER_2|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_THROUGHPUT, RESULT_UINT64, "bytes", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -7211,7 +7211,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "L3TotalThroughput", "L3 Total Throughput",
             "The total number of GPU memory bytes transferred via L3.",
-            "L3", (METRIC_GROUP_NAME_ID_L3 * 0x1000000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "L3", (METRIC_GROUP_NAME_ID_L3 * 0x1000000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_THROUGHPUT, RESULT_UINT64, "bytes", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -7223,7 +7223,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "ShaderBarriers", "Shader Barrier Messages",
             "The total number of shader barrier messages.",
-            "EU Array/Barrier", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_EU_BARRIER * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Barrier", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_EU_BARRIER * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "messages", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -7237,7 +7237,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         {
             metric = metricSet->AddMetric( "L3Bank00Accesses", "L3 Bank 00 Accesses",
                 "The total number of accesses to L3 Bank 00.",
-                "L3", (METRIC_GROUP_NAME_ID_L3 * 0x1000000), USAGE_FLAG_TIER_4|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+                "L3", (METRIC_GROUP_NAME_ID_L3 * 0x1000000), USAGE_FLAG_TIER_4|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
                 METRIC_TYPE_EVENT, RESULT_UINT64, "messages", 0, 0, HW_UNIT_SLICE, availabilityEquation, NULL, NULL );
             if( metric )
             {
@@ -7253,7 +7253,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         {
             metric = metricSet->AddMetric( "L3Bank01Accesses", "L3 Bank 01 Accesses",
                 "The total number of accesses to L3 Bank 01.",
-                "L3", (METRIC_GROUP_NAME_ID_L3 * 0x1000000), USAGE_FLAG_TIER_4|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+                "L3", (METRIC_GROUP_NAME_ID_L3 * 0x1000000), USAGE_FLAG_TIER_4|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
                 METRIC_TYPE_EVENT, RESULT_UINT64, "messages", 0, 0, HW_UNIT_SLICE, availabilityEquation, NULL, NULL );
             if( metric )
             {
@@ -7269,7 +7269,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         {
             metric = metricSet->AddMetric( "L3Bank02Accesses", "L3 Bank 02 Accesses",
                 "The total number of accesses to L3 Bank 02.",
-                "L3", (METRIC_GROUP_NAME_ID_L3 * 0x1000000), USAGE_FLAG_TIER_4|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+                "L3", (METRIC_GROUP_NAME_ID_L3 * 0x1000000), USAGE_FLAG_TIER_4|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
                 METRIC_TYPE_EVENT, RESULT_UINT64, "messages", 0, 0, HW_UNIT_SLICE, availabilityEquation, NULL, NULL );
             if( metric )
             {
@@ -7285,7 +7285,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         {
             metric = metricSet->AddMetric( "L3Bank03Accesses", "L3 Bank 03 Accesses",
                 "The total number of accesses to L3 Bank 03.",
-                "L3", (METRIC_GROUP_NAME_ID_L3 * 0x1000000), USAGE_FLAG_TIER_4|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+                "L3", (METRIC_GROUP_NAME_ID_L3 * 0x1000000), USAGE_FLAG_TIER_4|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
                 METRIC_TYPE_EVENT, RESULT_UINT64, "messages", 0, 0, HW_UNIT_SLICE, availabilityEquation, NULL, NULL );
             if( metric )
             {
@@ -7301,7 +7301,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         {
             metric = metricSet->AddMetric( "L3Bank10Accesses", "L3 Bank 10 Accesses",
                 "The total number of accesses to L3 Bank 10.",
-                "L3", (METRIC_GROUP_NAME_ID_L3 * 0x1000000), USAGE_FLAG_TIER_4|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+                "L3", (METRIC_GROUP_NAME_ID_L3 * 0x1000000), USAGE_FLAG_TIER_4|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
                 METRIC_TYPE_EVENT, RESULT_UINT64, "messages", 0, 0, HW_UNIT_SLICE, availabilityEquation, NULL, NULL );
             if( metric )
             {
@@ -7317,7 +7317,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         {
             metric = metricSet->AddMetric( "L3Bank11Accesses", "L3 Bank 11 Accesses",
                 "The total number of accesses to L3 Bank 11.",
-                "L3", (METRIC_GROUP_NAME_ID_L3 * 0x1000000), USAGE_FLAG_TIER_4|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+                "L3", (METRIC_GROUP_NAME_ID_L3 * 0x1000000), USAGE_FLAG_TIER_4|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
                 METRIC_TYPE_EVENT, RESULT_UINT64, "messages", 0, 0, HW_UNIT_SLICE, availabilityEquation, NULL, NULL );
             if( metric )
             {
@@ -7333,7 +7333,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         {
             metric = metricSet->AddMetric( "L3Bank12Accesses", "L3 Bank 12 Accesses",
                 "The total number of accesses to L3 Bank 12.",
-                "L3", (METRIC_GROUP_NAME_ID_L3 * 0x1000000), USAGE_FLAG_TIER_4|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+                "L3", (METRIC_GROUP_NAME_ID_L3 * 0x1000000), USAGE_FLAG_TIER_4|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
                 METRIC_TYPE_EVENT, RESULT_UINT64, "messages", 0, 0, HW_UNIT_SLICE, availabilityEquation, NULL, NULL );
             if( metric )
             {
@@ -7349,7 +7349,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         {
             metric = metricSet->AddMetric( "L3Bank13Accesses", "L3 Bank 13 Accesses",
                 "The total number of accesses to L3 Bank 13.",
-                "L3", (METRIC_GROUP_NAME_ID_L3 * 0x1000000), USAGE_FLAG_TIER_4|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+                "L3", (METRIC_GROUP_NAME_ID_L3 * 0x1000000), USAGE_FLAG_TIER_4|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
                 METRIC_TYPE_EVENT, RESULT_UINT64, "messages", 0, 0, HW_UNIT_SLICE, availabilityEquation, NULL, NULL );
             if( metric )
             {
@@ -7365,7 +7365,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         {
             metric = metricSet->AddMetric( "L3Bank00IcAccesses", "L3 Bank 00 IC Accesses",
                 "The total number of accesses to L3 Bank 00 from IC cache.",
-                "L3/IC", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_IC * 0x10000), USAGE_FLAG_TIER_4|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+                "L3/IC", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_IC * 0x10000), USAGE_FLAG_TIER_4|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
                 METRIC_TYPE_EVENT, RESULT_UINT64, "messages", 0, 0, HW_UNIT_SLICE, availabilityEquation, NULL, NULL );
             if( metric )
             {
@@ -7381,7 +7381,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         {
             metric = metricSet->AddMetric( "L3Bank00IcHits", "L3 Bank 00 IC Hits",
                 "The total number of hits in L3 Bank 00 from IC cache.",
-                "L3/IC", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_IC * 0x10000), USAGE_FLAG_TIER_4|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+                "L3/IC", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_IC * 0x10000), USAGE_FLAG_TIER_4|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
                 METRIC_TYPE_EVENT, RESULT_UINT64, "messages", 0, 0, HW_UNIT_SLICE, availabilityEquation, NULL, NULL );
             if( metric )
             {
@@ -7397,7 +7397,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         {
             metric = metricSet->AddMetric( "L3Bank10IcAccesses", "L3 Bank 10 IC Accesses",
                 "The total number of accesses to L3 Bank 10 from IC cache.",
-                "L3/IC", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_IC * 0x10000), USAGE_FLAG_TIER_4|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+                "L3/IC", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_IC * 0x10000), USAGE_FLAG_TIER_4|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
                 METRIC_TYPE_EVENT, RESULT_UINT64, "messages", 0, 0, HW_UNIT_SLICE, availabilityEquation, NULL, NULL );
             if( metric )
             {
@@ -7413,7 +7413,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         {
             metric = metricSet->AddMetric( "L3Bank10IcHits", "L3 Bank 10 IC Hits",
                 "The total number of hits in L3 Bank 10 from IC cache.",
-                "L3/IC", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_IC * 0x10000), USAGE_FLAG_TIER_4|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+                "L3/IC", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_IC * 0x10000), USAGE_FLAG_TIER_4|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
                 METRIC_TYPE_EVENT, RESULT_UINT64, "messages", 0, 0, HW_UNIT_SLICE, availabilityEquation, NULL, NULL );
             if( metric )
             {
@@ -7427,7 +7427,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "GtiL3Throughput", "GTI L3 Throughput",
             "The total number of GPU memory bytes transferred between L3 caches and GTI.",
-            "GTI/L3", (METRIC_GROUP_NAME_ID_GTI * 0x1000000) | (METRIC_GROUP_NAME_ID_L3 * 0x10000), USAGE_FLAG_TIER_2|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "GTI/L3", (METRIC_GROUP_NAME_ID_GTI * 0x1000000) | (METRIC_GROUP_NAME_ID_L3 * 0x10000), USAGE_FLAG_TIER_2|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_THROUGHPUT, RESULT_UINT64, "bytes", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -7441,7 +7441,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "GtiReadThroughput", "GTI Read Throughput",
             "The total number of GPU memory bytes read from GTI.",
-            "GTI", (METRIC_GROUP_NAME_ID_GTI * 0x1000000), USAGE_FLAG_TIER_1|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "GTI", (METRIC_GROUP_NAME_ID_GTI * 0x1000000), USAGE_FLAG_TIER_1|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_THROUGHPUT, RESULT_UINT64, "bytes", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -7455,7 +7455,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "GtiWriteThroughput", "GTI Write Throughput",
             "The total number of GPU memory bytes written to GTI.",
-            "GTI", (METRIC_GROUP_NAME_ID_GTI * 0x1000000), USAGE_FLAG_TIER_1|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "GTI", (METRIC_GROUP_NAME_ID_GTI * 0x1000000), USAGE_FLAG_TIER_1|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_THROUGHPUT, RESULT_UINT64, "bytes", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -7468,7 +7468,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
 
         information = metricSet->AddInformation( "QueryBeginTime", "Query Begin Time",
             "The measurement begin time.",
-            "Report Meta Data", API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "Report Meta Data", API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             INFORMATION_TYPE_TIMESTAMP, "ns", NULL );
         if( information )
         {
@@ -7479,7 +7479,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
 
         information = metricSet->AddInformation( "CoreFrequencyMHz", "GPU Core Frequency",
             "The last core frequency in the measurement.",
-            "Report Meta Data", API_TYPE_OGL|API_TYPE_OGL4_X,
+            "Report Meta Data", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
             INFORMATION_TYPE_VALUE, "MHz", NULL );
         if( information )
         {
@@ -7507,7 +7507,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
 
         information = metricSet->AddInformation( "CoreFrequencyChanged", "Core Frequency Changed",
             "The flag indicating that core frequency has changed.",
-            "Exception", API_TYPE_OGL|API_TYPE_OGL4_X,
+            "Exception", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
             INFORMATION_TYPE_FLAG, NULL, NULL );
         if( information )
         {
@@ -7517,7 +7517,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
 
         information = metricSet->AddInformation( "QuerySplitOccurred", "Query Split Occurred",
             "The flag indicating that query has been split during execution on the GPU.",
-            "Exception", API_TYPE_OGL|API_TYPE_OGL4_X,
+            "Exception", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
             INFORMATION_TYPE_FLAG, NULL, NULL );
         if( information )
         {
@@ -7527,7 +7527,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
 
         information = metricSet->AddInformation( "ReportId", "Query report id",
             "Query report identification number.",
-            "Report Meta Data", API_TYPE_OGL|API_TYPE_OGL4_X,
+            "Report Meta Data", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
             INFORMATION_TYPE_VALUE, NULL, NULL );
         if( information )
         {
@@ -7537,7 +7537,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
 
         information = metricSet->AddInformation( "ReportsCount", "Query reports count",
             "The number of available query reports.",
-            "Report Meta Data", API_TYPE_OGL|API_TYPE_OGL4_X,
+            "Report Meta Data", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
             INFORMATION_TYPE_VALUE, NULL, NULL );
         if( information )
         {
@@ -7547,7 +7547,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
 
         information = metricSet->AddInformation( "OverrunOccured", "Query Overrun Occurred",
             "The flag indicating that Oa buffer has been overran.",
-            "Exception", API_TYPE_OGL|API_TYPE_OGL4_X,
+            "Exception", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
             INFORMATION_TYPE_FLAG, NULL, NULL );
         if( information )
         {
@@ -7690,7 +7690,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
     platformMask = PLATFORM_BDW;
     if( MD_IS_INTERNAL_BUILD || metricsDevice->IsPlatformTypeOf( platformMask ) )
     {
-        metricSet = concurrentGroup->AddMetricSet( "DataPortReadsCoalescing", "Data Port Reads Coalescing Gen8", API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+        metricSet = concurrentGroup->AddMetricSet( "DataPortReadsCoalescing", "Data Port Reads Coalescing Gen8", API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
            GPU_COMPUTE, 256, 536, OA_REPORT_TYPE_256B_A45_NOA16, platformMask );
         MD_CHECK_PTR( metricSet );
         
@@ -7700,7 +7700,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "GpuTime", "GPU Time Elapsed",
             "Time elapsed on the GPU during the measurement.",
-            "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_TIER_1|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_TIER_1|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_DURATION, RESULT_UINT64, "ns", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -7712,7 +7712,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "GpuCoreClocks", "GPU Core Clocks",
             "The total number of GPU core clocks elapsed during the measurement.",
-            "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_TIER_1|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_TIER_1|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "cycles", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -7724,7 +7724,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "AvgGpuCoreFrequencyMHz", "AVG GPU Core Frequency",
             "Average GPU Core Frequency in the measurement.",
-            "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_TIER_1|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_TIER_1|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "MHz", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -7735,7 +7735,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "VsThreads", "VS Threads Dispatched",
             "The total number of vertex shader hardware threads dispatched.",
-            "EU Array/Vertex Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_VS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Vertex Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_VS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "threads", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -7747,7 +7747,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "HsThreads", "HS Threads Dispatched",
             "The total number of hull shader hardware threads dispatched.",
-            "EU Array/Hull Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_HS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Hull Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_HS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "threads", 0, 0, HW_UNIT_GPU, availabilityEquation, "Hull|Control,hull|control,HS|TCS", "oa.fixed" );
         if( metric )
         {
@@ -7759,7 +7759,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "DsThreads", "DS Threads Dispatched",
             "The total number of domain shader hardware threads dispatched.",
-            "EU Array/Domain Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_DS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Domain Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_DS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "threads", 0, 0, HW_UNIT_GPU, availabilityEquation, "Domain|Evaluation,domain|evaluation,DS|TES", "oa.fixed" );
         if( metric )
         {
@@ -7771,7 +7771,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "GsThreads", "GS Threads Dispatched",
             "The total number of geometry shader hardware threads dispatched.",
-            "EU Array/Geometry Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_GS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Geometry Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_GS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "threads", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -7783,7 +7783,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "PsThreads", "PS Threads Dispatched",
             "The total number of pixel shader hardware threads dispatched.",
-            "EU Array/Pixel Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_PS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Pixel Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_PS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "threads", 0, 0, HW_UNIT_GPU, availabilityEquation, "Pixel|Fragment,PS|FS,pixel|fragment", "oa.fixed" );
         if( metric )
         {
@@ -7795,7 +7795,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "CsThreads", "CS Threads Dispatched",
             "The total number of compute shader hardware threads dispatched.",
-            "EU Array/Compute Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_CS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Compute Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_CS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "threads", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -7807,7 +7807,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "EuActive", "EU Active",
             "The percentage of time in which the Execution Units were actively processing.",
-            "EU Array", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000), USAGE_FLAG_TIER_2|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000), USAGE_FLAG_TIER_2|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -7821,7 +7821,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "EuStall", "EU Stall",
             "The percentage of time in which the Execution Units were stalled.",
-            "EU Array", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000), USAGE_FLAG_TIER_2|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000), USAGE_FLAG_TIER_2|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -7833,21 +7833,9 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         }
 
         availabilityEquation = NULL;
-        metric = metricSet->AddMetric( "EuAvgIpcRate", "EU AVG IPC Rate",
-            "The average rate of IPC calculated for 2 FPU pipelines.",
-            "EU Array", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000), USAGE_FLAG_TIER_4|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
-            METRIC_TYPE_RATIO, RESULT_FLOAT, "number", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
-        if( metric )
-        {
-            
-            MD_CHECK_CC( metric->SetNormalizationEquation( "$EuFpuBothActive $Fpu0Active $Fpu1Active UADD $EuFpuBothActive USUB FDIV 1 FADD" ));
-            MD_CHECK_CC( metric->SetMaxValueEquation( "2" ));
-        }
-
-        availabilityEquation = NULL;
         metric = metricSet->AddMetric( "EuFpuBothActive", "EU Both FPU Pipes Active",
             "The percentage of time in which both EU FPU pipelines were actively processing.",
-            "EU Array/Pipes", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_EU_PIPES * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Pipes", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_EU_PIPES * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -7861,7 +7849,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "Fpu0Active", "EU FPU0 Pipe Active",
             "The percentage of time in which EU FPU0 pipeline was actively processing.",
-            "EU Array/Pipes", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_EU_PIPES * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Pipes", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_EU_PIPES * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -7875,7 +7863,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "Fpu1Active", "EU FPU1 Pipe Active",
             "The percentage of time in which EU FPU1 pipeline was actively processing.",
-            "EU Array/Pipes", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_EU_PIPES * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Pipes", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_EU_PIPES * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -7887,9 +7875,21 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         }
 
         availabilityEquation = NULL;
+        metric = metricSet->AddMetric( "EuAvgIpcRate", "EU AVG IPC Rate",
+            "The average rate of IPC calculated for 2 FPU pipelines.",
+            "EU Array", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000), USAGE_FLAG_TIER_4|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            METRIC_TYPE_RATIO, RESULT_FLOAT, "number", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
+        if( metric )
+        {
+            
+            MD_CHECK_CC( metric->SetNormalizationEquation( "$EuFpuBothActive $Fpu0Active $Fpu1Active UADD $EuFpuBothActive USUB FDIV 1 FADD" ));
+            MD_CHECK_CC( metric->SetMaxValueEquation( "2" ));
+        }
+
+        availabilityEquation = NULL;
         metric = metricSet->AddMetric( "EuSendActive", "EU Send Pipe Active",
             "The percentage of time in which EU send pipeline was actively processing.",
-            "EU Array/Pipes", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_EU_PIPES * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Pipes", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_EU_PIPES * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -7903,7 +7903,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "EuThreadOccupancy", "EU Thread Occupancy",
             "The percentage of time in which hardware threads occupied EUs.",
-            "EU Array", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000), USAGE_FLAG_TIER_2|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000), USAGE_FLAG_TIER_2|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -7917,7 +7917,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "SamplerTexels", "Sampler Texels",
             "The total number of texels seen on input (with 2x2 accuracy) in all sampler units.",
-            "Sampler/Sampler Input", (METRIC_GROUP_NAME_ID_SAMPLER * 0x1000000) | (METRIC_GROUP_NAME_ID_SAMPLER_IN * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "Sampler/Sampler Input", (METRIC_GROUP_NAME_ID_SAMPLER * 0x1000000) | (METRIC_GROUP_NAME_ID_SAMPLER_IN * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "texels", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -7930,7 +7930,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "SamplerTexelMisses", "Sampler Texels Misses",
             "The total number of texels lookups (with 2x2 accuracy) that missed L1 sampler cache.",
-            "Sampler/Sampler Cache", (METRIC_GROUP_NAME_ID_SAMPLER * 0x1000000) | (METRIC_GROUP_NAME_ID_SAMPLER_CACHE * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_BATCH|USAGE_FLAG_FRAME|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "Sampler/Sampler Cache", (METRIC_GROUP_NAME_ID_SAMPLER * 0x1000000) | (METRIC_GROUP_NAME_ID_SAMPLER_CACHE * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_BATCH|USAGE_FLAG_FRAME|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "texels", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -7943,7 +7943,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "SlmBytesRead", "SLM Bytes Read",
             "The total number of GPU memory bytes read from shared local memory.",
-            "L3/Data Port/SLM", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000) | (METRIC_GROUP_NAME_ID_SLM * 0x100), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "L3/Data Port/SLM", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000) | (METRIC_GROUP_NAME_ID_SLM * 0x100), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_THROUGHPUT, RESULT_UINT64, "bytes", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -7957,7 +7957,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "SlmBytesWritten", "SLM Bytes Written",
             "The total number of GPU memory bytes written into shared local memory.",
-            "L3/Data Port/SLM", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000) | (METRIC_GROUP_NAME_ID_SLM * 0x100), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "L3/Data Port/SLM", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000) | (METRIC_GROUP_NAME_ID_SLM * 0x100), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_THROUGHPUT, RESULT_UINT64, "bytes", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -7971,7 +7971,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "ShaderMemoryAccesses", "Shader Memory Accesses",
             "The total number of shader memory accesses to L3.",
-            "L3/Data Port", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "L3/Data Port", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "messages", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -7983,7 +7983,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "ShaderAtomics", "Shader Atomic Memory Accesses",
             "The total number of shader atomic memory accesses.",
-            "L3/Data Port/Atomics", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000) | (METRIC_GROUP_NAME_ID_ATOMICS * 0x100), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "L3/Data Port/Atomics", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000) | (METRIC_GROUP_NAME_ID_ATOMICS * 0x100), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "messages", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -7995,7 +7995,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "L3ShaderThroughput", "L3 Shader Throughput",
             "The total number of GPU memory bytes transferred between shaders and L3 caches w/o URB.",
-            "L3/Data Port", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000), USAGE_FLAG_TIER_2|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "L3/Data Port", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000), USAGE_FLAG_TIER_2|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_THROUGHPUT, RESULT_UINT64, "bytes", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -8007,7 +8007,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "ShaderBarriers", "Shader Barrier Messages",
             "The total number of shader barrier messages.",
-            "EU Array/Barrier", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_EU_BARRIER * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Barrier", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_EU_BARRIER * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "messages", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -8019,7 +8019,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "EuHdc0Reads32B", "EU to Data Port 0 Reads 32",
             "The subslice 0 EU data reads from Data Port with 32B per message.",
-            "L3/Data Port", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000), USAGE_FLAG_TIER_4|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "L3/Data Port", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000), USAGE_FLAG_TIER_4|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "messages", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -8031,7 +8031,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "EuHdc0Reads64B", "EU to Data Port 0 Reads 64",
             "The subslice 0 EU data reads from Data Port with 64B per message.",
-            "L3/Data Port", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000), USAGE_FLAG_TIER_4|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "L3/Data Port", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000), USAGE_FLAG_TIER_4|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "messages", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -8043,7 +8043,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "EuHdc0Reads128B", "EU to Data Port 0 Reads 128",
             "The subslice 0 EU data reads from Data Port with 128B per message.",
-            "L3/Data Port", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000), USAGE_FLAG_TIER_4|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "L3/Data Port", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000), USAGE_FLAG_TIER_4|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "messages", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -8055,7 +8055,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "EuHdc0Reads256B", "EU to Data Port 0 Reads 256",
             "The subslice 0 EU data reads from Data Port with 256B per message.",
-            "L3/Data Port", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000), USAGE_FLAG_TIER_4|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "L3/Data Port", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000), USAGE_FLAG_TIER_4|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "messages", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -8067,7 +8067,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "Hdc0L3DataReads", "Data Port 0 to L3 Data Reads",
             "The subslice 0 Data Port data and constant reads from L3 cache.",
-            "L3/Data Port", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000), USAGE_FLAG_TIER_4|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "L3/Data Port", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000), USAGE_FLAG_TIER_4|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "messages", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -8079,7 +8079,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "Hdc0L3DataWrites", "Data Port 0 to L3 Data Writes",
             "The subslice 0 Data Port data writes to L3 cache.",
-            "L3/Data Port", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000), USAGE_FLAG_TIER_4|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "L3/Data Port", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000), USAGE_FLAG_TIER_4|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "messages", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -8091,7 +8091,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "Hdc0L3Reads", "All Data Port 0 Reads from L3",
             "The subslice 0 Data Port reads from L3 cache.",
-            "L3/Data Port", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000), USAGE_FLAG_TIER_4|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "L3/Data Port", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000), USAGE_FLAG_TIER_4|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "messages", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -8103,7 +8103,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "Hdc0L3Writes", "All Data Port 0 Writes to L3",
             "The subslice 0 Data Port writes to L3 cache.",
-            "L3/Data Port", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000), USAGE_FLAG_TIER_4|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "L3/Data Port", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000), USAGE_FLAG_TIER_4|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "messages", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -8115,7 +8115,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "EuBytesReadPerCacheLine", "EuBytesReadPerCacheLine",
             "Average EU bytes read per L3 cache line.",
-            "L3/Data Port", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000), USAGE_FLAG_TIER_2|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "L3/Data Port", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000), USAGE_FLAG_TIER_2|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_RATIO, RESULT_FLOAT, "EU bytes per L3 cache line", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -8126,7 +8126,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "EuDataReadsPerCacheLine", "EuDataReadsPerCacheLine",
             "Coalescing ratio of EU read requests to L3 cache lines.",
-            "L3/Data Port", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000), USAGE_FLAG_TIER_2|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "L3/Data Port", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000), USAGE_FLAG_TIER_2|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_RATIO, RESULT_FLOAT, "utilization", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -8136,7 +8136,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
 
         information = metricSet->AddInformation( "QueryBeginTime", "Query Begin Time",
             "The measurement begin time.",
-            "Report Meta Data", API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "Report Meta Data", API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             INFORMATION_TYPE_TIMESTAMP, "ns", NULL );
         if( information )
         {
@@ -8147,7 +8147,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
 
         information = metricSet->AddInformation( "CoreFrequencyMHz", "GPU Core Frequency",
             "The last core frequency in the measurement.",
-            "Report Meta Data", API_TYPE_OGL|API_TYPE_OGL4_X,
+            "Report Meta Data", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
             INFORMATION_TYPE_VALUE, "MHz", NULL );
         if( information )
         {
@@ -8175,7 +8175,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
 
         information = metricSet->AddInformation( "CoreFrequencyChanged", "Core Frequency Changed",
             "The flag indicating that core frequency has changed.",
-            "Exception", API_TYPE_OGL|API_TYPE_OGL4_X,
+            "Exception", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
             INFORMATION_TYPE_FLAG, NULL, NULL );
         if( information )
         {
@@ -8185,7 +8185,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
 
         information = metricSet->AddInformation( "QuerySplitOccurred", "Query Split Occurred",
             "The flag indicating that query has been split during execution on the GPU.",
-            "Exception", API_TYPE_OGL|API_TYPE_OGL4_X,
+            "Exception", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
             INFORMATION_TYPE_FLAG, NULL, NULL );
         if( information )
         {
@@ -8195,7 +8195,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
 
         information = metricSet->AddInformation( "ReportId", "Query report id",
             "Query report identification number.",
-            "Report Meta Data", API_TYPE_OGL|API_TYPE_OGL4_X,
+            "Report Meta Data", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
             INFORMATION_TYPE_VALUE, NULL, NULL );
         if( information )
         {
@@ -8205,7 +8205,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
 
         information = metricSet->AddInformation( "ReportsCount", "Query reports count",
             "The number of available query reports.",
-            "Report Meta Data", API_TYPE_OGL|API_TYPE_OGL4_X,
+            "Report Meta Data", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
             INFORMATION_TYPE_VALUE, NULL, NULL );
         if( information )
         {
@@ -8215,7 +8215,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
 
         information = metricSet->AddInformation( "OverrunOccured", "Query Overrun Occurred",
             "The flag indicating that Oa buffer has been overran.",
-            "Exception", API_TYPE_OGL|API_TYPE_OGL4_X,
+            "Exception", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
             INFORMATION_TYPE_FLAG, NULL, NULL );
         if( information )
         {
@@ -8381,7 +8381,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
     platformMask = PLATFORM_BDW;
     if( MD_IS_INTERNAL_BUILD || metricsDevice->IsPlatformTypeOf( platformMask ) )
     {
-        metricSet = concurrentGroup->AddMetricSet( "DataPortWritesCoalescing", "Data Port Writes Coalescing Gen8", API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+        metricSet = concurrentGroup->AddMetricSet( "DataPortWritesCoalescing", "Data Port Writes Coalescing Gen8", API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
            GPU_COMPUTE, 256, 536, OA_REPORT_TYPE_256B_A45_NOA16, platformMask );
         MD_CHECK_PTR( metricSet );
         
@@ -8391,7 +8391,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "GpuTime", "GPU Time Elapsed",
             "Time elapsed on the GPU during the measurement.",
-            "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_TIER_1|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_TIER_1|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_DURATION, RESULT_UINT64, "ns", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -8403,7 +8403,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "GpuCoreClocks", "GPU Core Clocks",
             "The total number of GPU core clocks elapsed during the measurement.",
-            "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_TIER_1|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_TIER_1|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "cycles", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -8415,7 +8415,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "AvgGpuCoreFrequencyMHz", "AVG GPU Core Frequency",
             "Average GPU Core Frequency in the measurement.",
-            "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_TIER_1|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_TIER_1|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "MHz", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -8426,7 +8426,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "VsThreads", "VS Threads Dispatched",
             "The total number of vertex shader hardware threads dispatched.",
-            "EU Array/Vertex Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_VS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Vertex Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_VS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "threads", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -8438,7 +8438,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "HsThreads", "HS Threads Dispatched",
             "The total number of hull shader hardware threads dispatched.",
-            "EU Array/Hull Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_HS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Hull Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_HS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "threads", 0, 0, HW_UNIT_GPU, availabilityEquation, "Hull|Control,hull|control,HS|TCS", "oa.fixed" );
         if( metric )
         {
@@ -8450,7 +8450,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "DsThreads", "DS Threads Dispatched",
             "The total number of domain shader hardware threads dispatched.",
-            "EU Array/Domain Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_DS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Domain Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_DS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "threads", 0, 0, HW_UNIT_GPU, availabilityEquation, "Domain|Evaluation,domain|evaluation,DS|TES", "oa.fixed" );
         if( metric )
         {
@@ -8462,7 +8462,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "GsThreads", "GS Threads Dispatched",
             "The total number of geometry shader hardware threads dispatched.",
-            "EU Array/Geometry Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_GS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Geometry Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_GS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "threads", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -8474,7 +8474,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "PsThreads", "PS Threads Dispatched",
             "The total number of pixel shader hardware threads dispatched.",
-            "EU Array/Pixel Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_PS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Pixel Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_PS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "threads", 0, 0, HW_UNIT_GPU, availabilityEquation, "Pixel|Fragment,PS|FS,pixel|fragment", "oa.fixed" );
         if( metric )
         {
@@ -8486,7 +8486,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "CsThreads", "CS Threads Dispatched",
             "The total number of compute shader hardware threads dispatched.",
-            "EU Array/Compute Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_CS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Compute Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_CS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "threads", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -8498,7 +8498,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "EuActive", "EU Active",
             "The percentage of time in which the Execution Units were actively processing.",
-            "EU Array", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000), USAGE_FLAG_TIER_2|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000), USAGE_FLAG_TIER_2|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -8512,7 +8512,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "EuStall", "EU Stall",
             "The percentage of time in which the Execution Units were stalled.",
-            "EU Array", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000), USAGE_FLAG_TIER_2|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000), USAGE_FLAG_TIER_2|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -8524,21 +8524,9 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         }
 
         availabilityEquation = NULL;
-        metric = metricSet->AddMetric( "EuAvgIpcRate", "EU AVG IPC Rate",
-            "The average rate of IPC calculated for 2 FPU pipelines.",
-            "EU Array", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000), USAGE_FLAG_TIER_4|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
-            METRIC_TYPE_RATIO, RESULT_FLOAT, "number", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
-        if( metric )
-        {
-            
-            MD_CHECK_CC( metric->SetNormalizationEquation( "$EuFpuBothActive $Fpu0Active $Fpu1Active UADD $EuFpuBothActive USUB FDIV 1 FADD" ));
-            MD_CHECK_CC( metric->SetMaxValueEquation( "2" ));
-        }
-
-        availabilityEquation = NULL;
         metric = metricSet->AddMetric( "EuFpuBothActive", "EU Both FPU Pipes Active",
             "The percentage of time in which both EU FPU pipelines were actively processing.",
-            "EU Array/Pipes", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_EU_PIPES * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Pipes", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_EU_PIPES * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -8552,7 +8540,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "Fpu0Active", "EU FPU0 Pipe Active",
             "The percentage of time in which EU FPU0 pipeline was actively processing.",
-            "EU Array/Pipes", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_EU_PIPES * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Pipes", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_EU_PIPES * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -8566,7 +8554,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "Fpu1Active", "EU FPU1 Pipe Active",
             "The percentage of time in which EU FPU1 pipeline was actively processing.",
-            "EU Array/Pipes", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_EU_PIPES * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Pipes", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_EU_PIPES * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -8578,9 +8566,21 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         }
 
         availabilityEquation = NULL;
+        metric = metricSet->AddMetric( "EuAvgIpcRate", "EU AVG IPC Rate",
+            "The average rate of IPC calculated for 2 FPU pipelines.",
+            "EU Array", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000), USAGE_FLAG_TIER_4|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            METRIC_TYPE_RATIO, RESULT_FLOAT, "number", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
+        if( metric )
+        {
+            
+            MD_CHECK_CC( metric->SetNormalizationEquation( "$EuFpuBothActive $Fpu0Active $Fpu1Active UADD $EuFpuBothActive USUB FDIV 1 FADD" ));
+            MD_CHECK_CC( metric->SetMaxValueEquation( "2" ));
+        }
+
+        availabilityEquation = NULL;
         metric = metricSet->AddMetric( "EuSendActive", "EU Send Pipe Active",
             "The percentage of time in which EU send pipeline was actively processing.",
-            "EU Array/Pipes", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_EU_PIPES * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Pipes", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_EU_PIPES * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -8594,7 +8594,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "EuThreadOccupancy", "EU Thread Occupancy",
             "The percentage of time in which hardware threads occupied EUs.",
-            "EU Array", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000), USAGE_FLAG_TIER_2|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000), USAGE_FLAG_TIER_2|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -8608,7 +8608,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "SamplerTexels", "Sampler Texels",
             "The total number of texels seen on input (with 2x2 accuracy) in all sampler units.",
-            "Sampler/Sampler Input", (METRIC_GROUP_NAME_ID_SAMPLER * 0x1000000) | (METRIC_GROUP_NAME_ID_SAMPLER_IN * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_BATCH|USAGE_FLAG_FRAME|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "Sampler/Sampler Input", (METRIC_GROUP_NAME_ID_SAMPLER * 0x1000000) | (METRIC_GROUP_NAME_ID_SAMPLER_IN * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_BATCH|USAGE_FLAG_FRAME|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "texels", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -8621,7 +8621,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "SamplerTexelMisses", "Sampler Texels Misses",
             "The total number of texels lookups (with 2x2 accuracy) that missed L1 sampler cache.",
-            "Sampler/Sampler Cache", (METRIC_GROUP_NAME_ID_SAMPLER * 0x1000000) | (METRIC_GROUP_NAME_ID_SAMPLER_CACHE * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_BATCH|USAGE_FLAG_FRAME|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "Sampler/Sampler Cache", (METRIC_GROUP_NAME_ID_SAMPLER * 0x1000000) | (METRIC_GROUP_NAME_ID_SAMPLER_CACHE * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_BATCH|USAGE_FLAG_FRAME|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "texels", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -8634,7 +8634,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "SlmBytesRead", "SLM Bytes Read",
             "The total number of GPU memory bytes read from shared local memory.",
-            "L3/Data Port/SLM", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000) | (METRIC_GROUP_NAME_ID_SLM * 0x100), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "L3/Data Port/SLM", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000) | (METRIC_GROUP_NAME_ID_SLM * 0x100), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_THROUGHPUT, RESULT_UINT64, "bytes", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -8648,7 +8648,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "SlmBytesWritten", "SLM Bytes Written",
             "The total number of GPU memory bytes written into shared local memory.",
-            "L3/Data Port/SLM", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000) | (METRIC_GROUP_NAME_ID_SLM * 0x100), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "L3/Data Port/SLM", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000) | (METRIC_GROUP_NAME_ID_SLM * 0x100), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_THROUGHPUT, RESULT_UINT64, "bytes", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -8662,7 +8662,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "ShaderMemoryAccesses", "Shader Memory Accesses",
             "The total number of shader memory accesses to L3.",
-            "L3/Data Port", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "L3/Data Port", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "messages", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -8674,7 +8674,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "ShaderAtomics", "Shader Atomic Memory Accesses",
             "The total number of shader atomic memory accesses.",
-            "L3/Data Port/Atomics", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000) | (METRIC_GROUP_NAME_ID_ATOMICS * 0x100), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "L3/Data Port/Atomics", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000) | (METRIC_GROUP_NAME_ID_ATOMICS * 0x100), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "messages", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -8686,7 +8686,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "L3ShaderThroughput", "L3 Shader Throughput",
             "The total number of GPU memory bytes transferred between shaders and L3 caches w/o URB.",
-            "L3/Data Port", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000), USAGE_FLAG_TIER_2|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "L3/Data Port", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000), USAGE_FLAG_TIER_2|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_THROUGHPUT, RESULT_UINT64, "bytes", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -8698,7 +8698,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "ShaderBarriers", "Shader Barrier Messages",
             "The total number of shader barrier messages.",
-            "EU Array/Barrier", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_EU_BARRIER * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Barrier", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_EU_BARRIER * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "messages", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -8710,7 +8710,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "EuHdc0Writes32B", "EU to Data Port 0 Writes 32B",
             "The subslice 0 EU data writes to Data Port with 32B per message.",
-            "L3/Data Port", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "L3/Data Port", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "messages", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -8722,7 +8722,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "EuHdc0Writes64B", "EU to Data Port 0 Writes 64B",
             "The subslice 0 EU data writes to Data Port with 64B per message.",
-            "L3/Data Port", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "L3/Data Port", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "messages", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -8734,7 +8734,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "EuHdc0Writes96B", "EU to Data Port 0 Writes 64B",
             "The subslice 0 EU data writes to Data Port with 64B per message.",
-            "L3/Data Port", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "L3/Data Port", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "messages", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -8747,7 +8747,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "EuHdc0Writes128B", "EU to Data Port 0 Writes 128",
             "The subslice 0 EU data writes to Data Port with 128B per message.",
-            "L3/Data Port", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "L3/Data Port", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "messages", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -8760,7 +8760,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "EuHdc0Writes192B", "EU to Data Port 0 Writes 128",
             "The subslice 0 EU data simd16 writes to Data Port with 192B per message.",
-            "L3/Data Port", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "L3/Data Port", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "messages", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -8773,7 +8773,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "EuHdc0Writes128BSimd16", "EU to Data Port 0 Writes 64B",
             "The subslice 0 EU data simd16 writes to Data Port with 128B per message.",
-            "L3/Data Port", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "L3/Data Port", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "messages", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -8785,7 +8785,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "EuHdc0Writes256BSimd16", "EU to Data Port 0 Writes 256B",
             "The subslice 0 EU data simd16 writes to Data Port with 256B per message.",
-            "L3/Data Port", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "L3/Data Port", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "messages", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -8798,7 +8798,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "Hdc0L3DataReads", "Data Port 0 to L3 Data Reads",
             "The subslice 0 Data Port data and constant reads from L3 cache.",
-            "L3/Data Port", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "L3/Data Port", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "messages", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -8810,7 +8810,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "Hdc0L3DataWrites", "Data Port 0 to L3 Data Writes",
             "The subslice 0 Data Port data writes to L3 cache.",
-            "L3/Data Port", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "L3/Data Port", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "messages", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -8822,7 +8822,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "Hdc0L3Reads", "All Data Port 0 Reads from L3",
             "The subslice 0 Data Port reads from L3 cache.",
-            "L3/Data Port", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "L3/Data Port", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "messages", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -8834,7 +8834,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "Hdc0L3Writes", "All Data Port 0 Writes to L3",
             "The subslice 0 Data Port writes to L3 cache.",
-            "L3/Data Port", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "L3/Data Port", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "messages", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -8846,7 +8846,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "EuBytesWrittenPerCacheLine", "EuBytesWrittenPerCacheLine",
             "Average EU bytes written per L3 cache line.",
-            "L3/Data Port", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000), USAGE_FLAG_TIER_2|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "L3/Data Port", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000), USAGE_FLAG_TIER_2|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_RATIO, RESULT_FLOAT, "EU bytes per L3 cache line", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -8857,7 +8857,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "EuDataWritesPerCacheLine", "EuDataWritesPerCacheLine",
             "Coalescing ratio of EU write requests to L3 cache lines.",
-            "L3/Data Port", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000), USAGE_FLAG_TIER_2|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "L3/Data Port", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000), USAGE_FLAG_TIER_2|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_RATIO, RESULT_FLOAT, "utilization", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -8867,7 +8867,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
 
         information = metricSet->AddInformation( "QueryBeginTime", "Query Begin Time",
             "The measurement begin time.",
-            "Report Meta Data", API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "Report Meta Data", API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             INFORMATION_TYPE_TIMESTAMP, "ns", NULL );
         if( information )
         {
@@ -8878,7 +8878,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
 
         information = metricSet->AddInformation( "CoreFrequencyMHz", "GPU Core Frequency",
             "The last core frequency in the measurement.",
-            "Report Meta Data", API_TYPE_OGL|API_TYPE_OGL4_X,
+            "Report Meta Data", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
             INFORMATION_TYPE_VALUE, "MHz", NULL );
         if( information )
         {
@@ -8906,7 +8906,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
 
         information = metricSet->AddInformation( "CoreFrequencyChanged", "Core Frequency Changed",
             "The flag indicating that core frequency has changed.",
-            "Exception", API_TYPE_OGL|API_TYPE_OGL4_X,
+            "Exception", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
             INFORMATION_TYPE_FLAG, NULL, NULL );
         if( information )
         {
@@ -8916,7 +8916,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
 
         information = metricSet->AddInformation( "QuerySplitOccurred", "Query Split Occurred",
             "The flag indicating that query has been split during execution on the GPU.",
-            "Exception", API_TYPE_OGL|API_TYPE_OGL4_X,
+            "Exception", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
             INFORMATION_TYPE_FLAG, NULL, NULL );
         if( information )
         {
@@ -8926,7 +8926,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
 
         information = metricSet->AddInformation( "ReportId", "Query report id",
             "Query report identification number.",
-            "Report Meta Data", API_TYPE_OGL|API_TYPE_OGL4_X,
+            "Report Meta Data", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
             INFORMATION_TYPE_VALUE, NULL, NULL );
         if( information )
         {
@@ -8936,7 +8936,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
 
         information = metricSet->AddInformation( "ReportsCount", "Query reports count",
             "The number of available query reports.",
-            "Report Meta Data", API_TYPE_OGL|API_TYPE_OGL4_X,
+            "Report Meta Data", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
             INFORMATION_TYPE_VALUE, NULL, NULL );
         if( information )
         {
@@ -8946,7 +8946,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
 
         information = metricSet->AddInformation( "OverrunOccured", "Query Overrun Occurred",
             "The flag indicating that Oa buffer has been overran.",
-            "Exception", API_TYPE_OGL|API_TYPE_OGL4_X,
+            "Exception", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
             INFORMATION_TYPE_FLAG, NULL, NULL );
         if( information )
         {
@@ -9108,7 +9108,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
     platformMask = PLATFORM_BDW;
     if( MD_IS_INTERNAL_BUILD || metricsDevice->IsPlatformTypeOf( platformMask ) )
     {
-        metricSet = concurrentGroup->AddMetricSet( "HDCAndSF", "Metric set HDCAndSF", API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+        metricSet = concurrentGroup->AddMetricSet( "HDCAndSF", "Metric set HDCAndSF", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
            GPU_RENDER|GPU_COMPUTE, 256, 536, OA_REPORT_TYPE_256B_A45_NOA16, platformMask );
         MD_CHECK_PTR( metricSet );
         
@@ -9118,7 +9118,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "GpuTime", "GPU Time Elapsed",
             "Time elapsed on the GPU during the measurement.",
-            "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_TIER_1|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_TIER_1|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_DURATION, RESULT_UINT64, "ns", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -9130,7 +9130,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "GpuCoreClocks", "GPU Core Clocks",
             "The total number of GPU core clocks elapsed during the measurement.",
-            "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_TIER_1|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_TIER_1|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "cycles", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -9142,7 +9142,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "AvgGpuCoreFrequencyMHz", "AVG GPU Core Frequency",
             "Average GPU Core Frequency in the measurement.",
-            "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_TIER_1|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_TIER_1|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "MHz", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -9153,7 +9153,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "GpuBusy", "GPU Busy",
             "The percentage of time in which the GPU has been processing GPU commands.",
-            "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_TIER_1|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_TIER_1|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -9167,7 +9167,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "VsThreads", "VS Threads Dispatched",
             "The total number of vertex shader hardware threads dispatched.",
-            "EU Array/Vertex Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_VS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Vertex Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_VS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "threads", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -9179,7 +9179,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "HsThreads", "HS Threads Dispatched",
             "The total number of hull shader hardware threads dispatched.",
-            "EU Array/Hull Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_HS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Hull Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_HS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "threads", 0, 0, HW_UNIT_GPU, availabilityEquation, "Hull|Control,hull|control,HS|TCS", "oa.fixed" );
         if( metric )
         {
@@ -9191,7 +9191,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "DsThreads", "DS Threads Dispatched",
             "The total number of domain shader hardware threads dispatched.",
-            "EU Array/Domain Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_DS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Domain Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_DS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "threads", 0, 0, HW_UNIT_GPU, availabilityEquation, "Domain|Evaluation,domain|evaluation,DS|TES", "oa.fixed" );
         if( metric )
         {
@@ -9203,7 +9203,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "GsThreads", "GS Threads Dispatched",
             "The total number of geometry shader hardware threads dispatched.",
-            "EU Array/Geometry Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_GS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Geometry Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_GS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "threads", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -9215,7 +9215,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "PsThreads", "PS Threads Dispatched",
             "The total number of pixel shader hardware threads dispatched.",
-            "EU Array/Pixel Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_PS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Pixel Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_PS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "threads", 0, 0, HW_UNIT_GPU, availabilityEquation, "Pixel|Fragment,PS|FS,pixel|fragment", "oa.fixed" );
         if( metric )
         {
@@ -9227,7 +9227,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "CsThreads", "CS Threads Dispatched",
             "The total number of compute shader hardware threads dispatched.",
-            "EU Array/Compute Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_CS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Compute Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_CS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "threads", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -9239,7 +9239,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "EuActive", "EU Active",
             "The percentage of time in which the Execution Units were actively processing.",
-            "EU Array", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000), USAGE_FLAG_TIER_2|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000), USAGE_FLAG_TIER_2|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -9253,7 +9253,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "EuStall", "EU Stall",
             "The percentage of time in which the Execution Units were stalled.",
-            "EU Array", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000), USAGE_FLAG_TIER_2|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000), USAGE_FLAG_TIER_2|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -9267,7 +9267,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "EuFpuBothActive", "EU Both FPU Pipes Active",
             "The percentage of time in which both EU FPU pipelines were actively processing.",
-            "EU Array/Pipes", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_EU_PIPES * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Pipes", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_EU_PIPES * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -9281,7 +9281,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "VsFpu0Active", "VS FPU0 Pipe Active",
             "The percentage of time in which EU FPU0 pipeline was actively processing a vertex shader instruction.",
-            "EU Array/Vertex Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_VS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Vertex Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_VS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -9295,7 +9295,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "VsFpu1Active", "VS FPU1 Pipe Active",
             "The percentage of time in which EU FPU1 pipeline was actively processing a vertex shader instruction.",
-            "EU Array/Vertex Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_VS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Vertex Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_VS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -9309,7 +9309,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "VsSendActive", "VS Send Pipe Active",
             "The percentage of time in which EU send pipeline was actively processing a vertex shader instruction.",
-            "EU Array/Vertex Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_VS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Vertex Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_VS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -9323,7 +9323,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "PsFpu0Active", "PS FPU0 Pipe Active",
             "The percentage of time in which EU FPU0 pipeline was actively processing a pixel shader instruction.",
-            "EU Array/Pixel Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_PS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Pixel Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_PS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, "Pixel|Fragment,PS|FS,pixel|fragment", NULL );
         if( metric )
         {
@@ -9337,7 +9337,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "PsFpu1Active", "PS FPU1 Pipe Active",
             "The percentage of time in which EU FPU1 pipeline was actively processing a pixel shader instruction.",
-            "EU Array/Pixel Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_PS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Pixel Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_PS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, "Pixel|Fragment,PS|FS,pixel|fragment", NULL );
         if( metric )
         {
@@ -9351,7 +9351,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "PsSendActive", "PS Send Pipeline Active",
             "The percentage of time in which EU send pipeline was actively processing a pixel shader instruction.",
-            "EU Array/Pixel Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_PS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Pixel Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_PS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, "Pixel|Fragment,PS|FS,pixel|fragment", NULL );
         if( metric )
         {
@@ -9365,7 +9365,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "PsEuBothFpuActive", "PS Both FPU Active",
             "The percentage of time in which pixel shaders were processed actively on the both FPUs.",
-            "3D Pipe/Pixel Shader", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_PS * 0x10000), USAGE_FLAG_TIER_4|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "3D Pipe/Pixel Shader", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_PS * 0x10000), USAGE_FLAG_TIER_4|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, "Pixel|Fragment,PS|FS,pixel|fragment", NULL );
         if( metric )
         {
@@ -9379,7 +9379,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "RasterizedPixels", "Rasterized Pixels",
             "The total number of rasterized pixels.",
-            "3D Pipe/Rasterizer", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_WM * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "3D Pipe/Rasterizer", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_WM * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "pixels", 0, 0, HW_UNIT_GPU, availabilityEquation, "Pixel|Fragment,PS|FS,pixel|fragment", "oa.fixed" );
         if( metric )
         {
@@ -9392,7 +9392,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "HiDepthTestFails", "Early Hi-Depth Test Fails",
             "The total number of pixels dropped on early hierarchical depth test.",
-            "3D Pipe/Rasterizer/Hi-Depth Test", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_WM * 0x10000) | (METRIC_GROUP_NAME_ID_HZ * 0x100), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "3D Pipe/Rasterizer/Hi-Depth Test", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_WM * 0x10000) | (METRIC_GROUP_NAME_ID_HZ * 0x100), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "pixels", 0, 0, HW_UNIT_GPU, availabilityEquation, "Pixel|Fragment,PS|FS,pixel|fragment", "oa.fixed" );
         if( metric )
         {
@@ -9405,7 +9405,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "EarlyDepthTestFails", "Early Depth Test Fails",
             "The total number of pixels dropped on early depth test.",
-            "3D Pipe/Rasterizer/Early Depth Test", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_WM * 0x10000) | (METRIC_GROUP_NAME_ID_IZ * 0x100), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "3D Pipe/Rasterizer/Early Depth Test", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_WM * 0x10000) | (METRIC_GROUP_NAME_ID_IZ * 0x100), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "pixels", 0, 0, HW_UNIT_GPU, availabilityEquation, "Pixel|Fragment,PS|FS,pixel|fragment", "oa.fixed" );
         if( metric )
         {
@@ -9418,7 +9418,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "SamplesKilledInPs", "Samples Killed in PS",
             "The total number of samples or pixels dropped in pixel shaders.",
-            "3D Pipe/Pixel Shader", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_PS * 0x10000), USAGE_FLAG_TIER_4|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "3D Pipe/Pixel Shader", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_PS * 0x10000), USAGE_FLAG_TIER_4|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "pixels", 0, 0, HW_UNIT_GPU, availabilityEquation, "Pixel|Fragment,PS|FS,pixel|fragment", "oa.fixed" );
         if( metric )
         {
@@ -9431,7 +9431,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "PixelsFailingPostPsTests", "Pixels Failing Tests",
             "The total number of pixels dropped on post-PS alpha, stencil, or depth tests.",
-            "3D Pipe/Output Merger", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_OM * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "3D Pipe/Output Merger", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_OM * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "pixels", 0, 0, HW_UNIT_GPU, availabilityEquation, "Pixel|Fragment,PS|FS,pixel|fragment", "oa.fixed" );
         if( metric )
         {
@@ -9444,7 +9444,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "SamplesWritten", "Samples Written",
             "The total number of samples or pixels written to all render targets.",
-            "3D Pipe/Output Merger", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_OM * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "3D Pipe/Output Merger", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_OM * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "pixels", 0, 0, HW_UNIT_GPU, availabilityEquation, "Pixel|Fragment,PS|FS,pixel|fragment", "oa.fixed" );
         if( metric )
         {
@@ -9457,7 +9457,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "SamplesBlended", "Samples Blended",
             "The total number of blended samples or pixels written to all render targets.",
-            "3D Pipe/Output Merger", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_OM * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "3D Pipe/Output Merger", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_OM * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "pixels", 0, 0, HW_UNIT_GPU, availabilityEquation, "Pixel|Fragment,PS|FS,pixel|fragment", "oa.fixed" );
         if( metric )
         {
@@ -9470,7 +9470,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "SamplerTexels", "Sampler Texels",
             "The total number of texels seen on input (with 2x2 accuracy) in all sampler units.",
-            "Sampler/Sampler Input", (METRIC_GROUP_NAME_ID_SAMPLER * 0x1000000) | (METRIC_GROUP_NAME_ID_SAMPLER_IN * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "Sampler/Sampler Input", (METRIC_GROUP_NAME_ID_SAMPLER * 0x1000000) | (METRIC_GROUP_NAME_ID_SAMPLER_IN * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "texels", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -9483,7 +9483,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "SamplerTexelMisses", "Sampler Texels Misses",
             "The total number of texels lookups (with 2x2 accuracy) that missed L1 sampler cache.",
-            "Sampler/Sampler Cache", (METRIC_GROUP_NAME_ID_SAMPLER * 0x1000000) | (METRIC_GROUP_NAME_ID_SAMPLER_CACHE * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_BATCH|USAGE_FLAG_FRAME|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "Sampler/Sampler Cache", (METRIC_GROUP_NAME_ID_SAMPLER * 0x1000000) | (METRIC_GROUP_NAME_ID_SAMPLER_CACHE * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_BATCH|USAGE_FLAG_FRAME|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "texels", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -9496,7 +9496,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "SlmBytesRead", "SLM Bytes Read",
             "The total number of GPU memory bytes read from shared local memory.",
-            "L3/Data Port/SLM", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000) | (METRIC_GROUP_NAME_ID_SLM * 0x100), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "L3/Data Port/SLM", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000) | (METRIC_GROUP_NAME_ID_SLM * 0x100), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_THROUGHPUT, RESULT_UINT64, "bytes", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -9510,7 +9510,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "SlmBytesWritten", "SLM Bytes Written",
             "The total number of GPU memory bytes written into shared local memory.",
-            "L3/Data Port/SLM", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000) | (METRIC_GROUP_NAME_ID_SLM * 0x100), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "L3/Data Port/SLM", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000) | (METRIC_GROUP_NAME_ID_SLM * 0x100), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_THROUGHPUT, RESULT_UINT64, "bytes", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -9524,7 +9524,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "ShaderMemoryAccesses", "Shader Memory Accesses",
             "The total number of shader memory accesses to L3.",
-            "L3/Data Port", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "L3/Data Port", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "messages", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -9536,7 +9536,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "ShaderAtomics", "Shader Atomic Memory Accesses",
             "The total number of shader atomic memory accesses.",
-            "L3/Data Port/Atomics", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000) | (METRIC_GROUP_NAME_ID_ATOMICS * 0x100), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "L3/Data Port/Atomics", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000) | (METRIC_GROUP_NAME_ID_ATOMICS * 0x100), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "messages", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -9548,7 +9548,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "L3ShaderThroughput", "L3 Shader Throughput",
             "The total number of GPU memory bytes transferred between shaders and L3 caches w/o URB.",
-            "L3/Data Port", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000), USAGE_FLAG_TIER_2|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "L3/Data Port", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000), USAGE_FLAG_TIER_2|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_THROUGHPUT, RESULT_UINT64, "bytes", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -9560,7 +9560,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "ShaderBarriers", "Shader Barrier Messages",
             "The total number of shader barrier messages.",
-            "EU Array/Barrier", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_EU_BARRIER * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Barrier", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_EU_BARRIER * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "messages", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -9574,7 +9574,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         {
             metric = metricSet->AddMetric( "PolyDataReady", "Polygon Data Ready",
                 "The percentage of time in which geometry pipeline output is ready",
-                "GPU/3D Pipe/Strip-Fans", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_3D_PIPE * 0x10000) | (METRIC_GROUP_NAME_ID_SF * 0x100), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+                "GPU/3D Pipe/Strip-Fans", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_3D_PIPE * 0x10000) | (METRIC_GROUP_NAME_ID_SF * 0x100), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
                 METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
             if( metric )
             {
@@ -9591,7 +9591,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         {
             metric = metricSet->AddMetric( "NonSamplerShader02AccessStalledOnL3", "HDC stalled by L3 (s0.ss2)",
                 "Percentage of time when HDC has messges to L3, but it's stalled due to lack of credits (s0.ss2)",
-                "GPU/Data Port", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+                "GPU/Data Port", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
                 METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, NULL, NULL );
             if( metric )
             {
@@ -9608,7 +9608,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         {
             metric = metricSet->AddMetric( "NonSamplerShader01AccessStalledOnL3", "HDC stalled by L3 (s0.ss1)",
                 "Percentage of time when HDC has messges to L3, but it's stalled due to lack of credits (s0.ss1)",
-                "GPU/Data Port", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+                "GPU/Data Port", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
                 METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, NULL, NULL );
             if( metric )
             {
@@ -9625,7 +9625,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         {
             metric = metricSet->AddMetric( "NonSamplerShader00AccessStalledOnL3", "HDC stalled by L3 (s0.ss0)",
                 "Percentage of time when HDC has messges to L3, but it's stalled due to lack of credits (s0.ss0)",
-                "GPU/Data Port", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+                "GPU/Data Port", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
                 METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, NULL, NULL );
             if( metric )
             {
@@ -9642,7 +9642,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         {
             metric = metricSet->AddMetric( "NonSamplerShader12AccessStalledOnL3", "HDC stalled by L3 (s0.ss2)",
                 "Percentage of time when HDC has messges to L3, but it's stalled due to lack of credits (s0.ss2)",
-                "GPU/Data Port", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+                "GPU/Data Port", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
                 METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, NULL, NULL );
             if( metric )
             {
@@ -9659,7 +9659,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         {
             metric = metricSet->AddMetric( "NonSamplerShader11AccessStalledOnL3", "HDC stalled by L3 (s0.ss1)",
                 "Percentage of time when HDC has messges to L3, but it's stalled due to lack of credits (s0.ss1)",
-                "GPU/Data Port", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+                "GPU/Data Port", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
                 METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, NULL, NULL );
             if( metric )
             {
@@ -9676,7 +9676,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         {
             metric = metricSet->AddMetric( "NonSamplerShader10AccessStalledOnL3", "HDC stalled by L3 (s0.ss0)",
                 "Percentage of time when HDC has messges to L3, but it's stalled due to lack of credits (s0.ss0)",
-                "GPU/Data Port", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+                "GPU/Data Port", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
                 METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, NULL, NULL );
             if( metric )
             {
@@ -9691,7 +9691,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "GTRequestQueueFull", "SQ is full",
             "The percentage of time when SQ is filled above a threshold (usually 48 entries)",
-            "GTI", (METRIC_GROUP_NAME_ID_GTI * 0x1000000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X,
+            "GTI", (METRIC_GROUP_NAME_ID_GTI * 0x1000000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X,
             METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -9703,7 +9703,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
 
         information = metricSet->AddInformation( "QueryBeginTime", "Query Begin Time",
             "The measurement begin time.",
-            "Report Meta Data", API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "Report Meta Data", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             INFORMATION_TYPE_TIMESTAMP, "ns", NULL );
         if( information )
         {
@@ -9714,7 +9714,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
 
         information = metricSet->AddInformation( "CoreFrequencyMHz", "GPU Core Frequency",
             "The last core frequency in the measurement.",
-            "Report Meta Data", API_TYPE_OGL|API_TYPE_OGL4_X,
+            "Report Meta Data", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
             INFORMATION_TYPE_VALUE, "MHz", NULL );
         if( information )
         {
@@ -9742,7 +9742,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
 
         information = metricSet->AddInformation( "CoreFrequencyChanged", "Core Frequency Changed",
             "The flag indicating that core frequency has changed.",
-            "Exception", API_TYPE_OGL|API_TYPE_OGL4_X,
+            "Exception", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
             INFORMATION_TYPE_FLAG, NULL, NULL );
         if( information )
         {
@@ -9752,7 +9752,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
 
         information = metricSet->AddInformation( "QuerySplitOccurred", "Query Split Occurred",
             "The flag indicating that query has been split during execution on the GPU.",
-            "Exception", API_TYPE_OGL|API_TYPE_OGL4_X,
+            "Exception", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
             INFORMATION_TYPE_FLAG, NULL, NULL );
         if( information )
         {
@@ -9762,7 +9762,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
 
         information = metricSet->AddInformation( "ReportId", "Query report id",
             "Query report identification number.",
-            "Report Meta Data", API_TYPE_OGL|API_TYPE_OGL4_X,
+            "Report Meta Data", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
             INFORMATION_TYPE_VALUE, NULL, NULL );
         if( information )
         {
@@ -9772,7 +9772,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
 
         information = metricSet->AddInformation( "ReportsCount", "Query reports count",
             "The number of available query reports.",
-            "Report Meta Data", API_TYPE_OGL|API_TYPE_OGL4_X,
+            "Report Meta Data", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
             INFORMATION_TYPE_VALUE, NULL, NULL );
         if( information )
         {
@@ -9782,7 +9782,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
 
         information = metricSet->AddInformation( "OverrunOccured", "Query Overrun Occurred",
             "The flag indicating that Oa buffer has been overran.",
-            "Exception", API_TYPE_OGL|API_TYPE_OGL4_X,
+            "Exception", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
             INFORMATION_TYPE_FLAG, NULL, NULL );
         if( information )
         {
@@ -9912,7 +9912,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
     platformMask = PLATFORM_BDW;
     if( MD_IS_INTERNAL_BUILD || metricsDevice->IsPlatformTypeOf( platformMask ) )
     {
-        metricSet = concurrentGroup->AddMetricSet( "L3_1", "Metric set L3_1", API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+        metricSet = concurrentGroup->AddMetricSet( "L3_1", "Metric set L3_1", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
            GPU_RENDER|GPU_COMPUTE, 256, 536, OA_REPORT_TYPE_256B_A45_NOA16, platformMask );
         MD_CHECK_PTR( metricSet );
         
@@ -9922,7 +9922,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "GpuTime", "GPU Time Elapsed",
             "Time elapsed on the GPU during the measurement.",
-            "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_TIER_1|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_TIER_1|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_DURATION, RESULT_UINT64, "ns", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -9934,7 +9934,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "GpuCoreClocks", "GPU Core Clocks",
             "The total number of GPU core clocks elapsed during the measurement.",
-            "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_TIER_1|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_TIER_1|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "cycles", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -9946,7 +9946,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "AvgGpuCoreFrequencyMHz", "AVG GPU Core Frequency",
             "Average GPU Core Frequency in the measurement.",
-            "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_TIER_1|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_TIER_1|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "MHz", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -9957,7 +9957,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "GpuBusy", "GPU Busy",
             "The percentage of time in which the GPU has been processing GPU commands.",
-            "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_TIER_1|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_TIER_1|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -9971,7 +9971,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "VsThreads", "VS Threads Dispatched",
             "The total number of vertex shader hardware threads dispatched.",
-            "EU Array/Vertex Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_VS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Vertex Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_VS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "threads", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -9983,7 +9983,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "HsThreads", "HS Threads Dispatched",
             "The total number of hull shader hardware threads dispatched.",
-            "EU Array/Hull Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_HS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Hull Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_HS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "threads", 0, 0, HW_UNIT_GPU, availabilityEquation, "Hull|Control,hull|control,HS|TCS", "oa.fixed" );
         if( metric )
         {
@@ -9995,7 +9995,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "DsThreads", "DS Threads Dispatched",
             "The total number of domain shader hardware threads dispatched.",
-            "EU Array/Domain Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_DS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Domain Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_DS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "threads", 0, 0, HW_UNIT_GPU, availabilityEquation, "Domain|Evaluation,domain|evaluation,DS|TES", "oa.fixed" );
         if( metric )
         {
@@ -10007,7 +10007,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "GsThreads", "GS Threads Dispatched",
             "The total number of geometry shader hardware threads dispatched.",
-            "EU Array/Geometry Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_GS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Geometry Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_GS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "threads", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -10019,7 +10019,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "PsThreads", "PS Threads Dispatched",
             "The total number of pixel shader hardware threads dispatched.",
-            "EU Array/Pixel Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_PS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Pixel Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_PS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "threads", 0, 0, HW_UNIT_GPU, availabilityEquation, "Pixel|Fragment,PS|FS,pixel|fragment", "oa.fixed" );
         if( metric )
         {
@@ -10031,7 +10031,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "CsThreads", "CS Threads Dispatched",
             "The total number of compute shader hardware threads dispatched.",
-            "EU Array/Compute Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_CS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Compute Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_CS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "threads", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -10043,7 +10043,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "EuActive", "EU Active",
             "The percentage of time in which the Execution Units were actively processing.",
-            "EU Array", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000), USAGE_FLAG_TIER_2|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000), USAGE_FLAG_TIER_2|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -10057,7 +10057,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "EuStall", "EU Stall",
             "The percentage of time in which the Execution Units were stalled.",
-            "EU Array", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000), USAGE_FLAG_TIER_2|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000), USAGE_FLAG_TIER_2|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -10071,7 +10071,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "EuFpuBothActive", "EU Both FPU Pipes Active",
             "The percentage of time in which both EU FPU pipelines were actively processing.",
-            "EU Array/Pipes", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_EU_PIPES * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Pipes", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_EU_PIPES * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -10085,7 +10085,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "VsFpu0Active", "VS FPU0 Pipe Active",
             "The percentage of time in which EU FPU0 pipeline was actively processing a vertex shader instruction.",
-            "EU Array/Vertex Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_VS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Vertex Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_VS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -10099,7 +10099,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "VsFpu1Active", "VS FPU1 Pipe Active",
             "The percentage of time in which EU FPU1 pipeline was actively processing a vertex shader instruction.",
-            "EU Array/Vertex Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_VS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Vertex Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_VS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -10113,7 +10113,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "VsSendActive", "VS Send Pipe Active",
             "The percentage of time in which EU send pipeline was actively processing a vertex shader instruction.",
-            "EU Array/Vertex Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_VS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Vertex Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_VS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -10127,7 +10127,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "PsFpu0Active", "PS FPU0 Pipe Active",
             "The percentage of time in which EU FPU0 pipeline was actively processing a pixel shader instruction.",
-            "EU Array/Pixel Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_PS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Pixel Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_PS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, "Pixel|Fragment,PS|FS,pixel|fragment", NULL );
         if( metric )
         {
@@ -10141,7 +10141,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "PsFpu1Active", "PS FPU1 Pipe Active",
             "The percentage of time in which EU FPU1 pipeline was actively processing a pixel shader instruction.",
-            "EU Array/Pixel Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_PS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Pixel Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_PS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, "Pixel|Fragment,PS|FS,pixel|fragment", NULL );
         if( metric )
         {
@@ -10155,7 +10155,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "PsSendActive", "PS Send Pipeline Active",
             "The percentage of time in which EU send pipeline was actively processing a pixel shader instruction.",
-            "EU Array/Pixel Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_PS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Pixel Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_PS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, "Pixel|Fragment,PS|FS,pixel|fragment", NULL );
         if( metric )
         {
@@ -10169,7 +10169,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "PsEuBothFpuActive", "PS Both FPU Active",
             "The percentage of time in which pixel shaders were processed actively on the both FPUs.",
-            "3D Pipe/Pixel Shader", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_PS * 0x10000), USAGE_FLAG_TIER_4|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "3D Pipe/Pixel Shader", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_PS * 0x10000), USAGE_FLAG_TIER_4|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, "Pixel|Fragment,PS|FS,pixel|fragment", NULL );
         if( metric )
         {
@@ -10183,7 +10183,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "RasterizedPixels", "Rasterized Pixels",
             "The total number of rasterized pixels.",
-            "3D Pipe/Rasterizer", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_WM * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "3D Pipe/Rasterizer", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_WM * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "pixels", 0, 0, HW_UNIT_GPU, availabilityEquation, "Pixel|Fragment,PS|FS,pixel|fragment", "oa.fixed" );
         if( metric )
         {
@@ -10196,7 +10196,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "HiDepthTestFails", "Early Hi-Depth Test Fails",
             "The total number of pixels dropped on early hierarchical depth test.",
-            "3D Pipe/Rasterizer/Hi-Depth Test", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_WM * 0x10000) | (METRIC_GROUP_NAME_ID_HZ * 0x100), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "3D Pipe/Rasterizer/Hi-Depth Test", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_WM * 0x10000) | (METRIC_GROUP_NAME_ID_HZ * 0x100), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "pixels", 0, 0, HW_UNIT_GPU, availabilityEquation, "Pixel|Fragment,PS|FS,pixel|fragment", "oa.fixed" );
         if( metric )
         {
@@ -10209,7 +10209,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "EarlyDepthTestFails", "Early Depth Test Fails",
             "The total number of pixels dropped on early depth test.",
-            "3D Pipe/Rasterizer/Early Depth Test", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_WM * 0x10000) | (METRIC_GROUP_NAME_ID_IZ * 0x100), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "3D Pipe/Rasterizer/Early Depth Test", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_WM * 0x10000) | (METRIC_GROUP_NAME_ID_IZ * 0x100), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "pixels", 0, 0, HW_UNIT_GPU, availabilityEquation, "Pixel|Fragment,PS|FS,pixel|fragment", "oa.fixed" );
         if( metric )
         {
@@ -10222,7 +10222,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "SamplesKilledInPs", "Samples Killed in PS",
             "The total number of samples or pixels dropped in pixel shaders.",
-            "3D Pipe/Pixel Shader", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_PS * 0x10000), USAGE_FLAG_TIER_4|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "3D Pipe/Pixel Shader", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_PS * 0x10000), USAGE_FLAG_TIER_4|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "pixels", 0, 0, HW_UNIT_GPU, availabilityEquation, "Pixel|Fragment,PS|FS,pixel|fragment", "oa.fixed" );
         if( metric )
         {
@@ -10235,7 +10235,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "PixelsFailingPostPsTests", "Pixels Failing Tests",
             "The total number of pixels dropped on post-PS alpha, stencil, or depth tests.",
-            "3D Pipe/Output Merger", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_OM * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "3D Pipe/Output Merger", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_OM * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "pixels", 0, 0, HW_UNIT_GPU, availabilityEquation, "Pixel|Fragment,PS|FS,pixel|fragment", "oa.fixed" );
         if( metric )
         {
@@ -10248,7 +10248,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "SamplesWritten", "Samples Written",
             "The total number of samples or pixels written to all render targets.",
-            "3D Pipe/Output Merger", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_OM * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "3D Pipe/Output Merger", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_OM * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "pixels", 0, 0, HW_UNIT_GPU, availabilityEquation, "Pixel|Fragment,PS|FS,pixel|fragment", "oa.fixed" );
         if( metric )
         {
@@ -10261,7 +10261,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "SamplesBlended", "Samples Blended",
             "The total number of blended samples or pixels written to all render targets.",
-            "3D Pipe/Output Merger", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_OM * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "3D Pipe/Output Merger", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_OM * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "pixels", 0, 0, HW_UNIT_GPU, availabilityEquation, "Pixel|Fragment,PS|FS,pixel|fragment", "oa.fixed" );
         if( metric )
         {
@@ -10274,7 +10274,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "SamplerTexels", "Sampler Texels",
             "The total number of texels seen on input (with 2x2 accuracy) in all sampler units.",
-            "Sampler/Sampler Input", (METRIC_GROUP_NAME_ID_SAMPLER * 0x1000000) | (METRIC_GROUP_NAME_ID_SAMPLER_IN * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "Sampler/Sampler Input", (METRIC_GROUP_NAME_ID_SAMPLER * 0x1000000) | (METRIC_GROUP_NAME_ID_SAMPLER_IN * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "texels", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -10287,7 +10287,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "SamplerTexelMisses", "Sampler Texels Misses",
             "The total number of texels lookups (with 2x2 accuracy) that missed L1 sampler cache.",
-            "Sampler/Sampler Cache", (METRIC_GROUP_NAME_ID_SAMPLER * 0x1000000) | (METRIC_GROUP_NAME_ID_SAMPLER_CACHE * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_BATCH|USAGE_FLAG_FRAME|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "Sampler/Sampler Cache", (METRIC_GROUP_NAME_ID_SAMPLER * 0x1000000) | (METRIC_GROUP_NAME_ID_SAMPLER_CACHE * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_BATCH|USAGE_FLAG_FRAME|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "texels", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -10300,7 +10300,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "SlmBytesRead", "SLM Bytes Read",
             "The total number of GPU memory bytes read from shared local memory.",
-            "L3/Data Port/SLM", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000) | (METRIC_GROUP_NAME_ID_SLM * 0x100), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "L3/Data Port/SLM", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000) | (METRIC_GROUP_NAME_ID_SLM * 0x100), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_THROUGHPUT, RESULT_UINT64, "bytes", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -10314,7 +10314,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "SlmBytesWritten", "SLM Bytes Written",
             "The total number of GPU memory bytes written into shared local memory.",
-            "L3/Data Port/SLM", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000) | (METRIC_GROUP_NAME_ID_SLM * 0x100), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "L3/Data Port/SLM", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000) | (METRIC_GROUP_NAME_ID_SLM * 0x100), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_THROUGHPUT, RESULT_UINT64, "bytes", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -10328,7 +10328,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "ShaderMemoryAccesses", "Shader Memory Accesses",
             "The total number of shader memory accesses to L3.",
-            "L3/Data Port", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "L3/Data Port", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "messages", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -10340,7 +10340,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "ShaderAtomics", "Shader Atomic Memory Accesses",
             "The total number of shader atomic memory accesses.",
-            "L3/Data Port/Atomics", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000) | (METRIC_GROUP_NAME_ID_ATOMICS * 0x100), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "L3/Data Port/Atomics", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000) | (METRIC_GROUP_NAME_ID_ATOMICS * 0x100), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "messages", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -10352,7 +10352,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "L3ShaderThroughput", "L3 Shader Throughput",
             "The total number of GPU memory bytes transferred between shaders and L3 caches w/o URB.",
-            "L3/Data Port", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000), USAGE_FLAG_TIER_2|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "L3/Data Port", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000), USAGE_FLAG_TIER_2|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_THROUGHPUT, RESULT_UINT64, "bytes", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -10364,7 +10364,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "ShaderBarriers", "Shader Barrier Messages",
             "The total number of shader barrier messages.",
-            "EU Array/Barrier", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_EU_BARRIER * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Barrier", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_EU_BARRIER * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "messages", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -10378,7 +10378,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         {
             metric = metricSet->AddMetric( "L31Bank0Stalled", "Slice1 L3 Bank0 Stalled",
                 "The percentage of time in which slice1 L3 bank0 is stalled",
-                "GTI/L3", (METRIC_GROUP_NAME_ID_GTI * 0x1000000) | (METRIC_GROUP_NAME_ID_L3 * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+                "GTI/L3", (METRIC_GROUP_NAME_ID_GTI * 0x1000000) | (METRIC_GROUP_NAME_ID_L3 * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
                 METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SLICE, availabilityEquation, NULL, NULL );
             if( metric )
             {
@@ -10395,7 +10395,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         {
             metric = metricSet->AddMetric( "L31Bank1Stalled", "Slice1 L3 Bank1 Stalled",
                 "The percentage of time in which slice1 L3 bank1 is stalled",
-                "GTI/L3", (METRIC_GROUP_NAME_ID_GTI * 0x1000000) | (METRIC_GROUP_NAME_ID_L3 * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+                "GTI/L3", (METRIC_GROUP_NAME_ID_GTI * 0x1000000) | (METRIC_GROUP_NAME_ID_L3 * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
                 METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SLICE, availabilityEquation, NULL, NULL );
             if( metric )
             {
@@ -10412,7 +10412,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         {
             metric = metricSet->AddMetric( "L31Bank1Active", "Slice1 L3 Bank1 Active",
                 "The percentage of time in which slice1 L3 bank1 is active",
-                "GTI/L3", (METRIC_GROUP_NAME_ID_GTI * 0x1000000) | (METRIC_GROUP_NAME_ID_L3 * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+                "GTI/L3", (METRIC_GROUP_NAME_ID_GTI * 0x1000000) | (METRIC_GROUP_NAME_ID_L3 * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
                 METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SLICE, availabilityEquation, NULL, NULL );
             if( metric )
             {
@@ -10429,7 +10429,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         {
             metric = metricSet->AddMetric( "L31Bank0Active", "Slice1 L3 Bank0 Active",
                 "The percentage of time in which slice1 L3 bank0 is active",
-                "GTI/L3", (METRIC_GROUP_NAME_ID_GTI * 0x1000000) | (METRIC_GROUP_NAME_ID_L3 * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+                "GTI/L3", (METRIC_GROUP_NAME_ID_GTI * 0x1000000) | (METRIC_GROUP_NAME_ID_L3 * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
                 METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SLICE, availabilityEquation, NULL, NULL );
             if( metric )
             {
@@ -10444,7 +10444,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "GTRequestQueueFull", "SQ is full",
             "The percentage of time when SQ is filled above a threshold (usually 48 entries)",
-            "GTI", (METRIC_GROUP_NAME_ID_GTI * 0x1000000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X,
+            "GTI", (METRIC_GROUP_NAME_ID_GTI * 0x1000000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X,
             METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -10456,7 +10456,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
 
         information = metricSet->AddInformation( "QueryBeginTime", "Query Begin Time",
             "The measurement begin time.",
-            "Report Meta Data", API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "Report Meta Data", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             INFORMATION_TYPE_TIMESTAMP, "ns", NULL );
         if( information )
         {
@@ -10467,7 +10467,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
 
         information = metricSet->AddInformation( "CoreFrequencyMHz", "GPU Core Frequency",
             "The last core frequency in the measurement.",
-            "Report Meta Data", API_TYPE_OGL|API_TYPE_OGL4_X,
+            "Report Meta Data", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
             INFORMATION_TYPE_VALUE, "MHz", NULL );
         if( information )
         {
@@ -10495,7 +10495,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
 
         information = metricSet->AddInformation( "CoreFrequencyChanged", "Core Frequency Changed",
             "The flag indicating that core frequency has changed.",
-            "Exception", API_TYPE_OGL|API_TYPE_OGL4_X,
+            "Exception", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
             INFORMATION_TYPE_FLAG, NULL, NULL );
         if( information )
         {
@@ -10505,7 +10505,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
 
         information = metricSet->AddInformation( "QuerySplitOccurred", "Query Split Occurred",
             "The flag indicating that query has been split during execution on the GPU.",
-            "Exception", API_TYPE_OGL|API_TYPE_OGL4_X,
+            "Exception", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
             INFORMATION_TYPE_FLAG, NULL, NULL );
         if( information )
         {
@@ -10515,7 +10515,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
 
         information = metricSet->AddInformation( "ReportId", "Query report id",
             "Query report identification number.",
-            "Report Meta Data", API_TYPE_OGL|API_TYPE_OGL4_X,
+            "Report Meta Data", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
             INFORMATION_TYPE_VALUE, NULL, NULL );
         if( information )
         {
@@ -10525,7 +10525,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
 
         information = metricSet->AddInformation( "ReportsCount", "Query reports count",
             "The number of available query reports.",
-            "Report Meta Data", API_TYPE_OGL|API_TYPE_OGL4_X,
+            "Report Meta Data", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
             INFORMATION_TYPE_VALUE, NULL, NULL );
         if( information )
         {
@@ -10535,7 +10535,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
 
         information = metricSet->AddInformation( "OverrunOccured", "Query Overrun Occurred",
             "The flag indicating that Oa buffer has been overran.",
-            "Exception", API_TYPE_OGL|API_TYPE_OGL4_X,
+            "Exception", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
             INFORMATION_TYPE_FLAG, NULL, NULL );
         if( information )
         {
@@ -10672,7 +10672,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
     platformMask = PLATFORM_BDW;
     if( MD_IS_INTERNAL_BUILD || metricsDevice->IsPlatformTypeOf( platformMask ) )
     {
-        metricSet = concurrentGroup->AddMetricSet( "L3_2", "Metric set L3_2", API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+        metricSet = concurrentGroup->AddMetricSet( "L3_2", "Metric set L3_2", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
            GPU_RENDER|GPU_COMPUTE, 256, 536, OA_REPORT_TYPE_256B_A45_NOA16, platformMask );
         MD_CHECK_PTR( metricSet );
         
@@ -10682,7 +10682,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "GpuTime", "GPU Time Elapsed",
             "Time elapsed on the GPU during the measurement.",
-            "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_TIER_1|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_TIER_1|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_DURATION, RESULT_UINT64, "ns", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -10694,7 +10694,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "GpuCoreClocks", "GPU Core Clocks",
             "The total number of GPU core clocks elapsed during the measurement.",
-            "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_TIER_1|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_TIER_1|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "cycles", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -10706,7 +10706,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "AvgGpuCoreFrequencyMHz", "AVG GPU Core Frequency",
             "Average GPU Core Frequency in the measurement.",
-            "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_TIER_1|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_TIER_1|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "MHz", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -10717,7 +10717,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "GpuBusy", "GPU Busy",
             "The percentage of time in which the GPU has been processing GPU commands.",
-            "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_TIER_1|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_TIER_1|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -10731,7 +10731,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "VsThreads", "VS Threads Dispatched",
             "The total number of vertex shader hardware threads dispatched.",
-            "EU Array/Vertex Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_VS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Vertex Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_VS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "threads", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -10743,7 +10743,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "HsThreads", "HS Threads Dispatched",
             "The total number of hull shader hardware threads dispatched.",
-            "EU Array/Hull Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_HS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Hull Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_HS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "threads", 0, 0, HW_UNIT_GPU, availabilityEquation, "Hull|Control,hull|control,HS|TCS", "oa.fixed" );
         if( metric )
         {
@@ -10755,7 +10755,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "DsThreads", "DS Threads Dispatched",
             "The total number of domain shader hardware threads dispatched.",
-            "EU Array/Domain Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_DS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Domain Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_DS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "threads", 0, 0, HW_UNIT_GPU, availabilityEquation, "Domain|Evaluation,domain|evaluation,DS|TES", "oa.fixed" );
         if( metric )
         {
@@ -10767,7 +10767,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "GsThreads", "GS Threads Dispatched",
             "The total number of geometry shader hardware threads dispatched.",
-            "EU Array/Geometry Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_GS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Geometry Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_GS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "threads", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -10779,7 +10779,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "PsThreads", "PS Threads Dispatched",
             "The total number of pixel shader hardware threads dispatched.",
-            "EU Array/Pixel Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_PS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Pixel Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_PS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "threads", 0, 0, HW_UNIT_GPU, availabilityEquation, "Pixel|Fragment,PS|FS,pixel|fragment", "oa.fixed" );
         if( metric )
         {
@@ -10791,7 +10791,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "CsThreads", "CS Threads Dispatched",
             "The total number of compute shader hardware threads dispatched.",
-            "EU Array/Compute Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_CS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Compute Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_CS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "threads", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -10803,7 +10803,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "EuActive", "EU Active",
             "The percentage of time in which the Execution Units were actively processing.",
-            "EU Array", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000), USAGE_FLAG_TIER_2|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000), USAGE_FLAG_TIER_2|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -10817,7 +10817,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "EuStall", "EU Stall",
             "The percentage of time in which the Execution Units were stalled.",
-            "EU Array", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000), USAGE_FLAG_TIER_2|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000), USAGE_FLAG_TIER_2|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -10831,7 +10831,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "EuFpuBothActive", "EU Both FPU Pipes Active",
             "The percentage of time in which both EU FPU pipelines were actively processing.",
-            "EU Array/Pipes", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_EU_PIPES * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Pipes", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_EU_PIPES * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -10845,7 +10845,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "VsFpu0Active", "VS FPU0 Pipe Active",
             "The percentage of time in which EU FPU0 pipeline was actively processing a vertex shader instruction.",
-            "EU Array/Vertex Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_VS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Vertex Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_VS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -10859,7 +10859,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "VsFpu1Active", "VS FPU1 Pipe Active",
             "The percentage of time in which EU FPU1 pipeline was actively processing a vertex shader instruction.",
-            "EU Array/Vertex Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_VS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Vertex Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_VS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -10873,7 +10873,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "VsSendActive", "VS Send Pipe Active",
             "The percentage of time in which EU send pipeline was actively processing a vertex shader instruction.",
-            "EU Array/Vertex Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_VS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Vertex Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_VS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -10887,7 +10887,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "PsFpu0Active", "PS FPU0 Pipe Active",
             "The percentage of time in which EU FPU0 pipeline was actively processing a pixel shader instruction.",
-            "EU Array/Pixel Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_PS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Pixel Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_PS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, "Pixel|Fragment,PS|FS,pixel|fragment", NULL );
         if( metric )
         {
@@ -10901,7 +10901,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "PsFpu1Active", "PS FPU1 Pipe Active",
             "The percentage of time in which EU FPU1 pipeline was actively processing a pixel shader instruction.",
-            "EU Array/Pixel Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_PS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Pixel Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_PS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, "Pixel|Fragment,PS|FS,pixel|fragment", NULL );
         if( metric )
         {
@@ -10915,7 +10915,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "PsSendActive", "PS Send Pipeline Active",
             "The percentage of time in which EU send pipeline was actively processing a pixel shader instruction.",
-            "EU Array/Pixel Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_PS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Pixel Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_PS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, "Pixel|Fragment,PS|FS,pixel|fragment", NULL );
         if( metric )
         {
@@ -10929,7 +10929,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "PsEuBothFpuActive", "PS Both FPU Active",
             "The percentage of time in which pixel shaders were processed actively on the both FPUs.",
-            "3D Pipe/Pixel Shader", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_PS * 0x10000), USAGE_FLAG_TIER_4|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "3D Pipe/Pixel Shader", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_PS * 0x10000), USAGE_FLAG_TIER_4|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, "Pixel|Fragment,PS|FS,pixel|fragment", NULL );
         if( metric )
         {
@@ -10943,7 +10943,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "RasterizedPixels", "Rasterized Pixels",
             "The total number of rasterized pixels.",
-            "3D Pipe/Rasterizer", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_WM * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "3D Pipe/Rasterizer", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_WM * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "pixels", 0, 0, HW_UNIT_GPU, availabilityEquation, "Pixel|Fragment,PS|FS,pixel|fragment", "oa.fixed" );
         if( metric )
         {
@@ -10956,7 +10956,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "HiDepthTestFails", "Early Hi-Depth Test Fails",
             "The total number of pixels dropped on early hierarchical depth test.",
-            "3D Pipe/Rasterizer/Hi-Depth Test", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_WM * 0x10000) | (METRIC_GROUP_NAME_ID_HZ * 0x100), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "3D Pipe/Rasterizer/Hi-Depth Test", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_WM * 0x10000) | (METRIC_GROUP_NAME_ID_HZ * 0x100), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "pixels", 0, 0, HW_UNIT_GPU, availabilityEquation, "Pixel|Fragment,PS|FS,pixel|fragment", "oa.fixed" );
         if( metric )
         {
@@ -10969,7 +10969,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "EarlyDepthTestFails", "Early Depth Test Fails",
             "The total number of pixels dropped on early depth test.",
-            "3D Pipe/Rasterizer/Early Depth Test", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_WM * 0x10000) | (METRIC_GROUP_NAME_ID_IZ * 0x100), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "3D Pipe/Rasterizer/Early Depth Test", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_WM * 0x10000) | (METRIC_GROUP_NAME_ID_IZ * 0x100), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "pixels", 0, 0, HW_UNIT_GPU, availabilityEquation, "Pixel|Fragment,PS|FS,pixel|fragment", "oa.fixed" );
         if( metric )
         {
@@ -10982,7 +10982,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "SamplesKilledInPs", "Samples Killed in PS",
             "The total number of samples or pixels dropped in pixel shaders.",
-            "3D Pipe/Pixel Shader", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_PS * 0x10000), USAGE_FLAG_TIER_4|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "3D Pipe/Pixel Shader", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_PS * 0x10000), USAGE_FLAG_TIER_4|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "pixels", 0, 0, HW_UNIT_GPU, availabilityEquation, "Pixel|Fragment,PS|FS,pixel|fragment", "oa.fixed" );
         if( metric )
         {
@@ -10995,7 +10995,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "PixelsFailingPostPsTests", "Pixels Failing Tests",
             "The total number of pixels dropped on post-PS alpha, stencil, or depth tests.",
-            "3D Pipe/Output Merger", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_OM * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "3D Pipe/Output Merger", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_OM * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "pixels", 0, 0, HW_UNIT_GPU, availabilityEquation, "Pixel|Fragment,PS|FS,pixel|fragment", "oa.fixed" );
         if( metric )
         {
@@ -11008,7 +11008,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "SamplesWritten", "Samples Written",
             "The total number of samples or pixels written to all render targets.",
-            "3D Pipe/Output Merger", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_OM * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "3D Pipe/Output Merger", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_OM * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "pixels", 0, 0, HW_UNIT_GPU, availabilityEquation, "Pixel|Fragment,PS|FS,pixel|fragment", "oa.fixed" );
         if( metric )
         {
@@ -11021,7 +11021,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "SamplesBlended", "Samples Blended",
             "The total number of blended samples or pixels written to all render targets.",
-            "3D Pipe/Output Merger", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_OM * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "3D Pipe/Output Merger", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_OM * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "pixels", 0, 0, HW_UNIT_GPU, availabilityEquation, "Pixel|Fragment,PS|FS,pixel|fragment", "oa.fixed" );
         if( metric )
         {
@@ -11034,7 +11034,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "SamplerTexels", "Sampler Texels",
             "The total number of texels seen on input (with 2x2 accuracy) in all sampler units.",
-            "Sampler/Sampler Input", (METRIC_GROUP_NAME_ID_SAMPLER * 0x1000000) | (METRIC_GROUP_NAME_ID_SAMPLER_IN * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "Sampler/Sampler Input", (METRIC_GROUP_NAME_ID_SAMPLER * 0x1000000) | (METRIC_GROUP_NAME_ID_SAMPLER_IN * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "texels", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -11047,7 +11047,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "SamplerTexelMisses", "Sampler Texels Misses",
             "The total number of texels lookups (with 2x2 accuracy) that missed L1 sampler cache.",
-            "Sampler/Sampler Cache", (METRIC_GROUP_NAME_ID_SAMPLER * 0x1000000) | (METRIC_GROUP_NAME_ID_SAMPLER_CACHE * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_BATCH|USAGE_FLAG_FRAME|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "Sampler/Sampler Cache", (METRIC_GROUP_NAME_ID_SAMPLER * 0x1000000) | (METRIC_GROUP_NAME_ID_SAMPLER_CACHE * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_BATCH|USAGE_FLAG_FRAME|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "texels", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -11060,7 +11060,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "SlmBytesRead", "SLM Bytes Read",
             "The total number of GPU memory bytes read from shared local memory.",
-            "L3/Data Port/SLM", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000) | (METRIC_GROUP_NAME_ID_SLM * 0x100), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "L3/Data Port/SLM", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000) | (METRIC_GROUP_NAME_ID_SLM * 0x100), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_THROUGHPUT, RESULT_UINT64, "bytes", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -11074,7 +11074,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "SlmBytesWritten", "SLM Bytes Written",
             "The total number of GPU memory bytes written into shared local memory.",
-            "L3/Data Port/SLM", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000) | (METRIC_GROUP_NAME_ID_SLM * 0x100), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "L3/Data Port/SLM", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000) | (METRIC_GROUP_NAME_ID_SLM * 0x100), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_THROUGHPUT, RESULT_UINT64, "bytes", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -11088,7 +11088,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "ShaderMemoryAccesses", "Shader Memory Accesses",
             "The total number of shader memory accesses to L3.",
-            "L3/Data Port", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "L3/Data Port", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "messages", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -11100,7 +11100,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "ShaderAtomics", "Shader Atomic Memory Accesses",
             "The total number of shader atomic memory accesses.",
-            "L3/Data Port/Atomics", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000) | (METRIC_GROUP_NAME_ID_ATOMICS * 0x100), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "L3/Data Port/Atomics", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000) | (METRIC_GROUP_NAME_ID_ATOMICS * 0x100), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "messages", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -11112,7 +11112,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "L3ShaderThroughput", "L3 Shader Throughput",
             "The total number of GPU memory bytes transferred between shaders and L3 caches w/o URB.",
-            "L3/Data Port", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000), USAGE_FLAG_TIER_2|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "L3/Data Port", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000), USAGE_FLAG_TIER_2|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_THROUGHPUT, RESULT_UINT64, "bytes", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -11124,7 +11124,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "ShaderBarriers", "Shader Barrier Messages",
             "The total number of shader barrier messages.",
-            "EU Array/Barrier", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_EU_BARRIER * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Barrier", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_EU_BARRIER * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "messages", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -11138,7 +11138,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         {
             metric = metricSet->AddMetric( "L30Bank0Stalled", "Slice0 L3 Bank0 Stalled",
                 "The percentage of time in which slice0 L3 bank0 is stalled",
-                "GTI/L3", (METRIC_GROUP_NAME_ID_GTI * 0x1000000) | (METRIC_GROUP_NAME_ID_L3 * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+                "GTI/L3", (METRIC_GROUP_NAME_ID_GTI * 0x1000000) | (METRIC_GROUP_NAME_ID_L3 * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
                 METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SLICE, availabilityEquation, NULL, NULL );
             if( metric )
             {
@@ -11155,7 +11155,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         {
             metric = metricSet->AddMetric( "L30Bank1Stalled", "Slice0 L3 Bank1 Stalled",
                 "The percentage of time in which slice0 L3 bank1 is stalled",
-                "GTI/L3", (METRIC_GROUP_NAME_ID_GTI * 0x1000000) | (METRIC_GROUP_NAME_ID_L3 * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+                "GTI/L3", (METRIC_GROUP_NAME_ID_GTI * 0x1000000) | (METRIC_GROUP_NAME_ID_L3 * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
                 METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SLICE, availabilityEquation, NULL, NULL );
             if( metric )
             {
@@ -11172,7 +11172,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         {
             metric = metricSet->AddMetric( "L30Bank1Active", "Slice0 L3 Bank1 Active",
                 "The percentage of time in which slice0 L3 bank1 is active",
-                "GTI/L3", (METRIC_GROUP_NAME_ID_GTI * 0x1000000) | (METRIC_GROUP_NAME_ID_L3 * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+                "GTI/L3", (METRIC_GROUP_NAME_ID_GTI * 0x1000000) | (METRIC_GROUP_NAME_ID_L3 * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
                 METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SLICE, availabilityEquation, NULL, NULL );
             if( metric )
             {
@@ -11189,7 +11189,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         {
             metric = metricSet->AddMetric( "L30Bank0Active", "Slice0 L3 Bank0 Active",
                 "The percentage of time in which slice0 L3 bank0 is active",
-                "GTI/L3", (METRIC_GROUP_NAME_ID_GTI * 0x1000000) | (METRIC_GROUP_NAME_ID_L3 * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+                "GTI/L3", (METRIC_GROUP_NAME_ID_GTI * 0x1000000) | (METRIC_GROUP_NAME_ID_L3 * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
                 METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SLICE, availabilityEquation, NULL, NULL );
             if( metric )
             {
@@ -11204,7 +11204,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "GTRequestQueueFull", "SQ is full",
             "The percentage of time when SQ is filled above a threshold (usually 48 entries)",
-            "GTI", (METRIC_GROUP_NAME_ID_GTI * 0x1000000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X,
+            "GTI", (METRIC_GROUP_NAME_ID_GTI * 0x1000000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X,
             METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -11216,7 +11216,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
 
         information = metricSet->AddInformation( "QueryBeginTime", "Query Begin Time",
             "The measurement begin time.",
-            "Report Meta Data", API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "Report Meta Data", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             INFORMATION_TYPE_TIMESTAMP, "ns", NULL );
         if( information )
         {
@@ -11227,7 +11227,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
 
         information = metricSet->AddInformation( "CoreFrequencyMHz", "GPU Core Frequency",
             "The last core frequency in the measurement.",
-            "Report Meta Data", API_TYPE_OGL|API_TYPE_OGL4_X,
+            "Report Meta Data", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
             INFORMATION_TYPE_VALUE, "MHz", NULL );
         if( information )
         {
@@ -11255,7 +11255,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
 
         information = metricSet->AddInformation( "CoreFrequencyChanged", "Core Frequency Changed",
             "The flag indicating that core frequency has changed.",
-            "Exception", API_TYPE_OGL|API_TYPE_OGL4_X,
+            "Exception", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
             INFORMATION_TYPE_FLAG, NULL, NULL );
         if( information )
         {
@@ -11265,7 +11265,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
 
         information = metricSet->AddInformation( "QuerySplitOccurred", "Query Split Occurred",
             "The flag indicating that query has been split during execution on the GPU.",
-            "Exception", API_TYPE_OGL|API_TYPE_OGL4_X,
+            "Exception", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
             INFORMATION_TYPE_FLAG, NULL, NULL );
         if( information )
         {
@@ -11275,7 +11275,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
 
         information = metricSet->AddInformation( "ReportId", "Query report id",
             "Query report identification number.",
-            "Report Meta Data", API_TYPE_OGL|API_TYPE_OGL4_X,
+            "Report Meta Data", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
             INFORMATION_TYPE_VALUE, NULL, NULL );
         if( information )
         {
@@ -11285,7 +11285,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
 
         information = metricSet->AddInformation( "ReportsCount", "Query reports count",
             "The number of available query reports.",
-            "Report Meta Data", API_TYPE_OGL|API_TYPE_OGL4_X,
+            "Report Meta Data", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
             INFORMATION_TYPE_VALUE, NULL, NULL );
         if( information )
         {
@@ -11295,7 +11295,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
 
         information = metricSet->AddInformation( "OverrunOccured", "Query Overrun Occurred",
             "The flag indicating that Oa buffer has been overran.",
-            "Exception", API_TYPE_OGL|API_TYPE_OGL4_X,
+            "Exception", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
             INFORMATION_TYPE_FLAG, NULL, NULL );
         if( information )
         {
@@ -11419,7 +11419,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
     platformMask = PLATFORM_BDW;
     if( MD_IS_INTERNAL_BUILD || metricsDevice->IsPlatformTypeOf( platformMask ) )
     {
-        metricSet = concurrentGroup->AddMetricSet( "L3_3", "Metric set L3_3", API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+        metricSet = concurrentGroup->AddMetricSet( "L3_3", "Metric set L3_3", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
            GPU_RENDER|GPU_COMPUTE, 256, 536, OA_REPORT_TYPE_256B_A45_NOA16, platformMask );
         MD_CHECK_PTR( metricSet );
         
@@ -11429,7 +11429,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "GpuTime", "GPU Time Elapsed",
             "Time elapsed on the GPU during the measurement.",
-            "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_TIER_1|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_TIER_1|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_DURATION, RESULT_UINT64, "ns", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -11441,7 +11441,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "GpuCoreClocks", "GPU Core Clocks",
             "The total number of GPU core clocks elapsed during the measurement.",
-            "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_TIER_1|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_TIER_1|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "cycles", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -11453,7 +11453,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "AvgGpuCoreFrequencyMHz", "AVG GPU Core Frequency",
             "Average GPU Core Frequency in the measurement.",
-            "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_TIER_1|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_TIER_1|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "MHz", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -11464,7 +11464,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "GpuBusy", "GPU Busy",
             "The percentage of time in which the GPU has been processing GPU commands.",
-            "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_TIER_1|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_TIER_1|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -11478,7 +11478,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "VsThreads", "VS Threads Dispatched",
             "The total number of vertex shader hardware threads dispatched.",
-            "EU Array/Vertex Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_VS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Vertex Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_VS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "threads", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -11490,7 +11490,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "HsThreads", "HS Threads Dispatched",
             "The total number of hull shader hardware threads dispatched.",
-            "EU Array/Hull Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_HS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Hull Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_HS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "threads", 0, 0, HW_UNIT_GPU, availabilityEquation, "Hull|Control,hull|control,HS|TCS", "oa.fixed" );
         if( metric )
         {
@@ -11502,7 +11502,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "DsThreads", "DS Threads Dispatched",
             "The total number of domain shader hardware threads dispatched.",
-            "EU Array/Domain Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_DS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Domain Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_DS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "threads", 0, 0, HW_UNIT_GPU, availabilityEquation, "Domain|Evaluation,domain|evaluation,DS|TES", "oa.fixed" );
         if( metric )
         {
@@ -11514,7 +11514,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "GsThreads", "GS Threads Dispatched",
             "The total number of geometry shader hardware threads dispatched.",
-            "EU Array/Geometry Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_GS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Geometry Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_GS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "threads", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -11526,7 +11526,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "PsThreads", "PS Threads Dispatched",
             "The total number of pixel shader hardware threads dispatched.",
-            "EU Array/Pixel Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_PS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Pixel Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_PS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "threads", 0, 0, HW_UNIT_GPU, availabilityEquation, "Pixel|Fragment,PS|FS,pixel|fragment", "oa.fixed" );
         if( metric )
         {
@@ -11538,7 +11538,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "CsThreads", "CS Threads Dispatched",
             "The total number of compute shader hardware threads dispatched.",
-            "EU Array/Compute Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_CS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Compute Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_CS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "threads", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -11550,7 +11550,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "EuActive", "EU Active",
             "The percentage of time in which the Execution Units were actively processing.",
-            "EU Array", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000), USAGE_FLAG_TIER_2|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000), USAGE_FLAG_TIER_2|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -11564,7 +11564,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "EuStall", "EU Stall",
             "The percentage of time in which the Execution Units were stalled.",
-            "EU Array", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000), USAGE_FLAG_TIER_2|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000), USAGE_FLAG_TIER_2|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -11578,7 +11578,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "EuFpuBothActive", "EU Both FPU Pipes Active",
             "The percentage of time in which both EU FPU pipelines were actively processing.",
-            "EU Array/Pipes", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_EU_PIPES * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Pipes", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_EU_PIPES * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -11592,7 +11592,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "VsFpu0Active", "VS FPU0 Pipe Active",
             "The percentage of time in which EU FPU0 pipeline was actively processing a vertex shader instruction.",
-            "EU Array/Vertex Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_VS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Vertex Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_VS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -11606,7 +11606,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "VsFpu1Active", "VS FPU1 Pipe Active",
             "The percentage of time in which EU FPU1 pipeline was actively processing a vertex shader instruction.",
-            "EU Array/Vertex Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_VS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Vertex Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_VS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -11620,7 +11620,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "VsSendActive", "VS Send Pipe Active",
             "The percentage of time in which EU send pipeline was actively processing a vertex shader instruction.",
-            "EU Array/Vertex Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_VS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Vertex Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_VS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -11634,7 +11634,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "PsFpu0Active", "PS FPU0 Pipe Active",
             "The percentage of time in which EU FPU0 pipeline was actively processing a pixel shader instruction.",
-            "EU Array/Pixel Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_PS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Pixel Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_PS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, "Pixel|Fragment,PS|FS,pixel|fragment", NULL );
         if( metric )
         {
@@ -11648,7 +11648,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "PsFpu1Active", "PS FPU1 Pipe Active",
             "The percentage of time in which EU FPU1 pipeline was actively processing a pixel shader instruction.",
-            "EU Array/Pixel Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_PS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Pixel Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_PS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, "Pixel|Fragment,PS|FS,pixel|fragment", NULL );
         if( metric )
         {
@@ -11662,7 +11662,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "PsSendActive", "PS Send Pipeline Active",
             "The percentage of time in which EU send pipeline was actively processing a pixel shader instruction.",
-            "EU Array/Pixel Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_PS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Pixel Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_PS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, "Pixel|Fragment,PS|FS,pixel|fragment", NULL );
         if( metric )
         {
@@ -11676,7 +11676,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "PsEuBothFpuActive", "PS Both FPU Active",
             "The percentage of time in which pixel shaders were processed actively on the both FPUs.",
-            "3D Pipe/Pixel Shader", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_PS * 0x10000), USAGE_FLAG_TIER_4|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "3D Pipe/Pixel Shader", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_PS * 0x10000), USAGE_FLAG_TIER_4|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, "Pixel|Fragment,PS|FS,pixel|fragment", NULL );
         if( metric )
         {
@@ -11690,7 +11690,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "RasterizedPixels", "Rasterized Pixels",
             "The total number of rasterized pixels.",
-            "3D Pipe/Rasterizer", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_WM * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "3D Pipe/Rasterizer", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_WM * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "pixels", 0, 0, HW_UNIT_GPU, availabilityEquation, "Pixel|Fragment,PS|FS,pixel|fragment", "oa.fixed" );
         if( metric )
         {
@@ -11703,7 +11703,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "HiDepthTestFails", "Early Hi-Depth Test Fails",
             "The total number of pixels dropped on early hierarchical depth test.",
-            "3D Pipe/Rasterizer/Hi-Depth Test", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_WM * 0x10000) | (METRIC_GROUP_NAME_ID_HZ * 0x100), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "3D Pipe/Rasterizer/Hi-Depth Test", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_WM * 0x10000) | (METRIC_GROUP_NAME_ID_HZ * 0x100), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "pixels", 0, 0, HW_UNIT_GPU, availabilityEquation, "Pixel|Fragment,PS|FS,pixel|fragment", "oa.fixed" );
         if( metric )
         {
@@ -11716,7 +11716,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "EarlyDepthTestFails", "Early Depth Test Fails",
             "The total number of pixels dropped on early depth test.",
-            "3D Pipe/Rasterizer/Early Depth Test", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_WM * 0x10000) | (METRIC_GROUP_NAME_ID_IZ * 0x100), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "3D Pipe/Rasterizer/Early Depth Test", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_WM * 0x10000) | (METRIC_GROUP_NAME_ID_IZ * 0x100), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "pixels", 0, 0, HW_UNIT_GPU, availabilityEquation, "Pixel|Fragment,PS|FS,pixel|fragment", "oa.fixed" );
         if( metric )
         {
@@ -11729,7 +11729,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "SamplesKilledInPs", "Samples Killed in PS",
             "The total number of samples or pixels dropped in pixel shaders.",
-            "3D Pipe/Pixel Shader", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_PS * 0x10000), USAGE_FLAG_TIER_4|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "3D Pipe/Pixel Shader", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_PS * 0x10000), USAGE_FLAG_TIER_4|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "pixels", 0, 0, HW_UNIT_GPU, availabilityEquation, "Pixel|Fragment,PS|FS,pixel|fragment", "oa.fixed" );
         if( metric )
         {
@@ -11742,7 +11742,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "PixelsFailingPostPsTests", "Pixels Failing Tests",
             "The total number of pixels dropped on post-PS alpha, stencil, or depth tests.",
-            "3D Pipe/Output Merger", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_OM * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "3D Pipe/Output Merger", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_OM * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "pixels", 0, 0, HW_UNIT_GPU, availabilityEquation, "Pixel|Fragment,PS|FS,pixel|fragment", "oa.fixed" );
         if( metric )
         {
@@ -11755,7 +11755,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "SamplesWritten", "Samples Written",
             "The total number of samples or pixels written to all render targets.",
-            "3D Pipe/Output Merger", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_OM * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "3D Pipe/Output Merger", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_OM * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "pixels", 0, 0, HW_UNIT_GPU, availabilityEquation, "Pixel|Fragment,PS|FS,pixel|fragment", "oa.fixed" );
         if( metric )
         {
@@ -11768,7 +11768,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "SamplesBlended", "Samples Blended",
             "The total number of blended samples or pixels written to all render targets.",
-            "3D Pipe/Output Merger", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_OM * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "3D Pipe/Output Merger", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_OM * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "pixels", 0, 0, HW_UNIT_GPU, availabilityEquation, "Pixel|Fragment,PS|FS,pixel|fragment", "oa.fixed" );
         if( metric )
         {
@@ -11781,7 +11781,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "SamplerTexels", "Sampler Texels",
             "The total number of texels seen on input (with 2x2 accuracy) in all sampler units.",
-            "Sampler/Sampler Input", (METRIC_GROUP_NAME_ID_SAMPLER * 0x1000000) | (METRIC_GROUP_NAME_ID_SAMPLER_IN * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "Sampler/Sampler Input", (METRIC_GROUP_NAME_ID_SAMPLER * 0x1000000) | (METRIC_GROUP_NAME_ID_SAMPLER_IN * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "texels", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -11794,7 +11794,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "SamplerTexelMisses", "Sampler Texels Misses",
             "The total number of texels lookups (with 2x2 accuracy) that missed L1 sampler cache.",
-            "Sampler/Sampler Cache", (METRIC_GROUP_NAME_ID_SAMPLER * 0x1000000) | (METRIC_GROUP_NAME_ID_SAMPLER_CACHE * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_BATCH|USAGE_FLAG_FRAME|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "Sampler/Sampler Cache", (METRIC_GROUP_NAME_ID_SAMPLER * 0x1000000) | (METRIC_GROUP_NAME_ID_SAMPLER_CACHE * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_BATCH|USAGE_FLAG_FRAME|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "texels", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -11807,7 +11807,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "SlmBytesRead", "SLM Bytes Read",
             "The total number of GPU memory bytes read from shared local memory.",
-            "L3/Data Port/SLM", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000) | (METRIC_GROUP_NAME_ID_SLM * 0x100), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "L3/Data Port/SLM", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000) | (METRIC_GROUP_NAME_ID_SLM * 0x100), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_THROUGHPUT, RESULT_UINT64, "bytes", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -11821,7 +11821,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "SlmBytesWritten", "SLM Bytes Written",
             "The total number of GPU memory bytes written into shared local memory.",
-            "L3/Data Port/SLM", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000) | (METRIC_GROUP_NAME_ID_SLM * 0x100), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "L3/Data Port/SLM", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000) | (METRIC_GROUP_NAME_ID_SLM * 0x100), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_THROUGHPUT, RESULT_UINT64, "bytes", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -11835,7 +11835,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "ShaderMemoryAccesses", "Shader Memory Accesses",
             "The total number of shader memory accesses to L3.",
-            "L3/Data Port", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "L3/Data Port", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "messages", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -11847,7 +11847,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "ShaderAtomics", "Shader Atomic Memory Accesses",
             "The total number of shader atomic memory accesses.",
-            "L3/Data Port/Atomics", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000) | (METRIC_GROUP_NAME_ID_ATOMICS * 0x100), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "L3/Data Port/Atomics", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000) | (METRIC_GROUP_NAME_ID_ATOMICS * 0x100), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "messages", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -11859,7 +11859,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "L3ShaderThroughput", "L3 Shader Throughput",
             "The total number of GPU memory bytes transferred between shaders and L3 caches w/o URB.",
-            "L3/Data Port", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000), USAGE_FLAG_TIER_2|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "L3/Data Port", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000), USAGE_FLAG_TIER_2|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_THROUGHPUT, RESULT_UINT64, "bytes", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -11871,7 +11871,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "ShaderBarriers", "Shader Barrier Messages",
             "The total number of shader barrier messages.",
-            "EU Array/Barrier", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_EU_BARRIER * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Barrier", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_EU_BARRIER * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "messages", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -11885,7 +11885,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         {
             metric = metricSet->AddMetric( "L30Bank3Stalled", "Slice0 L3 Bank3 Stalled",
                 "The percentage of time in which slice0 L3 bank3 is stalled",
-                "GTI/L3", (METRIC_GROUP_NAME_ID_GTI * 0x1000000) | (METRIC_GROUP_NAME_ID_L3 * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+                "GTI/L3", (METRIC_GROUP_NAME_ID_GTI * 0x1000000) | (METRIC_GROUP_NAME_ID_L3 * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
                 METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SLICE, availabilityEquation, NULL, NULL );
             if( metric )
             {
@@ -11902,7 +11902,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         {
             metric = metricSet->AddMetric( "L31Bank3Stalled", "Slice1 L3 Bank3 Stalled",
                 "The percentage of time in which slice1 L3 bank3 is stalled",
-                "GTI/L3", (METRIC_GROUP_NAME_ID_GTI * 0x1000000) | (METRIC_GROUP_NAME_ID_L3 * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+                "GTI/L3", (METRIC_GROUP_NAME_ID_GTI * 0x1000000) | (METRIC_GROUP_NAME_ID_L3 * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
                 METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SLICE, availabilityEquation, NULL, NULL );
             if( metric )
             {
@@ -11919,7 +11919,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         {
             metric = metricSet->AddMetric( "L31Bank3Active", "Slice1 L3 Bank3 Active",
                 "The percentage of time in which slice1 L3 bank3 is active",
-                "GTI/L3", (METRIC_GROUP_NAME_ID_GTI * 0x1000000) | (METRIC_GROUP_NAME_ID_L3 * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+                "GTI/L3", (METRIC_GROUP_NAME_ID_GTI * 0x1000000) | (METRIC_GROUP_NAME_ID_L3 * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
                 METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SLICE, availabilityEquation, NULL, NULL );
             if( metric )
             {
@@ -11936,7 +11936,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         {
             metric = metricSet->AddMetric( "L30Bank3Active", "Slice0 L3 Bank3 Active",
                 "The percentage of time in which slice0 L3 bank3 is active",
-                "GTI/L3", (METRIC_GROUP_NAME_ID_GTI * 0x1000000) | (METRIC_GROUP_NAME_ID_L3 * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+                "GTI/L3", (METRIC_GROUP_NAME_ID_GTI * 0x1000000) | (METRIC_GROUP_NAME_ID_L3 * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
                 METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SLICE, availabilityEquation, NULL, NULL );
             if( metric )
             {
@@ -11951,7 +11951,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "GTRequestQueueFull", "SQ is full",
             "The percentage of time when SQ is filled above a threshold (usually 48 entries)",
-            "GTI", (METRIC_GROUP_NAME_ID_GTI * 0x1000000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X,
+            "GTI", (METRIC_GROUP_NAME_ID_GTI * 0x1000000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X,
             METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -11963,7 +11963,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
 
         information = metricSet->AddInformation( "QueryBeginTime", "Query Begin Time",
             "The measurement begin time.",
-            "Report Meta Data", API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "Report Meta Data", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             INFORMATION_TYPE_TIMESTAMP, "ns", NULL );
         if( information )
         {
@@ -11974,7 +11974,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
 
         information = metricSet->AddInformation( "CoreFrequencyMHz", "GPU Core Frequency",
             "The last core frequency in the measurement.",
-            "Report Meta Data", API_TYPE_OGL|API_TYPE_OGL4_X,
+            "Report Meta Data", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
             INFORMATION_TYPE_VALUE, "MHz", NULL );
         if( information )
         {
@@ -12002,7 +12002,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
 
         information = metricSet->AddInformation( "CoreFrequencyChanged", "Core Frequency Changed",
             "The flag indicating that core frequency has changed.",
-            "Exception", API_TYPE_OGL|API_TYPE_OGL4_X,
+            "Exception", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
             INFORMATION_TYPE_FLAG, NULL, NULL );
         if( information )
         {
@@ -12012,7 +12012,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
 
         information = metricSet->AddInformation( "QuerySplitOccurred", "Query Split Occurred",
             "The flag indicating that query has been split during execution on the GPU.",
-            "Exception", API_TYPE_OGL|API_TYPE_OGL4_X,
+            "Exception", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
             INFORMATION_TYPE_FLAG, NULL, NULL );
         if( information )
         {
@@ -12022,7 +12022,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
 
         information = metricSet->AddInformation( "ReportId", "Query report id",
             "Query report identification number.",
-            "Report Meta Data", API_TYPE_OGL|API_TYPE_OGL4_X,
+            "Report Meta Data", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
             INFORMATION_TYPE_VALUE, NULL, NULL );
         if( information )
         {
@@ -12032,7 +12032,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
 
         information = metricSet->AddInformation( "ReportsCount", "Query reports count",
             "The number of available query reports.",
-            "Report Meta Data", API_TYPE_OGL|API_TYPE_OGL4_X,
+            "Report Meta Data", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
             INFORMATION_TYPE_VALUE, NULL, NULL );
         if( information )
         {
@@ -12042,7 +12042,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
 
         information = metricSet->AddInformation( "OverrunOccured", "Query Overrun Occurred",
             "The flag indicating that Oa buffer has been overran.",
-            "Exception", API_TYPE_OGL|API_TYPE_OGL4_X,
+            "Exception", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
             INFORMATION_TYPE_FLAG, NULL, NULL );
         if( information )
         {
@@ -12182,7 +12182,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
     platformMask = PLATFORM_BDW;
     if( MD_IS_INTERNAL_BUILD || metricsDevice->IsPlatformTypeOf( platformMask ) )
     {
-        metricSet = concurrentGroup->AddMetricSet( "L3_4", "Metric set L3_4", API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+        metricSet = concurrentGroup->AddMetricSet( "L3_4", "Metric set L3_4", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
            GPU_RENDER|GPU_COMPUTE, 256, 536, OA_REPORT_TYPE_256B_A45_NOA16, platformMask );
         MD_CHECK_PTR( metricSet );
         
@@ -12192,7 +12192,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "GpuTime", "GPU Time Elapsed",
             "Time elapsed on the GPU during the measurement.",
-            "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_TIER_1|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_TIER_1|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_DURATION, RESULT_UINT64, "ns", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -12204,7 +12204,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "GpuCoreClocks", "GPU Core Clocks",
             "The total number of GPU core clocks elapsed during the measurement.",
-            "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_TIER_1|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_TIER_1|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "cycles", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -12216,7 +12216,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "AvgGpuCoreFrequencyMHz", "AVG GPU Core Frequency",
             "Average GPU Core Frequency in the measurement.",
-            "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_TIER_1|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_TIER_1|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "MHz", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -12227,7 +12227,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "GpuBusy", "GPU Busy",
             "The percentage of time in which the GPU has been processing GPU commands.",
-            "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_TIER_1|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_TIER_1|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -12241,7 +12241,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "VsThreads", "VS Threads Dispatched",
             "The total number of vertex shader hardware threads dispatched.",
-            "EU Array/Vertex Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_VS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Vertex Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_VS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "threads", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -12253,7 +12253,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "HsThreads", "HS Threads Dispatched",
             "The total number of hull shader hardware threads dispatched.",
-            "EU Array/Hull Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_HS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Hull Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_HS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "threads", 0, 0, HW_UNIT_GPU, availabilityEquation, "Hull|Control,hull|control,HS|TCS", "oa.fixed" );
         if( metric )
         {
@@ -12265,7 +12265,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "DsThreads", "DS Threads Dispatched",
             "The total number of domain shader hardware threads dispatched.",
-            "EU Array/Domain Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_DS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Domain Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_DS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "threads", 0, 0, HW_UNIT_GPU, availabilityEquation, "Domain|Evaluation,domain|evaluation,DS|TES", "oa.fixed" );
         if( metric )
         {
@@ -12277,7 +12277,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "GsThreads", "GS Threads Dispatched",
             "The total number of geometry shader hardware threads dispatched.",
-            "EU Array/Geometry Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_GS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Geometry Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_GS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "threads", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -12289,7 +12289,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "PsThreads", "PS Threads Dispatched",
             "The total number of pixel shader hardware threads dispatched.",
-            "EU Array/Pixel Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_PS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Pixel Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_PS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "threads", 0, 0, HW_UNIT_GPU, availabilityEquation, "Pixel|Fragment,PS|FS,pixel|fragment", "oa.fixed" );
         if( metric )
         {
@@ -12301,7 +12301,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "CsThreads", "CS Threads Dispatched",
             "The total number of compute shader hardware threads dispatched.",
-            "EU Array/Compute Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_CS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Compute Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_CS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "threads", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -12313,7 +12313,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "EuActive", "EU Active",
             "The percentage of time in which the Execution Units were actively processing.",
-            "EU Array", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000), USAGE_FLAG_TIER_2|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000), USAGE_FLAG_TIER_2|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -12327,7 +12327,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "EuStall", "EU Stall",
             "The percentage of time in which the Execution Units were stalled.",
-            "EU Array", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000), USAGE_FLAG_TIER_2|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000), USAGE_FLAG_TIER_2|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -12341,7 +12341,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "EuFpuBothActive", "EU Both FPU Pipes Active",
             "The percentage of time in which both EU FPU pipelines were actively processing.",
-            "EU Array/Pipes", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_EU_PIPES * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Pipes", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_EU_PIPES * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -12355,7 +12355,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "VsFpu0Active", "VS FPU0 Pipe Active",
             "The percentage of time in which EU FPU0 pipeline was actively processing a vertex shader instruction.",
-            "EU Array/Vertex Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_VS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Vertex Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_VS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -12369,7 +12369,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "VsFpu1Active", "VS FPU1 Pipe Active",
             "The percentage of time in which EU FPU1 pipeline was actively processing a vertex shader instruction.",
-            "EU Array/Vertex Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_VS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Vertex Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_VS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -12383,7 +12383,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "VsSendActive", "VS Send Pipe Active",
             "The percentage of time in which EU send pipeline was actively processing a vertex shader instruction.",
-            "EU Array/Vertex Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_VS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Vertex Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_VS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -12397,7 +12397,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "PsFpu0Active", "PS FPU0 Pipe Active",
             "The percentage of time in which EU FPU0 pipeline was actively processing a pixel shader instruction.",
-            "EU Array/Pixel Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_PS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Pixel Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_PS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, "Pixel|Fragment,PS|FS,pixel|fragment", NULL );
         if( metric )
         {
@@ -12411,7 +12411,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "PsFpu1Active", "PS FPU1 Pipe Active",
             "The percentage of time in which EU FPU1 pipeline was actively processing a pixel shader instruction.",
-            "EU Array/Pixel Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_PS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Pixel Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_PS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, "Pixel|Fragment,PS|FS,pixel|fragment", NULL );
         if( metric )
         {
@@ -12425,7 +12425,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "PsSendActive", "PS Send Pipeline Active",
             "The percentage of time in which EU send pipeline was actively processing a pixel shader instruction.",
-            "EU Array/Pixel Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_PS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Pixel Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_PS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, "Pixel|Fragment,PS|FS,pixel|fragment", NULL );
         if( metric )
         {
@@ -12439,7 +12439,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "PsEuBothFpuActive", "PS Both FPU Active",
             "The percentage of time in which pixel shaders were processed actively on the both FPUs.",
-            "3D Pipe/Pixel Shader", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_PS * 0x10000), USAGE_FLAG_TIER_4|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "3D Pipe/Pixel Shader", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_PS * 0x10000), USAGE_FLAG_TIER_4|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, "Pixel|Fragment,PS|FS,pixel|fragment", NULL );
         if( metric )
         {
@@ -12453,7 +12453,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "RasterizedPixels", "Rasterized Pixels",
             "The total number of rasterized pixels.",
-            "3D Pipe/Rasterizer", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_WM * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "3D Pipe/Rasterizer", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_WM * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "pixels", 0, 0, HW_UNIT_GPU, availabilityEquation, "Pixel|Fragment,PS|FS,pixel|fragment", "oa.fixed" );
         if( metric )
         {
@@ -12466,7 +12466,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "HiDepthTestFails", "Early Hi-Depth Test Fails",
             "The total number of pixels dropped on early hierarchical depth test.",
-            "3D Pipe/Rasterizer/Hi-Depth Test", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_WM * 0x10000) | (METRIC_GROUP_NAME_ID_HZ * 0x100), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "3D Pipe/Rasterizer/Hi-Depth Test", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_WM * 0x10000) | (METRIC_GROUP_NAME_ID_HZ * 0x100), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "pixels", 0, 0, HW_UNIT_GPU, availabilityEquation, "Pixel|Fragment,PS|FS,pixel|fragment", "oa.fixed" );
         if( metric )
         {
@@ -12479,7 +12479,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "EarlyDepthTestFails", "Early Depth Test Fails",
             "The total number of pixels dropped on early depth test.",
-            "3D Pipe/Rasterizer/Early Depth Test", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_WM * 0x10000) | (METRIC_GROUP_NAME_ID_IZ * 0x100), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "3D Pipe/Rasterizer/Early Depth Test", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_WM * 0x10000) | (METRIC_GROUP_NAME_ID_IZ * 0x100), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "pixels", 0, 0, HW_UNIT_GPU, availabilityEquation, "Pixel|Fragment,PS|FS,pixel|fragment", "oa.fixed" );
         if( metric )
         {
@@ -12492,7 +12492,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "SamplesKilledInPs", "Samples Killed in PS",
             "The total number of samples or pixels dropped in pixel shaders.",
-            "3D Pipe/Pixel Shader", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_PS * 0x10000), USAGE_FLAG_TIER_4|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "3D Pipe/Pixel Shader", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_PS * 0x10000), USAGE_FLAG_TIER_4|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "pixels", 0, 0, HW_UNIT_GPU, availabilityEquation, "Pixel|Fragment,PS|FS,pixel|fragment", "oa.fixed" );
         if( metric )
         {
@@ -12505,7 +12505,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "PixelsFailingPostPsTests", "Pixels Failing Tests",
             "The total number of pixels dropped on post-PS alpha, stencil, or depth tests.",
-            "3D Pipe/Output Merger", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_OM * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "3D Pipe/Output Merger", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_OM * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "pixels", 0, 0, HW_UNIT_GPU, availabilityEquation, "Pixel|Fragment,PS|FS,pixel|fragment", "oa.fixed" );
         if( metric )
         {
@@ -12518,7 +12518,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "SamplesWritten", "Samples Written",
             "The total number of samples or pixels written to all render targets.",
-            "3D Pipe/Output Merger", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_OM * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "3D Pipe/Output Merger", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_OM * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "pixels", 0, 0, HW_UNIT_GPU, availabilityEquation, "Pixel|Fragment,PS|FS,pixel|fragment", "oa.fixed" );
         if( metric )
         {
@@ -12531,7 +12531,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "SamplesBlended", "Samples Blended",
             "The total number of blended samples or pixels written to all render targets.",
-            "3D Pipe/Output Merger", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_OM * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "3D Pipe/Output Merger", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_OM * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "pixels", 0, 0, HW_UNIT_GPU, availabilityEquation, "Pixel|Fragment,PS|FS,pixel|fragment", "oa.fixed" );
         if( metric )
         {
@@ -12544,7 +12544,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "SamplerTexels", "Sampler Texels",
             "The total number of texels seen on input (with 2x2 accuracy) in all sampler units.",
-            "Sampler/Sampler Input", (METRIC_GROUP_NAME_ID_SAMPLER * 0x1000000) | (METRIC_GROUP_NAME_ID_SAMPLER_IN * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "Sampler/Sampler Input", (METRIC_GROUP_NAME_ID_SAMPLER * 0x1000000) | (METRIC_GROUP_NAME_ID_SAMPLER_IN * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "texels", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -12557,7 +12557,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "SamplerTexelMisses", "Sampler Texels Misses",
             "The total number of texels lookups (with 2x2 accuracy) that missed L1 sampler cache.",
-            "Sampler/Sampler Cache", (METRIC_GROUP_NAME_ID_SAMPLER * 0x1000000) | (METRIC_GROUP_NAME_ID_SAMPLER_CACHE * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_BATCH|USAGE_FLAG_FRAME|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "Sampler/Sampler Cache", (METRIC_GROUP_NAME_ID_SAMPLER * 0x1000000) | (METRIC_GROUP_NAME_ID_SAMPLER_CACHE * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_BATCH|USAGE_FLAG_FRAME|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "texels", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -12570,7 +12570,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "SlmBytesRead", "SLM Bytes Read",
             "The total number of GPU memory bytes read from shared local memory.",
-            "L3/Data Port/SLM", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000) | (METRIC_GROUP_NAME_ID_SLM * 0x100), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "L3/Data Port/SLM", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000) | (METRIC_GROUP_NAME_ID_SLM * 0x100), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_THROUGHPUT, RESULT_UINT64, "bytes", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -12584,7 +12584,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "SlmBytesWritten", "SLM Bytes Written",
             "The total number of GPU memory bytes written into shared local memory.",
-            "L3/Data Port/SLM", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000) | (METRIC_GROUP_NAME_ID_SLM * 0x100), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "L3/Data Port/SLM", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000) | (METRIC_GROUP_NAME_ID_SLM * 0x100), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_THROUGHPUT, RESULT_UINT64, "bytes", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -12598,7 +12598,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "ShaderMemoryAccesses", "Shader Memory Accesses",
             "The total number of shader memory accesses to L3.",
-            "L3/Data Port", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "L3/Data Port", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "messages", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -12610,7 +12610,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "ShaderAtomics", "Shader Atomic Memory Accesses",
             "The total number of shader atomic memory accesses.",
-            "L3/Data Port/Atomics", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000) | (METRIC_GROUP_NAME_ID_ATOMICS * 0x100), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "L3/Data Port/Atomics", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000) | (METRIC_GROUP_NAME_ID_ATOMICS * 0x100), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "messages", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -12622,7 +12622,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "L3ShaderThroughput", "L3 Shader Throughput",
             "The total number of GPU memory bytes transferred between shaders and L3 caches w/o URB.",
-            "L3/Data Port", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000), USAGE_FLAG_TIER_2|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "L3/Data Port", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000), USAGE_FLAG_TIER_2|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_THROUGHPUT, RESULT_UINT64, "bytes", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -12634,7 +12634,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "ShaderBarriers", "Shader Barrier Messages",
             "The total number of shader barrier messages.",
-            "EU Array/Barrier", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_EU_BARRIER * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Barrier", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_EU_BARRIER * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "messages", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -12648,7 +12648,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         {
             metric = metricSet->AddMetric( "L30Bank2Stalled", "Slice0 L3 Bank2 Stalled",
                 "The percentage of time in which slice0 L3 bank2 is stalled",
-                "GTI/L3", (METRIC_GROUP_NAME_ID_GTI * 0x1000000) | (METRIC_GROUP_NAME_ID_L3 * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+                "GTI/L3", (METRIC_GROUP_NAME_ID_GTI * 0x1000000) | (METRIC_GROUP_NAME_ID_L3 * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
                 METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SLICE, availabilityEquation, NULL, NULL );
             if( metric )
             {
@@ -12665,7 +12665,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         {
             metric = metricSet->AddMetric( "L31Bank2Stalled", "Slice1 L3 Bank2 Stalled",
                 "The percentage of time in which slice1 L3 bank2 is stalled",
-                "GTI/L3", (METRIC_GROUP_NAME_ID_GTI * 0x1000000) | (METRIC_GROUP_NAME_ID_L3 * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+                "GTI/L3", (METRIC_GROUP_NAME_ID_GTI * 0x1000000) | (METRIC_GROUP_NAME_ID_L3 * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
                 METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SLICE, availabilityEquation, NULL, NULL );
             if( metric )
             {
@@ -12682,7 +12682,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         {
             metric = metricSet->AddMetric( "L31Bank2Active", "Slice1 L3 Bank2 Active",
                 "The percentage of time in which slice1 L3 bank2 is active",
-                "GTI/L3", (METRIC_GROUP_NAME_ID_GTI * 0x1000000) | (METRIC_GROUP_NAME_ID_L3 * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+                "GTI/L3", (METRIC_GROUP_NAME_ID_GTI * 0x1000000) | (METRIC_GROUP_NAME_ID_L3 * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
                 METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SLICE, availabilityEquation, NULL, NULL );
             if( metric )
             {
@@ -12699,7 +12699,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         {
             metric = metricSet->AddMetric( "L30Bank2Active", "Slice0 L3 Bank2 Active",
                 "The percentage of time in which slice0 L3 bank2 is active",
-                "GTI/L3", (METRIC_GROUP_NAME_ID_GTI * 0x1000000) | (METRIC_GROUP_NAME_ID_L3 * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+                "GTI/L3", (METRIC_GROUP_NAME_ID_GTI * 0x1000000) | (METRIC_GROUP_NAME_ID_L3 * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
                 METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SLICE, availabilityEquation, NULL, NULL );
             if( metric )
             {
@@ -12714,7 +12714,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "GTRequestQueueFull", "SQ is full",
             "The percentage of time when SQ is filled above a threshold (usually 48 entries)",
-            "GTI", (METRIC_GROUP_NAME_ID_GTI * 0x1000000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X,
+            "GTI", (METRIC_GROUP_NAME_ID_GTI * 0x1000000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X,
             METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -12726,7 +12726,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
 
         information = metricSet->AddInformation( "QueryBeginTime", "Query Begin Time",
             "The measurement begin time.",
-            "Report Meta Data", API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "Report Meta Data", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             INFORMATION_TYPE_TIMESTAMP, "ns", NULL );
         if( information )
         {
@@ -12737,7 +12737,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
 
         information = metricSet->AddInformation( "CoreFrequencyMHz", "GPU Core Frequency",
             "The last core frequency in the measurement.",
-            "Report Meta Data", API_TYPE_OGL|API_TYPE_OGL4_X,
+            "Report Meta Data", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
             INFORMATION_TYPE_VALUE, "MHz", NULL );
         if( information )
         {
@@ -12765,7 +12765,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
 
         information = metricSet->AddInformation( "CoreFrequencyChanged", "Core Frequency Changed",
             "The flag indicating that core frequency has changed.",
-            "Exception", API_TYPE_OGL|API_TYPE_OGL4_X,
+            "Exception", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
             INFORMATION_TYPE_FLAG, NULL, NULL );
         if( information )
         {
@@ -12775,7 +12775,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
 
         information = metricSet->AddInformation( "QuerySplitOccurred", "Query Split Occurred",
             "The flag indicating that query has been split during execution on the GPU.",
-            "Exception", API_TYPE_OGL|API_TYPE_OGL4_X,
+            "Exception", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
             INFORMATION_TYPE_FLAG, NULL, NULL );
         if( information )
         {
@@ -12785,7 +12785,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
 
         information = metricSet->AddInformation( "ReportId", "Query report id",
             "Query report identification number.",
-            "Report Meta Data", API_TYPE_OGL|API_TYPE_OGL4_X,
+            "Report Meta Data", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
             INFORMATION_TYPE_VALUE, NULL, NULL );
         if( information )
         {
@@ -12795,7 +12795,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
 
         information = metricSet->AddInformation( "ReportsCount", "Query reports count",
             "The number of available query reports.",
-            "Report Meta Data", API_TYPE_OGL|API_TYPE_OGL4_X,
+            "Report Meta Data", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
             INFORMATION_TYPE_VALUE, NULL, NULL );
         if( information )
         {
@@ -12805,7 +12805,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
 
         information = metricSet->AddInformation( "OverrunOccured", "Query Overrun Occurred",
             "The flag indicating that Oa buffer has been overran.",
-            "Exception", API_TYPE_OGL|API_TYPE_OGL4_X,
+            "Exception", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
             INFORMATION_TYPE_FLAG, NULL, NULL );
         if( information )
         {
@@ -12944,7 +12944,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
     platformMask = PLATFORM_BDW;
     if( MD_IS_INTERNAL_BUILD || metricsDevice->IsPlatformTypeOf( platformMask ) )
     {
-        metricSet = concurrentGroup->AddMetricSet( "RasterizerAndPixelBackend", "Metric set RasterizerAndPixelBackend", API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+        metricSet = concurrentGroup->AddMetricSet( "RasterizerAndPixelBackend", "Metric set RasterizerAndPixelBackend", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
            GPU_RENDER|GPU_COMPUTE, 256, 536, OA_REPORT_TYPE_256B_A45_NOA16, platformMask );
         MD_CHECK_PTR( metricSet );
         
@@ -12954,7 +12954,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "GpuTime", "GPU Time Elapsed",
             "Time elapsed on the GPU during the measurement.",
-            "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_TIER_1|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_TIER_1|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_DURATION, RESULT_UINT64, "ns", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -12966,7 +12966,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "GpuCoreClocks", "GPU Core Clocks",
             "The total number of GPU core clocks elapsed during the measurement.",
-            "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_TIER_1|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_TIER_1|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "cycles", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -12978,7 +12978,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "AvgGpuCoreFrequencyMHz", "AVG GPU Core Frequency",
             "Average GPU Core Frequency in the measurement.",
-            "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_TIER_1|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_TIER_1|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "MHz", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -12989,7 +12989,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "GpuBusy", "GPU Busy",
             "The percentage of time in which the GPU has been processing GPU commands.",
-            "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_TIER_1|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_TIER_1|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -13003,7 +13003,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "VsThreads", "VS Threads Dispatched",
             "The total number of vertex shader hardware threads dispatched.",
-            "EU Array/Vertex Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_VS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Vertex Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_VS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "threads", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -13015,7 +13015,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "HsThreads", "HS Threads Dispatched",
             "The total number of hull shader hardware threads dispatched.",
-            "EU Array/Hull Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_HS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Hull Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_HS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "threads", 0, 0, HW_UNIT_GPU, availabilityEquation, "Hull|Control,hull|control,HS|TCS", "oa.fixed" );
         if( metric )
         {
@@ -13027,7 +13027,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "DsThreads", "DS Threads Dispatched",
             "The total number of domain shader hardware threads dispatched.",
-            "EU Array/Domain Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_DS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Domain Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_DS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "threads", 0, 0, HW_UNIT_GPU, availabilityEquation, "Domain|Evaluation,domain|evaluation,DS|TES", "oa.fixed" );
         if( metric )
         {
@@ -13039,7 +13039,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "GsThreads", "GS Threads Dispatched",
             "The total number of geometry shader hardware threads dispatched.",
-            "EU Array/Geometry Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_GS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Geometry Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_GS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "threads", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -13051,7 +13051,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "PsThreads", "PS Threads Dispatched",
             "The total number of pixel shader hardware threads dispatched.",
-            "EU Array/Pixel Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_PS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Pixel Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_PS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "threads", 0, 0, HW_UNIT_GPU, availabilityEquation, "Pixel|Fragment,PS|FS,pixel|fragment", "oa.fixed" );
         if( metric )
         {
@@ -13063,7 +13063,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "CsThreads", "CS Threads Dispatched",
             "The total number of compute shader hardware threads dispatched.",
-            "EU Array/Compute Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_CS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Compute Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_CS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "threads", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -13075,7 +13075,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "EuActive", "EU Active",
             "The percentage of time in which the Execution Units were actively processing.",
-            "EU Array", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000), USAGE_FLAG_TIER_2|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000), USAGE_FLAG_TIER_2|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -13089,7 +13089,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "EuStall", "EU Stall",
             "The percentage of time in which the Execution Units were stalled.",
-            "EU Array", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000), USAGE_FLAG_TIER_2|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000), USAGE_FLAG_TIER_2|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -13103,7 +13103,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "EuFpuBothActive", "EU Both FPU Pipes Active",
             "The percentage of time in which both EU FPU pipelines were actively processing.",
-            "EU Array/Pipes", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_EU_PIPES * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Pipes", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_EU_PIPES * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -13117,7 +13117,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "VsFpu0Active", "VS FPU0 Pipe Active",
             "The percentage of time in which EU FPU0 pipeline was actively processing a vertex shader instruction.",
-            "EU Array/Vertex Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_VS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Vertex Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_VS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -13131,7 +13131,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "VsFpu1Active", "VS FPU1 Pipe Active",
             "The percentage of time in which EU FPU1 pipeline was actively processing a vertex shader instruction.",
-            "EU Array/Vertex Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_VS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Vertex Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_VS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -13145,7 +13145,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "VsSendActive", "VS Send Pipe Active",
             "The percentage of time in which EU send pipeline was actively processing a vertex shader instruction.",
-            "EU Array/Vertex Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_VS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Vertex Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_VS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -13159,7 +13159,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "PsFpu0Active", "PS FPU0 Pipe Active",
             "The percentage of time in which EU FPU0 pipeline was actively processing a pixel shader instruction.",
-            "EU Array/Pixel Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_PS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Pixel Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_PS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, "Pixel|Fragment,PS|FS,pixel|fragment", NULL );
         if( metric )
         {
@@ -13173,7 +13173,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "PsFpu1Active", "PS FPU1 Pipe Active",
             "The percentage of time in which EU FPU1 pipeline was actively processing a pixel shader instruction.",
-            "EU Array/Pixel Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_PS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Pixel Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_PS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, "Pixel|Fragment,PS|FS,pixel|fragment", NULL );
         if( metric )
         {
@@ -13187,7 +13187,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "PsSendActive", "PS Send Pipeline Active",
             "The percentage of time in which EU send pipeline was actively processing a pixel shader instruction.",
-            "EU Array/Pixel Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_PS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Pixel Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_PS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, "Pixel|Fragment,PS|FS,pixel|fragment", NULL );
         if( metric )
         {
@@ -13201,7 +13201,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "PsEuBothFpuActive", "PS Both FPU Active",
             "The percentage of time in which pixel shaders were processed actively on the both FPUs.",
-            "3D Pipe/Pixel Shader", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_PS * 0x10000), USAGE_FLAG_TIER_4|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "3D Pipe/Pixel Shader", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_PS * 0x10000), USAGE_FLAG_TIER_4|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, "Pixel|Fragment,PS|FS,pixel|fragment", NULL );
         if( metric )
         {
@@ -13215,7 +13215,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "RasterizedPixels", "Rasterized Pixels",
             "The total number of rasterized pixels.",
-            "3D Pipe/Rasterizer", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_WM * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "3D Pipe/Rasterizer", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_WM * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "pixels", 0, 0, HW_UNIT_GPU, availabilityEquation, "Pixel|Fragment,PS|FS,pixel|fragment", "oa.fixed" );
         if( metric )
         {
@@ -13228,7 +13228,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "HiDepthTestFails", "Early Hi-Depth Test Fails",
             "The total number of pixels dropped on early hierarchical depth test.",
-            "3D Pipe/Rasterizer/Hi-Depth Test", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_WM * 0x10000) | (METRIC_GROUP_NAME_ID_HZ * 0x100), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "3D Pipe/Rasterizer/Hi-Depth Test", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_WM * 0x10000) | (METRIC_GROUP_NAME_ID_HZ * 0x100), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "pixels", 0, 0, HW_UNIT_GPU, availabilityEquation, "Pixel|Fragment,PS|FS,pixel|fragment", "oa.fixed" );
         if( metric )
         {
@@ -13241,7 +13241,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "EarlyDepthTestFails", "Early Depth Test Fails",
             "The total number of pixels dropped on early depth test.",
-            "3D Pipe/Rasterizer/Early Depth Test", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_WM * 0x10000) | (METRIC_GROUP_NAME_ID_IZ * 0x100), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "3D Pipe/Rasterizer/Early Depth Test", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_WM * 0x10000) | (METRIC_GROUP_NAME_ID_IZ * 0x100), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "pixels", 0, 0, HW_UNIT_GPU, availabilityEquation, "Pixel|Fragment,PS|FS,pixel|fragment", "oa.fixed" );
         if( metric )
         {
@@ -13254,7 +13254,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "SamplesKilledInPs", "Samples Killed in PS",
             "The total number of samples or pixels dropped in pixel shaders.",
-            "3D Pipe/Pixel Shader", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_PS * 0x10000), USAGE_FLAG_TIER_4|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "3D Pipe/Pixel Shader", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_PS * 0x10000), USAGE_FLAG_TIER_4|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "pixels", 0, 0, HW_UNIT_GPU, availabilityEquation, "Pixel|Fragment,PS|FS,pixel|fragment", "oa.fixed" );
         if( metric )
         {
@@ -13267,7 +13267,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "PixelsFailingPostPsTests", "Pixels Failing Tests",
             "The total number of pixels dropped on post-PS alpha, stencil, or depth tests.",
-            "3D Pipe/Output Merger", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_OM * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "3D Pipe/Output Merger", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_OM * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "pixels", 0, 0, HW_UNIT_GPU, availabilityEquation, "Pixel|Fragment,PS|FS,pixel|fragment", "oa.fixed" );
         if( metric )
         {
@@ -13280,7 +13280,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "SamplesWritten", "Samples Written",
             "The total number of samples or pixels written to all render targets.",
-            "3D Pipe/Output Merger", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_OM * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "3D Pipe/Output Merger", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_OM * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "pixels", 0, 0, HW_UNIT_GPU, availabilityEquation, "Pixel|Fragment,PS|FS,pixel|fragment", "oa.fixed" );
         if( metric )
         {
@@ -13293,7 +13293,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "SamplesBlended", "Samples Blended",
             "The total number of blended samples or pixels written to all render targets.",
-            "3D Pipe/Output Merger", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_OM * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "3D Pipe/Output Merger", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_OM * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "pixels", 0, 0, HW_UNIT_GPU, availabilityEquation, "Pixel|Fragment,PS|FS,pixel|fragment", "oa.fixed" );
         if( metric )
         {
@@ -13306,7 +13306,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "SamplerTexels", "Sampler Texels",
             "The total number of texels seen on input (with 2x2 accuracy) in all sampler units.",
-            "Sampler/Sampler Input", (METRIC_GROUP_NAME_ID_SAMPLER * 0x1000000) | (METRIC_GROUP_NAME_ID_SAMPLER_IN * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "Sampler/Sampler Input", (METRIC_GROUP_NAME_ID_SAMPLER * 0x1000000) | (METRIC_GROUP_NAME_ID_SAMPLER_IN * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "texels", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -13319,7 +13319,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "SamplerTexelMisses", "Sampler Texels Misses",
             "The total number of texels lookups (with 2x2 accuracy) that missed L1 sampler cache.",
-            "Sampler/Sampler Cache", (METRIC_GROUP_NAME_ID_SAMPLER * 0x1000000) | (METRIC_GROUP_NAME_ID_SAMPLER_CACHE * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_BATCH|USAGE_FLAG_FRAME|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "Sampler/Sampler Cache", (METRIC_GROUP_NAME_ID_SAMPLER * 0x1000000) | (METRIC_GROUP_NAME_ID_SAMPLER_CACHE * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_BATCH|USAGE_FLAG_FRAME|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "texels", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -13332,7 +13332,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "SlmBytesRead", "SLM Bytes Read",
             "The total number of GPU memory bytes read from shared local memory.",
-            "L3/Data Port/SLM", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000) | (METRIC_GROUP_NAME_ID_SLM * 0x100), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "L3/Data Port/SLM", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000) | (METRIC_GROUP_NAME_ID_SLM * 0x100), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_THROUGHPUT, RESULT_UINT64, "bytes", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -13346,7 +13346,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "SlmBytesWritten", "SLM Bytes Written",
             "The total number of GPU memory bytes written into shared local memory.",
-            "L3/Data Port/SLM", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000) | (METRIC_GROUP_NAME_ID_SLM * 0x100), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "L3/Data Port/SLM", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000) | (METRIC_GROUP_NAME_ID_SLM * 0x100), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_THROUGHPUT, RESULT_UINT64, "bytes", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -13360,7 +13360,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "ShaderMemoryAccesses", "Shader Memory Accesses",
             "The total number of shader memory accesses to L3.",
-            "L3/Data Port", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "L3/Data Port", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "messages", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -13372,7 +13372,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "ShaderAtomics", "Shader Atomic Memory Accesses",
             "The total number of shader atomic memory accesses.",
-            "L3/Data Port/Atomics", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000) | (METRIC_GROUP_NAME_ID_ATOMICS * 0x100), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "L3/Data Port/Atomics", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000) | (METRIC_GROUP_NAME_ID_ATOMICS * 0x100), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "messages", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -13384,7 +13384,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "L3ShaderThroughput", "L3 Shader Throughput",
             "The total number of GPU memory bytes transferred between shaders and L3 caches w/o URB.",
-            "L3/Data Port", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000), USAGE_FLAG_TIER_2|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "L3/Data Port", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000), USAGE_FLAG_TIER_2|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_THROUGHPUT, RESULT_UINT64, "bytes", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -13396,7 +13396,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "ShaderBarriers", "Shader Barrier Messages",
             "The total number of shader barrier messages.",
-            "EU Array/Barrier", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_EU_BARRIER * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Barrier", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_EU_BARRIER * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "messages", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -13410,7 +13410,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         {
             metric = metricSet->AddMetric( "Rasterizer0OutputReady", "Slice0 Rasterizer Output Ready",
                 "The percentage of time in which slice0 rasterizer output is ready",
-                "GPU/Rasterizer", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_WM * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+                "GPU/Rasterizer", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_WM * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
                 METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SLICE, availabilityEquation, NULL, NULL );
             if( metric )
             {
@@ -13427,7 +13427,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         {
             metric = metricSet->AddMetric( "PixelData1Ready", "Slice1 Post-EarlyZ Pixel Data Ready",
                 "The percentage of time in which slice1 post-EarlyZ pixel data is ready (after early Z tests have been applied)",
-                "GPU/Rasterizer/Early Depth Test", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_WM * 0x10000) | (METRIC_GROUP_NAME_ID_IZ * 0x100), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+                "GPU/Rasterizer/Early Depth Test", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_WM * 0x10000) | (METRIC_GROUP_NAME_ID_IZ * 0x100), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
                 METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SLICE, availabilityEquation, NULL, NULL );
             if( metric )
             {
@@ -13444,7 +13444,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         {
             metric = metricSet->AddMetric( "PixelData0Ready", "Slice0 Post-EarlyZ Pixel Data Ready",
                 "The percentage of time in which slice0 post-EarlyZ pixel data is ready (after early Z tests have been applied)",
-                "GPU/Rasterizer/Early Depth Test", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_WM * 0x10000) | (METRIC_GROUP_NAME_ID_IZ * 0x100), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+                "GPU/Rasterizer/Early Depth Test", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_WM * 0x10000) | (METRIC_GROUP_NAME_ID_IZ * 0x100), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
                 METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SLICE, availabilityEquation, NULL, NULL );
             if( metric )
             {
@@ -13461,7 +13461,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         {
             metric = metricSet->AddMetric( "Rasterizer1InputAvailable", "Slice1 Rasterizer Input Available",
                 "The percentage of time in which slice1 rasterizer input is available",
-                "GPU/Rasterizer", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_WM * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+                "GPU/Rasterizer", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_WM * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
                 METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SLICE, availabilityEquation, NULL, NULL );
             if( metric )
             {
@@ -13478,7 +13478,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         {
             metric = metricSet->AddMetric( "Rasterizer1OutputReady", "Slice1 Rasterizer Output Ready",
                 "The percentage of time in which slice1 rasterizer output is ready",
-                "GPU/Rasterizer", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_WM * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+                "GPU/Rasterizer", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_WM * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
                 METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SLICE, availabilityEquation, NULL, NULL );
             if( metric )
             {
@@ -13495,7 +13495,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         {
             metric = metricSet->AddMetric( "Rasterizer0InputAvailable", "Slice0 Rasterizer Input Available",
                 "The percentage of time in which slice0 rasterizer input is available",
-                "GPU/Rasterizer", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_WM * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+                "GPU/Rasterizer", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_WM * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
                 METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SLICE, availabilityEquation, NULL, NULL );
             if( metric )
             {
@@ -13512,7 +13512,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         {
             metric = metricSet->AddMetric( "PixelValues0Ready", "Slice0 Pixel Values Ready",
                 "The percentage of time in which slice0 pixel values are ready",
-                "GPU/3D Pipe", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_3D_PIPE * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+                "GPU/3D Pipe", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_3D_PIPE * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
                 METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SLICE, availabilityEquation, NULL, NULL );
             if( metric )
             {
@@ -13529,7 +13529,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         {
             metric = metricSet->AddMetric( "PSOutput0Available", "Slice0 PS Output Available",
                 "The percentage of time in which slice0 PS output is available",
-                "GPU/3D Pipe", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_3D_PIPE * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+                "GPU/3D Pipe", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_3D_PIPE * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
                 METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SLICE, availabilityEquation, NULL, NULL );
             if( metric )
             {
@@ -13546,7 +13546,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         {
             metric = metricSet->AddMetric( "PixelValues1Ready", "Slice1 Pixel Values Ready",
                 "The percentage of time in which slice1 pixel values are ready",
-                "GPU/3D Pipe", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_3D_PIPE * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+                "GPU/3D Pipe", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_3D_PIPE * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
                 METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SLICE, availabilityEquation, NULL, NULL );
             if( metric )
             {
@@ -13563,7 +13563,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         {
             metric = metricSet->AddMetric( "PSOutput1Available", "Slice1 PS Output Available",
                 "The percentage of time in which slice1 PS output is available",
-                "GPU/3D Pipe", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_3D_PIPE * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+                "GPU/3D Pipe", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_3D_PIPE * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
                 METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SLICE, availabilityEquation, NULL, NULL );
             if( metric )
             {
@@ -13578,7 +13578,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "GTRequestQueueFull", "SQ is full",
             "The percentage of time when SQ is filled above a threshold (usually 48 entries)",
-            "GTI", (METRIC_GROUP_NAME_ID_GTI * 0x1000000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X,
+            "GTI", (METRIC_GROUP_NAME_ID_GTI * 0x1000000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X,
             METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -13590,7 +13590,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
 
         information = metricSet->AddInformation( "QueryBeginTime", "Query Begin Time",
             "The measurement begin time.",
-            "Report Meta Data", API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "Report Meta Data", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             INFORMATION_TYPE_TIMESTAMP, "ns", NULL );
         if( information )
         {
@@ -13601,7 +13601,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
 
         information = metricSet->AddInformation( "CoreFrequencyMHz", "GPU Core Frequency",
             "The last core frequency in the measurement.",
-            "Report Meta Data", API_TYPE_OGL|API_TYPE_OGL4_X,
+            "Report Meta Data", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
             INFORMATION_TYPE_VALUE, "MHz", NULL );
         if( information )
         {
@@ -13629,7 +13629,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
 
         information = metricSet->AddInformation( "CoreFrequencyChanged", "Core Frequency Changed",
             "The flag indicating that core frequency has changed.",
-            "Exception", API_TYPE_OGL|API_TYPE_OGL4_X,
+            "Exception", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
             INFORMATION_TYPE_FLAG, NULL, NULL );
         if( information )
         {
@@ -13639,7 +13639,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
 
         information = metricSet->AddInformation( "QuerySplitOccurred", "Query Split Occurred",
             "The flag indicating that query has been split during execution on the GPU.",
-            "Exception", API_TYPE_OGL|API_TYPE_OGL4_X,
+            "Exception", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
             INFORMATION_TYPE_FLAG, NULL, NULL );
         if( information )
         {
@@ -13649,7 +13649,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
 
         information = metricSet->AddInformation( "ReportId", "Query report id",
             "Query report identification number.",
-            "Report Meta Data", API_TYPE_OGL|API_TYPE_OGL4_X,
+            "Report Meta Data", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
             INFORMATION_TYPE_VALUE, NULL, NULL );
         if( information )
         {
@@ -13659,7 +13659,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
 
         information = metricSet->AddInformation( "ReportsCount", "Query reports count",
             "The number of available query reports.",
-            "Report Meta Data", API_TYPE_OGL|API_TYPE_OGL4_X,
+            "Report Meta Data", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
             INFORMATION_TYPE_VALUE, NULL, NULL );
         if( information )
         {
@@ -13669,7 +13669,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
 
         information = metricSet->AddInformation( "OverrunOccured", "Query Overrun Occurred",
             "The flag indicating that Oa buffer has been overran.",
-            "Exception", API_TYPE_OGL|API_TYPE_OGL4_X,
+            "Exception", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
             INFORMATION_TYPE_FLAG, NULL, NULL );
         if( information )
         {
@@ -13825,7 +13825,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
     platformMask = PLATFORM_BDW;
     if( MD_IS_INTERNAL_BUILD || metricsDevice->IsPlatformTypeOf( platformMask ) )
     {
-        metricSet = concurrentGroup->AddMetricSet( "Sampler_1", "Metric set Sampler_1", API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+        metricSet = concurrentGroup->AddMetricSet( "Sampler_1", "Metric set Sampler_1", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
            GPU_RENDER|GPU_COMPUTE, 256, 536, OA_REPORT_TYPE_256B_A45_NOA16, platformMask );
         MD_CHECK_PTR( metricSet );
         
@@ -13835,7 +13835,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "GpuTime", "GPU Time Elapsed",
             "Time elapsed on the GPU during the measurement.",
-            "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_TIER_1|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_TIER_1|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_DURATION, RESULT_UINT64, "ns", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -13847,7 +13847,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "GpuCoreClocks", "GPU Core Clocks",
             "The total number of GPU core clocks elapsed during the measurement.",
-            "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_TIER_1|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_TIER_1|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "cycles", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -13859,7 +13859,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "AvgGpuCoreFrequencyMHz", "AVG GPU Core Frequency",
             "Average GPU Core Frequency in the measurement.",
-            "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_TIER_1|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_TIER_1|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "MHz", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -13870,7 +13870,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "GpuBusy", "GPU Busy",
             "The percentage of time in which the GPU has been processing GPU commands.",
-            "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_TIER_1|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_TIER_1|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -13884,7 +13884,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "VsThreads", "VS Threads Dispatched",
             "The total number of vertex shader hardware threads dispatched.",
-            "EU Array/Vertex Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_VS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Vertex Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_VS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "threads", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -13896,7 +13896,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "HsThreads", "HS Threads Dispatched",
             "The total number of hull shader hardware threads dispatched.",
-            "EU Array/Hull Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_HS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Hull Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_HS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "threads", 0, 0, HW_UNIT_GPU, availabilityEquation, "Hull|Control,hull|control,HS|TCS", "oa.fixed" );
         if( metric )
         {
@@ -13908,7 +13908,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "DsThreads", "DS Threads Dispatched",
             "The total number of domain shader hardware threads dispatched.",
-            "EU Array/Domain Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_DS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Domain Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_DS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "threads", 0, 0, HW_UNIT_GPU, availabilityEquation, "Domain|Evaluation,domain|evaluation,DS|TES", "oa.fixed" );
         if( metric )
         {
@@ -13920,7 +13920,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "GsThreads", "GS Threads Dispatched",
             "The total number of geometry shader hardware threads dispatched.",
-            "EU Array/Geometry Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_GS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Geometry Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_GS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "threads", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -13932,7 +13932,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "PsThreads", "PS Threads Dispatched",
             "The total number of pixel shader hardware threads dispatched.",
-            "EU Array/Pixel Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_PS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Pixel Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_PS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "threads", 0, 0, HW_UNIT_GPU, availabilityEquation, "Pixel|Fragment,PS|FS,pixel|fragment", "oa.fixed" );
         if( metric )
         {
@@ -13944,7 +13944,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "CsThreads", "CS Threads Dispatched",
             "The total number of compute shader hardware threads dispatched.",
-            "EU Array/Compute Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_CS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Compute Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_CS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "threads", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -13956,7 +13956,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "EuActive", "EU Active",
             "The percentage of time in which the Execution Units were actively processing.",
-            "EU Array", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000), USAGE_FLAG_TIER_2|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000), USAGE_FLAG_TIER_2|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -13970,7 +13970,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "EuStall", "EU Stall",
             "The percentage of time in which the Execution Units were stalled.",
-            "EU Array", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000), USAGE_FLAG_TIER_2|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000), USAGE_FLAG_TIER_2|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -13984,7 +13984,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "EuFpuBothActive", "EU Both FPU Pipes Active",
             "The percentage of time in which both EU FPU pipelines were actively processing.",
-            "EU Array/Pipes", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_EU_PIPES * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Pipes", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_EU_PIPES * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -13998,7 +13998,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "VsFpu0Active", "VS FPU0 Pipe Active",
             "The percentage of time in which EU FPU0 pipeline was actively processing a vertex shader instruction.",
-            "EU Array/Vertex Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_VS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Vertex Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_VS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -14012,7 +14012,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "VsFpu1Active", "VS FPU1 Pipe Active",
             "The percentage of time in which EU FPU1 pipeline was actively processing a vertex shader instruction.",
-            "EU Array/Vertex Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_VS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Vertex Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_VS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -14026,7 +14026,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "VsSendActive", "VS Send Pipe Active",
             "The percentage of time in which EU send pipeline was actively processing a vertex shader instruction.",
-            "EU Array/Vertex Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_VS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Vertex Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_VS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -14040,7 +14040,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "PsFpu0Active", "PS FPU0 Pipe Active",
             "The percentage of time in which EU FPU0 pipeline was actively processing a pixel shader instruction.",
-            "EU Array/Pixel Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_PS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Pixel Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_PS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, "Pixel|Fragment,PS|FS,pixel|fragment", NULL );
         if( metric )
         {
@@ -14054,7 +14054,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "PsFpu1Active", "PS FPU1 Pipe Active",
             "The percentage of time in which EU FPU1 pipeline was actively processing a pixel shader instruction.",
-            "EU Array/Pixel Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_PS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Pixel Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_PS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, "Pixel|Fragment,PS|FS,pixel|fragment", NULL );
         if( metric )
         {
@@ -14068,7 +14068,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "PsSendActive", "PS Send Pipeline Active",
             "The percentage of time in which EU send pipeline was actively processing a pixel shader instruction.",
-            "EU Array/Pixel Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_PS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Pixel Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_PS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, "Pixel|Fragment,PS|FS,pixel|fragment", NULL );
         if( metric )
         {
@@ -14082,7 +14082,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "PsEuBothFpuActive", "PS Both FPU Active",
             "The percentage of time in which pixel shaders were processed actively on the both FPUs.",
-            "3D Pipe/Pixel Shader", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_PS * 0x10000), USAGE_FLAG_TIER_4|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "3D Pipe/Pixel Shader", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_PS * 0x10000), USAGE_FLAG_TIER_4|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, "Pixel|Fragment,PS|FS,pixel|fragment", NULL );
         if( metric )
         {
@@ -14096,7 +14096,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "RasterizedPixels", "Rasterized Pixels",
             "The total number of rasterized pixels.",
-            "3D Pipe/Rasterizer", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_WM * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "3D Pipe/Rasterizer", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_WM * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "pixels", 0, 0, HW_UNIT_GPU, availabilityEquation, "Pixel|Fragment,PS|FS,pixel|fragment", "oa.fixed" );
         if( metric )
         {
@@ -14109,7 +14109,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "HiDepthTestFails", "Early Hi-Depth Test Fails",
             "The total number of pixels dropped on early hierarchical depth test.",
-            "3D Pipe/Rasterizer/Hi-Depth Test", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_WM * 0x10000) | (METRIC_GROUP_NAME_ID_HZ * 0x100), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "3D Pipe/Rasterizer/Hi-Depth Test", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_WM * 0x10000) | (METRIC_GROUP_NAME_ID_HZ * 0x100), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "pixels", 0, 0, HW_UNIT_GPU, availabilityEquation, "Pixel|Fragment,PS|FS,pixel|fragment", "oa.fixed" );
         if( metric )
         {
@@ -14122,7 +14122,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "EarlyDepthTestFails", "Early Depth Test Fails",
             "The total number of pixels dropped on early depth test.",
-            "3D Pipe/Rasterizer/Early Depth Test", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_WM * 0x10000) | (METRIC_GROUP_NAME_ID_IZ * 0x100), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "3D Pipe/Rasterizer/Early Depth Test", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_WM * 0x10000) | (METRIC_GROUP_NAME_ID_IZ * 0x100), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "pixels", 0, 0, HW_UNIT_GPU, availabilityEquation, "Pixel|Fragment,PS|FS,pixel|fragment", "oa.fixed" );
         if( metric )
         {
@@ -14135,7 +14135,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "SamplesKilledInPs", "Samples Killed in PS",
             "The total number of samples or pixels dropped in pixel shaders.",
-            "3D Pipe/Pixel Shader", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_PS * 0x10000), USAGE_FLAG_TIER_4|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "3D Pipe/Pixel Shader", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_PS * 0x10000), USAGE_FLAG_TIER_4|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "pixels", 0, 0, HW_UNIT_GPU, availabilityEquation, "Pixel|Fragment,PS|FS,pixel|fragment", "oa.fixed" );
         if( metric )
         {
@@ -14148,7 +14148,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "PixelsFailingPostPsTests", "Pixels Failing Tests",
             "The total number of pixels dropped on post-PS alpha, stencil, or depth tests.",
-            "3D Pipe/Output Merger", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_OM * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "3D Pipe/Output Merger", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_OM * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "pixels", 0, 0, HW_UNIT_GPU, availabilityEquation, "Pixel|Fragment,PS|FS,pixel|fragment", "oa.fixed" );
         if( metric )
         {
@@ -14161,7 +14161,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "SamplesWritten", "Samples Written",
             "The total number of samples or pixels written to all render targets.",
-            "3D Pipe/Output Merger", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_OM * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "3D Pipe/Output Merger", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_OM * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "pixels", 0, 0, HW_UNIT_GPU, availabilityEquation, "Pixel|Fragment,PS|FS,pixel|fragment", "oa.fixed" );
         if( metric )
         {
@@ -14174,7 +14174,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "SamplesBlended", "Samples Blended",
             "The total number of blended samples or pixels written to all render targets.",
-            "3D Pipe/Output Merger", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_OM * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "3D Pipe/Output Merger", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_OM * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "pixels", 0, 0, HW_UNIT_GPU, availabilityEquation, "Pixel|Fragment,PS|FS,pixel|fragment", "oa.fixed" );
         if( metric )
         {
@@ -14187,7 +14187,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "SamplerTexels", "Sampler Texels",
             "The total number of texels seen on input (with 2x2 accuracy) in all sampler units.",
-            "Sampler/Sampler Input", (METRIC_GROUP_NAME_ID_SAMPLER * 0x1000000) | (METRIC_GROUP_NAME_ID_SAMPLER_IN * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "Sampler/Sampler Input", (METRIC_GROUP_NAME_ID_SAMPLER * 0x1000000) | (METRIC_GROUP_NAME_ID_SAMPLER_IN * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "texels", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -14200,7 +14200,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "SamplerTexelMisses", "Sampler Texels Misses",
             "The total number of texels lookups (with 2x2 accuracy) that missed L1 sampler cache.",
-            "Sampler/Sampler Cache", (METRIC_GROUP_NAME_ID_SAMPLER * 0x1000000) | (METRIC_GROUP_NAME_ID_SAMPLER_CACHE * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_BATCH|USAGE_FLAG_FRAME|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "Sampler/Sampler Cache", (METRIC_GROUP_NAME_ID_SAMPLER * 0x1000000) | (METRIC_GROUP_NAME_ID_SAMPLER_CACHE * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_BATCH|USAGE_FLAG_FRAME|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "texels", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -14213,7 +14213,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "SlmBytesRead", "SLM Bytes Read",
             "The total number of GPU memory bytes read from shared local memory.",
-            "L3/Data Port/SLM", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000) | (METRIC_GROUP_NAME_ID_SLM * 0x100), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "L3/Data Port/SLM", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000) | (METRIC_GROUP_NAME_ID_SLM * 0x100), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_THROUGHPUT, RESULT_UINT64, "bytes", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -14227,7 +14227,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "SlmBytesWritten", "SLM Bytes Written",
             "The total number of GPU memory bytes written into shared local memory.",
-            "L3/Data Port/SLM", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000) | (METRIC_GROUP_NAME_ID_SLM * 0x100), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "L3/Data Port/SLM", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000) | (METRIC_GROUP_NAME_ID_SLM * 0x100), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_THROUGHPUT, RESULT_UINT64, "bytes", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -14241,7 +14241,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "ShaderMemoryAccesses", "Shader Memory Accesses",
             "The total number of shader memory accesses to L3.",
-            "L3/Data Port", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "L3/Data Port", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "messages", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -14253,7 +14253,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "ShaderAtomics", "Shader Atomic Memory Accesses",
             "The total number of shader atomic memory accesses.",
-            "L3/Data Port/Atomics", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000) | (METRIC_GROUP_NAME_ID_ATOMICS * 0x100), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "L3/Data Port/Atomics", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000) | (METRIC_GROUP_NAME_ID_ATOMICS * 0x100), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "messages", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -14265,7 +14265,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "L3ShaderThroughput", "L3 Shader Throughput",
             "The total number of GPU memory bytes transferred between shaders and L3 caches w/o URB.",
-            "L3/Data Port", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000), USAGE_FLAG_TIER_2|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "L3/Data Port", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000), USAGE_FLAG_TIER_2|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_THROUGHPUT, RESULT_UINT64, "bytes", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -14277,7 +14277,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "ShaderBarriers", "Shader Barrier Messages",
             "The total number of shader barrier messages.",
-            "EU Array/Barrier", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_EU_BARRIER * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Barrier", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_EU_BARRIER * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "messages", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -14291,7 +14291,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         {
             metric = metricSet->AddMetric( "Sampler11InputAvailable", "Slice1 Subslice1 Input Available",
                 "The percentage of time in which slice1 subslice1 sampler input is available",
-                "GPU/Sampler", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_SAMPLER * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+                "GPU/Sampler", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_SAMPLER * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
                 METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, NULL, NULL );
             if( metric )
             {
@@ -14308,7 +14308,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         {
             metric = metricSet->AddMetric( "Sampler12InputAvailable", "Slice1 Subslice2 Input Available",
                 "The percentage of time in which slice1 subslice2 sampler input is available",
-                "GPU/Sampler", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_SAMPLER * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+                "GPU/Sampler", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_SAMPLER * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
                 METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, NULL, NULL );
             if( metric )
             {
@@ -14325,7 +14325,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         {
             metric = metricSet->AddMetric( "Sampler10InputAvailable", "Slice1 Subslice0 Input Available",
                 "The percentage of time in which slice1 subslice0 sampler input is available",
-                "GPU/Sampler", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_SAMPLER * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+                "GPU/Sampler", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_SAMPLER * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
                 METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, NULL, NULL );
             if( metric )
             {
@@ -14342,7 +14342,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         {
             metric = metricSet->AddMetric( "Sampler12OutputReady", "Slice1 Subslice2 Sampler Output Ready",
                 "The percentage of time in which slice1 subslice2 sampler output is ready",
-                "GPU/Sampler", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_SAMPLER * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+                "GPU/Sampler", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_SAMPLER * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
                 METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, NULL, NULL );
             if( metric )
             {
@@ -14359,7 +14359,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         {
             metric = metricSet->AddMetric( "Sampler10OutputReady", "Slice1 Subslice0 Sampler Output Ready",
                 "The percentage of time in which slice1 subslice0 sampler output is ready",
-                "GPU/Sampler", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_SAMPLER * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+                "GPU/Sampler", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_SAMPLER * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
                 METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, NULL, NULL );
             if( metric )
             {
@@ -14376,7 +14376,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         {
             metric = metricSet->AddMetric( "Sampler11OutputReady", "Slice1 Subslice1 Sampler Output Ready",
                 "The percentage of time in which slice1 subslice1 sampler output is ready",
-                "GPU/Sampler", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_SAMPLER * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+                "GPU/Sampler", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_SAMPLER * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
                 METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, NULL, NULL );
             if( metric )
             {
@@ -14391,7 +14391,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "GTRequestQueueFull", "SQ is full",
             "The percentage of time when SQ is filled above a threshold (usually 48 entries)",
-            "GTI", (METRIC_GROUP_NAME_ID_GTI * 0x1000000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X,
+            "GTI", (METRIC_GROUP_NAME_ID_GTI * 0x1000000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X,
             METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -14403,7 +14403,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
 
         information = metricSet->AddInformation( "QueryBeginTime", "Query Begin Time",
             "The measurement begin time.",
-            "Report Meta Data", API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "Report Meta Data", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             INFORMATION_TYPE_TIMESTAMP, "ns", NULL );
         if( information )
         {
@@ -14414,7 +14414,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
 
         information = metricSet->AddInformation( "CoreFrequencyMHz", "GPU Core Frequency",
             "The last core frequency in the measurement.",
-            "Report Meta Data", API_TYPE_OGL|API_TYPE_OGL4_X,
+            "Report Meta Data", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
             INFORMATION_TYPE_VALUE, "MHz", NULL );
         if( information )
         {
@@ -14442,7 +14442,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
 
         information = metricSet->AddInformation( "CoreFrequencyChanged", "Core Frequency Changed",
             "The flag indicating that core frequency has changed.",
-            "Exception", API_TYPE_OGL|API_TYPE_OGL4_X,
+            "Exception", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
             INFORMATION_TYPE_FLAG, NULL, NULL );
         if( information )
         {
@@ -14452,7 +14452,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
 
         information = metricSet->AddInformation( "QuerySplitOccurred", "Query Split Occurred",
             "The flag indicating that query has been split during execution on the GPU.",
-            "Exception", API_TYPE_OGL|API_TYPE_OGL4_X,
+            "Exception", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
             INFORMATION_TYPE_FLAG, NULL, NULL );
         if( information )
         {
@@ -14462,7 +14462,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
 
         information = metricSet->AddInformation( "ReportId", "Query report id",
             "Query report identification number.",
-            "Report Meta Data", API_TYPE_OGL|API_TYPE_OGL4_X,
+            "Report Meta Data", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
             INFORMATION_TYPE_VALUE, NULL, NULL );
         if( information )
         {
@@ -14472,7 +14472,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
 
         information = metricSet->AddInformation( "ReportsCount", "Query reports count",
             "The number of available query reports.",
-            "Report Meta Data", API_TYPE_OGL|API_TYPE_OGL4_X,
+            "Report Meta Data", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
             INFORMATION_TYPE_VALUE, NULL, NULL );
         if( information )
         {
@@ -14482,7 +14482,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
 
         information = metricSet->AddInformation( "OverrunOccured", "Query Overrun Occurred",
             "The flag indicating that Oa buffer has been overran.",
-            "Exception", API_TYPE_OGL|API_TYPE_OGL4_X,
+            "Exception", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
             INFORMATION_TYPE_FLAG, NULL, NULL );
         if( information )
         {
@@ -14644,7 +14644,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
     platformMask = PLATFORM_BDW;
     if( MD_IS_INTERNAL_BUILD || metricsDevice->IsPlatformTypeOf( platformMask ) )
     {
-        metricSet = concurrentGroup->AddMetricSet( "Sampler_2", "Metric set Sampler_2", API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+        metricSet = concurrentGroup->AddMetricSet( "Sampler_2", "Metric set Sampler_2", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
            GPU_RENDER|GPU_COMPUTE, 256, 536, OA_REPORT_TYPE_256B_A45_NOA16, platformMask );
         MD_CHECK_PTR( metricSet );
         
@@ -14654,7 +14654,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "GpuTime", "GPU Time Elapsed",
             "Time elapsed on the GPU during the measurement.",
-            "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_TIER_1|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_TIER_1|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_DURATION, RESULT_UINT64, "ns", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -14666,7 +14666,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "GpuCoreClocks", "GPU Core Clocks",
             "The total number of GPU core clocks elapsed during the measurement.",
-            "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_TIER_1|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_TIER_1|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "cycles", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -14678,7 +14678,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "AvgGpuCoreFrequencyMHz", "AVG GPU Core Frequency",
             "Average GPU Core Frequency in the measurement.",
-            "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_TIER_1|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_TIER_1|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "MHz", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -14689,7 +14689,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "GpuBusy", "GPU Busy",
             "The percentage of time in which the GPU has been processing GPU commands.",
-            "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_TIER_1|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_TIER_1|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -14703,7 +14703,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "VsThreads", "VS Threads Dispatched",
             "The total number of vertex shader hardware threads dispatched.",
-            "EU Array/Vertex Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_VS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Vertex Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_VS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "threads", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -14715,7 +14715,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "HsThreads", "HS Threads Dispatched",
             "The total number of hull shader hardware threads dispatched.",
-            "EU Array/Hull Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_HS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Hull Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_HS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "threads", 0, 0, HW_UNIT_GPU, availabilityEquation, "Hull|Control,hull|control,HS|TCS", "oa.fixed" );
         if( metric )
         {
@@ -14727,7 +14727,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "DsThreads", "DS Threads Dispatched",
             "The total number of domain shader hardware threads dispatched.",
-            "EU Array/Domain Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_DS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Domain Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_DS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "threads", 0, 0, HW_UNIT_GPU, availabilityEquation, "Domain|Evaluation,domain|evaluation,DS|TES", "oa.fixed" );
         if( metric )
         {
@@ -14739,7 +14739,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "GsThreads", "GS Threads Dispatched",
             "The total number of geometry shader hardware threads dispatched.",
-            "EU Array/Geometry Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_GS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Geometry Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_GS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "threads", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -14751,7 +14751,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "PsThreads", "PS Threads Dispatched",
             "The total number of pixel shader hardware threads dispatched.",
-            "EU Array/Pixel Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_PS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Pixel Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_PS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "threads", 0, 0, HW_UNIT_GPU, availabilityEquation, "Pixel|Fragment,PS|FS,pixel|fragment", "oa.fixed" );
         if( metric )
         {
@@ -14763,7 +14763,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "CsThreads", "CS Threads Dispatched",
             "The total number of compute shader hardware threads dispatched.",
-            "EU Array/Compute Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_CS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Compute Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_CS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "threads", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -14775,7 +14775,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "EuActive", "EU Active",
             "The percentage of time in which the Execution Units were actively processing.",
-            "EU Array", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000), USAGE_FLAG_TIER_2|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000), USAGE_FLAG_TIER_2|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -14789,7 +14789,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "EuStall", "EU Stall",
             "The percentage of time in which the Execution Units were stalled.",
-            "EU Array", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000), USAGE_FLAG_TIER_2|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000), USAGE_FLAG_TIER_2|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -14803,7 +14803,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "EuFpuBothActive", "EU Both FPU Pipes Active",
             "The percentage of time in which both EU FPU pipelines were actively processing.",
-            "EU Array/Pipes", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_EU_PIPES * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Pipes", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_EU_PIPES * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -14817,7 +14817,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "VsFpu0Active", "VS FPU0 Pipe Active",
             "The percentage of time in which EU FPU0 pipeline was actively processing a vertex shader instruction.",
-            "EU Array/Vertex Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_VS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Vertex Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_VS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -14831,7 +14831,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "VsFpu1Active", "VS FPU1 Pipe Active",
             "The percentage of time in which EU FPU1 pipeline was actively processing a vertex shader instruction.",
-            "EU Array/Vertex Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_VS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Vertex Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_VS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -14845,7 +14845,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "VsSendActive", "VS Send Pipe Active",
             "The percentage of time in which EU send pipeline was actively processing a vertex shader instruction.",
-            "EU Array/Vertex Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_VS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Vertex Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_VS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -14859,7 +14859,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "PsFpu0Active", "PS FPU0 Pipe Active",
             "The percentage of time in which EU FPU0 pipeline was actively processing a pixel shader instruction.",
-            "EU Array/Pixel Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_PS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Pixel Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_PS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, "Pixel|Fragment,PS|FS,pixel|fragment", NULL );
         if( metric )
         {
@@ -14873,7 +14873,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "PsFpu1Active", "PS FPU1 Pipe Active",
             "The percentage of time in which EU FPU1 pipeline was actively processing a pixel shader instruction.",
-            "EU Array/Pixel Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_PS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Pixel Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_PS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, "Pixel|Fragment,PS|FS,pixel|fragment", NULL );
         if( metric )
         {
@@ -14887,7 +14887,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "PsSendActive", "PS Send Pipeline Active",
             "The percentage of time in which EU send pipeline was actively processing a pixel shader instruction.",
-            "EU Array/Pixel Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_PS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Pixel Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_PS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, "Pixel|Fragment,PS|FS,pixel|fragment", NULL );
         if( metric )
         {
@@ -14901,7 +14901,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "PsEuBothFpuActive", "PS Both FPU Active",
             "The percentage of time in which pixel shaders were processed actively on the both FPUs.",
-            "3D Pipe/Pixel Shader", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_PS * 0x10000), USAGE_FLAG_TIER_4|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "3D Pipe/Pixel Shader", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_PS * 0x10000), USAGE_FLAG_TIER_4|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, "Pixel|Fragment,PS|FS,pixel|fragment", NULL );
         if( metric )
         {
@@ -14915,7 +14915,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "RasterizedPixels", "Rasterized Pixels",
             "The total number of rasterized pixels.",
-            "3D Pipe/Rasterizer", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_WM * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "3D Pipe/Rasterizer", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_WM * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "pixels", 0, 0, HW_UNIT_GPU, availabilityEquation, "Pixel|Fragment,PS|FS,pixel|fragment", "oa.fixed" );
         if( metric )
         {
@@ -14928,7 +14928,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "HiDepthTestFails", "Early Hi-Depth Test Fails",
             "The total number of pixels dropped on early hierarchical depth test.",
-            "3D Pipe/Rasterizer/Hi-Depth Test", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_WM * 0x10000) | (METRIC_GROUP_NAME_ID_HZ * 0x100), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "3D Pipe/Rasterizer/Hi-Depth Test", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_WM * 0x10000) | (METRIC_GROUP_NAME_ID_HZ * 0x100), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "pixels", 0, 0, HW_UNIT_GPU, availabilityEquation, "Pixel|Fragment,PS|FS,pixel|fragment", "oa.fixed" );
         if( metric )
         {
@@ -14941,7 +14941,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "EarlyDepthTestFails", "Early Depth Test Fails",
             "The total number of pixels dropped on early depth test.",
-            "3D Pipe/Rasterizer/Early Depth Test", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_WM * 0x10000) | (METRIC_GROUP_NAME_ID_IZ * 0x100), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "3D Pipe/Rasterizer/Early Depth Test", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_WM * 0x10000) | (METRIC_GROUP_NAME_ID_IZ * 0x100), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "pixels", 0, 0, HW_UNIT_GPU, availabilityEquation, "Pixel|Fragment,PS|FS,pixel|fragment", "oa.fixed" );
         if( metric )
         {
@@ -14954,7 +14954,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "SamplesKilledInPs", "Samples Killed in PS",
             "The total number of samples or pixels dropped in pixel shaders.",
-            "3D Pipe/Pixel Shader", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_PS * 0x10000), USAGE_FLAG_TIER_4|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "3D Pipe/Pixel Shader", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_PS * 0x10000), USAGE_FLAG_TIER_4|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "pixels", 0, 0, HW_UNIT_GPU, availabilityEquation, "Pixel|Fragment,PS|FS,pixel|fragment", "oa.fixed" );
         if( metric )
         {
@@ -14967,7 +14967,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "PixelsFailingPostPsTests", "Pixels Failing Tests",
             "The total number of pixels dropped on post-PS alpha, stencil, or depth tests.",
-            "3D Pipe/Output Merger", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_OM * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "3D Pipe/Output Merger", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_OM * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "pixels", 0, 0, HW_UNIT_GPU, availabilityEquation, "Pixel|Fragment,PS|FS,pixel|fragment", "oa.fixed" );
         if( metric )
         {
@@ -14980,7 +14980,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "SamplesWritten", "Samples Written",
             "The total number of samples or pixels written to all render targets.",
-            "3D Pipe/Output Merger", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_OM * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "3D Pipe/Output Merger", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_OM * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "pixels", 0, 0, HW_UNIT_GPU, availabilityEquation, "Pixel|Fragment,PS|FS,pixel|fragment", "oa.fixed" );
         if( metric )
         {
@@ -14993,7 +14993,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "SamplesBlended", "Samples Blended",
             "The total number of blended samples or pixels written to all render targets.",
-            "3D Pipe/Output Merger", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_OM * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "3D Pipe/Output Merger", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_OM * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "pixels", 0, 0, HW_UNIT_GPU, availabilityEquation, "Pixel|Fragment,PS|FS,pixel|fragment", "oa.fixed" );
         if( metric )
         {
@@ -15006,7 +15006,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "SamplerTexels", "Sampler Texels",
             "The total number of texels seen on input (with 2x2 accuracy) in all sampler units.",
-            "Sampler/Sampler Input", (METRIC_GROUP_NAME_ID_SAMPLER * 0x1000000) | (METRIC_GROUP_NAME_ID_SAMPLER_IN * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "Sampler/Sampler Input", (METRIC_GROUP_NAME_ID_SAMPLER * 0x1000000) | (METRIC_GROUP_NAME_ID_SAMPLER_IN * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "texels", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -15019,7 +15019,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "SamplerTexelMisses", "Sampler Texels Misses",
             "The total number of texels lookups (with 2x2 accuracy) that missed L1 sampler cache.",
-            "Sampler/Sampler Cache", (METRIC_GROUP_NAME_ID_SAMPLER * 0x1000000) | (METRIC_GROUP_NAME_ID_SAMPLER_CACHE * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_BATCH|USAGE_FLAG_FRAME|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "Sampler/Sampler Cache", (METRIC_GROUP_NAME_ID_SAMPLER * 0x1000000) | (METRIC_GROUP_NAME_ID_SAMPLER_CACHE * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_BATCH|USAGE_FLAG_FRAME|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "texels", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -15032,7 +15032,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "SlmBytesRead", "SLM Bytes Read",
             "The total number of GPU memory bytes read from shared local memory.",
-            "L3/Data Port/SLM", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000) | (METRIC_GROUP_NAME_ID_SLM * 0x100), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "L3/Data Port/SLM", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000) | (METRIC_GROUP_NAME_ID_SLM * 0x100), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_THROUGHPUT, RESULT_UINT64, "bytes", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -15046,7 +15046,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "SlmBytesWritten", "SLM Bytes Written",
             "The total number of GPU memory bytes written into shared local memory.",
-            "L3/Data Port/SLM", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000) | (METRIC_GROUP_NAME_ID_SLM * 0x100), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "L3/Data Port/SLM", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000) | (METRIC_GROUP_NAME_ID_SLM * 0x100), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_THROUGHPUT, RESULT_UINT64, "bytes", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -15060,7 +15060,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "ShaderMemoryAccesses", "Shader Memory Accesses",
             "The total number of shader memory accesses to L3.",
-            "L3/Data Port", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "L3/Data Port", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "messages", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -15072,7 +15072,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "ShaderAtomics", "Shader Atomic Memory Accesses",
             "The total number of shader atomic memory accesses.",
-            "L3/Data Port/Atomics", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000) | (METRIC_GROUP_NAME_ID_ATOMICS * 0x100), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "L3/Data Port/Atomics", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000) | (METRIC_GROUP_NAME_ID_ATOMICS * 0x100), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "messages", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -15084,7 +15084,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "L3ShaderThroughput", "L3 Shader Throughput",
             "The total number of GPU memory bytes transferred between shaders and L3 caches w/o URB.",
-            "L3/Data Port", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000), USAGE_FLAG_TIER_2|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "L3/Data Port", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000), USAGE_FLAG_TIER_2|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_THROUGHPUT, RESULT_UINT64, "bytes", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -15096,7 +15096,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "ShaderBarriers", "Shader Barrier Messages",
             "The total number of shader barrier messages.",
-            "EU Array/Barrier", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_EU_BARRIER * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Barrier", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_EU_BARRIER * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "messages", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -15110,7 +15110,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         {
             metric = metricSet->AddMetric( "Sampler01InputAvailable", "Slice0 Subslice1 Input Available",
                 "The percentage of time in which slice0 subslice1 sampler input is available",
-                "GPU/Sampler", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_SAMPLER * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+                "GPU/Sampler", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_SAMPLER * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
                 METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, NULL, NULL );
             if( metric )
             {
@@ -15127,7 +15127,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         {
             metric = metricSet->AddMetric( "Sampler02InputAvailable", "Slice0 Subslice2 Input Available",
                 "The percentage of time in which slice0 subslice2 sampler input is available",
-                "GPU/Sampler", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_SAMPLER * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+                "GPU/Sampler", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_SAMPLER * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
                 METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, NULL, NULL );
             if( metric )
             {
@@ -15144,7 +15144,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         {
             metric = metricSet->AddMetric( "Sampler00InputAvailable", "Slice0 Subslice0 Input Available",
                 "The percentage of time in which slice0 subslice0 sampler input is available",
-                "GPU/Sampler", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_SAMPLER * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+                "GPU/Sampler", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_SAMPLER * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
                 METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, NULL, NULL );
             if( metric )
             {
@@ -15161,7 +15161,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         {
             metric = metricSet->AddMetric( "Sampler02OutputReady", "Slice0 Subslice2 Sampler Output Ready",
                 "The percentage of time in which slice0 subslice2 sampler output is ready",
-                "GPU/Sampler", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_SAMPLER * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+                "GPU/Sampler", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_SAMPLER * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
                 METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, NULL, NULL );
             if( metric )
             {
@@ -15178,7 +15178,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         {
             metric = metricSet->AddMetric( "Sampler00OutputReady", "Slice0 Subslice0 Sampler Output Ready",
                 "The percentage of time in which slice0 subslice0 sampler output is ready",
-                "GPU/Sampler", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_SAMPLER * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+                "GPU/Sampler", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_SAMPLER * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
                 METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, NULL, NULL );
             if( metric )
             {
@@ -15195,7 +15195,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         {
             metric = metricSet->AddMetric( "Sampler01OutputReady", "Slice0 Subslice1 Sampler Output Ready",
                 "The percentage of time in which slice0 subslice1 sampler output is ready",
-                "GPU/Sampler", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_SAMPLER * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+                "GPU/Sampler", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_SAMPLER * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
                 METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, NULL, NULL );
             if( metric )
             {
@@ -15210,7 +15210,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "GTRequestQueueFull", "SQ is full",
             "The percentage of time when SQ is filled above a threshold (usually 48 entries)",
-            "GTI", (METRIC_GROUP_NAME_ID_GTI * 0x1000000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X,
+            "GTI", (METRIC_GROUP_NAME_ID_GTI * 0x1000000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X,
             METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -15222,7 +15222,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
 
         information = metricSet->AddInformation( "QueryBeginTime", "Query Begin Time",
             "The measurement begin time.",
-            "Report Meta Data", API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "Report Meta Data", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             INFORMATION_TYPE_TIMESTAMP, "ns", NULL );
         if( information )
         {
@@ -15233,7 +15233,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
 
         information = metricSet->AddInformation( "CoreFrequencyMHz", "GPU Core Frequency",
             "The last core frequency in the measurement.",
-            "Report Meta Data", API_TYPE_OGL|API_TYPE_OGL4_X,
+            "Report Meta Data", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
             INFORMATION_TYPE_VALUE, "MHz", NULL );
         if( information )
         {
@@ -15261,7 +15261,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
 
         information = metricSet->AddInformation( "CoreFrequencyChanged", "Core Frequency Changed",
             "The flag indicating that core frequency has changed.",
-            "Exception", API_TYPE_OGL|API_TYPE_OGL4_X,
+            "Exception", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
             INFORMATION_TYPE_FLAG, NULL, NULL );
         if( information )
         {
@@ -15271,7 +15271,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
 
         information = metricSet->AddInformation( "QuerySplitOccurred", "Query Split Occurred",
             "The flag indicating that query has been split during execution on the GPU.",
-            "Exception", API_TYPE_OGL|API_TYPE_OGL4_X,
+            "Exception", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
             INFORMATION_TYPE_FLAG, NULL, NULL );
         if( information )
         {
@@ -15281,7 +15281,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
 
         information = metricSet->AddInformation( "ReportId", "Query report id",
             "Query report identification number.",
-            "Report Meta Data", API_TYPE_OGL|API_TYPE_OGL4_X,
+            "Report Meta Data", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
             INFORMATION_TYPE_VALUE, NULL, NULL );
         if( information )
         {
@@ -15291,7 +15291,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
 
         information = metricSet->AddInformation( "ReportsCount", "Query reports count",
             "The number of available query reports.",
-            "Report Meta Data", API_TYPE_OGL|API_TYPE_OGL4_X,
+            "Report Meta Data", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
             INFORMATION_TYPE_VALUE, NULL, NULL );
         if( information )
         {
@@ -15301,7 +15301,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
 
         information = metricSet->AddInformation( "OverrunOccured", "Query Overrun Occurred",
             "The flag indicating that Oa buffer has been overran.",
-            "Exception", API_TYPE_OGL|API_TYPE_OGL4_X,
+            "Exception", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
             INFORMATION_TYPE_FLAG, NULL, NULL );
         if( information )
         {
@@ -15451,7 +15451,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
     platformMask = PLATFORM_BDW;
     if( MD_IS_INTERNAL_BUILD || metricsDevice->IsPlatformTypeOf( platformMask ) )
     {
-        metricSet = concurrentGroup->AddMetricSet( "TDL_1", "Metric set TDL_1", API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+        metricSet = concurrentGroup->AddMetricSet( "TDL_1", "Metric set TDL_1", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
            GPU_RENDER|GPU_COMPUTE, 256, 536, OA_REPORT_TYPE_256B_A45_NOA16, platformMask );
         MD_CHECK_PTR( metricSet );
         
@@ -15461,7 +15461,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "GpuTime", "GPU Time Elapsed",
             "Time elapsed on the GPU during the measurement.",
-            "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_TIER_1|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_TIER_1|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_DURATION, RESULT_UINT64, "ns", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -15473,7 +15473,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "GpuCoreClocks", "GPU Core Clocks",
             "The total number of GPU core clocks elapsed during the measurement.",
-            "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_TIER_1|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_TIER_1|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "cycles", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -15485,7 +15485,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "AvgGpuCoreFrequencyMHz", "AVG GPU Core Frequency",
             "Average GPU Core Frequency in the measurement.",
-            "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_TIER_1|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_TIER_1|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "MHz", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -15496,7 +15496,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "GpuBusy", "GPU Busy",
             "The percentage of time in which the GPU has been processing GPU commands.",
-            "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_TIER_1|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_TIER_1|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -15510,7 +15510,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "VsThreads", "VS Threads Dispatched",
             "The total number of vertex shader hardware threads dispatched.",
-            "EU Array/Vertex Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_VS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Vertex Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_VS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "threads", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -15522,7 +15522,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "HsThreads", "HS Threads Dispatched",
             "The total number of hull shader hardware threads dispatched.",
-            "EU Array/Hull Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_HS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Hull Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_HS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "threads", 0, 0, HW_UNIT_GPU, availabilityEquation, "Hull|Control,hull|control,HS|TCS", "oa.fixed" );
         if( metric )
         {
@@ -15534,7 +15534,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "DsThreads", "DS Threads Dispatched",
             "The total number of domain shader hardware threads dispatched.",
-            "EU Array/Domain Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_DS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Domain Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_DS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "threads", 0, 0, HW_UNIT_GPU, availabilityEquation, "Domain|Evaluation,domain|evaluation,DS|TES", "oa.fixed" );
         if( metric )
         {
@@ -15546,7 +15546,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "GsThreads", "GS Threads Dispatched",
             "The total number of geometry shader hardware threads dispatched.",
-            "EU Array/Geometry Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_GS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Geometry Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_GS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "threads", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -15558,7 +15558,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "PsThreads", "PS Threads Dispatched",
             "The total number of pixel shader hardware threads dispatched.",
-            "EU Array/Pixel Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_PS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Pixel Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_PS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "threads", 0, 0, HW_UNIT_GPU, availabilityEquation, "Pixel|Fragment,PS|FS,pixel|fragment", "oa.fixed" );
         if( metric )
         {
@@ -15570,7 +15570,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "CsThreads", "CS Threads Dispatched",
             "The total number of compute shader hardware threads dispatched.",
-            "EU Array/Compute Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_CS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Compute Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_CS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "threads", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -15582,7 +15582,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "EuActive", "EU Active",
             "The percentage of time in which the Execution Units were actively processing.",
-            "EU Array", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000), USAGE_FLAG_TIER_2|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000), USAGE_FLAG_TIER_2|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -15596,7 +15596,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "EuStall", "EU Stall",
             "The percentage of time in which the Execution Units were stalled.",
-            "EU Array", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000), USAGE_FLAG_TIER_2|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000), USAGE_FLAG_TIER_2|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -15610,7 +15610,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "EuFpuBothActive", "EU Both FPU Pipes Active",
             "The percentage of time in which both EU FPU pipelines were actively processing.",
-            "EU Array/Pipes", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_EU_PIPES * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Pipes", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_EU_PIPES * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -15624,7 +15624,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "VsFpu0Active", "VS FPU0 Pipe Active",
             "The percentage of time in which EU FPU0 pipeline was actively processing a vertex shader instruction.",
-            "EU Array/Vertex Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_VS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Vertex Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_VS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -15638,7 +15638,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "VsFpu1Active", "VS FPU1 Pipe Active",
             "The percentage of time in which EU FPU1 pipeline was actively processing a vertex shader instruction.",
-            "EU Array/Vertex Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_VS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Vertex Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_VS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -15652,7 +15652,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "VsSendActive", "VS Send Pipe Active",
             "The percentage of time in which EU send pipeline was actively processing a vertex shader instruction.",
-            "EU Array/Vertex Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_VS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Vertex Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_VS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -15666,7 +15666,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "PsFpu0Active", "PS FPU0 Pipe Active",
             "The percentage of time in which EU FPU0 pipeline was actively processing a pixel shader instruction.",
-            "EU Array/Pixel Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_PS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Pixel Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_PS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, "Pixel|Fragment,PS|FS,pixel|fragment", NULL );
         if( metric )
         {
@@ -15680,7 +15680,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "PsFpu1Active", "PS FPU1 Pipe Active",
             "The percentage of time in which EU FPU1 pipeline was actively processing a pixel shader instruction.",
-            "EU Array/Pixel Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_PS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Pixel Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_PS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, "Pixel|Fragment,PS|FS,pixel|fragment", NULL );
         if( metric )
         {
@@ -15694,7 +15694,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "PsSendActive", "PS Send Pipeline Active",
             "The percentage of time in which EU send pipeline was actively processing a pixel shader instruction.",
-            "EU Array/Pixel Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_PS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Pixel Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_PS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, "Pixel|Fragment,PS|FS,pixel|fragment", NULL );
         if( metric )
         {
@@ -15708,7 +15708,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "PsEuBothFpuActive", "PS Both FPU Active",
             "The percentage of time in which pixel shaders were processed actively on the both FPUs.",
-            "3D Pipe/Pixel Shader", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_PS * 0x10000), USAGE_FLAG_TIER_4|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "3D Pipe/Pixel Shader", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_PS * 0x10000), USAGE_FLAG_TIER_4|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, "Pixel|Fragment,PS|FS,pixel|fragment", NULL );
         if( metric )
         {
@@ -15722,7 +15722,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "RasterizedPixels", "Rasterized Pixels",
             "The total number of rasterized pixels.",
-            "3D Pipe/Rasterizer", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_WM * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "3D Pipe/Rasterizer", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_WM * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "pixels", 0, 0, HW_UNIT_GPU, availabilityEquation, "Pixel|Fragment,PS|FS,pixel|fragment", "oa.fixed" );
         if( metric )
         {
@@ -15735,7 +15735,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "HiDepthTestFails", "Early Hi-Depth Test Fails",
             "The total number of pixels dropped on early hierarchical depth test.",
-            "3D Pipe/Rasterizer/Hi-Depth Test", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_WM * 0x10000) | (METRIC_GROUP_NAME_ID_HZ * 0x100), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "3D Pipe/Rasterizer/Hi-Depth Test", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_WM * 0x10000) | (METRIC_GROUP_NAME_ID_HZ * 0x100), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "pixels", 0, 0, HW_UNIT_GPU, availabilityEquation, "Pixel|Fragment,PS|FS,pixel|fragment", "oa.fixed" );
         if( metric )
         {
@@ -15748,7 +15748,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "EarlyDepthTestFails", "Early Depth Test Fails",
             "The total number of pixels dropped on early depth test.",
-            "3D Pipe/Rasterizer/Early Depth Test", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_WM * 0x10000) | (METRIC_GROUP_NAME_ID_IZ * 0x100), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "3D Pipe/Rasterizer/Early Depth Test", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_WM * 0x10000) | (METRIC_GROUP_NAME_ID_IZ * 0x100), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "pixels", 0, 0, HW_UNIT_GPU, availabilityEquation, "Pixel|Fragment,PS|FS,pixel|fragment", "oa.fixed" );
         if( metric )
         {
@@ -15761,7 +15761,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "SamplesKilledInPs", "Samples Killed in PS",
             "The total number of samples or pixels dropped in pixel shaders.",
-            "3D Pipe/Pixel Shader", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_PS * 0x10000), USAGE_FLAG_TIER_4|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "3D Pipe/Pixel Shader", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_PS * 0x10000), USAGE_FLAG_TIER_4|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "pixels", 0, 0, HW_UNIT_GPU, availabilityEquation, "Pixel|Fragment,PS|FS,pixel|fragment", "oa.fixed" );
         if( metric )
         {
@@ -15774,7 +15774,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "PixelsFailingPostPsTests", "Pixels Failing Tests",
             "The total number of pixels dropped on post-PS alpha, stencil, or depth tests.",
-            "3D Pipe/Output Merger", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_OM * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "3D Pipe/Output Merger", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_OM * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "pixels", 0, 0, HW_UNIT_GPU, availabilityEquation, "Pixel|Fragment,PS|FS,pixel|fragment", "oa.fixed" );
         if( metric )
         {
@@ -15787,7 +15787,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "SamplesWritten", "Samples Written",
             "The total number of samples or pixels written to all render targets.",
-            "3D Pipe/Output Merger", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_OM * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "3D Pipe/Output Merger", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_OM * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "pixels", 0, 0, HW_UNIT_GPU, availabilityEquation, "Pixel|Fragment,PS|FS,pixel|fragment", "oa.fixed" );
         if( metric )
         {
@@ -15800,7 +15800,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "SamplesBlended", "Samples Blended",
             "The total number of blended samples or pixels written to all render targets.",
-            "3D Pipe/Output Merger", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_OM * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "3D Pipe/Output Merger", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_OM * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "pixels", 0, 0, HW_UNIT_GPU, availabilityEquation, "Pixel|Fragment,PS|FS,pixel|fragment", "oa.fixed" );
         if( metric )
         {
@@ -15813,7 +15813,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "SamplerTexels", "Sampler Texels",
             "The total number of texels seen on input (with 2x2 accuracy) in all sampler units.",
-            "Sampler/Sampler Input", (METRIC_GROUP_NAME_ID_SAMPLER * 0x1000000) | (METRIC_GROUP_NAME_ID_SAMPLER_IN * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "Sampler/Sampler Input", (METRIC_GROUP_NAME_ID_SAMPLER * 0x1000000) | (METRIC_GROUP_NAME_ID_SAMPLER_IN * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "texels", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -15826,7 +15826,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "SamplerTexelMisses", "Sampler Texels Misses",
             "The total number of texels lookups (with 2x2 accuracy) that missed L1 sampler cache.",
-            "Sampler/Sampler Cache", (METRIC_GROUP_NAME_ID_SAMPLER * 0x1000000) | (METRIC_GROUP_NAME_ID_SAMPLER_CACHE * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_BATCH|USAGE_FLAG_FRAME|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "Sampler/Sampler Cache", (METRIC_GROUP_NAME_ID_SAMPLER * 0x1000000) | (METRIC_GROUP_NAME_ID_SAMPLER_CACHE * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_BATCH|USAGE_FLAG_FRAME|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "texels", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -15839,7 +15839,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "SlmBytesRead", "SLM Bytes Read",
             "The total number of GPU memory bytes read from shared local memory.",
-            "L3/Data Port/SLM", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000) | (METRIC_GROUP_NAME_ID_SLM * 0x100), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "L3/Data Port/SLM", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000) | (METRIC_GROUP_NAME_ID_SLM * 0x100), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_THROUGHPUT, RESULT_UINT64, "bytes", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -15853,7 +15853,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "SlmBytesWritten", "SLM Bytes Written",
             "The total number of GPU memory bytes written into shared local memory.",
-            "L3/Data Port/SLM", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000) | (METRIC_GROUP_NAME_ID_SLM * 0x100), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "L3/Data Port/SLM", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000) | (METRIC_GROUP_NAME_ID_SLM * 0x100), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_THROUGHPUT, RESULT_UINT64, "bytes", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -15867,7 +15867,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "ShaderMemoryAccesses", "Shader Memory Accesses",
             "The total number of shader memory accesses to L3.",
-            "L3/Data Port", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "L3/Data Port", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "messages", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -15879,7 +15879,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "ShaderAtomics", "Shader Atomic Memory Accesses",
             "The total number of shader atomic memory accesses.",
-            "L3/Data Port/Atomics", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000) | (METRIC_GROUP_NAME_ID_ATOMICS * 0x100), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "L3/Data Port/Atomics", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000) | (METRIC_GROUP_NAME_ID_ATOMICS * 0x100), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "messages", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -15891,7 +15891,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "L3ShaderThroughput", "L3 Shader Throughput",
             "The total number of GPU memory bytes transferred between shaders and L3 caches w/o URB.",
-            "L3/Data Port", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000), USAGE_FLAG_TIER_2|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "L3/Data Port", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000), USAGE_FLAG_TIER_2|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_THROUGHPUT, RESULT_UINT64, "bytes", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -15903,7 +15903,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "ShaderBarriers", "Shader Barrier Messages",
             "The total number of shader barrier messages.",
-            "EU Array/Barrier", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_EU_BARRIER * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Barrier", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_EU_BARRIER * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "messages", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -15917,7 +15917,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         {
             metric = metricSet->AddMetric( "NonPSThread11ReadyForDispatch", "NonPS Thread Ready For Dispatch on Slice1 Subslice1",
                 "The percentage of time in which non-PS thread is ready for dispatch on slice1 subslice1 thread dispatcher",
-                "GPU/Thread Dispatcher", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_TD * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+                "GPU/Thread Dispatcher", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_TD * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
                 METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, NULL, NULL );
             if( metric )
             {
@@ -15934,7 +15934,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         {
             metric = metricSet->AddMetric( "PSThread10ReadyForDispatch", "PS Thread Ready For Dispatch on Slice1 Subslice0",
                 "The percentage of time in which PS thread is ready for dispatch on slice1 subslice0 thread dispatcher",
-                "GPU/Thread Dispatcher", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_TD * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+                "GPU/Thread Dispatcher", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_TD * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
                 METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, NULL, NULL );
             if( metric )
             {
@@ -15951,7 +15951,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         {
             metric = metricSet->AddMetric( "NonPSThread10ReadyForDispatch", "NonPS Thread Ready For Dispatch on Slice1 Subslice0",
                 "The percentage of time in which non-PS thread is ready for dispatch on slice1 subslice0 thread dispatcher",
-                "GPU/Thread Dispatcher", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_TD * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+                "GPU/Thread Dispatcher", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_TD * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
                 METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, NULL, NULL );
             if( metric )
             {
@@ -15968,7 +15968,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         {
             metric = metricSet->AddMetric( "PSThread12ReadyForDispatch", "PS Thread Ready For Dispatch on Slice1 Subslice2",
                 "The percentage of time in which PS thread is ready for dispatch on slice1 subslice2 thread dispatcher",
-                "GPU/Thread Dispatcher", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_TD * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+                "GPU/Thread Dispatcher", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_TD * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
                 METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, NULL, NULL );
             if( metric )
             {
@@ -15985,7 +15985,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         {
             metric = metricSet->AddMetric( "NonPSThread12ReadyForDispatch", "NonPS Thread Ready For Dispatch on Slice1 Subslice2",
                 "The percentage of time in which non-PS thread is ready for dispatch on slice1 subslice2 thread dispatcher",
-                "GPU/Thread Dispatcher", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_TD * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+                "GPU/Thread Dispatcher", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_TD * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
                 METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, NULL, NULL );
             if( metric )
             {
@@ -16002,7 +16002,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         {
             metric = metricSet->AddMetric( "PSThread11ReadyForDispatch", "PS Thread Ready For Dispatch on Slice1 Subslice1",
                 "The percentage of time in which PS thread is ready for dispatch on slice1 subslice1 thread dispatcher",
-                "GPU/Thread Dispatcher", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_TD * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+                "GPU/Thread Dispatcher", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_TD * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
                 METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, NULL, NULL );
             if( metric )
             {
@@ -16019,7 +16019,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         {
             metric = metricSet->AddMetric( "ThreadHeader01ReadyPort0", "Thread Header Ready on Slice0 Subslice1 Port 0",
                 "The percentage of time in which thread header is ready on slice0 subslice1 thread dispatcher port 0",
-                "GPU/Thread Dispatcher", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_TD * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+                "GPU/Thread Dispatcher", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_TD * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
                 METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, NULL, NULL );
             if( metric )
             {
@@ -16036,7 +16036,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         {
             metric = metricSet->AddMetric( "ThreadHeader00ReadyPort1", "Thread Header Ready on Slice0 Subslice0 Port 1",
                 "The percentage of time in which thread header is ready on slice0 subslice0 thread dispatcher port 1",
-                "GPU/Thread Dispatcher", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_TD * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+                "GPU/Thread Dispatcher", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_TD * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
                 METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, NULL, NULL );
             if( metric )
             {
@@ -16053,7 +16053,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         {
             metric = metricSet->AddMetric( "ThreadHeader00ReadyPort0", "Thread Header Ready on Slice0 Subslice0 Port 0",
                 "The percentage of time in which thread header is ready on slice0 subslice0 thread dispatcher port 0",
-                "GPU/Thread Dispatcher", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_TD * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+                "GPU/Thread Dispatcher", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_TD * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
                 METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, NULL, NULL );
             if( metric )
             {
@@ -16070,7 +16070,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         {
             metric = metricSet->AddMetric( "ThreadHeader02ReadyPort1", "Thread Header Ready on Slice0 Subslice2 Port 1",
                 "The percentage of time in which thread header is ready on slice0 subslice2 thread dispatcher port 1",
-                "GPU/Thread Dispatcher", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_TD * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+                "GPU/Thread Dispatcher", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_TD * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
                 METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, NULL, NULL );
             if( metric )
             {
@@ -16087,7 +16087,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         {
             metric = metricSet->AddMetric( "ThreadHeader02ReadyPort0", "Thread Header Ready on Slice0 Subslice2 Port 0",
                 "The percentage of time in which thread header is ready on slice0 subslice2 thread dispatcher port 0",
-                "GPU/Thread Dispatcher", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_TD * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+                "GPU/Thread Dispatcher", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_TD * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
                 METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, NULL, NULL );
             if( metric )
             {
@@ -16104,7 +16104,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         {
             metric = metricSet->AddMetric( "ThreadHeader01ReadyPort1", "Thread Header Ready on Slice0 Subslice1 Port 1",
                 "The percentage of time in which thread header is ready on slice0 subslice1 thread dispatcher port 1",
-                "GPU/Thread Dispatcher", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_TD * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+                "GPU/Thread Dispatcher", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_TD * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
                 METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, NULL, NULL );
             if( metric )
             {
@@ -16119,7 +16119,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "GTRequestQueueFull", "SQ is full",
             "The percentage of time when SQ is filled above a threshold (usually 48 entries)",
-            "GTI", (METRIC_GROUP_NAME_ID_GTI * 0x1000000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X,
+            "GTI", (METRIC_GROUP_NAME_ID_GTI * 0x1000000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X,
             METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -16131,7 +16131,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
 
         information = metricSet->AddInformation( "QueryBeginTime", "Query Begin Time",
             "The measurement begin time.",
-            "Report Meta Data", API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "Report Meta Data", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             INFORMATION_TYPE_TIMESTAMP, "ns", NULL );
         if( information )
         {
@@ -16142,7 +16142,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
 
         information = metricSet->AddInformation( "CoreFrequencyMHz", "GPU Core Frequency",
             "The last core frequency in the measurement.",
-            "Report Meta Data", API_TYPE_OGL|API_TYPE_OGL4_X,
+            "Report Meta Data", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
             INFORMATION_TYPE_VALUE, "MHz", NULL );
         if( information )
         {
@@ -16170,7 +16170,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
 
         information = metricSet->AddInformation( "CoreFrequencyChanged", "Core Frequency Changed",
             "The flag indicating that core frequency has changed.",
-            "Exception", API_TYPE_OGL|API_TYPE_OGL4_X,
+            "Exception", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
             INFORMATION_TYPE_FLAG, NULL, NULL );
         if( information )
         {
@@ -16180,7 +16180,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
 
         information = metricSet->AddInformation( "QuerySplitOccurred", "Query Split Occurred",
             "The flag indicating that query has been split during execution on the GPU.",
-            "Exception", API_TYPE_OGL|API_TYPE_OGL4_X,
+            "Exception", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
             INFORMATION_TYPE_FLAG, NULL, NULL );
         if( information )
         {
@@ -16190,7 +16190,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
 
         information = metricSet->AddInformation( "ReportId", "Query report id",
             "Query report identification number.",
-            "Report Meta Data", API_TYPE_OGL|API_TYPE_OGL4_X,
+            "Report Meta Data", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
             INFORMATION_TYPE_VALUE, NULL, NULL );
         if( information )
         {
@@ -16200,7 +16200,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
 
         information = metricSet->AddInformation( "ReportsCount", "Query reports count",
             "The number of available query reports.",
-            "Report Meta Data", API_TYPE_OGL|API_TYPE_OGL4_X,
+            "Report Meta Data", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
             INFORMATION_TYPE_VALUE, NULL, NULL );
         if( information )
         {
@@ -16210,7 +16210,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
 
         information = metricSet->AddInformation( "OverrunOccured", "Query Overrun Occurred",
             "The flag indicating that Oa buffer has been overran.",
-            "Exception", API_TYPE_OGL|API_TYPE_OGL4_X,
+            "Exception", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
             INFORMATION_TYPE_FLAG, NULL, NULL );
         if( information )
         {
@@ -16403,7 +16403,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
     platformMask = PLATFORM_BDW;
     if( MD_IS_INTERNAL_BUILD || metricsDevice->IsPlatformTypeOf( platformMask ) )
     {
-        metricSet = concurrentGroup->AddMetricSet( "TDL_2", "Metric set TDL_2", API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+        metricSet = concurrentGroup->AddMetricSet( "TDL_2", "Metric set TDL_2", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
            GPU_RENDER|GPU_COMPUTE, 256, 536, OA_REPORT_TYPE_256B_A45_NOA16, platformMask );
         MD_CHECK_PTR( metricSet );
         
@@ -16413,7 +16413,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "GpuTime", "GPU Time Elapsed",
             "Time elapsed on the GPU during the measurement.",
-            "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_TIER_1|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_TIER_1|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_DURATION, RESULT_UINT64, "ns", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -16425,7 +16425,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "GpuCoreClocks", "GPU Core Clocks",
             "The total number of GPU core clocks elapsed during the measurement.",
-            "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_TIER_1|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_TIER_1|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "cycles", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -16437,7 +16437,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "AvgGpuCoreFrequencyMHz", "AVG GPU Core Frequency",
             "Average GPU Core Frequency in the measurement.",
-            "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_TIER_1|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_TIER_1|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "MHz", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -16448,7 +16448,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "GpuBusy", "GPU Busy",
             "The percentage of time in which the GPU has been processing GPU commands.",
-            "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_TIER_1|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_TIER_1|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -16462,7 +16462,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "VsThreads", "VS Threads Dispatched",
             "The total number of vertex shader hardware threads dispatched.",
-            "EU Array/Vertex Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_VS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Vertex Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_VS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "threads", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -16474,7 +16474,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "HsThreads", "HS Threads Dispatched",
             "The total number of hull shader hardware threads dispatched.",
-            "EU Array/Hull Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_HS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Hull Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_HS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "threads", 0, 0, HW_UNIT_GPU, availabilityEquation, "Hull|Control,hull|control,HS|TCS", "oa.fixed" );
         if( metric )
         {
@@ -16486,7 +16486,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "DsThreads", "DS Threads Dispatched",
             "The total number of domain shader hardware threads dispatched.",
-            "EU Array/Domain Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_DS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Domain Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_DS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "threads", 0, 0, HW_UNIT_GPU, availabilityEquation, "Domain|Evaluation,domain|evaluation,DS|TES", "oa.fixed" );
         if( metric )
         {
@@ -16498,7 +16498,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "GsThreads", "GS Threads Dispatched",
             "The total number of geometry shader hardware threads dispatched.",
-            "EU Array/Geometry Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_GS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Geometry Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_GS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "threads", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -16510,7 +16510,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "PsThreads", "PS Threads Dispatched",
             "The total number of pixel shader hardware threads dispatched.",
-            "EU Array/Pixel Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_PS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Pixel Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_PS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "threads", 0, 0, HW_UNIT_GPU, availabilityEquation, "Pixel|Fragment,PS|FS,pixel|fragment", "oa.fixed" );
         if( metric )
         {
@@ -16522,7 +16522,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "CsThreads", "CS Threads Dispatched",
             "The total number of compute shader hardware threads dispatched.",
-            "EU Array/Compute Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_CS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Compute Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_CS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "threads", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -16534,7 +16534,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "EuActive", "EU Active",
             "The percentage of time in which the Execution Units were actively processing.",
-            "EU Array", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000), USAGE_FLAG_TIER_2|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000), USAGE_FLAG_TIER_2|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -16548,7 +16548,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "EuStall", "EU Stall",
             "The percentage of time in which the Execution Units were stalled.",
-            "EU Array", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000), USAGE_FLAG_TIER_2|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000), USAGE_FLAG_TIER_2|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -16562,7 +16562,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "EuFpuBothActive", "EU Both FPU Pipes Active",
             "The percentage of time in which both EU FPU pipelines were actively processing.",
-            "EU Array/Pipes", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_EU_PIPES * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Pipes", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_EU_PIPES * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -16576,7 +16576,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "VsFpu0Active", "VS FPU0 Pipe Active",
             "The percentage of time in which EU FPU0 pipeline was actively processing a vertex shader instruction.",
-            "EU Array/Vertex Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_VS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Vertex Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_VS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -16590,7 +16590,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "VsFpu1Active", "VS FPU1 Pipe Active",
             "The percentage of time in which EU FPU1 pipeline was actively processing a vertex shader instruction.",
-            "EU Array/Vertex Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_VS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Vertex Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_VS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -16604,7 +16604,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "VsSendActive", "VS Send Pipe Active",
             "The percentage of time in which EU send pipeline was actively processing a vertex shader instruction.",
-            "EU Array/Vertex Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_VS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Vertex Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_VS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -16618,7 +16618,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "PsFpu0Active", "PS FPU0 Pipe Active",
             "The percentage of time in which EU FPU0 pipeline was actively processing a pixel shader instruction.",
-            "EU Array/Pixel Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_PS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Pixel Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_PS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, "Pixel|Fragment,PS|FS,pixel|fragment", NULL );
         if( metric )
         {
@@ -16632,7 +16632,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "PsFpu1Active", "PS FPU1 Pipe Active",
             "The percentage of time in which EU FPU1 pipeline was actively processing a pixel shader instruction.",
-            "EU Array/Pixel Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_PS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Pixel Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_PS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, "Pixel|Fragment,PS|FS,pixel|fragment", NULL );
         if( metric )
         {
@@ -16646,7 +16646,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "PsSendActive", "PS Send Pipeline Active",
             "The percentage of time in which EU send pipeline was actively processing a pixel shader instruction.",
-            "EU Array/Pixel Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_PS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Pixel Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_PS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, "Pixel|Fragment,PS|FS,pixel|fragment", NULL );
         if( metric )
         {
@@ -16660,7 +16660,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "PsEuBothFpuActive", "PS Both FPU Active",
             "The percentage of time in which pixel shaders were processed actively on the both FPUs.",
-            "3D Pipe/Pixel Shader", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_PS * 0x10000), USAGE_FLAG_TIER_4|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "3D Pipe/Pixel Shader", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_PS * 0x10000), USAGE_FLAG_TIER_4|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, "Pixel|Fragment,PS|FS,pixel|fragment", NULL );
         if( metric )
         {
@@ -16674,7 +16674,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "RasterizedPixels", "Rasterized Pixels",
             "The total number of rasterized pixels.",
-            "3D Pipe/Rasterizer", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_WM * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "3D Pipe/Rasterizer", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_WM * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "pixels", 0, 0, HW_UNIT_GPU, availabilityEquation, "Pixel|Fragment,PS|FS,pixel|fragment", "oa.fixed" );
         if( metric )
         {
@@ -16687,7 +16687,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "HiDepthTestFails", "Early Hi-Depth Test Fails",
             "The total number of pixels dropped on early hierarchical depth test.",
-            "3D Pipe/Rasterizer/Hi-Depth Test", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_WM * 0x10000) | (METRIC_GROUP_NAME_ID_HZ * 0x100), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "3D Pipe/Rasterizer/Hi-Depth Test", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_WM * 0x10000) | (METRIC_GROUP_NAME_ID_HZ * 0x100), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "pixels", 0, 0, HW_UNIT_GPU, availabilityEquation, "Pixel|Fragment,PS|FS,pixel|fragment", "oa.fixed" );
         if( metric )
         {
@@ -16700,7 +16700,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "EarlyDepthTestFails", "Early Depth Test Fails",
             "The total number of pixels dropped on early depth test.",
-            "3D Pipe/Rasterizer/Early Depth Test", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_WM * 0x10000) | (METRIC_GROUP_NAME_ID_IZ * 0x100), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "3D Pipe/Rasterizer/Early Depth Test", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_WM * 0x10000) | (METRIC_GROUP_NAME_ID_IZ * 0x100), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "pixels", 0, 0, HW_UNIT_GPU, availabilityEquation, "Pixel|Fragment,PS|FS,pixel|fragment", "oa.fixed" );
         if( metric )
         {
@@ -16713,7 +16713,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "SamplesKilledInPs", "Samples Killed in PS",
             "The total number of samples or pixels dropped in pixel shaders.",
-            "3D Pipe/Pixel Shader", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_PS * 0x10000), USAGE_FLAG_TIER_4|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "3D Pipe/Pixel Shader", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_PS * 0x10000), USAGE_FLAG_TIER_4|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "pixels", 0, 0, HW_UNIT_GPU, availabilityEquation, "Pixel|Fragment,PS|FS,pixel|fragment", "oa.fixed" );
         if( metric )
         {
@@ -16726,7 +16726,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "PixelsFailingPostPsTests", "Pixels Failing Tests",
             "The total number of pixels dropped on post-PS alpha, stencil, or depth tests.",
-            "3D Pipe/Output Merger", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_OM * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "3D Pipe/Output Merger", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_OM * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "pixels", 0, 0, HW_UNIT_GPU, availabilityEquation, "Pixel|Fragment,PS|FS,pixel|fragment", "oa.fixed" );
         if( metric )
         {
@@ -16739,7 +16739,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "SamplesWritten", "Samples Written",
             "The total number of samples or pixels written to all render targets.",
-            "3D Pipe/Output Merger", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_OM * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "3D Pipe/Output Merger", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_OM * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "pixels", 0, 0, HW_UNIT_GPU, availabilityEquation, "Pixel|Fragment,PS|FS,pixel|fragment", "oa.fixed" );
         if( metric )
         {
@@ -16752,7 +16752,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "SamplesBlended", "Samples Blended",
             "The total number of blended samples or pixels written to all render targets.",
-            "3D Pipe/Output Merger", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_OM * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "3D Pipe/Output Merger", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_OM * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "pixels", 0, 0, HW_UNIT_GPU, availabilityEquation, "Pixel|Fragment,PS|FS,pixel|fragment", "oa.fixed" );
         if( metric )
         {
@@ -16765,7 +16765,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "SamplerTexels", "Sampler Texels",
             "The total number of texels seen on input (with 2x2 accuracy) in all sampler units.",
-            "Sampler/Sampler Input", (METRIC_GROUP_NAME_ID_SAMPLER * 0x1000000) | (METRIC_GROUP_NAME_ID_SAMPLER_IN * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "Sampler/Sampler Input", (METRIC_GROUP_NAME_ID_SAMPLER * 0x1000000) | (METRIC_GROUP_NAME_ID_SAMPLER_IN * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "texels", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -16778,7 +16778,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "SamplerTexelMisses", "Sampler Texels Misses",
             "The total number of texels lookups (with 2x2 accuracy) that missed L1 sampler cache.",
-            "Sampler/Sampler Cache", (METRIC_GROUP_NAME_ID_SAMPLER * 0x1000000) | (METRIC_GROUP_NAME_ID_SAMPLER_CACHE * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_BATCH|USAGE_FLAG_FRAME|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "Sampler/Sampler Cache", (METRIC_GROUP_NAME_ID_SAMPLER * 0x1000000) | (METRIC_GROUP_NAME_ID_SAMPLER_CACHE * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_BATCH|USAGE_FLAG_FRAME|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "texels", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -16791,7 +16791,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "SlmBytesRead", "SLM Bytes Read",
             "The total number of GPU memory bytes read from shared local memory.",
-            "L3/Data Port/SLM", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000) | (METRIC_GROUP_NAME_ID_SLM * 0x100), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "L3/Data Port/SLM", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000) | (METRIC_GROUP_NAME_ID_SLM * 0x100), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_THROUGHPUT, RESULT_UINT64, "bytes", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -16805,7 +16805,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "SlmBytesWritten", "SLM Bytes Written",
             "The total number of GPU memory bytes written into shared local memory.",
-            "L3/Data Port/SLM", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000) | (METRIC_GROUP_NAME_ID_SLM * 0x100), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "L3/Data Port/SLM", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000) | (METRIC_GROUP_NAME_ID_SLM * 0x100), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_THROUGHPUT, RESULT_UINT64, "bytes", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -16819,7 +16819,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "ShaderMemoryAccesses", "Shader Memory Accesses",
             "The total number of shader memory accesses to L3.",
-            "L3/Data Port", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "L3/Data Port", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "messages", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -16831,7 +16831,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "ShaderAtomics", "Shader Atomic Memory Accesses",
             "The total number of shader atomic memory accesses.",
-            "L3/Data Port/Atomics", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000) | (METRIC_GROUP_NAME_ID_ATOMICS * 0x100), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "L3/Data Port/Atomics", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000) | (METRIC_GROUP_NAME_ID_ATOMICS * 0x100), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "messages", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -16843,7 +16843,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "L3ShaderThroughput", "L3 Shader Throughput",
             "The total number of GPU memory bytes transferred between shaders and L3 caches w/o URB.",
-            "L3/Data Port", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000), USAGE_FLAG_TIER_2|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "L3/Data Port", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000), USAGE_FLAG_TIER_2|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_THROUGHPUT, RESULT_UINT64, "bytes", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -16855,7 +16855,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "ShaderBarriers", "Shader Barrier Messages",
             "The total number of shader barrier messages.",
-            "EU Array/Barrier", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_EU_BARRIER * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Barrier", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_EU_BARRIER * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "messages", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -16869,7 +16869,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         {
             metric = metricSet->AddMetric( "NonPSThread02ReadyForDispatch", "NonPS Thread Ready For Dispatch on Slice0 Subslice2",
                 "The percentage of time in which non-PS thread is ready for dispatch on slice0 subslice2 thread dispatcher",
-                "GPU/Thread Dispatcher", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_TD * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+                "GPU/Thread Dispatcher", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_TD * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
                 METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, NULL, NULL );
             if( metric )
             {
@@ -16886,7 +16886,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         {
             metric = metricSet->AddMetric( "PSThread02ReadyForDispatch", "PS Thread Ready For Dispatch on Slice0 Subslice2",
                 "The percentage of time in which PS thread is ready for dispatch on slice0 subslice2 thread dispatcher",
-                "GPU/Thread Dispatcher", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_TD * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+                "GPU/Thread Dispatcher", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_TD * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
                 METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, NULL, NULL );
             if( metric )
             {
@@ -16903,7 +16903,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         {
             metric = metricSet->AddMetric( "PSThread01ReadyForDispatch", "PS Thread Ready For Dispatch on Slice0 Subslice1",
                 "The percentage of time in which PS thread is ready for dispatch on slice0 subslice1 thread dispatcher",
-                "GPU/Thread Dispatcher", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_TD * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+                "GPU/Thread Dispatcher", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_TD * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
                 METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, NULL, NULL );
             if( metric )
             {
@@ -16920,7 +16920,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         {
             metric = metricSet->AddMetric( "PSThread00ReadyForDispatch", "PS Thread Ready For Dispatch on Slice0 Subslice0",
                 "The percentage of time in which PS thread is ready for dispatch on slice0 subslice0 thread dispatcher",
-                "GPU/Thread Dispatcher", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_TD * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+                "GPU/Thread Dispatcher", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_TD * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
                 METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, NULL, NULL );
             if( metric )
             {
@@ -16937,7 +16937,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         {
             metric = metricSet->AddMetric( "NonPSThread01ReadyForDispatch", "NonPS Thread Ready For Dispatch on Slice0 Subslice1",
                 "The percentage of time in which non-PS thread is ready for dispatch on slice0 subslice1 thread dispatcher",
-                "GPU/Thread Dispatcher", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_TD * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+                "GPU/Thread Dispatcher", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_TD * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
                 METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, NULL, NULL );
             if( metric )
             {
@@ -16954,7 +16954,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         {
             metric = metricSet->AddMetric( "NonPSThread00ReadyForDispatch", "NonPS Thread Ready For Dispatch on Slice0 Subslice0",
                 "The percentage of time in which non-PS thread is ready for dispatch on slice0 subslice0 thread dispatcher",
-                "GPU/Thread Dispatcher", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_TD * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+                "GPU/Thread Dispatcher", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_TD * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
                 METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, NULL, NULL );
             if( metric )
             {
@@ -16971,7 +16971,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         {
             metric = metricSet->AddMetric( "ThreadHeader12ReadyPort0", "Thread Header Ready on Slice1 Subslice2 Port 0",
                 "The percentage of time in which thread header is ready on slice1 subslice2 thread dispatcher port 0",
-                "GPU/Thread Dispatcher", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_TD * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+                "GPU/Thread Dispatcher", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_TD * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
                 METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, NULL, NULL );
             if( metric )
             {
@@ -16988,7 +16988,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         {
             metric = metricSet->AddMetric( "ThreadHeader12ReadyPort1", "Thread Header Ready on Slice1 Subslice2 Port 1",
                 "The percentage of time in which thread header is ready on slice1 subslice2 thread dispatcher port 1",
-                "GPU/Thread Dispatcher", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_TD * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+                "GPU/Thread Dispatcher", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_TD * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
                 METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, NULL, NULL );
             if( metric )
             {
@@ -17005,7 +17005,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         {
             metric = metricSet->AddMetric( "ThreadHeader11ReadyPort1", "Thread Header Ready on Slice1 Subslice1 Port 1",
                 "The percentage of time in which thread header is ready on slice1 subslice1 thread dispatcher port 1",
-                "GPU/Thread Dispatcher", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_TD * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+                "GPU/Thread Dispatcher", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_TD * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
                 METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, NULL, NULL );
             if( metric )
             {
@@ -17022,7 +17022,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         {
             metric = metricSet->AddMetric( "ThreadHeader10ReadyPort0", "Thread Header Ready on Slice1 Subslice0 Port 0",
                 "The percentage of time in which thread header is ready on slice1 subslice0 thread dispatcher port 0",
-                "GPU/Thread Dispatcher", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_TD * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+                "GPU/Thread Dispatcher", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_TD * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
                 METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, NULL, NULL );
             if( metric )
             {
@@ -17039,7 +17039,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         {
             metric = metricSet->AddMetric( "ThreadHeader10ReadyPort1", "Thread Header Ready on Slice1 Subslice0 Port 1",
                 "The percentage of time in which thread header is ready on slice1 subslice0 thread dispatcher port 1",
-                "GPU/Thread Dispatcher", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_TD * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+                "GPU/Thread Dispatcher", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_TD * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
                 METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, NULL, NULL );
             if( metric )
             {
@@ -17056,7 +17056,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         {
             metric = metricSet->AddMetric( "ThreadHeader11ReadyPort0", "Thread Header Ready on Slice1 Subslice1 Port 0",
                 "The percentage of time in which thread header is ready on slice1 subslice1 thread dispatcher port 0",
-                "GPU/Thread Dispatcher", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_TD * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+                "GPU/Thread Dispatcher", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_TD * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
                 METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, NULL, NULL );
             if( metric )
             {
@@ -17071,7 +17071,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "GTRequestQueueFull", "SQ is full",
             "The percentage of time when SQ is filled above a threshold (usually 48 entries)",
-            "GTI", (METRIC_GROUP_NAME_ID_GTI * 0x1000000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X,
+            "GTI", (METRIC_GROUP_NAME_ID_GTI * 0x1000000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X,
             METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -17083,7 +17083,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
 
         information = metricSet->AddInformation( "QueryBeginTime", "Query Begin Time",
             "The measurement begin time.",
-            "Report Meta Data", API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "Report Meta Data", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             INFORMATION_TYPE_TIMESTAMP, "ns", NULL );
         if( information )
         {
@@ -17094,7 +17094,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
 
         information = metricSet->AddInformation( "CoreFrequencyMHz", "GPU Core Frequency",
             "The last core frequency in the measurement.",
-            "Report Meta Data", API_TYPE_OGL|API_TYPE_OGL4_X,
+            "Report Meta Data", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
             INFORMATION_TYPE_VALUE, "MHz", NULL );
         if( information )
         {
@@ -17122,7 +17122,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
 
         information = metricSet->AddInformation( "CoreFrequencyChanged", "Core Frequency Changed",
             "The flag indicating that core frequency has changed.",
-            "Exception", API_TYPE_OGL|API_TYPE_OGL4_X,
+            "Exception", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
             INFORMATION_TYPE_FLAG, NULL, NULL );
         if( information )
         {
@@ -17132,7 +17132,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
 
         information = metricSet->AddInformation( "QuerySplitOccurred", "Query Split Occurred",
             "The flag indicating that query has been split during execution on the GPU.",
-            "Exception", API_TYPE_OGL|API_TYPE_OGL4_X,
+            "Exception", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
             INFORMATION_TYPE_FLAG, NULL, NULL );
         if( information )
         {
@@ -17142,7 +17142,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
 
         information = metricSet->AddInformation( "ReportId", "Query report id",
             "Query report identification number.",
-            "Report Meta Data", API_TYPE_OGL|API_TYPE_OGL4_X,
+            "Report Meta Data", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
             INFORMATION_TYPE_VALUE, NULL, NULL );
         if( information )
         {
@@ -17152,7 +17152,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
 
         information = metricSet->AddInformation( "ReportsCount", "Query reports count",
             "The number of available query reports.",
-            "Report Meta Data", API_TYPE_OGL|API_TYPE_OGL4_X,
+            "Report Meta Data", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
             INFORMATION_TYPE_VALUE, NULL, NULL );
         if( information )
         {
@@ -17162,7 +17162,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
 
         information = metricSet->AddInformation( "OverrunOccured", "Query Overrun Occurred",
             "The flag indicating that Oa buffer has been overran.",
-            "Exception", API_TYPE_OGL|API_TYPE_OGL4_X,
+            "Exception", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
             INFORMATION_TYPE_FLAG, NULL, NULL );
         if( information )
         {
@@ -17359,7 +17359,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
     platformMask = PLATFORM_BDW;
     if( MD_IS_INTERNAL_BUILD || metricsDevice->IsPlatformTypeOf( platformMask ) )
     {
-        metricSet = concurrentGroup->AddMetricSet( "ComputeExtra", "Compute Metrics Extra Gen8", API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+        metricSet = concurrentGroup->AddMetricSet( "ComputeExtra", "Compute Metrics Extra Gen8", API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
            GPU_RENDER|GPU_COMPUTE, 256, 536, OA_REPORT_TYPE_256B_A45_NOA16, platformMask );
         MD_CHECK_PTR( metricSet );
         
@@ -17369,7 +17369,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "GpuTime", "GPU Time Elapsed",
             "Time elapsed on the GPU during the measurement.",
-            "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_TIER_1|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_TIER_1|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_DURATION, RESULT_UINT64, "ns", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -17381,7 +17381,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "GpuCoreClocks", "GPU Core Clocks",
             "The total number of GPU core clocks elapsed during the measurement.",
-            "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_TIER_1|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_TIER_1|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "cycles", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -17393,7 +17393,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "AvgGpuCoreFrequencyMHz", "AVG GPU Core Frequency",
             "Average GPU Core Frequency in the measurement.",
-            "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_TIER_1|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_TIER_1|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "MHz", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -17404,7 +17404,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "Fpu1Active", "EU FPU1 Pipe Active",
             "The percentage of time in which EU FPU1 pipeline was actively processing.",
-            "EU Array/Pipes", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_EU_PIPES * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Pipes", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_EU_PIPES * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -17418,7 +17418,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "Fpu1ActiveAdjusted", "EU FPU1 Pipe Active including Ext Math",
             "The percentage of time in which EU FPU1 pipeline was actively processing including Extended Math processing",
-            "EU Array/Pipes", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_EU_PIPES * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Pipes", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_EU_PIPES * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -17431,7 +17431,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
 
         information = metricSet->AddInformation( "QueryBeginTime", "Query Begin Time",
             "The measurement begin time.",
-            "Report Meta Data", API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "Report Meta Data", API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             INFORMATION_TYPE_TIMESTAMP, "ns", NULL );
         if( information )
         {
@@ -17442,7 +17442,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
 
         information = metricSet->AddInformation( "CoreFrequencyMHz", "GPU Core Frequency",
             "The last core frequency in the measurement.",
-            "Report Meta Data", API_TYPE_OGL|API_TYPE_OGL4_X,
+            "Report Meta Data", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
             INFORMATION_TYPE_VALUE, "MHz", NULL );
         if( information )
         {
@@ -17470,7 +17470,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
 
         information = metricSet->AddInformation( "CoreFrequencyChanged", "Core Frequency Changed",
             "The flag indicating that core frequency has changed.",
-            "Exception", API_TYPE_OGL|API_TYPE_OGL4_X,
+            "Exception", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
             INFORMATION_TYPE_FLAG, NULL, NULL );
         if( information )
         {
@@ -17480,7 +17480,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
 
         information = metricSet->AddInformation( "QuerySplitOccurred", "Query Split Occurred",
             "The flag indicating that query has been split during execution on the GPU.",
-            "Exception", API_TYPE_OGL|API_TYPE_OGL4_X,
+            "Exception", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
             INFORMATION_TYPE_FLAG, NULL, NULL );
         if( information )
         {
@@ -17490,7 +17490,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
 
         information = metricSet->AddInformation( "ReportId", "Query report id",
             "Query report identification number.",
-            "Report Meta Data", API_TYPE_OGL|API_TYPE_OGL4_X,
+            "Report Meta Data", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
             INFORMATION_TYPE_VALUE, NULL, NULL );
         if( information )
         {
@@ -17500,7 +17500,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
 
         information = metricSet->AddInformation( "ReportsCount", "Query reports count",
             "The number of available query reports.",
-            "Report Meta Data", API_TYPE_OGL|API_TYPE_OGL4_X,
+            "Report Meta Data", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
             INFORMATION_TYPE_VALUE, NULL, NULL );
         if( information )
         {
@@ -17510,7 +17510,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
 
         information = metricSet->AddInformation( "OverrunOccured", "Query Overrun Occurred",
             "The flag indicating that Oa buffer has been overran.",
-            "Exception", API_TYPE_OGL|API_TYPE_OGL4_X,
+            "Exception", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
             INFORMATION_TYPE_FLAG, NULL, NULL );
         if( information )
         {
@@ -17772,7 +17772,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
 
         information = metricSet->AddInformation( "CoreFrequencyChanged", "Core Frequency Changed",
             "The flag indicating that core frequency has changed.",
-            "Exception", API_TYPE_OGL|API_TYPE_OGL4_X,
+            "Exception", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
             INFORMATION_TYPE_FLAG, NULL, NULL );
         if( information )
         {
@@ -17793,7 +17793,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
 
         information = metricSet->AddInformation( "CoreFrequencyMHz", "GPU Core Frequency",
             "The last core frequency in the measurement.",
-            "Report Meta Data", API_TYPE_OGL|API_TYPE_OGL4_X,
+            "Report Meta Data", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
             INFORMATION_TYPE_VALUE, "MHz", NULL );
         if( information )
         {
@@ -17821,7 +17821,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
 
         information = metricSet->AddInformation( "QuerySplitOccurred", "Query Split Occurred",
             "The flag indicating that query has been split during execution on the GPU.",
-            "Exception", API_TYPE_OGL|API_TYPE_OGL4_X,
+            "Exception", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
             INFORMATION_TYPE_FLAG, NULL, NULL );
         if( information )
         {
@@ -17831,7 +17831,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
 
         information = metricSet->AddInformation( "ReportId", "Query report id",
             "Query report identification number.",
-            "Report Meta Data", API_TYPE_OGL|API_TYPE_OGL4_X,
+            "Report Meta Data", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
             INFORMATION_TYPE_VALUE, NULL, NULL );
         if( information )
         {
@@ -17841,7 +17841,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
 
         information = metricSet->AddInformation( "ReportsCount", "Query reports count",
             "The number of available query reports.",
-            "Report Meta Data", API_TYPE_OGL|API_TYPE_OGL4_X,
+            "Report Meta Data", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
             INFORMATION_TYPE_VALUE, NULL, NULL );
         if( information )
         {
@@ -17851,7 +17851,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
 
         information = metricSet->AddInformation( "OverrunOccured", "Query Overrun Occurred",
             "The flag indicating that Oa buffer has been overran.",
-            "Exception", API_TYPE_OGL|API_TYPE_OGL4_X,
+            "Exception", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
             INFORMATION_TYPE_FLAG, NULL, NULL );
         if( information )
         {
@@ -17973,7 +17973,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
     platformMask = PLATFORM_BDW;
     if( MD_IS_INTERNAL_BUILD || metricsDevice->IsPlatformTypeOf( platformMask ) )
     {
-        metricSet = concurrentGroup->AddMetricSet( "GpuBusyness", "Gpu Rings Busyness", API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+        metricSet = concurrentGroup->AddMetricSet( "GpuBusyness", "Gpu Rings Busyness", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
            GPU_RENDER|GPU_COMPUTE|GPU_MEDIA|GPU_GENERIC, 256, 536, OA_REPORT_TYPE_256B_A45_NOA16, platformMask );
         MD_CHECK_PTR( metricSet );
         
@@ -17983,7 +17983,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "GpuTime", "GPU Time Elapsed",
             "Time elapsed on the GPU during the measurement.",
-            "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_TIER_1|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_TIER_1|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_DURATION, RESULT_UINT64, "ns", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -17995,7 +17995,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "GpuCoreClocks", "GPU Core Clocks",
             "The total number of GPU core clocks elapsed during the measurement.",
-            "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_TIER_1|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_TIER_1|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "cycles", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -18007,7 +18007,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "AvgGpuCoreFrequencyMHz", "AVG GPU Core Frequency",
             "Average GPU Core Frequency in the measurement.",
-            "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_TIER_1|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_TIER_1|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "MHz", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -18018,7 +18018,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "RenderBusy", "Render Ring Busy",
             "The percentage of time when render command streamer was busy.",
-            "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -18032,7 +18032,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "Vdbox0Busy", "Vdbox0 Ring Busy",
             "The percentage of time when Vdbox0 command streamer was busy.",
-            "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -18046,7 +18046,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "Vdbox1Busy", "Vdbox1 Ring Busy",
             "The percentage of time when Vdbox1 command streamer was busy.",
-            "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -18060,7 +18060,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "VeboxBusy", "Vebox Ring Busy",
             "The percentage of time when vebox command streamer was busy.",
-            "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -18074,7 +18074,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "BlitterBusy", "Blitter Ring Busy",
             "The percentage of time when blitter command streamer was busy.",
-            "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -18088,7 +18088,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "AnyRingBusy", "AnyRingBusy",
             "The percentage of time when any command streamer was busy.",
-            "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -18101,7 +18101,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
 
         information = metricSet->AddInformation( "CoreFrequencyChanged", "Core Frequency Changed",
             "The flag indicating that core frequency has changed.",
-            "Exception", API_TYPE_OGL|API_TYPE_OGL4_X,
+            "Exception", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
             INFORMATION_TYPE_FLAG, NULL, NULL );
         if( information )
         {
@@ -18111,7 +18111,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
 
         information = metricSet->AddInformation( "QueryBeginTime", "Query Begin Time",
             "The measurement begin time.",
-            "Report Meta Data", API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "Report Meta Data", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             INFORMATION_TYPE_TIMESTAMP, "ns", NULL );
         if( information )
         {
@@ -18122,7 +18122,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
 
         information = metricSet->AddInformation( "CoreFrequencyMHz", "GPU Core Frequency",
             "The last core frequency in the measurement.",
-            "Report Meta Data", API_TYPE_OGL|API_TYPE_OGL4_X,
+            "Report Meta Data", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
             INFORMATION_TYPE_VALUE, "MHz", NULL );
         if( information )
         {
@@ -18150,7 +18150,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
 
         information = metricSet->AddInformation( "QuerySplitOccurred", "Query Split Occurred",
             "The flag indicating that query has been split during execution on the GPU.",
-            "Exception", API_TYPE_OGL|API_TYPE_OGL4_X,
+            "Exception", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
             INFORMATION_TYPE_FLAG, NULL, NULL );
         if( information )
         {
@@ -18160,7 +18160,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
 
         information = metricSet->AddInformation( "ReportId", "Query report id",
             "Query report identification number.",
-            "Report Meta Data", API_TYPE_OGL|API_TYPE_OGL4_X,
+            "Report Meta Data", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
             INFORMATION_TYPE_VALUE, NULL, NULL );
         if( information )
         {
@@ -18170,7 +18170,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
 
         information = metricSet->AddInformation( "ReportsCount", "Query reports count",
             "The number of available query reports.",
-            "Report Meta Data", API_TYPE_OGL|API_TYPE_OGL4_X,
+            "Report Meta Data", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
             INFORMATION_TYPE_VALUE, NULL, NULL );
         if( information )
         {
@@ -18180,7 +18180,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
 
         information = metricSet->AddInformation( "OverrunOccured", "Query Overrun Occurred",
             "The flag indicating that Oa buffer has been overran.",
-            "Exception", API_TYPE_OGL|API_TYPE_OGL4_X,
+            "Exception", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
             INFORMATION_TYPE_FLAG, NULL, NULL );
         if( information )
         {
@@ -18242,7 +18242,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
     platformMask = PLATFORM_BDW;
     if( MD_IS_INTERNAL_BUILD || metricsDevice->IsPlatformTypeOf( platformMask ) )
     {
-        metricSet = concurrentGroup->AddMetricSet( "TestOa", "MDAPI testing set Gen8", API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+        metricSet = concurrentGroup->AddMetricSet( "TestOa", "MDAPI testing set Gen8", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
            GPU_RENDER|GPU_COMPUTE, 256, 536, OA_REPORT_TYPE_256B_A45_NOA16, platformMask );
         MD_CHECK_PTR( metricSet );
         
@@ -18252,7 +18252,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "GpuTime", "GPU Time Elapsed",
             "Time elapsed on the GPU during the measurement.",
-            "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_TIER_1|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_TIER_1|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_DURATION, RESULT_UINT64, "ns", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -18264,7 +18264,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "GpuCoreClocks", "GPU Core Clocks",
             "The total number of GPU core clocks elapsed during the measurement.",
-            "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_TIER_1|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_TIER_1|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "cycles", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -18276,7 +18276,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "AvgGpuCoreFrequencyMHz", "AVG GPU Core Frequency",
             "Average GPU Core Frequency in the measurement.",
-            "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_TIER_1|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_TIER_1|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "MHz", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -18289,7 +18289,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         {
             metric = metricSet->AddMetric( "Counter0", "TestCounter0",
                 "HW test counter 0. Factor: 0.0",
-                "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+                "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
                 METRIC_TYPE_EVENT, RESULT_UINT64, "events", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
             if( metric )
             {
@@ -18304,7 +18304,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         {
             metric = metricSet->AddMetric( "Counter1", "TestCounter1",
                 "HW test counter 1. Factor: 1.0",
-                "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+                "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
                 METRIC_TYPE_EVENT, RESULT_UINT64, "events", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
             if( metric )
             {
@@ -18319,7 +18319,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         {
             metric = metricSet->AddMetric( "Counter2", "TestCounter2",
                 "HW test counter 2. Factor: 1.0",
-                "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+                "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
                 METRIC_TYPE_EVENT, RESULT_UINT64, "events", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
             if( metric )
             {
@@ -18334,7 +18334,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         {
             metric = metricSet->AddMetric( "Counter3", "TestCounter3",
                 "HW test counter 3. Factor: 0.5",
-                "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+                "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
                 METRIC_TYPE_EVENT, RESULT_UINT64, "events", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
             if( metric )
             {
@@ -18349,7 +18349,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         {
             metric = metricSet->AddMetric( "Counter4", "TestCounter4",
                 "HW test counter 4. Factor: 0.333",
-                "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+                "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
                 METRIC_TYPE_EVENT, RESULT_UINT64, "events", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
             if( metric )
             {
@@ -18364,7 +18364,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         {
             metric = metricSet->AddMetric( "Counter5", "TestCounter5",
                 "HW test counter 5. Factor: 0.333",
-                "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+                "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
                 METRIC_TYPE_EVENT, RESULT_UINT64, "events", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
             if( metric )
             {
@@ -18379,7 +18379,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         {
             metric = metricSet->AddMetric( "Counter6", "TestCounter6",
                 "HW test counter 6. Factor: 0.166",
-                "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+                "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
                 METRIC_TYPE_EVENT, RESULT_UINT64, "events", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
             if( metric )
             {
@@ -18394,7 +18394,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         {
             metric = metricSet->AddMetric( "Counter7", "TestCounter7",
                 "HW test counter 7. Factor: 0.666",
-                "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+                "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
                 METRIC_TYPE_EVENT, RESULT_UINT64, "events", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
             if( metric )
             {
@@ -18409,7 +18409,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         {
             metric = metricSet->AddMetric( "Counter8", "TestCounter8",
                 "HW test counter 8. Should be equal to 1.",
-                "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+                "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
                 METRIC_TYPE_EVENT, RESULT_UINT64, "events", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
             if( metric )
             {
@@ -18421,7 +18421,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
 
         information = metricSet->AddInformation( "CoreFrequencyChanged", "Core Frequency Changed",
             "The flag indicating that core frequency has changed.",
-            "Exception", API_TYPE_OGL|API_TYPE_OGL4_X,
+            "Exception", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
             INFORMATION_TYPE_FLAG, NULL, NULL );
         if( information )
         {
@@ -18431,7 +18431,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
 
         information = metricSet->AddInformation( "QueryBeginTime", "Query Begin Time",
             "The measurement begin time.",
-            "Report Meta Data", API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "Report Meta Data", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             INFORMATION_TYPE_TIMESTAMP, "ns", NULL );
         if( information )
         {
@@ -18442,7 +18442,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
 
         information = metricSet->AddInformation( "CoreFrequencyMHz", "GPU Core Frequency",
             "The last core frequency in the measurement.",
-            "Report Meta Data", API_TYPE_OGL|API_TYPE_OGL4_X,
+            "Report Meta Data", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
             INFORMATION_TYPE_VALUE, "MHz", NULL );
         if( information )
         {
@@ -18470,7 +18470,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
 
         information = metricSet->AddInformation( "QuerySplitOccurred", "Query Split Occurred",
             "The flag indicating that query has been split during execution on the GPU.",
-            "Exception", API_TYPE_OGL|API_TYPE_OGL4_X,
+            "Exception", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
             INFORMATION_TYPE_FLAG, NULL, NULL );
         if( information )
         {
@@ -18480,7 +18480,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
 
         information = metricSet->AddInformation( "ReportId", "Query report id",
             "Query report identification number.",
-            "Report Meta Data", API_TYPE_OGL|API_TYPE_OGL4_X,
+            "Report Meta Data", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
             INFORMATION_TYPE_VALUE, NULL, NULL );
         if( information )
         {
@@ -18490,7 +18490,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
 
         information = metricSet->AddInformation( "ReportsCount", "Query reports count",
             "The number of available query reports.",
-            "Report Meta Data", API_TYPE_OGL|API_TYPE_OGL4_X,
+            "Report Meta Data", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
             INFORMATION_TYPE_VALUE, NULL, NULL );
         if( information )
         {
@@ -18500,7 +18500,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
 
         information = metricSet->AddInformation( "OverrunOccured", "Query Overrun Occurred",
             "The flag indicating that Oa buffer has been overran.",
-            "Exception", API_TYPE_OGL|API_TYPE_OGL4_X,
+            "Exception", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
             INFORMATION_TYPE_FLAG, NULL, NULL );
         if( information )
         {
@@ -18552,7 +18552,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
     platformMask = PLATFORM_BDW;
     if( MD_IS_INTERNAL_BUILD || metricsDevice->IsPlatformTypeOf( platformMask ) )
     {
-        metricSet = concurrentGroup->AddMetricSet( "STC_PmaStall", "Metric set PMA Stall", API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+        metricSet = concurrentGroup->AddMetricSet( "STC_PmaStall", "Metric set PMA Stall", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
            GPU_RENDER, 256, 536, OA_REPORT_TYPE_256B_A45_NOA16, platformMask );
         MD_CHECK_PTR( metricSet );
         
@@ -18562,7 +18562,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "GpuTime", "GPU Time Elapsed",
             "Time elapsed on the GPU during the measurement.",
-            "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_TIER_1|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_TIER_1|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_DURATION, RESULT_UINT64, "ns", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -18574,7 +18574,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "GpuCoreClocks", "GPU Core Clocks",
             "The total number of GPU core clocks elapsed during the measurement.",
-            "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_TIER_1|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_TIER_1|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "cycles", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -18586,7 +18586,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "AvgGpuCoreFrequencyMHz", "AVG GPU Core Frequency",
             "Average GPU Core Frequency in the measurement.",
-            "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_TIER_1|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_TIER_1|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "MHz", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -18597,7 +18597,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "GpuBusy", "GPU Busy",
             "The percentage of time in which the GPU has been processing GPU commands.",
-            "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_TIER_1|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_TIER_1|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -18611,7 +18611,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "VsThreads", "VS Threads Dispatched",
             "The total number of vertex shader hardware threads dispatched.",
-            "EU Array/Vertex Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_VS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Vertex Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_VS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "threads", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -18623,7 +18623,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "HsThreads", "HS Threads Dispatched",
             "The total number of hull shader hardware threads dispatched.",
-            "EU Array/Hull Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_HS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Hull Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_HS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "threads", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -18635,7 +18635,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "DsThreads", "DS Threads Dispatched",
             "The total number of domain shader hardware threads dispatched.",
-            "EU Array/Domain Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_DS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Domain Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_DS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "threads", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -18647,7 +18647,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "GsThreads", "GS Threads Dispatched",
             "The total number of geometry shader hardware threads dispatched.",
-            "EU Array/Geometry Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_GS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Geometry Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_GS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "threads", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -18659,7 +18659,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "PsThreads", "PS Threads Dispatched",
             "The total number of pixel shader hardware threads dispatched.",
-            "EU Array/Pixel Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_PS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Pixel Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_PS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "threads", 0, 0, HW_UNIT_GPU, availabilityEquation, "Pixel|Fragment,PS|FS,pixel|fragment", "oa.fixed" );
         if( metric )
         {
@@ -18671,7 +18671,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "CsThreads", "CS Threads Dispatched",
             "The total number of compute shader hardware threads dispatched.",
-            "EU Array/Compute Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_CS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "EU Array/Compute Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_CS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "threads", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, "oa.fixed" );
         if( metric )
         {
@@ -18685,7 +18685,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
         {
             metric = metricSet->AddMetric( "StcPMAStall", "STC PMA stall",
                 "Percentage of time when stencil cache line and an overlapping pixel are causing stalls",
-                "GPU/Stencil Cache", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_STC * 0x10000), USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+                "GPU/Stencil Cache", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_STC * 0x10000), USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
                 METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
             if( metric )
             {
@@ -18699,7 +18699,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
 
         information = metricSet->AddInformation( "CoreFrequencyChanged", "Core Frequency Changed",
             "The flag indicating that core frequency has changed.",
-            "Exception", API_TYPE_OGL|API_TYPE_OGL4_X,
+            "Exception", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
             INFORMATION_TYPE_FLAG, NULL, NULL );
         if( information )
         {
@@ -18709,7 +18709,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
 
         information = metricSet->AddInformation( "QueryBeginTime", "Query Begin Time",
             "The measurement begin time.",
-            "Report Meta Data", API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            "Report Meta Data", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             INFORMATION_TYPE_TIMESTAMP, "ns", NULL );
         if( information )
         {
@@ -18720,7 +18720,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
 
         information = metricSet->AddInformation( "CoreFrequencyMHz", "GPU Core Frequency",
             "The last core frequency in the measurement.",
-            "Report Meta Data", API_TYPE_OGL|API_TYPE_OGL4_X,
+            "Report Meta Data", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
             INFORMATION_TYPE_VALUE, "MHz", NULL );
         if( information )
         {
@@ -18748,7 +18748,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
 
         information = metricSet->AddInformation( "QuerySplitOccurred", "Query Split Occurred",
             "The flag indicating that query has been split during execution on the GPU.",
-            "Exception", API_TYPE_OGL|API_TYPE_OGL4_X,
+            "Exception", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
             INFORMATION_TYPE_FLAG, NULL, NULL );
         if( information )
         {
@@ -18758,7 +18758,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
 
         information = metricSet->AddInformation( "ReportId", "Query report id",
             "Query report identification number.",
-            "Report Meta Data", API_TYPE_OGL|API_TYPE_OGL4_X,
+            "Report Meta Data", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
             INFORMATION_TYPE_VALUE, NULL, NULL );
         if( information )
         {
@@ -18768,7 +18768,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
 
         information = metricSet->AddInformation( "ReportsCount", "Query reports count",
             "The number of available query reports.",
-            "Report Meta Data", API_TYPE_OGL|API_TYPE_OGL4_X,
+            "Report Meta Data", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
             INFORMATION_TYPE_VALUE, NULL, NULL );
         if( information )
         {
@@ -18778,7 +18778,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
 
         information = metricSet->AddInformation( "OverrunOccured", "Query Overrun Occurred",
             "The flag indicating that Oa buffer has been overran.",
-            "Exception", API_TYPE_OGL|API_TYPE_OGL4_X,
+            "Exception", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
             INFORMATION_TYPE_FLAG, NULL, NULL );
         if( information )
         {

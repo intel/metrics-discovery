@@ -20,7 +20,7 @@
     FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
     IN THE SOFTWARE.
 
-    File Name:  md_metrics_DG1.cpp
+    File Name:  md_metrics_TGL_GT2.cpp
 
     Abstract:   C++ automated generated file to stack metrics meta data
 
@@ -31,8 +31,8 @@
 
 
 
-#if ((!defined(MD_INCLUDE_DG1_METRICS) && MD_INCLUDE_ALL_METRICS) || MD_INCLUDE_DG1_METRICS)
-TCompletionCode CreateMetricTreeDG1_PipelineStatistics( CMetricsDevice* metricsDevice, CConcurrentGroup* concurrentGroup )
+#if ((!defined(MD_INCLUDE_TGL_GT2_METRICS) && MD_INCLUDE_ALL_METRICS) || MD_INCLUDE_TGL_GT2_METRICS)
+TCompletionCode CreateMetricTreeTGL_GT2_PipelineStatistics( CMetricsDevice* metricsDevice, CConcurrentGroup* concurrentGroup )
 {
     MD_LOG_ENTER();
     MD_CHECK_PTR_RET( metricsDevice, CC_ERROR_INVALID_PARAMETER );
@@ -44,7 +44,7 @@ TCompletionCode CreateMetricTreeDG1_PipelineStatistics( CMetricsDevice* metricsD
     const char*       availabilityEquation = NULL;
     uint32_t          platformMask         = 0;
   
-    platformMask = PLATFORM_DG1;
+    platformMask = PLATFORM_TGL;
     if( MD_IS_INTERNAL_BUILD || metricsDevice->IsPlatformTypeOf( platformMask ) )
     {
         metricSet = concurrentGroup->AddMetricSet( "PipelineStats", "Pipeline Statistics for OGL4", API_TYPE_OGL|API_TYPE_OGL4_X,
@@ -199,8 +199,8 @@ TCompletionCode CreateMetricTreeDG1_PipelineStatistics( CMetricsDevice* metricsD
 #endif
 
 
-#if ((!defined(MD_INCLUDE_DG1_METRICS) && MD_INCLUDE_ALL_METRICS) || MD_INCLUDE_DG1_METRICS)
-TCompletionCode CreateMetricTreeDG1_OA( CMetricsDevice* metricsDevice, CConcurrentGroup* concurrentGroup )
+#if ((!defined(MD_INCLUDE_TGL_GT2_METRICS) && MD_INCLUDE_ALL_METRICS) || MD_INCLUDE_TGL_GT2_METRICS)
+TCompletionCode CreateMetricTreeTGL_GT2_OA( CMetricsDevice* metricsDevice, CConcurrentGroup* concurrentGroup )
 {
     MD_LOG_ENTER();
     MD_CHECK_PTR_RET( metricsDevice, CC_ERROR_INVALID_PARAMETER );
@@ -212,7 +212,7 @@ TCompletionCode CreateMetricTreeDG1_OA( CMetricsDevice* metricsDevice, CConcurre
     const char*       availabilityEquation = NULL;
     uint32_t          platformMask         = 0;
   
-    platformMask = PLATFORM_DG1;
+    platformMask = PLATFORM_TGL;
     if( MD_IS_INTERNAL_BUILD || metricsDevice->IsPlatformTypeOf( platformMask ) )
     {
         metricSet = concurrentGroup->AddMetricSet( "RenderBasic", "Render Metrics Basic Gen12", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
@@ -653,7 +653,7 @@ TCompletionCode CreateMetricTreeDG1_OA( CMetricsDevice* metricsDevice, CConcurre
             MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x198 qw@0x190 UADD qw@0x188 UADD qw@0x180 UADD" ));
             MD_CHECK_CC( metric->SetNormalizationEquation( "64 $Self UMUL" ));
             MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
-            MD_CHECK_CC( metric->SetMaxValueEquation( "$GpuCoreClocks 128 UMUL" ));
+            MD_CHECK_CC( metric->SetMaxValueEquation( "$GpuCoreClocks 64 UMUL" ));
         }
 
         availabilityEquation = NULL;
@@ -667,7 +667,7 @@ TCompletionCode CreateMetricTreeDG1_OA( CMetricsDevice* metricsDevice, CConcurre
             MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x178 qw@0x170 UADD" ));
             MD_CHECK_CC( metric->SetNormalizationEquation( "64 $Self UMUL" ));
             MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
-            MD_CHECK_CC( metric->SetMaxValueEquation( "$GpuCoreClocks 128 UMUL" ));
+            MD_CHECK_CC( metric->SetMaxValueEquation( "$GpuCoreClocks 64 UMUL" ));
         }
 
         information = metricSet->AddInformation( "QueryBeginTime", "Query Begin Time",
@@ -825,18 +825,10 @@ TCompletionCode CreateMetricTreeDG1_OA( CMetricsDevice* metricsDevice, CConcurre
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x10150000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x18150000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c150000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x00004000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0e004000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x10004000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x12004000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x00014000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1a012000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c012000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1e012000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c054000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x24050015, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x10088000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c08000e, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x18004000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x36000490, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c058000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x2405002a, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9884, 0x00000003, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x05151d47, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x09151536, REGISTER_TYPE_NOA ));
@@ -847,9 +839,13 @@ TCompletionCode CreateMetricTreeDG1_OA( CMetricsDevice* metricsDevice, CConcurre
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x5d102c01, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x11148000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1b14e000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x4b114000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x5f11a000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x61110002, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x4b112000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x5f115000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x61110001, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x01128000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0f128000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x11128000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x13128000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1f150137, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x01150000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0f168000, REGISTER_TYPE_NOA ));
@@ -862,16 +858,16 @@ TCompletionCode CreateMetricTreeDG1_OA( CMetricsDevice* metricsDevice, CConcurre
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0f364000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x01368000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x03368000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x47101000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x47103000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x4d100000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x4f100000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x51100000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x17100000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x31100000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x55101610, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x57100006, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x49101616, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x4b100616, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x55103130, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x57100001, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x49103131, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x4b100131, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9884, 0x00000003, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x65100002, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9884, 0x00000000, REGISTER_TYPE_NOA ));
@@ -901,7 +897,7 @@ TCompletionCode CreateMetricTreeDG1_OA( CMetricsDevice* metricsDevice, CConcurre
         MD_CHECK_CC( metricSet->RefreshConfigRegisters() );
     }
      
-    platformMask = PLATFORM_DG1;
+    platformMask = PLATFORM_TGL;
     if( MD_IS_INTERNAL_BUILD || metricsDevice->IsPlatformTypeOf( platformMask ) )
     {
         metricSet = concurrentGroup->AddMetricSet( "ComputeBasic", "Compute Metrics Basic", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
@@ -1278,7 +1274,7 @@ TCompletionCode CreateMetricTreeDG1_OA( CMetricsDevice* metricsDevice, CConcurre
             MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x1a8 qw@0x1a0 UADD qw@0x198 UADD qw@0x190 UADD" ));
             MD_CHECK_CC( metric->SetNormalizationEquation( "64 $Self UMUL" ));
             MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
-            MD_CHECK_CC( metric->SetMaxValueEquation( "$GpuCoreClocks 128 UMUL" ));
+            MD_CHECK_CC( metric->SetMaxValueEquation( "$GpuCoreClocks 64 UMUL" ));
         }
 
         availabilityEquation = NULL;
@@ -1292,7 +1288,7 @@ TCompletionCode CreateMetricTreeDG1_OA( CMetricsDevice* metricsDevice, CConcurre
             MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x188 qw@0x180 UADD" ));
             MD_CHECK_CC( metric->SetNormalizationEquation( "64 $Self UMUL" ));
             MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
-            MD_CHECK_CC( metric->SetMaxValueEquation( "$GpuCoreClocks 128 UMUL" ));
+            MD_CHECK_CC( metric->SetMaxValueEquation( "$GpuCoreClocks 64 UMUL" ));
         }
 
         information = metricSet->AddInformation( "QueryBeginTime", "Query Begin Time",
@@ -1480,7 +1476,7 @@ TCompletionCode CreateMetricTreeDG1_OA( CMetricsDevice* metricsDevice, CConcurre
         MD_CHECK_CC( metricSet->RefreshConfigRegisters() );
     }
      
-    platformMask = PLATFORM_DG1;
+    platformMask = PLATFORM_TGL;
     if( MD_IS_INTERNAL_BUILD || metricsDevice->IsPlatformTypeOf( platformMask ) )
     {
         metricSet = concurrentGroup->AddMetricSet( "RenderPipeProfile", "Render Metrics for 3D Pipeline Profile", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
@@ -2198,87 +2194,105 @@ TCompletionCode CreateMetricTreeDG1_OA( CMetricsDevice* metricsDevice, CConcurre
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9840, 0x00000000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9884, 0x00000000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x00123e00, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x060b00b3, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x140b3c00, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c0b0000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x120c8320, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x040dbe00, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x000d0000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x280d0000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x2c0e7c00, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x10087c00, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x060c40b3, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x140c3c00, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c0c0000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x120d0320, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x040e3e00, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x000e0000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x280e0000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x2c0f001f, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1e120002, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x20120000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1e130002, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0e004000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x10004000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x12004000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x34005540, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x36000001, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x02004000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x04004000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x06004000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x08004000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0a004000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0c004000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1a012000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c012000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1e012000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x2a015500, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x2c010005, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x02014000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x04014000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x06014000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x08014000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0a014000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x18012000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x2405ffdf, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x26050001, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x2205fff0, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0e0b0031, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x180b0092, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1a0b00b1, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x020b0093, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x040b0033, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x000b0000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0a0c0022, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1e0c0030, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c0c8000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x140c8000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x160c8000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x100dc017, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x160d0013, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c0d0081, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x080d0082, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0a0d8102, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x140d0000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0c0d0000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0e0d4000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x120d0000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x060dc000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0c0ec1c5, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x180e0000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0e0e8000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x100e4000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x120ec000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x140ec000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x160e4000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x080e8000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0a0ec000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c0f5555, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1e0f0554, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0e104000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x10104000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x14104000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x16104000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x18104000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1a104000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c104000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x02104000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x04104000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x06104000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x08104000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0a104000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0c104000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0e024000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x10024000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x2c024000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x2e020055, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x02024000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x04024000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x06024000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x08024000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0a024000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0c024000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1a032000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c032000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x2a035500, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x2c030001, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x02034000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x04034000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x06034000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x08034000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0a034000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x18032000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x360036db, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x380026db, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1a006000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c006000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1e006000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x34001b00, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x26050002, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0e0a8000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x100a8000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x120a4000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x140a8000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x160a8000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x180a8000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1a0a8000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c0a8000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x020a8000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x040a8000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x060a8000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x080a8000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0a0a8000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0c0a8000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x08081000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c080200, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x24065155, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x26060015, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x22065400, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c0901f7, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x14098000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1a09f000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0e0c0031, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x180c0092, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1a0c00b1, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x020c0093, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x040c0033, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x100c0000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0c0c0000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x000c0000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0a0d0022, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x100d0000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1e0da5a8, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x200d1a41, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x100e0017, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x160e0013, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c0e0081, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x080e0082, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0a0e0102, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x140e0000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0c0e0000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0e0e0000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x120e0000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0c0f0225, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x200f0000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0e0b4000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x100b4000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x140b4000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x160b4000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x180b4000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1a0b4000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c0b4000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x020b4000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x040b4000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x060b4000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x080b4000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0a0b4000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0c0b4000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9884, 0x00000003, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x5b105555, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x5d101555, REGISTER_TYPE_NOA ));
@@ -2287,19 +2301,34 @@ TCompletionCode CreateMetricTreeDG1_OA( CMetricsDevice* metricsDevice, CConcurre
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x13148000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x15148000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x17148000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x5f11aaaa, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x61112aaa, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x4d100002, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x4f100202, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x5110040a, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x53100202, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x55100202, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x5f115555, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x61111555, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0f128000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x11128000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x13128000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x15128000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x17128000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x19128000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1b128000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1d128000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1f128000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x03128000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x05128000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x07128000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x09128000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0b128000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0d128000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x4d100604, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x4f103400, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x51100200, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x53100004, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x55101400, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x17100000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x31100000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x57100006, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x57100005, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x47100000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x49100202, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x4b100202, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x49100000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x4b100400, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9884, 0x00000003, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x65100002, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9884, 0x00000000, REGISTER_TYPE_NOA ));
@@ -2320,10 +2349,10 @@ TCompletionCode CreateMetricTreeDG1_OA( CMetricsDevice* metricsDevice, CConcurre
         MD_CHECK_CC( metricSet->RefreshConfigRegisters() );
     }
      
-    platformMask = PLATFORM_DG1;
+    platformMask = PLATFORM_TGL;
     if( MD_IS_INTERNAL_BUILD || metricsDevice->IsPlatformTypeOf( platformMask ) )
     {
-        metricSet = concurrentGroup->AddMetricSet( "HDCAndSF", "Metric set HDCAndSF (DG1)", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+        metricSet = concurrentGroup->AddMetricSet( "HDCAndSF", "Metric set HDCAndSF", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
            GPU_RENDER|GPU_COMPUTE, 256, 672, OA_REPORT_TYPE_256B_A45_NOA16, platformMask );
         MD_CHECK_PTR( metricSet );
         
@@ -2695,8 +2724,8 @@ TCompletionCode CreateMetricTreeDG1_OA( CMetricsDevice* metricsDevice, CConcurre
                 METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, NULL, NULL );
             if( metric )
             {
-                MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "dw@0x0c dw@0xe8 FSUB" ));
-                MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x08 qw@0x180 FSUB" ));
+                MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "dw@0xc8" ));
+                MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x140" ));
                 MD_CHECK_CC( metric->SetNormalizationEquation( "GpuDuration" ));
                 MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
                 MD_CHECK_CC( metric->SetMaxValueEquation( "100" ));
@@ -2712,8 +2741,8 @@ TCompletionCode CreateMetricTreeDG1_OA( CMetricsDevice* metricsDevice, CConcurre
                 METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, NULL, NULL );
             if( metric )
             {
-                MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "dw@0x0c dw@0xec FSUB" ));
-                MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x08 qw@0x188 FSUB" ));
+                MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "dw@0xcc" ));
+                MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x148" ));
                 MD_CHECK_CC( metric->SetNormalizationEquation( "GpuDuration" ));
                 MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
                 MD_CHECK_CC( metric->SetMaxValueEquation( "100" ));
@@ -2729,8 +2758,8 @@ TCompletionCode CreateMetricTreeDG1_OA( CMetricsDevice* metricsDevice, CConcurre
                 METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, NULL, NULL );
             if( metric )
             {
-                MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "dw@0x0c dw@0xf0 FSUB" ));
-                MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x08 qw@0x190 FSUB" ));
+                MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "dw@0xd0" ));
+                MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x150" ));
                 MD_CHECK_CC( metric->SetNormalizationEquation( "GpuDuration" ));
                 MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
                 MD_CHECK_CC( metric->SetMaxValueEquation( "100" ));
@@ -2746,8 +2775,8 @@ TCompletionCode CreateMetricTreeDG1_OA( CMetricsDevice* metricsDevice, CConcurre
                 METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, NULL, NULL );
             if( metric )
             {
-                MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "dw@0x0c dw@0xf4 FSUB" ));
-                MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x08 qw@0x198 FSUB" ));
+                MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "dw@0xd4" ));
+                MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x158" ));
                 MD_CHECK_CC( metric->SetNormalizationEquation( "GpuDuration" ));
                 MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
                 MD_CHECK_CC( metric->SetMaxValueEquation( "100" ));
@@ -2763,8 +2792,8 @@ TCompletionCode CreateMetricTreeDG1_OA( CMetricsDevice* metricsDevice, CConcurre
                 METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, NULL, NULL );
             if( metric )
             {
-                MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "dw@0x0c dw@0xf8 FSUB" ));
-                MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x08 qw@0x1a0 FSUB" ));
+                MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "dw@0xc4" ));
+                MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x138" ));
                 MD_CHECK_CC( metric->SetNormalizationEquation( "GpuDuration" ));
                 MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
                 MD_CHECK_CC( metric->SetMaxValueEquation( "100" ));
@@ -2780,8 +2809,8 @@ TCompletionCode CreateMetricTreeDG1_OA( CMetricsDevice* metricsDevice, CConcurre
                 METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, NULL, NULL );
             if( metric )
             {
-                MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "dw@0x0c dw@0xfc FSUB" ));
-                MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x08 qw@0x1a8 FSUB" ));
+                MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "dw@0xc0" ));
+                MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x130" ));
                 MD_CHECK_CC( metric->SetNormalizationEquation( "GpuDuration" ));
                 MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
                 MD_CHECK_CC( metric->SetMaxValueEquation( "100" ));
@@ -2795,50 +2824,8 @@ TCompletionCode CreateMetricTreeDG1_OA( CMetricsDevice* metricsDevice, CConcurre
             METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
         if( metric )
         {
-            MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "dw@0xc0" ));
-            MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x130" ));
-            MD_CHECK_CC( metric->SetNormalizationEquation( "GpuDuration" ));
-            MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
-            MD_CHECK_CC( metric->SetMaxValueEquation( "100" ));
-        }
-
-        availabilityEquation = NULL;
-        metric = metricSet->AddMetric( "PixelData00Ready", "Slice0 Pipe0 Post-EarlyZ Pixel Data Ready",
-            "The percentage of time in which slice0  pipe0 post-EarlyZ pixel data is ready (after early Z tests have been applied)",
-            "GPU/Rasterizer/Early Depth Test", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_WM * 0x10000) | (METRIC_GROUP_NAME_ID_IZ * 0x100), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
-            METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SLICE, availabilityEquation, NULL, NULL );
-        if( metric )
-        {
-            MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "dw@0xcc" ));
-            MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x148" ));
-            MD_CHECK_CC( metric->SetNormalizationEquation( "GpuDuration" ));
-            MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
-            MD_CHECK_CC( metric->SetMaxValueEquation( "100" ));
-        }
-
-        availabilityEquation = NULL;
-        metric = metricSet->AddMetric( "PixelData01Ready", "Slice0 Pipe1 Post-EarlyZ Pixel Data Ready",
-            "The percentage of time in which slice0  pipe1 post-EarlyZ pixel data is ready (after early Z tests have been applied)",
-            "GPU/Rasterizer/Early Depth Test", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_WM * 0x10000) | (METRIC_GROUP_NAME_ID_IZ * 0x100), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
-            METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SLICE, availabilityEquation, NULL, NULL );
-        if( metric )
-        {
-            MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "dw@0xc8" ));
-            MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x140" ));
-            MD_CHECK_CC( metric->SetNormalizationEquation( "GpuDuration" ));
-            MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
-            MD_CHECK_CC( metric->SetMaxValueEquation( "100" ));
-        }
-
-        availabilityEquation = NULL;
-        metric = metricSet->AddMetric( "PixelData02Ready", "Slice0 Pipe2 Post-EarlyZ Pixel Data Ready",
-            "The percentage of time in which slice0  pipe2 post-EarlyZ pixel data is ready (after early Z tests have been applied)",
-            "GPU/Rasterizer/Early Depth Test", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_WM * 0x10000) | (METRIC_GROUP_NAME_ID_IZ * 0x100), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
-            METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SLICE, availabilityEquation, NULL, NULL );
-        if( metric )
-        {
-            MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "dw@0xc4" ));
-            MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x138" ));
+            MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "dw@0xd8" ));
+            MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x160" ));
             MD_CHECK_CC( metric->SetNormalizationEquation( "GpuDuration" ));
             MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
             MD_CHECK_CC( metric->SetMaxValueEquation( "100" ));
@@ -2985,122 +2972,81 @@ TCompletionCode CreateMetricTreeDG1_OA( CMetricsDevice* metricsDevice, CConcurre
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x0d04, 0x00000200, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9840, 0x00000000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9884, 0x00000000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x14112600, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x14312600, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x14512600, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x14712600, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x14912600, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x14b12600, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x120800a0, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x120900a0, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x120a00a0, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x240b0019, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x02110077, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x10110000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x00110000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x02128000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x12138000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x04310077, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x14112400, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x14312400, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x14512474, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x14712400, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x14912400, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x14b12400, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x240a0019, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c07c000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x24070002, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x10110074, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x08110000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x10128000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c130400, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x12310074, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x10310000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x02310000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x04328000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x14338000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x06510077, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x08310000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x12328000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c330800, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x10510000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x02510000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x06528000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x16538000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x08710077, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0a510000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x14528000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c531000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x16710074, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x10710000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x04710000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x08728000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x18738000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0a910077, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0a710000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x16728000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c732000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0e910074, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x10910000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x04910000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0a928000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1a938000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0cb10077, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x06910000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0e928000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c930200, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x00b10074, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x10b10000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x06b10000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0cb28000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1cb30100, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x00004000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0e004000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x10004000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x12004000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x34000540, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x02004000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x04004000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x06004000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x08004000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0a004000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0c004000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x00b28000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x10b38000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1e0f0020, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x16104000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x2e020001, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x2a030600, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x18002000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x36003488, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x3800001b, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x00014000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1a012000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c012000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1e012000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x2a011500, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x02014000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x04014000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x06014000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x08014000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0a014000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x18012000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c05c000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x240505ff, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x2205ff90, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0a082300, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0c080022, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c080000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x14088000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c064000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x24060156, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x22064000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x08092300, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0a090022, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c090007, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x10098000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1a09e000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x22078000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x060a2300, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x080a0022, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x100a0000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x180a0180, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1e0d5400, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x200d0001, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0a0ec000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0c0e4000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x080e8000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x000b00f7, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x200b0000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0e0b4000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x100b4000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x060b8000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0a0b4000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0c0b4000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x24050038, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x24060080, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x180a00f7, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x200a0000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x140a8000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x160a8000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9884, 0x00000003, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x41104000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x5b105555, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x5b105000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x5d100055, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x11148000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1b14fc00, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1b14e000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1d140007, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x13148000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x15148000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x17148000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x4b114000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x5f11aaaa, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x611100aa, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x47101310, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x4d100002, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x4f101808, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x51101717, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x53100717, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x4b112000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x5f115000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x61110055, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x01128000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0f128000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x11128000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x13128000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x15128000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x17128000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x19128000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x47100600, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x4d100000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x4f101116, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x51100401, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x53100030, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x17100000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x31100000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x49100311, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x4b100a08, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9884, 0x00000003, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x65100002, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9884, 0x00000000, REGISTER_TYPE_NOA ));
@@ -3109,24 +3055,36 @@ TCompletionCode CreateMetricTreeDG1_OA( CMetricsDevice* metricsDevice, CConcurre
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xd900, 0x00000000, REGISTER_TYPE_OA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xd904, 0xf0800000, REGISTER_TYPE_OA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xd910, 0x00000000, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xd914, 0x00800000, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xdc40, 0x000f0000, REGISTER_TYPE_OA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xd914, 0x70800000, REGISTER_TYPE_OA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xdc40, 0x007f0000, REGISTER_TYPE_OA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xd940, 0x00000002, REGISTER_TYPE_OA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xd944, 0x0000fffe, REGISTER_TYPE_OA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xdc00, 0x00000002, REGISTER_TYPE_OA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xdc04, 0x0000fffe, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xd948, 0x00000030, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xd94c, 0x0000fff9, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xdc08, 0x00000030, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xdc0c, 0x0000fff9, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xd950, 0x000000c0, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xd954, 0x0000ffe7, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xdc10, 0x000000c0, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xdc14, 0x0000ffe7, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xd958, 0x00000300, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xd95c, 0x0000ff9f, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xdc18, 0x00000300, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xdc1c, 0x0000ff9f, REGISTER_TYPE_OA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xd948, 0x00000002, REGISTER_TYPE_OA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xd94c, 0x0000fffd, REGISTER_TYPE_OA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xdc08, 0x00000002, REGISTER_TYPE_OA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xdc0c, 0x0000fffd, REGISTER_TYPE_OA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xd950, 0x00000002, REGISTER_TYPE_OA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xd954, 0x0000fffb, REGISTER_TYPE_OA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xdc10, 0x00000002, REGISTER_TYPE_OA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xdc14, 0x0000fffb, REGISTER_TYPE_OA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xd958, 0x00000002, REGISTER_TYPE_OA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xd95c, 0x0000fff7, REGISTER_TYPE_OA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xdc18, 0x00000002, REGISTER_TYPE_OA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xdc1c, 0x0000fff7, REGISTER_TYPE_OA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xd960, 0x00000002, REGISTER_TYPE_OA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xd964, 0x0000ffef, REGISTER_TYPE_OA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xdc20, 0x00000002, REGISTER_TYPE_OA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xdc24, 0x0000ffef, REGISTER_TYPE_OA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xd968, 0x00000002, REGISTER_TYPE_OA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xd96c, 0x0000ffdf, REGISTER_TYPE_OA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xdc28, 0x00000002, REGISTER_TYPE_OA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xdc2c, 0x0000ffdf, REGISTER_TYPE_OA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xd970, 0x00000002, REGISTER_TYPE_OA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xd974, 0x0000ffbf, REGISTER_TYPE_OA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xdc30, 0x00000002, REGISTER_TYPE_OA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xdc34, 0x0000ffbf, REGISTER_TYPE_OA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xe458, 0x00804704, REGISTER_TYPE_FLEX ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xe558, 0x00a04904, REGISTER_TYPE_FLEX ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xe658, 0x00805705, REGISTER_TYPE_FLEX ));
@@ -3137,7 +3095,7 @@ TCompletionCode CreateMetricTreeDG1_OA( CMetricsDevice* metricsDevice, CConcurre
         MD_CHECK_CC( metricSet->RefreshConfigRegisters() );
     }
      
-    platformMask = PLATFORM_DG1;
+    platformMask = PLATFORM_TGL;
     if( MD_IS_INTERNAL_BUILD || metricsDevice->IsPlatformTypeOf( platformMask ) )
     {
         metricSet = concurrentGroup->AddMetricSet( "RasterizerAndPixelBackend", "Metric set RasterizerAndPixelBackend", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
@@ -3538,6 +3496,20 @@ TCompletionCode CreateMetricTreeDG1_OA( CMetricsDevice* metricsDevice, CConcurre
         }
 
         availabilityEquation = NULL;
+        metric = metricSet->AddMetric( "PixelData00Ready", "Slice0 Pipe0 Post-EarlyZ Pixel Data Ready",
+            "The percentage of time in which slice0  pipe0 post-EarlyZ pixel data is ready (after early Z tests have been applied)",
+            "GPU/Rasterizer/Early Depth Test", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_WM * 0x10000) | (METRIC_GROUP_NAME_ID_IZ * 0x100), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SLICE, availabilityEquation, NULL, NULL );
+        if( metric )
+        {
+            MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "dw@0xc4" ));
+            MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x138" ));
+            MD_CHECK_CC( metric->SetNormalizationEquation( "GpuDuration" ));
+            MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
+            MD_CHECK_CC( metric->SetMaxValueEquation( "100" ));
+        }
+
+        availabilityEquation = NULL;
         metric = metricSet->AddMetric( "PSOutput00Available", "Slice0 Pipe0 PS Output Available",
             "The percentage of time in which slice0 pipe0 PS output is available",
             "GPU/3D Pipe", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_3D_PIPE * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
@@ -3818,76 +3790,78 @@ TCompletionCode CreateMetricTreeDG1_OA( CMetricsDevice* metricsDevice, CConcurre
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x0d04, 0x00000200, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9840, 0x00000000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9884, 0x00000000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1e075000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1a0700c0, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1e055000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1a0500c0, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1e065000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1a0600c0, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1e075000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1a0700c0, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x2a0b7300, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x2c0b0000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x00004000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0e004000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x10004000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x34005500, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x36000001, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x02004000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x04004000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x00014000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1a012000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c012000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x2a015400, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x2c010005, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x02014000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x04014000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0c05c000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x00052700, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x10050000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c05c000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x2405cf0f, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x26050003, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x220500c0, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0c0600d0, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0e062700, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x10060000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c064000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x24064140, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x26060010, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x22061000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x10098000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c090366, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1a091000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x2a0a7300, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x2c0a0000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x120800a0, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0a07c000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0e070027, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x10070000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x24070000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1a0a0104, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x200d1040, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0e0e8000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x120e4000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x000b0144, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0e0b0145, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x100b0156, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x040b014f, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x200b0000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x160b4000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c0b4000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x2a032000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x2c030008, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x18006000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x360036d8, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x38003299, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1a004000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c006000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x2a010400, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x2c010001, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0c05c000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x00052700, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x10050000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x24050000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x22050000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0c0600c0, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0e062700, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x10060000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x24060000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x26060000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x000a0144, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0e0a0145, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x100a0156, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x040a014f, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x200a0000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x120a4000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x140a4000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x180a8000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1e0a8000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x08081980, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0a080032, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x10080000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9884, 0x00000003, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x19151400, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x21152800, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x19351400, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x21352800, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x31152800, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x331500a0, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x31352800, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x333500a0, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x41104000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x5b105fa5, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x5d101550, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x5d101555, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x11148000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1b146000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1d14003e, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1b14e000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1d14003f, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x13148000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x15148000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x4b114000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x5f11a00a, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x61112aa0, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x4b112000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x5f115005, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x61111555, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x01128000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0f128000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x11128000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x13128000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x15128000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x17128000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x19128000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1b128000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1d128000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1f128000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x03128000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x05128000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x07150016, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x09150096, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x01150000, REGISTER_TYPE_NOA ));
@@ -3898,31 +3872,35 @@ TCompletionCode CreateMetricTreeDG1_OA( CMetricsDevice* metricsDevice, CConcurre
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x01350000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x05368000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x07364000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x47101800, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x4d100131, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x4f100808, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x51100000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x53101a00, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x55100003, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x47100400, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x4d100616, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x4f100404, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x51100202, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x53100002, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x55100204, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x17100000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x31100000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x5710000a, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x49103803, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x4b103131, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x57100000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x49101404, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x4b101616, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9884, 0x00000003, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x65100002, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9884, 0x00000000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x42000001, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xd920, 0x00000000, REGISTER_TYPE_OA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xd900, 0x00000000, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xd904, 0x10800000, REGISTER_TYPE_OA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xd904, 0x30800000, REGISTER_TYPE_OA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xd910, 0x00000000, REGISTER_TYPE_OA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xd914, 0x00800000, REGISTER_TYPE_OA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xdc40, 0x00010000, REGISTER_TYPE_OA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xdc40, 0x00030000, REGISTER_TYPE_OA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xd940, 0x00000038, REGISTER_TYPE_OA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xd944, 0x0000fff8, REGISTER_TYPE_OA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xdc00, 0x00000038, REGISTER_TYPE_OA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xdc04, 0x0000fff8, REGISTER_TYPE_OA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xd948, 0x000000c0, REGISTER_TYPE_OA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xd94c, 0x0000ffe7, REGISTER_TYPE_OA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xdc08, 0x000000c0, REGISTER_TYPE_OA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xdc0c, 0x0000ffe7, REGISTER_TYPE_OA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xe458, 0x00804704, REGISTER_TYPE_FLEX ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xe558, 0x00a04904, REGISTER_TYPE_FLEX ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xe658, 0x00805705, REGISTER_TYPE_FLEX ));
@@ -3933,7 +3911,7 @@ TCompletionCode CreateMetricTreeDG1_OA( CMetricsDevice* metricsDevice, CConcurre
         MD_CHECK_CC( metricSet->RefreshConfigRegisters() );
     }
      
-    platformMask = PLATFORM_DG1;
+    platformMask = PLATFORM_TGL;
     if( MD_IS_INTERNAL_BUILD || metricsDevice->IsPlatformTypeOf( platformMask ) )
     {
         metricSet = concurrentGroup->AddMetricSet( "L3_1", "Gen12LP L3_1", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
@@ -4329,51 +4307,30 @@ TCompletionCode CreateMetricTreeDG1_OA( CMetricsDevice* metricsDevice, CConcurre
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1a02002f, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x2e020000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x2c020000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x00034000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1a032000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c032000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1e032000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x2a035500, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c000024, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1e000025, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x02000026, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0800002d, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0a00002e, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0c00002f, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x3a000000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x00004000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0e004000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x10004000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x12004000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x34001540, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x36000000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x00014000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1a012000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c012000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1e012000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x2a015500, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c05c000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x24053fff, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c064000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x24065540, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x26060005, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x10098000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c0900fe, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c074000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x24071555, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x160a1000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x180a5400, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1a0a0055, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1e0d4001, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x200d0555, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x040e4000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0a0e8000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0c0ec000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0e0ec000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x100ec000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x000b4000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0e0b4000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x100b4000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x120b4000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x140b4000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x160b4000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x180b4000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1a0b4000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x360036d8, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x18006000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x380000db, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1a000000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x34000000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x000a8000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0e0a8000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x100a8000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x120a8000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x140a8000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x160a8000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x180a8000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1a0a8000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9884, 0x00000003, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x41104000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x5b105555, REGISTER_TYPE_NOA ));
@@ -4384,20 +4341,36 @@ TCompletionCode CreateMetricTreeDG1_OA( CMetricsDevice* metricsDevice, CConcurre
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x13148000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x15148000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x17148000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x4b114000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x5f11aaaa, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x61112aaa, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x47101000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x4d100919, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x4b112000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x5f115555, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x61111555, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x01128000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0f128000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x11128000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x13128000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x15128000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x17128000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x19128000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1b128000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1d128000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1f128000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x03128000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x05128000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x07128000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x09128000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0b128000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0d128000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x47100000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x4d100606, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x4f100000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x51100000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x53100000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x55101910, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x55100600, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x17100000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x31100000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x57100009, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x49101919, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x4b101919, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x57100006, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x49100606, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x4b100606, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9884, 0x00000003, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x65100002, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9884, 0x00000000, REGISTER_TYPE_NOA ));
@@ -4418,7 +4391,7 @@ TCompletionCode CreateMetricTreeDG1_OA( CMetricsDevice* metricsDevice, CConcurre
         MD_CHECK_CC( metricSet->RefreshConfigRegisters() );
     }
      
-    platformMask = PLATFORM_DG1;
+    platformMask = PLATFORM_TGL;
     if( MD_IS_INTERNAL_BUILD || metricsDevice->IsPlatformTypeOf( platformMask ) )
     {
         metricSet = concurrentGroup->AddMetricSet( "L3_2", "Gen12LP L3_2", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
@@ -4802,8 +4775,8 @@ TCompletionCode CreateMetricTreeDG1_OA( CMetricsDevice* metricsDevice, CConcurre
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9884, 0x00000000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x04023027, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0602382c, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x04007000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x06007800, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x04003000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x06003800, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c020024, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1e020025, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x02020026, REGISTER_TYPE_NOA ));
@@ -4811,7 +4784,13 @@ TCompletionCode CreateMetricTreeDG1_OA( CMetricsDevice* metricsDevice, CConcurre
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0a02002e, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0c02002f, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x2e020000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x2c020000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x2c030005, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x02034000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x04034000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x06034000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x08034000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0a034000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x18032000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x00000024, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0e000025, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x10000026, REGISTER_TYPE_NOA ));
@@ -4819,51 +4798,20 @@ TCompletionCode CreateMetricTreeDG1_OA( CMetricsDevice* metricsDevice, CConcurre
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1400002c, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1600002d, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1800002e, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1a00002f, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x3a000000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x34004000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x36000001, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x02004000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x08004000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0a004000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0c004000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x2c010005, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x02014000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x04014000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x06014000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x08014000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0a014000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x18012000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x2405c000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x26050003, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x2205fff0, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x26060050, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x22065400, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x24060015, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c090301, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x14098000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1a09f000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x24074000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x26070001, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x22075550, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1a0a0500, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x160a4000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x180a0155, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x200d5000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1e0d1554, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x120ec000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x040e8000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x060ec000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x080ec000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0a0e4000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c0b4000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1e0b4000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x020b4000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x040b4000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x060b4000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x080b4000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0a0b4000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0c0b4000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1a00602f, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x36000003, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x38003600, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c006000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1e006000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x34001b00, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c0a8000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1e0a8000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x020a8000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x040a8000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x060a8000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x080a8000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0a0a8000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0c0a8000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9884, 0x00000003, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x41104000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x5b105555, REGISTER_TYPE_NOA ));
@@ -4874,15 +4822,31 @@ TCompletionCode CreateMetricTreeDG1_OA( CMetricsDevice* metricsDevice, CConcurre
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x13148000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x15148000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x17148000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x4b114000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x5f11aaaa, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x61112aaa, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x47100910, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x4d101000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x4f101919, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x51101919, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x53101919, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x55100009, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x4b112000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x5f115555, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x61111555, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x01128000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0f128000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x11128000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x13128000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x15128000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x17128000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x19128000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1b128000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1d128000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1f128000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x03128000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x05128000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x07128000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x09128000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0b128000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0d128000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x47100600, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x4d100000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x4f100606, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x51100606, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x53100606, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x55100006, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x17100000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x31100000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x57100000, REGISTER_TYPE_NOA ));
@@ -4908,7 +4872,7 @@ TCompletionCode CreateMetricTreeDG1_OA( CMetricsDevice* metricsDevice, CConcurre
         MD_CHECK_CC( metricSet->RefreshConfigRegisters() );
     }
      
-    platformMask = PLATFORM_DG1;
+    platformMask = PLATFORM_TGL;
     if( MD_IS_INTERNAL_BUILD || metricsDevice->IsPlatformTypeOf( platformMask ) )
     {
         metricSet = concurrentGroup->AddMetricSet( "L3_3", "Gen12LP L3_3", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
@@ -5259,35 +5223,31 @@ TCompletionCode CreateMetricTreeDG1_OA( CMetricsDevice* metricsDevice, CConcurre
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x04020200, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x06020020, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x04000200, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x06004000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x06000000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x08020028, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x2e020000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x06034000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x08034000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0a000020, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0c000028, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x3a000000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x08004000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x06014000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x08014000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x22050f00, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x22064000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x24060001, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1a096000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x22070500, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x180a0014, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1e0d0140, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x060e8000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x080e4000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x060b4000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x080b4000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x36000000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1e006000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x34000300, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x060a8000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x080a8000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9884, 0x00000003, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x5b100550, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x17148000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1b141c00, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x5f110aa0, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x5f110550, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x07128000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x09128000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0b128000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0d128000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x17100000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x49100000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x4b101000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x4d100919, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x4b100000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x4d100606, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x31100000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9884, 0x00000003, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x65100002, REGISTER_TYPE_NOA ));
@@ -5309,7 +5269,7 @@ TCompletionCode CreateMetricTreeDG1_OA( CMetricsDevice* metricsDevice, CConcurre
         MD_CHECK_CC( metricSet->RefreshConfigRegisters() );
     }
      
-    platformMask = PLATFORM_DG1;
+    platformMask = PLATFORM_TGL;
     if( MD_IS_INTERNAL_BUILD || metricsDevice->IsPlatformTypeOf( platformMask ) )
     {
         metricSet = concurrentGroup->AddMetricSet( "L3_4", "Gen12LP L3_4", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
@@ -5664,31 +5624,26 @@ TCompletionCode CreateMetricTreeDG1_OA( CMetricsDevice* metricsDevice, CConcurre
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0a020020, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0c020028, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x2e020000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0a034000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x18032000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x08000028, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x3a000000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0a004000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0c004000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0a014000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x18012000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x2205f000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x24060014, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1a098000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c090001, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x22075000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x180a0140, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1e0d1400, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x080e8000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0a0e4000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0a0b4000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0c0b4000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x36000003, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1e000000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x34001800, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0a0a8000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0c0a8000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9884, 0x00000003, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x5b100550, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x17148000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1b141c00, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x5f110aa0, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x5f110550, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x07128000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x09128000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0b128000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0d128000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x17100000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x49101000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x4b100919, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x49100000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x4b100606, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x4d100000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x31100000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9884, 0x00000003, REGISTER_TYPE_NOA ));
@@ -5711,7 +5666,7 @@ TCompletionCode CreateMetricTreeDG1_OA( CMetricsDevice* metricsDevice, CConcurre
         MD_CHECK_CC( metricSet->RefreshConfigRegisters() );
     }
      
-    platformMask = PLATFORM_DG1;
+    platformMask = PLATFORM_TGL;
     if( MD_IS_INTERNAL_BUILD || metricsDevice->IsPlatformTypeOf( platformMask ) )
     {
         metricSet = concurrentGroup->AddMetricSet( "L3_5", "Gen12LP L3_5", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
@@ -6066,31 +6021,26 @@ TCompletionCode CreateMetricTreeDG1_OA( CMetricsDevice* metricsDevice, CConcurre
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0a020020, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0c020028, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x2e020000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0a034000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x18032000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x08000028, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x3a000000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0a004000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0c004000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0a014000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x18012000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x2205f000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x24060014, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1a098000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c090001, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x22075000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x180a0140, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1e0d1400, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x080e8000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0a0e4000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0a0b4000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0c0b4000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x36000003, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1e000000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x34001800, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0a0a8000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0c0a8000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9884, 0x00000003, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x5b100550, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x17148000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1b141c00, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x5f110aa0, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x5f110550, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x07128000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x09128000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0b128000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0d128000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x17100000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x49101000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x4b100919, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x49100000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x4b100606, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x4d100000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x31100000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9884, 0x00000003, REGISTER_TYPE_NOA ));
@@ -6113,7 +6063,7 @@ TCompletionCode CreateMetricTreeDG1_OA( CMetricsDevice* metricsDevice, CConcurre
         MD_CHECK_CC( metricSet->RefreshConfigRegisters() );
     }
      
-    platformMask = PLATFORM_DG1;
+    platformMask = PLATFORM_TGL;
     if( MD_IS_INTERNAL_BUILD || metricsDevice->IsPlatformTypeOf( platformMask ) )
     {
         metricSet = concurrentGroup->AddMetricSet( "L3_6", "Gen12LP L3_6", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
@@ -6468,31 +6418,26 @@ TCompletionCode CreateMetricTreeDG1_OA( CMetricsDevice* metricsDevice, CConcurre
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0a020020, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0c020028, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x2e020000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0a034000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x18032000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x08000028, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x3a000000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0a004000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0c004000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0a014000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x18012000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x2205f000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x24060014, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1a098000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c090001, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x22075000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x180a0140, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1e0d1400, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x080e8000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0a0e4000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0a0b4000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0c0b4000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x36000003, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1e000000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x34001800, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0a0a8000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0c0a8000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9884, 0x00000003, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x5b100550, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x17148000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1b141c00, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x5f110aa0, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x5f110550, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x07128000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x09128000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0b128000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0d128000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x17100000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x49101000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x4b100919, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x49100000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x4b100606, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x4d100000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x31100000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9884, 0x00000003, REGISTER_TYPE_NOA ));
@@ -6515,7 +6460,7 @@ TCompletionCode CreateMetricTreeDG1_OA( CMetricsDevice* metricsDevice, CConcurre
         MD_CHECK_CC( metricSet->RefreshConfigRegisters() );
     }
      
-    platformMask = PLATFORM_DG1;
+    platformMask = PLATFORM_TGL;
     if( MD_IS_INTERNAL_BUILD || metricsDevice->IsPlatformTypeOf( platformMask ) )
     {
         metricSet = concurrentGroup->AddMetricSet( "Sampler_1", "Sampler_1", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
@@ -6943,6 +6888,8 @@ TCompletionCode CreateMetricTreeDG1_OA( CMetricsDevice* metricsDevice, CConcurre
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x18941600, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1cb21600, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x18b41600, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c07c000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x2407002b, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x04120086, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x20120000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x02124000, REGISTER_TYPE_NOA ));
@@ -6989,48 +6936,29 @@ TCompletionCode CreateMetricTreeDG1_OA( CMetricsDevice* metricsDevice, CConcurre
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x00b400a6, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x10b40000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x18b58000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x00004000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0e004000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x10004000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x12004000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x34005540, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x36000001, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x02004000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x04004000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1e0f0028, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x14104000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x16104000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x2c024000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x2e020001, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x2a03a500, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x18002000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x36003248, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x380024db, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1a004000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c004000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x00014000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1a012000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c012000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1e012000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x2a015500, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x2c010005, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x02014000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x04014000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c05c000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x2405bfff, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x26050002, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x22050050, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x14088000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1a081000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c064000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x2406a540, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x26060005, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x10098000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c0900fe, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c078000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x24070002, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x160a1000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x180aa400, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1e0d4001, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x200d0005, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x040e4000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0a0e8000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0c0ec000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x000b4000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0e0b4000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x100b4000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x120b4000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x180b8000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1a0b8000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x2405c000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x26050003, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x220500a0, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x24062800, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x140a8000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x160a8000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x180a8000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1a0a8000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9884, 0x00000003, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x41104000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x5b105005, REGISTER_TYPE_NOA ));
@@ -7040,18 +6968,30 @@ TCompletionCode CreateMetricTreeDG1_OA( CMetricsDevice* metricsDevice, CConcurre
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1d14003f, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x13148000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x15148000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x4b114000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x5f11a00a, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x61112aaa, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x47101000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x4d100000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x4f100204, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x51101a06, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x53101803, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x55101311, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x4b112000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x5f115005, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x61111555, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x01128000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0f128000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x11128000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x13128000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x15128000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x17128000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x19128000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1b128000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1d128000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1f128000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x03128000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x05128000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x47101600, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x4d101000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x4f101603, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x51100003, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x53101404, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x55101111, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x17100000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x31100000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x57100007, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x57100005, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x49100511, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9884, 0x00000003, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x65100002, REGISTER_TYPE_NOA ));
@@ -7097,7 +7037,7 @@ TCompletionCode CreateMetricTreeDG1_OA( CMetricsDevice* metricsDevice, CConcurre
         MD_CHECK_CC( metricSet->RefreshConfigRegisters() );
     }
      
-    platformMask = PLATFORM_DG1;
+    platformMask = PLATFORM_TGL;
     if( MD_IS_INTERNAL_BUILD || metricsDevice->IsPlatformTypeOf( platformMask ) )
     {
         metricSet = concurrentGroup->AddMetricSet( "Sampler_2", "Sampler_2", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
@@ -7525,6 +7465,8 @@ TCompletionCode CreateMetricTreeDG1_OA( CMetricsDevice* metricsDevice, CConcurre
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x04943e00, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0cb23e00, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x04b43e00, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c07c000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x2407002b, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x04120033, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x20120000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x02124000, REGISTER_TYPE_NOA ));
@@ -7573,48 +7515,29 @@ TCompletionCode CreateMetricTreeDG1_OA( CMetricsDevice* metricsDevice, CConcurre
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x00b40013, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x10b40000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x18b58000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x00004000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0e004000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x10004000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x12004000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x34005540, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x36000001, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x02004000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x04004000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1e0f0028, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x14104000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x16104000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x2c024000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x2e020001, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x2a03a500, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x18002000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x36003248, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x380024db, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1a004000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c004000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x00014000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1a012000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c012000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1e012000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x2a015500, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x2c010005, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x02014000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x04014000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c05c000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x2405bfff, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x26050002, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x22050050, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x14088000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1a081000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c064000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x2406a540, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x26060005, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x10098000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c0900fe, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c078000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x24070002, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x160a1000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x180aa400, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1e0d4001, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x200d0005, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x040e4000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0a0e8000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0c0ec000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x000b4000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0e0b4000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x100b4000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x120b4000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x180b8000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1a0b8000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x2405c000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x26050003, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x220500a0, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x24062800, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x140a8000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x160a8000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x180a8000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1a0a8000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9884, 0x00000003, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x41104000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x5b105005, REGISTER_TYPE_NOA ));
@@ -7624,18 +7547,30 @@ TCompletionCode CreateMetricTreeDG1_OA( CMetricsDevice* metricsDevice, CConcurre
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1d14003f, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x13148000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x15148000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x4b114000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x5f11a00a, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x61112aaa, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x47101000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x4d100000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x4f100204, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x51101a06, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x53101803, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x55101311, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x4b112000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x5f115005, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x61111555, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x01128000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0f128000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x11128000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x13128000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x15128000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x17128000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x19128000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1b128000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1d128000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1f128000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x03128000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x05128000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x47101600, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x4d101000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x4f101603, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x51100003, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x53101404, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x55101111, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x17100000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x31100000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x57100007, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x57100005, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x49100511, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9884, 0x00000003, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x65100002, REGISTER_TYPE_NOA ));
@@ -7681,7 +7616,7 @@ TCompletionCode CreateMetricTreeDG1_OA( CMetricsDevice* metricsDevice, CConcurre
         MD_CHECK_CC( metricSet->RefreshConfigRegisters() );
     }
      
-    platformMask = PLATFORM_DG1;
+    platformMask = PLATFORM_TGL;
     if( MD_IS_INTERNAL_BUILD || metricsDevice->IsPlatformTypeOf( platformMask ) )
     {
         metricSet = concurrentGroup->AddMetricSet( "TDL_1", "TDL_1", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
@@ -8273,6 +8208,8 @@ TCompletionCode CreateMetricTreeDG1_OA( CMetricsDevice* metricsDevice, CConcurre
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x2671001c, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x2691001c, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x26b1001c, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c07c000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x24070002, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x16110103, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c110104, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1e110105, REGISTER_TYPE_NOA ));
@@ -8326,50 +8263,26 @@ TCompletionCode CreateMetricTreeDG1_OA( CMetricsDevice* metricsDevice, CConcurre
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x10b10000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x00b28000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x10b38000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x00004000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0e004000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x10004000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x12004000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x34004140, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x36000001, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x02004000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x04004000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x06004000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x08004000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0a004000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0c004000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c0f8000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x10104000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x10024000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c032000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1e034000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x18002000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x360026ca, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x38002402, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1a004000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c004000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1e004000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x34001200, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x00014000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1a012000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c012000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1e012000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x2a010500, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x2c010005, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x02014000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x04014000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x06014000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x08014000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0a014000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x18012000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c05c000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x240541bf, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x26050001, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x2205aa50, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c080320, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x14088000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1a081000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c064000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x24060640, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x10098000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c09000e, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c078000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x160a1000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x180a0800, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1e0d4001, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x040e4000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0a0e8000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x000b4000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0e0b4000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x120b8000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x240582c0, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x26050002, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x2205ffa0, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x24060020, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x100a8000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x120a8000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9884, 0x00000003, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x41104000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x5b105555, REGISTER_TYPE_NOA ));
@@ -8380,20 +8293,34 @@ TCompletionCode CreateMetricTreeDG1_OA( CMetricsDevice* metricsDevice, CConcurre
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x13148000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x15148000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x17148000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x4b114000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x5f11aaaa, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x6111282a, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x47101000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x4d100313, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x4f100a02, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x51101318, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x4b112000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x5f115555, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x61111415, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x01128000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0f128000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x11128000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x13128000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x15128000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x17128000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1d128000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1f128000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x03128000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x05128000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x07128000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x09128000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0b128000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0d128000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x47101600, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x4d100111, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x4f100006, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x51101114, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x53100001, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x17100000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x31100000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x55101110, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x57100001, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x49101111, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x4b101313, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x4b101111, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9884, 0x00000003, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x65100002, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9884, 0x00000000, REGISTER_TYPE_NOA ));
@@ -8446,7 +8373,7 @@ TCompletionCode CreateMetricTreeDG1_OA( CMetricsDevice* metricsDevice, CConcurre
         MD_CHECK_CC( metricSet->RefreshConfigRegisters() );
     }
      
-    platformMask = PLATFORM_DG1;
+    platformMask = PLATFORM_TGL;
     if( MD_IS_INTERNAL_BUILD || metricsDevice->IsPlatformTypeOf( platformMask ) )
     {
         metricSet = concurrentGroup->AddMetricSet( "TDL_2", "TDL_2", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
@@ -8954,6 +8881,9 @@ TCompletionCode CreateMetricTreeDG1_OA( CMetricsDevice* metricsDevice, CConcurre
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x24910340, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x24b10340, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x26b1001c, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c07c000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x2407002b, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x2207ff00, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x021100f3, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x041100f2, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x10110000, REGISTER_TYPE_NOA ));
@@ -9009,65 +8939,35 @@ TCompletionCode CreateMetricTreeDG1_OA( CMetricsDevice* metricsDevice, CConcurre
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x16b38000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x18b38000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1ab38000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x00004000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0e004000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x10004000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x12004000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x34005540, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x36000001, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x02004000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x04004000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x06004000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x08004000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0a004000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0c004000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1e0f0028, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x14104000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x16104000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x2c024000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x2e020001, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x2a03a500, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x18002000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x36003249, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x380024db, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1a004000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c004000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1e002000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x34000900, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x00014000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1a012000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c012000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1e012000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x2a015500, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x2c010005, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x02014000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x04014000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x06014000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x08014000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0a014000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x18012000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c05c000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x2405bfff, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x26050002, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x2205ff50, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x14088000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1a081000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c064000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x2406a555, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x26060005, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x22064000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x10098000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c0900ff, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1a09e000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c078000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x24070002, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x2207aa00, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x160a1000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x180aa554, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1e0d5541, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x200d0005, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x040e4000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0a0ec000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0c0ec000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x060e8000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x080ec000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x000b4000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0e0b4000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x100b4000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x120b4000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x180b8000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1a0b8000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x060b4000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x080b4000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0a0b4000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0c0b4000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x2405c000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x26050003, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x220500a0, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x24062800, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x140a8000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x160a8000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x180a8000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1a0a8000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9884, 0x00000003, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x41104000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x5b105555, REGISTER_TYPE_NOA ));
@@ -9078,20 +8978,36 @@ TCompletionCode CreateMetricTreeDG1_OA( CMetricsDevice* metricsDevice, CConcurre
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x13148000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x15148000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x17148000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x4b114000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x5f11aaaa, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x61112aaa, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x47101000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x4d100000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x4f100200, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x51100a02, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x5310080a, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x55101318, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x4b112000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x5f115555, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x61111555, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x01128000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0f128000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x11128000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x13128000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x15128000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x17128000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x19128000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1b128000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1d128000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1f128000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x03128000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x05128000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x07128000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x09128000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0b128000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0d128000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x47101600, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x4d100606, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x4f100606, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x51100006, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x53100400, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x55101114, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x17100000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x31100000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x57100003, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x57100001, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x49100111, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x4b100000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x4b100606, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9884, 0x00000003, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x65100002, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9884, 0x00000000, REGISTER_TYPE_NOA ));
@@ -9140,7 +9056,7 @@ TCompletionCode CreateMetricTreeDG1_OA( CMetricsDevice* metricsDevice, CConcurre
         MD_CHECK_CC( metricSet->RefreshConfigRegisters() );
     }
      
-    platformMask = PLATFORM_DG1;
+    platformMask = PLATFORM_TGL;
     if( MD_IS_INTERNAL_BUILD || metricsDevice->IsPlatformTypeOf( platformMask ) )
     {
         metricSet = concurrentGroup->AddMetricSet( "TDL_3", "TDL_3", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
@@ -9712,6 +9628,7 @@ TCompletionCode CreateMetricTreeDG1_OA( CMetricsDevice* metricsDevice, CConcurre
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x2651001c, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x2671001c, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x2691001c, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x24072a80, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x06510107, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x08510106, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0a510105, REGISTER_TYPE_NOA ));
@@ -9753,43 +9670,38 @@ TCompletionCode CreateMetricTreeDG1_OA( CMetricsDevice* metricsDevice, CConcurre
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x18928000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1a928000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c93f000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x34005540, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x36000001, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x02004000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x04004000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x06004000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x08004000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0a004000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0c004000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1e0f2800, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c0f000a, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c104000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1e104000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x02104000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x04104000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x2e020140, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x02024000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x04024000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x2c030005, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x02034000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x04034000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x06038000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x08038000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0a038000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x18034000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x36001003, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x38003649, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1a006000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c006000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1e006000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x34001b00, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x2a015500, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x2c010005, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x02014000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x04014000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x06014000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x08014000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0a014000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x18012000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x2405ffc0, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x26050003, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x2205fff0, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x24065015, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x260600a5, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x22066800, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c0903f1, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x14098000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1a09f000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1a0a00aa, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x200d0550, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0e0ec000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x100ec000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x140b4000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x160b4000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x180b4000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1a0b4000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x060b8000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x080b8000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0a0b8000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0c0b8000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x2206aa00, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c0a8000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1e0a8000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x020a8000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x040a8000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x060a8000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x080a8000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0a0a8000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0c0a8000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9884, 0x00000003, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x5d101554, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x5b100555, REGISTER_TYPE_NOA ));
@@ -9798,18 +9710,30 @@ TCompletionCode CreateMetricTreeDG1_OA( CMetricsDevice* metricsDevice, CConcurre
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x15148000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x17148000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1b141c00, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x61112aa8, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x5f110aaa, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x51100000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x53100000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x55100800, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x61111554, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x5f110555, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x15128000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x17128000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x19128000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1b128000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1d128000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1f128000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x03128000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x05128000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x07128000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x09128000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0b128000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0d128000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x51100600, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x53100606, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x55100006, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x17100000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x31100000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x57100008, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x57100000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x47100000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x49100808, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x4b100606, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x4d100606, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x49100000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x4b100404, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x4d100404, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9884, 0x00000003, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x65100002, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9884, 0x00000000, REGISTER_TYPE_NOA ));
@@ -9842,7 +9766,7 @@ TCompletionCode CreateMetricTreeDG1_OA( CMetricsDevice* metricsDevice, CConcurre
         MD_CHECK_CC( metricSet->RefreshConfigRegisters() );
     }
      
-    platformMask = PLATFORM_DG1;
+    platformMask = PLATFORM_TGL;
     if( MD_IS_INTERNAL_BUILD || metricsDevice->IsPlatformTypeOf( platformMask ) )
     {
         metricSet = concurrentGroup->AddMetricSet( "GpuBusyness", "GpuBusyness", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
@@ -10282,31 +10206,29 @@ TCompletionCode CreateMetricTreeDG1_OA( CMetricsDevice* metricsDevice, CConcurre
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x0d04, 0x00000200, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9840, 0x00000000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9884, 0x00000000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0e0f2400, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x220f0009, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x22100009, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x04004000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x08004000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0a004000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x04014000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x08014000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0a014000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x22053cc0, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x22061000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x24060005, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1a09d000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x020c4000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x040cc000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1e0d0a20, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x040f0043, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0a0f00b3, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x200f0000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x080f8000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x081000a3, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x00100000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x040b4000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x080b4000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0a0b4000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0e0e1200, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x220e0009, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0e101200, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x040e0043, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0a0e00b3, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x180e0000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0c0e0000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c0f0104, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x08100053, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x20100000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x04104000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0a104000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x04024000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x08024000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0a024000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x04034000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x08034000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0a034000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c006000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x34001b00, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x040a8000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x080a8000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0a0a8000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9884, 0x00000003, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x15102400, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x230b0120, REGISTER_TYPE_NOA ));
@@ -10318,26 +10240,31 @@ TCompletionCode CreateMetricTreeDG1_OA( CMetricsDevice* metricsDevice, CConcurre
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x5b100545, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x15148000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1b140c00, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x61113000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x5f110e89, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x61112000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x5f110945, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x03124000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x05128000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x09128000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0b128000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x13138000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1b0d0040, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1f0b00d3, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x210b0000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x190b0000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x170b0000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1b170002, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0d174000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x071800a3, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x11180000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x032d4000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x032b00d3, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x212b0000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x55101000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x57100007, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x192b0000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x092b0000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x55103000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x57100000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x47101000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x49103203, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x4b100005, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x4d100912, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x49107003, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x4b100402, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x4d100230, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x31100000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9884, 0x00000003, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x65100002, REGISTER_TYPE_NOA ));
@@ -10367,7 +10294,7 @@ TCompletionCode CreateMetricTreeDG1_OA( CMetricsDevice* metricsDevice, CConcurre
         MD_CHECK_CC( metricSet->RefreshConfigRegisters() );
     }
      
-    platformMask = PLATFORM_DG1;
+    platformMask = PLATFORM_TGL;
     if( MD_IS_INTERNAL_BUILD || metricsDevice->IsPlatformTypeOf( platformMask ) )
     {
         metricSet = concurrentGroup->AddMetricSet( "EuActivity1", "EuActivity1", API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
@@ -10551,7 +10478,7 @@ TCompletionCode CreateMetricTreeDG1_OA( CMetricsDevice* metricsDevice, CConcurre
             MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x1a8 qw@0x1a0 UADD qw@0x198 UADD qw@0x190 UADD" ));
             MD_CHECK_CC( metric->SetNormalizationEquation( "64 $Self UMUL" ));
             MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
-            MD_CHECK_CC( metric->SetMaxValueEquation( "$GpuCoreClocks 128 UMUL" ));
+            MD_CHECK_CC( metric->SetMaxValueEquation( "$GpuCoreClocks 64 UMUL" ));
         }
 
         availabilityEquation = NULL;
@@ -10565,7 +10492,7 @@ TCompletionCode CreateMetricTreeDG1_OA( CMetricsDevice* metricsDevice, CConcurre
             MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x188 qw@0x180 UADD" ));
             MD_CHECK_CC( metric->SetNormalizationEquation( "64 $Self UMUL" ));
             MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
-            MD_CHECK_CC( metric->SetMaxValueEquation( "$GpuCoreClocks 128 UMUL" ));
+            MD_CHECK_CC( metric->SetMaxValueEquation( "$GpuCoreClocks 64 UMUL" ));
         }
 
         availabilityEquation = NULL;
@@ -10751,22 +10678,20 @@ TCompletionCode CreateMetricTreeDG1_OA( CMetricsDevice* metricsDevice, CConcurre
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x0d04, 0x00000200, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9840, 0x00000000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9884, 0x00000000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0e0f2400, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x220f0009, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x34004000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x36000001, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x2c010005, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x2405c000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x26050003, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x26060050, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c090300, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0e0cc000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x200da000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c0f0043, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1e0f00b3, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x200f0000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c0b4000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1e0b4000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0e0e1200, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x220e0009, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c0e0043, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1e0e00b3, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x180e0000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x160e0000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1e0f1400, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c104000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1e104000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x2e020140, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x2c030005, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x38003600, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c0a8000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1e0a8000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9884, 0x00000003, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x05151d37, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x09151547, REGISTER_TYPE_NOA ));
@@ -10775,7 +10700,9 @@ TCompletionCode CreateMetricTreeDG1_OA( CMetricsDevice* metricsDevice, CConcurre
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x5d101400, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x5b100bbb, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1d140030, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x61112800, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x61111400, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1d128000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1f128000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0d150136, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x01150000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x03164000, REGISTER_TYPE_NOA ));
@@ -10791,10 +10718,10 @@ TCompletionCode CreateMetricTreeDG1_OA( CMetricsDevice* metricsDevice, CConcurre
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x17100000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x55100000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x57100000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x47101000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x49101a1a, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x4b101a1a, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x4d100a1a, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x47103000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x49103535, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x4b103535, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x4d100535, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x31100000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9884, 0x00000003, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x65100002, REGISTER_TYPE_NOA ));
@@ -10820,7 +10747,7 @@ TCompletionCode CreateMetricTreeDG1_OA( CMetricsDevice* metricsDevice, CConcurre
         MD_CHECK_CC( metricSet->RefreshConfigRegisters() );
     }
      
-    platformMask = PLATFORM_DG1;
+    platformMask = PLATFORM_TGL;
     if( MD_IS_INTERNAL_BUILD || metricsDevice->IsPlatformTypeOf( platformMask ) )
     {
         metricSet = concurrentGroup->AddMetricSet( "EuActivity2", "EuActivity2", API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
@@ -11004,7 +10931,7 @@ TCompletionCode CreateMetricTreeDG1_OA( CMetricsDevice* metricsDevice, CConcurre
             MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x1a8 qw@0x1a0 UADD qw@0x198 UADD qw@0x190 UADD" ));
             MD_CHECK_CC( metric->SetNormalizationEquation( "64 $Self UMUL" ));
             MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
-            MD_CHECK_CC( metric->SetMaxValueEquation( "$GpuCoreClocks 128 UMUL" ));
+            MD_CHECK_CC( metric->SetMaxValueEquation( "$GpuCoreClocks 64 UMUL" ));
         }
 
         availabilityEquation = NULL;
@@ -11018,7 +10945,7 @@ TCompletionCode CreateMetricTreeDG1_OA( CMetricsDevice* metricsDevice, CConcurre
             MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x188 qw@0x180 UADD" ));
             MD_CHECK_CC( metric->SetNormalizationEquation( "64 $Self UMUL" ));
             MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
-            MD_CHECK_CC( metric->SetMaxValueEquation( "$GpuCoreClocks 128 UMUL" ));
+            MD_CHECK_CC( metric->SetMaxValueEquation( "$GpuCoreClocks 64 UMUL" ));
         }
 
         availabilityEquation = NULL;
@@ -11204,22 +11131,20 @@ TCompletionCode CreateMetricTreeDG1_OA( CMetricsDevice* metricsDevice, CConcurre
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x0d04, 0x00000200, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9840, 0x00000000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9884, 0x00000000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0e0f2400, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x220f0009, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x34004000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x36000001, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x2c010005, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x2405c000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x26050003, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x26060050, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c090300, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0e0cc000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x200da000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c0f0043, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1e0f00b3, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x200f0000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c0b4000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1e0b4000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0e0e1200, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x220e0009, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c0e0043, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1e0e00b3, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x180e0000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x160e0000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1e0f1400, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c104000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1e104000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x2e020140, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x2c030005, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x38003600, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c0a8000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1e0a8000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9884, 0x00000003, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x05151d37, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x09151547, REGISTER_TYPE_NOA ));
@@ -11228,7 +11153,9 @@ TCompletionCode CreateMetricTreeDG1_OA( CMetricsDevice* metricsDevice, CConcurre
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x5d101400, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x5b100bbb, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1d140030, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x61112800, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x61111400, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1d128000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1f128000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0d150136, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x01150000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x03164000, REGISTER_TYPE_NOA ));
@@ -11244,10 +11171,10 @@ TCompletionCode CreateMetricTreeDG1_OA( CMetricsDevice* metricsDevice, CConcurre
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x17100000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x55100000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x57100000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x47101000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x49101a1a, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x4b101a1a, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x4d100a1a, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x47103000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x49103535, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x4b103535, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x4d100535, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x31100000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9884, 0x00000003, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x65100002, REGISTER_TYPE_NOA ));
@@ -11273,7 +11200,7 @@ TCompletionCode CreateMetricTreeDG1_OA( CMetricsDevice* metricsDevice, CConcurre
         MD_CHECK_CC( metricSet->RefreshConfigRegisters() );
     }
      
-    platformMask = PLATFORM_DG1;
+    platformMask = PLATFORM_TGL;
     if( MD_IS_INTERNAL_BUILD || metricsDevice->IsPlatformTypeOf( platformMask ) )
     {
         metricSet = concurrentGroup->AddMetricSet( "EuActivity3", "EuActivity3", API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
@@ -11457,7 +11384,7 @@ TCompletionCode CreateMetricTreeDG1_OA( CMetricsDevice* metricsDevice, CConcurre
             MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x1a8 qw@0x1a0 UADD qw@0x198 UADD qw@0x190 UADD" ));
             MD_CHECK_CC( metric->SetNormalizationEquation( "64 $Self UMUL" ));
             MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
-            MD_CHECK_CC( metric->SetMaxValueEquation( "$GpuCoreClocks 128 UMUL" ));
+            MD_CHECK_CC( metric->SetMaxValueEquation( "$GpuCoreClocks 64 UMUL" ));
         }
 
         availabilityEquation = NULL;
@@ -11471,7 +11398,7 @@ TCompletionCode CreateMetricTreeDG1_OA( CMetricsDevice* metricsDevice, CConcurre
             MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x188 qw@0x180 UADD" ));
             MD_CHECK_CC( metric->SetNormalizationEquation( "64 $Self UMUL" ));
             MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
-            MD_CHECK_CC( metric->SetMaxValueEquation( "$GpuCoreClocks 128 UMUL" ));
+            MD_CHECK_CC( metric->SetMaxValueEquation( "$GpuCoreClocks 64 UMUL" ));
         }
 
         availabilityEquation = NULL;
@@ -11657,22 +11584,20 @@ TCompletionCode CreateMetricTreeDG1_OA( CMetricsDevice* metricsDevice, CConcurre
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x0d04, 0x00000200, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9840, 0x00000000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9884, 0x00000000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0e0f2400, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x220f0009, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x34004000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x36000001, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x2c010005, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x2405c000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x26050003, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x26060050, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c090300, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0e0cc000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x200da000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c0f0043, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1e0f00b3, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x200f0000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c0b4000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1e0b4000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0e0e1200, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x220e0009, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c0e0043, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1e0e00b3, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x180e0000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x160e0000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1e0f1400, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c104000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1e104000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x2e020140, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x2c030005, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x38003600, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c0a8000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1e0a8000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9884, 0x00000003, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x05151d37, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x09151547, REGISTER_TYPE_NOA ));
@@ -11681,7 +11606,9 @@ TCompletionCode CreateMetricTreeDG1_OA( CMetricsDevice* metricsDevice, CConcurre
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x5d101400, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x5b100bbb, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1d140030, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x61112800, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x61111400, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1d128000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1f128000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0d150136, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x01150000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x03164000, REGISTER_TYPE_NOA ));
@@ -11697,10 +11624,10 @@ TCompletionCode CreateMetricTreeDG1_OA( CMetricsDevice* metricsDevice, CConcurre
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x17100000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x55100000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x57100000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x47101000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x49101a1a, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x4b101a1a, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x4d100a1a, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x47103000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x49103535, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x4b103535, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x4d100535, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x31100000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9884, 0x00000003, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x65100002, REGISTER_TYPE_NOA ));
@@ -11726,7 +11653,7 @@ TCompletionCode CreateMetricTreeDG1_OA( CMetricsDevice* metricsDevice, CConcurre
         MD_CHECK_CC( metricSet->RefreshConfigRegisters() );
     }
      
-    platformMask = PLATFORM_DG1;
+    platformMask = PLATFORM_TGL;
     if( MD_IS_INTERNAL_BUILD || metricsDevice->IsPlatformTypeOf( platformMask ) )
     {
         metricSet = concurrentGroup->AddMetricSet( "EuActivity4", "EuActivity4", API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
@@ -11910,7 +11837,7 @@ TCompletionCode CreateMetricTreeDG1_OA( CMetricsDevice* metricsDevice, CConcurre
             MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x1a8 qw@0x1a0 UADD qw@0x198 UADD qw@0x190 UADD" ));
             MD_CHECK_CC( metric->SetNormalizationEquation( "64 $Self UMUL" ));
             MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
-            MD_CHECK_CC( metric->SetMaxValueEquation( "$GpuCoreClocks 128 UMUL" ));
+            MD_CHECK_CC( metric->SetMaxValueEquation( "$GpuCoreClocks 64 UMUL" ));
         }
 
         availabilityEquation = NULL;
@@ -11924,7 +11851,7 @@ TCompletionCode CreateMetricTreeDG1_OA( CMetricsDevice* metricsDevice, CConcurre
             MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x188 qw@0x180 UADD" ));
             MD_CHECK_CC( metric->SetNormalizationEquation( "64 $Self UMUL" ));
             MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
-            MD_CHECK_CC( metric->SetMaxValueEquation( "$GpuCoreClocks 128 UMUL" ));
+            MD_CHECK_CC( metric->SetMaxValueEquation( "$GpuCoreClocks 64 UMUL" ));
         }
 
         availabilityEquation = NULL;
@@ -12110,22 +12037,20 @@ TCompletionCode CreateMetricTreeDG1_OA( CMetricsDevice* metricsDevice, CConcurre
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x0d04, 0x00000200, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9840, 0x00000000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9884, 0x00000000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0e0f2400, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x220f0009, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x34004000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x36000001, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x2c010005, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x2405c000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x26050003, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x26060050, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c090300, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0e0cc000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x200da000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c0f0043, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1e0f00b3, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x200f0000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c0b4000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1e0b4000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0e0e1200, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x220e0009, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c0e0043, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1e0e00b3, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x180e0000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x160e0000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1e0f1400, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c104000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1e104000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x2e020140, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x2c030005, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x38003600, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c0a8000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1e0a8000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9884, 0x00000003, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x05151d37, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x09151547, REGISTER_TYPE_NOA ));
@@ -12134,7 +12059,9 @@ TCompletionCode CreateMetricTreeDG1_OA( CMetricsDevice* metricsDevice, CConcurre
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x5d101400, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x5b100bbb, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1d140030, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x61112800, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x61111400, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1d128000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1f128000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0d150136, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x01150000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x03164000, REGISTER_TYPE_NOA ));
@@ -12150,10 +12077,10 @@ TCompletionCode CreateMetricTreeDG1_OA( CMetricsDevice* metricsDevice, CConcurre
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x17100000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x55100000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x57100000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x47101000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x49101a1a, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x4b101a1a, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x4d100a1a, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x47103000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x49103535, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x4b103535, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x4d100535, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x31100000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9884, 0x00000003, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x65100002, REGISTER_TYPE_NOA ));
@@ -12179,7 +12106,7 @@ TCompletionCode CreateMetricTreeDG1_OA( CMetricsDevice* metricsDevice, CConcurre
         MD_CHECK_CC( metricSet->RefreshConfigRegisters() );
     }
      
-    platformMask = PLATFORM_DG1;
+    platformMask = PLATFORM_TGL;
     if( MD_IS_INTERNAL_BUILD || metricsDevice->IsPlatformTypeOf( platformMask ) )
     {
         metricSet = concurrentGroup->AddMetricSet( "EuActivity5", "EuActivity5", API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
@@ -12363,7 +12290,7 @@ TCompletionCode CreateMetricTreeDG1_OA( CMetricsDevice* metricsDevice, CConcurre
             MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x1a8 qw@0x1a0 UADD qw@0x198 UADD qw@0x190 UADD" ));
             MD_CHECK_CC( metric->SetNormalizationEquation( "64 $Self UMUL" ));
             MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
-            MD_CHECK_CC( metric->SetMaxValueEquation( "$GpuCoreClocks 128 UMUL" ));
+            MD_CHECK_CC( metric->SetMaxValueEquation( "$GpuCoreClocks 64 UMUL" ));
         }
 
         availabilityEquation = NULL;
@@ -12377,7 +12304,7 @@ TCompletionCode CreateMetricTreeDG1_OA( CMetricsDevice* metricsDevice, CConcurre
             MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x188 qw@0x180 UADD" ));
             MD_CHECK_CC( metric->SetNormalizationEquation( "64 $Self UMUL" ));
             MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
-            MD_CHECK_CC( metric->SetMaxValueEquation( "$GpuCoreClocks 128 UMUL" ));
+            MD_CHECK_CC( metric->SetMaxValueEquation( "$GpuCoreClocks 64 UMUL" ));
         }
 
         availabilityEquation = NULL;
@@ -12563,22 +12490,20 @@ TCompletionCode CreateMetricTreeDG1_OA( CMetricsDevice* metricsDevice, CConcurre
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x0d04, 0x00000200, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9840, 0x00000000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9884, 0x00000000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0e0f2400, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x220f0009, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x34004000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x36000001, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x2c010005, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x2405c000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x26050003, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x26060050, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c090300, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0e0cc000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x200da000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c0f0043, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1e0f00b3, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x200f0000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c0b4000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1e0b4000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0e0e1200, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x220e0009, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c0e0043, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1e0e00b3, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x180e0000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x160e0000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1e0f1400, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c104000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1e104000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x2e020140, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x2c030005, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x38003600, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c0a8000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1e0a8000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9884, 0x00000003, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x05151d37, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x09151547, REGISTER_TYPE_NOA ));
@@ -12587,7 +12512,9 @@ TCompletionCode CreateMetricTreeDG1_OA( CMetricsDevice* metricsDevice, CConcurre
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x5d101400, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x5b100bbb, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1d140030, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x61112800, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x61111400, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1d128000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1f128000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0d150136, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x01150000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x03164000, REGISTER_TYPE_NOA ));
@@ -12603,10 +12530,10 @@ TCompletionCode CreateMetricTreeDG1_OA( CMetricsDevice* metricsDevice, CConcurre
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x17100000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x55100000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x57100000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x47101000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x49101a1a, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x4b101a1a, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x4d100a1a, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x47103000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x49103535, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x4b103535, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x4d100535, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x31100000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9884, 0x00000003, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x65100002, REGISTER_TYPE_NOA ));
@@ -12632,7 +12559,7 @@ TCompletionCode CreateMetricTreeDG1_OA( CMetricsDevice* metricsDevice, CConcurre
         MD_CHECK_CC( metricSet->RefreshConfigRegisters() );
     }
      
-    platformMask = PLATFORM_DG1;
+    platformMask = PLATFORM_TGL;
     if( MD_IS_INTERNAL_BUILD || metricsDevice->IsPlatformTypeOf( platformMask ) )
     {
         metricSet = concurrentGroup->AddMetricSet( "EuActivity6", "EuActivity6", API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
@@ -12816,7 +12743,7 @@ TCompletionCode CreateMetricTreeDG1_OA( CMetricsDevice* metricsDevice, CConcurre
             MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x1a8 qw@0x1a0 UADD qw@0x198 UADD qw@0x190 UADD" ));
             MD_CHECK_CC( metric->SetNormalizationEquation( "64 $Self UMUL" ));
             MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
-            MD_CHECK_CC( metric->SetMaxValueEquation( "$GpuCoreClocks 128 UMUL" ));
+            MD_CHECK_CC( metric->SetMaxValueEquation( "$GpuCoreClocks 64 UMUL" ));
         }
 
         availabilityEquation = NULL;
@@ -12830,7 +12757,7 @@ TCompletionCode CreateMetricTreeDG1_OA( CMetricsDevice* metricsDevice, CConcurre
             MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x188 qw@0x180 UADD" ));
             MD_CHECK_CC( metric->SetNormalizationEquation( "64 $Self UMUL" ));
             MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
-            MD_CHECK_CC( metric->SetMaxValueEquation( "$GpuCoreClocks 128 UMUL" ));
+            MD_CHECK_CC( metric->SetMaxValueEquation( "$GpuCoreClocks 64 UMUL" ));
         }
 
         availabilityEquation = NULL;
@@ -13016,22 +12943,20 @@ TCompletionCode CreateMetricTreeDG1_OA( CMetricsDevice* metricsDevice, CConcurre
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x0d04, 0x00000200, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9840, 0x00000000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9884, 0x00000000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0e0f2400, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x220f0009, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x34004000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x36000001, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x2c010005, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x2405c000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x26050003, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x26060050, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c090300, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0e0cc000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x200da000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c0f0043, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1e0f00b3, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x200f0000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c0b4000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1e0b4000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0e0e1200, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x220e0009, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c0e0043, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1e0e00b3, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x180e0000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x160e0000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1e0f1400, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c104000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1e104000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x2e020140, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x2c030005, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x38003600, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c0a8000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1e0a8000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9884, 0x00000003, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x05151d37, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x09151547, REGISTER_TYPE_NOA ));
@@ -13040,7 +12965,9 @@ TCompletionCode CreateMetricTreeDG1_OA( CMetricsDevice* metricsDevice, CConcurre
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x5d101400, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x5b100bbb, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1d140030, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x61112800, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x61111400, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1d128000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1f128000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0d150136, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x01150000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x03164000, REGISTER_TYPE_NOA ));
@@ -13056,10 +12983,10 @@ TCompletionCode CreateMetricTreeDG1_OA( CMetricsDevice* metricsDevice, CConcurre
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x17100000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x55100000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x57100000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x47101000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x49101a1a, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x4b101a1a, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x4d100a1a, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x47103000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x49103535, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x4b103535, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x4d100535, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x31100000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9884, 0x00000003, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x65100002, REGISTER_TYPE_NOA ));
@@ -13085,7 +13012,7 @@ TCompletionCode CreateMetricTreeDG1_OA( CMetricsDevice* metricsDevice, CConcurre
         MD_CHECK_CC( metricSet->RefreshConfigRegisters() );
     }
      
-    platformMask = PLATFORM_DG1;
+    platformMask = PLATFORM_TGL;
     if( MD_IS_INTERNAL_BUILD || metricsDevice->IsPlatformTypeOf( platformMask ) )
     {
         metricSet = concurrentGroup->AddMetricSet( "EuActivity7", "EuActivity7", API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
@@ -13323,7 +13250,7 @@ TCompletionCode CreateMetricTreeDG1_OA( CMetricsDevice* metricsDevice, CConcurre
             MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x1a8 qw@0x1a0 UADD qw@0x198 UADD qw@0x190 UADD" ));
             MD_CHECK_CC( metric->SetNormalizationEquation( "64 $Self UMUL" ));
             MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
-            MD_CHECK_CC( metric->SetMaxValueEquation( "$GpuCoreClocks 128 UMUL" ));
+            MD_CHECK_CC( metric->SetMaxValueEquation( "$GpuCoreClocks 64 UMUL" ));
         }
 
         availabilityEquation = NULL;
@@ -13337,7 +13264,7 @@ TCompletionCode CreateMetricTreeDG1_OA( CMetricsDevice* metricsDevice, CConcurre
             MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x188 qw@0x180 UADD" ));
             MD_CHECK_CC( metric->SetNormalizationEquation( "64 $Self UMUL" ));
             MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
-            MD_CHECK_CC( metric->SetMaxValueEquation( "$GpuCoreClocks 128 UMUL" ));
+            MD_CHECK_CC( metric->SetMaxValueEquation( "$GpuCoreClocks 64 UMUL" ));
         }
 
         information = metricSet->AddInformation( "QueryBeginTime", "Query Begin Time",
@@ -13481,22 +13408,20 @@ TCompletionCode CreateMetricTreeDG1_OA( CMetricsDevice* metricsDevice, CConcurre
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x0d04, 0x00000200, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9840, 0x00000000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9884, 0x00000000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0e0f2400, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x220f0009, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x34004000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x36000001, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x2c010005, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x2405c000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x26050003, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x26060050, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c090300, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0e0cc000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x200da000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c0f0043, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1e0f00b3, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x200f0000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c0b4000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1e0b4000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0e0e1200, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x220e0009, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c0e0043, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1e0e00b3, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x180e0000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x160e0000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1e0f1400, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c104000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1e104000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x2e020140, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x2c030005, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x38003600, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c0a8000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1e0a8000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9884, 0x00000003, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x05151d37, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x09151547, REGISTER_TYPE_NOA ));
@@ -13505,7 +13430,9 @@ TCompletionCode CreateMetricTreeDG1_OA( CMetricsDevice* metricsDevice, CConcurre
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x5d101400, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x5b100bbb, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1d140030, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x61112800, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x61111400, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1d128000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1f128000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0d150136, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x01150000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x03164000, REGISTER_TYPE_NOA ));
@@ -13521,10 +13448,10 @@ TCompletionCode CreateMetricTreeDG1_OA( CMetricsDevice* metricsDevice, CConcurre
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x17100000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x55100000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x57100000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x47101000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x49101a1a, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x4b101a1a, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x4d100a1a, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x47103000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x49103535, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x4b103535, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x4d100535, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x31100000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9884, 0x00000003, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x65100002, REGISTER_TYPE_NOA ));
@@ -13550,7 +13477,7 @@ TCompletionCode CreateMetricTreeDG1_OA( CMetricsDevice* metricsDevice, CConcurre
         MD_CHECK_CC( metricSet->RefreshConfigRegisters() );
     }
      
-    platformMask = PLATFORM_DG1;
+    platformMask = PLATFORM_TGL;
     if( MD_IS_INTERNAL_BUILD || metricsDevice->IsPlatformTypeOf( platformMask ) )
     {
         metricSet = concurrentGroup->AddMetricSet( "EuActivity8", "EuActivity8", API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
@@ -13734,7 +13661,7 @@ TCompletionCode CreateMetricTreeDG1_OA( CMetricsDevice* metricsDevice, CConcurre
             MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x1a8 qw@0x1a0 UADD qw@0x198 UADD qw@0x190 UADD" ));
             MD_CHECK_CC( metric->SetNormalizationEquation( "64 $Self UMUL" ));
             MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
-            MD_CHECK_CC( metric->SetMaxValueEquation( "$GpuCoreClocks 128 UMUL" ));
+            MD_CHECK_CC( metric->SetMaxValueEquation( "$GpuCoreClocks 64 UMUL" ));
         }
 
         availabilityEquation = NULL;
@@ -13748,7 +13675,7 @@ TCompletionCode CreateMetricTreeDG1_OA( CMetricsDevice* metricsDevice, CConcurre
             MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x188 qw@0x180 UADD" ));
             MD_CHECK_CC( metric->SetNormalizationEquation( "64 $Self UMUL" ));
             MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
-            MD_CHECK_CC( metric->SetMaxValueEquation( "$GpuCoreClocks 128 UMUL" ));
+            MD_CHECK_CC( metric->SetMaxValueEquation( "$GpuCoreClocks 64 UMUL" ));
         }
 
         availabilityEquation = NULL;
@@ -13906,22 +13833,20 @@ TCompletionCode CreateMetricTreeDG1_OA( CMetricsDevice* metricsDevice, CConcurre
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x0d04, 0x00000200, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9840, 0x00000000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9884, 0x00000000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0e0f2400, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x220f0009, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x34004000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x36000001, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x2c010005, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x2405c000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x26050003, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x26060050, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c090300, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0e0cc000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x200da000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c0f0043, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1e0f00b3, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x200f0000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c0b4000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1e0b4000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0e0e1200, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x220e0009, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c0e0043, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1e0e00b3, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x180e0000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x160e0000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1e0f1400, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c104000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1e104000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x2e020140, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x2c030005, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x38003600, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c0a8000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1e0a8000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9884, 0x00000003, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x05151d37, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x09151547, REGISTER_TYPE_NOA ));
@@ -13930,7 +13855,9 @@ TCompletionCode CreateMetricTreeDG1_OA( CMetricsDevice* metricsDevice, CConcurre
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x5d101400, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x5b100bbb, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1d140030, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x61112800, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x61111400, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1d128000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1f128000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0d150136, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x01150000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x03164000, REGISTER_TYPE_NOA ));
@@ -13946,10 +13873,10 @@ TCompletionCode CreateMetricTreeDG1_OA( CMetricsDevice* metricsDevice, CConcurre
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x17100000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x55100000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x57100000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x47101000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x49101a1a, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x4b101a1a, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x4d100a1a, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x47103000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x49103535, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x4b103535, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x4d100535, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x31100000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9884, 0x00000003, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x65100002, REGISTER_TYPE_NOA ));
@@ -13971,11 +13898,11 @@ TCompletionCode CreateMetricTreeDG1_OA( CMetricsDevice* metricsDevice, CConcurre
         MD_CHECK_CC( metricSet->RefreshConfigRegisters() );
     }
      
-    platformMask = PLATFORM_DG1;
+    platformMask = PLATFORM_TGL;
     if( MD_IS_INTERNAL_BUILD || metricsDevice->IsPlatformTypeOf( platformMask ) )
     {
         metricSet = concurrentGroup->AddMetricSet( "TestOa", "Metric set TestOa", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
-           GPU_RENDER|GPU_COMPUTE|GPU_MEDIA|GPU_GENERIC, 256, 672, OA_REPORT_TYPE_256B_A45_NOA16, platformMask );
+           GPU_RENDER|GPU_COMPUTE, 256, 672, OA_REPORT_TYPE_256B_A45_NOA16, platformMask );
         MD_CHECK_PTR( metricSet );
         
         MD_CHECK_CC( metricSet->SetApiSpecificId("GPAV", 0, 0x40000000, 0x80000203, 0, 0,
@@ -14127,7 +14054,7 @@ TCompletionCode CreateMetricTreeDG1_OA( CMetricsDevice* metricsDevice, CConcurre
         availabilityEquation = NULL;
         metric = metricSet->AddMetric( "Counter9", "TestCounter9 - OAR enable",
             "HW test counter 9. Should be equal to 1 in query.",
-            "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_VULKAN,
+            "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "events", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
         if( metric )
         {
@@ -14277,27 +14204,26 @@ TCompletionCode CreateMetricTreeDG1_OA( CMetricsDevice* metricsDevice, CConcurre
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x0d04, 0x00000200, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9840, 0x00000000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9884, 0x00000000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x04100000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x36000001, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x2c010004, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x26050003, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x26060040, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1c090200, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x0e0c8000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x200d8000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1e0f8000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1e100017, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x00100000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1e0b4000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x280e0000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1e0e0147, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x180e0000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x160e0000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1e0f1000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1e104000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x2e020100, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x2c030004, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x38003000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1e0a8000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9884, 0x00000003, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x49110000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x5d101400, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1d140020, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1d1103a3, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x01110000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x61112000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x61111000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x1f128000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x17100000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x55100230, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x55100630, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x57100000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x31100000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9884, 0x00000003, REGISTER_TYPE_NOA ));

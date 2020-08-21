@@ -49,10 +49,14 @@ namespace MetricsDiscovery
         PLATFORM_KBL = 1 << 12 /*GENERATION_KBL*/,
         PLATFORM_GLK = 1 << 13 /*GENERATION_GLK*/,
         PLATFORM_ICL = 1 << 14 /*GENERATION_ICL*/,
-        // 15-17 reserved
+        // 15-16 reserved
+        PLATFORM_TGL = 1 << 17 /*GENERATION_TGL*/,
         PLATFORM_CFL = 1 << 18 /*GENERATION_CFL*/,
         PLATFORM_EHL = 1 << 19 /*GENERATION_EHL*/,
-        // 20-21 reserved
+        // 20 reserved
+        PLATFORM_DG1 = 1 << 21 /*GENERATION_DG1*/,
+        // 22 reserved
+        PLATFORM_RKL = 1 << 23 /*GENERATION_RKL*/,
         // ...
         PLATFORM_ALL = 0xFFFFFFFF,
     } TPlatformType;
@@ -291,9 +295,8 @@ namespace MetricsDiscovery
     //   IInternalMetricSet
     //
     // Description:
-    //   Abstract internal interface for the metric sets mapping to different HW
-    //   configuration that should be used exclusively to each other metric set in
-    //   the concurrent group.
+    //   Abstract internal interface for the metric sets mapping to different HW configuration
+    //   that should be used exclusively to each other metric set in the concurrent group.
     //
     /////////////////////////////////////////////////////////////////////////////
     class IInternalMetricSet : public IMetricSet_1_5
