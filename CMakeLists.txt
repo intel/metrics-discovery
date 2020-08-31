@@ -68,25 +68,6 @@ if (("${BUILD_TYPE}" STREQUAL "release-internal") OR
     set(MD_INTERNAL_BUILD TRUE)
 endif ()
 
-# mdapi internal metrics definitions
-if ((MD_INTERNAL_BUILD) OR
-    ("${PLATFORM}" STREQUAL Windows)) # for windows always compile internal metrics
-    set (_SOURCES
-        ${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen/md_metrics_HSW_internal.cpp
-        ${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen/md_metrics_BDW_internal.cpp
-        ${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen/md_metrics_SKL_GT2_internal.cpp
-        ${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen/md_metrics_SKL_GT3_internal.cpp
-        ${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen/md_metrics_SKL_GT4_internal.cpp
-        ${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen/md_metrics_BXT_internal.cpp
-        ${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen/md_metrics_KBL_GT2_internal.cpp
-        ${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen/md_metrics_KBL_GT3_internal.cpp
-        ${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen/md_metrics_CFL_GT2_internal.cpp
-        ${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen/md_metrics_CFL_GT3_internal.cpp
-        ${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen/md_metrics_GLK_internal.cpp
-        ${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen/md_metrics_ICL_internal.cpp
-        )
-endif ()
-
 # generic
 set (_SOURCES ${_SOURCES}
     # mdapi metrics definitions
