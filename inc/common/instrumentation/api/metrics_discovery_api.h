@@ -54,7 +54,7 @@
 //////////////////////////////////////////////////////////////////////////////////
 // API build number:
 //////////////////////////////////////////////////////////////////////////////////
-#define MD_API_BUILD_NUMBER_CURRENT 127
+#define MD_API_BUILD_NUMBER_CURRENT 128
 
 namespace MetricsDiscovery
 {
@@ -80,7 +80,9 @@ namespace MetricsDiscovery
         MD_API_MINOR_NUMBER_4       = 4, // GT dependent MetricSets
         MD_API_MINOR_NUMBER_5       = 5, // MaxValue calculation for CalculationAPI
         MD_API_MINOR_NUMBER_6       = 6, // Multi adapter support
-        MD_API_MINOR_NUMBER_CURRENT = MD_API_MINOR_NUMBER_6,
+        MD_API_MINOR_NUMBER_7       = 7,
+        MD_API_MINOR_NUMBER_8       = 8, // TAdapterParams update
+        MD_API_MINOR_NUMBER_CURRENT = MD_API_MINOR_NUMBER_8,
         MD_API_MINOR_NUMBER_CEIL    = 0xFFFFFFFF
     } MD_API_MINOR_VERSION;
 
@@ -413,6 +415,14 @@ namespace MetricsDiscovery
         TAdapterType   Type;           // Adapter type, e.g. integrated, discrete
         uint32_t       CapabilityMask; // Consists of TAdapterCapability flags, e.g. RENDER_SUPPORTED
     } TAdapterParams_1_6;
+
+    //////////////////////////////////////////////////////////////////////////////////
+    // Global parameters of GPU adapter:
+    //////////////////////////////////////////////////////////////////////////////////
+    typedef struct SAdapterParams_1_8 : public SAdapterParams_1_6
+    {
+        uint32_t    DomainNumber;
+    } TAdapterParams_1_8;
 
     //////////////////////////////////////////////////////////////////////////////////
     // Global parameters of Adapter Group:
@@ -1192,6 +1202,24 @@ namespace MetricsDiscovery
     ///////////////////////////////////////////////////////////////////////////////
     //
     // Class:
+    //   IAdapter_1_8
+    //
+    // Description:
+    //   Abstract interface for GPU adapter.
+    //
+    // New:
+    // - GetParams:                     To get this adapter params
+    //
+    ///////////////////////////////////////////////////////////////////////////////
+    class IAdapter_1_8 : public IAdapter_1_6
+    {
+    public:
+        virtual const TAdapterParams_1_8* GetParams( void ) const;
+    };
+
+    ///////////////////////////////////////////////////////////////////////////////
+    //
+    // Class:
     //   IAdapterGroup_1_6
     //
     // Description:
@@ -1212,13 +1240,31 @@ namespace MetricsDiscovery
         virtual TCompletionCode                Close();
     };
 
+    ///////////////////////////////////////////////////////////////////////////////
+    //
+    // Class:
+    //   IAdapterGroup_1_8
+    //
+    // Description:
+    //   Abstract interface for the GPU adapters root object.
+    //
+    // New:
+    // - GetAdapter:                    To enumerate available GPU adapters
+    //
+    ///////////////////////////////////////////////////////////////////////////////
+    class IAdapterGroup_1_8 : public IAdapterGroup_1_6
+    {
+    public:
+        virtual IAdapter_1_8* GetAdapter( uint32_t index );
+    };
+
 #ifdef __cplusplus
     extern "C"
     {
 #endif
 
         // [Current] Factory functions
-        typedef TCompletionCode( MD_STDCALL* OpenAdapterGroup_fn )( IAdapterGroup_1_6** adapterGroup );
+        typedef TCompletionCode( MD_STDCALL* OpenAdapterGroup_fn )( IAdapterGroup_1_8** adapterGroup );
 
         // [Legacy] Factory functions
         typedef TCompletionCode( MD_STDCALL* OpenMetricsDevice_fn )( IMetricsDevice_1_5** metricsDevice );

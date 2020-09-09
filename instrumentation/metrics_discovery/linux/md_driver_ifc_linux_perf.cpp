@@ -463,6 +463,7 @@ namespace MetricsDiscoveryInternal
                 adapter.Params.BusNumber      = device.businfo.pci->bus;
                 adapter.Params.DeviceNumber   = device.businfo.pci->dev;
                 adapter.Params.FunctionNumber = device.businfo.pci->func;
+                adapter.Params.DomainNumber   = device.businfo.pci->domain;
 
                 adapter.Params.VendorId    = device.deviceinfo.pci->vendor_id;
                 adapter.Params.SubVendorId = device.deviceinfo.pci->subvendor_id;
@@ -3767,6 +3768,10 @@ namespace MetricsDiscoveryInternal
             if( mesaDeviceInfo->is_dg1 )
             {
                 *outInstrPlatformId = GENERATION_DG1;
+            }
+            else if( mesaDeviceInfo->is_rkl )
+            {
+                *outInstrPlatformId = GENERATION_RKL;
             }
             else
             {

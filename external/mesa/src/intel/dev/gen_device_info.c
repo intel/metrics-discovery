@@ -1009,10 +1009,12 @@ static const struct gen_device_info gen_device_info_tgl_gt2 = {
 
 static const struct gen_device_info gen_device_info_rkl_gt05 = {
    GEN12_GT05_FEATURES,
+   .is_rkl = true,
 };
 
 static const struct gen_device_info gen_device_info_rkl_gt1 = {
    GEN12_GT_FEATURES(1),
+   .is_rkl = true,
 };
 
 #define GEN12_DG1_SG1_FEATURES                  \

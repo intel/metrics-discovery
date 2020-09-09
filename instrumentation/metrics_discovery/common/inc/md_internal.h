@@ -168,12 +168,12 @@ namespace MetricsDiscoveryInternal
     //     One instance for the whole library.
     //
     //////////////////////////////////////////////////////////////////////////////
-    class CAdapterGroup : public IAdapterGroup_1_6
+    class CAdapterGroup : public IAdapterGroup_1_8
     {
     public:
-        // API 1.6:
+        // API 1.8:
         virtual const TAdapterGroupParams_1_6* GetParams() const;
-        virtual IAdapter_1_6*                  GetAdapter( uint32_t index );
+        virtual IAdapter_1_8*                  GetAdapter( uint32_t index );
         virtual TCompletionCode                Close();
 
     public:
@@ -181,7 +181,7 @@ namespace MetricsDiscoveryInternal
         CAdapter* GetDefaultAdapter();
 
         // Non-API static:
-        static TCompletionCode Open( IAdapterGroup_1_6** adapterGroup );
+        static TCompletionCode Open( IAdapterGroup_1_8** adapterGroup );
         static bool            IsOpened();
         static CAdapterGroup*  Get();
 
@@ -202,7 +202,7 @@ namespace MetricsDiscoveryInternal
         // Static:
         static TCompletionCode GetOpenCloseSemaphore();
         static TCompletionCode ReleaseOpenCloseSemaphore();
-        static TCompletionCode CreateAdapterGroup( IAdapterGroup_1_6** adapterGroup );
+        static TCompletionCode CreateAdapterGroup( IAdapterGroup_1_8** adapterGroup );
 
     private:
         // Variables:
@@ -228,11 +228,11 @@ namespace MetricsDiscoveryInternal
     //     Represents a single GPU adapter.
     //
     //////////////////////////////////////////////////////////////////////////////
-    class CAdapter : public IAdapter_1_6
+    class CAdapter : public IAdapter_1_8
     {
     public:
-        // API 1.6:
-        virtual const TAdapterParams_1_6* GetParams() const;
+        // API 1.8:
+        virtual const TAdapterParams_1_8* GetParams() const;
         virtual TCompletionCode           Reset();
         virtual TCompletionCode           OpenMetricsDevice( IMetricsDevice_1_5** metricsDevice );
         virtual TCompletionCode           OpenMetricsDeviceFromFile( const char* fileName, void* openParams, IMetricsDevice_1_5** metricsDevice );
@@ -241,7 +241,7 @@ namespace MetricsDiscoveryInternal
 
     public:
         // Constructor & Destructor:
-        CAdapter( CAdapterGroup& adapterGroup, const TAdapterParams_1_6& params, CAdapterHandle& adapterHandle );
+        CAdapter( CAdapterGroup& adapterGroup, const TAdapterParams_1_8& params, CAdapterHandle& adapterHandle );
         virtual ~CAdapter();
 
         CAdapter( const CAdapter& ) = delete;            // Delete copy-constructor
@@ -263,7 +263,7 @@ namespace MetricsDiscoveryInternal
 
     private:
         // Variables:
-        TAdapterParams_1_6 m_params;        // Adapter information
+        TAdapterParams_1_8 m_params;        // Adapter information
         CAdapterHandle*    m_adapterHandle; // OS adapter handle which the given CAdapter object represents
 
         CDriverInterface* m_driverInterface;    // Driver interface for this adapter

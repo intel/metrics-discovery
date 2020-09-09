@@ -51,13 +51,13 @@ extern "C"
     //     Open() calls are reference counted.
     //
     // Input:
-    //     IAdapterGroup_1_6** adapterGroup - [out] created / retrieved adapter group
+    //     IAdapterGroup_1_8** adapterGroup - [out] created / retrieved adapter group
     //
     // Output:
     //     TCompletionCode                  - CC_OK or CC_ALREADY_INITIALIZED means success
     //
     //////////////////////////////////////////////////////////////////////////////
-    TCompletionCode OpenAdapterGroup( IAdapterGroup_1_6** adapterGroup )
+    TCompletionCode OpenAdapterGroup( IAdapterGroup_1_8** adapterGroup )
     {
         MD_LOG_ENTER();
         MD_CHECK_PTR_RET( adapterGroup, CC_ERROR_INVALID_PARAMETER );
@@ -102,7 +102,7 @@ extern "C"
 
         CAdapterGroup* adapterGroup = NULL;
 
-        TCompletionCode retVal = CAdapterGroup::Open( (IAdapterGroup_1_6**) &adapterGroup );
+        TCompletionCode retVal = CAdapterGroup::Open( (IAdapterGroup_1_8**) &adapterGroup );
         if( retVal != CC_OK && retVal != CC_ALREADY_INITIALIZED )
         {
             MD_LOG( LOG_ERROR, "Failed to open group device" );
@@ -166,7 +166,7 @@ extern "C"
 
         CAdapterGroup* adapterGroup = NULL;
 
-        TCompletionCode retVal = CAdapterGroup::Open( (IAdapterGroup_1_6**) &adapterGroup );
+        TCompletionCode retVal = CAdapterGroup::Open( (IAdapterGroup_1_8**) &adapterGroup );
         if( retVal != CC_OK && retVal != CC_ALREADY_INITIALIZED )
         {
             MD_LOG( LOG_ERROR, "Failed to open adapter group" );

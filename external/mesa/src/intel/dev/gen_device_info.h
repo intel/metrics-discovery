@@ -64,6 +64,7 @@ struct gen_device_info
    bool is_cannonlake;
    bool is_elkhartlake;
    bool is_dg1;
+   bool is_rkl;
 
    bool has_hiz_and_separate_stencil;
    bool must_use_separate_stencil;

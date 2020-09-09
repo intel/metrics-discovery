@@ -71,7 +71,7 @@ namespace MetricsDiscoveryInternal
     typedef struct SAdapterData
     {
         CAdapterHandle*    Handle;
-        TAdapterParams_1_6 Params;
+        TAdapterParams_1_8 Params;
     } TAdapterData;
 
     //////////////////////////////////////////////////////////////////////////////

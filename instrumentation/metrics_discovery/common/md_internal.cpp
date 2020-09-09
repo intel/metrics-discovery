@@ -272,11 +272,19 @@ namespace MetricsDiscovery
     {
         return NULL;
     }
+    IAdapter_1_8* IAdapterGroup_1_8::GetAdapter( uint32_t index )
+    {
+        return NULL;
+    }
 
     IAdapter_1_6::~IAdapter_1_6()
     {
     }
     const TAdapterParams_1_6* IAdapter_1_6::GetParams( void ) const
+    {
+        return NULL;
+    }
+    const TAdapterParams_1_8* IAdapter_1_8::GetParams( void ) const
     {
         return NULL;
     }
@@ -637,10 +645,10 @@ namespace MetricsDiscoveryInternal
     //     uint32_t index - index of a chosen adapter
     //
     // Output:
-    //     IAdapter_1_6*  - chosen adapter or null
+    //     IAdapter_1_8*  - chosen adapter or null
     //
     //////////////////////////////////////////////////////////////////////////////
-    IAdapter_1_6* CAdapterGroup::GetAdapter( uint32_t index )
+    IAdapter_1_8* CAdapterGroup::GetAdapter( uint32_t index )
     {
         MD_CHECK_PTR_RET( m_adapterVector, NULL );
 
@@ -721,13 +729,13 @@ namespace MetricsDiscoveryInternal
     //     Open() calls are reference counted.
     //
     // Input:
-    //     IAdapterGroup_1_6** adapterGroup - [out] created / retrieved adapter group
+    //     IAdapterGroup_1_8** adapterGroup - [out] created / retrieved adapter group
     //
     // Output:
     //     TCompletionCode                  - CC_OK or CC_ALREADY_INITIALIZED means success
     //
     //////////////////////////////////////////////////////////////////////////////
-    TCompletionCode CAdapterGroup::Open( IAdapterGroup_1_6** adapterGroup )
+    TCompletionCode CAdapterGroup::Open( IAdapterGroup_1_8** adapterGroup )
     {
         MD_LOG_ENTER();
         MD_CHECK_PTR_RET( adapterGroup, CC_ERROR_INVALID_PARAMETER );
@@ -857,13 +865,13 @@ namespace MetricsDiscoveryInternal
     //     adapter enumeration.
     //
     // Input:
-    //     IAdapterGroup_1_6** adapterGroup - [optional] created adapter group
+    //     IAdapterGroup_1_8** adapterGroup - [optional] created adapter group
     //
     // Output:
     //     TCompletionCode                  - CC_OK if success
     //
     //////////////////////////////////////////////////////////////////////////////
-    TCompletionCode CAdapterGroup::CreateAdapterGroup( IAdapterGroup_1_6** adapterGroup )
+    TCompletionCode CAdapterGroup::CreateAdapterGroup( IAdapterGroup_1_8** adapterGroup )
     {
         MD_ASSERT( m_adapterGroup == NULL );
 
@@ -1071,11 +1079,11 @@ namespace MetricsDiscoveryInternal
     //
     // Input:
     //     CAdapterGroup&            adapterGroup  - parent adapter group object
-    //     const TAdapterParams_1_6& params        - filled adapter params
+    //     const TAdapterParams_1_8& params        - filled adapter params
     //     CAdapterHandle&           adapterHandle - adapter handle connected with this adapter
     //
     //////////////////////////////////////////////////////////////////////////////
-    CAdapter::CAdapter( CAdapterGroup& adapterGroup, const TAdapterParams_1_6& params, CAdapterHandle& adapterHandle )
+    CAdapter::CAdapter( CAdapterGroup& adapterGroup, const TAdapterParams_1_8& params, CAdapterHandle& adapterHandle )
         : m_params( params )
         , m_adapterHandle( &adapterHandle )
         , m_adapterGroup( adapterGroup )
@@ -1124,10 +1132,10 @@ namespace MetricsDiscoveryInternal
     //     Returns adapter params.
     //
     // Output:
-    //     const TAdapterParams_1_6* - adapter params
+    //     const TAdapterParams_1_8* - adapter params
     //
     //////////////////////////////////////////////////////////////////////////////
-    const TAdapterParams_1_6* CAdapter::GetParams() const
+    const TAdapterParams_1_8* CAdapter::GetParams() const
     {
         return &m_params;
     }
@@ -4210,7 +4218,7 @@ namespace MetricsDiscoveryInternal
         MD_ASSERT( name != NULL );
 
         // Create a semaphore name: "<CcgSymbolName>_<BusNumber>_<DeviceNumber>_<FunctionNumber>"
-        const TAdapterParams_1_6* adapterParams = m_device->GetAdapter().GetParams();
+        const TAdapterParams_1_8* adapterParams = m_device->GetAdapter().GetParams();
         MD_CHECK_PTR_RET( adapterParams, CC_ERROR_GENERAL );
 
         int32_t neededSize = snprintf( name, size, "%s_%u_%u_%u", m_params_1_0.SymbolName, adapterParams->BusNumber, adapterParams->DeviceNumber, adapterParams->FunctionNumber );
