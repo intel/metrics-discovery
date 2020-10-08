@@ -1,30 +1,30 @@
-/*****************************************************************************\
-
-    Copyright © 2019-2020, Intel Corporation
-
-    Permission is hereby granted, free of charge, to any person obtaining a
-    copy of this software and associated documentation files (the "Software"),
-    to deal in the Software without restriction, including without limitation
-    the rights to use, copy, modify, merge, publish, distribute, sublicense,
-    and/or sell copies of the Software, and to permit persons to whom the
-    Software is furnished to do so, subject to the following conditions:
-
-    The above copyright notice and this permission notice shall be included
-    in all copies or substantial portions of the Software.
-
-    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-    IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-    FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
-    THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-    LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
-    FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
-    IN THE SOFTWARE.
-
-    File Name:  md_metrics_GLK.cpp
-
-    Abstract:   C++ automated generated file to stack metrics meta data
-
-\*****************************************************************************/
+//////////////////////////////////////////////////////////////////////////////
+//
+//    Copyright © 2019-2020, Intel Corporation
+//
+//    Permission is hereby granted, free of charge, to any person obtaining a
+//    copy of this software and associated documentation files (the "Software"),
+//    to deal in the Software without restriction, including without limitation
+//    the rights to use, copy, modify, merge, publish, distribute, sublicense,
+//    and/or sell copies of the Software, and to permit persons to whom the
+//    Software is furnished to do so, subject to the following conditions:
+//
+//    The above copyright notice and this permission notice shall be included
+//    in all copies or substantial portions of the Software.
+//
+//    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+//    IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+//    FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
+//    THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+//    LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+//    FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
+//    IN THE SOFTWARE.
+//
+//    File Name:  md_metrics_GLK.cpp
+//
+//    Abstract:   C++ automated generated file to stack metrics meta data
+//
+//////////////////////////////////////////////////////////////////////////////
 
 #include "md_per_platform_preamble.h"
 
@@ -45,7 +45,7 @@ TCompletionCode CreateMetricTreeGLK_PipelineStatistics( CMetricsDevice* metricsD
     uint32_t          platformMask         = 0;
   
     platformMask = PLATFORM_GLK;
-    if( MD_IS_INTERNAL_BUILD || metricsDevice->IsPlatformTypeOf( platformMask ) )
+    if( metricsDevice->IsPlatformTypeOf( platformMask ) )
     {
         metricSet = concurrentGroup->AddMetricSet( "PipelineStats", "Pipeline Statistics for OGL4", API_TYPE_OGL|API_TYPE_OGL4_X,
            GPU_RENDER|GPU_COMPUTE, 0, 88, OA_REPORT_TYPE_256B_A45_NOA16, platformMask );
@@ -202,7 +202,7 @@ TCompletionCode CreateMetricTreeGLK_OA( CMetricsDevice* metricsDevice, CConcurre
     uint32_t          platformMask         = 0;
   
     platformMask = PLATFORM_GLK;
-    if( MD_IS_INTERNAL_BUILD || metricsDevice->IsPlatformTypeOf( platformMask ) )
+    if( metricsDevice->IsPlatformTypeOf( platformMask ) )
     {
         metricSet = concurrentGroup->AddMetricSet( "RenderBasic", "Render Metrics Basic Gen9", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
            GPU_RENDER|GPU_COMPUTE, 256, 672, OA_REPORT_TYPE_256B_A45_NOA16, platformMask );
@@ -1098,7 +1098,7 @@ TCompletionCode CreateMetricTreeGLK_OA( CMetricsDevice* metricsDevice, CConcurre
     }
      
     platformMask = PLATFORM_GLK;
-    if( MD_IS_INTERNAL_BUILD || metricsDevice->IsPlatformTypeOf( platformMask ) )
+    if( metricsDevice->IsPlatformTypeOf( platformMask ) )
     {
         metricSet = concurrentGroup->AddMetricSet( "ComputeBasic", "Compute Metrics Basic Gen9", API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
            GPU_RENDER|GPU_COMPUTE, 256, 672, OA_REPORT_TYPE_256B_A45_NOA16, platformMask );
@@ -1803,7 +1803,7 @@ TCompletionCode CreateMetricTreeGLK_OA( CMetricsDevice* metricsDevice, CConcurre
     }
      
     platformMask = PLATFORM_GLK;
-    if( MD_IS_INTERNAL_BUILD || metricsDevice->IsPlatformTypeOf( platformMask ) )
+    if( metricsDevice->IsPlatformTypeOf( platformMask ) )
     {
         metricSet = concurrentGroup->AddMetricSet( "RenderDX1x", "Render Metrics DX1x Gen9", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
            GPU_RENDER, 256, 672, OA_REPORT_TYPE_256B_A45_NOA16, platformMask );
@@ -2587,7 +2587,7 @@ TCompletionCode CreateMetricTreeGLK_OA( CMetricsDevice* metricsDevice, CConcurre
     }
      
     platformMask = PLATFORM_GLK;
-    if( MD_IS_INTERNAL_BUILD || metricsDevice->IsPlatformTypeOf( platformMask ) )
+    if( metricsDevice->IsPlatformTypeOf( platformMask ) )
     {
         metricSet = concurrentGroup->AddMetricSet( "RenderPipeProfile", "Render Metrics for 3D Pipeline Profile Gen9", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
            GPU_RENDER, 256, 672, OA_REPORT_TYPE_256B_A45_NOA16, platformMask );
@@ -3372,7 +3372,7 @@ TCompletionCode CreateMetricTreeGLK_OA( CMetricsDevice* metricsDevice, CConcurre
     }
      
     platformMask = PLATFORM_GLK;
-    if( MD_IS_INTERNAL_BUILD || metricsDevice->IsPlatformTypeOf( platformMask ) )
+    if( metricsDevice->IsPlatformTypeOf( platformMask ) )
     {
         metricSet = concurrentGroup->AddMetricSet( "MemoryReads", "Memory Reads Distribution Gen9", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
            GPU_RENDER|GPU_COMPUTE, 256, 672, OA_REPORT_TYPE_256B_A45_NOA16, platformMask );
@@ -4078,7 +4078,7 @@ TCompletionCode CreateMetricTreeGLK_OA( CMetricsDevice* metricsDevice, CConcurre
     }
      
     platformMask = PLATFORM_GLK;
-    if( MD_IS_INTERNAL_BUILD || metricsDevice->IsPlatformTypeOf( platformMask ) )
+    if( metricsDevice->IsPlatformTypeOf( platformMask ) )
     {
         metricSet = concurrentGroup->AddMetricSet( "MemoryWrites", "Memory Writes Distribution Gen9", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
            GPU_RENDER|GPU_COMPUTE, 256, 672, OA_REPORT_TYPE_256B_A45_NOA16, platformMask );
@@ -4784,7 +4784,7 @@ TCompletionCode CreateMetricTreeGLK_OA( CMetricsDevice* metricsDevice, CConcurre
     }
      
     platformMask = PLATFORM_GLK;
-    if( MD_IS_INTERNAL_BUILD || metricsDevice->IsPlatformTypeOf( platformMask ) )
+    if( metricsDevice->IsPlatformTypeOf( platformMask ) )
     {
         metricSet = concurrentGroup->AddMetricSet( "ComputeExtended", "Compute Metrics Extended Gen9", API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
            GPU_COMPUTE, 256, 672, OA_REPORT_TYPE_256B_A45_NOA16, platformMask );
@@ -5488,7 +5488,7 @@ TCompletionCode CreateMetricTreeGLK_OA( CMetricsDevice* metricsDevice, CConcurre
     }
      
     platformMask = PLATFORM_GLK;
-    if( MD_IS_INTERNAL_BUILD || metricsDevice->IsPlatformTypeOf( platformMask ) )
+    if( metricsDevice->IsPlatformTypeOf( platformMask ) )
     {
         metricSet = concurrentGroup->AddMetricSet( "ComputeL3Cache", "Compute Metrics L3 Cache Gen9", API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
            GPU_RENDER|GPU_COMPUTE, 256, 672, OA_REPORT_TYPE_256B_A45_NOA16, platformMask );
@@ -6423,7 +6423,7 @@ TCompletionCode CreateMetricTreeGLK_OA( CMetricsDevice* metricsDevice, CConcurre
     }
      
     platformMask = PLATFORM_GLK;
-    if( MD_IS_INTERNAL_BUILD || metricsDevice->IsPlatformTypeOf( platformMask ) )
+    if( metricsDevice->IsPlatformTypeOf( platformMask ) )
     {
         metricSet = concurrentGroup->AddMetricSet( "HDCAndSF", "Metric set HDCAndSF", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
            GPU_RENDER|GPU_COMPUTE, 256, 672, OA_REPORT_TYPE_256B_A45_NOA16, platformMask );
@@ -7112,7 +7112,7 @@ TCompletionCode CreateMetricTreeGLK_OA( CMetricsDevice* metricsDevice, CConcurre
     }
      
     platformMask = PLATFORM_GLK;
-    if( MD_IS_INTERNAL_BUILD || metricsDevice->IsPlatformTypeOf( platformMask ) )
+    if( metricsDevice->IsPlatformTypeOf( platformMask ) )
     {
         metricSet = concurrentGroup->AddMetricSet( "L3_1", "Metric set L3_1", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
            GPU_RENDER|GPU_COMPUTE, 256, 672, OA_REPORT_TYPE_256B_A45_NOA16, platformMask );
@@ -7867,7 +7867,7 @@ TCompletionCode CreateMetricTreeGLK_OA( CMetricsDevice* metricsDevice, CConcurre
     }
      
     platformMask = PLATFORM_GLK;
-    if( MD_IS_INTERNAL_BUILD || metricsDevice->IsPlatformTypeOf( platformMask ) )
+    if( metricsDevice->IsPlatformTypeOf( platformMask ) )
     {
         metricSet = concurrentGroup->AddMetricSet( "RasterizerAndPixelBackend", "Metric set RasterizerAndPixelBackend", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
            GPU_RENDER|GPU_COMPUTE, 256, 672, OA_REPORT_TYPE_256B_A45_NOA16, platformMask );
@@ -8591,7 +8591,7 @@ TCompletionCode CreateMetricTreeGLK_OA( CMetricsDevice* metricsDevice, CConcurre
     }
      
     platformMask = PLATFORM_GLK;
-    if( MD_IS_INTERNAL_BUILD || metricsDevice->IsPlatformTypeOf( platformMask ) )
+    if( metricsDevice->IsPlatformTypeOf( platformMask ) )
     {
         metricSet = concurrentGroup->AddMetricSet( "Sampler", "Metric set Sampler", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
            GPU_RENDER|GPU_COMPUTE, 256, 672, OA_REPORT_TYPE_256B_A45_NOA16, platformMask );
@@ -9386,7 +9386,7 @@ TCompletionCode CreateMetricTreeGLK_OA( CMetricsDevice* metricsDevice, CConcurre
     }
      
     platformMask = PLATFORM_GLK;
-    if( MD_IS_INTERNAL_BUILD || metricsDevice->IsPlatformTypeOf( platformMask ) )
+    if( metricsDevice->IsPlatformTypeOf( platformMask ) )
     {
         metricSet = concurrentGroup->AddMetricSet( "TDL_1", "Metric set TDL_1", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
            GPU_RENDER|GPU_COMPUTE, 256, 672, OA_REPORT_TYPE_256B_A45_NOA16, platformMask );
@@ -10180,7 +10180,7 @@ TCompletionCode CreateMetricTreeGLK_OA( CMetricsDevice* metricsDevice, CConcurre
     }
      
     platformMask = PLATFORM_GLK;
-    if( MD_IS_INTERNAL_BUILD || metricsDevice->IsPlatformTypeOf( platformMask ) )
+    if( metricsDevice->IsPlatformTypeOf( platformMask ) )
     {
         metricSet = concurrentGroup->AddMetricSet( "TDL_2", "Metric set TDL_2", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
            GPU_RENDER|GPU_COMPUTE, 256, 672, OA_REPORT_TYPE_256B_A45_NOA16, platformMask );
@@ -10934,7 +10934,7 @@ TCompletionCode CreateMetricTreeGLK_OA( CMetricsDevice* metricsDevice, CConcurre
     }
      
     platformMask = PLATFORM_GLK;
-    if( MD_IS_INTERNAL_BUILD || metricsDevice->IsPlatformTypeOf( platformMask ) )
+    if( metricsDevice->IsPlatformTypeOf( platformMask ) )
     {
         metricSet = concurrentGroup->AddMetricSet( "ComputeExtra", "Compute Metrics Extra Gen9", API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
            GPU_RENDER|GPU_COMPUTE, 256, 672, OA_REPORT_TYPE_256B_A45_NOA16, platformMask );
@@ -11160,7 +11160,7 @@ TCompletionCode CreateMetricTreeGLK_OA( CMetricsDevice* metricsDevice, CConcurre
     }
      
     platformMask = PLATFORM_GLK;
-    if( MD_IS_INTERNAL_BUILD || metricsDevice->IsPlatformTypeOf( platformMask ) )
+    if( metricsDevice->IsPlatformTypeOf( platformMask ) )
     {
         metricSet = concurrentGroup->AddMetricSet( "TestOa", "MDAPI testing set Gen9", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
            GPU_RENDER|GPU_COMPUTE, 256, 672, OA_REPORT_TYPE_256B_A45_NOA16, platformMask );
@@ -11477,7 +11477,7 @@ TCompletionCode CreateMetricTreeGLK_OA( CMetricsDevice* metricsDevice, CConcurre
     }
      
     platformMask = PLATFORM_GLK;
-    if( MD_IS_INTERNAL_BUILD || metricsDevice->IsPlatformTypeOf( platformMask ) )
+    if( metricsDevice->IsPlatformTypeOf( platformMask ) )
     {
         metricSet = concurrentGroup->AddMetricSet( "PMA_Stall", "Metric set PMA Stall", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
            GPU_RENDER, 256, 672, OA_REPORT_TYPE_256B_A45_NOA16, platformMask );

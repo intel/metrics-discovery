@@ -1,30 +1,30 @@
-/*****************************************************************************\
-
-    Copyright © 2019-2020, Intel Corporation
-
-    Permission is hereby granted, free of charge, to any person obtaining a
-    copy of this software and associated documentation files (the "Software"),
-    to deal in the Software without restriction, including without limitation
-    the rights to use, copy, modify, merge, publish, distribute, sublicense,
-    and/or sell copies of the Software, and to permit persons to whom the
-    Software is furnished to do so, subject to the following conditions:
-
-    The above copyright notice and this permission notice shall be included
-    in all copies or substantial portions of the Software.
-
-    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-    IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-    FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
-    THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-    LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
-    FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
-    IN THE SOFTWARE.
-
-    File Name:  md_metrics_EHL.cpp
-
-    Abstract:   C++ automated generated file to stack metrics meta data
-
-\*****************************************************************************/
+//////////////////////////////////////////////////////////////////////////////
+//
+//    Copyright © 2019-2020, Intel Corporation
+//
+//    Permission is hereby granted, free of charge, to any person obtaining a
+//    copy of this software and associated documentation files (the "Software"),
+//    to deal in the Software without restriction, including without limitation
+//    the rights to use, copy, modify, merge, publish, distribute, sublicense,
+//    and/or sell copies of the Software, and to permit persons to whom the
+//    Software is furnished to do so, subject to the following conditions:
+//
+//    The above copyright notice and this permission notice shall be included
+//    in all copies or substantial portions of the Software.
+//
+//    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+//    IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+//    FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
+//    THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+//    LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+//    FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
+//    IN THE SOFTWARE.
+//
+//    File Name:  md_metrics_EHL.cpp
+//
+//    Abstract:   C++ automated generated file to stack metrics meta data
+//
+//////////////////////////////////////////////////////////////////////////////
 
 #include "md_per_platform_preamble.h"
 
@@ -45,7 +45,7 @@ TCompletionCode CreateMetricTreeEHL_PipelineStatistics( CMetricsDevice* metricsD
     uint32_t          platformMask         = 0;
   
     platformMask = PLATFORM_EHL;
-    if( MD_IS_INTERNAL_BUILD || metricsDevice->IsPlatformTypeOf( platformMask ) )
+    if( metricsDevice->IsPlatformTypeOf( platformMask ) )
     {
         metricSet = concurrentGroup->AddMetricSet( "PipelineStats", "Pipeline Statistics for OGL4", API_TYPE_OGL|API_TYPE_OGL4_X,
            GPU_RENDER|GPU_COMPUTE, 0, 96, OA_REPORT_TYPE_256B_A45_NOA16, platformMask );
@@ -213,7 +213,7 @@ TCompletionCode CreateMetricTreeEHL_OA( CMetricsDevice* metricsDevice, CConcurre
     uint32_t          platformMask         = 0;
   
     platformMask = PLATFORM_EHL;
-    if( MD_IS_INTERNAL_BUILD || metricsDevice->IsPlatformTypeOf( platformMask ) )
+    if( metricsDevice->IsPlatformTypeOf( platformMask ) )
     {
         metricSet = concurrentGroup->AddMetricSet( "RenderBasic", "Render Metrics Basic Gen11", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
            GPU_RENDER|GPU_COMPUTE, 256, 672, OA_REPORT_TYPE_256B_A45_NOA16, platformMask );
@@ -951,7 +951,7 @@ TCompletionCode CreateMetricTreeEHL_OA( CMetricsDevice* metricsDevice, CConcurre
     }
      
     platformMask = PLATFORM_EHL;
-    if( MD_IS_INTERNAL_BUILD || metricsDevice->IsPlatformTypeOf( platformMask ) )
+    if( metricsDevice->IsPlatformTypeOf( platformMask ) )
     {
         metricSet = concurrentGroup->AddMetricSet( "ComputeBasic", "Compute Metrics Basic Gen10", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
            GPU_RENDER|GPU_COMPUTE, 256, 672, OA_REPORT_TYPE_256B_A45_NOA16, platformMask );
@@ -1713,7 +1713,7 @@ TCompletionCode CreateMetricTreeEHL_OA( CMetricsDevice* metricsDevice, CConcurre
     }
      
     platformMask = PLATFORM_EHL;
-    if( MD_IS_INTERNAL_BUILD || metricsDevice->IsPlatformTypeOf( platformMask ) )
+    if( metricsDevice->IsPlatformTypeOf( platformMask ) )
     {
         metricSet = concurrentGroup->AddMetricSet( "ComputeExtended", "ComputeExtended Gen11", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
            GPU_RENDER|GPU_COMPUTE|GPU_MEDIA|GPU_GENERIC, 256, 672, OA_REPORT_TYPE_256B_A45_NOA16, platformMask );
@@ -2263,7 +2263,7 @@ TCompletionCode CreateMetricTreeEHL_OA( CMetricsDevice* metricsDevice, CConcurre
     }
      
     platformMask = PLATFORM_EHL;
-    if( MD_IS_INTERNAL_BUILD || metricsDevice->IsPlatformTypeOf( platformMask ) )
+    if( metricsDevice->IsPlatformTypeOf( platformMask ) )
     {
         metricSet = concurrentGroup->AddMetricSet( "ComputeL3Cache", "Compute Metrics L3 Cache Gen11", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
            GPU_RENDER|GPU_COMPUTE, 256, 672, OA_REPORT_TYPE_256B_A45_NOA16, platformMask );
@@ -3227,7 +3227,7 @@ TCompletionCode CreateMetricTreeEHL_OA( CMetricsDevice* metricsDevice, CConcurre
     }
      
     platformMask = PLATFORM_EHL;
-    if( MD_IS_INTERNAL_BUILD || metricsDevice->IsPlatformTypeOf( platformMask ) )
+    if( metricsDevice->IsPlatformTypeOf( platformMask ) )
     {
         metricSet = concurrentGroup->AddMetricSet( "RenderPipeProfile", "Render Metrics for 3D Pipeline Profile Gen10", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
            GPU_RENDER, 256, 672, OA_REPORT_TYPE_256B_A45_NOA16, platformMask );
@@ -4009,7 +4009,7 @@ TCompletionCode CreateMetricTreeEHL_OA( CMetricsDevice* metricsDevice, CConcurre
     }
      
     platformMask = PLATFORM_EHL;
-    if( MD_IS_INTERNAL_BUILD || metricsDevice->IsPlatformTypeOf( platformMask ) )
+    if( metricsDevice->IsPlatformTypeOf( platformMask ) )
     {
         metricSet = concurrentGroup->AddMetricSet( "HDCAndSF", "Metric set HDCAndSF", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
            GPU_RENDER|GPU_COMPUTE, 256, 672, OA_REPORT_TYPE_256B_A45_NOA16, platformMask );
@@ -4473,60 +4473,72 @@ TCompletionCode CreateMetricTreeEHL_OA( CMetricsDevice* metricsDevice, CConcurre
             MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
         }
 
-        availabilityEquation = NULL;
-        metric = metricSet->AddMetric( "NonSamplerShader00AccessStalledOnL3", "Slice0 Subslice group 0 Non-sampler Shader Access Stalled On L3",
-            "Percentage of time when HDC has messages to L3, but it's stalled due to lack of credits (Slice0 Subslice group 0)",
-            "GPU/Data Port", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
-            METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, NULL, NULL );
-        if( metric )
+        availabilityEquation = "$SubsliceMask 3 AND";
+        if( MD_IS_INTERNAL_BUILD || metricsDevice->IsAvailabilityEquationTrue( availabilityEquation ) )
         {
-            MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "dw@0xe0 dw@0xdc FSUB" ));
-            MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x170 qw@0x168 FSUB" ));
-            MD_CHECK_CC( metric->SetNormalizationEquation( "GpuDuration" ));
-            MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
-            MD_CHECK_CC( metric->SetMaxValueEquation( "100" ));
+            metric = metricSet->AddMetric( "NonSamplerShader00AccessStalledOnL3", "Slice0 Subslice group 0 Non-sampler Shader Access Stalled On L3",
+                "Percentage of time when HDC has messages to L3, but it's stalled due to lack of credits (Slice0 Subslice group 0)",
+                "GPU/Data Port", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+                METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, NULL, NULL );
+            if( metric )
+            {
+                MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "dw@0xe0 dw@0xdc FSUB" ));
+                MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x170 qw@0x168 FSUB" ));
+                MD_CHECK_CC( metric->SetNormalizationEquation( "GpuDuration" ));
+                MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
+                MD_CHECK_CC( metric->SetMaxValueEquation( "100" ));
+            }
         }
 
-        availabilityEquation = NULL;
-        metric = metricSet->AddMetric( "NonSamplerShader01AccessStalledOnL3", "Slice0 Subslice group 1 Non-sampler Shader Access Stalled On L3",
-            "Percentage of time when HDC has messages to L3, but it's stalled due to lack of credits (Slice0 Subslice group 1)",
-            "GPU/Data Port", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
-            METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, NULL, NULL );
-        if( metric )
+        availabilityEquation = "$SubsliceMask 12 AND";
+        if( MD_IS_INTERNAL_BUILD || metricsDevice->IsAvailabilityEquationTrue( availabilityEquation ) )
         {
-            MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "dw@0xe8 dw@0xe4 FSUB" ));
-            MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x180 qw@0x178 FSUB" ));
-            MD_CHECK_CC( metric->SetNormalizationEquation( "GpuDuration" ));
-            MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
-            MD_CHECK_CC( metric->SetMaxValueEquation( "100" ));
+            metric = metricSet->AddMetric( "NonSamplerShader01AccessStalledOnL3", "Slice0 Subslice group 1 Non-sampler Shader Access Stalled On L3",
+                "Percentage of time when HDC has messages to L3, but it's stalled due to lack of credits (Slice0 Subslice group 1)",
+                "GPU/Data Port", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+                METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, NULL, NULL );
+            if( metric )
+            {
+                MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "dw@0xe8 dw@0xe4 FSUB" ));
+                MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x180 qw@0x178 FSUB" ));
+                MD_CHECK_CC( metric->SetNormalizationEquation( "GpuDuration" ));
+                MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
+                MD_CHECK_CC( metric->SetMaxValueEquation( "100" ));
+            }
         }
 
-        availabilityEquation = NULL;
-        metric = metricSet->AddMetric( "NonSamplerShader02AccessStalledOnL3", "Slice0 Subslice group 2 Non-sampler Shader Access Stalled On L3",
-            "Percentage of time when HDC has messages to L3, but it's stalled due to lack of credits (Slice0 Subslice group 2)",
-            "GPU/Data Port", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
-            METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, NULL, NULL );
-        if( metric )
+        availabilityEquation = "$SubsliceMask 48 AND";
+        if( MD_IS_INTERNAL_BUILD || metricsDevice->IsAvailabilityEquationTrue( availabilityEquation ) )
         {
-            MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "dw@0xf0 dw@0xec FSUB" ));
-            MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x190 qw@0x188 FSUB" ));
-            MD_CHECK_CC( metric->SetNormalizationEquation( "GpuDuration" ));
-            MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
-            MD_CHECK_CC( metric->SetMaxValueEquation( "100" ));
+            metric = metricSet->AddMetric( "NonSamplerShader02AccessStalledOnL3", "Slice0 Subslice group 2 Non-sampler Shader Access Stalled On L3",
+                "Percentage of time when HDC has messages to L3, but it's stalled due to lack of credits (Slice0 Subslice group 2)",
+                "GPU/Data Port", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+                METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, NULL, NULL );
+            if( metric )
+            {
+                MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "dw@0xf0 dw@0xec FSUB" ));
+                MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x190 qw@0x188 FSUB" ));
+                MD_CHECK_CC( metric->SetNormalizationEquation( "GpuDuration" ));
+                MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
+                MD_CHECK_CC( metric->SetMaxValueEquation( "100" ));
+            }
         }
 
-        availabilityEquation = NULL;
-        metric = metricSet->AddMetric( "NonSamplerShader03AccessStalledOnL3", "Slice0 Subslice group 3 Non-sampler Shader Access Stalled On L3",
-            "Percentage of time when HDC has messages to L3, but it's stalled due to lack of credits (Slice0 Subslice group 3)",
-            "GPU/Data Port", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
-            METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, NULL, NULL );
-        if( metric )
+        availabilityEquation = "$SubsliceMask 192 AND";
+        if( MD_IS_INTERNAL_BUILD || metricsDevice->IsAvailabilityEquationTrue( availabilityEquation ) )
         {
-            MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "dw@0xf8 dw@0xf4 FSUB" ));
-            MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x1a0 qw@0x198 FSUB" ));
-            MD_CHECK_CC( metric->SetNormalizationEquation( "GpuDuration" ));
-            MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
-            MD_CHECK_CC( metric->SetMaxValueEquation( "100" ));
+            metric = metricSet->AddMetric( "NonSamplerShader03AccessStalledOnL3", "Slice0 Subslice group 3 Non-sampler Shader Access Stalled On L3",
+                "Percentage of time when HDC has messages to L3, but it's stalled due to lack of credits (Slice0 Subslice group 3)",
+                "GPU/Data Port", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+                METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, NULL, NULL );
+            if( metric )
+            {
+                MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "dw@0xf8 dw@0xf4 FSUB" ));
+                MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x1a0 qw@0x198 FSUB" ));
+                MD_CHECK_CC( metric->SetNormalizationEquation( "GpuDuration" ));
+                MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
+                MD_CHECK_CC( metric->SetMaxValueEquation( "100" ));
+            }
         }
 
         availabilityEquation = NULL;
@@ -4761,7 +4773,7 @@ TCompletionCode CreateMetricTreeEHL_OA( CMetricsDevice* metricsDevice, CConcurre
     }
      
     platformMask = PLATFORM_EHL;
-    if( MD_IS_INTERNAL_BUILD || metricsDevice->IsPlatformTypeOf( platformMask ) )
+    if( metricsDevice->IsPlatformTypeOf( platformMask ) )
     {
         metricSet = concurrentGroup->AddMetricSet( "RasterizerAndPixelBackend", "Metric set RasterizerAndPixelBackend", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
            GPU_RENDER|GPU_COMPUTE, 256, 672, OA_REPORT_TYPE_256B_A45_NOA16, platformMask );
@@ -5567,7 +5579,7 @@ TCompletionCode CreateMetricTreeEHL_OA( CMetricsDevice* metricsDevice, CConcurre
     }
      
     platformMask = PLATFORM_EHL;
-    if( MD_IS_INTERNAL_BUILD || metricsDevice->IsPlatformTypeOf( platformMask ) )
+    if( metricsDevice->IsPlatformTypeOf( platformMask ) )
     {
         metricSet = concurrentGroup->AddMetricSet( "L3_1", "Metric set L3_1", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
            GPU_RENDER|GPU_COMPUTE, 256, 672, OA_REPORT_TYPE_256B_A45_NOA16, platformMask );
@@ -6373,7 +6385,7 @@ TCompletionCode CreateMetricTreeEHL_OA( CMetricsDevice* metricsDevice, CConcurre
     }
      
     platformMask = PLATFORM_EHL;
-    if( MD_IS_INTERNAL_BUILD || metricsDevice->IsPlatformTypeOf( platformMask ) )
+    if( metricsDevice->IsPlatformTypeOf( platformMask ) )
     {
         metricSet = concurrentGroup->AddMetricSet( "L3_2", "Gen11 L2Bank0 stalled metric set", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
            GPU_RENDER|GPU_COMPUTE|GPU_MEDIA|GPU_GENERIC, 256, 672, OA_REPORT_TYPE_256B_A45_NOA16, platformMask );
@@ -6924,7 +6936,7 @@ TCompletionCode CreateMetricTreeEHL_OA( CMetricsDevice* metricsDevice, CConcurre
     }
      
     platformMask = PLATFORM_EHL;
-    if( MD_IS_INTERNAL_BUILD || metricsDevice->IsPlatformTypeOf( platformMask ) )
+    if( metricsDevice->IsPlatformTypeOf( platformMask ) )
     {
         metricSet = concurrentGroup->AddMetricSet( "L3_3", "Gen11 L2Bank1 stalled metric set", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
            GPU_RENDER|GPU_COMPUTE|GPU_MEDIA|GPU_GENERIC, 256, 672, OA_REPORT_TYPE_256B_A45_NOA16, platformMask );
@@ -7475,7 +7487,7 @@ TCompletionCode CreateMetricTreeEHL_OA( CMetricsDevice* metricsDevice, CConcurre
     }
      
     platformMask = PLATFORM_EHL;
-    if( MD_IS_INTERNAL_BUILD || metricsDevice->IsPlatformTypeOf( platformMask ) )
+    if( metricsDevice->IsPlatformTypeOf( platformMask ) )
     {
         metricSet = concurrentGroup->AddMetricSet( "L3_4", "Gen11 L2Bank4 stalled metric set", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
            GPU_RENDER|GPU_COMPUTE|GPU_MEDIA|GPU_GENERIC, 256, 672, OA_REPORT_TYPE_256B_A45_NOA16, platformMask );
@@ -8055,7 +8067,7 @@ TCompletionCode CreateMetricTreeEHL_OA( CMetricsDevice* metricsDevice, CConcurre
     }
      
     platformMask = PLATFORM_EHL;
-    if( MD_IS_INTERNAL_BUILD || metricsDevice->IsPlatformTypeOf( platformMask ) )
+    if( metricsDevice->IsPlatformTypeOf( platformMask ) )
     {
         metricSet = concurrentGroup->AddMetricSet( "L3_5", "Gen11 L2Bank5 stalled metric set", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
            GPU_RENDER|GPU_COMPUTE|GPU_MEDIA|GPU_GENERIC, 256, 672, OA_REPORT_TYPE_256B_A45_NOA16, platformMask );
@@ -8635,7 +8647,7 @@ TCompletionCode CreateMetricTreeEHL_OA( CMetricsDevice* metricsDevice, CConcurre
     }
      
     platformMask = PLATFORM_EHL;
-    if( MD_IS_INTERNAL_BUILD || metricsDevice->IsPlatformTypeOf( platformMask ) )
+    if( metricsDevice->IsPlatformTypeOf( platformMask ) )
     {
         metricSet = concurrentGroup->AddMetricSet( "Sampler_1", "Metric set Sampler 1", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
            GPU_RENDER|GPU_COMPUTE, 256, 672, OA_REPORT_TYPE_256B_A45_NOA16, platformMask );
@@ -9534,7 +9546,7 @@ TCompletionCode CreateMetricTreeEHL_OA( CMetricsDevice* metricsDevice, CConcurre
     }
      
     platformMask = PLATFORM_EHL;
-    if( MD_IS_INTERNAL_BUILD || metricsDevice->IsPlatformTypeOf( platformMask ) )
+    if( metricsDevice->IsPlatformTypeOf( platformMask ) )
     {
         metricSet = concurrentGroup->AddMetricSet( "Sampler_2", "Metric set Sampler 2", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
            GPU_RENDER|GPU_COMPUTE, 256, 672, OA_REPORT_TYPE_256B_A45_NOA16, platformMask );
@@ -10393,7 +10405,7 @@ TCompletionCode CreateMetricTreeEHL_OA( CMetricsDevice* metricsDevice, CConcurre
     }
      
     platformMask = PLATFORM_EHL;
-    if( MD_IS_INTERNAL_BUILD || metricsDevice->IsPlatformTypeOf( platformMask ) )
+    if( metricsDevice->IsPlatformTypeOf( platformMask ) )
     {
         metricSet = concurrentGroup->AddMetricSet( "TDL_1", "Metric set TDL_1", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
            GPU_RENDER|GPU_COMPUTE, 256, 672, OA_REPORT_TYPE_256B_A45_NOA16, platformMask );
@@ -11401,7 +11413,7 @@ TCompletionCode CreateMetricTreeEHL_OA( CMetricsDevice* metricsDevice, CConcurre
     }
      
     platformMask = PLATFORM_EHL;
-    if( MD_IS_INTERNAL_BUILD || metricsDevice->IsPlatformTypeOf( platformMask ) )
+    if( metricsDevice->IsPlatformTypeOf( platformMask ) )
     {
         metricSet = concurrentGroup->AddMetricSet( "TDL_2", "Metric set TDL_2", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
            GPU_RENDER|GPU_COMPUTE, 256, 672, OA_REPORT_TYPE_256B_A45_NOA16, platformMask );
@@ -12253,7 +12265,7 @@ TCompletionCode CreateMetricTreeEHL_OA( CMetricsDevice* metricsDevice, CConcurre
     }
      
     platformMask = PLATFORM_EHL;
-    if( MD_IS_INTERNAL_BUILD || metricsDevice->IsPlatformTypeOf( platformMask ) )
+    if( metricsDevice->IsPlatformTypeOf( platformMask ) )
     {
         metricSet = concurrentGroup->AddMetricSet( "TDL_3", "Metric set TDL_3", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
            GPU_RENDER|GPU_COMPUTE, 256, 672, OA_REPORT_TYPE_256B_A45_NOA16, platformMask );
@@ -13283,7 +13295,7 @@ TCompletionCode CreateMetricTreeEHL_OA( CMetricsDevice* metricsDevice, CConcurre
     }
      
     platformMask = PLATFORM_EHL;
-    if( MD_IS_INTERNAL_BUILD || metricsDevice->IsPlatformTypeOf( platformMask ) )
+    if( metricsDevice->IsPlatformTypeOf( platformMask ) )
     {
         metricSet = concurrentGroup->AddMetricSet( "GpuBusyness", "Gpu Rings Busyness", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
            GPU_RENDER|GPU_COMPUTE|GPU_MEDIA|GPU_GENERIC, 256, 672, OA_REPORT_TYPE_256B_A45_NOA16, platformMask );
@@ -13595,7 +13607,7 @@ TCompletionCode CreateMetricTreeEHL_OA( CMetricsDevice* metricsDevice, CConcurre
     }
      
     platformMask = PLATFORM_EHL;
-    if( MD_IS_INTERNAL_BUILD || metricsDevice->IsPlatformTypeOf( platformMask ) )
+    if( metricsDevice->IsPlatformTypeOf( platformMask ) )
     {
         metricSet = concurrentGroup->AddMetricSet( "TestOa", "Metric set TestOa", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
            GPU_RENDER|GPU_COMPUTE, 256, 672, OA_REPORT_TYPE_256B_A45_NOA16, platformMask );
