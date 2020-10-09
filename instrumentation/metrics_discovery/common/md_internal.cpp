@@ -3069,6 +3069,7 @@ namespace MetricsDiscoveryInternal
                         equationString,
                         metricParams.DxToOglAlias,
                         signalName,
+                        i,
                         true );
                     MD_CHECK_PTR_RET( metric, CC_ERROR_NO_MEMORY );
                 }
@@ -3170,7 +3171,8 @@ namespace MetricsDiscoveryInternal
                     informationParams.ApiMask,
                     informationParams.InfoType,
                     informationParams.InfoUnits,
-                    equationString );
+                    equationString,
+                    k );
                 MD_CHECK_PTR_RET( aInformation, CC_ERROR_NO_MEMORY );
             }
 
@@ -5296,8 +5298,8 @@ namespace MetricsDiscoveryInternal
         m_startRegsVector           = new( std::nothrow ) Vector<TRegister*>( START_REGS_VECTOR_INCREASE );
         m_startRegsQueryVector      = new( std::nothrow ) Vector<TRegister*>( START_REGS_QUERY_VECTOR_INCREASE );
         m_startRegisterSetList      = new( std::nothrow ) List<CRegisterSet*>();
-        m_otherMetricsList          = new( std::nothrow ) List<CMetric*>();
-        m_otherInformationList      = new( std::nothrow ) List<CInformation*>();
+        m_otherMetricsVector        = new( std::nothrow ) Vector<CMetric*>( METRICS_VECTOR_INCREASE );
+        m_otherInformationVector    = new( std::nothrow ) Vector<CInformation*>( INFORMATION_VECTOR_INCREASE );
         m_filteredMetricsVector     = new( std::nothrow ) Vector<CMetric*>( METRICS_VECTOR_INCREASE );
         m_filteredInformationVector = new( std::nothrow ) Vector<CInformation*>( INFORMATION_VECTOR_INCREASE );
         m_metricsCalculator         = new( std::nothrow ) CMetricsCalculator( m_device );
@@ -5343,8 +5345,8 @@ namespace MetricsDiscoveryInternal
 
         MD_SAFE_DELETE( m_startRegisterSetList );
 
-        MD_SAFE_DELETE( m_otherMetricsList );
-        MD_SAFE_DELETE( m_otherInformationList );
+        MD_SAFE_DELETE( m_otherMetricsVector );
+        MD_SAFE_DELETE( m_otherInformationVector );
         MD_SAFE_DELETE( m_metricsCalculator );
     }
 
@@ -5883,17 +5885,17 @@ namespace MetricsDiscoveryInternal
     //     CMetric*  - pointer to the newly created metric.
     //
     //////////////////////////////////////////////////////////////////////////////
-    CMetric* CMetricSet::AddMetric( const char* symbolName, const char* shortName, const char* longName, const char* groupName, uint32_t groupId, uint32_t usageFlagsMask, uint32_t apiMask, TMetricType metricType, TMetricResultType resultType, const char* units, int64_t loWatermark, int64_t hiWatermark, THwUnitType hwType, const char* availabilityEquation, const char* alias, const char* signalName, bool isCustom /*= false*/ )
+    CMetric* CMetricSet::AddMetric( const char* symbolName, const char* shortName, const char* longName, const char* groupName, uint32_t groupId, uint32_t usageFlagsMask, uint32_t apiMask, TMetricType metricType, TMetricResultType resultType, const char* units, int64_t loWatermark, int64_t hiWatermark, THwUnitType hwType, const char* availabilityEquation, const char* alias, const char* signalName, uint32_t metricXmlId, bool isCustom /*= false*/ )
     {
         MD_CHECK_PTR_RET( m_metricsVector, NULL );
-        MD_CHECK_PTR_RET( m_otherMetricsList, NULL );
+        MD_CHECK_PTR_RET( m_otherMetricsVector, NULL );
 
         if( groupName == NULL )
         {
             groupName = "";
         }
 
-        CMetric* metric = (CMetric*) new( std::nothrow ) CMetric( m_device, m_metricsVector->GetCount(), symbolName, shortName, longName, groupName, groupId, usageFlagsMask, apiMask, metricType, resultType, units, loWatermark, hiWatermark, hwType, alias, signalName );
+        CMetric* metric = (CMetric*) new( std::nothrow ) CMetric( m_device, metricXmlId, symbolName, shortName, longName, groupName, groupId, usageFlagsMask, apiMask, metricType, resultType, units, loWatermark, hiWatermark, hwType, alias, signalName );
         MD_CHECK_PTR_RET( metric, NULL );
 
         if( metric->SetAvailabilityEquation( availabilityEquation ) != CC_OK )
@@ -5906,17 +5908,19 @@ namespace MetricsDiscoveryInternal
         {
             if( IsMetricAlreadyAdded( symbolName ) )
             {
-                m_otherMetricsList->PushBack( metric );
+                m_otherMetricsVector->PushBack( metric );
             }
             else
             {
+                uint32_t count = m_metricsVector->GetCount();
+                metric->SetIdInSetParam( count );
                 m_metricsVector->PushBack( metric );
-                m_params_1_0.MetricsCount = m_metricsVector->GetCount();
+                m_params_1_0.MetricsCount = count + 1;
             }
         }
         else
         {
-            m_otherMetricsList->PushBack( metric );
+            m_otherMetricsVector->PushBack( metric );
         }
 
         if( isCustom )
@@ -5948,12 +5952,12 @@ namespace MetricsDiscoveryInternal
     CMetric* CMetricSet::AddMetric( CMetric* metric )
     {
         MD_CHECK_PTR_RET( m_metricsVector, NULL );
-        MD_CHECK_PTR_RET( m_otherMetricsList, NULL );
+        MD_CHECK_PTR_RET( m_otherMetricsVector, NULL );
         MD_CHECK_PTR_RET( metric, NULL );
 
         if( IsMetricAlreadyAdded( metric->GetParams()->SymbolName ) )
         {
-            m_otherMetricsList->PushBack( metric );
+            m_otherMetricsVector->PushBack( metric );
         }
         else
         {
@@ -5983,17 +5987,18 @@ namespace MetricsDiscoveryInternal
     //     uint32_t     apiMask                -
     //     TInformationType informationType    -
     //     const char*  availabilityEquation   -
+    //     uint32_t informationXmlId           -
     //
     // Output:
     //     CInformation*   - pointer to the newly created information
     //
     //////////////////////////////////////////////////////////////////////////////
-    CInformation* CMetricSet::AddInformation( const char* symbolName, const char* shortName, const char* longName, const char* groupName, uint32_t apiMask, TInformationType informationType, const char* informationUnits, const char* availabilityEquation )
+    CInformation* CMetricSet::AddInformation( const char* symbolName, const char* shortName, const char* longName, const char* groupName, uint32_t apiMask, TInformationType informationType, const char* informationUnits, const char* availabilityEquation, uint32_t informationXmlId )
     {
         MD_CHECK_PTR_RET( m_informationVector, NULL );
-        MD_CHECK_PTR_RET( m_otherInformationList, NULL );
+        MD_CHECK_PTR_RET( m_otherInformationVector, NULL );
 
-        CInformation* information = (CInformation*) new( std::nothrow ) CInformation( m_device, m_informationVector->GetCount(), symbolName, shortName, longName, groupName, apiMask, informationType, informationUnits );
+        CInformation* information = (CInformation*) new( std::nothrow ) CInformation( m_device, informationXmlId, symbolName, shortName, longName, groupName, apiMask, informationType, informationUnits );
         MD_CHECK_PTR_RET( information, NULL );
 
         if( information->SetAvailabilityEquation( availabilityEquation ) != CC_OK )
@@ -6004,12 +6009,14 @@ namespace MetricsDiscoveryInternal
 
         if( m_device->IsAvailabilityEquationTrue( availabilityEquation ) )
         {
+            uint32_t count = m_informationVector->GetCount();
+            information->SetIdInSetParam( count );
             m_informationVector->PushBack( information );
-            m_params_1_0.InformationCount = m_informationVector->GetCount();
+            m_params_1_0.InformationCount = count + 1;
         }
         else
         {
-            m_otherInformationList->PushBack( information );
+            m_otherInformationVector->PushBack( information );
         }
 
         return information;
@@ -6566,8 +6573,6 @@ namespace MetricsDiscoveryInternal
     TCompletionCode CMetricSet::WriteCMetricSetToFile( FILE* metricFile )
     {
         uint32_t             count           = 0;
-        Node<CMetric*>*      metricNode      = NULL;
-        Node<CInformation*>* informationNode = NULL;
         Node<CRegisterSet*>* registerSetNode = NULL;
 
         if( metricFile == NULL )
@@ -6578,8 +6583,8 @@ namespace MetricsDiscoveryInternal
 
         MD_CHECK_PTR_RET( m_metricsVector, CC_ERROR_GENERAL );
         MD_CHECK_PTR_RET( m_informationVector, CC_ERROR_GENERAL );
-        MD_CHECK_PTR_RET( m_otherMetricsList, CC_ERROR_GENERAL );
-        MD_CHECK_PTR_RET( m_otherInformationList, CC_ERROR_GENERAL );
+        MD_CHECK_PTR_RET( m_otherMetricsVector, CC_ERROR_GENERAL );
+        MD_CHECK_PTR_RET( m_otherInformationVector, CC_ERROR_GENERAL );
         MD_CHECK_PTR_RET( m_startRegisterSetList, CC_ERROR_GENERAL );
         MD_CHECK_PTR_RET( m_complementarySetsVector, CC_ERROR_GENERAL );
 
@@ -6605,63 +6610,78 @@ namespace MetricsDiscoveryInternal
         fwrite( &m_params_1_0.ApiSpecificId.OCL, sizeof( m_params_1_0.ApiSpecificId.OCL ), 1, metricFile );
         fwrite( &m_params_1_0.ApiSpecificId.HwConfigId, sizeof( m_params_1_0.ApiSpecificId.HwConfigId ), 1, metricFile );
 
-        // m_metricsVector & m_otherMetricsList
-        count = m_metricsVector->GetCount() + m_otherMetricsList->GetCount();
+        // m_metricsVector & m_otherMetricsVector
+        count = m_metricsVector->GetCount() + m_otherMetricsVector->GetCount();
         fwrite( &count, sizeof( uint32_t ), 1, metricFile );
-        count = m_metricsVector->GetCount();
-        for( uint32_t i = 0; i < count; i++ )
+        uint32_t i = 0;
+        uint32_t j = 0;
+        while( i < m_metricsVector->GetCount() || j < m_otherMetricsVector->GetCount() )
         {
-            // Write in the correct order
-            metricNode = m_otherMetricsList->GetHeadNode();
-            while( metricNode != NULL )
+            // Define which vector is not finished and write remaining available metrics
+            if( i == m_metricsVector->GetCount() )
             {
-                if( i == metricNode->value->GetParams()->IdInSet )
+                for( uint32_t k = j; k < m_otherMetricsVector->GetCount(); k++ )
                 {
-                    metricNode->value->WriteCMetricToFile( metricFile );
+                    ( *m_otherMetricsVector )[k]->WriteCMetricToFile( metricFile );
                 }
-                metricNode = metricNode->nextNode;
+                break;
+            }
+            if( j == m_otherMetricsVector->GetCount() )
+            {
+                for( uint32_t k = i; k < m_metricsVector->GetCount(); k++ )
+                {
+                    ( *m_metricsVector )[k]->WriteCMetricToFile( metricFile );
+                }
+                break;
             }
 
-            ( *m_metricsVector )[i]->WriteCMetricToFile( metricFile );
-        }
-        // Write remaining unavailable metrics
-        metricNode = m_otherMetricsList->GetHeadNode();
-        while( metricNode != NULL )
-        {
-            if( metricNode->value->GetParams()->IdInSet >= count )
+            // Write in the correct order
+            if( ( *m_metricsVector )[i]->m_id < ( *m_otherMetricsVector )[j]->m_id )
             {
-                metricNode->value->WriteCMetricToFile( metricFile );
+                ( *m_metricsVector )[i]->WriteCMetricToFile( metricFile );
+                i++;
             }
-            metricNode = metricNode->nextNode;
+            else
+            {
+                ( *m_otherMetricsVector )[j]->WriteCMetricToFile( metricFile );
+                j++;
+            }
         }
 
-        // m_informationVector & m_otherInformationList
-        count = m_informationVector->GetCount() + m_otherInformationList->GetCount();
+        // m_informationVector & m_otherInformationVector
+        count = m_informationVector->GetCount() + m_otherInformationVector->GetCount();
         fwrite( &count, sizeof( uint32_t ), 1, metricFile );
-        count = m_informationVector->GetCount();
-        for( uint32_t i = 0; i < count; i++ )
+        i = 0;
+        j = 0;
+        while( i < m_informationVector->GetCount() || j < m_otherInformationVector->GetCount() )
         {
-            // Write in the correct order
-            informationNode = m_otherInformationList->GetHeadNode();
-            while( informationNode != NULL )
+            // Define which vector is not finished and write remaining available informations
+            if( i == m_informationVector->GetCount() )
             {
-                if( i == informationNode->value->GetParams()->IdInSet )
+                for( uint32_t k = j; k < m_otherInformationVector->GetCount(); k++ )
                 {
-                    informationNode->value->WriteCInformationToFile( metricFile );
+                    ( *m_otherInformationVector )[k]->WriteCInformationToFile( metricFile );
                 }
-                informationNode = informationNode->nextNode;
+                break;
             }
-            ( *m_informationVector )[i]->WriteCInformationToFile( metricFile );
-        }
-        // Write remaining unavailable information
-        informationNode = m_otherInformationList->GetHeadNode();
-        while( informationNode != NULL )
-        {
-            if( informationNode->value->GetParams()->IdInSet >= count )
+            if( j == m_otherInformationVector->GetCount() )
             {
-                informationNode->value->WriteCInformationToFile( metricFile );
+                for( uint32_t k = i; k < m_informationVector->GetCount(); k++ )
+                {
+                    ( *m_informationVector )[k]->WriteCInformationToFile( metricFile );
+                }
+                break;
             }
-            informationNode = informationNode->nextNode;
+
+            // Write in the correct order
+            if( ( *m_informationVector )[i]->m_id < ( *m_otherInformationVector )[j]->m_id )
+            {
+                ( *m_informationVector )[i++]->WriteCInformationToFile( metricFile );
+            }
+            else
+            {
+                ( *m_otherInformationVector )[j++]->WriteCInformationToFile( metricFile );
+            }
         }
 
         // m_startRegisterSetList
@@ -6790,7 +6810,7 @@ namespace MetricsDiscoveryInternal
     bool CMetricSet::IsMetricAlreadyAdded( const char* symbolName )
     {
         MD_CHECK_PTR_RET( m_metricsVector, false );
-        MD_CHECK_PTR_RET( m_otherMetricsList, false );
+        MD_CHECK_PTR_RET( m_otherMetricsVector, false );
         MD_CHECK_PTR_RET( symbolName, false );
 
         for( uint32_t i = 0; i < m_metricsVector->GetCount(); i++ )
@@ -6801,14 +6821,13 @@ namespace MetricsDiscoveryInternal
             }
         }
 
-        Node<CMetric*>* metricNode = m_otherMetricsList->GetHeadNode();
-        while( metricNode != NULL )
+        uint32_t count = m_otherMetricsVector->GetCount();
+        for( uint32_t i = 0; i < count; i++ )
         {
-            if( ( metricNode->value ) && ( strcmp( symbolName, metricNode->value->GetParams()->SymbolName ) == 0 ) )
+            if( strcmp( symbolName, ( *m_otherMetricsVector )[i]->GetParams()->SymbolName ) == 0 )
             {
                 return true;
             }
-            metricNode = metricNode->nextNode;
         }
 
         return false;
@@ -7092,22 +7111,28 @@ namespace MetricsDiscoveryInternal
         ClearCachedMetricsAndInformation();
 
         // Cache metrics
-        for( uint32_t i = 0; i < m_params_1_0.MetricsCount; i++ )
+        for( uint32_t i = 0, j = 0; i < m_params_1_0.MetricsCount; i++ )
         {
             IMetric_1_0* metric = GetMetric( i );
             if( metric && ( metric->GetParams()->ApiMask & m_filteredParams.ApiMask ) > 0 )
             {
-                m_filteredMetricsVector->PushBack( (CMetric*) metric );
+                CMetric* filteredMetric = (CMetric*) ( metric );
+                filteredMetric->SetIdInSetParam( j++ );
+
+                m_filteredMetricsVector->PushBack( filteredMetric );
             }
         }
 
         // Cache information
-        for( uint32_t i = 0; i < m_params_1_0.InformationCount; i++ )
+        for( uint32_t i = 0, j = 0; i < m_params_1_0.InformationCount; i++ )
         {
             IInformation_1_0* information = GetInformation( i );
             if( information && ( information->GetParams()->ApiMask & m_filteredParams.ApiMask ) > 0 )
             {
-                m_filteredInformationVector->PushBack( (CInformation*) information );
+                CInformation* filteredInformation = (CInformation*) ( information );
+                filteredInformation->SetIdInSetParam( j++ );
+
+                m_filteredInformationVector->PushBack( filteredInformation );
             }
         }
 
@@ -7683,7 +7708,8 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     CMetric::CMetric( CMetricsDevice* device, uint32_t id, const char* name, const char* shortName, const char* longName, const char* group, uint32_t groupId, uint32_t usageFlagsMask, uint32_t apiMask, TMetricType metricType, TMetricResultType resultType, const char* units, int64_t loWatermark, int64_t hiWatermark, THwUnitType hwType, const char* alias, const char* signalName )
     {
-        m_params_1_0.IdInSet           = id;
+        m_params_1_0.IdInSet           = id; // filtered id, equal to original on creation
+        m_id                           = id; // id in original set, equal to filtered on creation
         m_params_1_0.SymbolName        = GetCopiedCString( name );
         m_params_1_0.ShortName         = GetCopiedCString( shortName );
         m_params_1_0.LongName          = GetCopiedCString( longName );
@@ -7733,7 +7759,8 @@ namespace MetricsDiscoveryInternal
     {
         memset( &m_params_1_0, 0, sizeof( m_params_1_0 ) );
 
-        m_params_1_0.IdInSet           = other.m_params_1_0.IdInSet;
+        m_params_1_0.IdInSet           = other.m_params_1_0.IdInSet; // id after filterings
+        m_id                           = other.m_id;                 // initial id before filterings
         m_params_1_0.GroupId           = other.m_params_1_0.GroupId;
         m_params_1_0.SymbolName        = GetCopiedCString( other.m_params_1_0.SymbolName );
         m_params_1_0.ShortName         = GetCopiedCString( other.m_params_1_0.ShortName );
@@ -7973,6 +8000,29 @@ namespace MetricsDiscoveryInternal
     //     CMetric
     //
     // Method:
+    //     SetIdInSetParam
+    //
+    // Description:
+    //     Updates IdInSet parameter in the metric.
+    //
+    // Input:
+    //     uint32_t id - id in current metric set
+    //
+    // Output:
+    //     void        - return values is absent
+    //
+    //////////////////////////////////////////////////////////////////////////////
+    void CMetric::SetIdInSetParam( uint32_t id )
+    {
+        m_params_1_0.IdInSet = id;
+    }
+
+    //////////////////////////////////////////////////////////////////////////////
+    //
+    // Class:
+    //     CMetric
+    //
+    // Method:
     //     SetSnapshotReportDeltaFunction
     //
     // Description:
@@ -8147,7 +8197,8 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     CInformation::CInformation( CMetricsDevice* device, uint32_t id, const char* name, const char* shortName, const char* longName, const char* group, uint32_t apiMask, TInformationType informationType, const char* informationUnits )
     {
-        m_params_1_0.IdInSet    = id;
+        m_params_1_0.IdInSet    = id; // filtered, equal to original on creation
+        m_id                    = id; // original, equal to filtered on creation
         m_params_1_0.SymbolName = GetCopiedCString( name );
         m_params_1_0.ShortName  = GetCopiedCString( shortName );
         m_params_1_0.LongName   = GetCopiedCString( longName );
@@ -8183,7 +8234,8 @@ namespace MetricsDiscoveryInternal
     CInformation::CInformation( const CInformation& other )
         : m_device( other.m_device )
     {
-        m_params_1_0.IdInSet    = other.m_params_1_0.IdInSet;
+        m_params_1_0.IdInSet    = other.m_params_1_0.IdInSet; // id after filterings
+        m_id                    = other.m_id;                 // initial id before filterings
         m_params_1_0.SymbolName = GetCopiedCString( other.m_params_1_0.SymbolName );
         m_params_1_0.ShortName  = GetCopiedCString( other.m_params_1_0.ShortName );
         m_params_1_0.GroupName  = GetCopiedCString( other.m_params_1_0.GroupName );
@@ -8463,6 +8515,29 @@ namespace MetricsDiscoveryInternal
         }
 
         return ret;
+    }
+
+    //////////////////////////////////////////////////////////////////////////////
+    //
+    // Class:
+    //     CInformation
+    //
+    // Method:
+    //     SetIdInSetParam
+    //
+    // Description:
+    //     Updates IdInSet parameter in the information element.
+    //
+    // Input:
+    //     uint32_t id - id in current information set
+    //
+    // Output:
+    //     void        - return values is absent
+    //
+    //////////////////////////////////////////////////////////////////////////////
+    void CInformation::SetIdInSetParam( uint32_t id )
+    {
+        m_params_1_0.IdInSet = id;
     }
 
     //////////////////////////////////////////////////////////////////////////////

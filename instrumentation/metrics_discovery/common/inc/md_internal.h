@@ -638,16 +638,8 @@ namespace MetricsDiscoveryInternal
         virtual TCompletionCode CalculateMetrics( const uint8_t* rawData, uint32_t rawDataSize, TTypedValue_1_0* out, uint32_t outSize, uint32_t* outReportCount, bool enableContextFiltering );
         virtual TCompletionCode CalculateIoMeasurementInformation( TTypedValue_1_0* out, uint32_t outSize );
 
-        // IMetricSet_1_5
+        // API 1.5:
         virtual TCompletionCode CalculateMetrics( const uint8_t* rawData, uint32_t rawDataSize, TTypedValue_1_0* out, uint32_t outSize, uint32_t* outReportCount, TTypedValue_1_0* outMaxValues, uint32_t outMaxValuesSize );
-
-    private: // Constants
-        static const uint32_t METRICS_VECTOR_INCREASE            = 64;
-        static const uint32_t INFORMATION_VECTOR_INCREASE        = 16;
-        static const uint32_t COMPLEMENTARY_SETS_VECTOR_INCREASE = 16;
-        static const uint32_t START_REGS_VECTOR_INCREASE         = 128;
-        static const uint32_t START_REGS_QUERY_VECTOR_INCREASE   = 16;
-        static const uint32_t STOP_REGS_VECTOR_INCREASE          = 32;
 
     public:
         // Constructor & Destructor:
@@ -658,10 +650,10 @@ namespace MetricsDiscoveryInternal
         TCompletionCode SetApiSpecificId( const char* dx9Fourcc, uint32_t dx9QueryId, uint32_t dx10Counter, uint32_t oglQuery, uint32_t ocl, uint32_t hwConfig, const char* dx10CounterName, uint32_t dx10QueryId, const char* oglQueryName, uint32_t oglQueryARB );
         TCompletionCode SetApiSpecificId( TApiSpecificId_1_0 apiSepcificId );
 
-        CMetric* AddMetric( const char* symbolName, const char* shortName, const char* longName, const char* groupName, uint32_t groupId, uint32_t usageFlagsMask, uint32_t apiMask, TMetricType metricType, TMetricResultType resultType, const char* units, int64_t loWatermark, int64_t hiWatermark, THwUnitType hwType, const char* availabilityEquation, const char* alias, const char* signalName, bool isCustom = false );
+        CMetric* AddMetric( const char* symbolName, const char* shortName, const char* longName, const char* groupName, uint32_t groupId, uint32_t usageFlagsMask, uint32_t apiMask, TMetricType metricType, TMetricResultType resultType, const char* units, int64_t loWatermark, int64_t hiWatermark, THwUnitType hwType, const char* availabilityEquation, const char* alias, const char* signalName, uint32_t metricXmlId, bool isCustom = false );
         CMetric* AddMetric( CMetric* metric );
 
-        CInformation* AddInformation( const char* symbolName, const char* shortName, const char* longName, const char* groupName, uint32_t apiMask, TInformationType informationType, const char* informationUnits, const char* availabilityEquation );
+        CInformation* AddInformation( const char* symbolName, const char* shortName, const char* longName, const char* groupName, uint32_t apiMask, TInformationType informationType, const char* informationUnits, const char* availabilityEquation, uint32_t informationXmlId );
         CInformation* AddInformation( CInformation* information );
         bool          HasInformation( const char* symbolName );
 
@@ -717,8 +709,8 @@ namespace MetricsDiscoveryInternal
         List<CRegisterSet*>* m_startRegisterSetList;
 
         // List of unavailable metrics and information:
-        List<CMetric*>*      m_otherMetricsList;
-        List<CInformation*>* m_otherInformationList;
+        Vector<CMetric*>*      m_otherMetricsVector;
+        Vector<CInformation*>* m_otherInformationVector;
 
         CMetricsDevice*   m_device;
         CConcurrentGroup* m_concurrentGroup;
@@ -739,6 +731,15 @@ namespace MetricsDiscoveryInternal
         bool                m_isReadRegsCfgSet; // if true then read regs config will be cleared on Deactivate; determined during Activate
         TPmRegsConfigInfo   m_pmRegsConfigInfo;
         CMetricsCalculator* m_metricsCalculator;
+
+    private:
+        // Static variables:
+        static const uint32_t METRICS_VECTOR_INCREASE            = 64;
+        static const uint32_t INFORMATION_VECTOR_INCREASE        = 16;
+        static const uint32_t COMPLEMENTARY_SETS_VECTOR_INCREASE = 16;
+        static const uint32_t START_REGS_VECTOR_INCREASE         = 128;
+        static const uint32_t START_REGS_QUERY_VECTOR_INCREASE   = 16;
+        static const uint32_t STOP_REGS_VECTOR_INCREASE          = 32;
     };
 
     //////////////////////////////////////////////////////////////////////////////
@@ -769,10 +770,14 @@ namespace MetricsDiscoveryInternal
         TCompletionCode SetSnapshotReportDeltaFunction( const char* equationSting );
         TCompletionCode SetAvailabilityEquation( const char* equationSting );
         TCompletionCode SetMaxValueEquation( const char* equationSting );
+        void            SetIdInSetParam( uint32_t id );
 
         TCompletionCode WriteCMetricToFile( FILE* metricFile );
         TCompletionCode SetSnapshotReportDeltaFunction( TDeltaFunction_1_0 deltaFunction );
         const char*     GetSignalName();
+
+        // Variables:
+        uint32_t m_id; // Position in set before any filterings (SetApiFiltering, AvailableEquation check)
 
     private:
         uint64_t GetMetricValue( const char* valueString );
@@ -820,6 +825,10 @@ namespace MetricsDiscoveryInternal
 
         TCompletionCode WriteCInformationToFile( FILE* metricFile );
         TCompletionCode SetInformationValue( uint32_t value, TEquationType equationType );
+        void            SetIdInSetParam( uint32_t id );
+
+        // Variables:
+        uint32_t m_id; // Position in set before any filterings (SetApiFiltering, AvailableEquation check)
 
     private:
         // Variables:

@@ -307,7 +307,7 @@ TCompletionCode CreateMetricTree( CMetricsDevice* metricsDevice )
         metric = metricSet->AddMetric( "PixelsRendered", "Depth passed pixels",
             "The total number of pixels that passed depth test. Note: not all rendered pixels are necessarily written to render targets.",
             "3D Pipe/Output Merger", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_OM * 0x10000), USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X,
-            METRIC_TYPE_EVENT, RESULT_UINT64, "pixels", 0, 0, HW_UNIT_GPU, availabilityEquation, "Pixel|Fragment,PS|FS,pixel|fragment", NULL );
+            METRIC_TYPE_EVENT, RESULT_UINT64, "pixels", 0, 0, HW_UNIT_GPU, availabilityEquation, "Pixel|Fragment,PS|FS,pixel|fragment", NULL, 0 );
         if( metric )
         {
             
@@ -331,7 +331,7 @@ TCompletionCode CreateMetricTree( CMetricsDevice* metricsDevice )
         metric = metricSet->AddMetric( "PixelsRendered", "Depth passed fragments",
             "The total number of fragments that passed depth test. Note: not all rendered fragments are necessarily written to render targets.",
             "3D Pipe/Output Merger", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_OM * 0x10000), USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X,
-            METRIC_TYPE_EVENT, RESULT_UINT64, "fragments", 0, 0, HW_UNIT_GPU, availabilityEquation, "Pixel|Fragment,PS|FS,pixel|fragment", NULL );
+            METRIC_TYPE_EVENT, RESULT_UINT64, "fragments", 0, 0, HW_UNIT_GPU, availabilityEquation, "Pixel|Fragment,PS|FS,pixel|fragment", NULL, 0 );
         if( metric )
         {
             
@@ -358,7 +358,7 @@ TCompletionCode CreateMetricTree( CMetricsDevice* metricsDevice )
         metric = metricSet->AddMetric( "GpuDuration", "GPU Duration",
             "Total GPU duration for selected work items.",
             "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_TIER_1|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X,
-            METRIC_TYPE_DURATION, RESULT_UINT64, "ns", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL );
+            METRIC_TYPE_DURATION, RESULT_UINT64, "ns", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL, 0 );
         if( metric )
         {
             MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "qw@0x00" ));
