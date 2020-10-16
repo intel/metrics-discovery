@@ -777,10 +777,19 @@ TCompletionCode CreateMetricTreeTGL_GT2_OA( CMetricsDevice* metricsDevice, CConc
             MD_CHECK_CC( information->SetDeltaReportReadEquation( "dw@0x1cc" ));
         }
 
+        information = metricSet->AddInformation( "StreamMarker", "Stream marker",
+            "Stream marker value.",
+            "Report Meta Data", API_TYPE_IOSTREAM,
+            INFORMATION_TYPE_VALUE, NULL, NULL, 29 );
+        if( information )
+        {
+            MD_CHECK_CC( information->SetSnapshotReportReadEquation( "dw@0x5c" ));
+        }
+
         information = metricSet->AddInformation( "ReportError", "Query report error",
             "An error in the query execution, the received report should be ignored.",
             "Report Meta Data", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
-            INFORMATION_TYPE_FLAG, NULL, NULL, 31 );
+            INFORMATION_TYPE_FLAG, NULL, NULL, 30 );
         if( information )
         {
             
@@ -790,7 +799,7 @@ TCompletionCode CreateMetricTreeTGL_GT2_OA( CMetricsDevice* metricsDevice, CConc
         information = metricSet->AddInformation( "ReportLost", "Query report lost",
             "Begin or end query report has not been triggered due to hw limitations.",
             "Report Meta Data", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
-            INFORMATION_TYPE_FLAG, NULL, NULL, 32 );
+            INFORMATION_TYPE_FLAG, NULL, NULL, 31 );
         if( information )
         {
             
@@ -800,7 +809,7 @@ TCompletionCode CreateMetricTreeTGL_GT2_OA( CMetricsDevice* metricsDevice, CConc
         information = metricSet->AddInformation( "ReportInconsistent", "Query report inconsistent",
             "The contextId inconsistency in the Oa buffer within the query window.",
             "Report Meta Data", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
-            INFORMATION_TYPE_FLAG, NULL, NULL, 33 );
+            INFORMATION_TYPE_FLAG, NULL, NULL, 32 );
         if( information )
         {
             
@@ -1398,10 +1407,19 @@ TCompletionCode CreateMetricTreeTGL_GT2_OA( CMetricsDevice* metricsDevice, CConc
             MD_CHECK_CC( information->SetDeltaReportReadEquation( "dw@0x1cc" ));
         }
 
+        information = metricSet->AddInformation( "StreamMarker", "Stream marker",
+            "Stream marker value.",
+            "Report Meta Data", API_TYPE_IOSTREAM,
+            INFORMATION_TYPE_VALUE, NULL, NULL, 29 );
+        if( information )
+        {
+            MD_CHECK_CC( information->SetSnapshotReportReadEquation( "dw@0x5c" ));
+        }
+
         information = metricSet->AddInformation( "ReportError", "Query report error",
             "An error in the query execution, the received report should be ignored.",
             "Report Meta Data", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
-            INFORMATION_TYPE_FLAG, NULL, NULL, 31 );
+            INFORMATION_TYPE_FLAG, NULL, NULL, 30 );
         if( information )
         {
             
@@ -1411,7 +1429,7 @@ TCompletionCode CreateMetricTreeTGL_GT2_OA( CMetricsDevice* metricsDevice, CConc
         information = metricSet->AddInformation( "ReportLost", "Query report lost",
             "Begin or end query report has not been triggered due to hw limitations.",
             "Report Meta Data", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
-            INFORMATION_TYPE_FLAG, NULL, NULL, 32 );
+            INFORMATION_TYPE_FLAG, NULL, NULL, 31 );
         if( information )
         {
             
@@ -1421,7 +1439,7 @@ TCompletionCode CreateMetricTreeTGL_GT2_OA( CMetricsDevice* metricsDevice, CConc
         information = metricSet->AddInformation( "ReportInconsistent", "Query report inconsistent",
             "The contextId inconsistency in the Oa buffer within the query window.",
             "Report Meta Data", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
-            INFORMATION_TYPE_FLAG, NULL, NULL, 33 );
+            INFORMATION_TYPE_FLAG, NULL, NULL, 32 );
         if( information )
         {
             
@@ -14170,10 +14188,19 @@ TCompletionCode CreateMetricTreeTGL_GT2_OA( CMetricsDevice* metricsDevice, CConc
             MD_CHECK_CC( information->SetDeltaReportReadEquation( "dw@0x1cc" ));
         }
 
+        information = metricSet->AddInformation( "StreamMarker", "Stream marker",
+            "Stream marker value.",
+            "Report Meta Data", API_TYPE_IOSTREAM,
+            INFORMATION_TYPE_VALUE, NULL, NULL, 29 );
+        if( information )
+        {
+            MD_CHECK_CC( information->SetSnapshotReportReadEquation( "dw@0x5c" ));
+        }
+
         information = metricSet->AddInformation( "ReportError", "Query report error",
             "An error in the query execution, the received report should be ignored.",
             "Report Meta Data", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
-            INFORMATION_TYPE_FLAG, NULL, NULL, 31 );
+            INFORMATION_TYPE_FLAG, NULL, NULL, 30 );
         if( information )
         {
             
@@ -14183,7 +14210,7 @@ TCompletionCode CreateMetricTreeTGL_GT2_OA( CMetricsDevice* metricsDevice, CConc
         information = metricSet->AddInformation( "ReportLost", "Query report lost",
             "Begin or end query report has not been triggered due to hw limitations.",
             "Report Meta Data", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
-            INFORMATION_TYPE_FLAG, NULL, NULL, 32 );
+            INFORMATION_TYPE_FLAG, NULL, NULL, 31 );
         if( information )
         {
             
@@ -14193,7 +14220,7 @@ TCompletionCode CreateMetricTreeTGL_GT2_OA( CMetricsDevice* metricsDevice, CConc
         information = metricSet->AddInformation( "ReportInconsistent", "Query report inconsistent",
             "The contextId inconsistency in the Oa buffer within the query window.",
             "Report Meta Data", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
-            INFORMATION_TYPE_FLAG, NULL, NULL, 33 );
+            INFORMATION_TYPE_FLAG, NULL, NULL, 32 );
         if( information )
         {
             

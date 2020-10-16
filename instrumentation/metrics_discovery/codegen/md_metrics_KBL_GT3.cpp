@@ -1000,6 +1000,15 @@ TCompletionCode CreateMetricTreeKBL_GT3_OA( CMetricsDevice* metricsDevice, CConc
             MD_CHECK_CC( information->SetDeltaReportReadEquation( "dw@0x1cc" ));
         }
 
+        information = metricSet->AddInformation( "StreamMarker", "Stream marker",
+            "Stream marker value.",
+            "Report Meta Data", API_TYPE_IOSTREAM,
+            INFORMATION_TYPE_VALUE, NULL, NULL, 20 );
+        if( information )
+        {
+            MD_CHECK_CC( information->SetSnapshotReportReadEquation( "dw@0x5c" ));
+        }
+
         MD_CHECK_CC( metricSet->AddStartRegisterSet( 0, 0 ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xE458, 0x00005004, REGISTER_TYPE_FLEX ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xE558, 0x00010003, REGISTER_TYPE_FLEX ));
@@ -1714,6 +1723,15 @@ TCompletionCode CreateMetricTreeKBL_GT3_OA( CMetricsDevice* metricsDevice, CConc
         {
             
             MD_CHECK_CC( information->SetDeltaReportReadEquation( "dw@0x1cc" ));
+        }
+
+        information = metricSet->AddInformation( "StreamMarker", "Stream marker",
+            "Stream marker value.",
+            "Report Meta Data", API_TYPE_IOSTREAM,
+            INFORMATION_TYPE_VALUE, NULL, NULL, 20 );
+        if( information )
+        {
+            MD_CHECK_CC( information->SetSnapshotReportReadEquation( "dw@0x5c" ));
         }
 
         MD_CHECK_CC( metricSet->AddStartRegisterSet( 0, 0 ));
@@ -12610,6 +12628,15 @@ TCompletionCode CreateMetricTreeKBL_GT3_OA( CMetricsDevice* metricsDevice, CConc
             MD_CHECK_CC( information->SetDeltaReportReadEquation( "dw@0x1cc" ));
         }
 
+        information = metricSet->AddInformation( "StreamMarker", "Stream marker",
+            "Stream marker value.",
+            "Report Meta Data", API_TYPE_IOSTREAM,
+            INFORMATION_TYPE_VALUE, NULL, NULL, 20 );
+        if( information )
+        {
+            MD_CHECK_CC( information->SetSnapshotReportReadEquation( "dw@0x5c" ));
+        }
+
         MD_CHECK_CC( metricSet->AddStartRegisterSet( 0, 0 ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x2740, 0x00000000, REGISTER_TYPE_OA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x2744, 0x00800000, REGISTER_TYPE_OA ));
@@ -12646,6 +12673,7 @@ TCompletionCode CreateMetricTreeKBL_GT3_OA( CMetricsDevice* metricsDevice, CConc
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x00009888, 0x53900000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x00009888, 0x45900000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x00009888, 0x33900000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xe65c, 0x00222222, REGISTER_TYPE_FLEX ));
   
         MD_CHECK_CC( metricSet->RefreshConfigRegisters() );
     }
@@ -13231,6 +13259,15 @@ TCompletionCode CreateMetricTreeKBL_GT3_OA( CMetricsDevice* metricsDevice, CConc
             MD_CHECK_CC( information->SetDeltaReportReadEquation( "dw@0x1cc" ));
         }
 
+        information = metricSet->AddInformation( "StreamMarker", "Stream marker",
+            "Stream marker value.",
+            "Report Meta Data", API_TYPE_IOSTREAM,
+            INFORMATION_TYPE_VALUE, NULL, NULL, 20 );
+        if( information )
+        {
+            MD_CHECK_CC( information->SetSnapshotReportReadEquation( "dw@0x5c" ));
+        }
+
         MD_CHECK_CC( metricSet->AddStartRegisterSet( 0, 0 ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x2740, 0x00000000, REGISTER_TYPE_OA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x2710, 0x00000000, REGISTER_TYPE_OA ));
@@ -13243,6 +13280,7 @@ TCompletionCode CreateMetricTreeKBL_GT3_OA( CMetricsDevice* metricsDevice, CConc
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xe758, 0x00011010, REGISTER_TYPE_FLEX ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xe45c, 0x00061060, REGISTER_TYPE_FLEX ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xe55c, 0x00000008, REGISTER_TYPE_FLEX ));
+        MD_CHECK_CC( metricSet->AddStartConfigRegister( 0xe65c, 0x00222222, REGISTER_TYPE_FLEX ));
   
         MD_CHECK_CC( metricSet->RefreshConfigRegisters() );
     }
