@@ -2012,8 +2012,7 @@ namespace MetricsDiscoveryInternal
         };
 
         // Check capabilities. Update when OA interrupt will be mergerd.
-        m_PerfCapabilities.IsOaInterruptSupported     = false; //requirePerfRevision( 2 );
-        m_PerfCapabilities.IsFlushPerfStreamSupported = false; //requirePerfRevision( 2 );
+        m_PerfCapabilities.IsOaInterruptSupported = false; //requirePerfRevision( 2 );
 
         PrintPerfCapabilities();
     }
@@ -2053,7 +2052,6 @@ namespace MetricsDiscoveryInternal
                                                                           : "not supported"; };
 
         MD_LOG( LOG_INFO, "Oa interrupt: %s", getSupportedString( m_PerfCapabilities.IsOaInterruptSupported ) );
-        MD_LOG( LOG_INFO, "Flush pref stream: %s", getSupportedString( m_PerfCapabilities.IsFlushPerfStreamSupported ) );
     }
 
     //////////////////////////////////////////////////////////////////////////////
@@ -2081,7 +2079,7 @@ namespace MetricsDiscoveryInternal
     TCompletionCode CDriverInterfaceLinuxPerf::OpenPerfStream( uint32_t perfMetricSetId, uint32_t perfReportType, uint32_t timerPeriodExponent )
     {
         int32_t                         perfEventFd  = -1;
-        uint64_t                        properties[] = { DRM_I915_PERF_PROP_SAMPLE_OA, true, DRM_I915_PERF_PROP_OA_METRICS_SET, perfMetricSetId, DRM_I915_PERF_PROP_OA_FORMAT, perfReportType, DRM_I915_PERF_PROP_OA_EXPONENT, timerPeriodExponent, DRM_I915_PERF_PROP_OA_ENABLE_INTERRUPT, true, DRM_I915_PERF_PROP_POLL_OA_DELAY, 0 }; // 0 - disable OA polling by kernel
+        uint64_t                        properties[] = { DRM_I915_PERF_PROP_SAMPLE_OA, true, DRM_I915_PERF_PROP_OA_METRICS_SET, perfMetricSetId, DRM_I915_PERF_PROP_OA_FORMAT, perfReportType, DRM_I915_PERF_PROP_OA_EXPONENT, timerPeriodExponent };
         struct drm_i915_perf_open_param param        = {
             0,
         };
@@ -2092,13 +2090,6 @@ namespace MetricsDiscoveryInternal
 
         param.properties_ptr = (uint64_t) properties;
         param.num_properties = sizeof( properties ) / 16;
-
-        if( !m_PerfCapabilities.IsOaInterruptSupported )
-        {
-            // Kernel doesn't support OA interrupt feature.
-            // Don't send OA_ENABLE_INTERRUPT and POLL_OA_DELAY parameters to avoid errors.
-            param.num_properties -= 2;
-        }
 
         MD_LOG( LOG_DEBUG, "Opening i915 perf stream with params: perfMetricSetId: %u, perfReportType: %u, timerPeriodExponent: %u", perfMetricSetId, perfReportType, timerPeriodExponent );
 
@@ -2152,9 +2143,6 @@ namespace MetricsDiscoveryInternal
         const size_t perfReportSize  = perfHeaderSize + oaReportSize;                   // Perf report size is bigger (additional header)
         const size_t perfBytesToRead = reportsToRead * perfReportSize + perfHeaderSize; // Adding header for flag only reports, e.g. for situations where user
                                                                                         // requests 1 report, but first report from Perf is REPORT_LOST flag.
-
-        // Force kernel to read OA tail / head - needed when using OA interrupt and disabled OA poll delay
-        FlushPerfStream();
 
         // Resize Perf report buffer if needed
         m_PerfStreamReportData.resize( perfBytesToRead );
@@ -2254,46 +2242,6 @@ namespace MetricsDiscoveryInternal
             m_PerfStreamFd = -1;
         }
         return CC_OK;
-    }
-
-    //////////////////////////////////////////////////////////////////////////////
-    //
-    // Class:
-    //     CDriverInterfaceLinuxPerf
-    //
-    // Method:
-    //     FlushPerfStream
-    //
-    // Description:
-    //     Flushes previously opened Perf stream - forces kernel to read OA tail / head
-    //     pointers.
-    //     It's needed when using OA interrupt with disabled OA poll delay (without kernel
-    //     periodically checking OA tail / head). Without flushing, 'read' is able to return
-    //     any data only after interrupt occurred (half OA buffer is full).
-    //
-    // Output:
-    //     TCompletionCode - *CC_OK* means success
-    //
-    //////////////////////////////////////////////////////////////////////////////
-    TCompletionCode CDriverInterfaceLinuxPerf::FlushPerfStream()
-    {
-        TCompletionCode ret = CC_ERROR_NOT_SUPPORTED;
-
-        if( m_PerfCapabilities.IsFlushPerfStreamSupported )
-        {
-            int32_t ioctlResult = SendIoctl( m_PerfStreamFd, I915_PERF_IOCTL_FLUSH_DATA, 0 );
-            if( ioctlResult < 0 )
-            {
-                MD_LOG( LOG_ERROR, "ERROR: Flushing i915 perf stream data failed, errno: %d (%s)", errno, strerror( errno ) );
-                ret = CC_ERROR_GENERAL;
-            }
-            else
-            {
-                MD_LOG( LOG_DEBUG, "i915 perf stream data flushed" );
-                ret = CC_OK;
-            }
-        }
-        return ret;
     }
 
     //////////////////////////////////////////////////////////////////////////////

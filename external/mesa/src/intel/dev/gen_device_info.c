@@ -33,6 +33,7 @@
 #include "util/bitscan.h"
 #include "util/macros.h"
 
+#define __user
 #include "i915_drm.h"
 
 static const struct {

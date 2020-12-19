@@ -83,8 +83,7 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     typedef struct SPerfCapabilities
     {
-        bool IsOaInterruptSupported;     // Available since i915 Perf revision '2'
-        bool IsFlushPerfStreamSupported; // Available since i915 Perf revision '2'
+        bool IsOaInterruptSupported; // Available since i915 Perf revision '2'
     } TPerfCapabilities;
 
     //////////////////////////////////////////////////////////////////////////////
@@ -205,7 +204,6 @@ namespace MetricsDiscoveryInternal
         TCompletionCode OpenPerfStream( uint32_t perfMetricSetId, uint32_t perfReportType, uint32_t timerPeriodExponent );
         TCompletionCode ReadPerfStream( uint32_t oaReportSize, uint32_t reportsToRead, char* reportData, uint32_t* readBytes, bool* reportLostOccured );
         TCompletionCode ClosePerfStream();
-        TCompletionCode FlushPerfStream();
         TCompletionCode WaitForPerfStreamReports( uint32_t timeoutMs );
         TCompletionCode AddPerfConfig( TRegister** regVector, uint32_t regCount, const char* requestedGuid, int32_t* addedConfigId );
         TCompletionCode RemovePerfConfig( int32_t perfConfigId );
@@ -257,7 +255,7 @@ namespace MetricsDiscoveryInternal
         CAdapterHandleLinux& m_DrmDeviceHandle; // Adapter handle with which this driver interface communicates.
                                                 // Important: handle owned by CAdapter object.
         int32_t           m_DrmCardNumber;      // Used for SysFs reads / writes
-        TPerfCapabilities m_PerfCapabilities;   // Information about i915 Perf features supported in current kernel
+        TPerfCapabilities m_PerfCapabilities;   // Object is reserved for future implementation of i915 Perf capabilites in current kernel
 
         // Stream
         int32_t                    m_PerfStreamFd;         // Opened Perf stream file descriptor
