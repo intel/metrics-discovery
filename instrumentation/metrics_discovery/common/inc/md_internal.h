@@ -32,6 +32,9 @@
 #include "md_driver_ifc.h"
 #include "md_utils.h"
 #include "md_calculation.h"
+#include "md_sub_devices_linux.h"
+#include <vector>
+
 
 #define MD_BYTE            8
 #define MD_MBYTE           1048576
@@ -168,12 +171,12 @@ namespace MetricsDiscoveryInternal
     //     One instance for the whole library.
     //
     //////////////////////////////////////////////////////////////////////////////
-    class CAdapterGroup : public IAdapterGroup_1_8
+    class CAdapterGroup : public IAdapterGroup_1_9
     {
     public:
-        // API 1.8:
+        // API 1.9:
         virtual const TAdapterGroupParams_1_6* GetParams() const;
-        virtual IAdapter_1_8*                  GetAdapter( uint32_t index );
+        virtual IAdapter_1_9*                  GetAdapter( uint32_t index );
         virtual TCompletionCode                Close();
 
     public:
@@ -181,7 +184,7 @@ namespace MetricsDiscoveryInternal
         CAdapter* GetDefaultAdapter();
 
         // Non-API static:
-        static TCompletionCode Open( IAdapterGroup_1_8** adapterGroup );
+        static TCompletionCode Open( IAdapterGroup_1_9** adapterGroup );
         static bool            IsOpened();
         static CAdapterGroup*  Get();
 
@@ -202,7 +205,7 @@ namespace MetricsDiscoveryInternal
         // Static:
         static TCompletionCode GetOpenCloseSemaphore();
         static TCompletionCode ReleaseOpenCloseSemaphore();
-        static TCompletionCode CreateAdapterGroup( IAdapterGroup_1_8** adapterGroup );
+        static TCompletionCode CreateAdapterGroup( IAdapterGroup_1_9** adapterGroup );
 
     private:
         // Variables:
@@ -228,20 +231,30 @@ namespace MetricsDiscoveryInternal
     //     Represents a single GPU adapter.
     //
     //////////////////////////////////////////////////////////////////////////////
-    class CAdapter : public IAdapter_1_8
+    class CAdapter : public IAdapter_1_9
     {
     public:
+        // API 1.9:
+        virtual const TSubDeviceParams_1_9* GetSubDeviceParams( const uint32_t subDeviceIndex );
+        virtual const TEngineParams_1_9*    GetEngineParams( const uint32_t subDeviceIndex, const uint32_t engineIndex );
+        virtual TCompletionCode             OpenMetricsSubDevice( const uint32_t subDeviceIndex, IMetricsDevice_1_5** metricsDevice );
+        virtual TCompletionCode             OpenMetricsSubDeviceFromFile( const uint32_t subDeviceIndex, const char* fileName, void* openParams, IMetricsDevice_1_5** metricsDevice );
+
         // API 1.8:
-        virtual const TAdapterParams_1_8* GetParams() const;
+        virtual const TAdapterParams_1_9* GetParams() const;
         virtual TCompletionCode           Reset();
         virtual TCompletionCode           OpenMetricsDevice( IMetricsDevice_1_5** metricsDevice );
         virtual TCompletionCode           OpenMetricsDeviceFromFile( const char* fileName, void* openParams, IMetricsDevice_1_5** metricsDevice );
         virtual TCompletionCode           CloseMetricsDevice( IMetricsDevice_1_5* metricsDevice );
         virtual TCompletionCode           SaveMetricsDeviceToFile( const char* fileName, void* saveParams, IMetricsDevice_1_5* metricsDevice );
 
+        // Non API:
+        CDriverInterface*        GetDriverInterface();
+        const TEngineParams_1_9* GetTbsEngineParams( const uint32_t subDeviceIndex );
+
     public:
         // Constructor & Destructor:
-        CAdapter( CAdapterGroup& adapterGroup, const TAdapterParams_1_8& params, CAdapterHandle& adapterHandle );
+        CAdapter( CAdapterGroup& adapterGroup, const TAdapterParams_1_9& params, CAdapterHandle& adapterHandle );
         virtual ~CAdapter();
 
         CAdapter( const CAdapter& ) = delete;            // Delete copy-constructor
@@ -263,13 +276,17 @@ namespace MetricsDiscoveryInternal
 
     private:
         // Variables:
-        TAdapterParams_1_8 m_params;        // Adapter information
+        TAdapterParams_1_9 m_params;        // Adapter information
         CAdapterHandle*    m_adapterHandle; // OS adapter handle which the given CAdapter object represents
 
         CDriverInterface* m_driverInterface;    // Driver interface for this adapter
         CMetricsDevice*   m_metricsDevice;      // Metrics device opened on this adapter
-        uint32_t          m_mdRefCounter;       // Metrics device reference counter
         void*             m_openCloseSemaphore; // Semaphore used during metrics device operations
+
+        // Sub devices.
+        CSubDevices          m_subDevices;
+        TSubDeviceParams_1_9 m_subDeviceParams;
+        TEngineParams_1_9    m_engineParams;
 
         CAdapterGroup& m_adapterGroup; // Parent adapter group
     };
@@ -364,6 +381,20 @@ namespace MetricsDiscoveryInternal
         TPlatformType     GetPlatformType();
         bool              IsOpenedFromFile();
 
+        // Reference counter.
+        uint32_t& GetReferenceCounter();
+
+        // Sub devices.
+        uint32_t GetSubDeviceIndex();
+        void     SetSubDeviceIndex( const uint32_t index );
+
+        // Performance stream.
+        int32_t               GetStreamId();
+        int32_t               GetStreamConfigId();
+        void                  SetStreamId( const int32_t id );
+        void                  SetStreamConfigId( const int32_t id );
+        std::vector<uint8_t>& GetStreamBuffer();
+
     private:
         // Methods to read from file must be used in correct order
         TCompletionCode ReadGlobalSymbolsFromFileBuffer( uint8_t** bufferPtr );
@@ -384,9 +415,18 @@ namespace MetricsDiscoveryInternal
         Vector<IOverride_1_2*>*    m_overridesVector;
         CSymbolSet                 m_symbolSet;
 
+        // Stream:
+        int32_t              m_streamId;
+        int32_t              m_streamConfigId;
+        std::vector<uint8_t> m_streamBuffer;
+
+        // Sub device:
+        uint32_t m_subDeviceIndex;
+
         TPlatformType m_platform;
         TGTType       m_gtType;
         bool          m_isOpenedFromFile;
+        uint32_t      m_referenceCounter;
 
         CAdapter&         m_adapter;
         CDriverInterface& m_driverInterface;

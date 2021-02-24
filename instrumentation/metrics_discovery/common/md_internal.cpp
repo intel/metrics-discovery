@@ -34,6 +34,7 @@
 #include <string>
 #include <new>
 #include <unordered_map>
+#include <algorithm>
 
 using namespace MetricsDiscovery;
 
@@ -276,6 +277,10 @@ namespace MetricsDiscovery
     {
         return NULL;
     }
+    IAdapter_1_9* IAdapterGroup_1_9::GetAdapter( uint32_t index )
+    {
+        return NULL;
+    }
 
     IAdapter_1_6::~IAdapter_1_6()
     {
@@ -307,6 +312,26 @@ namespace MetricsDiscovery
     TCompletionCode IAdapter_1_6::SaveMetricsDeviceToFile( const char* fileName, void* saveParams, IMetricsDevice_1_5* metricsDevice )
     {
         return CC_ERROR_NOT_SUPPORTED;
+    }
+    TCompletionCode IAdapter_1_9::OpenMetricsSubDevice( const uint32_t subDeviceIndex, IMetricsDevice_1_5** metricsDevice )
+    {
+        return CC_ERROR_NOT_SUPPORTED;
+    }
+    TCompletionCode IAdapter_1_9::OpenMetricsSubDeviceFromFile( const uint32_t subDeviceIndex, const char* fileName, void* openParams, IMetricsDevice_1_5** metricsDevice )
+    {
+        return CC_ERROR_NOT_SUPPORTED;
+    }
+    const TAdapterParams_1_9* IAdapter_1_9::GetParams( void ) const
+    {
+        return NULL;
+    }
+    const TSubDeviceParams_1_9* IAdapter_1_9::GetSubDeviceParams( const uint32_t subDeviceIndex )
+    {
+        return NULL;
+    }
+    const TEngineParams_1_9* IAdapter_1_9::GetEngineParams( const uint32_t subDeviceIndex, const uint32_t engineIndex )
+    {
+        return NULL;
     }
 } // namespace MetricsDiscovery
 
@@ -645,10 +670,10 @@ namespace MetricsDiscoveryInternal
     //     uint32_t index - index of a chosen adapter
     //
     // Output:
-    //     IAdapter_1_8*  - chosen adapter or null
+    //     IAdapter_1_9*  - chosen adapter or null
     //
     //////////////////////////////////////////////////////////////////////////////
-    IAdapter_1_8* CAdapterGroup::GetAdapter( uint32_t index )
+    IAdapter_1_9* CAdapterGroup::GetAdapter( uint32_t index )
     {
         MD_CHECK_PTR_RET( m_adapterVector, NULL );
 
@@ -729,13 +754,13 @@ namespace MetricsDiscoveryInternal
     //     Open() calls are reference counted.
     //
     // Input:
-    //     IAdapterGroup_1_8** adapterGroup - [out] created / retrieved adapter group
+    //     IAdapterGroup_1_9** adapterGroup - [out] created / retrieved adapter group
     //
     // Output:
     //     TCompletionCode                  - CC_OK or CC_ALREADY_INITIALIZED means success
     //
     //////////////////////////////////////////////////////////////////////////////
-    TCompletionCode CAdapterGroup::Open( IAdapterGroup_1_8** adapterGroup )
+    TCompletionCode CAdapterGroup::Open( IAdapterGroup_1_9** adapterGroup )
     {
         MD_LOG_ENTER();
         MD_CHECK_PTR_RET( adapterGroup, CC_ERROR_INVALID_PARAMETER );
@@ -865,13 +890,13 @@ namespace MetricsDiscoveryInternal
     //     adapter enumeration.
     //
     // Input:
-    //     IAdapterGroup_1_8** adapterGroup - [optional] created adapter group
+    //     IAdapterGroup_1_9** adapterGroup - [optional] created adapter group
     //
     // Output:
     //     TCompletionCode                  - CC_OK if success
     //
     //////////////////////////////////////////////////////////////////////////////
-    TCompletionCode CAdapterGroup::CreateAdapterGroup( IAdapterGroup_1_8** adapterGroup )
+    TCompletionCode CAdapterGroup::CreateAdapterGroup( IAdapterGroup_1_9** adapterGroup )
     {
         MD_ASSERT( m_adapterGroup == NULL );
 
@@ -1079,19 +1104,24 @@ namespace MetricsDiscoveryInternal
     //
     // Input:
     //     CAdapterGroup&            adapterGroup  - parent adapter group object
-    //     const TAdapterParams_1_8& params        - filled adapter params
+    //     const TAdapterParams_1_9& params        - filled adapter params
     //     CAdapterHandle&           adapterHandle - adapter handle connected with this adapter
     //
     //////////////////////////////////////////////////////////////////////////////
-    CAdapter::CAdapter( CAdapterGroup& adapterGroup, const TAdapterParams_1_8& params, CAdapterHandle& adapterHandle )
+    CAdapter::CAdapter( CAdapterGroup& adapterGroup, const TAdapterParams_1_9& params, CAdapterHandle& adapterHandle )
         : m_params( params )
         , m_adapterHandle( &adapterHandle )
         , m_adapterGroup( adapterGroup )
-        , m_mdRefCounter( 0 )
         , m_openCloseSemaphore( NULL )
         , m_driverInterface( NULL )
         , m_metricsDevice( NULL )
+        , m_subDevices( *this )
+        , m_subDeviceParams{}
+        , m_engineParams{}
     {
+        // Initialize sub device information.
+        m_subDevices.Enumerate();
+        m_subDevices.GetAdapterParams( m_params );
     }
 
     //////////////////////////////////////////////////////////////////////////////
@@ -1132,12 +1162,88 @@ namespace MetricsDiscoveryInternal
     //     Returns adapter params.
     //
     // Output:
-    //     const TAdapterParams_1_8* - adapter params
+    //     const TAdapterParams_1_9* - adapter params
     //
     //////////////////////////////////////////////////////////////////////////////
-    const TAdapterParams_1_8* CAdapter::GetParams() const
+    const TAdapterParams_1_9* CAdapter::GetParams() const
     {
         return &m_params;
+    }
+
+    //////////////////////////////////////////////////////////////////////////////
+    //
+    // Class:
+    //     CAdapter
+    //
+    // Method:
+    //     GetSubDeviceParams
+    //
+    // Description:
+    //     Returns sub device params.
+    //
+    // Input:
+    //     const uint32_t subDeviceIndex - sub device index
+    //
+    // Output:
+    //     const TSubDeviceParams_1_9*   - sub device params
+    //
+    //////////////////////////////////////////////////////////////////////////////
+    const TSubDeviceParams_1_9* CAdapter::GetSubDeviceParams( const uint32_t subDeviceIndex )
+    {
+        return ( m_subDevices.GetSubDeviceParams( subDeviceIndex, m_subDeviceParams ) == CC_OK )
+            ? &m_subDeviceParams
+            : NULL;
+    }
+
+    //////////////////////////////////////////////////////////////////////////////
+    //
+    // Class:
+    //     CAdapter
+    //
+    // Method:
+    //     GetEngineParams
+    //
+    // Description:
+    //     Returns engine params.
+    //
+    // Input:
+    //     const uint32_t subDeviceIndex - sub device index
+    //     const uint32_t engineIndex    - engine index
+    //  
+    // Output:
+    //     const TEngineParams_1_9*      - adapter params
+    //
+    //////////////////////////////////////////////////////////////////////////////
+    const TEngineParams_1_9* CAdapter::GetEngineParams( const uint32_t subDeviceIndex, const uint32_t engineIndex )
+    {
+        return ( m_subDevices.GetEngineParams( subDeviceIndex, engineIndex, m_engineParams ) == CC_OK )
+            ? &m_engineParams
+            : NULL;
+    }
+
+    //////////////////////////////////////////////////////////////////////////////
+    //
+    // Class:
+    //     CAdapter
+    //
+    // Method:
+    //     GetTbsEngineParams
+    //
+    // Description:
+    //     Returns engine params that can be used for tbs.
+    //
+    // Input:
+    //     const uint32_t subDeviceIndex - sub device index
+    //
+    // Output:
+    //     const TEngineParams_1_9*      - adapter params compatible with tbs.
+    //
+    //////////////////////////////////////////////////////////////////////////////
+    const TEngineParams_1_9* CAdapter::GetTbsEngineParams( const uint32_t subDeviceIndex )
+    {
+        return ( m_subDevices.GetTbsEngineParams( subDeviceIndex, m_engineParams ) == CC_OK )
+            ? &m_engineParams
+            : NULL;
     }
 
     //////////////////////////////////////////////////////////////////////////////
@@ -1248,14 +1354,14 @@ namespace MetricsDiscoveryInternal
         {
             *metricsDevice = m_metricsDevice;
             retVal         = CC_ALREADY_INITIALIZED;
-            m_mdRefCounter++;
+            ++m_metricsDevice->GetReferenceCounter();
         }
         else
         {
             retVal = CreateMetricsDevice( metricsDevice );
             if( retVal == CC_OK )
             {
-                m_mdRefCounter++;
+                ++m_metricsDevice->GetReferenceCounter();
             }
         }
 
@@ -1317,7 +1423,7 @@ namespace MetricsDiscoveryInternal
             {
                 *metricsDevice = m_metricsDevice;
                 retVal         = CC_ALREADY_INITIALIZED;
-                m_mdRefCounter++;
+                ++m_metricsDevice->GetReferenceCounter();
             }
             else
             {
@@ -1325,9 +1431,9 @@ namespace MetricsDiscoveryInternal
                 if( retVal == CC_OK )
                 {
                     *metricsDevice = m_metricsDevice;
-                    m_mdRefCounter++;
+                    ++m_metricsDevice->GetReferenceCounter();
                 }
-                else if( !m_mdRefCounter )
+                else if( !m_metricsDevice->GetReferenceCounter() )
                 {
                     // If this was a first call to OpenMetricsDevice
                     DestroyMetricsDevice();
@@ -1340,6 +1446,141 @@ namespace MetricsDiscoveryInternal
 
         MD_LOG_EXIT();
         return retVal;
+    }
+
+    //////////////////////////////////////////////////////////////////////////////
+    //
+    // Class:
+    //     CAdapter
+    //
+    // Method:
+    //     OpenMetricsSubDevice
+    //
+    // Description:
+    //     Opens metrics sub device or retrieves an instance opened before.
+    //
+    // Input:
+    //     const uint32_t       subDeviceIndex - sub device index to create
+    //     IMetricsDevice_1_5** metricsDevice  - [out] created / retrieved metrics sub device
+    //
+    // Output:
+    //     TCompletionCode                    - CC_OK or CC_ALREADY_INITIALIZED means success
+    //
+    //////////////////////////////////////////////////////////////////////////////
+    TCompletionCode CAdapter::OpenMetricsSubDevice( const uint32_t subDeviceIndex, IMetricsDevice_1_5** metricsDevice )
+    {
+        MD_LOG_ENTER();
+        MD_CHECK_PTR_RET( metricsDevice, CC_ERROR_INVALID_PARAMETER );
+
+        const bool      isFirstDevice        = subDeviceIndex == 0;
+        const bool      isValidIndex         = isFirstDevice || ( subDeviceIndex < m_params.SubDevicesCount );
+        const bool      isSubDeviceSupported = m_subDevices.IsSupported();
+        TCompletionCode result               = CC_OK;
+
+        // Check sub device support (first device is always supported).
+        if( !isFirstDevice && !isSubDeviceSupported )
+        {
+            MD_LOG( LOG_ERROR, "Sub devices are not supported" );
+            MD_LOG_EXIT();
+            return TCompletionCode::CC_ERROR_NOT_SUPPORTED;
+        }
+
+        // Check sub device index.
+        if( !isValidIndex )
+        {
+            MD_LOG( LOG_ERROR, "Invalid sub device index" );
+            MD_LOG_EXIT();
+            return TCompletionCode::CC_ERROR_INVALID_PARAMETER;
+        }
+
+        // Check if device is already created.
+        m_metricsDevice = m_subDevices.GetDevice( subDeviceIndex );
+
+        // Create new one if needed or increment reference counter.
+        if( m_metricsDevice == nullptr )
+        {
+            m_metricsDevice = m_subDevices.OpenDevice( subDeviceIndex );
+            result          = m_metricsDevice ? CC_OK : CC_ERROR_GENERAL;
+        }
+        else
+        {
+            ++m_metricsDevice->GetReferenceCounter();
+            result = CC_ALREADY_INITIALIZED;
+        }
+
+        MD_LOG_EXIT()
+        *metricsDevice = m_metricsDevice;
+        return result;
+    }
+
+    //////////////////////////////////////////////////////////////////////////////
+    //
+    // Class:
+    //     CAdapter
+    //
+    // Method:
+    //     OpenMetricsSubDeviceFromFile
+    //
+    // Description:
+    //     Opens metrics device or uses an instance opened before (just like OpenMetricsDevice),
+    //     then loads custom metric sets / metrics from a file and merged them into the 'standard'
+    //     metrics device.
+    //
+    // Input:
+    //     const uint32_t       subDeviceIndex - sub device index to create
+    //     const char*          fileName       - custom metric file
+    //     void*                openParams     - open params
+    //     IMetricsDevice_1_5** metricsDevice  - [out] created / retrieved metrics device
+    //
+    // Output:
+    //     TCompletionCode                    - CC_OK or CC_ALREADY_INITIALIZED means success
+    //
+    //////////////////////////////////////////////////////////////////////////////
+    TCompletionCode CAdapter::OpenMetricsSubDeviceFromFile( const uint32_t subDeviceIndex, const char* fileName, void* openParams, IMetricsDevice_1_5** metricsDevice )
+    {
+        MD_LOG_ENTER();
+        MD_CHECK_PTR_RET( fileName, CC_ERROR_INVALID_PARAMETER );
+        MD_CHECK_PTR_RET( metricsDevice, CC_ERROR_INVALID_PARAMETER );
+
+        const bool      isFirstDevice        = subDeviceIndex == 0;
+        const bool      isValidIndex         = isFirstDevice || ( subDeviceIndex < m_params.SubDevicesCount );
+        const bool      isSubDeviceSupported = m_subDevices.IsSupported();
+        TCompletionCode result               = CC_OK;
+
+        // Check sub device support (first device is always supported).
+        if( !isFirstDevice && !isSubDeviceSupported )
+        {
+            MD_LOG( LOG_ERROR, "Sub devices are not supported" );
+            MD_LOG_EXIT();
+            return TCompletionCode::CC_ERROR_NOT_SUPPORTED;
+        }
+
+        // Check sub device index.
+        if( !isValidIndex )
+        {
+            MD_LOG( LOG_ERROR, "Invalid sub device index" );
+            MD_LOG_EXIT();
+            return TCompletionCode::CC_ERROR_INVALID_PARAMETER;
+        }
+
+        // Check if device is already created.
+        m_metricsDevice = m_subDevices.GetDevice( subDeviceIndex );
+
+        // Create new one if needed or increment reference counter.
+        if( m_metricsDevice == nullptr )
+        {
+            m_metricsDevice = m_subDevices.OpenDeviceFromFile( subDeviceIndex, fileName, openParams );
+            result          = m_metricsDevice ? CC_OK : CC_ERROR_GENERAL;
+        }
+        else
+        {
+            ++m_metricsDevice->GetReferenceCounter();
+            result = CC_ALREADY_INITIALIZED;
+        }
+
+        MD_LOG_EXIT()
+        *metricsDevice = m_metricsDevice;
+        return result;
     }
 
     //////////////////////////////////////////////////////////////////////////////
@@ -1383,25 +1624,31 @@ namespace MetricsDiscoveryInternal
         }
 
         // 3. Check whether correct metrics device was passed
-        if( retVal == CC_OK && static_cast<CMetricsDevice*>( metricsDevice ) != m_metricsDevice )
+        const bool validDevice    = metricsDevice == m_metricsDevice;
+        const bool validSubDevice = m_subDevices.FindDevice( metricsDevice );
+
+        if( !validDevice && !validSubDevice )
         {
             MD_LOG( LOG_ERROR, "Pointers mismatch" );
             retVal = CC_ERROR_GENERAL;
         }
 
+        // Set as default device to remove.
+        m_metricsDevice = static_cast<CMetricsDevice*>( metricsDevice );
+
         // 4. Destroy or decrease reference counter for existing metrics device object
         if( retVal == CC_OK )
         {
-            if( m_mdRefCounter > 1 )
+            if( m_metricsDevice->GetReferenceCounter() > 1 )
             {
-                m_mdRefCounter--;
+                --m_metricsDevice->GetReferenceCounter();
                 retVal = CC_STILL_INITIALIZED;
             }
-            else if( m_mdRefCounter == 1 )
+            else if( m_metricsDevice->GetReferenceCounter() == 1 )
             {
+                m_metricsDevice->GetReferenceCounter() = 0;
                 DestroyMetricsDevice();
-                m_mdRefCounter = 0;
-                retVal         = CC_OK;
+                retVal = CC_OK;
             }
             else
             {
@@ -1479,6 +1726,31 @@ namespace MetricsDiscoveryInternal
     //     CAdapter
     //
     // Method:
+    //     GetDriverInterface
+    //
+    // Description:
+    //     Returns driver interface.
+    //
+    // Output:
+    //     CDriverInterface - pointer to driver interface
+    //
+    //////////////////////////////////////////////////////////////////////////////
+    CDriverInterface* CAdapter::GetDriverInterface()
+    {
+        if( m_driverInterface == nullptr )
+        {
+            CreateDriverInterface();
+        }
+
+        return m_driverInterface;
+    }
+
+    //////////////////////////////////////////////////////////////////////////////
+    //
+    // Class:
+    //     CAdapter
+    //
+    // Method:
     //     CreateDriverInterface
     //
     // Description:
@@ -1516,7 +1788,10 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     void CAdapter::DestroyDriverInterface()
     {
-        MD_SAFE_DELETE( m_driverInterface );
+        if( m_subDevices.GetDeviceCount() == 0 )
+        {
+            MD_SAFE_DELETE( m_driverInterface );
+        }
     }
 
     //////////////////////////////////////////////////////////////////////////////
@@ -1649,13 +1924,16 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     void CAdapter::DestroyMetricsDevice()
     {
-        // 1. Delete metrics device object
+        // 1. Remove device from sub devices.
+        m_subDevices.RemoveDevice( m_metricsDevice );
+
+        // 2. Delete metrics device object
         MD_SAFE_DELETE( m_metricsDevice );
 
-        // 2. Enable instrumentation support if needed
+        // 3. Disable instrumentation support if needed
         EnableDriverSupport( false );
 
-        // 3. Destroy driver interface
+        // 4. Destroy driver interface
         DestroyDriverInterface();
     }
 
@@ -2166,6 +2444,7 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     CMetricsDevice::CMetricsDevice( CAdapter& adapter, CDriverInterface& driverInterface )
         : m_params{}
+        , m_referenceCounter( 0 )
         , m_groupsVector( NULL )
         , m_overridesVector( NULL )
         , m_symbolSet( driverInterface )
@@ -2174,6 +2453,9 @@ namespace MetricsDiscoveryInternal
         , m_isOpenedFromFile( false )
         , m_adapter( adapter )
         , m_driverInterface( driverInterface )
+        , m_streamId( -1 )
+        , m_streamConfigId( -1 )
+        , m_subDeviceIndex( 0 )
     {
         m_params.DeltaFunctionsCount       = DELTA_FUNCTION_LAST_1_0;
         m_params.EquationOperationsCount   = EQUATION_OPER_LAST_1_0;
@@ -3516,6 +3798,166 @@ namespace MetricsDiscoveryInternal
     //     CMetricsDevice
     //
     // Method:
+    //     GetReferenceCounter
+    //
+    // Description:
+    //     Returns metrics device reference counters.
+    //
+    // Output:
+    //     uint32_t - metrics device reference counter
+    //
+    //////////////////////////////////////////////////////////////////////////////
+    uint32_t& CMetricsDevice::GetReferenceCounter()
+    {
+        return m_referenceCounter;
+    }
+
+    //////////////////////////////////////////////////////////////////////////////
+    //
+    // Class:
+    //     CMetricsDevice
+    //
+    // Method:
+    //     GetSubDeviceIndex
+    //
+    // Description:
+    //     Returns sub device index.
+    //
+    // Output:
+    //     uint32_t - sub device index
+    //
+    //////////////////////////////////////////////////////////////////////////////
+    uint32_t CMetricsDevice::GetSubDeviceIndex()
+    {
+        return m_subDeviceIndex;
+    }
+
+    //////////////////////////////////////////////////////////////////////////////
+    //
+    // Class:
+    //     CMetricsDevice
+    //
+    // Method:
+    //     SetSubDeviceIndex
+    //
+    // Description:
+    //     Associates CMetricsDevice with sub device.
+    //
+    // Input:
+    //     const uint32_t index  - sub device index
+    //
+    //////////////////////////////////////////////////////////////////////////////
+    void CMetricsDevice::SetSubDeviceIndex( const uint32_t index )
+    {
+        m_subDeviceIndex = index;
+    }
+
+    //////////////////////////////////////////////////////////////////////////////
+    //
+    // Class:
+    //     CMetricsDevice
+    //
+    // Method:
+    //     GetStreamConfigId
+    //
+    // Description:
+    //     Returns stream configuration id.
+    //
+    // Output:
+    //     int32_t - configuration id.
+    //
+    //////////////////////////////////////////////////////////////////////////////
+    int32_t CMetricsDevice::GetStreamConfigId()
+    {
+        return m_streamConfigId;
+    }
+
+    //////////////////////////////////////////////////////////////////////////////
+    //
+    // Class:
+    //     CMetricsDevice
+    //
+    // Method:
+    //     GetStreamId
+    //
+    // Description:
+    //     Returns stream id.
+    //
+    // Output:
+    //     int32_t - stream id.
+    //
+    //////////////////////////////////////////////////////////////////////////////
+    int32_t CMetricsDevice::GetStreamId()
+    {
+        return m_streamId;
+    }
+
+    //////////////////////////////////////////////////////////////////////////////
+    //
+    // Class:
+    //     CMetricsDevice
+    //
+    // Method:
+    //     SetStreamId
+    //
+    // Description:
+    //     Sets stream id.
+    //
+    // Input:
+    //     const int32_t id - stream id.
+    //
+    //////////////////////////////////////////////////////////////////////////////
+    void CMetricsDevice::SetStreamId( const int32_t id )
+    {
+        m_streamId = id;
+    }
+
+    //////////////////////////////////////////////////////////////////////////////
+    //
+    // Class:
+    //     CMetricsDevice
+    //
+    // Method:
+    //     SetStreamConfigId
+    //
+    // Description:
+    //     Sets stream configuration id.
+    //
+    // Input:
+    //     const int32_t id - configuration id.
+    //
+    //////////////////////////////////////////////////////////////////////////////
+    void CMetricsDevice::SetStreamConfigId( const int32_t id )
+    {
+        m_streamConfigId = id;
+    }
+
+    //////////////////////////////////////////////////////////////////////////////
+    //
+    // Class:
+    //     CMetricsDevice
+    //
+    // Method:
+    //     GetStreamBuffer
+    //
+    // Description:
+    //     Returns preallocated buffer for reading data from tbs stream to avoid new allocations on every read.
+    //
+    // Output:
+    //     std::vector<uint8_t> - tbs stream buffer.
+    //
+    //////////////////////////////////////////////////////////////////////////////
+    std::vector<uint8_t>& CMetricsDevice::GetStreamBuffer()
+    {
+        return m_streamBuffer;
+    }
+
+    //////////////////////////////////////////////////////////////////////////////
+    //
+    // Class:
+    //     CMetricsDevice
+    //
+    // Method:
     //     GetConcurrentGroupByName
     //
     // Description:
@@ -4220,7 +4662,7 @@ namespace MetricsDiscoveryInternal
         MD_ASSERT( name != NULL );
 
         // Create a semaphore name: "<CcgSymbolName>_<BusNumber>_<DeviceNumber>_<FunctionNumber>"
-        const TAdapterParams_1_8* adapterParams = m_device->GetAdapter().GetParams();
+        const TAdapterParams_1_9* adapterParams = m_device->GetAdapter().GetParams();
         MD_CHECK_PTR_RET( adapterParams, CC_ERROR_GENERAL );
 
         int32_t neededSize = snprintf( name, size, "%s_%u_%u_%u", m_params_1_0.SymbolName, adapterParams->BusNumber, adapterParams->DeviceNumber, adapterParams->FunctionNumber );
@@ -4347,6 +4789,11 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     COAConcurrentGroup::~COAConcurrentGroup()
     {
+        if( m_ioMetricSet )
+        {
+            CloseIoStream();
+        }
+
         MD_SAFE_DELETE( m_ioMeasurementInfoVector );
         MD_SAFE_DELETE( m_ioGpuContextInfoVector );
     }
@@ -4488,7 +4935,7 @@ namespace MetricsDiscoveryInternal
         TCompletionCode   ret             = CC_OK;
         CDriverInterface& driverInterface = m_device->GetDriverInterface();
 
-        ret = driverInterface.OpenIoStream( m_streamType, (CMetricSet*) metricSet, m_params_1_0.SymbolName, processId, nsTimerPeriod, oaBufferSize, &m_streamEventHandle );
+        ret = driverInterface.OpenIoStream( m_streamType, *m_device, (CMetricSet*) metricSet, m_params_1_0.SymbolName, processId, nsTimerPeriod, oaBufferSize, &m_streamEventHandle );
         if( ret != CC_OK )
         {
             MD_LOG_EXIT();
@@ -4554,7 +5001,7 @@ namespace MetricsDiscoveryInternal
         uint32_t                        frequency       = 0;
         GTDIReadCounterStreamExceptions exceptions      = {};
 
-        ret = driverInterface.ReadIoStream( m_streamType, m_ioMetricSet, reportData, reportCount, readFlags, &frequency, &exceptions );
+        ret = driverInterface.ReadIoStream( m_streamType, *m_device, m_ioMetricSet, reportData, reportCount, readFlags, &frequency, &exceptions );
         if( ret == CC_OK || ret == CC_READ_PENDING )
         {
             driverInterface.HandleIoStreamExceptions( m_params_1_0.SymbolName, m_ioMetricSet, m_processId, reportCount, &exceptions );
@@ -4618,7 +5065,7 @@ namespace MetricsDiscoveryInternal
         TCompletionCode   ret             = CC_OK;
         CDriverInterface& driverInterface = m_device->GetDriverInterface();
 
-        ret = driverInterface.CloseIoStream( m_streamType, &m_streamEventHandle, m_params_1_0.SymbolName, m_ioMetricSet );
+        ret = driverInterface.CloseIoStream( m_streamType, *m_device, &m_streamEventHandle, m_params_1_0.SymbolName, m_ioMetricSet );
         if( ret != CC_OK )
         {
             MD_LOG_EXIT();
@@ -4656,7 +5103,7 @@ namespace MetricsDiscoveryInternal
         TCompletionCode   retVal          = CC_OK;
         CDriverInterface& driverInterface = m_device->GetDriverInterface();
 
-        retVal = driverInterface.WaitForIoStreamReports( m_streamType, milliseconds, m_streamEventHandle );
+        retVal = driverInterface.WaitForIoStreamReports( m_streamType, *m_device, milliseconds, m_streamEventHandle );
 
         return retVal;
     }
@@ -5106,7 +5553,7 @@ namespace MetricsDiscoveryInternal
         TCompletionCode   ret             = CC_OK;
         CDriverInterface& driverInterface = m_device->GetDriverInterface();
 
-        ret = driverInterface.OpenIoStream( STREAM_TYPE_SYS, (CMetricSet*) metricSet, m_params_1_0.SymbolName, processId, nsTimerPeriod, sysBufferSize, &m_streamEventHandle );
+        ret = driverInterface.OpenIoStream( STREAM_TYPE_SYS, *m_device, (CMetricSet*) metricSet, m_params_1_0.SymbolName, processId, nsTimerPeriod, sysBufferSize, &m_streamEventHandle );
         if( ret != CC_OK )
         {
             return ret;
@@ -5153,7 +5600,7 @@ namespace MetricsDiscoveryInternal
         GTDIReadCounterStreamExceptions exceptions      = {};
         CDriverInterface&               driverInterface = m_device->GetDriverInterface();
 
-        ret = driverInterface.ReadIoStream( STREAM_TYPE_SYS, m_ioMetricSet, reportData, reportCount, readFlags, &frequency, &exceptions );
+        ret = driverInterface.ReadIoStream( STREAM_TYPE_SYS, *m_device, m_ioMetricSet, reportData, reportCount, readFlags, &frequency, &exceptions );
         if( m_ioMeasurementInfoVector && ( ret == CC_OK || ret == CC_READ_PENDING ) )
         {
             // Order (indices) should be in sync with AddIoMeasurementInfoPredefined()
@@ -5205,7 +5652,7 @@ namespace MetricsDiscoveryInternal
         TCompletionCode   ret             = CC_OK;
         CDriverInterface& driverInterface = m_device->GetDriverInterface();
 
-        ret = driverInterface.CloseIoStream( STREAM_TYPE_SYS, &m_streamEventHandle, m_params_1_0.SymbolName, m_ioMetricSet );
+        ret = driverInterface.CloseIoStream( STREAM_TYPE_SYS, *m_device, &m_streamEventHandle, m_params_1_0.SymbolName, m_ioMetricSet );
         if( ret != CC_OK )
         {
             return ret;
@@ -5238,7 +5685,7 @@ namespace MetricsDiscoveryInternal
     {
         CDriverInterface& driverInterface = m_device->GetDriverInterface();
 
-        return driverInterface.WaitForIoStreamReports( STREAM_TYPE_SYS, milliseconds, m_streamEventHandle );
+        return driverInterface.WaitForIoStreamReports( STREAM_TYPE_SYS, *m_device, milliseconds, m_streamEventHandle );
     }
 
     //////////////////////////////////////////////////////////////////////////////

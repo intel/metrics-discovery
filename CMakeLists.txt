@@ -119,6 +119,7 @@ if ("${PLATFORM}" STREQUAL Windows) # windows
         ${BS_DIR_INSTRUMENTATION}/metrics_discovery/linux/md_driver_ifc_android.cpp
         ${BS_DIR_INSTRUMENTATION}/metrics_discovery/linux/md_driver_ifc_linux.cpp
         ${BS_DIR_INSTRUMENTATION}/metrics_discovery/linux/md_driver_ifc_linux_perf.cpp
+        ${BS_DIR_INSTRUMENTATION}/metrics_discovery/linux/md_sub_devices_linux.cpp
         # instr utils
         ${BS_DIR_INSTRUMENTATION}/utils/linux/iu_std.cpp
         ${BS_DIR_INSTRUMENTATION}/utils/linux/iu_os.cpp
@@ -133,6 +134,7 @@ if ("${PLATFORM}" STREQUAL Windows) # windows
 elseif ("${PLATFORM}" STREQUAL linux) # linux
     set (_SOURCES ${_SOURCES}
     ${BS_DIR_INSTRUMENTATION}/metrics_discovery/linux/md_driver_ifc_linux_perf.cpp
+    ${BS_DIR_INSTRUMENTATION}/metrics_discovery/linux/md_sub_devices_linux.cpp
     ${BS_DIR_INSTRUMENTATION}/utils/linux/iu_std.cpp
     ${BS_DIR_INSTRUMENTATION}/utils/linux/iu_os.cpp
     # external

@@ -42,6 +42,7 @@ namespace MetricsDiscoveryInternal
 {
     // Forward declarations //
     class CAdapterHandle;
+    class CMetricsDevice;
     class CMetricSet;
 
     ///////////////////////////////////////////////////////////////////////////////
@@ -71,7 +72,7 @@ namespace MetricsDiscoveryInternal
     typedef struct SAdapterData
     {
         CAdapterHandle*    Handle;
-        TAdapterParams_1_8 Params;
+        TAdapterParams_1_9 Params;
     } TAdapterData;
 
     //////////////////////////////////////////////////////////////////////////////
@@ -138,11 +139,11 @@ namespace MetricsDiscoveryInternal
         virtual TCompletionCode UnlockConcurrentGroup( const char* name, void** semaphore ) = 0;
 
         // Stream:
-        virtual TCompletionCode OpenIoStream( TStreamType streamType, CMetricSet* metricSet, const char* concurrentGroupName, uint32_t processId, uint32_t* nsTimerPeriod, uint32_t* bufferSize, void** streamEventHandle )       = 0;
-        virtual TCompletionCode ReadIoStream( TStreamType streamType, IMetricSet_1_0* metricSet, char* reportData, uint32_t* reportsCount, uint32_t readFlags, uint32_t* frequency, GTDIReadCounterStreamExceptions* exceptions ) = 0;
-        virtual TCompletionCode CloseIoStream( TStreamType streamType, void** streamEventHandle, const char* concurrentGroupName, CMetricSet* metricSet )                                                                         = 0;
+        virtual TCompletionCode OpenIoStream( TStreamType streamType, CMetricsDevice& metricDevice, CMetricSet* metricSet, const char* concurrentGroupName, uint32_t processId, uint32_t* nsTimerPeriod, uint32_t* bufferSize, void** streamEventHandle )       = 0;
+        virtual TCompletionCode ReadIoStream( TStreamType streamType, CMetricsDevice& metricDevice, IMetricSet_1_0* metricSet, char* reportData, uint32_t* reportsCount, uint32_t readFlags, uint32_t* frequency, GTDIReadCounterStreamExceptions* exceptions ) = 0;
+        virtual TCompletionCode CloseIoStream( TStreamType streamType, CMetricsDevice& metricDevice, void** streamEventHandle, const char* concurrentGroupName, CMetricSet* metricSet )                                                                         = 0;
         virtual TCompletionCode HandleIoStreamExceptions( const char* concurrentGroupName, CMetricSet* metricSet, uint32_t processId, uint32_t* reportCount, GTDIReadCounterStreamExceptions* exceptions )                        = 0;
-        virtual TCompletionCode WaitForIoStreamReports( TStreamType streamType, uint32_t milliseconds, void* streamEventHandle )                                                                                                  = 0;
+        virtual TCompletionCode WaitForIoStreamReports( TStreamType streamType, CMetricsDevice& metricDevice, uint32_t milliseconds, void* streamEventHandle )                                                                                                = 0;
         virtual bool            IsIoMeasurementInfoAvailable( TIoMeasurementInfoType ioMeasurementInfoType )                                                                                                                      = 0;
 
         // Overrides:
@@ -150,6 +151,7 @@ namespace MetricsDiscoveryInternal
         virtual TCompletionCode SetQueryOverride( TOverrideType overrideType, TPlatformType platform, uint32_t oaBufferSize, const TSetQueryOverrideParams_1_2* params ) = 0;
         virtual TCompletionCode SetFreqChangeReportsOverride( bool enable )                                                                                              = 0;
         virtual bool            IsOverrideAvailable( TOverrideType overrideType )                                                                                        = 0;
+        virtual bool            IsSubDeviceSupported()                                                                                                                   = 0;
 
     protected:
         virtual bool CreateContext() = 0;

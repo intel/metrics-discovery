@@ -84,6 +84,7 @@ namespace MetricsDiscoveryInternal
     typedef struct SPerfCapabilities
     {
         bool IsOaInterruptSupported; // Available since i915 Perf revision '2'
+        bool IsSubDeviceSupported;   // Available since i915 Perf revision '10'
     } TPerfCapabilities;
 
     //////////////////////////////////////////////////////////////////////////////
@@ -179,11 +180,11 @@ namespace MetricsDiscoveryInternal
         virtual TCompletionCode UnlockConcurrentGroup( const char* name, void** semaphore );
 
         // Stream
-        virtual TCompletionCode OpenIoStream( TStreamType streamType, CMetricSet* metricSet, const char* concurrentGroupName, uint32_t processId, uint32_t* nsTimerPeriod, uint32_t* bufferSize, void** streamEventHandle );
-        virtual TCompletionCode ReadIoStream( TStreamType streamType, IMetricSet_1_0* metricSet, char* reportData, uint32_t* reportsCount, uint32_t readFlags, uint32_t* frequency, GTDIReadCounterStreamExceptions* exceptions );
-        virtual TCompletionCode CloseIoStream( TStreamType streamType, void** openStreamEventHandle, const char* concurrentGroupName, CMetricSet* metricSet );
+        virtual TCompletionCode OpenIoStream( TStreamType streamType, CMetricsDevice& metricsDevice, CMetricSet* metricSet, const char* concurrentGroupName, uint32_t processId, uint32_t* nsTimerPeriod, uint32_t* bufferSize, void** streamEventHandle );
+        virtual TCompletionCode ReadIoStream( TStreamType streamType, CMetricsDevice& metricDevice, IMetricSet_1_0* metricSet, char* reportData, uint32_t* reportsCount, uint32_t readFlags, uint32_t* frequency, GTDIReadCounterStreamExceptions* exceptions );
+        virtual TCompletionCode CloseIoStream( TStreamType streamType, CMetricsDevice& metricDevice, void** openStreamEventHandle, const char* concurrentGroupName, CMetricSet* metricSet );
         virtual TCompletionCode HandleIoStreamExceptions( const char* concurrentGroupName, CMetricSet* metricSet, uint32_t processId, uint32_t* reportCount, GTDIReadCounterStreamExceptions* exceptions );
-        virtual TCompletionCode WaitForIoStreamReports( TStreamType streamType, uint32_t milliseconds, void* streamEventHandle );
+        virtual TCompletionCode WaitForIoStreamReports( TStreamType streamType, CMetricsDevice& metricDevice, uint32_t milliseconds, void* streamEventHandle );
         virtual bool            IsIoMeasurementInfoAvailable( TIoMeasurementInfoType ioMeasurementInfoType );
 
         // Overrides
@@ -191,6 +192,7 @@ namespace MetricsDiscoveryInternal
         virtual TCompletionCode SetQueryOverride( TOverrideType overrideType, TPlatformType platorm, uint32_t oaBufferSize, const TSetQueryOverrideParams_1_2* params );
         virtual TCompletionCode SetFreqChangeReportsOverride( bool enable );
         virtual bool            IsOverrideAvailable( TOverrideType overrideType );
+        virtual bool            IsSubDeviceSupported();
 
     protected:
         virtual bool CreateContext();
@@ -201,10 +203,11 @@ namespace MetricsDiscoveryInternal
         void            ReadPerfCapabilities();
         void            ResetPerfCapabilities();
         void            PrintPerfCapabilities();
-        TCompletionCode OpenPerfStream( uint32_t perfMetricSetId, uint32_t perfReportType, uint32_t timerPeriodExponent );
-        TCompletionCode ReadPerfStream( uint32_t oaReportSize, uint32_t reportsToRead, char* reportData, uint32_t* readBytes, bool* reportLostOccured );
-        TCompletionCode ClosePerfStream();
-        TCompletionCode WaitForPerfStreamReports( uint32_t timeoutMs );
+        TCompletionCode OpenPerfStream( CMetricsDevice& metricDevice,  uint32_t perfMetricSetId, uint32_t perfReportType, uint32_t timerPeriodExponent );
+        TCompletionCode ReadPerfStream( CMetricsDevice& metricDevice, uint32_t oaReportSize, uint32_t reportsToRead, char* reportData, uint32_t* readBytes, bool* reportLostOccured );
+        TCompletionCode ClosePerfStream( CMetricsDevice& metricDevice );
+        TCompletionCode FlushPerfStream( CMetricsDevice& metricDevice );
+        TCompletionCode WaitForPerfStreamReports( CMetricsDevice& metricsDevice, uint32_t timeoutMs );
         TCompletionCode AddPerfConfig( TRegister** regVector, uint32_t regCount, const char* requestedGuid, int32_t* addedConfigId );
         TCompletionCode RemovePerfConfig( int32_t perfConfigId );
         TCompletionCode RemovePerfConfigQuery();
@@ -255,12 +258,7 @@ namespace MetricsDiscoveryInternal
         CAdapterHandleLinux& m_DrmDeviceHandle; // Adapter handle with which this driver interface communicates.
                                                 // Important: handle owned by CAdapter object.
         int32_t           m_DrmCardNumber;      // Used for SysFs reads / writes
-        TPerfCapabilities m_PerfCapabilities;   // Object is reserved for future implementation of i915 Perf capabilites in current kernel
-
-        // Stream
-        int32_t                    m_PerfStreamFd;         // Opened Perf stream file descriptor
-        int32_t                    m_PerfStreamConfigId;   // Perf configuration ID used for opening Perf stream, needed for config removal
-        std::vector<unsigned char> m_PerfStreamReportData; // Preallocated buffer for reading data from Perf stream to avoid new allocations on every read
+        TPerfCapabilities m_PerfCapabilities;   // Information about i915 Perf features supported in current kernel
 
         // Query
         std::vector<int32_t> m_AddedPerfConfigs; // IDs of configurations added to Perf for the need of query, needed for later config removal

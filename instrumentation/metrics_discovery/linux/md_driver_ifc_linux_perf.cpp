@@ -547,8 +547,6 @@ namespace MetricsDiscoveryInternal
         : m_DrmDeviceHandle( static_cast<CAdapterHandleLinux&>( adapterHandle ) )
         , m_DrmCardNumber( -1 )
         , m_PerfCapabilities{}
-        , m_PerfStreamFd( -1 )
-        , m_PerfStreamConfigId( -1 )
         , m_CachedBoostFrequency( 0 )
         , m_CachedMinFrequency( 0 )
         , m_CachedMaxFrequency( 0 )
@@ -627,14 +625,6 @@ namespace MetricsDiscoveryInternal
             RemovePerfConfig( perfConfigId );
         }
         m_AddedPerfConfigs.clear();
-
-        // Close Perf stream if opened
-        ClosePerfStream();
-
-        if( RemovePerfConfig( m_PerfStreamConfigId ) == CC_OK )
-        {
-            m_PerfStreamConfigId = -1;
-        }
 
         ResetPerfCapabilities();
         DeinitializeIntelDrm();
@@ -1548,6 +1538,7 @@ namespace MetricsDiscoveryInternal
     //
     // Input:
     //     TStreamType     streamType          - stream type
+    //     CMetricsDevice& metricDevice        - metrics device
     //     IMetricSet_1_0* metricSet           - metric set
     //     const char*     concurrentGroupName - concurrent group symbol name
     //     uint32_t        processId           - PID of the measured app (0 is global context)
@@ -1559,7 +1550,7 @@ namespace MetricsDiscoveryInternal
     //     TCompletionCode                     - *CC_OK* means succeess
     //
     //////////////////////////////////////////////////////////////////////////////
-    TCompletionCode CDriverInterfaceLinuxPerf::OpenIoStream( TStreamType streamType, CMetricSet* metricSet, const char* concurrentGroupName, uint32_t processId, uint32_t* nsTimerPeriod, uint32_t* bufferSize, void** streamEventHandle )
+    TCompletionCode CDriverInterfaceLinuxPerf::OpenIoStream( TStreamType streamType, CMetricsDevice& metricDevice, CMetricSet* metricSet, const char* concurrentGroupName, uint32_t processId, uint32_t* nsTimerPeriod, uint32_t* bufferSize, void** streamEventHandle )
     {
         if( streamType != STREAM_TYPE_OA )
         {
@@ -1575,7 +1566,7 @@ namespace MetricsDiscoveryInternal
         TCompletionCode ret = metricSet->ActivateInternal( false, false );
         MD_CHECK_CC_RET( ret );
 
-        MD_ASSERT( m_PerfStreamConfigId == -1 ); // Should be -1, which means stream is closed
+        MD_ASSERT( metricDevice.GetStreamConfigId() == -1 ); // Should be -1, which means stream is closed
 
         // 2. SET PARAMS
         uint32_t    timerPeriodExponent = GetTimerPeriodExponent( *nsTimerPeriod );
@@ -1584,7 +1575,7 @@ namespace MetricsDiscoveryInternal
         uint32_t    regCount            = 0;
         TRegister** regVector           = metricSet->GetStartConfiguration( &regCount );
 
-        if( perfReportType == I915_OA_FORMAT_MAX )
+        if( perfReportType == static_cast<uint32_t>( -1 ) )
         {
             ret = CC_ERROR_NOT_SUPPORTED;
             goto deactivate;
@@ -1599,7 +1590,7 @@ namespace MetricsDiscoveryInternal
         MD_ASSERT( perfMetricSetId != -1 );
 
         // 4. OPEN PERF STREAM
-        ret = OpenPerfStream( perfMetricSetId, perfReportType, timerPeriodExponent );
+        ret = OpenPerfStream( metricDevice, perfMetricSetId, perfReportType, timerPeriodExponent );
         if( ret != CC_OK )
         {
             goto remove_config;
@@ -1609,7 +1600,7 @@ namespace MetricsDiscoveryInternal
         *nsTimerPeriod = GetNsTimerPeriod( timerPeriodExponent );
         *bufferSize    = MD_PERF_OA_BUFFER_SIZE; // OaBuffer size in Perf is constant and not configurable
 
-        m_PerfStreamConfigId = perfMetricSetId; // Remember Perf config id so it could be removed from the kernel on CloseIoStream
+        metricDevice.SetStreamConfigId( perfMetricSetId ); // Remember Perf config id so it could be removed from the kernel on CloseIoStream
 
         MD_LOG( LOG_DEBUG, "Perf stream opened with metricSetId: %d, periodNs: %u, exponent: %u", perfMetricSetId, *nsTimerPeriod, timerPeriodExponent );
         return CC_OK;
@@ -1634,6 +1625,7 @@ namespace MetricsDiscoveryInternal
     //
     // Input:
     //     TStreamType     streamType                  - stream type
+    //     CMetricsDevice& metricDevice                - metrics device
     //     IMetricSet_1_0* metricSet                   - metricSet for which stream was opened
     //     char*           reportData                  - (OUT) pointer to the read data
     //     uint32_t*       reportsCount                - (IN/OUT) reports read/to read from the stream
@@ -1645,7 +1637,7 @@ namespace MetricsDiscoveryInternal
     //     TCompletionCode - result of operation
     //
     //////////////////////////////////////////////////////////////////////////////
-    TCompletionCode CDriverInterfaceLinuxPerf::ReadIoStream( TStreamType streamType, IMetricSet_1_0* metricSet, char* reportData, uint32_t* reportsCount, uint32_t readFlags, uint32_t* frequency, GTDIReadCounterStreamExceptions* exceptions )
+    TCompletionCode CDriverInterfaceLinuxPerf::ReadIoStream( TStreamType streamType, CMetricsDevice& metricDevice, IMetricSet_1_0* metricSet, char* reportData, uint32_t* reportsCount, uint32_t readFlags, uint32_t* frequency, GTDIReadCounterStreamExceptions* exceptions )
     {
         if( streamType != STREAM_TYPE_OA )
         {
@@ -1662,7 +1654,7 @@ namespace MetricsDiscoveryInternal
         bool     reportLostOccured = false;
 
         // Read flags are ignored for Perf
-        TCompletionCode ret = ReadPerfStream( reportSize, *reportsCount, reportData, &readBytes, &reportLostOccured );
+        TCompletionCode ret = ReadPerfStream( metricDevice, reportSize, *reportsCount, reportData, &readBytes, &reportLostOccured );
         if( ret == CC_OK )
         {
             MD_ASSERT( ( readBytes % reportSize ) == 0 );
@@ -1701,16 +1693,17 @@ namespace MetricsDiscoveryInternal
     //     Closes OA/Sys Counter Stream (IO Stream) and disables Timer Mode.
     //
     // Input:
-    //     TStreamType streamType          - stream type
-    //     void**      streamEventHandle   - *NOT USED ON ANDROID/LINUX*
-    //     const char* concurrentGroupName - *NOT USED ON ANDROID/LINUX* concurrent group symbol name
-    //     CMetricSet* metricSet           - metric set for which the stream was opened
+    //     TStreamType     streamType          - stream type
+    //     CMetricsDevice& metricDevice        - metrics device
+    //     void**          streamEventHandle   - *NOT USED ON ANDROID/LINUX*
+    //     const char*     concurrentGroupName - *NOT USED ON ANDROID/LINUX* concurrent group symbol name
+    //     CMetricSet*     metricSet           - metric set for which the stream was opened
     //
     // Output:
-    //     TCompletionCode                 - *CC_OK* means succeess
+    //     TCompletionCode                     - *CC_OK* means succeess
     //
     //////////////////////////////////////////////////////////////////////////////
-    TCompletionCode CDriverInterfaceLinuxPerf::CloseIoStream( TStreamType streamType, void** streamEventHandle, const char* concurrentGroupName, CMetricSet* metricSet )
+    TCompletionCode CDriverInterfaceLinuxPerf::CloseIoStream( TStreamType streamType, CMetricsDevice& metricDevice, void** streamEventHandle, const char* concurrentGroupName, CMetricSet* metricSet )
     {
         if( streamType != STREAM_TYPE_OA )
         {
@@ -1719,12 +1712,12 @@ namespace MetricsDiscoveryInternal
         MD_CHECK_PTR_RET( metricSet, CC_ERROR_INVALID_PARAMETER );
 
         // 1. CLOSE STREAM
-        ClosePerfStream();
+        ClosePerfStream( metricDevice );
 
         // 2. REMOVE HW CONFIG
-        if( RemovePerfConfig( m_PerfStreamConfigId ) == CC_OK )
+        if( RemovePerfConfig( metricDevice.GetStreamConfigId() ) == CC_OK )
         {
-            m_PerfStreamConfigId = -1;
+            metricDevice.SetStreamConfigId( -1 );
         }
 
         // 3. DEACTIVATE
@@ -1779,22 +1772,23 @@ namespace MetricsDiscoveryInternal
     //     Returns *CC_OK* if wait was successful (data waiting in the buffer was signaled).
     //
     // Input:
-    //     TStreamType streamType        - stream type
-    //     uint32_t    milliseconds      - max number of milliseconds to wait
-    //     void*       streamEventHandle - *NOT USED ON ANDROID/LINUX*
+    //     TStreamType     streamType        - stream type
+    //     CMetricsDevice& metricDevice      - metrics device
+    //     uint32_t        milliseconds      - max number of milliseconds to wait
+    //     void*           streamEventHandle - *NOT USED ON ANDROID/LINUX*
     //
     // Output:
-    //     TCompletionCode                - *CC_OK* means succeess (reports available)
+    //     TCompletionCode                   - *CC_OK* means succeess (reports available)
     //
     //////////////////////////////////////////////////////////////////////////////
-    TCompletionCode CDriverInterfaceLinuxPerf::WaitForIoStreamReports( TStreamType streamType, uint32_t milliseconds, void* streamEventHandle )
+    TCompletionCode CDriverInterfaceLinuxPerf::WaitForIoStreamReports( TStreamType streamType, CMetricsDevice& metricDevice, uint32_t milliseconds, void* streamEventHandle )
     {
         if( streamType != STREAM_TYPE_OA )
         {
             return CC_ERROR_NOT_SUPPORTED;
         }
 
-        return WaitForPerfStreamReports( milliseconds );
+        return WaitForPerfStreamReports( metricDevice, milliseconds );
     }
 
     //////////////////////////////////////////////////////////////////////////////
@@ -1967,6 +1961,26 @@ namespace MetricsDiscoveryInternal
     //     CDriverInterfaceLinuxPerf
     //
     // Method:
+    //     IsSubDeviceSupported
+    //
+    // Description:
+    //     Returns true if sub device support is available.
+    //
+    // Output:
+    //     bool - *true* if available
+    //
+    //////////////////////////////////////////////////////////////////////////////
+    bool CDriverInterfaceLinuxPerf::IsSubDeviceSupported()
+    {
+        return m_PerfCapabilities.IsSubDeviceSupported;
+    }
+
+    //////////////////////////////////////////////////////////////////////////////
+    //
+    // Class:
+    //     CDriverInterfaceLinuxPerf
+    //
+    // Method:
     //     SetQueryOverride
     //
     // Description:
@@ -2013,6 +2027,7 @@ namespace MetricsDiscoveryInternal
 
         // Check capabilities. Update when OA interrupt will be mergerd.
         m_PerfCapabilities.IsOaInterruptSupported = false; //requirePerfRevision( 2 );
+        m_PerfCapabilities.IsSubDeviceSupported   = false; //requirePerfRevision( 10 );
 
         PrintPerfCapabilities();
     }
@@ -2052,6 +2067,7 @@ namespace MetricsDiscoveryInternal
                                                                           : "not supported"; };
 
         MD_LOG( LOG_INFO, "Oa interrupt: %s", getSupportedString( m_PerfCapabilities.IsOaInterruptSupported ) );
+        MD_LOG( LOG_INFO, "Sub devices supported: %s", getSupportedString( m_PerfCapabilities.IsSubDeviceSupported ) );
     }
 
     //////////////////////////////////////////////////////////////////////////////
@@ -2068,28 +2084,59 @@ namespace MetricsDiscoveryInternal
     //     point.
     //
     // Input:
-    //     uint32_t perfMetricSetId     - Perf configuration ID (previously added)
-    //     uint32_t perfReportType      - Perf report type
-    //     uint32_t timerPeriodExponent - timer period exponent
+    //     CMetricsDevice& metricsDevice       - metrics device
+    //     uint32_t        perfMetricSetId     - Perf configuration ID (previously added)
+    //     uint32_t        perfReportType      - Perf report type
+    //     uint32_t        timerPeriodExponent - timer period exponent
     //
     // Output:
-    //     TCompletionCode              - *CC_OK* means success
+    //     TCompletionCode                     - *CC_OK* means success
     //
     //////////////////////////////////////////////////////////////////////////////
-    TCompletionCode CDriverInterfaceLinuxPerf::OpenPerfStream( uint32_t perfMetricSetId, uint32_t perfReportType, uint32_t timerPeriodExponent )
+    TCompletionCode CDriverInterfaceLinuxPerf::OpenPerfStream( CMetricsDevice& metricsDevice, uint32_t perfMetricSetId, uint32_t perfReportType, uint32_t timerPeriodExponent )
     {
-        int32_t                         perfEventFd  = -1;
-        uint64_t                        properties[] = { DRM_I915_PERF_PROP_SAMPLE_OA, true, DRM_I915_PERF_PROP_OA_METRICS_SET, perfMetricSetId, DRM_I915_PERF_PROP_OA_FORMAT, perfReportType, DRM_I915_PERF_PROP_OA_EXPONENT, timerPeriodExponent };
-        struct drm_i915_perf_open_param param        = {
-            0,
+        int32_t               perfEventFd    = -1;
+        uint32_t              subDeviceIndex = metricsDevice.GetSubDeviceIndex();
+        auto                  param          = drm_i915_perf_open_param{};
+        std::vector<uint64_t> properties     = {};
+        auto                  addProperty    = [&]( const uint64_t key, const uint64_t value ) {
+            properties.push_back( key );
+            properties.push_back( value );
         };
 
         param.flags = 0;
         param.flags |= I915_PERF_FLAG_FD_CLOEXEC;
         param.flags |= I915_PERF_FLAG_FD_NONBLOCK; // We want a non-blocking read
 
-        param.properties_ptr = (uint64_t) properties;
-        param.num_properties = sizeof( properties ) / 16;
+        // Standard tbs properties.
+        addProperty( DRM_I915_PERF_PROP_SAMPLE_OA, true );
+        addProperty( DRM_I915_PERF_PROP_OA_METRICS_SET, perfMetricSetId );
+        addProperty( DRM_I915_PERF_PROP_OA_FORMAT, perfReportType );
+        addProperty( DRM_I915_PERF_PROP_OA_EXPONENT, timerPeriodExponent );
+
+        // Sub device support.
+        if( subDeviceIndex > 0 )
+        {
+            auto       engineParameters = metricsDevice.GetAdapter().GetTbsEngineParams( subDeviceIndex );
+            const bool enginesSupported = IsSubDeviceSupported();
+
+            // Check sub device engines support.
+            if( !enginesSupported )
+            {
+                MD_LOG( LOG_ERROR, "Sub devices are not supported by i915 kernel" );
+                return TCompletionCode::CC_ERROR_NOT_SUPPORTED;
+            }
+
+            // Obtain tbs engine.
+            if( !engineParameters )
+            {
+                MD_LOG( LOG_ERROR, "No render engines found, unable to open tbs on sub device" );
+                return TCompletionCode::CC_ERROR_NOT_SUPPORTED;
+            }
+        }
+
+        param.properties_ptr = reinterpret_cast<uint64_t>( properties.data() );
+        param.num_properties = properties.size() / 2;
 
         MD_LOG( LOG_DEBUG, "Opening i915 perf stream with params: perfMetricSetId: %u, perfReportType: %u, timerPeriodExponent: %u", perfMetricSetId, perfReportType, timerPeriodExponent );
 
@@ -2099,9 +2146,10 @@ namespace MetricsDiscoveryInternal
             MD_LOG( LOG_ERROR, "ERROR: opening i915 perf stream failed, fd: %d, errno: %d (%s)", perfEventFd, errno, strerror( errno ) );
             return CC_ERROR_GENERAL;
         }
-        m_PerfStreamFd = perfEventFd;
 
-        MD_LOG( LOG_DEBUG, "i915 perf stream opened successfully, fd: %d", m_PerfStreamFd );
+        metricsDevice.SetStreamId( perfEventFd );
+
+        MD_LOG( LOG_DEBUG, "i915 perf stream opened successfully, fd: %d", perfEventFd );
         return CC_OK;
     }
 
@@ -2119,20 +2167,23 @@ namespace MetricsDiscoveryInternal
     //     is set.
     //
     // Input:
-    //     uint32_t  oaReportSize      - size of a single OA report, currently always 256 bytes
-    //     uint32_t  reportsToRead     - number of reports to read
-    //     char*     reportData        - (OUT) buffer for reports
-    //     uint32_t* readBytes         - (OUT) number of bytes read and copied to the output buffer
-    //     bool*     reportLostOccured - (OUT) true if report lost was reported by Perf
+    //     CMetricsDevice& metricDevice      - metrics device
+    //     uint32_t        oaReportSize      - size of a single OA report, currently always 256 bytes
+    //     uint32_t        reportsToRead     - number of reports to read
+    //     char*           reportData        - (OUT) buffer for reports
+    //     uint32_t*       readBytes         - (OUT) number of bytes read and copied to the output buffer
+    //     bool*           reportLostOccured - (OUT) true if report lost was reported by Perf
     //
     // Output:
-    //     TCompletionCode             - *CC_OK* means success, BUT IT DOESN'T MEAN ALL REQUESTED DATA WAS READ !!
-    //                                   (check readBytes for that).
+    //     TCompletionCode                   - *CC_OK* means success, BUT IT DOESN'T MEAN ALL REQUESTED DATA WAS READ !!
+    //                                         (check readBytes for that).
     //
     //////////////////////////////////////////////////////////////////////////////
-    TCompletionCode CDriverInterfaceLinuxPerf::ReadPerfStream( uint32_t oaReportSize, uint32_t reportsToRead, char* reportData, uint32_t* readBytes, bool* reportLostOccured )
+    TCompletionCode CDriverInterfaceLinuxPerf::ReadPerfStream( CMetricsDevice& metricDevice, uint32_t oaReportSize, uint32_t reportsToRead, char* reportData, uint32_t* readBytes, bool* reportLostOccured )
     {
-        if( m_PerfStreamFd < 0 )
+        const int32_t streamId = metricDevice.GetStreamId();
+
+        if( streamId < 0 )
         {
             MD_LOG( LOG_ERROR, "ERROR: Perf stream not opened" );
             return CC_ERROR_FILE_NOT_FOUND;
@@ -2145,14 +2196,14 @@ namespace MetricsDiscoveryInternal
                                                                                         // requests 1 report, but first report from Perf is REPORT_LOST flag.
 
         // Resize Perf report buffer if needed
-        m_PerfStreamReportData.resize( perfBytesToRead );
+        metricDevice.GetStreamBuffer().resize( perfBytesToRead );
 
-        MD_LOG( LOG_DEBUG, "Trying to read %u reports from i915 perf stream, fd: %d", reportsToRead, m_PerfStreamFd );
+        MD_LOG( LOG_DEBUG, "Trying to read %u reports from i915 perf stream, fd: %d", reportsToRead, streamId );
 
         // #Note May read 1 sample less than requested if ReportLost is returned from kernel
 
         // 1. READ DATA
-        int32_t perfReadBytes = read( m_PerfStreamFd, m_PerfStreamReportData.data(), perfBytesToRead );
+        int32_t perfReadBytes = read( streamId, metricDevice.GetStreamBuffer().data(), perfBytesToRead );
         if( perfReadBytes < 0 )
         {
             *readBytes = 0;
@@ -2171,7 +2222,7 @@ namespace MetricsDiscoveryInternal
         size_t perfDataOffset = 0;
         while( perfDataOffset < (size_t) perfReadBytes )
         {
-            const iu_i915_perf_record* perfOaRecord = (const iu_i915_perf_record*) ( m_PerfStreamReportData.data() + perfDataOffset );
+            const iu_i915_perf_record* perfOaRecord = (const iu_i915_perf_record*) ( metricDevice.GetStreamBuffer().data() + perfDataOffset );
             if( !perfOaRecord->header.size )
             {
                 MD_LOG( LOG_ERROR, "ERROR: 0 header size" );
@@ -2229,17 +2280,22 @@ namespace MetricsDiscoveryInternal
     // Description:
     //     Closes previously opened Perf stream.
     //
+    // Input:
+    //     CMetricsDevice& metricDevice - metrics device
+    //
     // Output:
-    //     TCompletionCode - *CC_OK* means success
+    //     TCompletionCode              - *CC_OK* means success
     //
     //////////////////////////////////////////////////////////////////////////////
-    TCompletionCode CDriverInterfaceLinuxPerf::ClosePerfStream()
+    TCompletionCode CDriverInterfaceLinuxPerf::ClosePerfStream( CMetricsDevice& metricDevice )
     {
-        if( m_PerfStreamFd >= 0 )
+        int32_t id = metricDevice.GetStreamId();
+
+        if( id >= 0 )
         {
-            MD_LOG( LOG_DEBUG, "Closing i915 perf stream, fd: %d", m_PerfStreamFd );
-            close( m_PerfStreamFd );
-            m_PerfStreamFd = -1;
+            MD_LOG( LOG_DEBUG, "Closing i915 perf stream, fd: %d", id );
+            close( id );
+            metricDevice.SetStreamId( -1 );
         }
         return CC_OK;
     }
@@ -2258,20 +2314,21 @@ namespace MetricsDiscoveryInternal
     //     THE PREVIOUS IMPLEMENTATIONS.
     //
     // Input:
-    //     uint32_t timeoutMs - wait timeout in milliseconds
+    //     CMetricsDevice& metricsDevice - metrics device
+    //     uint32_t        timeoutMs     - wait timeout in milliseconds
     //
     // Output:
-    //     TCompletionCode    - *CC_OK* means success
+    //     TCompletionCode               - *CC_OK* means success
     //
     //////////////////////////////////////////////////////////////////////////////
-    TCompletionCode CDriverInterfaceLinuxPerf::WaitForPerfStreamReports( uint32_t timeoutMs )
+    TCompletionCode CDriverInterfaceLinuxPerf::WaitForPerfStreamReports( CMetricsDevice& metricsDevice, uint32_t timeoutMs )
     {
         TCompletionCode retVal = CC_OK;
         struct pollfd   pollParams;
 
         memset( &pollParams, 0, sizeof( pollParams ) );
 
-        pollParams.fd      = m_PerfStreamFd;
+        pollParams.fd      = metricsDevice.GetStreamId();
         pollParams.revents = 0;
         pollParams.events  = POLLIN;
 
@@ -2618,7 +2675,7 @@ namespace MetricsDiscoveryInternal
         if( reportType != OA_REPORT_TYPE_256B_A45_NOA16 )
         {
             MD_LOG( LOG_ERROR, "ERROR: Unsupported report type" );
-            return I915_OA_FORMAT_MAX;
+            return static_cast<uint32_t>( -1 );
         }
 
         // Get platform ID
@@ -2626,7 +2683,7 @@ namespace MetricsDiscoveryInternal
         if( GetInstrPlatformId( &instrPlatformId ) != CC_OK || instrPlatformId == GTDI_PLATFORM_MAX )
         {
             MD_LOG( LOG_ERROR, "ERROR: Could not get platform ID" );
-            return I915_OA_FORMAT_MAX;
+            return static_cast<uint32_t>( -1 );
         }
 
         // Perf requires different format for HSW

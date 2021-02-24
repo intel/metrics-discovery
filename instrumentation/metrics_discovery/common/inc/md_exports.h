@@ -44,7 +44,7 @@ extern "C"
 {
 #endif
 
-    DllExport TCompletionCode OpenAdapterGroup( IAdapterGroup_1_8** adapterGroup );
+    DllExport TCompletionCode OpenAdapterGroup( IAdapterGroup_1_9** adapterGroup );
 
     DllExport TCompletionCode OpenMetricsDevice( IMetricsDevice_1_5** metricsDevice );
 
