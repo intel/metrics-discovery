@@ -1,6 +1,6 @@
 //////////////////////////////////////////////////////////////////////////////
 //
-//  Copyright © 2019-2020, Intel Corporation
+//  Copyright © 2019, Intel Corporation
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a
 //  copy of this software and associated documentation files (the "Software"),
@@ -20,44 +20,17 @@
 //  FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 //  IN THE SOFTWARE.
 //
-//  File Name:  md_exports.h
+//  File Name:  md_metrics.h
 //
-//  Abstract:   Header with exports of the MetricsDiscovery library. Exports on Windows
-//              are defined in the project file.
+//  Abstract:   C++ Metrics Discovery header for metric meta data.
 //
 //////////////////////////////////////////////////////////////////////////////
 #pragma once
 
 #include "metrics_discovery_api.h"
+#include "md_internal.h"
 
 using namespace MetricsDiscovery;
+using MetricsDiscoveryInternal::CMetricsDevice;
 
-#if defined( __linux__ )
-    #define DllExport __attribute__( ( visibility( "default" ) ) )
-#else
-    // On Windows exports through project settings (linker commands)
-    #define DllExport
-#endif // __linux__
-
-#ifdef __cplusplus
-extern "C"
-{
-#endif
-
-    DllExport TCompletionCode OpenAdapterGroup( IAdapterGroup_1_9** adapterGroup );
-
-    DllExport TCompletionCode OpenMetricsDevice( IMetricsDevice_1_5** metricsDevice );
-
-    DllExport TCompletionCode CloseMetricsDevice( IMetricsDevice_1_5* metricsDevice );
-
-    DllExport TCompletionCode OpenMetricsDeviceFromFile( const char* fileName, void* openParams, IMetricsDevice_1_5** metricsDevice );
-
-#if defined( _DEBUG ) || defined( _RELEASE_INTERNAL )
-
-    DllExport TCompletionCode SaveMetricsDeviceToFile( const char* fileName, void* saveParams, IMetricsDevice_1_5* metricsDevice );
-
-#endif // defined(_DEBUG) || defined(_RELEASE_INTERNAL)
-
-#ifdef __cplusplus
-}
-#endif
+TCompletionCode CreateMetricTree( CMetricsDevice* metricsDevice );

@@ -39,6 +39,7 @@ struct drm_i915_query_topology_info;
 #define GEN_DEVICE_MAX_SLICES           (6)  /* Maximum on gen10 */
 #define GEN_DEVICE_MAX_SUBSLICES        (8)  /* Maximum on gen11 */
 #define GEN_DEVICE_MAX_EUS_PER_SUBSLICE (10) /* Maximum on Haswell */
+#define GEN_DEVICE_MAX_PIXEL_PIPES      (2)  /* Maximum on gen11 */
 
 /**
  * Intel hardware information and quirks
@@ -46,6 +47,7 @@ struct drm_i915_query_topology_info;
 struct gen_device_info
 {
    int gen; /**< Generation number: 4, 5, 6, 7, ... */
+   int revision;
    int gt;
 
    bool is_g4x;
@@ -60,6 +62,9 @@ struct gen_device_info
    bool is_geminilake;
    bool is_coffeelake;
    bool is_cannonlake;
+   bool is_elkhartlake;
+   bool is_dg1;
+   bool is_rkl;
 
    bool has_hiz_and_separate_stencil;
    bool must_use_separate_stencil;
@@ -67,12 +72,17 @@ struct gen_device_info
    bool has_llc;
 
    bool has_pln;
-   bool has_64bit_types;
+   bool has_64bit_float;
+   bool has_64bit_int;
    bool has_integer_dword_mul;
    bool has_compr4;
    bool has_surface_tile_offset;
    bool supports_simd16_3src;
    bool has_resource_streamer;
+   bool disable_ccs_repack;
+   bool has_aux_map;
+   bool has_tiling_uapi;
+   bool has_local_mem;
 
    /**
     * \name Intel hardware quirks
@@ -121,6 +131,11 @@ struct gen_device_info
     * Number of subslices for each slice (used to be uniform until CNL).
     */
    unsigned num_subslices[GEN_DEVICE_MAX_SUBSLICES];
+
+   /**
+    * Number of subslices on each pixel pipe (ICL).
+    */
+   unsigned ppipe_subslices[GEN_DEVICE_MAX_PIXEL_PIPES];
 
    /**
     * Upper bound of number of EU per subslice (some SKUs might have just 1 EU
@@ -196,14 +211,14 @@ struct gen_device_info
 
    struct {
       /**
-       * Hardware default URB size.
+       * Fixed size of the URB.
        *
-       * The units this is expressed in are somewhat inconsistent: 512b units
-       * on Gen4-5, KB on Gen6-7, and KB times the slice count on Gen8+.
+       * On Gen6 and DG1, this is measured in KB.  Gen4-5 instead measure
+       * this in 512b blocks, as that's more convenient there.
        *
-       * Look up "URB Size" in the "Device Attributes" page, and take the
-       * maximum.  Look up the slice count for each GT SKU on the same page.
-       * urb.size = URB Size (kbytes) / slice count
+       * On most Gen7+ platforms, the URB is a section of the L3 cache,
+       * and can be resized based on the L3 programming.  For those platforms,
+       * simply leave this field blank (zero) - it isn't used.
        */
       unsigned size;
 
@@ -241,16 +256,35 @@ struct gen_device_info
     */
    uint64_t timestamp_frequency;
 
+   uint64_t aperture_bytes;
+
    /**
     * ID to put into the .aub files.
     */
    int simulator_id;
 
+   /**
+    * holds the pci device id
+    */
+   uint32_t chipset_id;
+
+   /**
+    * no_hw is true when the chipset_id pci device id has been overridden
+    */
+   bool no_hw;
    /** @} */
 };
 
+#ifdef GEN_GEN
+
+#define gen_device_info_is_9lp(devinfo) \
+   (GEN_GEN == 9 && ((devinfo)->is_broxton || (devinfo)->is_geminilake))
+
+#else
+
 #define gen_device_info_is_9lp(devinfo) \
    ((devinfo)->is_broxton || (devinfo)->is_geminilake)
+#endif
 
 static inline bool
 gen_device_info_subslice_available(const struct gen_device_info *devinfo,
@@ -260,19 +294,20 @@ gen_device_info_subslice_available(const struct gen_device_info *devinfo,
                                    subslice / 8] & (1U << (subslice % 8))) != 0;
 }
 
-int gen_get_pci_device_id_override(void);
 int gen_device_name_to_pci_device_id(const char *name);
-bool gen_get_device_info(int devid, struct gen_device_info *devinfo);
 const char *gen_get_device_name(int devid);
 
-/* Used with SLICE_MASK/SUBSLICE_MASK values from DRM_I915_GETPARAM. */
-void gen_device_info_update_from_masks(struct gen_device_info *devinfo,
-                                       uint32_t slice_mask,
-                                       uint32_t subslice_mask,
-                                       uint32_t n_eus);
-/* Used with DRM_IOCTL_I915_QUERY & DRM_I915_QUERY_TOPOLOGY_INFO. */
-void gen_device_info_update_from_topology(struct gen_device_info *devinfo,
-                                          const struct drm_i915_query_topology_info *topology);
+static inline uint64_t
+gen_device_info_timebase_scale(const struct gen_device_info *devinfo,
+                               uint64_t gpu_timestamp)
+{
+   return (1000000000ull * gpu_timestamp) / devinfo->timestamp_frequency;
+}
+
+bool gen_get_device_info_from_fd(int fh, struct gen_device_info *devinfo);
+bool gen_get_device_info_from_pci_id(int pci_id,
+                                     struct gen_device_info *devinfo);
+int gen_get_aperture_size(int fd, uint64_t *size);
 
 #ifdef __cplusplus
 }

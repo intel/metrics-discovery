@@ -1,31 +1,28 @@
-https://cgit.freedesktop.org/mesa/drm/tree/
-
-Base commit for i915_drm.h:
-(from https://github.com/djdeath/linux/commits/wip/djdeath/oa-interrupts)
-commit 45902f48ed6f97e4f46d947bc77147cd22c834fe (HEAD, origin/wip/djdeath/oa-interrupts)
-Author: Lionel Landwerlin <lionel.g.landwerlin@intel.com>
-Date:   Tue Feb 26 12:11:52 2019 +0000
-
-    drm/i915/perf: bump i915-perf revision
-
-    This makes the following opening parameters available to
-    applications :
-       - DRM_I915_PERF_PROP_POLL_OA_DELAY
-       - DRM_I915_PERF_PROP_OA_ENABLE_INTERRUPT
-
-    As well as this new ioctl on the i915-perf file descriptor :
-       - I915_PERF_IOCTL_FLUSH_DATA
-
-    Signed-off-by: Lionel Landwerlin <lionel.g.landwerlin@intel.com>
-
+Files in this folder is taken from: https://github.com/torvalds/linux/tree/master/include/uapi/drm
+And should be used as is, without any modification.
 
 Base commit:
-commit f3d90e8db42d8d8a839558c0bc4c368c0107a4b9
-Author: Michel Dänzer <michel.daenzer@amd.com>
-Date:   Mon Aug 27 11:48:48 2018 +0200
+commit b10733527bfd864605c33ab2e9a886eec317ec39
+Merge: 60f2f74978e6 f8aab60422c3
+Author: Dave Airlie <airlied@redhat.com>
+Date:   Thu Dec 10 16:55:41 2020 +1000
 
-    amdgpu-symbol-check: Add amdgpu_find_bo_by_cpu_mapping
+    Merge tag 'amd-drm-next-5.11-2020-12-09' of git://people.freedesktop.org/~agd5f/linux into drm-next
 
-    Fixes: 4d454424e1f2 ("amdgpu: add a function to find bo by cpu mapping
-                          (v2)"
+    amd-drm-next-5.11-2020-12-09:
 
+    amdgpu:
+    - SR-IOV fixes
+    - Navy Flounder updates
+    - Sienna Cichlid updates
+    - Dimgrey Cavefish updates
+    - Vangogh updates
+    - Misc SMU fixes
+    - Misc display fixes
+    - Last big hunk of W=1 warning fixes
+    - Cursor validation fixes
+    - CI BACO updates
+
+    From: Alex Deucher <alexdeucher@gmail.com>
+    Link: https://patchwork.freedesktop.org/patch/msgid/20201210045344.21566-1-alexander.deucher@amd.com
+    Signed-off-by: Dave Airlie <airlied@redhat.com>

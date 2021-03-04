@@ -1,6 +1,6 @@
 //////////////////////////////////////////////////////////////////////////////
 //
-//  Copyright © 2019-2020, Intel Corporation
+//  Copyright © 2021, Intel Corporation
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a
 //  copy of this software and associated documentation files (the "Software"),
@@ -20,56 +20,58 @@
 //  FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 //  IN THE SOFTWARE.
 //
-//  File Name:  iu_i915_perf.h
+//  File Name:  md_sub_devices_linux_.h
 //
-//  Abstract:   Contains definitions for i915 Perf usage
+//  Abstract:   C++ sub devices implementation for Linux
 //
 //////////////////////////////////////////////////////////////////////////////
 #pragma once
 
-#include <inttypes.h>
+#include "metrics_discovery_api.h"
+#include "md_utils.h"
 
-#if defined( __cplusplus )
-extern "C"
+using namespace MetricsDiscovery;
+
+namespace MetricsDiscoveryInternal
 {
-#endif
-
-#define __user
-#include <i915_drm.h>
-
     //////////////////////////////////////////////////////////////////////////////
-    //
-    // Struct:
-    //     iu_i915_perf_config_register
     //
     // Description:
-    //     For adding configs to kernel. Based on i915_oa_reg defined in kernel in i915_drv.h.
-    //     DRM_IOCTL_I915_PERF_ADD_CONFIG expects just (address, value) tuples.
+    //     Forward declaration.
     //
     //////////////////////////////////////////////////////////////////////////////
-    struct iu_i915_perf_config_register
-    {
-        uint32_t address;
-        uint32_t value;
-    };
+    class CAdapter;
+    class CMetricsDevice;
+    class CDriverInterface;
 
     //////////////////////////////////////////////////////////////////////////////
     //
-    // Struct:
-    //     iu_i915_perf_record
+    // Class:
+    //     CSubDevice
     //
     // Description:
-    //     For reading reports from kernel. Content of 'data' depends on flags passed to
-    //     DRM_IOCTL_I915_PERF_OPEN, it may contain multiple different information at once,
-    //     e.g. PID, CTX, timestamp, OA report.
+    //     Represents a GPU sub device.
     //
     //////////////////////////////////////////////////////////////////////////////
-    struct iu_i915_perf_record
+    class CSubDevices
     {
-        struct drm_i915_perf_record_header header;
-        uint8_t                            data[];
-    };
+    public:
+        CSubDevices( CAdapter& adapter );
 
-#if defined( __cplusplus )
-} // extern "C"
-#endif
+        bool            IsSupported();
+        TCompletionCode Enumerate();
+
+        TCompletionCode GetAdapterParams( TAdapterParams_1_9& params );
+        TCompletionCode GetSubDeviceParams( const uint32_t subDeviceIndex, TSubDeviceParams_1_9& params );
+        TCompletionCode GetEngineParams( const uint32_t subDeviceIndex, const uint32_t engineIndex, TEngineParams_1_9& params );
+        TCompletionCode GetTbsEngineParams( const uint32_t subDeviceIndex, TEngineParams_1_9& engineParams );
+
+        CMetricsDevice* GetDevice( const uint32_t index );
+        uint32_t        GetDeviceCount();
+        bool            FindDevice( const IMetricsDevice_1_5* metricsDevice );
+
+        CMetricsDevice* OpenDevice( const uint32_t index );
+        CMetricsDevice* OpenDeviceFromFile( const uint32_t index, const char* filename, void* parameters );
+        void            RemoveDevice( const IMetricsDevice_1_5* metricsDevice );
+    };
+}; // namespace MetricsDiscoveryInternal
