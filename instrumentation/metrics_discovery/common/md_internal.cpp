@@ -1624,21 +1624,24 @@ namespace MetricsDiscoveryInternal
         }
 
         // 3. Check whether correct metrics device was passed
-        const bool validDevice    = metricsDevice == m_metricsDevice;
-        const bool validSubDevice = m_subDevices.FindDevice( metricsDevice );
-
-        if( !validDevice && !validSubDevice )
+        if( retVal == CC_OK )
         {
-            MD_LOG( LOG_ERROR, "Pointers mismatch" );
-            retVal = CC_ERROR_GENERAL;
-        }
+            const bool validDevice    = metricsDevice == m_metricsDevice;
+            const bool validSubDevice = m_subDevices.FindDevice( metricsDevice );
 
-        // Set as default device to remove.
-        m_metricsDevice = static_cast<CMetricsDevice*>( metricsDevice );
+            if( !validDevice && !validSubDevice )
+            {
+                MD_LOG( LOG_ERROR, "Pointers mismatch" );
+                retVal = CC_ERROR_GENERAL;
+            }
+        }
 
         // 4. Destroy or decrease reference counter for existing metrics device object
         if( retVal == CC_OK )
         {
+            // Set as default device to remove.
+            m_metricsDevice = static_cast<CMetricsDevice*>( metricsDevice );
+
             if( m_metricsDevice->GetReferenceCounter() > 1 )
             {
                 --m_metricsDevice->GetReferenceCounter();
