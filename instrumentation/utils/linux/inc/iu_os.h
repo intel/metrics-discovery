@@ -1,6 +1,6 @@
 //////////////////////////////////////////////////////////////////////////////
 //
-//  Copyright © 2019-2020, Intel Corporation
+//  Copyright © 2019-2021, Intel Corporation
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a
 //  copy of this software and associated documentation files (the "Software"),
@@ -59,16 +59,19 @@ extern "C"
 {
 #endif
 
-    void IuGetModuleInfo(
+    uint64_t IuOsQueryPerformanceCounter(
+        uint64_t* outFrequency );
+
+    void IuOsGetModuleInfo(
         char** dlName,
         char** processName );
 
-    void IuLogGetSystemSettings(
+    void IuOsLogGetSystemSettings(
         bool*     assertEnable,
         uint32_t* logLayerEnable,
         uint32_t* logLevel );
 
-    void IuLogGetLocalSettings(
+    void IuOsLogGetLocalSettings(
         bool*     assertEnable,
         uint32_t* logLayerEnable,
         uint32_t* logLevel );

@@ -1,6 +1,6 @@
 //////////////////////////////////////////////////////////////////////////////
 //
-//  Copyright © 2019, Intel Corporation
+//  Copyright © 2019-2021, Intel Corporation
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a
 //  copy of this software and associated documentation files (the "Software"),
@@ -31,6 +31,8 @@
 #include "md_internal.h"
 #include "md_per_platform_preamble.h"
 #include "md_utils.h"
+
+using namespace MetricsDiscoveryInternal;
 
 #ifdef __cplusplus
 extern "C"
@@ -228,7 +230,6 @@ extern "C"
         if( !adapterGroup )
         {
             MD_LOG( LOG_ERROR, "Adapter group not found" );
-            MD_LOG_EXIT();
             return CC_ERROR_NOT_SUPPORTED;
         }
 

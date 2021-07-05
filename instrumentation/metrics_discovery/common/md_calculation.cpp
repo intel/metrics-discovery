@@ -1,6 +1,6 @@
 //////////////////////////////////////////////////////////////////////////////
 //
-//  Copyright © 2019-2020, Intel Corporation
+//  Copyright © 2019-2021, Intel Corporation
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a
 //  copy of this software and associated documentation files (the "Software"),
@@ -28,6 +28,7 @@
 #include "md_calculation.h"
 #include "md_utils.h"
 #include "md_types.h"
+#include "md_internal.h"
 
 #include <algorithm>
 #include <string.h>
@@ -38,9 +39,7 @@ namespace MetricsDiscoveryInternal
 {
     // Forward declarations //
     template <>
-    bool CMetricsCalculationManager<MEASUREMENT_TYPE_SNAPSHOT_IO>::FindIoReportOfInterest( TStreamCalculationContext* sc, bool isPrevReport );
-    template <>
-    int32_t CMetricsCalculationManager<MEASUREMENT_TYPE_SNAPSHOT_IO>::GetInformationIndex( const char* symbolName, IMetricSet_1_1* metricSet );
+    int32_t CMetricsCalculationManager<MEASUREMENT_TYPE_SNAPSHOT_IO>::GetInformationIndex( const char* symbolName, CMetricSet* metricSet );
 
     //////////////////////////////////////////////////////////////////////////////
     //
@@ -57,14 +56,12 @@ namespace MetricsDiscoveryInternal
     //     TCalculationContext& context - (IN/OUT) calculation context
     //
     //////////////////////////////////////////////////////////////////////////////
-
     template <>
     void CMetricsCalculationManager<MEASUREMENT_TYPE_SNAPSHOT_IO>::ResetContext( TCalculationContext& context )
     {
         memset( &context.StreamCalculationContext, 0, sizeof( context.StreamCalculationContext ) );
 
-        context.StreamCalculationContext.ReportReasonIdx = -1;
-        context.StreamCalculationContext.ContextIdIdx    = -1;
+        context.StreamCalculationContext.ContextIdIdx = -1;
     }
 
     //////////////////////////////////////////////////////////////////////////////
@@ -118,13 +115,13 @@ namespace MetricsDiscoveryInternal
         MD_CHECK_PTR_RET( sc->Out, CC_ERROR_INVALID_PARAMETER );
         MD_CHECK_PTR_RET( sc->DeltaValues, CC_ERROR_INVALID_PARAMETER );
 
+        // Find required indices for context filtering, report filtering and PreviousContextId information
+        sc->ContextIdIdx    = GetInformationIndex( "ContextId", sc->MetricSet );
+        sc->ReportReasonIdx = GetInformationIndex( "ReportReason", sc->MetricSet );
+
         if( sc->DoContextFiltering )
         {
-            // Find required indices for context filtering using MetricSet
-            sc->ReportReasonIdx = GetInformationIndex( "ReportReason", sc->MetricSet );
-            sc->ReportReasonIdx = GetInformationIndex( "ContextId", sc->MetricSet );
-
-            if( sc->ReportReasonIdx < 0 || sc->ContextIdIdx < 0 )
+            if( sc->ContextIdIdx < 0 )
             {
                 MD_LOG( LOG_ERROR, "error: can't find required information for context filtering" );
                 MD_LOG_EXIT();
@@ -226,6 +223,7 @@ namespace MetricsDiscoveryInternal
             {
                 MD_LOG( LOG_DEBUG, "Unable to store last raw report for reuse." );
             }
+
             return false;
         }
 
@@ -237,9 +235,6 @@ namespace MetricsDiscoveryInternal
             MD_ASSERT( sc->PrevRawDataPtr != NULL );
         }
 
-        // Find Prev report of interest
-        bool prevFound = sc->DoContextFiltering ? FindIoReportOfInterest( sc, true ) : true;
-
         // If not using saved report
         if( sc->PrevRawReportNumber != MD_SAVED_REPORT_NUMBER )
         {
@@ -247,35 +242,29 @@ namespace MetricsDiscoveryInternal
             sc->LastRawReportNumber = sc->PrevRawReportNumber + 1;
         }
 
-        // Find Last report of interest
-        bool lastFound = sc->DoContextFiltering ? FindIoReportOfInterest( sc, false ) : true;
-
-        if( prevFound && lastFound )
+        // METRICS
+        sc->Calculator->ReadMetricsFromIoReport( sc->LastRawDataPtr, sc->PrevRawDataPtr, sc->DeltaValues, *sc->MetricSet );
+        // NORMALIZATION
+        sc->Calculator->NormalizeMetrics( sc->DeltaValues, sc->OutPtr, *sc->MetricSet );
+        // INFORMATION
+        sc->Calculator->ReadInformation( sc->LastRawDataPtr, sc->OutPtr + sc->MetricSet->GetParams()->MetricsCount, *sc->MetricSet, sc->ContextIdIdx );
+        // MAX VALUES
+        if( sc->OutMaxValues )
         {
-            // METRICS
-            sc->Calculator->ReadMetricsFromIoReport( sc->LastRawDataPtr, sc->PrevRawDataPtr, sc->DeltaValues, sc->MetricSet );
-            // NORMALIZATION
-            sc->Calculator->NormalizeMetrics( sc->DeltaValues, sc->OutPtr, sc->MetricSet );
-            // INFORMATION
-            sc->Calculator->ReadInformation( sc->LastRawDataPtr, sc->OutPtr + sc->MetricSet->GetParams()->MetricsCount, sc->MetricSet );
-            // MAX VALUES
-            if( sc->OutMaxValues )
-            {
-                sc->Calculator->CalculateMaxValues( sc->DeltaValues, sc->OutPtr, sc->OutMaxValuesPtr, sc->MetricSet );
-                sc->OutMaxValuesPtr += sc->MetricSet->GetParams()->MetricsCount;
-            }
+            sc->Calculator->CalculateMaxValues( sc->DeltaValues, sc->OutPtr, sc->OutMaxValuesPtr, *sc->MetricSet );
+            sc->OutMaxValuesPtr += sc->MetricSet->GetParams()->MetricsCount;
+        }
 
-            // Prev is now Last
-            sc->PrevRawDataPtr      = sc->LastRawDataPtr;
-            sc->PrevRawReportNumber = sc->LastRawReportNumber;
+        sc->OutPtr += sc->MetricsAndInformationCount;
+        sc->OutReportCount++;
 
-            sc->OutPtr += sc->MetricsAndInformationCount;
-            sc->OutReportCount++;
+        // Prev is now Last
+        sc->PrevRawDataPtr      = sc->LastRawDataPtr;
+        sc->PrevRawReportNumber = sc->LastRawReportNumber;
 
-            if( sc->Calculator->SavedReportPresent() )
-            {
-                sc->Calculator->DiscardSavedReport();
-            }
+        if( sc->Calculator->SavedReportPresent() )
+        {
+            sc->Calculator->DiscardSavedReport();
         }
 
         return true;
@@ -314,15 +303,15 @@ namespace MetricsDiscoveryInternal
         }
 
         // METRICS
-        qc->Calculator->ReadMetricsFromQueryReport( qc->RawDataPtr, qc->DeltaValues, qc->MetricSet );
+        qc->Calculator->ReadMetricsFromQueryReport( qc->RawDataPtr, qc->DeltaValues, *qc->MetricSet );
         // NORMALIZATION
-        qc->Calculator->NormalizeMetrics( qc->DeltaValues, qc->OutPtr, qc->MetricSet );
+        qc->Calculator->NormalizeMetrics( qc->DeltaValues, qc->OutPtr, *qc->MetricSet );
         // INFORMATION
-        qc->Calculator->ReadInformation( qc->RawDataPtr, qc->OutPtr + qc->MetricSet->GetParams()->MetricsCount, qc->MetricSet );
+        qc->Calculator->ReadInformation( qc->RawDataPtr, qc->OutPtr + qc->MetricSet->GetParams()->MetricsCount, *qc->MetricSet, -1 );
         // MAX VALUES
         if( qc->OutMaxValues )
         {
-            qc->Calculator->CalculateMaxValues( qc->DeltaValues, qc->OutPtr, qc->OutMaxValuesPtr, qc->MetricSet );
+            qc->Calculator->CalculateMaxValues( qc->DeltaValues, qc->OutPtr, qc->OutMaxValuesPtr, *qc->MetricSet );
             qc->OutMaxValuesPtr += qc->MetricSet->GetParams()->MetricsCount;
         }
 
@@ -332,33 +321,6 @@ namespace MetricsDiscoveryInternal
         qc->OutReportCount++;
 
         return true;
-    }
-
-    /*****************************************************************************\
-
-Class:
-    CMetricsCalculationManager<MEASUREMENT_TYPE_SNAPSHOT_IO>
-
-Method:
-    FindIoReportOfInterest
-
-Description:
-    Used in IoStream context filtering. Finds the prev or next context matching report.
-
-Input:
-    TStreamCalculationContext* sc - stream calculation context
-    bool isPrevReport             - true, if this is for 'Prev' report
-                                    false for 'Last' report
-
-Output:
-    bool                          - true if found, false otherwise
-
-\*****************************************************************************/
-    template <>
-    bool CMetricsCalculationManager<MEASUREMENT_TYPE_SNAPSHOT_IO>::FindIoReportOfInterest( TStreamCalculationContext* sc, bool isPrevReport )
-    {
-        // Not implemented - intended
-        return false;
     }
 
     //////////////////////////////////////////////////////////////////////////////
@@ -380,9 +342,8 @@ Output:
     //     int - given information index in MetricSet, -1 if not found or error
     //
     //////////////////////////////////////////////////////////////////////////////
-
     template <>
-    int CMetricsCalculationManager<MEASUREMENT_TYPE_SNAPSHOT_IO>::GetInformationIndex( const char* symbolName, IMetricSet_1_1* metricSet )
+    int CMetricsCalculationManager<MEASUREMENT_TYPE_SNAPSHOT_IO>::GetInformationIndex( const char* symbolName, CMetricSet* metricSet )
     {
         MD_CHECK_PTR_RET( symbolName, -1 );
         MD_CHECK_PTR_RET( metricSet, -1 );
@@ -416,18 +377,20 @@ Output:
     //     CMetricsCalculator constructor.
     //
     // Input:
-    //     IMetricsDevice_1_1* metricsDevice - MetricsDevice used for obtaining GlobalSymbols
-    //                                         during calculations
+    //     CMetricsDevice* metricsDevice - MetricsDevice used for obtaining GlobalSymbols
+    //                                     during calculations
     //
     //////////////////////////////////////////////////////////////////////////////
-    CMetricsCalculator::CMetricsCalculator( IMetricsDevice_1_1* metricsDevice )
+    CMetricsCalculator::CMetricsCalculator( CMetricsDevice* metricsDevice )
     {
         m_device             = metricsDevice;
         m_gpuCoreClocks      = 0;
         m_euCoresCount       = 0;
         m_savedReport        = NULL;
         m_savedReportSize    = 0;
+        m_contextIdPrev      = 0;
         m_savedReportPresent = false;
+
     }
 
     //////////////////////////////////////////////////////////////////////////////
@@ -576,6 +539,7 @@ Output:
         m_savedReportPresent = false;
     }
 
+
     //////////////////////////////////////////////////////////////////////////////
     //
     // Class:
@@ -588,31 +552,30 @@ Output:
     //     Reads metrics from a given metric set using raw report data.
     //
     // Input:
-    //     const uint8_t* rawReport - (IN) single raw report
-    //     TTypedValue_1_0*     outValues - (OUT) single output report
-    //     IMetricSet_1_1*      metricSet - metric set for which the calculation will be conducted
+    //     const uint8_t*   rawReport - (IN) single raw report
+    //     TTypedValue_1_0* outValues - (OUT) single output report
+    //     CMetricSet&      metricSet - metric set for which the calculation will be conducted
     //
     // Output:
     //     TCompletionCode - *CC_OK* means success
     //
     //////////////////////////////////////////////////////////////////////////////
-    TCompletionCode CMetricsCalculator::ReadMetricsFromQueryReport( const uint8_t* rawReport, TTypedValue_1_0* outValues, IMetricSet_1_1* metricSet )
+    TCompletionCode CMetricsCalculator::ReadMetricsFromQueryReport( const uint8_t* rawReport, TTypedValue_1_0* outValues, CMetricSet& metricSet )
     {
         MD_CHECK_PTR_RET( rawReport, CC_ERROR_INVALID_PARAMETER );
         MD_CHECK_PTR_RET( outValues, CC_ERROR_INVALID_PARAMETER );
-        MD_CHECK_PTR_RET( metricSet, CC_ERROR_INVALID_PARAMETER );
 
         m_gpuCoreClocks = 0;
 
-        uint32_t metricsCount = metricSet->GetParams()->MetricsCount;
+        uint32_t metricsCount = metricSet.GetParams()->MetricsCount;
         for( uint32_t i = 0; i < metricsCount; i++ )
         {
-            TMetricParams_1_0* metricParams = metricSet->GetMetric( i )->GetParams();
-            IEquation_1_0*     equation     = metricParams->QueryReadEquation;
+            TMetricParams_1_0* metricParams = metricSet.GetMetric( i )->GetParams();
 
-            if( equation )
+            if( metricParams->QueryReadEquation )
             {
-                outValues[i] = CalculateReadEquation( equation, rawReport );
+                CEquation& equation = dynamic_cast<CEquation&>( *metricParams->QueryReadEquation );
+                outValues[i]        = CalculateReadEquation( equation, rawReport );
             }
             else
             {
@@ -641,34 +604,33 @@ Output:
     //     Reads metrics from a given metric set using raw report data for prev and last report.
     //
     // Input:
-    //     const uint8_t* rawRaportLast - (IN) last (next) single raw report
-    //     const uint8_t* rawRaportPrev - (IN) previous single raw report
-    //     TTypedValue_1_0*     outValues     - (OUT) read metric values
-    //     IMetricSet_1_1*      metricSet     - MetricSet for calculations
+    //     const uint8_t*   rawRaportLast - (IN) last (next) single raw report
+    //     const uint8_t*   rawRaportPrev - (IN) previous single raw report
+    //     TTypedValue_1_0* outValues     - (OUT) read metric values
+    //     CMetricSet&      metricSet     - MetricSet for calculations
     //
     // Output:
     //     TCompletionCode - *CC_OK* means success
     //
     //////////////////////////////////////////////////////////////////////////////
-    TCompletionCode CMetricsCalculator::ReadMetricsFromIoReport( const uint8_t* rawRaportLast, const uint8_t* rawRaportPrev, TTypedValue_1_0* outValues, IMetricSet_1_1* metricSet )
+    TCompletionCode CMetricsCalculator::ReadMetricsFromIoReport( const uint8_t* rawRaportLast, const uint8_t* rawRaportPrev, TTypedValue_1_0* outValues, CMetricSet& metricSet )
     {
         MD_CHECK_PTR_RET( rawRaportLast, CC_ERROR_INVALID_PARAMETER );
         MD_CHECK_PTR_RET( rawRaportPrev, CC_ERROR_INVALID_PARAMETER );
         MD_CHECK_PTR_RET( outValues, CC_ERROR_INVALID_PARAMETER );
-        MD_CHECK_PTR_RET( metricSet, CC_ERROR_INVALID_PARAMETER );
 
-        m_gpuCoreClocks = 0;
+        uint32_t metricsCount = metricSet.GetParams()->MetricsCount;
+        m_gpuCoreClocks       = 0;
 
-        uint32_t metricsCount = metricSet->GetParams()->MetricsCount;
         for( uint32_t i = 0; i < metricsCount; i++ )
         {
-            TMetricParams_1_0* metricParams = metricSet->GetMetric( i )->GetParams();
-            IEquation_1_0*     equation     = metricParams->IoReadEquation;
+            TMetricParams_1_0* metricParams = metricSet.GetMetric( i )->GetParams();
 
-            if( equation )
+            if( metricParams->IoReadEquation )
             {
-                TDeltaFunction_1_0 deltaFunc = metricParams->DeltaFunction;
-                outValues[i]                 = CalculateReadEquationAndDelta( equation, deltaFunc, rawRaportLast, rawRaportPrev );
+                CEquation&         equationInternal = dynamic_cast<CEquation&>( *metricParams->IoReadEquation );
+                TDeltaFunction_1_0 deltaFunc        = metricParams->DeltaFunction;
+                outValues[i]                        = CalculateReadEquationAndDelta( equationInternal, deltaFunc, rawRaportLast, rawRaportPrev );
             }
             else
             {
@@ -699,29 +661,32 @@ Output:
     // Input:
     //     TTypedValue_1_0* deltaValues - (IN) previously read metric delta values
     //     TTypedValue_1_0* outValues   - (OUT) output normalized metric values
-    //     IMetricSet_1_1*  metricSet   - MetricSet for calculations
+    //     CMetricSet&      metricSet   - MetricSet for calculations
     //
     //////////////////////////////////////////////////////////////////////////////
-    void CMetricsCalculator::NormalizeMetrics( TTypedValue_1_0* deltaValues, TTypedValue_1_0* outValues, IMetricSet_1_1* metricSet )
+    void CMetricsCalculator::NormalizeMetrics( TTypedValue_1_0* deltaValues, TTypedValue_1_0* outValues, CMetricSet& metricSet )
     {
-        if( !deltaValues || !outValues || !metricSet )
+        if( !deltaValues || !outValues )
         {
             MD_ASSERT( deltaValues != NULL );
             MD_ASSERT( outValues != NULL );
-            MD_ASSERT( metricSet != NULL );
             MD_LOG( LOG_ERROR, "error: null params" );
             return;
         }
 
-        uint32_t metricsCount = metricSet->GetParams()->MetricsCount;
+        uint32_t metricsCount = metricSet.GetParams()->MetricsCount;
+
         for( uint32_t i = 0; i < metricsCount; i++ )
         {
-            TMetricParams_1_0* metricParams = metricSet->GetMetric( i )->GetParams();
-            IEquation_1_0*     normEquation = metricParams->NormEquation;
-            if( normEquation )
+            CMetric*           metric                = static_cast<CMetric*>( metricSet.GetMetric( i ) );
+            TMetricParams_1_0* metricParams          = metric->GetParams();
+            IEquation_1_0*     normalizationEquation = metricParams->NormEquation;
+
+            if( normalizationEquation )
             {
                 // do final calculation, may refer to global symbols, local delta results and local normalization results
-                outValues[i] = CalculateLocalNormalizationEquation( normEquation, deltaValues, outValues, metricSet, i );
+                CEquation& equationInternal = dynamic_cast<CEquation&>( *normalizationEquation );
+                outValues[i]                = CalculateLocalNormalizationEquation( equationInternal, deltaValues, outValues, i );
             }
             else
             {
@@ -742,28 +707,104 @@ Output:
     //     Reads information from a given metric set.
     //
     // Input:
-    //     const uint8_t* rawData   - (IN) single raw report data
-    //     TTypedValue_1_0*     outValues - (OUT) out values with calculated information
-    //     IMetricSet_1_1*      metricSet - MetricSet for calculations
+    //     const uint8_t*   rawData      - (IN) single raw report data
+    //     TTypedValue_1_0* outValues    - (OUT) out values with calculated information
+    //     CMetricSet&      metricSet    - MetricSet for calculations
+    //     int32_t          contextIdIdx - index of contextId information to cache the value
     //
     //////////////////////////////////////////////////////////////////////////////
-    void CMetricsCalculator::ReadInformation( const uint8_t* rawData, TTypedValue_1_0* outValues, IMetricSet_1_1* metricSet )
+    void CMetricsCalculator::ReadInformation( const uint8_t* rawData, TTypedValue_1_0* outValues, CMetricSet& metricSet, int32_t contextIdIdx )
     {
-        if( !rawData || !outValues || !metricSet )
+        if( !rawData || !outValues )
         {
             MD_ASSERT( rawData != NULL );
             MD_ASSERT( outValues != NULL );
-            MD_ASSERT( metricSet != NULL );
             MD_LOG( LOG_ERROR, "error: null params" );
             return;
         }
 
-        IInformation_1_0* information      = NULL;
-        uint32_t          informationCount = metricSet->GetParams()->InformationCount;
+        uint32_t informationCount = metricSet.GetParams()->InformationCount;
+
         for( uint32_t i = 0; i < informationCount; i++ )
         {
-            information = metricSet->GetInformation( i );
-            ReadSingleInformation( rawData, information, metricSet->GetParams()->ApiMask, &outValues[i] );
+            IInformation_1_0* information = metricSet.GetInformation( i );
+            const uint32_t    apiMask     = metricSet.GetParams()->ApiMask;
+            ReadSingleInformation( rawData, information, apiMask, &outValues[i] );
+        }
+        if( contextIdIdx != -1 )
+        {
+            // Value stored to handle PreviousContextId information and context filtering
+            m_contextIdPrev = outValues[contextIdIdx].ValueUInt64;
+        }
+    }
+
+    //////////////////////////////////////////////////////////////////////////////
+    //
+    // Class:
+    //     CMetricsCalculator
+    //
+    // Method:
+    //     ReadContextIdInformation
+    //
+    // Description:
+    //     Reads contextId information to store it.
+    //     Done only in Stream.
+    //
+    // Input:
+    //     const uint8_t* rawData      - (IN) single raw report data
+    //     CMetricSet&    metricSet    - MetricSet for calculations
+    //     int32_t        contextIdIdx - index of contextId information
+    //
+    //////////////////////////////////////////////////////////////////////////////
+    void CMetricsCalculator::ReadContextIdInformation( const uint8_t* rawData, CMetricSet& metricSet, int32_t contextIdIdx )
+    {
+        if( contextIdIdx == -1 )
+        {
+            m_contextIdPrev = 0;
+        }
+        else
+        {
+            TTypedValue_1_0   outValue    = {};
+            IInformation_1_0* information = metricSet.GetInformation( contextIdIdx );
+            const uint32_t    apiMask     = metricSet.GetParams()->ApiMask;
+            ReadSingleInformation( rawData, information, apiMask, &outValue );
+            m_contextIdPrev = outValue.ValueUInt64;
+        }
+    }
+
+    //////////////////////////////////////////////////////////////////////////////
+    //
+    // Class:
+    //     CMetricsCalculator
+    //
+    // Method:
+    //     ReadInformationByIndex
+    //
+    // Description:
+    //     Reads information by given index as uint64_t.
+    //
+    // Input:
+    //     const uint8_t* rawData        - (IN) single raw report data
+    //     CMetricSet&    metricSet      - MetricSet for calculations
+    //     int32_t        informationIdx - index of information
+    //
+    // Output:
+    //     uint64_t - Information value in uint64_t format
+    //
+    //////////////////////////////////////////////////////////////////////////////
+    uint64_t CMetricsCalculator::ReadInformationByIndex( const uint8_t* rawData, CMetricSet& metricSet, int32_t informationIndex )
+    {
+        if( informationIndex == -1 )
+        {
+            return 0;
+        }
+        else
+        {
+            TTypedValue_1_0   outValue    = {};
+            IInformation_1_0* information = metricSet.GetInformation( informationIndex );
+            const uint32_t    apiMask     = metricSet.GetParams()->ApiMask;
+            ReadSingleInformation( rawData, information, apiMask, &outValue );
+            return outValue.ValueUInt64;
         }
     }
 
@@ -779,30 +820,32 @@ Output:
     //     Calculates IoMeasurementInformation obtained on every ReadIoStream.
     //
     // Input:
-    //     IConcurrentGroup_1_1* concurrentGroup - ConcurrentGroup which was used during ReadIoStream
-    //     TTypedValue_1_0*      outValues       - (OUT) calculated values
+    //     IConcurrentGroup_1_1& concurrentGroup - ConcurrentGroup which was used during ReadIoStream
+    //     TTypedValue_1_0&      outValues       - (OUT) calculated values
     //
     //////////////////////////////////////////////////////////////////////////////
-    void CMetricsCalculator::ReadIoMeasurementInformation( IConcurrentGroup_1_1* concurrentGroup, TTypedValue_1_0* outValues )
+    void CMetricsCalculator::ReadIoMeasurementInformation( IConcurrentGroup_1_1& concurrentGroup, TTypedValue_1_0* outValues )
     {
-        if( !outValues || !concurrentGroup )
+        if( !outValues )
         {
             MD_ASSERT( outValues != NULL );
-            MD_ASSERT( concurrentGroup != NULL );
             MD_LOG( LOG_ERROR, "error: null params" );
             return;
         }
 
-        uint32_t measurementInfoCount = concurrentGroup->GetParams()->IoMeasurementInformationCount;
+        uint32_t measurementInfoCount = concurrentGroup.GetParams()->IoMeasurementInformationCount;
+
         for( uint32_t i = 0; i < measurementInfoCount; i++ )
         {
-            IInformation_1_0* measurementInfo = concurrentGroup->GetIoMeasurementInformation( i );
+            IInformation_1_0* measurementInfo = concurrentGroup.GetIoMeasurementInformation( i );
             MD_ASSERT( measurementInfo != NULL );
 
             IEquation_1_0* equation = measurementInfo->GetParams()->IoReadEquation;
+
             if( equation )
             {
-                outValues[i] = CalculateReadEquation( equation, NULL );
+                CEquation& equationInternal = dynamic_cast<CEquation&>( *equation );
+                outValues[i]                = CalculateReadEquation( equationInternal, NULL );
             }
             else
             {
@@ -836,33 +879,34 @@ Output:
     //     TTypedValue_1_0* deltaMetricValues - (IN) previously read metric delta values
     //     TTypedValue_1_0* outMetricValues   - (IN) normalized metric values
     //     TTypedValue_1_0* outMaxValues      - (OUT) output max values
-    //     IMetricSet_1_1*  metricSet         - MetricSet for calculations
+    //     CMetricSet&      metricSet         - MetricSet for calculations
     //
     //////////////////////////////////////////////////////////////////////////////
-    void CMetricsCalculator::CalculateMaxValues( TTypedValue_1_0* deltaMetricValues, TTypedValue_1_0* outMetricValues, TTypedValue_1_0* outMaxValues, IMetricSet_1_1* metricSet )
+    void CMetricsCalculator::CalculateMaxValues( TTypedValue_1_0* deltaMetricValues, TTypedValue_1_0* outMetricValues, TTypedValue_1_0* outMaxValues, CMetricSet& metricSet )
     {
-        if( !deltaMetricValues || !outMetricValues || !outMaxValues || !metricSet )
+        if( !deltaMetricValues || !outMetricValues || !outMaxValues )
         {
             MD_ASSERT( deltaMetricValues != NULL );
             MD_ASSERT( outMetricValues != NULL );
             MD_ASSERT( outMaxValues != NULL );
-            MD_ASSERT( metricSet != NULL );
             MD_LOG( LOG_ERROR, "error: null params" );
             return;
         }
 
-        uint32_t metricsCount = metricSet->GetParams()->MetricsCount;
+        uint32_t metricsCount = metricSet.GetParams()->MetricsCount;
 
         for( uint32_t i = 0; i < metricsCount; i++ )
         {
-            TMetricParams_1_0* metricParams     = metricSet->GetMetric( i )->GetParams();
+            CMetric*           metric           = static_cast<CMetric*>( metricSet.GetMetric( i ) );
+            TMetricParams_1_0* metricParams     = metric->GetParams();
             IEquation_1_0*     maxValueEquation = metricParams->MaxValueEquation;
 
             if( maxValueEquation )
             {
                 // Do final calculation, may refer to global symbols, local delta results and local normalization results.
                 // Normalization equation function is used because NormalizationEquation has the same restrictions as MaxValueEquation.
-                outMaxValues[i] = CalculateLocalNormalizationEquation( maxValueEquation, deltaMetricValues, outMetricValues, metricSet, i );
+                CEquation& equationInternal = dynamic_cast<CEquation&>( *maxValueEquation );
+                outMaxValues[i]             = CalculateLocalNormalizationEquation( equationInternal, deltaMetricValues, outMetricValues, i );
             }
             else
             {
@@ -884,25 +928,25 @@ Output:
     //
     // Input:
     //     IEquation_1_0* equation  - read equation to calculate
-    //     const unsigned char* rawReport - (IN) single raw report
+    //     const uint8_t* rawReport - (IN) single raw report
     //
     // Output:
     //     TTypedValue_1_0 - output read value
     //
     //////////////////////////////////////////////////////////////////////////////
-    TTypedValue_1_0 CMetricsCalculator::CalculateReadEquation( IEquation_1_0* equation, const uint8_t* rawReport )
+    TTypedValue_1_0 CMetricsCalculator::CalculateReadEquation( CEquation& equation, const uint8_t* rawReport )
     {
         TTypedValue_1_0 typedValue;
         bool            isValid        = true;
         uint32_t        algorithmCheck = 0;
 
         // Prepare the stack for calculations.
-        isValid = m_equationStack.reserve( equation->GetEquationElementsCount() );
+        isValid = m_equationStack.reserve( equation.GetEquationElementsCount() );
         m_equationStack.clear();
 
-        for( uint32_t i = 0; i < equation->GetEquationElementsCount() && isValid; i++ )
+        for( uint32_t i = 0; i < equation.GetEquationElementsCount() && isValid; i++ )
         {
-            TEquationElement_1_0* element = equation->GetEquationElement( i );
+            TEquationElement_1_0* element = equation.GetEquationElement( i );
             switch( element->Type )
             {
                 case EQUATION_ELEM_RD_BITFIELD:
@@ -989,6 +1033,24 @@ Output:
                     break;
                 }
 
+                case EQUATION_ELEM_INFORMATION_SYMBOL:
+                {
+                    if( strcmp( element->SymbolName, "PreviousContextId" ) == 0 )
+                    {
+                        // Return cached context ID from the previous report
+                        typedValue.ValueUInt64 = m_contextIdPrev;
+                    }
+                    else
+                    {
+                        // TODO: not supported yet
+                        typedValue.ValueUInt64 = 0;
+                        MD_ASSERT( false );
+                    }
+                    typedValue.ValueType = VALUE_TYPE_UINT64;
+                    isValid              = EquationStackPush( m_equationStack, typedValue, algorithmCheck );
+                    break;
+                }
+
                 case EQUATION_ELEM_OPERATION:
                 {
                     // Pop two values from stack
@@ -1048,7 +1110,7 @@ Output:
     //     TTypedValue_1_0 - output read value
     //
     //////////////////////////////////////////////////////////////////////////////
-    TTypedValue_1_0 CMetricsCalculator::CalculateReadEquationAndDelta( IEquation_1_0* equation, TDeltaFunction_1_0 deltaFunction, const uint8_t* pRawReportLast, const uint8_t* pRawReportPrev )
+    TTypedValue_1_0 CMetricsCalculator::CalculateReadEquationAndDelta( CEquation& equation, TDeltaFunction_1_0 deltaFunction, const uint8_t* pRawReportLast, const uint8_t* pRawReportPrev )
     {
         TTypedValue_1_0    typedValue, typedValuePrev, typedValueLast;
         TDeltaFunction_1_0 readDeltaFunction;
@@ -1067,12 +1129,12 @@ Output:
         uint32_t algorithmCheck = 0;
 
         // Prepare the stack for calculations.
-        isValid = m_equationStack.reserve( equation->GetEquationElementsCount() );
+        isValid = m_equationStack.reserve( equation.GetEquationElementsCount() );
         m_equationStack.clear();
 
-        for( uint32_t i = 0; i < equation->GetEquationElementsCount() && isValid; i++ )
+        for( uint32_t i = 0; i < equation.GetEquationElementsCount() && isValid; i++ )
         {
-            TEquationElement_1_0* element = equation->GetEquationElement( i );
+            TEquationElement_1_0* element = equation.GetEquationElement( i );
             switch( element->Type )
             {
                 case EQUATION_ELEM_RD_BITFIELD:
@@ -1282,7 +1344,7 @@ Output:
                 {
                     if( previousValue.ValueUInt64 > lastValue.ValueUInt64 )
                     {
-                        uint64_t value         = lastValue.ValueUInt64 | 1LL << deltaFunction.BitsCount;
+                        uint64_t value         = lastValue.ValueUInt64 | ( 1LL << deltaFunction.BitsCount );
                         typedValue.ValueUInt64 = value - previousValue.ValueUInt64;
                         typedValue.ValueType   = VALUE_TYPE_UINT64;
                         return typedValue;
@@ -1327,26 +1389,26 @@ Output:
     //     IEquation_1_0*   equation         - (IN) normalization equation to be calculated
     //     TTypedValue_1_0* deltaValues      - (IN) previously calculated / read delta values
     //     TTypedValue_1_0* outValues        - (IN) so far normalized values (metrics with lower indices)
-    //     IMetricSet_1_1*  metricSet        - MetricSet for calculation
+    //     CMetricSet*      metricSet        - MetricSet for calculation
     //     uint32_t         currentMetricIdx - index of the currently calculated metric
     //
     // Output:
     //     TTypedValue_1_0 - output normalized value
     //
     //////////////////////////////////////////////////////////////////////////////
-    TTypedValue_1_0 CMetricsCalculator::CalculateLocalNormalizationEquation( IEquation_1_0* equation, TTypedValue_1_0* deltaValues, TTypedValue_1_0* outValues, IMetricSet_1_1* metricSet, uint32_t currentMetricIdx )
+    TTypedValue_1_0 CMetricsCalculator::CalculateLocalNormalizationEquation( CEquation& equation, TTypedValue_1_0* deltaValues, TTypedValue_1_0* outValues, uint32_t currentMetricIdx )
     {
         TTypedValue_1_0 typedValue;
         bool            isValid        = true;
         uint32_t        algorithmCheck = 0;
 
         // Prepare the stack for calculations.
-        isValid = m_equationStack.reserve( equation->GetEquationElementsCount() );
+        isValid = m_equationStack.reserve( equation.GetEquationElementsCount() );
         m_equationStack.clear();
 
-        for( uint32_t i = 0; i < equation->GetEquationElementsCount() && isValid; i++ )
+        for( uint32_t i = 0; i < equation.GetEquationElementsCount() && isValid; i++ )
         {
-            TEquationElement_1_0* element = equation->GetEquationElement( i );
+            TEquationElement_1_0* element = equation.GetEquationElement( i );
             switch( element->Type )
             {
                 case EQUATION_ELEM_RD_BITFIELD:
@@ -1745,7 +1807,8 @@ Output:
 
         if( equation )
         {
-            *outValue = CalculateReadEquation( equation, rawReport );
+            CEquation& equationInternal = dynamic_cast<CEquation&>( *equation );
+            *outValue                   = CalculateReadEquation( equationInternal, rawReport );
         }
         else
         {

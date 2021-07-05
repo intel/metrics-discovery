@@ -1,6 +1,6 @@
 //////////////////////////////////////////////////////////////////////////////
 //
-//    Copyright © 2019-2020, Intel Corporation
+//    Copyright © 2019-2021, Intel Corporation
 //
 //    Permission is hereby granted, free of charge, to any person obtaining a
 //    copy of this software and associated documentation files (the "Software"),
@@ -27,27 +27,29 @@
 //////////////////////////////////////////////////////////////////////////////
 
 #include "md_per_platform_preamble.h"
-
+#include "md_internal.h"
 
 
 
 #if ((!defined(MD_INCLUDE_BDW_METRICS) && MD_INCLUDE_ALL_METRICS) || MD_INCLUDE_BDW_METRICS)
+
+using namespace MetricsDiscoveryInternal;
+
 TCompletionCode CreateMetricTreeBDW_PipelineStatistics( CMetricsDevice* metricsDevice, CConcurrentGroup* concurrentGroup )
 {
     MD_LOG_ENTER();
     MD_CHECK_PTR_RET( metricsDevice, CC_ERROR_INVALID_PARAMETER );
     MD_CHECK_PTR_RET( concurrentGroup, CC_ERROR_INVALID_PARAMETER );
 
-    CMetricSet*       metricSet            = NULL;
     CMetric*          metric               = NULL;
     CInformation*     information          = NULL;
     const char*       availabilityEquation = NULL;
     uint32_t          platformMask         = 0;
-  
+
     platformMask = PLATFORM_BDW;
     if( metricsDevice->IsPlatformTypeOf( platformMask ) )
     {
-        metricSet = concurrentGroup->AddMetricSet( "PipelineStats", "Pipeline Statistics for OGL4", API_TYPE_OGL|API_TYPE_OGL4_X,
+        CMetricSet* metricSet = concurrentGroup->AddMetricSet( "PipelineStats", "Pipeline Statistics for OGL4", API_TYPE_OGL|API_TYPE_OGL4_X,
            GPU_RENDER|GPU_COMPUTE, 0, 88, OA_REPORT_TYPE_256B_A45_NOA16, platformMask );
         MD_CHECK_PTR( metricSet );
         
@@ -189,22 +191,24 @@ TCompletionCode CreateMetricTreeBDW_PipelineStatistics( CMetricsDevice* metricsD
 
 
 #if ((!defined(MD_INCLUDE_BDW_METRICS) && MD_INCLUDE_ALL_METRICS) || MD_INCLUDE_BDW_METRICS)
+
+using namespace MetricsDiscoveryInternal;
+
 TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurrentGroup* concurrentGroup )
 {
     MD_LOG_ENTER();
     MD_CHECK_PTR_RET( metricsDevice, CC_ERROR_INVALID_PARAMETER );
     MD_CHECK_PTR_RET( concurrentGroup, CC_ERROR_INVALID_PARAMETER );
 
-    CMetricSet*       metricSet            = NULL;
     CMetric*          metric               = NULL;
     CInformation*     information          = NULL;
     const char*       availabilityEquation = NULL;
     uint32_t          platformMask         = 0;
-  
+
     platformMask = PLATFORM_BDW;
     if( metricsDevice->IsPlatformTypeOf( platformMask ) )
     {
-        metricSet = concurrentGroup->AddMetricSet( "RenderBasic", "Render Metrics Basic Gen8", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+        CMetricSet* metricSet = concurrentGroup->AddMetricSet( "RenderBasic", "Render Metrics Basic set", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
            GPU_RENDER|GPU_COMPUTE, 256, 536, OA_REPORT_TYPE_256B_A45_NOA16, platformMask );
         MD_CHECK_PTR( metricSet );
         
@@ -1254,7 +1258,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
     platformMask = PLATFORM_BDW;
     if( metricsDevice->IsPlatformTypeOf( platformMask ) )
     {
-        metricSet = concurrentGroup->AddMetricSet( "ComputeBasic", "Compute Metrics Basic Gen8", API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+        CMetricSet* metricSet = concurrentGroup->AddMetricSet( "ComputeBasic", "Compute Metrics Basic set", API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
            GPU_RENDER|GPU_COMPUTE, 256, 536, OA_REPORT_TYPE_256B_A45_NOA16, platformMask );
         MD_CHECK_PTR( metricSet );
         
@@ -2084,7 +2088,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
     platformMask = PLATFORM_BDW;
     if( metricsDevice->IsPlatformTypeOf( platformMask ) )
     {
-        metricSet = concurrentGroup->AddMetricSet( "RenderDX1x", "Render Metrics DX1x Gen8", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+        CMetricSet* metricSet = concurrentGroup->AddMetricSet( "RenderDX1x", "Render Metrics DX1x set", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
            GPU_RENDER, 256, 536, OA_REPORT_TYPE_256B_A45_NOA16, platformMask );
         MD_CHECK_PTR( metricSet );
         
@@ -3022,7 +3026,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
     platformMask = PLATFORM_BDW;
     if( metricsDevice->IsPlatformTypeOf( platformMask ) )
     {
-        metricSet = concurrentGroup->AddMetricSet( "RenderPipeProfile", "Render Metrics for 3D Pipeline Profile", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+        CMetricSet* metricSet = concurrentGroup->AddMetricSet( "RenderPipeProfile", "Render Metrics for 3D Pipeline Profile", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
            GPU_RENDER, 256, 536, OA_REPORT_TYPE_256B_A45_NOA16, platformMask );
         MD_CHECK_PTR( metricSet );
         
@@ -3827,7 +3831,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
     platformMask = PLATFORM_BDW;
     if( metricsDevice->IsPlatformTypeOf( platformMask ) )
     {
-        metricSet = concurrentGroup->AddMetricSet( "MemoryReads", "Memory Reads Distribution Gen8", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+        CMetricSet* metricSet = concurrentGroup->AddMetricSet( "MemoryReads", "Memory Reads Distribution metric set", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
            GPU_RENDER|GPU_COMPUTE, 256, 536, OA_REPORT_TYPE_256B_A45_NOA16, platformMask );
         MD_CHECK_PTR( metricSet );
         
@@ -4538,7 +4542,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
     platformMask = PLATFORM_BDW;
     if( metricsDevice->IsPlatformTypeOf( platformMask ) )
     {
-        metricSet = concurrentGroup->AddMetricSet( "MemoryWrites", "Memory Writes Distribution Gen8", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+        CMetricSet* metricSet = concurrentGroup->AddMetricSet( "MemoryWrites", "Memory Writes Distribution metric set", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
            GPU_RENDER|GPU_COMPUTE, 256, 536, OA_REPORT_TYPE_256B_A45_NOA16, platformMask );
         MD_CHECK_PTR( metricSet );
         
@@ -5236,7 +5240,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
     platformMask = PLATFORM_BDW;
     if( metricsDevice->IsPlatformTypeOf( platformMask ) )
     {
-        metricSet = concurrentGroup->AddMetricSet( "ComputeExtended", "Compute Metrics Extended Gen8", API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+        CMetricSet* metricSet = concurrentGroup->AddMetricSet( "ComputeExtended", "Compute Metrics Extended metric set", API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
            GPU_COMPUTE, 256, 536, OA_REPORT_TYPE_256B_A45_NOA16, platformMask );
         MD_CHECK_PTR( metricSet );
         
@@ -6666,7 +6670,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
     platformMask = PLATFORM_BDW;
     if( metricsDevice->IsPlatformTypeOf( platformMask ) )
     {
-        metricSet = concurrentGroup->AddMetricSet( "ComputeL3Cache", "Compute Metrics L3 Cache Gen8", API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+        CMetricSet* metricSet = concurrentGroup->AddMetricSet( "ComputeL3Cache", "Compute Metrics L3 Cache metric set", API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
            GPU_RENDER|GPU_COMPUTE, 256, 536, OA_REPORT_TYPE_256B_A45_NOA16, platformMask );
         MD_CHECK_PTR( metricSet );
         
@@ -7690,7 +7694,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
     platformMask = PLATFORM_BDW;
     if( metricsDevice->IsPlatformTypeOf( platformMask ) )
     {
-        metricSet = concurrentGroup->AddMetricSet( "DataPortReadsCoalescing", "Data Port Reads Coalescing Gen8", API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+        CMetricSet* metricSet = concurrentGroup->AddMetricSet( "DataPortReadsCoalescing", "Data Port Reads Coalescing metric set", API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
            GPU_COMPUTE, 256, 536, OA_REPORT_TYPE_256B_A45_NOA16, platformMask );
         MD_CHECK_PTR( metricSet );
         
@@ -8381,7 +8385,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
     platformMask = PLATFORM_BDW;
     if( metricsDevice->IsPlatformTypeOf( platformMask ) )
     {
-        metricSet = concurrentGroup->AddMetricSet( "DataPortWritesCoalescing", "Data Port Writes Coalescing Gen8", API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+        CMetricSet* metricSet = concurrentGroup->AddMetricSet( "DataPortWritesCoalescing", "Data Port Writes Coalescing metric set", API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
            GPU_COMPUTE, 256, 536, OA_REPORT_TYPE_256B_A45_NOA16, platformMask );
         MD_CHECK_PTR( metricSet );
         
@@ -9108,7 +9112,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
     platformMask = PLATFORM_BDW;
     if( metricsDevice->IsPlatformTypeOf( platformMask ) )
     {
-        metricSet = concurrentGroup->AddMetricSet( "HDCAndSF", "Metric set HDCAndSF", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+        CMetricSet* metricSet = concurrentGroup->AddMetricSet( "HDCAndSF", "Metric set HDCAndSF", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
            GPU_RENDER|GPU_COMPUTE, 256, 536, OA_REPORT_TYPE_256B_A45_NOA16, platformMask );
         MD_CHECK_PTR( metricSet );
         
@@ -9912,7 +9916,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
     platformMask = PLATFORM_BDW;
     if( metricsDevice->IsPlatformTypeOf( platformMask ) )
     {
-        metricSet = concurrentGroup->AddMetricSet( "L3_1", "Metric set L3_1", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+        CMetricSet* metricSet = concurrentGroup->AddMetricSet( "L3_1", "Metric set L3_1", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
            GPU_RENDER|GPU_COMPUTE, 256, 536, OA_REPORT_TYPE_256B_A45_NOA16, platformMask );
         MD_CHECK_PTR( metricSet );
         
@@ -10672,7 +10676,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
     platformMask = PLATFORM_BDW;
     if( metricsDevice->IsPlatformTypeOf( platformMask ) )
     {
-        metricSet = concurrentGroup->AddMetricSet( "L3_2", "Metric set L3_2", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+        CMetricSet* metricSet = concurrentGroup->AddMetricSet( "L3_2", "Metric set L3_2", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
            GPU_RENDER|GPU_COMPUTE, 256, 536, OA_REPORT_TYPE_256B_A45_NOA16, platformMask );
         MD_CHECK_PTR( metricSet );
         
@@ -11419,7 +11423,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
     platformMask = PLATFORM_BDW;
     if( metricsDevice->IsPlatformTypeOf( platformMask ) )
     {
-        metricSet = concurrentGroup->AddMetricSet( "L3_3", "Metric set L3_3", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+        CMetricSet* metricSet = concurrentGroup->AddMetricSet( "L3_3", "Metric set L3_3", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
            GPU_RENDER|GPU_COMPUTE, 256, 536, OA_REPORT_TYPE_256B_A45_NOA16, platformMask );
         MD_CHECK_PTR( metricSet );
         
@@ -12182,7 +12186,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
     platformMask = PLATFORM_BDW;
     if( metricsDevice->IsPlatformTypeOf( platformMask ) )
     {
-        metricSet = concurrentGroup->AddMetricSet( "L3_4", "Metric set L3_4", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+        CMetricSet* metricSet = concurrentGroup->AddMetricSet( "L3_4", "Metric set L3_4", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
            GPU_RENDER|GPU_COMPUTE, 256, 536, OA_REPORT_TYPE_256B_A45_NOA16, platformMask );
         MD_CHECK_PTR( metricSet );
         
@@ -12944,7 +12948,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
     platformMask = PLATFORM_BDW;
     if( metricsDevice->IsPlatformTypeOf( platformMask ) )
     {
-        metricSet = concurrentGroup->AddMetricSet( "RasterizerAndPixelBackend", "Metric set RasterizerAndPixelBackend", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+        CMetricSet* metricSet = concurrentGroup->AddMetricSet( "RasterizerAndPixelBackend", "Metric set RasterizerAndPixelBackend", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
            GPU_RENDER|GPU_COMPUTE, 256, 536, OA_REPORT_TYPE_256B_A45_NOA16, platformMask );
         MD_CHECK_PTR( metricSet );
         
@@ -13825,7 +13829,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
     platformMask = PLATFORM_BDW;
     if( metricsDevice->IsPlatformTypeOf( platformMask ) )
     {
-        metricSet = concurrentGroup->AddMetricSet( "Sampler_1", "Metric set Sampler_1", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+        CMetricSet* metricSet = concurrentGroup->AddMetricSet( "Sampler_1", "Metric set Sampler_1", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
            GPU_RENDER|GPU_COMPUTE, 256, 536, OA_REPORT_TYPE_256B_A45_NOA16, platformMask );
         MD_CHECK_PTR( metricSet );
         
@@ -14644,7 +14648,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
     platformMask = PLATFORM_BDW;
     if( metricsDevice->IsPlatformTypeOf( platformMask ) )
     {
-        metricSet = concurrentGroup->AddMetricSet( "Sampler_2", "Metric set Sampler_2", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+        CMetricSet* metricSet = concurrentGroup->AddMetricSet( "Sampler_2", "Metric set Sampler_2", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
            GPU_RENDER|GPU_COMPUTE, 256, 536, OA_REPORT_TYPE_256B_A45_NOA16, platformMask );
         MD_CHECK_PTR( metricSet );
         
@@ -15451,7 +15455,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
     platformMask = PLATFORM_BDW;
     if( metricsDevice->IsPlatformTypeOf( platformMask ) )
     {
-        metricSet = concurrentGroup->AddMetricSet( "TDL_1", "Metric set TDL_1", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+        CMetricSet* metricSet = concurrentGroup->AddMetricSet( "TDL_1", "Metric set TDL_1", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
            GPU_RENDER|GPU_COMPUTE, 256, 536, OA_REPORT_TYPE_256B_A45_NOA16, platformMask );
         MD_CHECK_PTR( metricSet );
         
@@ -16403,7 +16407,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
     platformMask = PLATFORM_BDW;
     if( metricsDevice->IsPlatformTypeOf( platformMask ) )
     {
-        metricSet = concurrentGroup->AddMetricSet( "TDL_2", "Metric set TDL_2", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+        CMetricSet* metricSet = concurrentGroup->AddMetricSet( "TDL_2", "Metric set TDL_2", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
            GPU_RENDER|GPU_COMPUTE, 256, 536, OA_REPORT_TYPE_256B_A45_NOA16, platformMask );
         MD_CHECK_PTR( metricSet );
         
@@ -17359,7 +17363,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
     platformMask = PLATFORM_BDW;
     if( metricsDevice->IsPlatformTypeOf( platformMask ) )
     {
-        metricSet = concurrentGroup->AddMetricSet( "ComputeExtra", "Compute Metrics Extra Gen8", API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+        CMetricSet* metricSet = concurrentGroup->AddMetricSet( "ComputeExtra", "Compute Metrics Extra set", API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
            GPU_RENDER|GPU_COMPUTE, 256, 536, OA_REPORT_TYPE_256B_A45_NOA16, platformMask );
         MD_CHECK_PTR( metricSet );
         
@@ -17632,7 +17636,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
     platformMask = PLATFORM_BDW;
     if( metricsDevice->IsPlatformTypeOf( platformMask ) )
     {
-        metricSet = concurrentGroup->AddMetricSet( "VMEPipe", "Media Vme Pipe Gen8", API_TYPE_IOSTREAM,
+        CMetricSet* metricSet = concurrentGroup->AddMetricSet( "VMEPipe", "Media Vme Pipe metric set", API_TYPE_IOSTREAM,
            GPU_MEDIA, 256, 536, OA_REPORT_TYPE_256B_A45_NOA16, platformMask );
         MD_CHECK_PTR( metricSet );
         
@@ -17973,7 +17977,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
     platformMask = PLATFORM_BDW;
     if( metricsDevice->IsPlatformTypeOf( platformMask ) )
     {
-        metricSet = concurrentGroup->AddMetricSet( "GpuBusyness", "Gpu Rings Busyness", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+        CMetricSet* metricSet = concurrentGroup->AddMetricSet( "GpuBusyness", "Gpu Rings Busyness", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
            GPU_RENDER|GPU_COMPUTE|GPU_MEDIA|GPU_GENERIC, 256, 536, OA_REPORT_TYPE_256B_A45_NOA16, platformMask );
         MD_CHECK_PTR( metricSet );
         
@@ -18242,7 +18246,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
     platformMask = PLATFORM_BDW;
     if( metricsDevice->IsPlatformTypeOf( platformMask ) )
     {
-        metricSet = concurrentGroup->AddMetricSet( "TestOa", "MDAPI testing set Gen8", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+        CMetricSet* metricSet = concurrentGroup->AddMetricSet( "TestOa", "MDAPI testing set", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
            GPU_RENDER|GPU_COMPUTE, 256, 536, OA_REPORT_TYPE_256B_A45_NOA16, platformMask );
         MD_CHECK_PTR( metricSet );
         
@@ -18552,7 +18556,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
     platformMask = PLATFORM_BDW;
     if( metricsDevice->IsPlatformTypeOf( platformMask ) )
     {
-        metricSet = concurrentGroup->AddMetricSet( "STC_PmaStall", "Metric set PMA Stall", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+        CMetricSet* metricSet = concurrentGroup->AddMetricSet( "STC_PmaStall", "Metric set PMA Stall", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
            GPU_RENDER, 256, 536, OA_REPORT_TYPE_256B_A45_NOA16, platformMask );
         MD_CHECK_PTR( metricSet );
         

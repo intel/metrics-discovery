@@ -1,6 +1,6 @@
 //////////////////////////////////////////////////////////////////////////////
 //
-//  Copyright © 2019-2020, Intel Corporation
+//  Copyright © 2019-2021, Intel Corporation
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a
 //  copy of this software and associated documentation files (the "Software"),
@@ -32,9 +32,8 @@
 #include "md_driver_ifc.h"
 #include "md_utils.h"
 #include "md_calculation.h"
-#include "md_sub_devices_linux.h"
 #include <vector>
-
+#include "md_sub_devices_linux.h"
 
 #define MD_BYTE            8
 #define MD_MBYTE           1048576
@@ -249,8 +248,8 @@ namespace MetricsDiscoveryInternal
         virtual TCompletionCode           SaveMetricsDeviceToFile( const char* fileName, void* saveParams, IMetricsDevice_1_5* metricsDevice );
 
         // Non API:
-        CDriverInterface*        GetDriverInterface();
-        const TEngineParams_1_9* GetTbsEngineParams( const uint32_t subDeviceIndex );
+        CDriverInterface* GetDriverInterface();
+        CSubDevices&      GetSubDevices();
 
     public:
         // Constructor & Destructor:
@@ -304,7 +303,7 @@ namespace MetricsDiscoveryInternal
     {
     public:
         // Constructor & Destructor:
-        CSymbolSet( CDriverInterface& driverInterface );
+        CSymbolSet( CMetricsDevice& metricsDevice, CDriverInterface& driverInterface );
         ~CSymbolSet();
 
         // Non-API:
@@ -323,11 +322,12 @@ namespace MetricsDiscoveryInternal
         TCompletionCode    RedetectSymbol( const char* name );
 
     private:
-        bool IsPavpDisabled( uint32_t capabilities );
+        bool            IsPavpDisabled( uint32_t capabilities );
 
     private:
         // Variables:
         Vector<TGlobalSymbol*>* m_symbolVector;
+        CMetricsDevice&         m_metricsDevice;
         CDriverInterface&       m_driverInterface;
 
     private:
@@ -344,7 +344,7 @@ namespace MetricsDiscoveryInternal
     //     GPU metrics root object. Stores all the concurrent groups and global symbols.
     //
     //////////////////////////////////////////////////////////////////////////////
-    class CMetricsDevice : public IMetricsDevice_1_5
+    class CMetricsDevice : public IMetricsDevice_1_10
     {
     public:
         // API 1.0:
@@ -358,6 +358,9 @@ namespace MetricsDiscoveryInternal
         // API 1.2:
         virtual IOverride_1_2* GetOverride( uint32_t index );
         virtual IOverride_1_2* GetOverrideByName( const char* symbolName );
+
+        //API 1.10:
+        virtual TCompletionCode GetGpuCpuTimestamps( uint64_t* gpuTimestampNs, uint64_t* cpuTimestampNs, uint32_t* cpuId, uint64_t* correlationIndicatorNs );
 
     public:
         // Constructor & Destructor:
@@ -586,7 +589,6 @@ namespace MetricsDiscoveryInternal
         void            SetIoMeasurementInfoPredefined( TIoMeasurementInfoType ioMeasurementInfoType, uint32_t value, uint32_t* index );
         TCompletionCode ReadGpuContextIdTags( void );
         TCompletionCode TryReadGpuCtxTags( void );
-        TCompletionCode ProcessGpuContextTags( TContextTag* tags, uint32_t tagCount );
 
     protected:
         // Variables:
@@ -799,7 +801,7 @@ namespace MetricsDiscoveryInternal
 
     public:
         // Constructor & Destructor:
-        CMetric( CMetricsDevice* device, uint32_t id, const char* name, const char* shortName, const char* longName, const char* group, uint32_t groupId, uint32_t usageFlagsMask, uint32_t apiMask, TMetricType metricType, TMetricResultType resultType, const char* units, int64_t loWatermark, int64_t hiWatermark, THwUnitType hwType, const char* alias, const char* signalName );
+        CMetric( CMetricsDevice* device, uint32_t id, const char* name, const char* shortName, const char* longName, const char* group, uint32_t groupId, uint32_t usageFlagsMask, uint32_t apiMask, TMetricType metricType, TMetricResultType resultType, const char* units, int64_t loWatermark, int64_t hiWatermark, THwUnitType hwType, const char* alias, const char* signalName, bool isCustom = false );
         explicit CMetric( const CMetric& other );
         virtual ~CMetric();
 
@@ -817,7 +819,8 @@ namespace MetricsDiscoveryInternal
         const char*     GetSignalName();
 
         // Variables:
-        uint32_t m_id; // Position in set before any filterings (SetApiFiltering, AvailableEquation check)
+        uint32_t m_id;       // Position in set before any filterings (SetApiFiltering, AvailableEquation check)
+        bool     m_isCustom; // true if metric was created from AddCustomMetric function
 
     private:
         uint64_t GetMetricValue( const char* valueString );
@@ -956,13 +959,5 @@ namespace MetricsDiscoveryInternal
         // Static variables:
         static const uint32_t EQUATION_VECTOR_INCREASE = 32;
     };
-
-    /******************************************************************************/
-    /* Helper functions:                                                          */
-    /******************************************************************************/
-    TCompletionCode   GetOpenCloseSemaphore( void** semaphorePtr );
-    TCompletionCode   ReleaseOpenCloseSemaphore( void** semaphorePtr );
-    CDriverInterface* GetDriverIfc();
-    void              DestroyDriverIfc();
 
 }; // namespace MetricsDiscoveryInternal

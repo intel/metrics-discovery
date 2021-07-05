@@ -1,6 +1,6 @@
 //////////////////////////////////////////////////////////////////////////////
 //
-//  Copyright © 2019-2020, Intel Corporation
+//  Copyright © 2019-2021, Intel Corporation
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a
 //  copy of this software and associated documentation files (the "Software"),
@@ -28,6 +28,7 @@
 #pragma once
 
 #include "metrics_discovery_api.h"
+#include "md_per_platform_preamble.h"
 #include "md_debug.h"
 #include "iu_std.h"
 
@@ -86,6 +87,7 @@
 #define MD_BIT( i )                          ( 1 << ( i ) )
 #define MD_BITMASK( n )                      ( ~( ( uint64_t )( -1 ) << ( n ) ) )
 #define MD_BITMASK_RANGE( startbit, endbit ) ( MD_BITMASK( ( endbit ) + 1 ) & ~MD_BITMASK( startbit ) )
+#define MD_BITS_PER_BYTE                     ( 8 )
 
 #define MD_SECOND_IN_NS       1000000000ULL
 #define MD_GPU_TIMESTAMP_MASK MD_BITMASK( 32 )
@@ -740,14 +742,13 @@ namespace MetricsDiscoveryInternal
             , m_vectorSize( 0 )
             , m_elementsCount( 0 )
         {
-            m_vector = new( std::nothrow ) T[m_vectorIncrease];
+            m_vector = new( std::nothrow ) T[m_vectorIncrease]{};
             if( !m_vector )
             {
                 MD_ASSERT( false );
                 return;
             }
 
-            memset( m_vector, 0x0, sizeof( T ) * m_vectorIncrease );
             m_vectorSize    = m_vectorIncrease;
             m_elementsCount = 0;
         }
@@ -940,14 +941,13 @@ namespace MetricsDiscoveryInternal
         //////////////////////////////////////////////////////////////////////////////
         void IncreaseSize()
         {
-            T* newVector = new( std::nothrow ) T[m_vectorSize + m_vectorIncrease];
+            T* newVector = new( std::nothrow ) T[m_vectorSize + m_vectorIncrease]{};
             if( !newVector )
             {
                 MD_ASSERT( false );
                 return;
             }
 
-            memset( &newVector[m_vectorSize], 0x0, sizeof( T ) * m_vectorIncrease );
             for( uint32_t i = 0; i < m_vectorSize; i++ )
             {
                 newVector[i] = m_vector[i];

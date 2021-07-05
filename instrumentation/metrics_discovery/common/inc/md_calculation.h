@@ -1,6 +1,6 @@
 //////////////////////////////////////////////////////////////////////////////
 //
-//  Copyright © 2019-2020, Intel Corporation
+//  Copyright © 2019-2021, Intel Corporation
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a
 //  copy of this software and associated documentation files (the "Software"),
@@ -25,29 +25,35 @@
 //  Abstract:   C++ metrics discovery metrics calculation features header.
 //
 //////////////////////////////////////////////////////////////////////////////
+#pragma once
+
 #include "metrics_discovery_api.h"
 #include "md_utils.h"
 
-#define MD_SAVED_REPORT_NUMBER 0xFFFFFFFF
+#define MD_SAVED_REPORT_NUMBER            0xFFFFFFFF
 
 using namespace MetricsDiscovery;
 
 namespace MetricsDiscoveryInternal
 {
-    /* Forward declarations */
+    // Forward declarations //
     class CMetricsCalculator;
+    class CMetricsDevice;
+    class CMetricSet;
+    class CEquation;
 
     ///////////////////////////////////////////////////////////////////////////////
-    // Common calculation context:
+    //      * Common calculation context:
     //////////////////////////////////////////////////////////////////////////////
     typedef struct SCommonCalculationContext
     {
         // MetricsCalculator
         CMetricsCalculator* Calculator; // Required
 
-        // MetricSet
-        IMetricSet_1_1* MetricSet; // Required
-        uint32_t        MetricsAndInformationCount;
+        // ConcurrentGroup and MetricSet
+        IConcurrentGroup_1_5* ConcurrentGroup;
+        CMetricSet*           MetricSet; // Required
+        uint32_t              MetricsAndInformationCount;
 
         // Input
         const uint8_t* RawData;        // Required
@@ -67,7 +73,7 @@ namespace MetricsDiscoveryInternal
     } TCommonCalculationContext;
 
     ///////////////////////////////////////////////////////////////////////////////
-    // Stream specific calculation context:
+    //      * Stream specific calculation context:
     //////////////////////////////////////////////////////////////////////////////
     typedef struct SStreamCalculationContext : public TCommonCalculationContext
     {
@@ -87,7 +93,7 @@ namespace MetricsDiscoveryInternal
     } TStreamCalculationContext;
 
     ///////////////////////////////////////////////////////////////////////////////
-    // Query specific calculation context:
+    //      * Query specific calculation context:
     //////////////////////////////////////////////////////////////////////////////
     typedef struct SQueryCalculationContext : public TCommonCalculationContext
     {
@@ -97,7 +103,7 @@ namespace MetricsDiscoveryInternal
     } TQueryCalculationContext;
 
     ///////////////////////////////////////////////////////////////////////////////
-    // Union with all of calculation contexts:
+    //      * Union with all of calculation contexts:
     //////////////////////////////////////////////////////////////////////////////
     typedef union SCalculationContext
     {
@@ -142,8 +148,7 @@ namespace MetricsDiscoveryInternal
         virtual bool            CalculateNextReport( TCalculationContext& context );
 
     private:
-        bool    FindIoReportOfInterest( TStreamCalculationContext* sc, bool isPrevReport );
-        int32_t GetInformationIndex( const char* symbolName, IMetricSet_1_1* set );
+        int32_t GetInformationIndex( const char* symbolName, CMetricSet* set );
     };
 
     //////////////////////////////////////////////////////////////////////////////
@@ -158,7 +163,7 @@ namespace MetricsDiscoveryInternal
     class CMetricsCalculator
     {
     public:
-        CMetricsCalculator( IMetricsDevice_1_1* metricsDevice );
+        CMetricsCalculator( CMetricsDevice* metricsDevice );
         ~CMetricsCalculator();
 
         void Reset( uint32_t rawReportSize = 0 );
@@ -166,86 +171,93 @@ namespace MetricsDiscoveryInternal
         TCompletionCode ReadMetricsFromQueryReport(
             const uint8_t*   rawData,
             TTypedValue_1_0* outValues,
-            IMetricSet_1_1*  metricSet );
+            CMetricSet&      metricSet );
 
         TCompletionCode ReadMetricsFromIoReport(
             const uint8_t*   reportRaportLast,
             const uint8_t*   reportRaportPrev,
             TTypedValue_1_0* outValues,
-            IMetricSet_1_1*  metricSet );
+            CMetricSet&      metricSet );
 
         void NormalizeMetrics(
             TTypedValue_1_0* deltaValues,
             TTypedValue_1_0* outValues,
-            IMetricSet_1_1*  metricSet );
-
+            CMetricSet&      metricSet );
         void ReadInformation(
             const uint8_t*   rawData,
             TTypedValue_1_0* outValues,
-            IMetricSet_1_1*  metricSet );
+            CMetricSet&      metricSet,
+            int32_t          contextIdIdx );
+
+        void ReadContextIdInformation(
+            const uint8_t* rawData,
+            CMetricSet&    metricSet,
+            int32_t        contextIdIdx );
+
+        uint64_t ReadInformationByIndex(
+            const uint8_t* rawData,
+            CMetricSet&    metricSet,
+            int32_t        informationIndex );
+
+        void ReadSingleInformation(
+            const uint8_t*    rawReport,
+            IInformation_1_0* information,
+            uint32_t          apiMask,
+            TTypedValue_1_0*  result );
+
 
         void ReadIoMeasurementInformation(
-            IConcurrentGroup_1_1* concurrentGroup,
+            IConcurrentGroup_1_1& concurrentGroup,
             TTypedValue_1_0*      outValues );
 
         void CalculateMaxValues(
             TTypedValue_1_0* deltaMetricValues,
             TTypedValue_1_0* outMetricValues,
             TTypedValue_1_0* outMaxValues,
-            IMetricSet_1_1*  metricSet );
+            CMetricSet&      metricSet );
 
         TCompletionCode SaveReport( const uint8_t* lastReport );
         bool            SavedReportPresent();
-        unsigned char*  GetSavedReport();
+        uint8_t*        GetSavedReport();
         void            DiscardSavedReport();
 
+        uint64_t CastToUInt64( const TTypedValue_1_0& value );
+        float CastToFloat( const TTypedValue_1_0& value );
+
+        uint64_t ReadBitfield(
+            const uint8_t* rawReport,
+            uint32_t       bitOffset,
+            uint32_t       bitCount );
+
     private:
-        TTypedValue_1_0 CalculateReadEquation(
-            IEquation_1_0* equation,
-            const uint8_t* rawReport );
-
-        TTypedValue_1_0 CalculateReadEquationAndDelta(
-            IEquation_1_0*     equation,
-            TDeltaFunction_1_0 deltaFunction,
-            const uint8_t*     pRawReportLast,
-            const uint8_t*     pRawReportPrev );
-
         TTypedValue_1_0 CalculateDeltaFunction(
             TDeltaFunction_1_0     deltaFunction,
             const TTypedValue_1_0& lastValue,
             const TTypedValue_1_0& previousValue );
 
+        TTypedValue_1_0* GetGlobalSymbolValue(
+            const char* symbolName );
+
+        TTypedValue_1_0 CalculateReadEquation(
+            CEquation&     equation,
+            const uint8_t* rawReport );
+
+        TTypedValue_1_0 CalculateReadEquationAndDelta(
+            CEquation&         equation,
+            TDeltaFunction_1_0 deltaFunction,
+            const uint8_t*     pRawReportLast,
+            const uint8_t*     pRawReportPrev );
+
         TTypedValue_1_0 CalculateLocalNormalizationEquation(
-            IEquation_1_0*   equation,
+            CEquation&       equation,
             TTypedValue_1_0* deltaValues,
             TTypedValue_1_0* results,
-            IMetricSet_1_1*  metricSet,
             uint32_t         metricIndex );
 
         TTypedValue_1_0 CalculateEquationElemOperation(
             TEquationOperation     operation,
             const TTypedValue_1_0& valuePrev,
             const TTypedValue_1_0& valueLast );
-
-        void ReadSingleInformation(
-            const unsigned char* rawReport,
-            IInformation_1_0*    information,
-            uint32_t             apiMask,
-            TTypedValue_1_0*     result );
-
-        uint64_t CastToUInt64(
-            const TTypedValue_1_0& value );
-
-        float CastToFloat(
-            const TTypedValue_1_0& value );
-
-        uint64_t ReadBitfield(
-            const unsigned char* rawReport,
-            uint32_t             bitOffset,
-            uint32_t             bitCount );
-
-        TTypedValue_1_0* GetGlobalSymbolValue(
-            const char* symbolName );
 
         // Inline function
         bool inline EquationStackPush(
@@ -265,7 +277,8 @@ namespace MetricsDiscoveryInternal
         uint32_t               m_savedReportSize;
         uint8_t*               m_savedReport;
         bool                   m_savedReportPresent;
-        IMetricsDevice_1_1*    m_device;
+        uint64_t               m_contextIdPrev;
+        CMetricsDevice*        m_device;
     };
 
 } // namespace MetricsDiscoveryInternal

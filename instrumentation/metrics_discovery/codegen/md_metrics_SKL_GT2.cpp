@@ -1,6 +1,6 @@
 //////////////////////////////////////////////////////////////////////////////
 //
-//    Copyright © 2019-2020, Intel Corporation
+//    Copyright © 2019-2021, Intel Corporation
 //
 //    Permission is hereby granted, free of charge, to any person obtaining a
 //    copy of this software and associated documentation files (the "Software"),
@@ -27,27 +27,29 @@
 //////////////////////////////////////////////////////////////////////////////
 
 #include "md_per_platform_preamble.h"
-
+#include "md_internal.h"
 
 
 
 #if ((!defined(MD_INCLUDE_SKL_GT2_METRICS) && MD_INCLUDE_ALL_METRICS) || MD_INCLUDE_SKL_GT2_METRICS)
+
+using namespace MetricsDiscoveryInternal;
+
 TCompletionCode CreateMetricTreeSKL_GT2_PipelineStatistics( CMetricsDevice* metricsDevice, CConcurrentGroup* concurrentGroup )
 {
     MD_LOG_ENTER();
     MD_CHECK_PTR_RET( metricsDevice, CC_ERROR_INVALID_PARAMETER );
     MD_CHECK_PTR_RET( concurrentGroup, CC_ERROR_INVALID_PARAMETER );
 
-    CMetricSet*       metricSet            = NULL;
     CMetric*          metric               = NULL;
     CInformation*     information          = NULL;
     const char*       availabilityEquation = NULL;
     uint32_t          platformMask         = 0;
-  
+
     platformMask = PLATFORM_SKL;
     if( metricsDevice->IsPlatformTypeOf( platformMask, GT_TYPE_GT2 ) )
     {
-        metricSet = concurrentGroup->AddMetricSet( "PipelineStats", "Pipeline Statistics for OGL4", API_TYPE_OGL|API_TYPE_OGL4_X,
+        CMetricSet* metricSet = concurrentGroup->AddMetricSet( "PipelineStats", "Pipeline Statistics for OGL4", API_TYPE_OGL|API_TYPE_OGL4_X,
            GPU_RENDER|GPU_COMPUTE, 0, 88, OA_REPORT_TYPE_256B_A45_NOA16, platformMask, GT_TYPE_GT2 );
         MD_CHECK_PTR( metricSet );
         
@@ -189,22 +191,24 @@ TCompletionCode CreateMetricTreeSKL_GT2_PipelineStatistics( CMetricsDevice* metr
 
 
 #if ((!defined(MD_INCLUDE_SKL_GT2_METRICS) && MD_INCLUDE_ALL_METRICS) || MD_INCLUDE_SKL_GT2_METRICS)
+
+using namespace MetricsDiscoveryInternal;
+
 TCompletionCode CreateMetricTreeSKL_GT2_PipelineTimestamps( CMetricsDevice* metricsDevice, CConcurrentGroup* concurrentGroup )
 {
     MD_LOG_ENTER();
     MD_CHECK_PTR_RET( metricsDevice, CC_ERROR_INVALID_PARAMETER );
     MD_CHECK_PTR_RET( concurrentGroup, CC_ERROR_INVALID_PARAMETER );
 
-    CMetricSet*       metricSet            = NULL;
     CMetric*          metric               = NULL;
     CInformation*     information          = NULL;
     const char*       availabilityEquation = NULL;
     uint32_t          platformMask         = 0;
-  
+
     platformMask = PLATFORM_SKL;
     if( metricsDevice->IsPlatformTypeOf( platformMask, GT_TYPE_GT2 ) )
     {
-        metricSet = concurrentGroup->AddMetricSet( "PipelineTimestamps", "Pipeline Timestamps", API_TYPE_OGL|API_TYPE_OGL4_X,
+        CMetricSet* metricSet = concurrentGroup->AddMetricSet( "PipelineTimestamps", "Pipeline Timestamps", API_TYPE_OGL|API_TYPE_OGL4_X,
            GPU_RENDER, 0, 48, OA_REPORT_TYPE_256B_A45_NOA16, platformMask, GT_TYPE_GT2 );
         MD_CHECK_PTR( metricSet );
         
@@ -289,22 +293,24 @@ TCompletionCode CreateMetricTreeSKL_GT2_PipelineTimestamps( CMetricsDevice* metr
 
 
 #if ((!defined(MD_INCLUDE_SKL_GT2_METRICS) && MD_INCLUDE_ALL_METRICS) || MD_INCLUDE_SKL_GT2_METRICS)
+
+using namespace MetricsDiscoveryInternal;
+
 TCompletionCode CreateMetricTreeSKL_GT2_OA( CMetricsDevice* metricsDevice, CConcurrentGroup* concurrentGroup )
 {
     MD_LOG_ENTER();
     MD_CHECK_PTR_RET( metricsDevice, CC_ERROR_INVALID_PARAMETER );
     MD_CHECK_PTR_RET( concurrentGroup, CC_ERROR_INVALID_PARAMETER );
 
-    CMetricSet*       metricSet            = NULL;
     CMetric*          metric               = NULL;
     CInformation*     information          = NULL;
     const char*       availabilityEquation = NULL;
     uint32_t          platformMask         = 0;
-  
+
     platformMask = PLATFORM_SKL;
     if( metricsDevice->IsPlatformTypeOf( platformMask, GT_TYPE_GT2 ) )
     {
-        metricSet = concurrentGroup->AddMetricSet( "RenderBasic", "Render Metrics Basic Gen9", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+        CMetricSet* metricSet = concurrentGroup->AddMetricSet( "RenderBasic", "Render Metrics Basic set", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
            GPU_RENDER|GPU_COMPUTE, 256, 672, OA_REPORT_TYPE_256B_A45_NOA16, platformMask, GT_TYPE_GT2 );
         MD_CHECK_PTR( metricSet );
         
@@ -1109,6 +1115,46 @@ TCompletionCode CreateMetricTreeSKL_GT2_OA( CMetricsDevice* metricsDevice, CConc
             MD_CHECK_CC( information->SetSnapshotReportReadEquation( "dw@0x5c" ));
         }
 
+        information = metricSet->AddInformation( "ReportError", "Query report error",
+            "An error in the query execution, the received report should be ignored.",
+            "Report Meta Data", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
+            INFORMATION_TYPE_FLAG, NULL, NULL, 21 );
+        if( information )
+        {
+            
+            MD_CHECK_CC( information->SetDeltaReportReadEquation( "dw@0x29c 0x12 AND" ));
+        }
+
+        information = metricSet->AddInformation( "ReportInconsistent", "Query report inconsistent",
+            "The contextId inconsistency in the Oa buffer within the query window.",
+            "Report Meta Data", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
+            INFORMATION_TYPE_FLAG, NULL, NULL, 22 );
+        if( information )
+        {
+            
+            MD_CHECK_CC( information->SetDeltaReportReadEquation( "dw@0x29c 0x02 AND" ));
+        }
+
+        information = metricSet->AddInformation( "ReportCtxSwitchLost", "Query report context switch lost",
+            "Oa buffer has not been browsed to find context switch reports to filter out unfamiliar contexts from the query report.",
+            "Report Meta Data", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
+            INFORMATION_TYPE_FLAG, NULL, NULL, 23 );
+        if( information )
+        {
+            
+            MD_CHECK_CC( information->SetDeltaReportReadEquation( "dw@0x29c 0x08 AND" ));
+        }
+
+        information = metricSet->AddInformation( "ReportWithoutWorkload", "Query report missing workload",
+            "Missing workload between query begin and query end.",
+            "Report Meta Data", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
+            INFORMATION_TYPE_FLAG, NULL, NULL, 24 );
+        if( information )
+        {
+            
+            MD_CHECK_CC( information->SetDeltaReportReadEquation( "dw@0x29c 0x10 AND" ));
+        }
+
         availabilityEquation = "$SkuRevisionId 0x02 UGTE";
         if( MD_IS_INTERNAL_BUILD || metricsDevice->IsAvailabilityEquationTrue( availabilityEquation ) )
         {
@@ -1204,7 +1250,7 @@ TCompletionCode CreateMetricTreeSKL_GT2_OA( CMetricsDevice* metricsDevice, CConc
     platformMask = PLATFORM_SKL;
     if( metricsDevice->IsPlatformTypeOf( platformMask, GT_TYPE_GT2 ) )
     {
-        metricSet = concurrentGroup->AddMetricSet( "ComputeBasic", "Compute Metrics Basic Gen9", API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+        CMetricSet* metricSet = concurrentGroup->AddMetricSet( "ComputeBasic", "Compute Metrics Basic set", API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
            GPU_RENDER|GPU_COMPUTE, 256, 672, OA_REPORT_TYPE_256B_A45_NOA16, platformMask, GT_TYPE_GT2 );
         MD_CHECK_PTR( metricSet );
         
@@ -1817,6 +1863,46 @@ TCompletionCode CreateMetricTreeSKL_GT2_OA( CMetricsDevice* metricsDevice, CConc
             MD_CHECK_CC( information->SetDeltaReportReadEquation( "dw@0x1cc" ));
         }
 
+        information = metricSet->AddInformation( "ReportError", "Query report error",
+            "An error in the query execution, the received report should be ignored.",
+            "Report Meta Data", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
+            INFORMATION_TYPE_FLAG, NULL, NULL, 20 );
+        if( information )
+        {
+            
+            MD_CHECK_CC( information->SetDeltaReportReadEquation( "dw@0x29c 0x12 AND" ));
+        }
+
+        information = metricSet->AddInformation( "ReportInconsistent", "Query report inconsistent",
+            "The contextId inconsistency in the Oa buffer within the query window.",
+            "Report Meta Data", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
+            INFORMATION_TYPE_FLAG, NULL, NULL, 21 );
+        if( information )
+        {
+            
+            MD_CHECK_CC( information->SetDeltaReportReadEquation( "dw@0x29c 0x02 AND" ));
+        }
+
+        information = metricSet->AddInformation( "ReportCtxSwitchLost", "Query report context switch lost",
+            "Oa buffer has not been browsed to find context switch reports to filter out unfamiliar contexts from the query report.",
+            "Report Meta Data", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
+            INFORMATION_TYPE_FLAG, NULL, NULL, 22 );
+        if( information )
+        {
+            
+            MD_CHECK_CC( information->SetDeltaReportReadEquation( "dw@0x29c 0x08 AND" ));
+        }
+
+        information = metricSet->AddInformation( "ReportWithoutWorkload", "Query report missing workload",
+            "Missing workload between query begin and query end.",
+            "Report Meta Data", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
+            INFORMATION_TYPE_FLAG, NULL, NULL, 23 );
+        if( information )
+        {
+            
+            MD_CHECK_CC( information->SetDeltaReportReadEquation( "dw@0x29c 0x10 AND" ));
+        }
+
         availabilityEquation = "$SliceMask 0x01 AND $SkuRevisionId 0x02 ULT &&";
         if( MD_IS_INTERNAL_BUILD || metricsDevice->IsAvailabilityEquationTrue( availabilityEquation ) )
         {
@@ -2016,7 +2102,7 @@ TCompletionCode CreateMetricTreeSKL_GT2_OA( CMetricsDevice* metricsDevice, CConc
     platformMask = PLATFORM_SKL;
     if( metricsDevice->IsPlatformTypeOf( platformMask, GT_TYPE_GT2 ) )
     {
-        metricSet = concurrentGroup->AddMetricSet( "RenderDX1x", "Render Metrics DX1x Gen9", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+        CMetricSet* metricSet = concurrentGroup->AddMetricSet( "RenderDX1x", "Render Metrics DX1x set", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
            GPU_RENDER, 256, 672, OA_REPORT_TYPE_256B_A45_NOA16, platformMask, GT_TYPE_GT2 );
         MD_CHECK_PTR( metricSet );
         
@@ -2700,6 +2786,46 @@ TCompletionCode CreateMetricTreeSKL_GT2_OA( CMetricsDevice* metricsDevice, CConc
             MD_CHECK_CC( information->SetDeltaReportReadEquation( "dw@0x1cc" ));
         }
 
+        information = metricSet->AddInformation( "ReportError", "Query report error",
+            "An error in the query execution, the received report should be ignored.",
+            "Report Meta Data", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
+            INFORMATION_TYPE_FLAG, NULL, NULL, 20 );
+        if( information )
+        {
+            
+            MD_CHECK_CC( information->SetDeltaReportReadEquation( "dw@0x29c 0x12 AND" ));
+        }
+
+        information = metricSet->AddInformation( "ReportInconsistent", "Query report inconsistent",
+            "The contextId inconsistency in the Oa buffer within the query window.",
+            "Report Meta Data", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
+            INFORMATION_TYPE_FLAG, NULL, NULL, 21 );
+        if( information )
+        {
+            
+            MD_CHECK_CC( information->SetDeltaReportReadEquation( "dw@0x29c 0x02 AND" ));
+        }
+
+        information = metricSet->AddInformation( "ReportCtxSwitchLost", "Query report context switch lost",
+            "Oa buffer has not been browsed to find context switch reports to filter out unfamiliar contexts from the query report.",
+            "Report Meta Data", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
+            INFORMATION_TYPE_FLAG, NULL, NULL, 22 );
+        if( information )
+        {
+            
+            MD_CHECK_CC( information->SetDeltaReportReadEquation( "dw@0x29c 0x08 AND" ));
+        }
+
+        information = metricSet->AddInformation( "ReportWithoutWorkload", "Query report missing workload",
+            "Missing workload between query begin and query end.",
+            "Report Meta Data", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
+            INFORMATION_TYPE_FLAG, NULL, NULL, 23 );
+        if( information )
+        {
+            
+            MD_CHECK_CC( information->SetDeltaReportReadEquation( "dw@0x29c 0x10 AND" ));
+        }
+
         availabilityEquation = "$SliceMask 0x01 AND $SkuRevisionId 0x02 UGTE &&";
         if( MD_IS_INTERNAL_BUILD || metricsDevice->IsAvailabilityEquationTrue( availabilityEquation ) )
         {
@@ -2795,7 +2921,7 @@ TCompletionCode CreateMetricTreeSKL_GT2_OA( CMetricsDevice* metricsDevice, CConc
     platformMask = PLATFORM_SKL;
     if( metricsDevice->IsPlatformTypeOf( platformMask, GT_TYPE_GT2 ) )
     {
-        metricSet = concurrentGroup->AddMetricSet( "RenderPipeProfile", "Render Metrics for 3D Pipeline Profile Gen9", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+        CMetricSet* metricSet = concurrentGroup->AddMetricSet( "RenderPipeProfile", "Render Metrics set for 3D Pipeline Profile", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
            GPU_RENDER, 256, 672, OA_REPORT_TYPE_256B_A45_NOA16, platformMask, GT_TYPE_GT2 );
         MD_CHECK_PTR( metricSet );
         
@@ -3450,6 +3576,46 @@ TCompletionCode CreateMetricTreeSKL_GT2_OA( CMetricsDevice* metricsDevice, CConc
             MD_CHECK_CC( information->SetDeltaReportReadEquation( "dw@0x1cc" ));
         }
 
+        information = metricSet->AddInformation( "ReportError", "Query report error",
+            "An error in the query execution, the received report should be ignored.",
+            "Report Meta Data", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
+            INFORMATION_TYPE_FLAG, NULL, NULL, 20 );
+        if( information )
+        {
+            
+            MD_CHECK_CC( information->SetDeltaReportReadEquation( "dw@0x29c 0x12 AND" ));
+        }
+
+        information = metricSet->AddInformation( "ReportInconsistent", "Query report inconsistent",
+            "The contextId inconsistency in the Oa buffer within the query window.",
+            "Report Meta Data", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
+            INFORMATION_TYPE_FLAG, NULL, NULL, 21 );
+        if( information )
+        {
+            
+            MD_CHECK_CC( information->SetDeltaReportReadEquation( "dw@0x29c 0x02 AND" ));
+        }
+
+        information = metricSet->AddInformation( "ReportCtxSwitchLost", "Query report context switch lost",
+            "Oa buffer has not been browsed to find context switch reports to filter out unfamiliar contexts from the query report.",
+            "Report Meta Data", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
+            INFORMATION_TYPE_FLAG, NULL, NULL, 22 );
+        if( information )
+        {
+            
+            MD_CHECK_CC( information->SetDeltaReportReadEquation( "dw@0x29c 0x08 AND" ));
+        }
+
+        information = metricSet->AddInformation( "ReportWithoutWorkload", "Query report missing workload",
+            "Missing workload between query begin and query end.",
+            "Report Meta Data", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
+            INFORMATION_TYPE_FLAG, NULL, NULL, 23 );
+        if( information )
+        {
+            
+            MD_CHECK_CC( information->SetDeltaReportReadEquation( "dw@0x29c 0x10 AND" ));
+        }
+
         availabilityEquation = "$SkuRevisionId 0x02 ULT";
         if( MD_IS_INTERNAL_BUILD || metricsDevice->IsAvailabilityEquationTrue( availabilityEquation ) )
         {
@@ -3756,7 +3922,7 @@ TCompletionCode CreateMetricTreeSKL_GT2_OA( CMetricsDevice* metricsDevice, CConc
     platformMask = PLATFORM_SKL;
     if( metricsDevice->IsPlatformTypeOf( platformMask, GT_TYPE_GT2 ) )
     {
-        metricSet = concurrentGroup->AddMetricSet( "MemoryReads", "Memory Reads Distribution Gen9", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+        CMetricSet* metricSet = concurrentGroup->AddMetricSet( "MemoryReads", "Memory Reads Distribution metrics set", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
            GPU_RENDER|GPU_COMPUTE, 256, 672, OA_REPORT_TYPE_256B_A45_NOA16, platformMask, GT_TYPE_GT2 );
         MD_CHECK_PTR( metricSet );
         
@@ -4371,6 +4537,46 @@ TCompletionCode CreateMetricTreeSKL_GT2_OA( CMetricsDevice* metricsDevice, CConc
             MD_CHECK_CC( information->SetDeltaReportReadEquation( "dw@0x1cc" ));
         }
 
+        information = metricSet->AddInformation( "ReportError", "Query report error",
+            "An error in the query execution, the received report should be ignored.",
+            "Report Meta Data", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
+            INFORMATION_TYPE_FLAG, NULL, NULL, 20 );
+        if( information )
+        {
+            
+            MD_CHECK_CC( information->SetDeltaReportReadEquation( "dw@0x29c 0x12 AND" ));
+        }
+
+        information = metricSet->AddInformation( "ReportInconsistent", "Query report inconsistent",
+            "The contextId inconsistency in the Oa buffer within the query window.",
+            "Report Meta Data", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
+            INFORMATION_TYPE_FLAG, NULL, NULL, 21 );
+        if( information )
+        {
+            
+            MD_CHECK_CC( information->SetDeltaReportReadEquation( "dw@0x29c 0x02 AND" ));
+        }
+
+        information = metricSet->AddInformation( "ReportCtxSwitchLost", "Query report context switch lost",
+            "Oa buffer has not been browsed to find context switch reports to filter out unfamiliar contexts from the query report.",
+            "Report Meta Data", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
+            INFORMATION_TYPE_FLAG, NULL, NULL, 22 );
+        if( information )
+        {
+            
+            MD_CHECK_CC( information->SetDeltaReportReadEquation( "dw@0x29c 0x08 AND" ));
+        }
+
+        information = metricSet->AddInformation( "ReportWithoutWorkload", "Query report missing workload",
+            "Missing workload between query begin and query end.",
+            "Report Meta Data", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
+            INFORMATION_TYPE_FLAG, NULL, NULL, 23 );
+        if( information )
+        {
+            
+            MD_CHECK_CC( information->SetDeltaReportReadEquation( "dw@0x29c 0x10 AND" ));
+        }
+
         availabilityEquation = "$SliceMask 0x01 AND $SkuRevisionId 0x02 ULT &&";
         if( MD_IS_INTERNAL_BUILD || metricsDevice->IsAvailabilityEquationTrue( availabilityEquation ) )
         {
@@ -4682,7 +4888,7 @@ TCompletionCode CreateMetricTreeSKL_GT2_OA( CMetricsDevice* metricsDevice, CConc
     platformMask = PLATFORM_SKL;
     if( metricsDevice->IsPlatformTypeOf( platformMask, GT_TYPE_GT2 ) )
     {
-        metricSet = concurrentGroup->AddMetricSet( "MemoryWrites", "Memory Writes Distribution Gen9", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+        CMetricSet* metricSet = concurrentGroup->AddMetricSet( "MemoryWrites", "Memory Writes Distribution metrics set", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
            GPU_RENDER|GPU_COMPUTE, 256, 672, OA_REPORT_TYPE_256B_A45_NOA16, platformMask, GT_TYPE_GT2 );
         MD_CHECK_PTR( metricSet );
         
@@ -5297,6 +5503,46 @@ TCompletionCode CreateMetricTreeSKL_GT2_OA( CMetricsDevice* metricsDevice, CConc
             MD_CHECK_CC( information->SetDeltaReportReadEquation( "dw@0x1cc" ));
         }
 
+        information = metricSet->AddInformation( "ReportError", "Query report error",
+            "An error in the query execution, the received report should be ignored.",
+            "Report Meta Data", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
+            INFORMATION_TYPE_FLAG, NULL, NULL, 20 );
+        if( information )
+        {
+            
+            MD_CHECK_CC( information->SetDeltaReportReadEquation( "dw@0x29c 0x12 AND" ));
+        }
+
+        information = metricSet->AddInformation( "ReportInconsistent", "Query report inconsistent",
+            "The contextId inconsistency in the Oa buffer within the query window.",
+            "Report Meta Data", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
+            INFORMATION_TYPE_FLAG, NULL, NULL, 21 );
+        if( information )
+        {
+            
+            MD_CHECK_CC( information->SetDeltaReportReadEquation( "dw@0x29c 0x02 AND" ));
+        }
+
+        information = metricSet->AddInformation( "ReportCtxSwitchLost", "Query report context switch lost",
+            "Oa buffer has not been browsed to find context switch reports to filter out unfamiliar contexts from the query report.",
+            "Report Meta Data", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
+            INFORMATION_TYPE_FLAG, NULL, NULL, 22 );
+        if( information )
+        {
+            
+            MD_CHECK_CC( information->SetDeltaReportReadEquation( "dw@0x29c 0x08 AND" ));
+        }
+
+        information = metricSet->AddInformation( "ReportWithoutWorkload", "Query report missing workload",
+            "Missing workload between query begin and query end.",
+            "Report Meta Data", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
+            INFORMATION_TYPE_FLAG, NULL, NULL, 23 );
+        if( information )
+        {
+            
+            MD_CHECK_CC( information->SetDeltaReportReadEquation( "dw@0x29c 0x10 AND" ));
+        }
+
         availabilityEquation = "$SliceMask 0x01 AND $SkuRevisionId 0x02 ULT &&";
         if( MD_IS_INTERNAL_BUILD || metricsDevice->IsAvailabilityEquationTrue( availabilityEquation ) )
         {
@@ -5607,7 +5853,7 @@ TCompletionCode CreateMetricTreeSKL_GT2_OA( CMetricsDevice* metricsDevice, CConc
     platformMask = PLATFORM_SKL;
     if( metricsDevice->IsPlatformTypeOf( platformMask, GT_TYPE_GT2 ) )
     {
-        metricSet = concurrentGroup->AddMetricSet( "ComputeExtended", "Compute Metrics Extended Gen9", API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+        CMetricSet* metricSet = concurrentGroup->AddMetricSet( "ComputeExtended", "Compute Metrics Extended metrics set", API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
            GPU_COMPUTE, 256, 672, OA_REPORT_TYPE_256B_A45_NOA16, platformMask, GT_TYPE_GT2 );
         MD_CHECK_PTR( metricSet );
         
@@ -6182,6 +6428,46 @@ TCompletionCode CreateMetricTreeSKL_GT2_OA( CMetricsDevice* metricsDevice, CConc
             MD_CHECK_CC( information->SetDeltaReportReadEquation( "dw@0x1cc" ));
         }
 
+        information = metricSet->AddInformation( "ReportError", "Query report error",
+            "An error in the query execution, the received report should be ignored.",
+            "Report Meta Data", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
+            INFORMATION_TYPE_FLAG, NULL, NULL, 20 );
+        if( information )
+        {
+            
+            MD_CHECK_CC( information->SetDeltaReportReadEquation( "dw@0x29c 0x12 AND" ));
+        }
+
+        information = metricSet->AddInformation( "ReportInconsistent", "Query report inconsistent",
+            "The contextId inconsistency in the Oa buffer within the query window.",
+            "Report Meta Data", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
+            INFORMATION_TYPE_FLAG, NULL, NULL, 21 );
+        if( information )
+        {
+            
+            MD_CHECK_CC( information->SetDeltaReportReadEquation( "dw@0x29c 0x02 AND" ));
+        }
+
+        information = metricSet->AddInformation( "ReportCtxSwitchLost", "Query report context switch lost",
+            "Oa buffer has not been browsed to find context switch reports to filter out unfamiliar contexts from the query report.",
+            "Report Meta Data", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
+            INFORMATION_TYPE_FLAG, NULL, NULL, 22 );
+        if( information )
+        {
+            
+            MD_CHECK_CC( information->SetDeltaReportReadEquation( "dw@0x29c 0x08 AND" ));
+        }
+
+        information = metricSet->AddInformation( "ReportWithoutWorkload", "Query report missing workload",
+            "Missing workload between query begin and query end.",
+            "Report Meta Data", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
+            INFORMATION_TYPE_FLAG, NULL, NULL, 23 );
+        if( information )
+        {
+            
+            MD_CHECK_CC( information->SetDeltaReportReadEquation( "dw@0x29c 0x10 AND" ));
+        }
+
         availabilityEquation = "$SubsliceMask 0x01 AND";
         if( MD_IS_INTERNAL_BUILD || metricsDevice->IsAvailabilityEquationTrue( availabilityEquation ) )
         {
@@ -6296,7 +6582,7 @@ TCompletionCode CreateMetricTreeSKL_GT2_OA( CMetricsDevice* metricsDevice, CConc
     platformMask = PLATFORM_SKL;
     if( metricsDevice->IsPlatformTypeOf( platformMask, GT_TYPE_GT2 ) )
     {
-        metricSet = concurrentGroup->AddMetricSet( "ComputeL3Cache", "Compute Metrics L3 Cache Gen9", API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+        CMetricSet* metricSet = concurrentGroup->AddMetricSet( "ComputeL3Cache", "Compute Metrics L3 Cache metrics set", API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
            GPU_RENDER|GPU_COMPUTE, 256, 672, OA_REPORT_TYPE_256B_A45_NOA16, platformMask, GT_TYPE_GT2 );
         MD_CHECK_PTR( metricSet );
         
@@ -7135,6 +7421,46 @@ TCompletionCode CreateMetricTreeSKL_GT2_OA( CMetricsDevice* metricsDevice, CConc
             MD_CHECK_CC( information->SetDeltaReportReadEquation( "dw@0x1cc" ));
         }
 
+        information = metricSet->AddInformation( "ReportError", "Query report error",
+            "An error in the query execution, the received report should be ignored.",
+            "Report Meta Data", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
+            INFORMATION_TYPE_FLAG, NULL, NULL, 20 );
+        if( information )
+        {
+            
+            MD_CHECK_CC( information->SetDeltaReportReadEquation( "dw@0x29c 0x12 AND" ));
+        }
+
+        information = metricSet->AddInformation( "ReportInconsistent", "Query report inconsistent",
+            "The contextId inconsistency in the Oa buffer within the query window.",
+            "Report Meta Data", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
+            INFORMATION_TYPE_FLAG, NULL, NULL, 21 );
+        if( information )
+        {
+            
+            MD_CHECK_CC( information->SetDeltaReportReadEquation( "dw@0x29c 0x02 AND" ));
+        }
+
+        information = metricSet->AddInformation( "ReportCtxSwitchLost", "Query report context switch lost",
+            "Oa buffer has not been browsed to find context switch reports to filter out unfamiliar contexts from the query report.",
+            "Report Meta Data", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
+            INFORMATION_TYPE_FLAG, NULL, NULL, 22 );
+        if( information )
+        {
+            
+            MD_CHECK_CC( information->SetDeltaReportReadEquation( "dw@0x29c 0x08 AND" ));
+        }
+
+        information = metricSet->AddInformation( "ReportWithoutWorkload", "Query report missing workload",
+            "Missing workload between query begin and query end.",
+            "Report Meta Data", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
+            INFORMATION_TYPE_FLAG, NULL, NULL, 23 );
+        if( information )
+        {
+            
+            MD_CHECK_CC( information->SetDeltaReportReadEquation( "dw@0x29c 0x10 AND" ));
+        }
+
         MD_CHECK_CC( metricSet->AddStartRegisterSet( 0, 0 ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9840, 0x000000A0, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x00009888, 0x166C0760, REGISTER_TYPE_NOA ));
@@ -7224,7 +7550,7 @@ TCompletionCode CreateMetricTreeSKL_GT2_OA( CMetricsDevice* metricsDevice, CConc
     platformMask = PLATFORM_SKL;
     if( metricsDevice->IsPlatformTypeOf( platformMask, GT_TYPE_GT2 ) )
     {
-        metricSet = concurrentGroup->AddMetricSet( "HDCAndSF", "Metric set HDCAndSF", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+        CMetricSet* metricSet = concurrentGroup->AddMetricSet( "HDCAndSF", "Metric set HDCAndSF", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
            GPU_RENDER|GPU_COMPUTE, 256, 672, OA_REPORT_TYPE_256B_A45_NOA16, platformMask, GT_TYPE_GT2 );
         MD_CHECK_PTR( metricSet );
         
@@ -7864,6 +8190,46 @@ TCompletionCode CreateMetricTreeSKL_GT2_OA( CMetricsDevice* metricsDevice, CConc
             MD_CHECK_CC( information->SetDeltaReportReadEquation( "dw@0x1cc" ));
         }
 
+        information = metricSet->AddInformation( "ReportError", "Query report error",
+            "An error in the query execution, the received report should be ignored.",
+            "Report Meta Data", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
+            INFORMATION_TYPE_FLAG, NULL, NULL, 20 );
+        if( information )
+        {
+            
+            MD_CHECK_CC( information->SetDeltaReportReadEquation( "dw@0x29c 0x12 AND" ));
+        }
+
+        information = metricSet->AddInformation( "ReportInconsistent", "Query report inconsistent",
+            "The contextId inconsistency in the Oa buffer within the query window.",
+            "Report Meta Data", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
+            INFORMATION_TYPE_FLAG, NULL, NULL, 21 );
+        if( information )
+        {
+            
+            MD_CHECK_CC( information->SetDeltaReportReadEquation( "dw@0x29c 0x02 AND" ));
+        }
+
+        information = metricSet->AddInformation( "ReportCtxSwitchLost", "Query report context switch lost",
+            "Oa buffer has not been browsed to find context switch reports to filter out unfamiliar contexts from the query report.",
+            "Report Meta Data", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
+            INFORMATION_TYPE_FLAG, NULL, NULL, 22 );
+        if( information )
+        {
+            
+            MD_CHECK_CC( information->SetDeltaReportReadEquation( "dw@0x29c 0x08 AND" ));
+        }
+
+        information = metricSet->AddInformation( "ReportWithoutWorkload", "Query report missing workload",
+            "Missing workload between query begin and query end.",
+            "Report Meta Data", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
+            INFORMATION_TYPE_FLAG, NULL, NULL, 23 );
+        if( information )
+        {
+            
+            MD_CHECK_CC( information->SetDeltaReportReadEquation( "dw@0x29c 0x10 AND" ));
+        }
+
         MD_CHECK_CC( metricSet->AddStartRegisterSet( 0, 0 ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9840, 0x000000a0, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x104f0232, REGISTER_TYPE_NOA ));
@@ -7943,7 +8309,7 @@ TCompletionCode CreateMetricTreeSKL_GT2_OA( CMetricsDevice* metricsDevice, CConc
     platformMask = PLATFORM_SKL;
     if( metricsDevice->IsPlatformTypeOf( platformMask, GT_TYPE_GT2 ) )
     {
-        metricSet = concurrentGroup->AddMetricSet( "L3_1", "Metric set L3_1", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+        CMetricSet* metricSet = concurrentGroup->AddMetricSet( "L3_1", "Metric set L3_1", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
            GPU_RENDER|GPU_COMPUTE, 256, 672, OA_REPORT_TYPE_256B_A45_NOA16, platformMask, GT_TYPE_GT2 );
         MD_CHECK_PTR( metricSet );
         
@@ -8583,6 +8949,46 @@ TCompletionCode CreateMetricTreeSKL_GT2_OA( CMetricsDevice* metricsDevice, CConc
             MD_CHECK_CC( information->SetDeltaReportReadEquation( "dw@0x1cc" ));
         }
 
+        information = metricSet->AddInformation( "ReportError", "Query report error",
+            "An error in the query execution, the received report should be ignored.",
+            "Report Meta Data", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
+            INFORMATION_TYPE_FLAG, NULL, NULL, 20 );
+        if( information )
+        {
+            
+            MD_CHECK_CC( information->SetDeltaReportReadEquation( "dw@0x29c 0x12 AND" ));
+        }
+
+        information = metricSet->AddInformation( "ReportInconsistent", "Query report inconsistent",
+            "The contextId inconsistency in the Oa buffer within the query window.",
+            "Report Meta Data", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
+            INFORMATION_TYPE_FLAG, NULL, NULL, 21 );
+        if( information )
+        {
+            
+            MD_CHECK_CC( information->SetDeltaReportReadEquation( "dw@0x29c 0x02 AND" ));
+        }
+
+        information = metricSet->AddInformation( "ReportCtxSwitchLost", "Query report context switch lost",
+            "Oa buffer has not been browsed to find context switch reports to filter out unfamiliar contexts from the query report.",
+            "Report Meta Data", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
+            INFORMATION_TYPE_FLAG, NULL, NULL, 22 );
+        if( information )
+        {
+            
+            MD_CHECK_CC( information->SetDeltaReportReadEquation( "dw@0x29c 0x08 AND" ));
+        }
+
+        information = metricSet->AddInformation( "ReportWithoutWorkload", "Query report missing workload",
+            "Missing workload between query begin and query end.",
+            "Report Meta Data", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
+            INFORMATION_TYPE_FLAG, NULL, NULL, 23 );
+        if( information )
+        {
+            
+            MD_CHECK_CC( information->SetDeltaReportReadEquation( "dw@0x29c 0x10 AND" ));
+        }
+
         MD_CHECK_CC( metricSet->AddStartRegisterSet( 0, 0 ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9840, 0x000000a0, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x126c7b40, REGISTER_TYPE_NOA ));
@@ -8693,7 +9099,7 @@ TCompletionCode CreateMetricTreeSKL_GT2_OA( CMetricsDevice* metricsDevice, CConc
     platformMask = PLATFORM_SKL;
     if( metricsDevice->IsPlatformTypeOf( platformMask, GT_TYPE_GT2 ) )
     {
-        metricSet = concurrentGroup->AddMetricSet( "L3_2", "Metric set L3_2", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+        CMetricSet* metricSet = concurrentGroup->AddMetricSet( "L3_2", "Metric set L3_2", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
            GPU_RENDER|GPU_COMPUTE, 256, 672, OA_REPORT_TYPE_256B_A45_NOA16, platformMask, GT_TYPE_GT2 );
         MD_CHECK_PTR( metricSet );
         
@@ -9299,6 +9705,46 @@ TCompletionCode CreateMetricTreeSKL_GT2_OA( CMetricsDevice* metricsDevice, CConc
             MD_CHECK_CC( information->SetDeltaReportReadEquation( "dw@0x1cc" ));
         }
 
+        information = metricSet->AddInformation( "ReportError", "Query report error",
+            "An error in the query execution, the received report should be ignored.",
+            "Report Meta Data", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
+            INFORMATION_TYPE_FLAG, NULL, NULL, 20 );
+        if( information )
+        {
+            
+            MD_CHECK_CC( information->SetDeltaReportReadEquation( "dw@0x29c 0x12 AND" ));
+        }
+
+        information = metricSet->AddInformation( "ReportInconsistent", "Query report inconsistent",
+            "The contextId inconsistency in the Oa buffer within the query window.",
+            "Report Meta Data", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
+            INFORMATION_TYPE_FLAG, NULL, NULL, 21 );
+        if( information )
+        {
+            
+            MD_CHECK_CC( information->SetDeltaReportReadEquation( "dw@0x29c 0x02 AND" ));
+        }
+
+        information = metricSet->AddInformation( "ReportCtxSwitchLost", "Query report context switch lost",
+            "Oa buffer has not been browsed to find context switch reports to filter out unfamiliar contexts from the query report.",
+            "Report Meta Data", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
+            INFORMATION_TYPE_FLAG, NULL, NULL, 22 );
+        if( information )
+        {
+            
+            MD_CHECK_CC( information->SetDeltaReportReadEquation( "dw@0x29c 0x08 AND" ));
+        }
+
+        information = metricSet->AddInformation( "ReportWithoutWorkload", "Query report missing workload",
+            "Missing workload between query begin and query end.",
+            "Report Meta Data", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
+            INFORMATION_TYPE_FLAG, NULL, NULL, 23 );
+        if( information )
+        {
+            
+            MD_CHECK_CC( information->SetDeltaReportReadEquation( "dw@0x29c 0x10 AND" ));
+        }
+
         MD_CHECK_CC( metricSet->AddStartRegisterSet( 0, 0 ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9840, 0x000000a0, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x126c02e0, REGISTER_TYPE_NOA ));
@@ -9374,7 +9820,7 @@ TCompletionCode CreateMetricTreeSKL_GT2_OA( CMetricsDevice* metricsDevice, CConc
     platformMask = PLATFORM_SKL;
     if( metricsDevice->IsPlatformTypeOf( platformMask, GT_TYPE_GT2 ) )
     {
-        metricSet = concurrentGroup->AddMetricSet( "L3_3", "Metric set L3_3", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+        CMetricSet* metricSet = concurrentGroup->AddMetricSet( "L3_3", "Metric set L3_3", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
            GPU_RENDER|GPU_COMPUTE, 256, 672, OA_REPORT_TYPE_256B_A45_NOA16, platformMask, GT_TYPE_GT2 );
         MD_CHECK_PTR( metricSet );
         
@@ -9980,6 +10426,46 @@ TCompletionCode CreateMetricTreeSKL_GT2_OA( CMetricsDevice* metricsDevice, CConc
             MD_CHECK_CC( information->SetDeltaReportReadEquation( "dw@0x1cc" ));
         }
 
+        information = metricSet->AddInformation( "ReportError", "Query report error",
+            "An error in the query execution, the received report should be ignored.",
+            "Report Meta Data", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
+            INFORMATION_TYPE_FLAG, NULL, NULL, 20 );
+        if( information )
+        {
+            
+            MD_CHECK_CC( information->SetDeltaReportReadEquation( "dw@0x29c 0x12 AND" ));
+        }
+
+        information = metricSet->AddInformation( "ReportInconsistent", "Query report inconsistent",
+            "The contextId inconsistency in the Oa buffer within the query window.",
+            "Report Meta Data", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
+            INFORMATION_TYPE_FLAG, NULL, NULL, 21 );
+        if( information )
+        {
+            
+            MD_CHECK_CC( information->SetDeltaReportReadEquation( "dw@0x29c 0x02 AND" ));
+        }
+
+        information = metricSet->AddInformation( "ReportCtxSwitchLost", "Query report context switch lost",
+            "Oa buffer has not been browsed to find context switch reports to filter out unfamiliar contexts from the query report.",
+            "Report Meta Data", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
+            INFORMATION_TYPE_FLAG, NULL, NULL, 22 );
+        if( information )
+        {
+            
+            MD_CHECK_CC( information->SetDeltaReportReadEquation( "dw@0x29c 0x08 AND" ));
+        }
+
+        information = metricSet->AddInformation( "ReportWithoutWorkload", "Query report missing workload",
+            "Missing workload between query begin and query end.",
+            "Report Meta Data", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
+            INFORMATION_TYPE_FLAG, NULL, NULL, 23 );
+        if( information )
+        {
+            
+            MD_CHECK_CC( information->SetDeltaReportReadEquation( "dw@0x29c 0x10 AND" ));
+        }
+
         MD_CHECK_CC( metricSet->AddStartRegisterSet( 0, 0 ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9840, 0x000000a0, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x126c4e80, REGISTER_TYPE_NOA ));
@@ -10054,7 +10540,7 @@ TCompletionCode CreateMetricTreeSKL_GT2_OA( CMetricsDevice* metricsDevice, CConc
     platformMask = PLATFORM_SKL;
     if( metricsDevice->IsPlatformTypeOf( platformMask, GT_TYPE_GT2 ) )
     {
-        metricSet = concurrentGroup->AddMetricSet( "RasterizerAndPixelBackend", "Metric set RasterizerAndPixelBackend", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+        CMetricSet* metricSet = concurrentGroup->AddMetricSet( "RasterizerAndPixelBackend", "Metric set RasterizerAndPixelBackend", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
            GPU_RENDER|GPU_COMPUTE, 256, 672, OA_REPORT_TYPE_256B_A45_NOA16, platformMask, GT_TYPE_GT2 );
         MD_CHECK_PTR( metricSet );
         
@@ -10711,6 +11197,46 @@ TCompletionCode CreateMetricTreeSKL_GT2_OA( CMetricsDevice* metricsDevice, CConc
             MD_CHECK_CC( information->SetDeltaReportReadEquation( "dw@0x1cc" ));
         }
 
+        information = metricSet->AddInformation( "ReportError", "Query report error",
+            "An error in the query execution, the received report should be ignored.",
+            "Report Meta Data", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
+            INFORMATION_TYPE_FLAG, NULL, NULL, 20 );
+        if( information )
+        {
+            
+            MD_CHECK_CC( information->SetDeltaReportReadEquation( "dw@0x29c 0x12 AND" ));
+        }
+
+        information = metricSet->AddInformation( "ReportInconsistent", "Query report inconsistent",
+            "The contextId inconsistency in the Oa buffer within the query window.",
+            "Report Meta Data", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
+            INFORMATION_TYPE_FLAG, NULL, NULL, 21 );
+        if( information )
+        {
+            
+            MD_CHECK_CC( information->SetDeltaReportReadEquation( "dw@0x29c 0x02 AND" ));
+        }
+
+        information = metricSet->AddInformation( "ReportCtxSwitchLost", "Query report context switch lost",
+            "Oa buffer has not been browsed to find context switch reports to filter out unfamiliar contexts from the query report.",
+            "Report Meta Data", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
+            INFORMATION_TYPE_FLAG, NULL, NULL, 22 );
+        if( information )
+        {
+            
+            MD_CHECK_CC( information->SetDeltaReportReadEquation( "dw@0x29c 0x08 AND" ));
+        }
+
+        information = metricSet->AddInformation( "ReportWithoutWorkload", "Query report missing workload",
+            "Missing workload between query begin and query end.",
+            "Report Meta Data", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
+            INFORMATION_TYPE_FLAG, NULL, NULL, 23 );
+        if( information )
+        {
+            
+            MD_CHECK_CC( information->SetDeltaReportReadEquation( "dw@0x29c 0x10 AND" ));
+        }
+
         MD_CHECK_CC( metricSet->AddStartRegisterSet( 0, 0 ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9840, 0x000000a0, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x102f3800, REGISTER_TYPE_NOA ));
@@ -10769,7 +11295,7 @@ TCompletionCode CreateMetricTreeSKL_GT2_OA( CMetricsDevice* metricsDevice, CConc
     platformMask = PLATFORM_SKL;
     if( metricsDevice->IsPlatformTypeOf( platformMask, GT_TYPE_GT2 ) )
     {
-        metricSet = concurrentGroup->AddMetricSet( "Sampler", "Metric set Sampler", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+        CMetricSet* metricSet = concurrentGroup->AddMetricSet( "Sampler", "Metric set Sampler", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
            GPU_RENDER|GPU_COMPUTE, 256, 672, OA_REPORT_TYPE_256B_A45_NOA16, platformMask, GT_TYPE_GT2 );
         MD_CHECK_PTR( metricSet );
         
@@ -11443,6 +11969,46 @@ TCompletionCode CreateMetricTreeSKL_GT2_OA( CMetricsDevice* metricsDevice, CConc
             MD_CHECK_CC( information->SetDeltaReportReadEquation( "dw@0x1cc" ));
         }
 
+        information = metricSet->AddInformation( "ReportError", "Query report error",
+            "An error in the query execution, the received report should be ignored.",
+            "Report Meta Data", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
+            INFORMATION_TYPE_FLAG, NULL, NULL, 20 );
+        if( information )
+        {
+            
+            MD_CHECK_CC( information->SetDeltaReportReadEquation( "dw@0x29c 0x12 AND" ));
+        }
+
+        information = metricSet->AddInformation( "ReportInconsistent", "Query report inconsistent",
+            "The contextId inconsistency in the Oa buffer within the query window.",
+            "Report Meta Data", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
+            INFORMATION_TYPE_FLAG, NULL, NULL, 21 );
+        if( information )
+        {
+            
+            MD_CHECK_CC( information->SetDeltaReportReadEquation( "dw@0x29c 0x02 AND" ));
+        }
+
+        information = metricSet->AddInformation( "ReportCtxSwitchLost", "Query report context switch lost",
+            "Oa buffer has not been browsed to find context switch reports to filter out unfamiliar contexts from the query report.",
+            "Report Meta Data", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
+            INFORMATION_TYPE_FLAG, NULL, NULL, 22 );
+        if( information )
+        {
+            
+            MD_CHECK_CC( information->SetDeltaReportReadEquation( "dw@0x29c 0x08 AND" ));
+        }
+
+        information = metricSet->AddInformation( "ReportWithoutWorkload", "Query report missing workload",
+            "Missing workload between query begin and query end.",
+            "Report Meta Data", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
+            INFORMATION_TYPE_FLAG, NULL, NULL, 23 );
+        if( information )
+        {
+            
+            MD_CHECK_CC( information->SetDeltaReportReadEquation( "dw@0x29c 0x10 AND" ));
+        }
+
         MD_CHECK_CC( metricSet->AddStartRegisterSet( 0, 0 ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9840, 0x000000a0, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x14152c00, REGISTER_TYPE_NOA ));
@@ -11541,7 +12107,7 @@ TCompletionCode CreateMetricTreeSKL_GT2_OA( CMetricsDevice* metricsDevice, CConc
     platformMask = PLATFORM_SKL;
     if( metricsDevice->IsPlatformTypeOf( platformMask, GT_TYPE_GT2 ) )
     {
-        metricSet = concurrentGroup->AddMetricSet( "TDL_1", "Metric set TDL_1", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+        CMetricSet* metricSet = concurrentGroup->AddMetricSet( "TDL_1", "Metric set TDL_1", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
            GPU_RENDER|GPU_COMPUTE, 256, 672, OA_REPORT_TYPE_256B_A45_NOA16, platformMask, GT_TYPE_GT2 );
         MD_CHECK_PTR( metricSet );
         
@@ -12215,6 +12781,46 @@ TCompletionCode CreateMetricTreeSKL_GT2_OA( CMetricsDevice* metricsDevice, CConc
             MD_CHECK_CC( information->SetDeltaReportReadEquation( "dw@0x1cc" ));
         }
 
+        information = metricSet->AddInformation( "ReportError", "Query report error",
+            "An error in the query execution, the received report should be ignored.",
+            "Report Meta Data", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
+            INFORMATION_TYPE_FLAG, NULL, NULL, 20 );
+        if( information )
+        {
+            
+            MD_CHECK_CC( information->SetDeltaReportReadEquation( "dw@0x29c 0x12 AND" ));
+        }
+
+        information = metricSet->AddInformation( "ReportInconsistent", "Query report inconsistent",
+            "The contextId inconsistency in the Oa buffer within the query window.",
+            "Report Meta Data", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
+            INFORMATION_TYPE_FLAG, NULL, NULL, 21 );
+        if( information )
+        {
+            
+            MD_CHECK_CC( information->SetDeltaReportReadEquation( "dw@0x29c 0x02 AND" ));
+        }
+
+        information = metricSet->AddInformation( "ReportCtxSwitchLost", "Query report context switch lost",
+            "Oa buffer has not been browsed to find context switch reports to filter out unfamiliar contexts from the query report.",
+            "Report Meta Data", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
+            INFORMATION_TYPE_FLAG, NULL, NULL, 22 );
+        if( information )
+        {
+            
+            MD_CHECK_CC( information->SetDeltaReportReadEquation( "dw@0x29c 0x08 AND" ));
+        }
+
+        information = metricSet->AddInformation( "ReportWithoutWorkload", "Query report missing workload",
+            "Missing workload between query begin and query end.",
+            "Report Meta Data", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
+            INFORMATION_TYPE_FLAG, NULL, NULL, 23 );
+        if( information )
+        {
+            
+            MD_CHECK_CC( information->SetDeltaReportReadEquation( "dw@0x29c 0x10 AND" ));
+        }
+
         MD_CHECK_CC( metricSet->AddStartRegisterSet( 0, 0 ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9840, 0x000000a0, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x12120000, REGISTER_TYPE_NOA ));
@@ -12318,7 +12924,7 @@ TCompletionCode CreateMetricTreeSKL_GT2_OA( CMetricsDevice* metricsDevice, CConc
     platformMask = PLATFORM_SKL;
     if( metricsDevice->IsPlatformTypeOf( platformMask, GT_TYPE_GT2 ) )
     {
-        metricSet = concurrentGroup->AddMetricSet( "TDL_2", "Metric set TDL_2", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+        CMetricSet* metricSet = concurrentGroup->AddMetricSet( "TDL_2", "Metric set TDL_2", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
            GPU_RENDER|GPU_COMPUTE, 256, 672, OA_REPORT_TYPE_256B_A45_NOA16, platformMask, GT_TYPE_GT2 );
         MD_CHECK_PTR( metricSet );
         
@@ -12992,6 +13598,46 @@ TCompletionCode CreateMetricTreeSKL_GT2_OA( CMetricsDevice* metricsDevice, CConc
             MD_CHECK_CC( information->SetDeltaReportReadEquation( "dw@0x1cc" ));
         }
 
+        information = metricSet->AddInformation( "ReportError", "Query report error",
+            "An error in the query execution, the received report should be ignored.",
+            "Report Meta Data", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
+            INFORMATION_TYPE_FLAG, NULL, NULL, 20 );
+        if( information )
+        {
+            
+            MD_CHECK_CC( information->SetDeltaReportReadEquation( "dw@0x29c 0x12 AND" ));
+        }
+
+        information = metricSet->AddInformation( "ReportInconsistent", "Query report inconsistent",
+            "The contextId inconsistency in the Oa buffer within the query window.",
+            "Report Meta Data", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
+            INFORMATION_TYPE_FLAG, NULL, NULL, 21 );
+        if( information )
+        {
+            
+            MD_CHECK_CC( information->SetDeltaReportReadEquation( "dw@0x29c 0x02 AND" ));
+        }
+
+        information = metricSet->AddInformation( "ReportCtxSwitchLost", "Query report context switch lost",
+            "Oa buffer has not been browsed to find context switch reports to filter out unfamiliar contexts from the query report.",
+            "Report Meta Data", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
+            INFORMATION_TYPE_FLAG, NULL, NULL, 22 );
+        if( information )
+        {
+            
+            MD_CHECK_CC( information->SetDeltaReportReadEquation( "dw@0x29c 0x08 AND" ));
+        }
+
+        information = metricSet->AddInformation( "ReportWithoutWorkload", "Query report missing workload",
+            "Missing workload between query begin and query end.",
+            "Report Meta Data", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
+            INFORMATION_TYPE_FLAG, NULL, NULL, 23 );
+        if( information )
+        {
+            
+            MD_CHECK_CC( information->SetDeltaReportReadEquation( "dw@0x29c 0x10 AND" ));
+        }
+
         MD_CHECK_CC( metricSet->AddStartRegisterSet( 0, 0 ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9840, 0x000000a0, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x12124d60, REGISTER_TYPE_NOA ));
@@ -13057,7 +13703,7 @@ TCompletionCode CreateMetricTreeSKL_GT2_OA( CMetricsDevice* metricsDevice, CConc
     platformMask = PLATFORM_SKL;
     if( metricsDevice->IsPlatformTypeOf( platformMask, GT_TYPE_GT2 ) )
     {
-        metricSet = concurrentGroup->AddMetricSet( "ComputeExtra", "Compute Metrics Extra Gen9", API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+        CMetricSet* metricSet = concurrentGroup->AddMetricSet( "ComputeExtra", "Compute Metrics Extra set", API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
            GPU_RENDER|GPU_COMPUTE, 256, 672, OA_REPORT_TYPE_256B_A45_NOA16, platformMask, GT_TYPE_GT2 );
         MD_CHECK_PTR( metricSet );
         
@@ -13225,6 +13871,46 @@ TCompletionCode CreateMetricTreeSKL_GT2_OA( CMetricsDevice* metricsDevice, CConc
             MD_CHECK_CC( information->SetDeltaReportReadEquation( "dw@0x1cc" ));
         }
 
+        information = metricSet->AddInformation( "ReportError", "Query report error",
+            "An error in the query execution, the received report should be ignored.",
+            "Report Meta Data", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
+            INFORMATION_TYPE_FLAG, NULL, NULL, 20 );
+        if( information )
+        {
+            
+            MD_CHECK_CC( information->SetDeltaReportReadEquation( "dw@0x29c 0x12 AND" ));
+        }
+
+        information = metricSet->AddInformation( "ReportInconsistent", "Query report inconsistent",
+            "The contextId inconsistency in the Oa buffer within the query window.",
+            "Report Meta Data", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
+            INFORMATION_TYPE_FLAG, NULL, NULL, 21 );
+        if( information )
+        {
+            
+            MD_CHECK_CC( information->SetDeltaReportReadEquation( "dw@0x29c 0x02 AND" ));
+        }
+
+        information = metricSet->AddInformation( "ReportCtxSwitchLost", "Query report context switch lost",
+            "Oa buffer has not been browsed to find context switch reports to filter out unfamiliar contexts from the query report.",
+            "Report Meta Data", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
+            INFORMATION_TYPE_FLAG, NULL, NULL, 22 );
+        if( information )
+        {
+            
+            MD_CHECK_CC( information->SetDeltaReportReadEquation( "dw@0x29c 0x08 AND" ));
+        }
+
+        information = metricSet->AddInformation( "ReportWithoutWorkload", "Query report missing workload",
+            "Missing workload between query begin and query end.",
+            "Report Meta Data", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
+            INFORMATION_TYPE_FLAG, NULL, NULL, 23 );
+        if( information )
+        {
+            
+            MD_CHECK_CC( information->SetDeltaReportReadEquation( "dw@0x29c 0x10 AND" ));
+        }
+
         MD_CHECK_CC( metricSet->AddStartRegisterSet( 0, 0 ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9840, 0x00000080, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x121203e0, REGISTER_TYPE_NOA ));
@@ -13278,7 +13964,7 @@ TCompletionCode CreateMetricTreeSKL_GT2_OA( CMetricsDevice* metricsDevice, CConc
     platformMask = PLATFORM_SKL;
     if( metricsDevice->IsPlatformTypeOf( platformMask, GT_TYPE_GT2 ) )
     {
-        metricSet = concurrentGroup->AddMetricSet( "VMEPipe", "Media Vme Pipe Gen9", API_TYPE_IOSTREAM,
+        CMetricSet* metricSet = concurrentGroup->AddMetricSet( "VMEPipe", "Media Vme Pipe metrics set", API_TYPE_IOSTREAM,
            GPU_MEDIA, 256, 672, OA_REPORT_TYPE_256B_A45_NOA16, platformMask, GT_TYPE_GT2 );
         MD_CHECK_PTR( metricSet );
         
@@ -13514,6 +14200,46 @@ TCompletionCode CreateMetricTreeSKL_GT2_OA( CMetricsDevice* metricsDevice, CConc
             MD_CHECK_CC( information->SetDeltaReportReadEquation( "dw@0x1cc" ));
         }
 
+        information = metricSet->AddInformation( "ReportError", "Query report error",
+            "An error in the query execution, the received report should be ignored.",
+            "Report Meta Data", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
+            INFORMATION_TYPE_FLAG, NULL, NULL, 20 );
+        if( information )
+        {
+            
+            MD_CHECK_CC( information->SetDeltaReportReadEquation( "dw@0x29c 0x12 AND" ));
+        }
+
+        information = metricSet->AddInformation( "ReportInconsistent", "Query report inconsistent",
+            "The contextId inconsistency in the Oa buffer within the query window.",
+            "Report Meta Data", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
+            INFORMATION_TYPE_FLAG, NULL, NULL, 21 );
+        if( information )
+        {
+            
+            MD_CHECK_CC( information->SetDeltaReportReadEquation( "dw@0x29c 0x02 AND" ));
+        }
+
+        information = metricSet->AddInformation( "ReportCtxSwitchLost", "Query report context switch lost",
+            "Oa buffer has not been browsed to find context switch reports to filter out unfamiliar contexts from the query report.",
+            "Report Meta Data", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
+            INFORMATION_TYPE_FLAG, NULL, NULL, 22 );
+        if( information )
+        {
+            
+            MD_CHECK_CC( information->SetDeltaReportReadEquation( "dw@0x29c 0x08 AND" ));
+        }
+
+        information = metricSet->AddInformation( "ReportWithoutWorkload", "Query report missing workload",
+            "Missing workload between query begin and query end.",
+            "Report Meta Data", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
+            INFORMATION_TYPE_FLAG, NULL, NULL, 23 );
+        if( information )
+        {
+            
+            MD_CHECK_CC( information->SetDeltaReportReadEquation( "dw@0x29c 0x10 AND" ));
+        }
+
         MD_CHECK_CC( metricSet->AddStartRegisterSet( 0, 0 ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9840, 0x00000080, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x141a5800, REGISTER_TYPE_NOA ));
@@ -13603,7 +14329,7 @@ TCompletionCode CreateMetricTreeSKL_GT2_OA( CMetricsDevice* metricsDevice, CConc
     platformMask = PLATFORM_SKL;
     if( metricsDevice->IsPlatformTypeOf( platformMask, GT_TYPE_GT2 ) )
     {
-        metricSet = concurrentGroup->AddMetricSet( "GpuBusyness", "Gpu Rings Busyness", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+        CMetricSet* metricSet = concurrentGroup->AddMetricSet( "GpuBusyness", "Gpu Rings Busyness", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
            GPU_RENDER|GPU_COMPUTE|GPU_MEDIA|GPU_GENERIC, 256, 672, OA_REPORT_TYPE_256B_A45_NOA16, platformMask, GT_TYPE_GT2 );
         MD_CHECK_PTR( metricSet );
         
@@ -13813,6 +14539,46 @@ TCompletionCode CreateMetricTreeSKL_GT2_OA( CMetricsDevice* metricsDevice, CConc
             MD_CHECK_CC( information->SetDeltaReportReadEquation( "dw@0x1cc" ));
         }
 
+        information = metricSet->AddInformation( "ReportError", "Query report error",
+            "An error in the query execution, the received report should be ignored.",
+            "Report Meta Data", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
+            INFORMATION_TYPE_FLAG, NULL, NULL, 20 );
+        if( information )
+        {
+            
+            MD_CHECK_CC( information->SetDeltaReportReadEquation( "dw@0x29c 0x12 AND" ));
+        }
+
+        information = metricSet->AddInformation( "ReportInconsistent", "Query report inconsistent",
+            "The contextId inconsistency in the Oa buffer within the query window.",
+            "Report Meta Data", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
+            INFORMATION_TYPE_FLAG, NULL, NULL, 21 );
+        if( information )
+        {
+            
+            MD_CHECK_CC( information->SetDeltaReportReadEquation( "dw@0x29c 0x02 AND" ));
+        }
+
+        information = metricSet->AddInformation( "ReportCtxSwitchLost", "Query report context switch lost",
+            "Oa buffer has not been browsed to find context switch reports to filter out unfamiliar contexts from the query report.",
+            "Report Meta Data", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
+            INFORMATION_TYPE_FLAG, NULL, NULL, 22 );
+        if( information )
+        {
+            
+            MD_CHECK_CC( information->SetDeltaReportReadEquation( "dw@0x29c 0x08 AND" ));
+        }
+
+        information = metricSet->AddInformation( "ReportWithoutWorkload", "Query report missing workload",
+            "Missing workload between query begin and query end.",
+            "Report Meta Data", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
+            INFORMATION_TYPE_FLAG, NULL, NULL, 23 );
+        if( information )
+        {
+            
+            MD_CHECK_CC( information->SetDeltaReportReadEquation( "dw@0x29c 0x10 AND" ));
+        }
+
         MD_CHECK_CC( metricSet->AddStartRegisterSet( 0, 0 ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9840, 0x00000080, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x13805800, REGISTER_TYPE_NOA ));
@@ -13862,7 +14628,7 @@ TCompletionCode CreateMetricTreeSKL_GT2_OA( CMetricsDevice* metricsDevice, CConc
     platformMask = PLATFORM_SKL;
     if( metricsDevice->IsPlatformTypeOf( platformMask, GT_TYPE_GT2 ) )
     {
-        metricSet = concurrentGroup->AddMetricSet( "FfBottlenecks", "FF Bottlenecks", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+        CMetricSet* metricSet = concurrentGroup->AddMetricSet( "FfBottlenecks", "FF Bottlenecks", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
            GPU_RENDER, 256, 672, OA_REPORT_TYPE_256B_A45_NOA16, platformMask, GT_TYPE_GT2 );
         MD_CHECK_PTR( metricSet );
         
@@ -14361,6 +15127,46 @@ TCompletionCode CreateMetricTreeSKL_GT2_OA( CMetricsDevice* metricsDevice, CConc
             MD_CHECK_CC( information->SetDeltaReportReadEquation( "dw@0x1cc" ));
         }
 
+        information = metricSet->AddInformation( "ReportError", "Query report error",
+            "An error in the query execution, the received report should be ignored.",
+            "Report Meta Data", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
+            INFORMATION_TYPE_FLAG, NULL, NULL, 20 );
+        if( information )
+        {
+            
+            MD_CHECK_CC( information->SetDeltaReportReadEquation( "dw@0x29c 0x12 AND" ));
+        }
+
+        information = metricSet->AddInformation( "ReportInconsistent", "Query report inconsistent",
+            "The contextId inconsistency in the Oa buffer within the query window.",
+            "Report Meta Data", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
+            INFORMATION_TYPE_FLAG, NULL, NULL, 21 );
+        if( information )
+        {
+            
+            MD_CHECK_CC( information->SetDeltaReportReadEquation( "dw@0x29c 0x02 AND" ));
+        }
+
+        information = metricSet->AddInformation( "ReportCtxSwitchLost", "Query report context switch lost",
+            "Oa buffer has not been browsed to find context switch reports to filter out unfamiliar contexts from the query report.",
+            "Report Meta Data", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
+            INFORMATION_TYPE_FLAG, NULL, NULL, 22 );
+        if( information )
+        {
+            
+            MD_CHECK_CC( information->SetDeltaReportReadEquation( "dw@0x29c 0x08 AND" ));
+        }
+
+        information = metricSet->AddInformation( "ReportWithoutWorkload", "Query report missing workload",
+            "Missing workload between query begin and query end.",
+            "Report Meta Data", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
+            INFORMATION_TYPE_FLAG, NULL, NULL, 23 );
+        if( information )
+        {
+            
+            MD_CHECK_CC( information->SetDeltaReportReadEquation( "dw@0x29c 0x10 AND" ));
+        }
+
         MD_CHECK_CC( metricSet->AddStartRegisterSet( 0, 0 ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9840, 0x00000080, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x11850019, REGISTER_TYPE_NOA ));
@@ -14439,7 +15245,7 @@ TCompletionCode CreateMetricTreeSKL_GT2_OA( CMetricsDevice* metricsDevice, CConc
     platformMask = PLATFORM_SKL;
     if( metricsDevice->IsPlatformTypeOf( platformMask, GT_TYPE_GT2 ) )
     {
-        metricSet = concurrentGroup->AddMetricSet( "TestOa", "MDAPI testing set Gen9", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+        CMetricSet* metricSet = concurrentGroup->AddMetricSet( "TestOa", "MDAPI testing set", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
            GPU_RENDER|GPU_COMPUTE, 256, 672, OA_REPORT_TYPE_256B_A45_NOA16, platformMask, GT_TYPE_GT2 );
         MD_CHECK_PTR( metricSet );
         
@@ -14723,6 +15529,46 @@ TCompletionCode CreateMetricTreeSKL_GT2_OA( CMetricsDevice* metricsDevice, CConc
             MD_CHECK_CC( information->SetSnapshotReportReadEquation( "dw@0x5c" ));
         }
 
+        information = metricSet->AddInformation( "ReportError", "Query report error",
+            "An error in the query execution, the received report should be ignored.",
+            "Report Meta Data", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
+            INFORMATION_TYPE_FLAG, NULL, NULL, 21 );
+        if( information )
+        {
+            
+            MD_CHECK_CC( information->SetDeltaReportReadEquation( "dw@0x29c 0x12 AND" ));
+        }
+
+        information = metricSet->AddInformation( "ReportInconsistent", "Query report inconsistent",
+            "The contextId inconsistency in the Oa buffer within the query window.",
+            "Report Meta Data", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
+            INFORMATION_TYPE_FLAG, NULL, NULL, 22 );
+        if( information )
+        {
+            
+            MD_CHECK_CC( information->SetDeltaReportReadEquation( "dw@0x29c 0x02 AND" ));
+        }
+
+        information = metricSet->AddInformation( "ReportCtxSwitchLost", "Query report context switch lost",
+            "Oa buffer has not been browsed to find context switch reports to filter out unfamiliar contexts from the query report.",
+            "Report Meta Data", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
+            INFORMATION_TYPE_FLAG, NULL, NULL, 23 );
+        if( information )
+        {
+            
+            MD_CHECK_CC( information->SetDeltaReportReadEquation( "dw@0x29c 0x08 AND" ));
+        }
+
+        information = metricSet->AddInformation( "ReportWithoutWorkload", "Query report missing workload",
+            "Missing workload between query begin and query end.",
+            "Report Meta Data", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
+            INFORMATION_TYPE_FLAG, NULL, NULL, 24 );
+        if( information )
+        {
+            
+            MD_CHECK_CC( information->SetDeltaReportReadEquation( "dw@0x29c 0x10 AND" ));
+        }
+
         MD_CHECK_CC( metricSet->AddStartRegisterSet( 0, 0 ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9840, 0x00000080, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x11810000, REGISTER_TYPE_NOA ));
@@ -14766,7 +15612,7 @@ TCompletionCode CreateMetricTreeSKL_GT2_OA( CMetricsDevice* metricsDevice, CConc
     platformMask = PLATFORM_SKL;
     if( metricsDevice->IsPlatformTypeOf( platformMask, GT_TYPE_GT2 ) )
     {
-        metricSet = concurrentGroup->AddMetricSet( "PMA_Stall", "Metric set PMA Stall", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+        CMetricSet* metricSet = concurrentGroup->AddMetricSet( "PMA_Stall", "Metric set PMA Stall", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
            GPU_RENDER, 256, 672, OA_REPORT_TYPE_256B_A45_NOA16, platformMask, GT_TYPE_GT2 );
         MD_CHECK_PTR( metricSet );
         
@@ -14923,6 +15769,46 @@ TCompletionCode CreateMetricTreeSKL_GT2_OA( CMetricsDevice* metricsDevice, CConc
             MD_CHECK_CC( information->SetDeltaReportReadEquation( "dw@0x1cc" ));
         }
 
+        information = metricSet->AddInformation( "ReportError", "Query report error",
+            "An error in the query execution, the received report should be ignored.",
+            "Report Meta Data", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
+            INFORMATION_TYPE_FLAG, NULL, NULL, 20 );
+        if( information )
+        {
+            
+            MD_CHECK_CC( information->SetDeltaReportReadEquation( "dw@0x29c 0x12 AND" ));
+        }
+
+        information = metricSet->AddInformation( "ReportInconsistent", "Query report inconsistent",
+            "The contextId inconsistency in the Oa buffer within the query window.",
+            "Report Meta Data", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
+            INFORMATION_TYPE_FLAG, NULL, NULL, 21 );
+        if( information )
+        {
+            
+            MD_CHECK_CC( information->SetDeltaReportReadEquation( "dw@0x29c 0x02 AND" ));
+        }
+
+        information = metricSet->AddInformation( "ReportCtxSwitchLost", "Query report context switch lost",
+            "Oa buffer has not been browsed to find context switch reports to filter out unfamiliar contexts from the query report.",
+            "Report Meta Data", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
+            INFORMATION_TYPE_FLAG, NULL, NULL, 22 );
+        if( information )
+        {
+            
+            MD_CHECK_CC( information->SetDeltaReportReadEquation( "dw@0x29c 0x08 AND" ));
+        }
+
+        information = metricSet->AddInformation( "ReportWithoutWorkload", "Query report missing workload",
+            "Missing workload between query begin and query end.",
+            "Report Meta Data", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
+            INFORMATION_TYPE_FLAG, NULL, NULL, 23 );
+        if( information )
+        {
+            
+            MD_CHECK_CC( information->SetDeltaReportReadEquation( "dw@0x29c 0x10 AND" ));
+        }
+
         MD_CHECK_CC( metricSet->AddStartRegisterSet( 0, 0 ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9840, 0x00000080, REGISTER_TYPE_NOA ));
         MD_CHECK_CC( metricSet->AddStartConfigRegister( 0x9888, 0x122d3080, REGISTER_TYPE_NOA ));
@@ -14964,7 +15850,7 @@ TCompletionCode CreateMetricTreeSKL_GT2_OA( CMetricsDevice* metricsDevice, CConc
     platformMask = PLATFORM_SKL;
     if( metricsDevice->IsPlatformTypeOf( platformMask, GT_TYPE_GT2 ) )
     {
-        metricSet = concurrentGroup->AddMetricSet( "AsyncCompute", "AsyncCompute", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+        CMetricSet* metricSet = concurrentGroup->AddMetricSet( "AsyncCompute", "AsyncCompute", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
            GPU_RENDER|GPU_COMPUTE|GPU_MEDIA|GPU_GENERIC, 256, 672, OA_REPORT_TYPE_256B_A45_NOA16, platformMask, GT_TYPE_GT2 );
         MD_CHECK_PTR( metricSet );
         
@@ -15351,6 +16237,46 @@ TCompletionCode CreateMetricTreeSKL_GT2_OA( CMetricsDevice* metricsDevice, CConc
         if( information )
         {
             MD_CHECK_CC( information->SetSnapshotReportReadEquation( "dw@0x5c" ));
+        }
+
+        information = metricSet->AddInformation( "ReportError", "Query report error",
+            "An error in the query execution, the received report should be ignored.",
+            "Report Meta Data", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
+            INFORMATION_TYPE_FLAG, NULL, NULL, 21 );
+        if( information )
+        {
+            
+            MD_CHECK_CC( information->SetDeltaReportReadEquation( "dw@0x29c 0x12 AND" ));
+        }
+
+        information = metricSet->AddInformation( "ReportInconsistent", "Query report inconsistent",
+            "The contextId inconsistency in the Oa buffer within the query window.",
+            "Report Meta Data", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
+            INFORMATION_TYPE_FLAG, NULL, NULL, 22 );
+        if( information )
+        {
+            
+            MD_CHECK_CC( information->SetDeltaReportReadEquation( "dw@0x29c 0x02 AND" ));
+        }
+
+        information = metricSet->AddInformation( "ReportCtxSwitchLost", "Query report context switch lost",
+            "Oa buffer has not been browsed to find context switch reports to filter out unfamiliar contexts from the query report.",
+            "Report Meta Data", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
+            INFORMATION_TYPE_FLAG, NULL, NULL, 23 );
+        if( information )
+        {
+            
+            MD_CHECK_CC( information->SetDeltaReportReadEquation( "dw@0x29c 0x08 AND" ));
+        }
+
+        information = metricSet->AddInformation( "ReportWithoutWorkload", "Query report missing workload",
+            "Missing workload between query begin and query end.",
+            "Report Meta Data", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
+            INFORMATION_TYPE_FLAG, NULL, NULL, 24 );
+        if( information )
+        {
+            
+            MD_CHECK_CC( information->SetDeltaReportReadEquation( "dw@0x29c 0x10 AND" ));
         }
 
         MD_CHECK_CC( metricSet->AddStartRegisterSet( 0, 0 ));

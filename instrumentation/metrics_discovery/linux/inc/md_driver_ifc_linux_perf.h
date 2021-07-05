@@ -1,6 +1,6 @@
 //////////////////////////////////////////////////////////////////////////////
 //
-//  Copyright © 2019-2020, Intel Corporation
+//  Copyright © 2019-2021, Intel Corporation
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a
 //  copy of this software and associated documentation files (the "Software"),
@@ -38,7 +38,10 @@
 extern "C"
 {
 #endif
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wreturn-type"
 #include "gen_device_info.h" // MESA
+#pragma GCC diagnostic pop
 #if defined( __cplusplus )
 }
 #endif
@@ -83,8 +86,8 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     typedef struct SPerfCapabilities
     {
-        bool IsOaInterruptSupported; // Available since i915 Perf revision '2'
-        bool IsSubDeviceSupported;   // Available since i915 Perf revision '10'
+        bool IsOaInterruptSupported;     // Available since i915 Perf revision '2'
+        bool IsSubDeviceSupported;       // Available since i915 Perf revision '10'
     } TPerfCapabilities;
 
     //////////////////////////////////////////////////////////////////////////////
@@ -172,7 +175,7 @@ namespace MetricsDiscoveryInternal
         virtual TCompletionCode SendReadRegsConfig( TRegister** regVector, uint32_t regCount, uint32_t apiMask );
         virtual TCompletionCode GetPmRegsConfigHandles( uint32_t configId, uint32_t* oaConfigHandle, uint32_t* gpConfigHandle, uint32_t* rrConfigHandle );
         virtual TCompletionCode ValidatePmRegsConfig( TRegister* regVector, uint32_t regCount, TPlatformType platform );
-        virtual TCompletionCode GetGpuCpuTimestamps( uint64_t* gpuTimestamp, uint64_t* cpuTimestamp, uint32_t* cpuId );
+        virtual TCompletionCode GetGpuCpuTimestamps( CMetricsDevice& device, uint64_t* gpuTimestamp, uint64_t* cpuTimestamp, uint32_t* cpuId, uint64_t* correlationIndicator );
         virtual TCompletionCode SendGetCtxIdTagsEscape( TGetCtxTagsIdParams* params );
 
         // Synchronization
@@ -203,7 +206,7 @@ namespace MetricsDiscoveryInternal
         void            ReadPerfCapabilities();
         void            ResetPerfCapabilities();
         void            PrintPerfCapabilities();
-        TCompletionCode OpenPerfStream( CMetricsDevice& metricDevice,  uint32_t perfMetricSetId, uint32_t perfReportType, uint32_t timerPeriodExponent );
+        TCompletionCode OpenPerfStream( CMetricsDevice& metricDevice, uint32_t perfMetricSetId, uint32_t perfReportType, uint32_t timerPeriodExponent );
         TCompletionCode ReadPerfStream( CMetricsDevice& metricDevice, uint32_t oaReportSize, uint32_t reportsToRead, char* reportData, uint32_t* readBytes, bool* reportLostOccured );
         TCompletionCode ClosePerfStream( CMetricsDevice& metricDevice );
         TCompletionCode FlushPerfStream( CMetricsDevice& metricDevice );

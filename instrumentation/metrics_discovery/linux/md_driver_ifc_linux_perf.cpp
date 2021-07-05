@@ -1,6 +1,6 @@
 //////////////////////////////////////////////////////////////////////////////
 //
-//  Copyright © 2019-2020, Intel Corporation
+//  Copyright © 2019-2021, Intel Corporation
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a
 //  copy of this software and associated documentation files (the "Software"),
@@ -46,15 +46,6 @@
 #include <unistd.h> // close, write, read
 
 #include "xf86drm.h" // for drmOpen/drmClose/drmIoctl
-
-#if defined( __cplusplus )
-extern "C"
-{
-#endif
-#include "gen_device_info.h" // MESA
-#if defined( __cplusplus )
-}
-#endif
 
 //////////////////////////////////////////////////////////////////////////////
 //
@@ -115,7 +106,6 @@ extern "C"
 #define MD_MAX_DUALSLICE              8 // Currently max value
 #define MD_MAX_DUALSUBSLICE_PER_SLICE 6 // Currently max value
 #define MD_DUALSUBSLICE_PER_SLICE     4 // Current value
-#define MD_BITS_PER_BYTE              8
 
 using namespace MetricsDiscovery;
 
@@ -309,7 +299,7 @@ namespace MetricsDiscoveryInternal
     CDriverInterface* CDriverInterface::CreateInstance( CAdapterHandle& adapterHandle )
     {
         // Read debug logs settings
-        IuLogGetSettings();
+        IuLogGetSettings( IU_ADAPTER_ID_DEFAULT );
 
         CDriverInterface* driverInterface = new( std::nothrow ) CDriverInterfaceLinuxPerf( adapterHandle );
         if( ( driverInterface != NULL ) && ( driverInterface->CreateContext() == false ) )
@@ -506,7 +496,7 @@ namespace MetricsDiscoveryInternal
     void CDriverInterface::ReadDebugLogSettings()
     {
         // Read global debug logs settings
-        IuLogGetSettings();
+        IuLogGetSettings( IU_ADAPTER_ID_DEFAULT );
     }
 
     //////////////////////////////////////////////////////////////////////////////
@@ -778,21 +768,6 @@ namespace MetricsDiscoveryInternal
                 break;
             }
 
-            case GTDI_DEVICE_PARAM_SUBSLICES_PER_SLICE_COUNT:
-            {
-                // Return value is a mask for one slice (assuming it's uniform for each slice)
-                int32_t singleSubsliceMask = 0;
-
-                ret = SendGetParamIoctl( m_DrmDeviceHandle, I915_PARAM_SUBSLICE_MASK, &singleSubsliceMask );
-                MD_CHECK_CC_RET( ret );
-
-                out->ValueType   = GTDI_DEVICE_PARAM_VALUE_TYPE_UINT32;
-                out->ValueUint32 = CalculateEnabledBits( singleSubsliceMask, 0xFFFFFFFF );
-
-                MD_ASSERT( out->ValueUint32 <= GetGtMaxSubslicePerSlice() );
-                break;
-            }
-
             case GTDI_DEVICE_PARAM_SLICES_COUNT:
             {
                 if( instrPlatformId == GENERATION_TGL || instrPlatformId == GENERATION_DG1 )
@@ -866,7 +841,7 @@ namespace MetricsDiscoveryInternal
             {
                 if( instrPlatformId == GENERATION_TGL || instrPlatformId == GENERATION_DG1 )
                 {
-                    ret = CC_ERROR_INVALID_PARAMETER;
+                    ret = CC_ERROR_NOT_SUPPORTED;
                 }
                 else
                 {
@@ -922,7 +897,7 @@ namespace MetricsDiscoveryInternal
                 }
                 else
                 {
-                    ret = CC_ERROR_INVALID_PARAMETER;
+                    ret = CC_ERROR_NOT_SUPPORTED;
                 }
                 break;
             }
@@ -1008,7 +983,7 @@ namespace MetricsDiscoveryInternal
                 MD_CHECK_CC_RET( ret );
 
                 // Returning mapped GtType for compatibility reasons
-                out->ValueType   = GTDI_DEVICE_PARAM_VALUE_TYPE_UINT32;
+                out->ValueType = GTDI_DEVICE_PARAM_VALUE_TYPE_UINT32;
                 out->ValueUint32 = (uint32_t) MapMesaToInstrGtType( mesaDeviceInfo->gt );
                 break;
             }
@@ -1257,36 +1232,39 @@ namespace MetricsDiscoveryInternal
     //     CpuTimestamp is read from clock_gettime() CLOCK_MONOTONIC.
     //
     // Input:
-    //     uint64_t* gpuTimestamp - (OUT) GPU timestamp in ns
-    //     uint64_t* cpuTimestamp - (OUT) CPU timestamp in ns
-    //     uint32_t* cpuId        - (OUT) CPU id
+    //     CMetricsDevice& device         - (IN)  metrics device
+    //     uint64_t* gpuTimestamp         - (OUT) GPU timestamp in ns
+    //     uint64_t* cpuTimestamp         - (OUT) CPU timestamp in ns
+    //     uint32_t* cpuId                - (OUT) CPU id
+    //     uint64_t* correlationIndicator - (out) correlation indicator in ns !ON LINUX ALWAYS 0!
     //
     // Output:
     //     TCompletionCode                  - *CC_OK* means succeess
     //
     //////////////////////////////////////////////////////////////////////////////
-    TCompletionCode CDriverInterfaceLinuxPerf::GetGpuCpuTimestamps( uint64_t* gpuTimestamp, uint64_t* cpuTimestamp, uint32_t* cpuId )
+    TCompletionCode CDriverInterfaceLinuxPerf::GetGpuCpuTimestamps( CMetricsDevice& device, uint64_t* gpuTimestamp, uint64_t* cpuTimestamp, uint32_t* cpuId, uint64_t* correlationIndicator )
     {
         MD_LOG_ENTER();
         MD_CHECK_PTR_RET( gpuTimestamp, CC_ERROR_INVALID_PARAMETER );
         MD_CHECK_PTR_RET( cpuTimestamp, CC_ERROR_INVALID_PARAMETER );
         MD_CHECK_PTR_RET( cpuId, CC_ERROR_INVALID_PARAMETER );
+        MD_CHECK_PTR_RET( correlationIndicator, CC_ERROR_INVALID_PARAMETER );
 
-        uint64_t gpuTimestampNs = 0;
-        uint64_t cpuTimestampNs = 0;
+        uint64_t        gpuTimestampNs        = 0;
+        uint64_t        cpuTimestampNs        = 0;
 
-        TCompletionCode ret = GetGpuTimestampNs( &gpuTimestampNs );
-        MD_CHECK_CC_RET( ret );
+        TCompletionCode result = GetGpuTimestampNs( &gpuTimestampNs );
+        MD_CHECK_CC_RET( result );
 
-        ret = GetCpuTimestampNs( &cpuTimestampNs );
-        MD_CHECK_CC_RET( ret );
+        result = GetCpuTimestampNs( &cpuTimestampNs );
+        MD_CHECK_CC_RET( result );
 
         // Set GPU & CPU timestamps
         *cpuTimestamp = cpuTimestampNs;
         *gpuTimestamp = gpuTimestampNs;
 
         MD_LOG_EXIT();
-        return ret;
+        return result;
     }
 
     //////////////////////////////////////////////////////////////////////////////
@@ -2026,6 +2004,7 @@ namespace MetricsDiscoveryInternal
         };
 
         // Check capabilities. Update when OA interrupt will be mergerd.
+
         m_PerfCapabilities.IsOaInterruptSupported = false; //requirePerfRevision( 2 );
         m_PerfCapabilities.IsSubDeviceSupported   = false; //requirePerfRevision( 10 );
 
@@ -2097,6 +2076,8 @@ namespace MetricsDiscoveryInternal
     {
         int32_t               perfEventFd    = -1;
         uint32_t              subDeviceIndex = metricsDevice.GetSubDeviceIndex();
+        auto                  subDevices     = metricsDevice.GetAdapter().GetSubDevices();
+        auto                  engine         = TEngineParams_1_9{};
         auto                  param          = drm_i915_perf_open_param{};
         std::vector<uint64_t> properties     = {};
         auto                  addProperty    = [&]( const uint64_t key, const uint64_t value ) {
@@ -2117,8 +2098,8 @@ namespace MetricsDiscoveryInternal
         // Sub device support.
         if( subDeviceIndex > 0 )
         {
-            auto       engineParameters = metricsDevice.GetAdapter().GetTbsEngineParams( subDeviceIndex );
-            const bool enginesSupported = IsSubDeviceSupported();
+            TCompletionCode result           = subDevices.GetTbsEngineParams( subDeviceIndex, engine );
+            const bool      enginesSupported = IsSubDeviceSupported();
 
             // Check sub device engines support.
             if( !enginesSupported )
@@ -2128,7 +2109,7 @@ namespace MetricsDiscoveryInternal
             }
 
             // Obtain tbs engine.
-            if( !engineParameters )
+            if( result != CC_OK )
             {
                 MD_LOG( LOG_ERROR, "No render engines found, unable to open tbs on sub device" );
                 return TCompletionCode::CC_ERROR_NOT_SUPPORTED;

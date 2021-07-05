@@ -1,6 +1,6 @@
 //////////////////////////////////////////////////////////////////////////////
 //
-//  Copyright © 2019-2020, Intel Corporation
+//  Copyright © 2019-2021, Intel Corporation
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a
 //  copy of this software and associated documentation files (the "Software"),
@@ -36,6 +36,7 @@ using namespace MetricsDiscovery;
     #define DllExport __attribute__( ( visibility( "default" ) ) )
 #else
     // On Windows exports through project settings (linker commands)
+    // ! WARNING: Windows exports a different set of functions than Linux !
     #define DllExport
 #endif // __linux__
 
@@ -46,6 +47,7 @@ extern "C"
 
     DllExport TCompletionCode OpenAdapterGroup( IAdapterGroup_1_9** adapterGroup );
 
+    // Note: when changing IMetricsDevice version in params remember about OGL PerfQuery - it needs to be changed too
     DllExport TCompletionCode OpenMetricsDevice( IMetricsDevice_1_5** metricsDevice );
 
     DllExport TCompletionCode CloseMetricsDevice( IMetricsDevice_1_5* metricsDevice );

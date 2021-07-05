@@ -1,6 +1,6 @@
 //////////////////////////////////////////////////////////////////////////////
 //
-//    Copyright © 2019-2020, Intel Corporation
+//    Copyright © 2019-2021, Intel Corporation
 //
 //    Permission is hereby granted, free of charge, to any person obtaining a
 //    copy of this software and associated documentation files (the "Software"),
@@ -27,27 +27,29 @@
 //////////////////////////////////////////////////////////////////////////////
 
 #include "md_per_platform_preamble.h"
-
+#include "md_internal.h"
 
 
 
 #if ((!defined(MD_INCLUDE_HSW_METRICS) && MD_INCLUDE_ALL_METRICS) || MD_INCLUDE_HSW_METRICS)
+
+using namespace MetricsDiscoveryInternal;
+
 TCompletionCode CreateMetricTreeHSW_PipelineStatistics( CMetricsDevice* metricsDevice, CConcurrentGroup* concurrentGroup )
 {
     MD_LOG_ENTER();
     MD_CHECK_PTR_RET( metricsDevice, CC_ERROR_INVALID_PARAMETER );
     MD_CHECK_PTR_RET( concurrentGroup, CC_ERROR_INVALID_PARAMETER );
 
-    CMetricSet*       metricSet            = NULL;
     CMetric*          metric               = NULL;
     CInformation*     information          = NULL;
     const char*       availabilityEquation = NULL;
     uint32_t          platformMask         = 0;
-  
+
     platformMask = PLATFORM_HSW;
     if( metricsDevice->IsPlatformTypeOf( platformMask ) )
     {
-        metricSet = concurrentGroup->AddMetricSet( "PipelineStats", "Pipeline Statistics for OGL4", API_TYPE_OGL|API_TYPE_OGL4_X,
+        CMetricSet* metricSet = concurrentGroup->AddMetricSet( "PipelineStats", "Pipeline Statistics for OGL4", API_TYPE_OGL|API_TYPE_OGL4_X,
            GPU_RENDER|GPU_COMPUTE, 0, 88, OA_REPORT_TYPE_256B_A45_NOA16, platformMask );
         MD_CHECK_PTR( metricSet );
         
@@ -189,22 +191,24 @@ TCompletionCode CreateMetricTreeHSW_PipelineStatistics( CMetricsDevice* metricsD
 
 
 #if ((!defined(MD_INCLUDE_HSW_METRICS) && MD_INCLUDE_ALL_METRICS) || MD_INCLUDE_HSW_METRICS)
+
+using namespace MetricsDiscoveryInternal;
+
 TCompletionCode CreateMetricTreeHSW_OA( CMetricsDevice* metricsDevice, CConcurrentGroup* concurrentGroup )
 {
     MD_LOG_ENTER();
     MD_CHECK_PTR_RET( metricsDevice, CC_ERROR_INVALID_PARAMETER );
     MD_CHECK_PTR_RET( concurrentGroup, CC_ERROR_INVALID_PARAMETER );
 
-    CMetricSet*       metricSet            = NULL;
     CMetric*          metric               = NULL;
     CInformation*     information          = NULL;
     const char*       availabilityEquation = NULL;
     uint32_t          platformMask         = 0;
-  
+
     platformMask = PLATFORM_HSW;
     if( metricsDevice->IsPlatformTypeOf( platformMask ) )
     {
-        metricSet = concurrentGroup->AddMetricSet( "RenderBasic", "Render Metrics Basic Gen7.5", API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+        CMetricSet* metricSet = concurrentGroup->AddMetricSet( "RenderBasic", "Render Metrics Basic set", API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
            GPU_RENDER, 256, 536, OA_REPORT_TYPE_256B_A45_NOA16, platformMask );
         MD_CHECK_PTR( metricSet );
         
@@ -1270,7 +1274,7 @@ TCompletionCode CreateMetricTreeHSW_OA( CMetricsDevice* metricsDevice, CConcurre
     platformMask = PLATFORM_HSW;
     if( metricsDevice->IsPlatformTypeOf( platformMask ) )
     {
-        metricSet = concurrentGroup->AddMetricSet( "ComputeBasic", "Compute Metrics Basic Gen7.5", API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+        CMetricSet* metricSet = concurrentGroup->AddMetricSet( "ComputeBasic", "Compute Metrics Basic set", API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
            GPU_RENDER|GPU_COMPUTE, 256, 536, OA_REPORT_TYPE_256B_A45_NOA16, platformMask );
         MD_CHECK_PTR( metricSet );
         
@@ -2069,7 +2073,7 @@ TCompletionCode CreateMetricTreeHSW_OA( CMetricsDevice* metricsDevice, CConcurre
     platformMask = PLATFORM_HSW;
     if( metricsDevice->IsPlatformTypeOf( platformMask ) )
     {
-        metricSet = concurrentGroup->AddMetricSet( "ComputeExtended", "Compute Metrics Extended Gen7.5", API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+        CMetricSet* metricSet = concurrentGroup->AddMetricSet( "ComputeExtended", "Compute Metrics Extended set", API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
            GPU_COMPUTE, 256, 536, OA_REPORT_TYPE_256B_A45_NOA16, platformMask );
         MD_CHECK_PTR( metricSet );
         
@@ -2429,7 +2433,7 @@ TCompletionCode CreateMetricTreeHSW_OA( CMetricsDevice* metricsDevice, CConcurre
     platformMask = PLATFORM_HSW;
     if( metricsDevice->IsPlatformTypeOf( platformMask ) )
     {
-        metricSet = concurrentGroup->AddMetricSet( "RenderBalance", "Render Metrics Slice Balance Gen7.5", API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+        CMetricSet* metricSet = concurrentGroup->AddMetricSet( "RenderBalance", "Render Metrics Slice Balance set", API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
            GPU_RENDER, 256, 536, OA_REPORT_TYPE_256B_A45_NOA16, platformMask );
         MD_CHECK_PTR( metricSet );
         
@@ -3329,7 +3333,7 @@ TCompletionCode CreateMetricTreeHSW_OA( CMetricsDevice* metricsDevice, CConcurre
     platformMask = PLATFORM_HSW;
     if( metricsDevice->IsPlatformTypeOf( platformMask ) )
     {
-        metricSet = concurrentGroup->AddMetricSet( "MemoryReads", "Memory Reads Distribution Gen7.5", API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+        CMetricSet* metricSet = concurrentGroup->AddMetricSet( "MemoryReads", "Memory Reads Distribution set", API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
            GPU_RENDER|GPU_COMPUTE, 256, 536, OA_REPORT_TYPE_256B_A45_NOA16, platformMask );
         MD_CHECK_PTR( metricSet );
         
@@ -4161,7 +4165,7 @@ TCompletionCode CreateMetricTreeHSW_OA( CMetricsDevice* metricsDevice, CConcurre
     platformMask = PLATFORM_HSW;
     if( metricsDevice->IsPlatformTypeOf( platformMask ) )
     {
-        metricSet = concurrentGroup->AddMetricSet( "MemoryWrites", "Memory Writes Distribution Gen7.5", API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+        CMetricSet* metricSet = concurrentGroup->AddMetricSet( "MemoryWrites", "Memory Writes Distribution set", API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
            GPU_RENDER|GPU_COMPUTE, 256, 536, OA_REPORT_TYPE_256B_A45_NOA16, platformMask );
         MD_CHECK_PTR( metricSet );
         
@@ -5007,7 +5011,7 @@ TCompletionCode CreateMetricTreeHSW_OA( CMetricsDevice* metricsDevice, CConcurre
     platformMask = PLATFORM_HSW;
     if( metricsDevice->IsPlatformTypeOf( platformMask ) )
     {
-        metricSet = concurrentGroup->AddMetricSet( "SamplerBalance", "Metric set SamplerBalance", API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+        CMetricSet* metricSet = concurrentGroup->AddMetricSet( "SamplerBalance", "Metric set SamplerBalance", API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
            GPU_RENDER, 256, 536, OA_REPORT_TYPE_256B_A45_NOA16, platformMask );
         MD_CHECK_PTR( metricSet );
         

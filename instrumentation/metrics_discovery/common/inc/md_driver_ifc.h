@@ -1,6 +1,6 @@
 //////////////////////////////////////////////////////////////////////////////
 //
-//  Copyright © 2019-2020, Intel Corporation
+//  Copyright © 2019-2021, Intel Corporation
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a
 //  copy of this software and associated documentation files (the "Software"),
@@ -46,7 +46,7 @@ namespace MetricsDiscoveryInternal
     class CMetricSet;
 
     ///////////////////////////////////////////////////////////////////////////////
-    // Semaphore wait result:                                                     //
+    // Semaphore wait result:                                                    //
     ///////////////////////////////////////////////////////////////////////////////
     typedef enum ESemaphoreWaitResult
     {
@@ -57,7 +57,7 @@ namespace MetricsDiscoveryInternal
     } TSemaphoreWaitResult;
 
     ///////////////////////////////////////////////////////////////////////////////
-    // Override ID map to not include instr files in (md)_internal.cpp            //
+    // Override ID map to not include instr files in (md)_internal.cpp           //
     ///////////////////////////////////////////////////////////////////////////////
     typedef enum EOverrideId
     {
@@ -67,7 +67,7 @@ namespace MetricsDiscoveryInternal
     } TOverrideId;
 
     ///////////////////////////////////////////////////////////////////////////////
-    // Adapter data:                                                              //
+    // Adapter data:                                                             //
     ///////////////////////////////////////////////////////////////////////////////
     typedef struct SAdapterData
     {
@@ -124,15 +124,15 @@ namespace MetricsDiscoveryInternal
         static TCompletionCode      SemaphoreRelease( void** semaphore );
 
         // General:
-        virtual TCompletionCode ForceSupportDisable()                                                                                                     = 0;
-        virtual TCompletionCode SendSupportEnableEscape( bool enable )                                                                                    = 0;
-        virtual TCompletionCode SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM param, GTDIDeviceInfoParamExtOut* out )                                      = 0;
-        virtual TCompletionCode SendPmRegsConfig( TRegister** regVector, uint32_t regCount, uint32_t apiMask )                                            = 0;
-        virtual TCompletionCode SendReadRegsConfig( TRegister** regVector, uint32_t regCount, uint32_t apiMask )                                          = 0;
-        virtual TCompletionCode GetPmRegsConfigHandles( uint32_t configId, uint32_t* oaConfigHandle, uint32_t* gpConfigHandle, uint32_t* rrConfigHandle ) = 0;
-        virtual TCompletionCode ValidatePmRegsConfig( TRegister* regVector, uint32_t regCount, TPlatformType platform )                                   = 0;
-        virtual TCompletionCode GetGpuCpuTimestamps( uint64_t* gpuTimestamp, uint64_t* cpuTimestamp, uint32_t* cpuId )                                    = 0;
-        virtual TCompletionCode SendGetCtxIdTagsEscape( TGetCtxTagsIdParams* params )                                                                     = 0;
+        virtual TCompletionCode ForceSupportDisable()                                                                                                                          = 0;
+        virtual TCompletionCode SendSupportEnableEscape( bool enable )                                                                                                         = 0;
+        virtual TCompletionCode SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM param, GTDIDeviceInfoParamExtOut* out )                                                           = 0;
+        virtual TCompletionCode SendPmRegsConfig( TRegister** regVector, uint32_t regCount, uint32_t apiMask )                                                                 = 0;
+        virtual TCompletionCode SendReadRegsConfig( TRegister** regVector, uint32_t regCount, uint32_t apiMask )                                                               = 0;
+        virtual TCompletionCode GetPmRegsConfigHandles( uint32_t configId, uint32_t* oaConfigHandle, uint32_t* gpConfigHandle, uint32_t* rrConfigHandle )                      = 0;
+        virtual TCompletionCode ValidatePmRegsConfig( TRegister* regVector, uint32_t regCount, TPlatformType platform )                                                        = 0;
+        virtual TCompletionCode GetGpuCpuTimestamps( CMetricsDevice& device, uint64_t* gpuTimestamp, uint64_t* cpuTimestamp, uint32_t* cpuId, uint64_t* correlationIndicator ) = 0;
+        virtual TCompletionCode SendGetCtxIdTagsEscape( TGetCtxTagsIdParams* params )                                                                                          = 0;
 
         // Synchronization:
         virtual TCompletionCode LockConcurrentGroup( const char* name, void** semaphore )   = 0;
@@ -142,9 +142,9 @@ namespace MetricsDiscoveryInternal
         virtual TCompletionCode OpenIoStream( TStreamType streamType, CMetricsDevice& metricDevice, CMetricSet* metricSet, const char* concurrentGroupName, uint32_t processId, uint32_t* nsTimerPeriod, uint32_t* bufferSize, void** streamEventHandle )       = 0;
         virtual TCompletionCode ReadIoStream( TStreamType streamType, CMetricsDevice& metricDevice, IMetricSet_1_0* metricSet, char* reportData, uint32_t* reportsCount, uint32_t readFlags, uint32_t* frequency, GTDIReadCounterStreamExceptions* exceptions ) = 0;
         virtual TCompletionCode CloseIoStream( TStreamType streamType, CMetricsDevice& metricDevice, void** streamEventHandle, const char* concurrentGroupName, CMetricSet* metricSet )                                                                         = 0;
-        virtual TCompletionCode HandleIoStreamExceptions( const char* concurrentGroupName, CMetricSet* metricSet, uint32_t processId, uint32_t* reportCount, GTDIReadCounterStreamExceptions* exceptions )                        = 0;
-        virtual TCompletionCode WaitForIoStreamReports( TStreamType streamType, CMetricsDevice& metricDevice, uint32_t milliseconds, void* streamEventHandle )                                                                                                = 0;
-        virtual bool            IsIoMeasurementInfoAvailable( TIoMeasurementInfoType ioMeasurementInfoType )                                                                                                                      = 0;
+        virtual TCompletionCode HandleIoStreamExceptions( const char* concurrentGroupName, CMetricSet* metricSet, uint32_t processId, uint32_t* reportCount, GTDIReadCounterStreamExceptions* exceptions )                                                      = 0;
+        virtual TCompletionCode WaitForIoStreamReports( TStreamType streamType, CMetricsDevice& metricDevice, uint32_t milliseconds, void* streamEventHandle )                                                                                                  = 0;
+        virtual bool            IsIoMeasurementInfoAvailable( TIoMeasurementInfoType ioMeasurementInfoType )                                                                                                                                                    = 0;
 
         // Overrides:
         virtual TCompletionCode SetFrequencyOverride( const TSetFrequencyOverrideParams_1_2* params )                                                                    = 0;

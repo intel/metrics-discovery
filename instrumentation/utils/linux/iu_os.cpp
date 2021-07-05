@@ -1,6 +1,6 @@
 //////////////////////////////////////////////////////////////////////////////
 //
-//  Copyright © 2019-2020, Intel Corporation
+//  Copyright © 2019-2021, Intel Corporation
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a
 //  copy of this software and associated documentation files (the "Software"),
@@ -30,7 +30,15 @@
 #include "iu_debug.h"
 #include "iu_std.h"
 
-#include <unistd.h> // For 'readlink'
+#include <unistd.h>
+#include <stdlib.h>
+#include <string.h>
+
+#if defined( ANDROID )
+    #include <time.h> // for clock_gettime
+#elif defined( __linux )
+    #include <sys/time.h> // for gettimeofday
+#endif
 
 extern "C"
 {
@@ -40,7 +48,53 @@ extern "C"
     //     Instrumentation Utils Non-Standard OS Specific Functions
     //
     // Method:
-    //     IuGetModuleInfo
+    //     IuOsQueryPerformanceCounter
+    //
+    // Description:
+    //     Retrieves high resolution timestamp (in ticks) and it's frequency.
+    //
+    // Input:
+    //     uint64_t* outFrequency - performance counter frequency (ticks per second)
+    //
+    // Output:
+    //     uint64_t               - performance counter value (timestamp in ticks)
+    //
+    ///////////////////////////////////////////////////////////////////////////////
+    uint64_t IuOsQueryPerformanceCounter( uint64_t* outFrequency )
+    {
+        uint64_t frequency = 0;
+        uint64_t counter   = 0;
+
+#if defined( ANDROID )
+        timespec currentTime;
+        clock_gettime( CLOCK_MONOTONIC, &currentTime );
+        counter   = (uint64_t) currentTime.tv_sec * IU_SECOND_IN_NS + currentTime.tv_nsec; // convert to ns
+        frequency = IU_SECOND_IN_NS;                                                       // unit is nanosecond
+#elif defined( __linux__ )
+        timeval currentTime;
+        gettimeofday( &currentTime, 0 );
+        counter   = (uint64_t) currentTime.tv_sec * IU_SECOND_IN_US + currentTime.tv_usec; // convert to us
+        frequency = IU_SECOND_IN_US;                                                       // unit is microsecond
+#endif
+
+        if( outFrequency )
+        {
+            *outFrequency = frequency;
+        }
+
+        IU_DBG_FUNCTION_OUTPUT64( IU_DBG_SEV_DEBUG, counter );
+        IU_DBG_FUNCTION_OUTPUT64( IU_DBG_SEV_DEBUG, frequency );
+
+        return counter;
+    }
+
+    ///////////////////////////////////////////////////////////////////////////////
+    //
+    // Group:
+    //     Instrumentation Utils Non-Standard OS Specific Functions
+    //
+    // Method:
+    //     IuOsGetModuleInfo
     //
     // Description:
     //     Returns information on current module. Used for debug logs.
@@ -50,9 +104,18 @@ extern "C"
     //     char** processName - (OUT)
     //
     ///////////////////////////////////////////////////////////////////////////////
-    void IuGetModuleInfo( char** dlName, char** processName )
+    void IuOsGetModuleInfo( char** dlName, char** processName )
     {
-        // To be implemented.
+        static char fullProcessName[IU_MODULE_NAME_SIZE_MAX] = { 0 };
+
+        // Get an executable path. If the function fails, it shall return a value of -1.
+        if( readlink( "/proc/self/exe", fullProcessName, IU_MODULE_NAME_SIZE_MAX ) == -1 )
+        {
+            IU_DBG_PRINT( IU_DBG_SEV_ERROR, "Couldn't find an executable, exiting" );
+            return;
+        }
+
+        *processName = strrchr( fullProcessName, '/' ) + 1;
     }
 
     ///////////////////////////////////////////////////////////////////////////////
@@ -61,7 +124,7 @@ extern "C"
     //     Instrumentation Utils Non-Standard OS Specific Functions
     //
     // Method:
-    //     IuLogGetSystemSettings
+    //     IuOsLogGetSystemSettings
     //
     // Description:
     //     Reads system-wide instrumentation log settings.
@@ -72,7 +135,7 @@ extern "C"
     //     uint32_t* logLevel       - (OUT) read LogLevel value
     //
     ///////////////////////////////////////////////////////////////////////////////
-    void IuLogGetSystemSettings(
+    void IuOsLogGetSystemSettings(
         bool*     assertEnable,
         uint32_t* logLayerEnable,
         uint32_t* logLevel )
@@ -86,7 +149,7 @@ extern "C"
     //     Instrumentation Utils Non-Standard OS Specific Functions
     //
     // Method:
-    //     IuLogGetLocalSettings
+    //     IuOsLogGetLocalSettings
     //
     // Description:
     //     Reads local instrumentation log settings.
@@ -97,7 +160,7 @@ extern "C"
     //     uint32_t* logLevel       - (OUT) read LogLevel value
     //
     ///////////////////////////////////////////////////////////////////////////////
-    void IuLogGetLocalSettings(
+    void IuOsLogGetLocalSettings(
         bool*     assertEnable,
         uint32_t* logLayerEnable,
         uint32_t* logLevel )
@@ -168,8 +231,6 @@ extern "C"
 
         fclose( file );
         file = NULL;
-
-        IU_DBG_PRINT( IU_DBG_SEV_WARNING, "Loaded debug log settings configuration file" );
     }
 
 } // extern "C"

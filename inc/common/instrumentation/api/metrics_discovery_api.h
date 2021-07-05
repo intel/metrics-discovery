@@ -54,7 +54,7 @@
 //////////////////////////////////////////////////////////////////////////////////
 // API build number:
 //////////////////////////////////////////////////////////////////////////////////
-#define MD_API_BUILD_NUMBER_CURRENT 134
+#define MD_API_BUILD_NUMBER_CURRENT 135
 
 namespace MetricsDiscovery
 {
@@ -74,16 +74,17 @@ namespace MetricsDiscovery
     typedef enum EMD_API_MINOR_VERSION
     {
         MD_API_MINOR_NUMBER_0       = 0,
-        MD_API_MINOR_NUMBER_1       = 1, // CalculationAPI
-        MD_API_MINOR_NUMBER_2       = 2, // OverridesAPI
-        MD_API_MINOR_NUMBER_3       = 3, // BatchBuffer Sampling (aka DMA Sampling)
-        MD_API_MINOR_NUMBER_4       = 4, // GT dependent MetricSets
-        MD_API_MINOR_NUMBER_5       = 5, // MaxValue calculation for CalculationAPI
-        MD_API_MINOR_NUMBER_6       = 6, // Multi adapter support
-        MD_API_MINOR_NUMBER_7       = 7,
-        MD_API_MINOR_NUMBER_8       = 8, // TAdapterParams update
-        MD_API_MINOR_NUMBER_9       = 9, // Sub device support.
-        MD_API_MINOR_NUMBER_CURRENT = MD_API_MINOR_NUMBER_9,
+        MD_API_MINOR_NUMBER_1       = 1,  // CalculationAPI
+        MD_API_MINOR_NUMBER_2       = 2,  // OverridesAPI
+        MD_API_MINOR_NUMBER_3       = 3,  // BatchBuffer Sampling (aka DMA Sampling)
+        MD_API_MINOR_NUMBER_4       = 4,  // GT dependent MetricSets
+        MD_API_MINOR_NUMBER_5       = 5,  // MaxValue calculation for CalculationAPI
+        MD_API_MINOR_NUMBER_6       = 6,  // Multi adapter support
+        MD_API_MINOR_NUMBER_7       = 7,  // Compile time equations calculation approach
+        MD_API_MINOR_NUMBER_8       = 8,  // TAdapterParams update
+        MD_API_MINOR_NUMBER_9       = 9,  // Sub device support.
+        MD_API_MINOR_NUMBER_10      = 10, // GetGpuCpuTimestamps API function extended by a correlation indicator param
+        MD_API_MINOR_NUMBER_CURRENT = MD_API_MINOR_NUMBER_10,
         MD_API_MINOR_NUMBER_CEIL    = 0xFFFFFFFF
     } MD_API_MINOR_VERSION;
 
@@ -1223,6 +1224,25 @@ namespace MetricsDiscovery
     {
     public:
         virtual IConcurrentGroup_1_5* GetConcurrentGroup( uint32_t index );
+    };
+
+    ///////////////////////////////////////////////////////////////////////////////
+    //
+    // Class:
+    //   IMetricsDevice_1_10
+    //
+    // Description:
+    //   Updated 1.5 version to use with 1.10 interface version.
+    //
+    // Updates:
+    // - GetGpuCpuTimestamps:            Update to 1.10 interface
+    //
+    ///////////////////////////////////////////////////////////////////////////////
+    class IMetricsDevice_1_10 : public IMetricsDevice_1_5
+    {
+    public:
+        using IMetricsDevice_1_0::GetGpuCpuTimestamps; // To avoid hiding by 1.10 interface function
+        virtual TCompletionCode GetGpuCpuTimestamps( uint64_t* gpuTimestampNs, uint64_t* cpuTimestampNs, uint32_t* cpuId, uint64_t* correlationIndicatorNs );
     };
 
     ///////////////////////////////////////////////////////////////////////////////

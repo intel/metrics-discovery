@@ -1,6 +1,6 @@
 //////////////////////////////////////////////////////////////////////////////
 //
-//  Copyright © 2019-2020, Intel Corporation
+//  Copyright © 2019-2021, Intel Corporation
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a
 //  copy of this software and associated documentation files (the "Software"),
@@ -71,15 +71,30 @@ extern "C"
                                                                     // [^\"]  - continue matching the expression until the quotation mark reappears
 #define IU_CONFIG_FILE_NAME          "iu.config"
 
+///////////////////////////////////////////////////////////////////////////////
+// MACRO: Default adapter id
+///////////////////////////////////////////////////////////////////////////////
+#define IU_ADAPTER_ID_DEFAULT 0
+
     ///////////////////////////////////////////////////////////////////////////////
-    // FUNCTION: IuCheckLogLevel (compares an incoming logLevel and layer to IU settings)
+    // FUNCTION: IuLogCheckLayer (compares an incoming layer to IU settings)
     ///////////////////////////////////////////////////////////////////////////////
-    bool IuCheckLogLevel( const uint32_t dbgLevel, const uint32_t layer );
+    bool IuLogCheckLayer( const uint32_t layer );
+
+    ///////////////////////////////////////////////////////////////////////////////
+    // FUNCTION: IuLogCheckLevel (compares an incoming logLevel and layer to IU settings)
+    ///////////////////////////////////////////////////////////////////////////////
+    bool IuLogCheckLevel( const uint32_t dbgLevel, const uint32_t layer );
+
+    ///////////////////////////////////////////////////////////////////////////////
+    // FUNCTION: IuLogCheckShowMode (verifies if given showMode is enabled in the IU settings)
+    ///////////////////////////////////////////////////////////////////////////////
+    bool IuLogCheckShowMode( const uint32_t showMode );
 
     ///////////////////////////////////////////////////////////////////////////////
     // FUNCTION: IuLogGetSettings (to override default log settings)
     ///////////////////////////////////////////////////////////////////////////////
-    void IuLogGetSettings( void );
+    void IuLogGetSettings( const uint32_t adapterId );
 
     ///////////////////////////////////////////////////////////////////////////////
     // FUNCTION: __IuLogPrint (for internal use only)
@@ -101,6 +116,9 @@ extern "C"
         // &
         // selecting which log fields are shown (tag, moduleName, functionName)
         uint32_t LogLevel;
+
+        // adapter id
+        uint32_t AdapterId;
     } IU_LOGS_CONTROL;
     extern IU_LOGS_CONTROL g_IuLogsControl;
 
@@ -108,10 +126,10 @@ extern "C"
 // MACROS: related to debug severity, shown fields, debug layers
 ///////////////////////////////////////////////////////////////////////////////
 // severity
-#define IU_DBG_ALL 0x000003FF
+#define IU_DBG_ALL 0x000007FF
 #define IU_DBG_OFF 0x00000000
 
-#define IU_DBG_SEV_CRITICAL 0x00000001 // unexpected unrecoverable errors, user for asserts only
+#define IU_DBG_SEV_CRITICAL 0x00000001 // unexpected unrecoverable errors, used for asserts only
 #define IU_DBG_SEV_ERROR    0x00000002 // unexpected recoverable errors
 #define IU_DBG_SEV_WARNING  0x00000004 // expected errors & warnings
 #define IU_DBG_SEV_INFO     0x00000008 // information messages
@@ -123,8 +141,9 @@ extern "C"
 #define IU_DBG_SEV_EXITING 0x00000080 // exiting a function
 #define IU_DBG_SEV_INPUT   0x00000100 // input parameter
 #define IU_DBG_SEV_OUTPUT  0x00000200 // output parameter
+#define IU_DBG_SEV_CSV     0x00000400 // csv file dumping
 
-#define IU_DBG_SEV_MASK 0x000003FF // severity mask
+#define IU_DBG_SEV_MASK 0x000007FF // severity mask
 
 // if following flag is set, logs will be aligned in output
 #define IU_DBG_ALIGNED 0x08000000
@@ -137,6 +156,9 @@ extern "C"
 
 // if following flag is set, logs will be additionally printed on console
 #define IU_DBG_CONSOLE_DUMP 0x80000000
+
+// if following flag is set, a new line sign will be inserted at the end of each log
+#define IU_DBG_EOL 0x40000000
 
 // layers
 #define IU_DBG_LAYER_INSTR 0x00000001
@@ -151,36 +173,36 @@ extern "C"
 ///////////////////////////////////////////////////////////////////////////////
 // error & warning logs are available in any driver
 #define F_IU_DBG_SEV_CRITICAL( level, layer, ... ) \
-    if( IuCheckLogLevel( level, layer ) )          \
+    if( IuLogCheckLevel( level, layer ) )          \
     __IuLogPrint( "C", level, __VA_ARGS__ )
 #define F_IU_DBG_SEV_ERROR( level, layer, ... ) \
-    if( IuCheckLogLevel( level, layer ) )       \
+    if( IuLogCheckLevel( level, layer ) )       \
     __IuLogPrint( "E", level, __VA_ARGS__ )
 #define F_IU_DBG_SEV_WARNING( level, layer, ... ) \
-    if( IuCheckLogLevel( level, layer ) )         \
+    if( IuLogCheckLevel( level, layer ) )         \
     __IuLogPrint( "W", level, __VA_ARGS__ )
 // debug logs are not available in release driver
 #if IU_DEBUG_LOGS
     #define F_IU_DBG_SEV_INFO( level, layer, ... ) \
-        if( IuCheckLogLevel( level, layer ) )      \
+        if( IuLogCheckLevel( level, layer ) )      \
         __IuLogPrint( "I", level, __VA_ARGS__ )
     #define F_IU_DBG_SEV_DEBUG( level, layer, ... ) \
-        if( IuCheckLogLevel( level, layer ) )       \
+        if( IuLogCheckLevel( level, layer ) )       \
         __IuLogPrint( "D", level, __VA_ARGS__ )
     #define F_IU_DBG_SEV_TRAITS( level, layer, ... ) \
-        if( IuCheckLogLevel( level, layer ) )        \
+        if( IuLogCheckLevel( level, layer ) )        \
         __IuLogPrint( "T", level, __VA_ARGS__ )
     #define F_IU_DBG_SEV_ENTERED( level, layer, ... ) \
-        if( IuCheckLogLevel( level, layer ) )         \
+        if( IuLogCheckLevel( level, layer ) )         \
         __IuLogPrint( ">", level, __VA_ARGS__ )
     #define F_IU_DBG_SEV_EXITING( level, layer, ... ) \
-        if( IuCheckLogLevel( level, layer ) )         \
+        if( IuLogCheckLevel( level, layer ) )         \
         __IuLogPrint( "<", level, __VA_ARGS__ )
     #define F_IU_DBG_SEV_INPUT( level, layer, ... ) \
-        if( IuCheckLogLevel( level, layer ) )       \
+        if( IuLogCheckLevel( level, layer ) )       \
         __IuLogPrint( ">", level, __VA_ARGS__ )
     #define F_IU_DBG_SEV_OUTPUT( level, layer, ... ) \
-        if( IuCheckLogLevel( level, layer ) )        \
+        if( IuLogCheckLevel( level, layer ) )        \
         __IuLogPrint( "<", level, __VA_ARGS__ )
 #else
     #define F_IU_DBG_SEV_INFO( level, layer, ... )
@@ -252,8 +274,10 @@ extern "C"
 #define IU_DBG_PRINT( level, ... )           IU_DBG_PRINT_TAGGED( _##level, IU_DBG_LAYER_IU, IU_LOG_TAG, __FUNCTION__, __VA_ARGS__ )
 #define IU_DBG_FUNCTION_ENTER( level )       IU_DBG_FUNCTION_ENTER_TAGGED( _##level, IU_DBG_LAYER_IU, IU_LOG_TAG );
 #define IU_DBG_FUNCTION_EXIT( level )        IU_DBG_FUNCTION_EXIT_TAGGED( _##level, IU_DBG_LAYER_IU, IU_LOG_TAG );
-#define IU_DBG_FUNCTION_OUTPUT( level, x )   IU_DBG_PRINT( _##level, "OUT: %s = %#018llx = %llu", #x, x, x );
-#define IU_DBG_FUNCTION_OUTPUT64( level, x ) IU_DBG_PRINT( _##level, "OUT: %s = %#08x = %u", #x, x, x );
+#define IU_DBG_FUNCTION_INPUT( level, x )    IU_DBG_PRINT( _##level, "IN: %s = %#010x = %u", #x, x, x );
+#define IU_DBG_FUNCTION_INPUT64( level, x )  IU_DBG_PRINT( _##level, "IN: %s = %#018llx = %llu", #x, x, x );
+#define IU_DBG_FUNCTION_OUTPUT( level, x )   IU_DBG_PRINT( _##level, "OUT: %s = %#010x = %u", #x, x, x );
+#define IU_DBG_FUNCTION_OUTPUT64( level, x ) IU_DBG_PRINT( _##level, "OUT: %s = %#018llx = %llu", #x, x, x );
 
 ///////////////////////////////////////////////////////////////////////////////
 // MACROS: following macros are required for compatibility with compilers on

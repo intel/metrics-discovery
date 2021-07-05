@@ -1,6 +1,6 @@
 //////////////////////////////////////////////////////////////////////////////
 //
-//    Copyright © 2019-2020, Intel Corporation
+//    Copyright © 2019-2021, Intel Corporation
 //
 //    Permission is hereby granted, free of charge, to any person obtaining a
 //    copy of this software and associated documentation files (the "Software"),
@@ -29,174 +29,176 @@
 #include "metrics_discovery_api.h"
 #include "md_internal.h"
 #include "md_per_platform_preamble.h"
+#include "md_internal.h"
+using namespace MetricsDiscoveryInternal;
 
 
-#if (!defined(MD_INCLUDE_HSW_METRICS) && MD_INCLUDE_ALL_METRICS) || MD_INCLUDE_HSW_METRICS
+#if MD_INCLUDE_HSW_METRICS
 #define MD_CALL_HSW_METRICS 1
     TCompletionCode CreateMetricTreeHSW_PipelineStatistics(CMetricsDevice* metricsDevice, CConcurrentGroup* concurrentGroup);
 #endif
 
-#if (!defined(MD_INCLUDE_BDW_METRICS) && MD_INCLUDE_ALL_METRICS) || MD_INCLUDE_BDW_METRICS
+#if MD_INCLUDE_BDW_METRICS
 #define MD_CALL_BDW_METRICS 1
     TCompletionCode CreateMetricTreeBDW_PipelineStatistics(CMetricsDevice* metricsDevice, CConcurrentGroup* concurrentGroup);
 #endif
 
-#if (!defined(MD_INCLUDE_SKL_GT2_METRICS) && MD_INCLUDE_ALL_METRICS) || MD_INCLUDE_SKL_GT2_METRICS
+#if MD_INCLUDE_SKL_GT2_METRICS
 #define MD_CALL_SKL_GT2_METRICS 1
     TCompletionCode CreateMetricTreeSKL_GT2_PipelineStatistics(CMetricsDevice* metricsDevice, CConcurrentGroup* concurrentGroup);
 #endif
 
-#if (!defined(MD_INCLUDE_SKL_GT3_METRICS) && MD_INCLUDE_ALL_METRICS) || MD_INCLUDE_SKL_GT3_METRICS
+#if MD_INCLUDE_SKL_GT3_METRICS
 #define MD_CALL_SKL_GT3_METRICS 1
     TCompletionCode CreateMetricTreeSKL_GT3_PipelineStatistics(CMetricsDevice* metricsDevice, CConcurrentGroup* concurrentGroup);
 #endif
 
-#if (!defined(MD_INCLUDE_SKL_GT4_METRICS) && MD_INCLUDE_ALL_METRICS) || MD_INCLUDE_SKL_GT4_METRICS
+#if MD_INCLUDE_SKL_GT4_METRICS
 #define MD_CALL_SKL_GT4_METRICS 1
     TCompletionCode CreateMetricTreeSKL_GT4_PipelineStatistics(CMetricsDevice* metricsDevice, CConcurrentGroup* concurrentGroup);
 #endif
 
-#if (!defined(MD_INCLUDE_BXT_METRICS) && MD_INCLUDE_ALL_METRICS) || MD_INCLUDE_BXT_METRICS
+#if MD_INCLUDE_BXT_METRICS
 #define MD_CALL_BXT_METRICS 1
     TCompletionCode CreateMetricTreeBXT_PipelineStatistics(CMetricsDevice* metricsDevice, CConcurrentGroup* concurrentGroup);
 #endif
 
-#if (!defined(MD_INCLUDE_KBL_GT2_METRICS) && MD_INCLUDE_ALL_METRICS) || MD_INCLUDE_KBL_GT2_METRICS
+#if MD_INCLUDE_KBL_GT2_METRICS
 #define MD_CALL_KBL_GT2_METRICS 1
     TCompletionCode CreateMetricTreeKBL_GT2_PipelineStatistics(CMetricsDevice* metricsDevice, CConcurrentGroup* concurrentGroup);
 #endif
 
-#if (!defined(MD_INCLUDE_KBL_GT3_METRICS) && MD_INCLUDE_ALL_METRICS) || MD_INCLUDE_KBL_GT3_METRICS
+#if MD_INCLUDE_KBL_GT3_METRICS
 #define MD_CALL_KBL_GT3_METRICS 1
     TCompletionCode CreateMetricTreeKBL_GT3_PipelineStatistics(CMetricsDevice* metricsDevice, CConcurrentGroup* concurrentGroup);
 #endif
 
-#if (!defined(MD_INCLUDE_CFL_GT2_METRICS) && MD_INCLUDE_ALL_METRICS) || MD_INCLUDE_CFL_GT2_METRICS
+#if MD_INCLUDE_CFL_GT2_METRICS
 #define MD_CALL_CFL_GT2_METRICS 1
     TCompletionCode CreateMetricTreeCFL_GT2_PipelineStatistics(CMetricsDevice* metricsDevice, CConcurrentGroup* concurrentGroup);
 #endif
 
-#if (!defined(MD_INCLUDE_CFL_GT3_METRICS) && MD_INCLUDE_ALL_METRICS) || MD_INCLUDE_CFL_GT3_METRICS
+#if MD_INCLUDE_CFL_GT3_METRICS
 #define MD_CALL_CFL_GT3_METRICS 1
     TCompletionCode CreateMetricTreeCFL_GT3_PipelineStatistics(CMetricsDevice* metricsDevice, CConcurrentGroup* concurrentGroup);
 #endif
 
-#if (!defined(MD_INCLUDE_GLK_METRICS) && MD_INCLUDE_ALL_METRICS) || MD_INCLUDE_GLK_METRICS
+#if MD_INCLUDE_GLK_METRICS
 #define MD_CALL_GLK_METRICS 1
     TCompletionCode CreateMetricTreeGLK_PipelineStatistics(CMetricsDevice* metricsDevice, CConcurrentGroup* concurrentGroup);
 #endif
 
-#if (!defined(MD_INCLUDE_ICL_METRICS) && MD_INCLUDE_ALL_METRICS) || MD_INCLUDE_ICL_METRICS
+#if MD_INCLUDE_ICL_METRICS
 #define MD_CALL_ICL_METRICS 1
     TCompletionCode CreateMetricTreeICL_PipelineStatistics(CMetricsDevice* metricsDevice, CConcurrentGroup* concurrentGroup);
 #endif
 
-#if (!defined(MD_INCLUDE_EHL_METRICS) && MD_INCLUDE_ALL_METRICS) || MD_INCLUDE_EHL_METRICS
+#if MD_INCLUDE_EHL_METRICS
 #define MD_CALL_EHL_METRICS 1
     TCompletionCode CreateMetricTreeEHL_PipelineStatistics(CMetricsDevice* metricsDevice, CConcurrentGroup* concurrentGroup);
 #endif
 
-#if (!defined(MD_INCLUDE_TGL_GT1_METRICS) && MD_INCLUDE_ALL_METRICS) || MD_INCLUDE_TGL_GT1_METRICS
+#if MD_INCLUDE_TGL_GT1_METRICS
 #define MD_CALL_TGL_GT1_METRICS 1
     TCompletionCode CreateMetricTreeTGL_GT1_PipelineStatistics(CMetricsDevice* metricsDevice, CConcurrentGroup* concurrentGroup);
 #endif
 
-#if (!defined(MD_INCLUDE_TGL_GT2_METRICS) && MD_INCLUDE_ALL_METRICS) || MD_INCLUDE_TGL_GT2_METRICS
+#if MD_INCLUDE_TGL_GT2_METRICS
 #define MD_CALL_TGL_GT2_METRICS 1
     TCompletionCode CreateMetricTreeTGL_GT2_PipelineStatistics(CMetricsDevice* metricsDevice, CConcurrentGroup* concurrentGroup);
 #endif
 
-#if (!defined(MD_INCLUDE_DG1_METRICS) && MD_INCLUDE_ALL_METRICS) || MD_INCLUDE_DG1_METRICS
-#define MD_CALL_DG1_METRICS 1
-    TCompletionCode CreateMetricTreeDG1_PipelineStatistics(CMetricsDevice* metricsDevice, CConcurrentGroup* concurrentGroup);
-#endif
-
-#if (!defined(MD_INCLUDE_RKL_METRICS) && MD_INCLUDE_ALL_METRICS) || MD_INCLUDE_RKL_METRICS
+#if MD_INCLUDE_RKL_METRICS
 #define MD_CALL_RKL_METRICS 1
     TCompletionCode CreateMetricTreeRKL_PipelineStatistics(CMetricsDevice* metricsDevice, CConcurrentGroup* concurrentGroup);
 #endif
 
-#if (!defined(MD_INCLUDE_HSW_METRICS) && MD_INCLUDE_ALL_METRICS) || MD_INCLUDE_HSW_METRICS
+#if MD_INCLUDE_DG1_METRICS
+#define MD_CALL_DG1_METRICS 1
+    TCompletionCode CreateMetricTreeDG1_PipelineStatistics(CMetricsDevice* metricsDevice, CConcurrentGroup* concurrentGroup);
+#endif
+
+#if MD_INCLUDE_HSW_METRICS
 #define MD_CALL_HSW_METRICS 1
     TCompletionCode CreateMetricTreeHSW_OA(CMetricsDevice* metricsDevice, CConcurrentGroup* concurrentGroup);
 #endif
 
-#if (!defined(MD_INCLUDE_BDW_METRICS) && MD_INCLUDE_ALL_METRICS) || MD_INCLUDE_BDW_METRICS
+#if MD_INCLUDE_BDW_METRICS
 #define MD_CALL_BDW_METRICS 1
     TCompletionCode CreateMetricTreeBDW_OA(CMetricsDevice* metricsDevice, CConcurrentGroup* concurrentGroup);
 #endif
 
-#if (!defined(MD_INCLUDE_SKL_GT2_METRICS) && MD_INCLUDE_ALL_METRICS) || MD_INCLUDE_SKL_GT2_METRICS
+#if MD_INCLUDE_SKL_GT2_METRICS
 #define MD_CALL_SKL_GT2_METRICS 1
     TCompletionCode CreateMetricTreeSKL_GT2_OA(CMetricsDevice* metricsDevice, CConcurrentGroup* concurrentGroup);
 #endif
 
-#if (!defined(MD_INCLUDE_SKL_GT3_METRICS) && MD_INCLUDE_ALL_METRICS) || MD_INCLUDE_SKL_GT3_METRICS
+#if MD_INCLUDE_SKL_GT3_METRICS
 #define MD_CALL_SKL_GT3_METRICS 1
     TCompletionCode CreateMetricTreeSKL_GT3_OA(CMetricsDevice* metricsDevice, CConcurrentGroup* concurrentGroup);
 #endif
 
-#if (!defined(MD_INCLUDE_SKL_GT4_METRICS) && MD_INCLUDE_ALL_METRICS) || MD_INCLUDE_SKL_GT4_METRICS
+#if MD_INCLUDE_SKL_GT4_METRICS
 #define MD_CALL_SKL_GT4_METRICS 1
     TCompletionCode CreateMetricTreeSKL_GT4_OA(CMetricsDevice* metricsDevice, CConcurrentGroup* concurrentGroup);
 #endif
 
-#if (!defined(MD_INCLUDE_BXT_METRICS) && MD_INCLUDE_ALL_METRICS) || MD_INCLUDE_BXT_METRICS
+#if MD_INCLUDE_BXT_METRICS
 #define MD_CALL_BXT_METRICS 1
     TCompletionCode CreateMetricTreeBXT_OA(CMetricsDevice* metricsDevice, CConcurrentGroup* concurrentGroup);
 #endif
 
-#if (!defined(MD_INCLUDE_KBL_GT2_METRICS) && MD_INCLUDE_ALL_METRICS) || MD_INCLUDE_KBL_GT2_METRICS
+#if MD_INCLUDE_KBL_GT2_METRICS
 #define MD_CALL_KBL_GT2_METRICS 1
     TCompletionCode CreateMetricTreeKBL_GT2_OA(CMetricsDevice* metricsDevice, CConcurrentGroup* concurrentGroup);
 #endif
 
-#if (!defined(MD_INCLUDE_KBL_GT3_METRICS) && MD_INCLUDE_ALL_METRICS) || MD_INCLUDE_KBL_GT3_METRICS
+#if MD_INCLUDE_KBL_GT3_METRICS
 #define MD_CALL_KBL_GT3_METRICS 1
     TCompletionCode CreateMetricTreeKBL_GT3_OA(CMetricsDevice* metricsDevice, CConcurrentGroup* concurrentGroup);
 #endif
 
-#if (!defined(MD_INCLUDE_CFL_GT2_METRICS) && MD_INCLUDE_ALL_METRICS) || MD_INCLUDE_CFL_GT2_METRICS
+#if MD_INCLUDE_CFL_GT2_METRICS
 #define MD_CALL_CFL_GT2_METRICS 1
     TCompletionCode CreateMetricTreeCFL_GT2_OA(CMetricsDevice* metricsDevice, CConcurrentGroup* concurrentGroup);
 #endif
 
-#if (!defined(MD_INCLUDE_CFL_GT3_METRICS) && MD_INCLUDE_ALL_METRICS) || MD_INCLUDE_CFL_GT3_METRICS
+#if MD_INCLUDE_CFL_GT3_METRICS
 #define MD_CALL_CFL_GT3_METRICS 1
     TCompletionCode CreateMetricTreeCFL_GT3_OA(CMetricsDevice* metricsDevice, CConcurrentGroup* concurrentGroup);
 #endif
 
-#if (!defined(MD_INCLUDE_GLK_METRICS) && MD_INCLUDE_ALL_METRICS) || MD_INCLUDE_GLK_METRICS
+#if MD_INCLUDE_GLK_METRICS
 #define MD_CALL_GLK_METRICS 1
     TCompletionCode CreateMetricTreeGLK_OA(CMetricsDevice* metricsDevice, CConcurrentGroup* concurrentGroup);
 #endif
 
-#if (!defined(MD_INCLUDE_ICL_METRICS) && MD_INCLUDE_ALL_METRICS) || MD_INCLUDE_ICL_METRICS
+#if MD_INCLUDE_ICL_METRICS
 #define MD_CALL_ICL_METRICS 1
     TCompletionCode CreateMetricTreeICL_OA(CMetricsDevice* metricsDevice, CConcurrentGroup* concurrentGroup);
 #endif
 
-#if (!defined(MD_INCLUDE_EHL_METRICS) && MD_INCLUDE_ALL_METRICS) || MD_INCLUDE_EHL_METRICS
+#if MD_INCLUDE_EHL_METRICS
 #define MD_CALL_EHL_METRICS 1
     TCompletionCode CreateMetricTreeEHL_OA(CMetricsDevice* metricsDevice, CConcurrentGroup* concurrentGroup);
 #endif
 
-#if (!defined(MD_INCLUDE_TGL_GT1_METRICS) && MD_INCLUDE_ALL_METRICS) || MD_INCLUDE_TGL_GT1_METRICS
+#if MD_INCLUDE_TGL_GT1_METRICS
 #define MD_CALL_TGL_GT1_METRICS 1
     TCompletionCode CreateMetricTreeTGL_GT1_OA(CMetricsDevice* metricsDevice, CConcurrentGroup* concurrentGroup);
 #endif
 
-#if (!defined(MD_INCLUDE_TGL_GT2_METRICS) && MD_INCLUDE_ALL_METRICS) || MD_INCLUDE_TGL_GT2_METRICS
+#if MD_INCLUDE_TGL_GT2_METRICS
 #define MD_CALL_TGL_GT2_METRICS 1
     TCompletionCode CreateMetricTreeTGL_GT2_OA(CMetricsDevice* metricsDevice, CConcurrentGroup* concurrentGroup);
 #endif
 
-#if (!defined(MD_INCLUDE_DG1_METRICS) && MD_INCLUDE_ALL_METRICS) || MD_INCLUDE_DG1_METRICS
+#if MD_INCLUDE_DG1_METRICS
 #define MD_CALL_DG1_METRICS 1
     TCompletionCode CreateMetricTreeDG1_OA(CMetricsDevice* metricsDevice, CConcurrentGroup* concurrentGroup);
 #endif
 
-#if (!defined(MD_INCLUDE_RKL_METRICS) && MD_INCLUDE_ALL_METRICS) || MD_INCLUDE_RKL_METRICS
+#if MD_INCLUDE_RKL_METRICS
 #define MD_CALL_RKL_METRICS 1
     TCompletionCode CreateMetricTreeRKL_OA(CMetricsDevice* metricsDevice, CConcurrentGroup* concurrentGroup);
 #endif
@@ -211,8 +213,6 @@ TCompletionCode AddGlobalSymbols( CSymbolSet* globalSymbolSet )
     globalSymbolSet->AddSymbolUINT32( "EuCoresPerSubsliceCount", 10, SYMBOL_TYPE_DETECT );
 
     globalSymbolSet->AddSymbolUINT32( "EuSubslicesTotalCount", 6, SYMBOL_TYPE_DETECT );
-
-    globalSymbolSet->AddSymbolUINT32( "EuSubslicesPerSliceCount", 3, SYMBOL_TYPE_DETECT );
 
     globalSymbolSet->AddSymbolUINT32( "EuDualSubslicesTotalCount", 0, SYMBOL_TYPE_DETECT );
 
@@ -281,7 +281,7 @@ TCompletionCode CreateMetricTree( CMetricsDevice* metricsDevice )
     CMetric*          metric               = NULL;
     CInformation*     information          = NULL;
     const char*       availabilityEquation = NULL;
-    uint32_t          platformMask         = 0;
+    uint32_t          platformMask         = PLATFORM_ALL;
 
     information = NULL; // To omit warning C4189 - local variable is initialized but not referenced
 
@@ -289,14 +289,14 @@ TCompletionCode CreateMetricTree( CMetricsDevice* metricsDevice )
     MD_CHECK_PTR( symbolSet );
     AddGlobalSymbols( symbolSet );
     metricsDevice->GetParams()->GlobalSymbolsCount = symbolSet->GetSymbolCount();
-  
+
     concurrentGroup = metricsDevice->AddConcurrentGroup( "OcclusionQueryStats", "Occlusion Query Statistics", MEASUREMENT_TYPE_DELTA_QUERY );
     MD_CHECK_PTR( concurrentGroup );
     
-    platformMask = PLATFORM_HSW|PLATFORM_BDW|PLATFORM_SKL|PLATFORM_BXT|PLATFORM_GLK|PLATFORM_KBL|PLATFORM_CFL|PLATFORM_ICL|PLATFORM_EHL|PLATFORM_TGL|PLATFORM_DG1|PLATFORM_RKL;
+    platformMask = PLATFORM_ALL;
     if( metricsDevice->IsPlatformTypeOf( platformMask ) )
     {
-        metricSet = concurrentGroup->AddMetricSet( "RenderedPixelsStats", "Rendered Pixels Statistics", API_TYPE_VULKAN|API_TYPE_OGL4_X,
+        CMetricSet* metricSet = concurrentGroup->AddMetricSet( "RenderedPixelsStats", "Rendered Pixels Statistics", API_TYPE_VULKAN|API_TYPE_OGL4_X,
            GPU_RENDER, 0, 8, OA_REPORT_TYPE_256B_A45_NOA16, platformMask );
         MD_CHECK_PTR( metricSet );
         
@@ -317,10 +317,10 @@ TCompletionCode CreateMetricTree( CMetricsDevice* metricsDevice )
         MD_CHECK_CC( metricSet->RefreshConfigRegisters() );
     }
      
-    platformMask = PLATFORM_HSW|PLATFORM_BDW|PLATFORM_SKL|PLATFORM_BXT|PLATFORM_GLK|PLATFORM_KBL|PLATFORM_CFL|PLATFORM_ICL|PLATFORM_EHL|PLATFORM_TGL|PLATFORM_DG1|PLATFORM_RKL;
+    platformMask = PLATFORM_ALL;
     if( metricsDevice->IsPlatformTypeOf( platformMask ) )
     {
-        metricSet = concurrentGroup->AddMetricSet( "RenderedFragmentsStats", "Rendered Fragments Statistics", API_TYPE_OGL|API_TYPE_OGL4_X,
+        CMetricSet* metricSet = concurrentGroup->AddMetricSet( "RenderedFragmentsStats", "Rendered Fragments Statistics", API_TYPE_OGL|API_TYPE_OGL4_X,
            GPU_RENDER, 0, 8, OA_REPORT_TYPE_256B_A45_NOA16, platformMask );
         MD_CHECK_PTR( metricSet );
         
@@ -344,10 +344,10 @@ TCompletionCode CreateMetricTree( CMetricsDevice* metricsDevice )
     concurrentGroup = metricsDevice->AddConcurrentGroup( "TimestampQuery", "Timestamp Query", MEASUREMENT_TYPE_SNAPSHOT_QUERY );
     MD_CHECK_PTR( concurrentGroup );
     
-    platformMask = PLATFORM_HSW|PLATFORM_BDW|PLATFORM_SKL|PLATFORM_BXT|PLATFORM_GLK|PLATFORM_KBL|PLATFORM_CFL|PLATFORM_ICL|PLATFORM_EHL|PLATFORM_TGL|PLATFORM_DG1|PLATFORM_RKL;
+    platformMask = PLATFORM_ALL;
     if( metricsDevice->IsPlatformTypeOf( platformMask ) )
     {
-        metricSet = concurrentGroup->AddMetricSet( "GPUTimestamp", "GPU Timestamp", API_TYPE_VULKAN|API_TYPE_OGL4_X,
+        CMetricSet* metricSet = concurrentGroup->AddMetricSet( "GPUTimestamp", "GPU Timestamp", API_TYPE_VULKAN|API_TYPE_OGL4_X,
            GPU_GENERIC, 8, 0, OA_REPORT_TYPE_256B_A45_NOA16, platformMask );
         MD_CHECK_PTR( metricSet );
         
@@ -433,12 +433,12 @@ TCompletionCode CreateMetricTree( CMetricsDevice* metricsDevice )
     MD_CHECK_CC( CreateMetricTreeTGL_GT2_PipelineStatistics(metricsDevice, concurrentGroup) );
 #endif
 
-#if MD_CALL_DG1_METRICS
-    MD_CHECK_CC( CreateMetricTreeDG1_PipelineStatistics(metricsDevice, concurrentGroup) );
-#endif
-
 #if MD_CALL_RKL_METRICS
     MD_CHECK_CC( CreateMetricTreeRKL_PipelineStatistics(metricsDevice, concurrentGroup) );
+#endif
+
+#if MD_CALL_DG1_METRICS
+    MD_CHECK_CC( CreateMetricTreeDG1_PipelineStatistics(metricsDevice, concurrentGroup) );
 #endif
 
     concurrentGroup = metricsDevice->AddConcurrentGroup( "OA", "OA Unit Metrics", MEASUREMENT_TYPE_DELTA_QUERY|MEASUREMENT_TYPE_SNAPSHOT_IO );
@@ -524,4 +524,3 @@ TCompletionCode CreateMetricTree( CMetricsDevice* metricsDevice )
     MD_LOG_EXIT();
     return CC_ERROR_NO_MEMORY;
 }
-

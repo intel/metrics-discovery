@@ -1,6 +1,6 @@
 //////////////////////////////////////////////////////////////////////////////
 //
-//  Copyright © 2019-2020, Intel Corporation
+//  Copyright © 2019-2021, Intel Corporation
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a
 //  copy of this software and associated documentation files (the "Software"),
@@ -242,6 +242,41 @@ namespace MetricsDiscoveryInternal
     //     Metrics Discovery Utils
     //
     // Function:
+    //     GetCopiedCStringFromWcString
+    //
+    // Description:
+    //     Allocates memory and copies given wide-char cstring. Copy is returned.
+    //     It HAVE TO be deleted later.
+    //
+    // Input:
+    //     const wchar_t* wcstring - wide-char cstring to be copied
+    //
+    // Output:
+    //     char*                   - copied cstring
+    //
+    //////////////////////////////////////////////////////////////////////////////
+    char* GetCopiedCStringFromWcString( const wchar_t* wcstring )
+    {
+        if( wcstring == NULL )
+        {
+            return NULL;
+        }
+
+        size_t wstrLength    = wcslen( wcstring );
+        char*  copiedCString = new( std::nothrow ) char[wstrLength + 1](); // One more for '\0', initialize all to 0
+        MD_CHECK_PTR_RET( copiedCString, NULL );
+
+        iu_wstrtombs_s( copiedCString, wstrLength + 1, wcstring, wstrLength );
+
+        return copiedCString;
+    }
+
+    //////////////////////////////////////////////////////////////////////////////
+    //
+    // Group:
+    //     Metrics Discovery Utils
+    //
+    // Function:
     //     GetByteArrayFromMask
     //
     // Description:
@@ -281,41 +316,6 @@ namespace MetricsDiscoveryInternal
         }
 
         return byteArray;
-    }
-
-    //////////////////////////////////////////////////////////////////////////////
-    //
-    // Group:
-    //     Metrics Discovery Utils
-    //
-    // Function:
-    //     GetCopiedCStringFromWcString
-    //
-    // Description:
-    //     Allocates memory and copies given wide-char cstring. Copy is returned.
-    //     It HAVE TO be deleted later.
-    //
-    // Input:
-    //     const wchar_t* wcstring - wide-char cstring to be copied
-    //
-    // Output:
-    //     char*                   - copied cstring
-    //
-    //////////////////////////////////////////////////////////////////////////////
-    char* GetCopiedCStringFromWcString( const wchar_t* wcstring )
-    {
-        if( wcstring == NULL )
-        {
-            return NULL;
-        }
-
-        size_t wstrLength    = wcslen( wcstring );
-        char*  copiedCString = new( std::nothrow ) char[wstrLength + 1](); // One more for '\0', initialize all to 0
-        MD_CHECK_PTR_RET( copiedCString, NULL );
-
-        iu_wstrtombs_s( copiedCString, wstrLength + 1, wcstring, wstrLength );
-
-        return copiedCString;
     }
 
     //////////////////////////////////////////////////////////////////////////////
@@ -373,31 +373,33 @@ namespace MetricsDiscoveryInternal
         }
 
         fwrite( &typedValue->ValueType, sizeof( typedValue->ValueType ), 1, pFile );
-        if( typedValue->ValueType == VALUE_TYPE_UINT32 )
+
+        switch( typedValue->ValueType )
         {
-            fwrite( &typedValue->ValueUInt32, sizeof( typedValue->ValueUInt32 ), 1, pFile );
-        }
-        else if( typedValue->ValueType == VALUE_TYPE_UINT64 )
-        {
-            fwrite( &typedValue->ValueUInt64, sizeof( typedValue->ValueUInt64 ), 1, pFile );
-        }
-        else if( typedValue->ValueType == VALUE_TYPE_FLOAT )
-        {
-            fwrite( &typedValue->ValueFloat, sizeof( typedValue->ValueFloat ), 1, pFile );
-        }
-        else if( typedValue->ValueType == VALUE_TYPE_BOOL )
-        {
-            fwrite( &typedValue->ValueBool, sizeof( typedValue->ValueBool ), 1, pFile );
-        }
-        else if( typedValue->ValueType == VALUE_TYPE_CSTRING )
-        {
-            MD_LOG( LOG_DEBUG, "calling WriteCStringToFile()..." );
-            WriteCStringToFile( typedValue->ValueCString, pFile );
-        }
-        else
-        {
-            MD_ASSERT( false );
-            return;
+            case VALUE_TYPE_UINT32:
+                fwrite( &typedValue->ValueUInt32, sizeof( typedValue->ValueUInt32 ), 1, pFile );
+                break;
+
+            case VALUE_TYPE_UINT64:
+                fwrite( &typedValue->ValueUInt64, sizeof( typedValue->ValueUInt64 ), 1, pFile );
+                break;
+
+            case VALUE_TYPE_FLOAT:
+                fwrite( &typedValue->ValueFloat, sizeof( typedValue->ValueFloat ), 1, pFile );
+                break;
+
+            case VALUE_TYPE_BOOL:
+                fwrite( &typedValue->ValueBool, sizeof( typedValue->ValueBool ), 1, pFile );
+                break;
+
+            case VALUE_TYPE_CSTRING:
+                MD_LOG( LOG_DEBUG, "calling WriteCStringToFile()..." );
+                WriteCStringToFile( typedValue->ValueCString, pFile );
+                break;
+
+            default:
+                MD_ASSERT( false );
+                break;
         }
     }
 
@@ -542,35 +544,37 @@ namespace MetricsDiscoveryInternal
         typedValue.ValueType = ( *(TValueType*) *fileBuffer );
         *fileBuffer += sizeof( TValueType );
 
-        if( typedValue.ValueType == VALUE_TYPE_UINT32 )
+        switch( typedValue.ValueType )
         {
-            typedValue.ValueUInt32 = *( (uint32_t*) *fileBuffer );
-            *fileBuffer += sizeof( uint32_t );
-        }
-        else if( typedValue.ValueType == VALUE_TYPE_UINT64 )
-        {
-            typedValue.ValueUInt64 = *( (uint64_t*) *fileBuffer );
-            *fileBuffer += sizeof( uint64_t );
-        }
-        else if( typedValue.ValueType == VALUE_TYPE_FLOAT )
-        {
-            typedValue.ValueFloat = *( (float*) *fileBuffer );
-            *fileBuffer += sizeof( float );
-        }
-        else if( typedValue.ValueType == VALUE_TYPE_BOOL )
-        {
-            typedValue.ValueBool = *( (bool*) *fileBuffer );
-            *fileBuffer += sizeof( bool );
-        }
-        else if( typedValue.ValueType == VALUE_TYPE_CSTRING )
-        {
-            MD_LOG( LOG_DEBUG, "calling ReadCStringFromFileBuffer()..." );
-            typedValue.ValueCString = ReadCStringFromFileBuffer( fileBuffer );
-            *fileBuffer += sizeof( bool );
-        }
-        else
-        {
-            MD_ASSERT( false );
+            case VALUE_TYPE_UINT32:
+                typedValue.ValueUInt32 = *( (uint32_t*) *fileBuffer );
+                *fileBuffer += sizeof( uint32_t );
+                break;
+
+            case VALUE_TYPE_UINT64:
+                typedValue.ValueUInt64 = *( (uint64_t*) *fileBuffer );
+                *fileBuffer += sizeof( uint64_t );
+                break;
+
+            case VALUE_TYPE_FLOAT:
+                typedValue.ValueFloat = *( (float*) *fileBuffer );
+                *fileBuffer += sizeof( float );
+                break;
+
+            case VALUE_TYPE_BOOL:
+                typedValue.ValueBool = *( (bool*) *fileBuffer );
+                *fileBuffer += sizeof( bool );
+                break;
+
+            case VALUE_TYPE_CSTRING:
+                MD_LOG( LOG_DEBUG, "calling ReadCStringFromFileBuffer()..." );
+                typedValue.ValueCString = ReadCStringFromFileBuffer( fileBuffer );
+                *fileBuffer += sizeof( bool );
+                break;
+
+            default:
+                MD_ASSERT( false );
+                break;
         }
 
         return typedValue;

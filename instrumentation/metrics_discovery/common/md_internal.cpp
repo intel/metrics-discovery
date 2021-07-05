@@ -1,6 +1,6 @@
 //////////////////////////////////////////////////////////////////////////////
 //
-//  Copyright © 2019-2020, Intel Corporation
+//  Copyright © 2019-2021, Intel Corporation
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a
 //  copy of this software and associated documentation files (the "Software"),
@@ -26,12 +26,11 @@
 //
 //////////////////////////////////////////////////////////////////////////////
 #include "md_internal.h"
-#include "md_per_platform_preamble.h"
 #include "md_metrics.h"
 
+#include <string>
 #include <string.h>
 #include <stdlib.h>
-#include <string>
 #include <new>
 #include <unordered_map>
 #include <algorithm>
@@ -98,6 +97,10 @@ namespace MetricsDiscovery
     IConcurrentGroup_1_5* IMetricsDevice_1_5::GetConcurrentGroup( uint32_t index )
     {
         return NULL;
+    }
+    TCompletionCode IMetricsDevice_1_10::GetGpuCpuTimestamps( uint64_t* gpuTimestampNs, uint64_t* cpuTimestampNs, uint32_t* cpuId, uint64_t* correlationIndicatorNs )
+    {
+        return CC_ERROR_NOT_SUPPORTED;
     }
 
     IOverride_1_2::~IOverride_1_2()
@@ -1209,7 +1212,7 @@ namespace MetricsDiscoveryInternal
     // Input:
     //     const uint32_t subDeviceIndex - sub device index
     //     const uint32_t engineIndex    - engine index
-    //  
+    //
     // Output:
     //     const TEngineParams_1_9*      - adapter params
     //
@@ -1227,23 +1230,18 @@ namespace MetricsDiscoveryInternal
     //     CAdapter
     //
     // Method:
-    //     GetTbsEngineParams
+    //     GetSubDevices
     //
     // Description:
-    //     Returns engine params that can be used for tbs.
-    //
-    // Input:
-    //     const uint32_t subDeviceIndex - sub device index
+    //     Returns a reference to sub devices implementation.
     //
     // Output:
-    //     const TEngineParams_1_9*      - adapter params compatible with tbs.
+    //     CSubDevices& -reference to sub device implementation.
     //
     //////////////////////////////////////////////////////////////////////////////
-    const TEngineParams_1_9* CAdapter::GetTbsEngineParams( const uint32_t subDeviceIndex )
+    CSubDevices& CAdapter::GetSubDevices()
     {
-        return ( m_subDevices.GetTbsEngineParams( subDeviceIndex, m_engineParams ) == CC_OK )
-            ? &m_engineParams
-            : NULL;
+        return m_subDevices;
     }
 
     //////////////////////////////////////////////////////////////////////////////
@@ -2450,7 +2448,7 @@ namespace MetricsDiscoveryInternal
         , m_referenceCounter( 0 )
         , m_groupsVector( NULL )
         , m_overridesVector( NULL )
-        , m_symbolSet( driverInterface )
+        , m_symbolSet( *this, driverInterface )
         , m_platform( PLATFORM_UNKNOWN )
         , m_gtType( GT_TYPE_UNKNOWN )
         , m_isOpenedFromFile( false )
@@ -2635,24 +2633,25 @@ namespace MetricsDiscoveryInternal
     //     Retrieves both GPU and CPU timestamp at the same time.
     //
     // Input:
-    //     uint64_t* gpuTimestampNs - (out) GPU timestamp in ns
-    //     uint64_t* cpuTimestampNs - (out) CPU timestamp in ns
-    //     uint32_t* cpuId          - (out) CPU id
+    //     uint64_t* gpuTimestampNs         - (out) GPU timestamp in ns
+    //     uint64_t* cpuTimestampNs         - (out) CPU timestamp in ns
+    //     uint32_t* cpuId                  - (out) CPU id
+    //     uint64_t* correlationIndicatorNs - (out) correlation indicator in ns
     //
     // Output:
     //     TCompletionCode - result of the operation
     //
     //////////////////////////////////////////////////////////////////////////////
-    TCompletionCode CMetricsDevice::GetGpuCpuTimestamps( uint64_t* gpuTimestampNs, uint64_t* cpuTimestampNs, uint32_t* cpuId )
+    TCompletionCode CMetricsDevice::GetGpuCpuTimestamps( uint64_t* gpuTimestampNs, uint64_t* cpuTimestampNs, uint32_t* cpuId, uint64_t* correlationIndicatorNs )
     {
         if( !gpuTimestampNs && !cpuTimestampNs )
         {
             return CC_ERROR_INVALID_PARAMETER;
         }
 
-        uint64_t        gpuTS = 0, cpuTS = 0;
+        uint64_t        gpuTS = 0, cpuTS = 0, correlationIndicator = 0;
         uint32_t        cpuID = 0;
-        TCompletionCode ret   = m_driverInterface.GetGpuCpuTimestamps( &gpuTS, &cpuTS, &cpuID );
+        TCompletionCode ret   = m_driverInterface.GetGpuCpuTimestamps( *this, &gpuTS, &cpuTS, &cpuID, &correlationIndicator );
 
         if( ret == CC_OK )
         {
@@ -2668,9 +2667,38 @@ namespace MetricsDiscoveryInternal
             {
                 *cpuId = cpuID;
             }
+            if( correlationIndicatorNs )
+            {
+                *correlationIndicatorNs = correlationIndicator;
+            }
         }
 
         return ret;
+    }
+
+    //////////////////////////////////////////////////////////////////////////////
+    //
+    // Class:
+    //     CMetricsDevice
+    //
+    // Method:
+    //     GetCpuGpuTimestamps
+    //
+    // Description:
+    //     Retrieves both GPU and CPU timestamp at the same time.
+    //
+    // Input:
+    //     uint64_t* gpuTimestampNs - (out) GPU timestamp in ns
+    //     uint64_t* cpuTimestampNs - (out) CPU timestamp in ns
+    //     uint32_t* cpuId          - (out) CPU id
+    //
+    // Output:
+    //     TCompletionCode - result of the operation
+    //
+    //////////////////////////////////////////////////////////////////////////////
+    TCompletionCode CMetricsDevice::GetGpuCpuTimestamps( uint64_t* gpuTimestampNs, uint64_t* cpuTimestampNs, uint32_t* cpuId )
+    {
+        return GetGpuCpuTimestamps( gpuTimestampNs, cpuTimestampNs, cpuId, nullptr );
     }
 
     //////////////////////////////////////////////////////////////////////////////
@@ -5029,11 +5057,6 @@ namespace MetricsDiscoveryInternal
             {
                 m_params_1_0.IoMeasurementInformationCount = 0;
             }
-
-            if( m_contextTagsEnabled && m_processId > 0 && readFlags & IO_READ_FLAG_GET_CONTEXT_ID_TAGS )
-            {
-                ReadGpuContextIdTags();
-            }
         }
 
         return ret;
@@ -5339,167 +5362,6 @@ namespace MetricsDiscoveryInternal
         {
             ( *m_ioMeasurementInfoVector )[( *index )++]->SetInformationValue( value, EQUATION_IO_READ );
         }
-    }
-
-    //////////////////////////////////////////////////////////////////////////////
-    //
-    // Class:
-    //     COAConcurrentGroup
-    //
-    // Method:
-    //     ReadGpuContextIdTags
-    //
-    // Description:
-    //     Obtains GPU context tags from KMD using GetCtxIdTags escape. Tags are added to
-    //     m_ioGpuContextInfoVector. ProcessIds are stored as a SymbolName of the information.
-    //
-    // Output:
-    //     CompletionCode - result of the operation, *CC_OK* is ok
-    //
-    //////////////////////////////////////////////////////////////////////////////
-    TCompletionCode COAConcurrentGroup::ReadGpuContextIdTags()
-    {
-        MD_LOG_ENTER();
-        MD_CHECK_PTR_RET( m_ioGpuContextInfoVector, CC_ERROR_GENERAL );
-
-        const uint32_t  maxReadCount = 3;
-        TCompletionCode ret          = CC_OK;
-
-        // Try read up to maxReadCount times
-        uint32_t count = 0;
-        do
-        {
-            ret = TryReadGpuCtxTags();
-        } while( ret == CC_TRY_AGAIN && ++count < maxReadCount );
-
-        if( ret != CC_OK )
-        {
-            MD_LOG( LOG_DEBUG, "unable to read GPU Context tags, ret: %u", ret );
-            if( ret == CC_TRY_AGAIN )
-            {
-                ret = CC_ERROR_GENERAL;
-            }
-        }
-
-        MD_LOG_EXIT();
-        return ret;
-    }
-
-    //////////////////////////////////////////////////////////////////////////////
-    //
-    // Class:
-    //     COAConcurrentGroup
-    //
-    // Method:
-    //     TryReadGpuCtxTags
-    //
-    // Description:
-    //     Try read all GPU context tags data. If stateChangeCount has changed, readAgain
-    //     flag is set.
-    //
-    // Output:
-    //     TCompletionCode - result of the operation, *CC_OK* is ok, *CC_READ_AGAIN* means
-    //                       it's needed to read again
-    //
-    //////////////////////////////////////////////////////////////////////////////
-    TCompletionCode COAConcurrentGroup::TryReadGpuCtxTags()
-    {
-        TCompletionCode     ret              = CC_OK;
-        uint32_t            stateChangeCount = 0;
-        uint32_t            offset           = 0;
-        TGetCtxTagsIdParams params           = {};
-        CDriverInterface&   driverInterface  = m_device->GetDriverInterface();
-
-        MD_LOG( LOG_DEBUG, "reading GPU Context tags, pid: %d, offset: %d", m_processId, offset );
-
-        // Read context tag batches
-        params.PID = m_processId;
-        do
-        {
-            params.Offset           = offset;
-            params.TagCount         = 0;
-            params.AvailableTags    = 0;
-            params.StateChangeCount = 0;
-
-            ret = driverInterface.SendGetCtxIdTagsEscape( &params );
-            if( ret == CC_OK )
-            {
-                if( offset == 0 )
-                {
-                    stateChangeCount = params.StateChangeCount;
-                }
-                else if( stateChangeCount != params.StateChangeCount )
-                {
-                    MD_LOG( LOG_DEBUG, "GPU Context tags stage changed, requesting to read again" );
-                    ret = CC_TRY_AGAIN;
-                    break;
-                }
-
-                offset += params.TagCount;
-                ProcessGpuContextTags( params.Tags, params.TagCount );
-            }
-        } while( ret == CC_OK && offset < params.AvailableTags && params.TagCount != 0 );
-
-        return ret;
-    }
-
-    //////////////////////////////////////////////////////////////////////////////
-    //
-    // Class:
-    //     COAConcurrentGroup
-    //
-    // Method:
-    //     ProcessGpuContextTags
-    //
-    // Description:
-    //     Adds tags obtained from the driver to the m_ioGpuContextInfoVector.
-    //
-    // Input:
-    //     TContextTag* tags        - result of the GetCtxIdTags escape
-    //     uint32_t     tagCount    - tag count
-    //
-    // Output:
-    //     TCompletionCode - result of the operation, *CC_OK* is ok
-    //
-    //////////////////////////////////////////////////////////////////////////////
-    TCompletionCode COAConcurrentGroup::ProcessGpuContextTags( TContextTag* tags, uint32_t tagCount )
-    {
-        MD_ASSERT( tags != NULL );
-
-        TCompletionCode ret         = CC_OK;
-        CInformation*   information = NULL;
-        char            pidTagComboEquation[31]; // Max string length for "%u 32 << %u OR"
-
-        MD_LOG( LOG_DEBUG, "read %d GPU Context tags", tagCount );
-        for( uint32_t i = 0; i < tagCount; i++ )
-        {
-            if( tags[i].ContextTagType < CONTEXT_TAG_TYPE_LAST )
-            {
-                information = AddIoGpuContextInformation( "GPUContextId", "GPU Context Id", "GPU Context Id tag for PID specified during open stream", "Context ID", INFORMATION_TYPE_CONTEXT_ID_TAG, NULL );
-                if( !information )
-                {
-                    ret = CC_ERROR_NO_MEMORY;
-                    break;
-                }
-
-                memset( pidTagComboEquation, 0, sizeof( pidTagComboEquation ) );
-                iu_sprintf_s( pidTagComboEquation, sizeof( pidTagComboEquation ), "%u 32 << %u OR", tags[i].PID, tags[i].ContextTag );
-
-                ret = information->SetSnapshotReportReadEquation( pidTagComboEquation );
-                if( ret != CC_OK )
-                {
-                    break;
-                }
-            }
-            else
-            {
-                MD_LOG( LOG_DEBUG, "Unknown context tag type: %u", tags[i].ContextTagType );
-            }
-        }
-
-        m_params_1_0.IoGpuContextInformationCount = m_ioGpuContextInfoVector->GetCount();
-
-        return ret;
     }
 
     //////////////////////////////////////////////////////////////////////////////
@@ -6156,7 +6018,7 @@ namespace MetricsDiscoveryInternal
             return NULL;
         }
 
-        CMetric* metric = (CMetric*) new( std::nothrow ) CMetric( m_device, m_metricsVector->GetCount(), symbolName, shortName, longName, groupName, groupId, usageFlagsMask, apiMask, metricType, resultType, resultUnits, loWatermark, hiWatermark, hwType, dxToOglAlias, signalName );
+        CMetric* metric = (CMetric*) new( std::nothrow ) CMetric( m_device, m_metricsVector->GetCount(), symbolName, shortName, longName, groupName, groupId, usageFlagsMask, apiMask, metricType, resultType, resultUnits, loWatermark, hiWatermark, hwType, dxToOglAlias, signalName, true );
         MD_CHECK_PTR_RET( metric, NULL );
 
         if( metric->SetAvailabilityEquation( availabilityEquation ) != CC_OK || metric->SetSnapshotReportReadEquation( ioReadEquation ) != CC_OK || metric->SetDeltaReportReadEquation( queryReadEquation ) != CC_OK || metric->SetNormalizationEquation( normalizationEquation ) != CC_OK || metric->SetSnapshotReportDeltaFunction( deltaFunction ) != CC_OK || metric->SetMaxValueEquation( maxValueEquation ) != CC_OK )
@@ -6173,6 +6035,7 @@ namespace MetricsDiscoveryInternal
         // Refresh cached filtered metrics
         RefreshCachedMetricsAndInformation();
 
+        MD_LOG( LOG_DEBUG, "Custom metric %s is added", symbolName );
         MD_LOG_EXIT();
         return metric;
     }
@@ -6319,17 +6182,25 @@ namespace MetricsDiscoveryInternal
     //     Adds a new metric to the metric set. Null if failed.
     //
     // Input:
-    //     const char * symbolicName           -
+    //     const char * symbolName             -
     //     const char * shortName              -
     //     const char * longName               -
     //     const char * groupName              -
+    //     uint32_t     groupId                -
+    //     uint32_t     usageFlagsMask         -
     //     uint32_t     apiMask                -
-    //     TMetricType metricType              -
+    //     TMetricType  metricType             -
     //     TMetricResultType resultType        -
     //     const char * units                  -
     //     const char * maxValue               -
+    //     int64_t loWatermark                 -
+    //     int64_t hiWatermark                 -
     //     THwUnitType hwType                  -
     //     const char * availabilityEquation   -
+    //     const char* alias                   -
+    //     const char* signalName              -
+    //     uint32_t metricXmlId                -
+    //     bool isCustom                       -
     //
     // Output:
     //     CMetric*  - pointer to the newly created metric.
@@ -7648,7 +7519,7 @@ namespace MetricsDiscoveryInternal
     //     TTypedValue_1_0* out                    - (OUT) buffer for calculated reports
     //     uint32_t         outSize                - size of the provided output buffer
     //     uint32_t*        outReportCount         - (OUT - optional) how much reports were calculated and are stored in the out buffer
-    //bool                  enableContextFiltering - if true enable context filtering during calculation
+    //     bool             enableContextFiltering - if true enable context filtering during calculation
     //
     // Output:
     //     TCompletionCode - *CC_OK* means success
@@ -7811,7 +7682,7 @@ namespace MetricsDiscoveryInternal
 
         MD_CHECK_PTR_RET( m_metricsCalculator, CC_ERROR_GENERAL );
 
-        m_metricsCalculator->ReadIoMeasurementInformation( m_concurrentGroup, out );
+        m_metricsCalculator->ReadIoMeasurementInformation( *m_concurrentGroup, out );
         MD_LOG( LOG_DEBUG, "calculated %u out io information", m_concurrentGroup->GetParams()->IoMeasurementInformationCount );
 
         MD_LOG_EXIT();
@@ -7970,13 +7841,13 @@ namespace MetricsDiscoveryInternal
 
         // Initialize context
         calculationManager->ResetContext( context );
-        context.CommonCalculationContext.DeltaValues    = new( std::nothrow ) TTypedValue_1_0[m_currentParams->MetricsCount];
-        context.CommonCalculationContext.Calculator     = m_metricsCalculator;
-        context.CommonCalculationContext.MetricSet      = this;
-        context.CommonCalculationContext.Out            = out;
-        context.CommonCalculationContext.OutMaxValues   = outMaxValues;
-        context.CommonCalculationContext.RawData        = rawData;
-        context.CommonCalculationContext.RawReportCount = rawReportCount;
+        context.CommonCalculationContext.DeltaValues     = new( std::nothrow ) TTypedValue_1_0[m_currentParams->MetricsCount];
+        context.CommonCalculationContext.Calculator      = m_metricsCalculator;
+        context.CommonCalculationContext.MetricSet       = this;
+        context.CommonCalculationContext.Out             = out;
+        context.CommonCalculationContext.OutMaxValues    = outMaxValues;
+        context.CommonCalculationContext.RawData         = rawData;
+        context.CommonCalculationContext.RawReportCount  = rawReportCount;
         MD_CHECK_PTR_RET( context.CommonCalculationContext.DeltaValues, CC_ERROR_NO_MEMORY );
         if( measurementType == MEASUREMENT_TYPE_SNAPSHOT_IO )
         {
@@ -8148,15 +8019,22 @@ namespace MetricsDiscoveryInternal
     //     const char * shortName       -
     //     const char * longName        -
     //     const char * group           -
+    //     uint32_t groupId             -
+    //     uint32_t usageFlagsMask      -
     //     uint32_t     apiMask         -
     //     TMetricType metricType       -
     //     TMetricResultType resultType -
     //     const char * units           -
+    //     int64_t loWatermark          -
+    //     int64_t hiWatermark          -
     //     const char * maxValue        -
     //     THwUnitType hwType           -
+    //     const char* alias            -
+    //     const char* signalName       -
+    //     bool isCustom                - flag shows that metric was created from function AddCustomMetric
     //
     //////////////////////////////////////////////////////////////////////////////
-    CMetric::CMetric( CMetricsDevice* device, uint32_t id, const char* name, const char* shortName, const char* longName, const char* group, uint32_t groupId, uint32_t usageFlagsMask, uint32_t apiMask, TMetricType metricType, TMetricResultType resultType, const char* units, int64_t loWatermark, int64_t hiWatermark, THwUnitType hwType, const char* alias, const char* signalName )
+    CMetric::CMetric( CMetricsDevice* device, uint32_t id, const char* name, const char* shortName, const char* longName, const char* group, uint32_t groupId, uint32_t usageFlagsMask, uint32_t apiMask, TMetricType metricType, TMetricResultType resultType, const char* units, int64_t loWatermark, int64_t hiWatermark, THwUnitType hwType, const char* alias, const char* signalName, bool isCustom )
     {
         m_params_1_0.IdInSet           = id; // filtered id, equal to original on creation
         m_id                           = id; // id in original set, equal to filtered on creation
@@ -8189,7 +8067,8 @@ namespace MetricsDiscoveryInternal
         m_queryReadEquation = NULL;
         m_maxValueEquation  = NULL;
 
-        m_device = device;
+        m_device   = device;
+        m_isCustom = isCustom;
     }
 
     //////////////////////////////////////////////////////////////////////////////
@@ -8361,7 +8240,6 @@ namespace MetricsDiscoveryInternal
     TCompletionCode CMetric::SetSnapshotReportReadEquation( const char* equationString )
     {
         TCompletionCode ret = SetEquation( m_device, &m_ioReadEquation, equationString );
-
         m_params_1_0.IoReadEquation = (IEquation_1_0*) m_ioReadEquation;
         return ret;
     }
@@ -10049,8 +9927,9 @@ namespace MetricsDiscoveryInternal
     //     Constructor.
     //
     //////////////////////////////////////////////////////////////////////////////
-    CSymbolSet::CSymbolSet( CDriverInterface& driverInterface )
+    CSymbolSet::CSymbolSet( CMetricsDevice& metricsDevice, CDriverInterface& driverInterface )
         : m_symbolVector( NULL )
+        , m_metricsDevice( metricsDevice )
         , m_driverInterface( driverInterface )
     {
         m_symbolVector = new( std::nothrow ) Vector<TGlobalSymbol*>( SYMBOLS_VECTOR_INCREASE );
@@ -10194,14 +10073,17 @@ namespace MetricsDiscoveryInternal
         MD_CHECK_PTR_RET( m_symbolVector, CC_ERROR_GENERAL );
         MD_CHECK_PTR_RET( name, CC_ERROR_GENERAL );
 
-        MD_LOG( LOG_INFO, "%s - adding...", name );
+        MD_LOG( LOG_DEBUG, "%s - adding...", name );
 
         if( symbolType == SYMBOL_TYPE_DETECT )
         {
+            // if it is a CString or a ByteArray, a memory is allocated here
             TCompletionCode ret = DetectSymbolValue( name, &typedValue );
 
             if( ret == CC_ERROR_NOT_SUPPORTED )
             {
+                MD_LOG( LOG_INFO, "Symbol is not supported." );
+                // do nothing if a symbol is not supported and return success
                 return CC_OK;
             }
 
@@ -10212,19 +10094,23 @@ namespace MetricsDiscoveryInternal
         MD_CHECK_PTR_RET( symbol, CC_ERROR_NO_MEMORY );
 
         symbol->version               = API_VERSION_1_0;
+        symbol->symbolType            = symbolType;
         symbol->symbol_1_0.SymbolName = GetCopiedCString( name );
         if( typedValue.ValueType == VALUE_TYPE_CSTRING )
         {
-            symbol->symbol_1_0.SymbolTypedValue.ValueType    = VALUE_TYPE_CSTRING;
-            symbol->symbol_1_0.SymbolTypedValue.ValueCString = GetCopiedCString( typedValue.ValueCString );
+            symbol->symbol_1_0.SymbolTypedValue.ValueType    = typedValue.ValueType;
+            symbol->symbol_1_0.SymbolTypedValue.ValueCString = ( symbolType == SYMBOL_TYPE_DETECT )
+                ? typedValue.ValueCString // CString is already copied
+                : GetCopiedCString( typedValue.ValueCString );
         }
         else
         {
             symbol->symbol_1_0.SymbolTypedValue = typedValue;
         }
-        symbol->symbolType = symbolType;
-
         m_symbolVector->PushBack( symbol );
+
+        MD_LOG( LOG_INFO, "Symbol added successfully." );
+
         return CC_OK;
     }
 
@@ -10272,9 +10158,8 @@ namespace MetricsDiscoveryInternal
         }
         else if( strcmp( name, "EuSubslicesPerSliceCount" ) == 0 )
         {
-            ret = m_driverInterface.SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_SUBSLICES_PER_SLICE_COUNT, &out );
-            MD_CHECK_CC_RET( ret );
-            typedValue->ValueUInt32 = out.ValueUint32;
+            // not supported for XeHP_SDV, removed all platforms for consitency
+            return CC_ERROR_NOT_SUPPORTED;
         }
         else if( strcmp( name, "EuDualSubslicesTotalCount" ) == 0 )
         {
@@ -10295,25 +10180,23 @@ namespace MetricsDiscoveryInternal
             typedValue->ValueUInt32 = out.ValueUint32;
         }
 
-        else if( strcmp( name, "SubsliceMask" ) == 0 )
-        {
-            ret = m_driverInterface.SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_SUBSLICES_MASK, &out );
-            MD_CHECK_CC_RET( ret );
-            typedValue->ValueUInt64 = out.ValueUint64;
-            // TODO: change type of SubsliceMask param to ValueCString, then use following line instead of the above one
-            //iu_memcpy_s(typedValue->ValueCString, sizeof(typedValue->ValueCString), outExt.ValueByteArray, sizeof(outExt.ValueByteArray) );
-        }
-        else if( strcmp( name, "DualSubsliceMask" ) == 0 )
-        {
-            ret = m_driverInterface.SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_DUALSUBSLICES_MASK, &out );
-            MD_CHECK_CC_RET( ret );
-            typedValue->ValueUInt64 = out.ValueUint64;
-        }
-        else if( strcmp( name, "SliceMask" ) == 0 )
+        else if( ( strcmp( name, "SliceMask" ) == 0 ) || ( strcmp( name, "GtSliceMask" ) == 0 ) )
         {
             ret = m_driverInterface.SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_SLICES_MASK, &out );
             MD_CHECK_CC_RET( ret );
             typedValue->ValueUInt32 = out.ValueUint32;
+        }
+        else if( ( strcmp( name, "SubsliceMask" ) == 0 ) || ( strcmp( name, "GtSubsliceMask" ) == 0 ) )
+        {
+            ret = m_driverInterface.SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_SUBSLICES_MASK, &out );
+            MD_CHECK_CC_RET( ret );
+            typedValue->ValueUInt64 = out.ValueUint64;
+        }
+        else if( ( strcmp( name, "DualSubsliceMask" ) == 0 ) || ( strcmp( name, "GtDualSubsliceMask" ) == 0 ) )
+        {
+            ret = m_driverInterface.SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_DUALSUBSLICES_MASK, &out );
+            MD_CHECK_CC_RET( ret );
+            typedValue->ValueUInt64 = out.ValueUint64;
         }
 
         else if( strcmp( name, "SamplersTotalCount" ) == 0 )
@@ -10325,20 +10208,22 @@ namespace MetricsDiscoveryInternal
         else if( strcmp( name, "SamplersPerSubliceCount" ) == 0 )
         {
             // obsolete
-            typedValue->ValueUInt32 = 1;
+            return CC_ERROR_NOT_SUPPORTED;
         }
 
         else if( strcmp( name, "MemoryPeakThroghputMB" ) == 0 )
         {
-            ret = m_driverInterface.SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_DRAM_PEAK_THROUGHTPUT, &out );
-
-            if( ret == CC_ERROR_NOT_SUPPORTED )
+            if( m_metricsDevice.GetAdapter().GetParams()->Type == ADAPTER_TYPE_INTEGRATED )
             {
-                return ret;
-            }
+                ret = m_driverInterface.SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_DRAM_PEAK_THROUGHTPUT, &out );
 
-            MD_CHECK_CC_RET( ret );
-            typedValue->ValueUInt32 = ( uint32_t )( out.ValueUint64 / ( uint64_t )( MD_MBYTE ) ); // value / MBYTE
+                MD_CHECK_CC_RET( ret );
+                typedValue->ValueUInt32 = static_cast<uint32_t>( out.ValueUint64 / static_cast<uint64_t>( MD_MBYTE ) );
+            }
+            else
+            {
+                return CC_ERROR_NOT_SUPPORTED;
+            }
         }
         else if( strcmp( name, "MemoryFrequencyMHz" ) == 0 )
         {
@@ -10658,26 +10543,6 @@ namespace MetricsDiscoveryInternal
     //     CSymbolSet
     //
     // Method:
-    //     IsPavpDisabled
-    //
-    // Description:
-    //     Checks if the PAVP_DISABLED bit in capabilities symbol is set.
-    //
-    // Output:
-    //     bool - result
-    //
-    //////////////////////////////////////////////////////////////////////////////
-    bool CSymbolSet::IsPavpDisabled( uint32_t capabilities )
-    {
-        return ( capabilities & GTDI_CAPABILITY_PAVP_DISABLED ) > 0;
-    }
-
-    //////////////////////////////////////////////////////////////////////////////
-    //
-    // Class:
-    //     CSymbolSet
-    //
-    // Method:
     //     WriteSymbolSetToFile
     //
     // Description:
@@ -10766,6 +10631,26 @@ namespace MetricsDiscoveryInternal
         }
 
         return DetectSymbolValue( symbolName, symbolValue );
+    }
+
+    //////////////////////////////////////////////////////////////////////////////
+    //
+    // Class:
+    //     CSymbolSet
+    //
+    // Method:
+    //     IsPavpDisabled
+    //
+    // Description:
+    //     Checks if the PAVP_DISABLED bit in capabilities symbol is set.
+    //
+    // Output:
+    //     bool - result
+    //
+    //////////////////////////////////////////////////////////////////////////////
+    bool CSymbolSet::IsPavpDisabled( uint32_t capabilities )
+    {
+        return ( capabilities & GTDI_CAPABILITY_PAVP_DISABLED ) > 0;
     }
 
 } // namespace MetricsDiscoveryInternal

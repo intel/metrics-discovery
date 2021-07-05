@@ -1,6 +1,6 @@
 //////////////////////////////////////////////////////////////////////////////
 //
-//  Copyright © 2019-2020, Intel Corporation
+//  Copyright © 2019-2021, Intel Corporation
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a
 //  copy of this software and associated documentation files (the "Software"),
@@ -100,6 +100,32 @@ extern "C"
 
         memcpy( dest, src, count );
         return true;
+    }
+
+    ///////////////////////////////////////////////////////////////////////////////
+    //
+    // Group:
+    //     Instrumentation Utils Standard OS Specific Functions
+    //
+    // Function:
+    //     iu_memcmp
+    //
+    // Description:
+    //     Compares the first given number of bytes of the two memory blocks pointed
+    //     by 'ptr1' and 'ptr2'.
+    //
+    // Input:
+    //     const void* ptr1      - memory block 1
+    //     const void* ptr2      - memory block 2
+    //     size_t bytesToCompare - number of bytes to compare
+    //
+    // Output:
+    //     bool - true if equal
+    //
+    ///////////////////////////////////////////////////////////////////////////////
+    bool iu_memcmp( const void* ptr1, const void* ptr2, size_t bytesToCompare )
+    {
+        return memcmp( ptr1, ptr2, bytesToCompare ) == 0;
     }
 
     ///////////////////////////////////////////////////////////////////////////////
@@ -271,6 +297,175 @@ extern "C"
     //     Instrumentation Utils Standard OS Specific Functions
     //
     // Function:
+    //     iu_strncmp
+    //
+    // Description:
+    //     Compares up to 'count' characters of the cstring 'str1' to those of the 'str2'.
+    //
+    // Input:
+    //     const char* str1  - cstring to compare
+    //     const char* str2  - cstring to compare
+    //     size_t      count - in characters
+    //
+    // Output:
+    //     int32_t - relationship between strings. 0 means equal strings up to 'count' chars
+    //
+    ///////////////////////////////////////////////////////////////////////////////
+    int32_t iu_strncmp( const char* str1, const char* str2, size_t count )
+    {
+        return strncmp( str1, str2, count );
+    }
+
+    ///////////////////////////////////////////////////////////////////////////////
+    //
+    // Group:
+    //     Instrumentation Utils Standard OS Specific Functions
+    //
+    // Function:
+    //     iu_wstrcat_s
+    //
+    // Description:
+    //     Appends 'srcWstr' to 'destWstr'.
+    //
+    // Input:
+    //     wchar_t*       destWstr - null-terminated destination wide-char cstring
+    //     size_t         destSize - size of the destination wide-char cstring (in bytes)
+    //     const wchar_t* srcWstr  - null-terminated source wide-char cstring
+    //
+    // Output:
+    //     bool - true if success
+    //
+    ///////////////////////////////////////////////////////////////////////////////
+    bool iu_wstrcat_s( wchar_t* destWstr, size_t destSize, const wchar_t* srcWstr )
+    {
+        if( destWstr == NULL || srcWstr == NULL || destSize == 0 )
+        {
+            IU_ASSERT( false );
+            return false;
+        }
+
+        size_t destSizeInWideChars = destSize / sizeof( wchar_t );
+        size_t srcLen              = wcslen( srcWstr );
+        size_t destLen             = wcslen( destWstr );
+        if( ( destSizeInWideChars - destLen ) <= srcLen )
+        {
+            // Dest too small
+            IU_ASSERT( false );
+            return false;
+        }
+
+        return wcscat( destWstr, srcWstr ) != NULL;
+    }
+
+    ///////////////////////////////////////////////////////////////////////////////
+    //
+    // Group:
+    //     Instrumentation Utils Standard OS Specific Functions
+    //
+    // Function:
+    //     iu_wstrncpy_s
+    //
+    // Description:
+    //     Check for NULLs and whether destination memory size is not too small. It appends
+    //     null-terminating character to the end of destWstr.
+    //
+    // Input:
+    //     char*       destWstr - destination wide-char cstring
+    //     size_t      destSize - size of the destination wide-char cstring in wide characters
+    //     const char* srcWstr  - source wide-char cstring
+    //     size_t      count    - number of wide-chars to copy
+    //
+    // Output:
+    //     bool - true if success
+    //
+    ///////////////////////////////////////////////////////////////////////////////
+    bool iu_wstrncpy_s( wchar_t* destWstr, size_t destSize, const wchar_t* srcWstr, size_t count )
+    {
+        if( destWstr == NULL || srcWstr == NULL || destSize == 0 )
+        {
+            IU_ASSERT( false );
+            return false;
+        }
+        if( destSize <= count )
+        {
+            // Buffer too small
+            IU_ASSERT( false );
+            return false;
+        }
+
+        wcsncpy( destWstr, srcWstr, count );
+        destWstr[count] = '\0';
+        return true;
+    }
+
+    ///////////////////////////////////////////////////////////////////////////////
+    //
+    // Group:
+    //     Instrumentation Utils Standard OS Specific Functions
+    //
+    // Function:
+    //     iu_wstrncat_s
+    //
+    // Description:
+    //     Appends 'srcWstr' to 'destWstr' up to 'maxAppend' wide characters.
+    //
+    // Input:
+    //     wchar_t*       destWstr  - null-terminated destination wide-char cstring
+    //     size_t         destSize  - size of the destination wide-char cstring (in bytes)
+    //     const wchar_t* srcWstr   - null-terminated source wide-char cstring
+    //     size_t         maxAppend - max number of wide-chars to append
+    //
+    // Output:
+    //     bool - true if success
+    //
+    ///////////////////////////////////////////////////////////////////////////////
+    bool iu_wstrncat_s( wchar_t* destWstr, size_t destSize, const wchar_t* srcWstr, size_t maxAppend )
+    {
+        if( destWstr == NULL || srcWstr == NULL || destSize == 0 )
+        {
+            IU_ASSERT( false );
+            return false;
+        }
+
+        return wcsncat( destWstr, srcWstr, maxAppend ) != NULL;
+    }
+
+    ///////////////////////////////////////////////////////////////////////////////
+    //
+    // Group:
+    //     Instrumentation Utils Standard OS Specific Functions
+    //
+    // Function:
+    //     iu_wstrnlen
+    //
+    // Description:
+    //     Returns length of the given wide-char cstring, without '\0'.
+    //
+    // Input:
+    //     const wchar_t* wstr     - wide-char cstring
+    //     size_t         wstrSize - in bytes
+    //
+    // Output:
+    //     size_t - length of a cstring in characters (without '\0')
+    //
+    ///////////////////////////////////////////////////////////////////////////////
+    size_t iu_wstrnlen( const wchar_t* wstr, size_t wstrSize )
+    {
+        if( wstr == NULL )
+        {
+            IU_ASSERT( false );
+            return 0;
+        }
+
+        return wcsnlen( wstr, wstrSize / sizeof( wchar_t ) );
+    }
+
+    ///////////////////////////////////////////////////////////////////////////////
+    //
+    // Group:
+    //     Instrumentation Utils Standard OS Specific Functions
+    //
+    // Function:
     //     iu_wstrtombs
     //
     // Description:
@@ -434,18 +629,26 @@ extern "C"
     //     Instrumentation Utils Standard OS Specific Functions
     //
     // Function:
-    //     iu_printfln
+    //     iu_printf
     //
     // Description:
-    //     Debug log printf with new line at the end.
+    //     Debug log printf.
     //
     // Input:
     //     const char* msg    - message to print
+    //     const bool  addEOL - add a new line sign at the end of the message
     //
     ///////////////////////////////////////////////////////////////////////////////
-    void iu_printfln( const char* msg )
+    void iu_printf( const char* msg, const bool addEOL )
     {
-        printf( "%s\n", msg );
+        if( addEOL )
+        {
+            printf( "%s\n", msg );
+        }
+        else
+        {
+            printf( "%s", msg );
+        }
     }
 
     ///////////////////////////////////////////////////////////////////////////////
