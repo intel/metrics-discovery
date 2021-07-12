@@ -20,17 +20,18 @@
 //  FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 //  IN THE SOFTWARE.
 //
-//  File Name:  md_calculation.h
-//
-//  Abstract:   C++ metrics discovery metrics calculation features header.
-//
 //////////////////////////////////////////////////////////////////////////////
+
+//     File Name:  md_calculation.h
+//
+//     Abstract:   C++ metrics discovery metrics calculation features header.
+
 #pragma once
 
 #include "metrics_discovery_api.h"
 #include "md_utils.h"
 
-#define MD_SAVED_REPORT_NUMBER            0xFFFFFFFF
+#define MD_SAVED_REPORT_NUMBER 0xFFFFFFFF
 
 using namespace MetricsDiscovery;
 
@@ -205,7 +206,6 @@ namespace MetricsDiscoveryInternal
             uint32_t          apiMask,
             TTypedValue_1_0*  result );
 
-
         void ReadIoMeasurementInformation(
             IConcurrentGroup_1_1& concurrentGroup,
             TTypedValue_1_0*      outValues );
@@ -222,7 +222,7 @@ namespace MetricsDiscoveryInternal
         void            DiscardSavedReport();
 
         uint64_t CastToUInt64( const TTypedValue_1_0& value );
-        float CastToFloat( const TTypedValue_1_0& value );
+        float    CastToFloat( const TTypedValue_1_0& value );
 
         uint64_t ReadBitfield(
             const uint8_t* rawReport,

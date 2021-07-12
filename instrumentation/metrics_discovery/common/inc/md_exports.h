@@ -20,12 +20,13 @@
 //  FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 //  IN THE SOFTWARE.
 //
-//  File Name:  md_exports.h
-//
-//  Abstract:   Header with exports of the MetricsDiscovery library. Exports on Windows
-//              are defined in the project file.
-//
 //////////////////////////////////////////////////////////////////////////////
+
+//     File Name:  md_exports.h
+
+//     Abstract:   Header with exports of the MetricsDiscovery library. Exports on Windows
+//                 are defined in the project file.
+
 #pragma once
 
 #include "metrics_discovery_api.h"

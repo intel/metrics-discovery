@@ -20,11 +20,12 @@
 //  FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 //  IN THE SOFTWARE.
 //
-//  File Name:  md_driver_ifc.h
-//
-//  Abstract:   C++ driver interface header
-//
 //////////////////////////////////////////////////////////////////////////////
+
+//     File Name:  md_driver_ifc.h
+
+//     Abstract:   C++ driver interface header
+
 #pragma once
 
 #include "md_types.h"

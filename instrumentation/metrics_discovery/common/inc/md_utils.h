@@ -20,11 +20,12 @@
 //  FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 //  IN THE SOFTWARE.
 //
-//  File Name:  md_utils.h
-//
-//  Abstract:   C++ header with metrics discovery utils
-//
 //////////////////////////////////////////////////////////////////////////////
+
+//     File Name:  md_utils.h
+
+//     Abstract:   C++ header with metrics discovery utils
+
 #pragma once
 
 #include "metrics_discovery_api.h"

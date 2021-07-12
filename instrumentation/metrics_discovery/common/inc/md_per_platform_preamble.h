@@ -20,11 +20,12 @@
 //  FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 //  IN THE SOFTWARE.
 //
-//  File Name:  md_per_platform_preamble.h
-//
-//  Abstract:   C++ Metrics Discovery internal header
-//
 //////////////////////////////////////////////////////////////////////////////
+
+//     File Name:  md_per_platform_preamble.h
+
+//     Abstract:   C++ Metrics Discovery internal header
+
 #pragma once
 
 #include "metrics_discovery_api.h"

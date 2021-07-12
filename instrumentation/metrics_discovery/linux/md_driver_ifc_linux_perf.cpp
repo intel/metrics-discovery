@@ -20,11 +20,12 @@
 //  FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 //  IN THE SOFTWARE.
 //
-//  File Name:  md_driver_ifc_linux_perf.cpp
-//
-//  Abstract:   C++ implementation for Linux/Android with Perf
-//
 //////////////////////////////////////////////////////////////////////////////
+
+//     File Name:  md_driver_ifc_linux_perf.cpp
+
+//     Abstract:   C++ implementation for Linux/Android with Perf
+
 #include "md_driver_ifc_linux_perf.h"
 #include "iu_i915_perf.h"
 
@@ -983,7 +984,7 @@ namespace MetricsDiscoveryInternal
                 MD_CHECK_CC_RET( ret );
 
                 // Returning mapped GtType for compatibility reasons
-                out->ValueType = GTDI_DEVICE_PARAM_VALUE_TYPE_UINT32;
+                out->ValueType   = GTDI_DEVICE_PARAM_VALUE_TYPE_UINT32;
                 out->ValueUint32 = (uint32_t) MapMesaToInstrGtType( mesaDeviceInfo->gt );
                 break;
             }
@@ -1250,8 +1251,8 @@ namespace MetricsDiscoveryInternal
         MD_CHECK_PTR_RET( cpuId, CC_ERROR_INVALID_PARAMETER );
         MD_CHECK_PTR_RET( correlationIndicator, CC_ERROR_INVALID_PARAMETER );
 
-        uint64_t        gpuTimestampNs        = 0;
-        uint64_t        cpuTimestampNs        = 0;
+        uint64_t gpuTimestampNs = 0;
+        uint64_t cpuTimestampNs = 0;
 
         TCompletionCode result = GetGpuTimestampNs( &gpuTimestampNs );
         MD_CHECK_CC_RET( result );

@@ -20,11 +20,12 @@
 //  FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 //  IN THE SOFTWARE.
 //
-//  File Name:  md_main.cpp
-//
-//  Abstract:   Metrics Discovery main file
-//
 //////////////////////////////////////////////////////////////////////////////
+
+//     File Name:  md_main.cpp
+
+//     Abstract:   Metrics Discovery main file
+
 #include "metrics_discovery_api.h"
 #include "md_metrics.h"
 #include "md_exports.h"

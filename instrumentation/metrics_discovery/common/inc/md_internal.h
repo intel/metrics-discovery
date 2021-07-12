@@ -20,11 +20,12 @@
 //  FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 //  IN THE SOFTWARE.
 //
-//  File Name:  md_internal.h
-//
-//  Abstract:   C++ Metrics Discovery internal header
-//
 //////////////////////////////////////////////////////////////////////////////
+
+//     File Name:  md_internal.h
+
+//     Abstract:   C++ Metrics Discovery internal header
+
 #pragma once
 
 #include "metrics_discovery_internal_api.h"
@@ -322,7 +323,7 @@ namespace MetricsDiscoveryInternal
         TCompletionCode    RedetectSymbol( const char* name );
 
     private:
-        bool            IsPavpDisabled( uint32_t capabilities );
+        bool IsPavpDisabled( uint32_t capabilities );
 
     private:
         // Variables:

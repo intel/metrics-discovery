@@ -20,11 +20,12 @@
 //  FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 //  IN THE SOFTWARE.
 //
-//  File Name:  md_debug.h
-//
-//  Abstract:   Header with Metrics Discovery debug functions and macros
-//
 //////////////////////////////////////////////////////////////////////////////
+
+//     File Name:  md_debug.h
+
+//     Abstract:   Header with Metrics Discovery debug functions and macros
+
 #pragma once
 
 #include "iu_debug.h"

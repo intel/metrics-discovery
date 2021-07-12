@@ -20,11 +20,12 @@
 //  FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 //  IN THE SOFTWARE.
 //
-//  File Name:  md_utils.cpp
-//
-//  Abstract:   C++ metrics discovery utils implementation.
-//
 //////////////////////////////////////////////////////////////////////////////
+
+//     File Name:  md_utils.cpp
+
+//     Abstract:   C++ metrics discovery utils implementation.
+
 #include "md_utils.h"
 #include "md_internal.h"
 

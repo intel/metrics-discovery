@@ -20,11 +20,12 @@
 //  FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 //  IN THE SOFTWARE.
 //
-//  File Name:  md_sub_devices_linux.cpp
-//
-//  Abstract:   C++ sub devices implementation for Linux
-//
 //////////////////////////////////////////////////////////////////////////////
+
+//     File Name:  md_sub_devices_linux.cpp
+
+//     Abstract:   C++ sub devices implementation for Linux
+
 #include "md_sub_devices_linux.h"
 #include "md_driver_ifc.h"
 

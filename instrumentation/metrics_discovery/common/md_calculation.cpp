@@ -20,11 +20,12 @@
 //  FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 //  IN THE SOFTWARE.
 //
-//  File Name:  md_calculation.cpp
-//
-//  Abstract:   C++ metrics discovery metrics calculation features implementation.
-//
 //////////////////////////////////////////////////////////////////////////////
+
+//     File Name:  md_calculation.cpp
+
+//     Abstract:   C++ metrics discovery metrics calculation features implementation.
+
 #include "md_calculation.h"
 #include "md_utils.h"
 #include "md_types.h"
@@ -390,7 +391,6 @@ namespace MetricsDiscoveryInternal
         m_savedReportSize    = 0;
         m_contextIdPrev      = 0;
         m_savedReportPresent = false;
-
     }
 
     //////////////////////////////////////////////////////////////////////////////
@@ -538,7 +538,6 @@ namespace MetricsDiscoveryInternal
     {
         m_savedReportPresent = false;
     }
-
 
     //////////////////////////////////////////////////////////////////////////////
     //

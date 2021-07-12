@@ -20,11 +20,12 @@
 //  FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 //  IN THE SOFTWARE.
 //
-//  File Name:  md_driver_ifc_linux_perf.h
-//
-//  Abstract:   C++ implementation for Linux/Android with Perf
-//
 //////////////////////////////////////////////////////////////////////////////
+
+//     File Name:  md_driver_ifc_linux_perf.h
+//
+//    Abstract:   C++ implementation for Linux/Android with Perf
+
 #pragma once
 
 #include <mutex>
@@ -86,8 +87,8 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     typedef struct SPerfCapabilities
     {
-        bool IsOaInterruptSupported;     // Available since i915 Perf revision '2'
-        bool IsSubDeviceSupported;       // Available since i915 Perf revision '10'
+        bool IsOaInterruptSupported; // Available since i915 Perf revision '2'
+        bool IsSubDeviceSupported;   // Available since i915 Perf revision '10'
     } TPerfCapabilities;
 
     //////////////////////////////////////////////////////////////////////////////

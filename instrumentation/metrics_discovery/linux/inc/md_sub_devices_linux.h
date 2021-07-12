@@ -20,11 +20,12 @@
 //  FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 //  IN THE SOFTWARE.
 //
-//  File Name:  md_sub_devices_linux.h
-//
-//  Abstract:   C++ sub devices implementation for Linux
-//
 //////////////////////////////////////////////////////////////////////////////
+
+//     File Name:  md_sub_devices_linux.h
+
+//     Abstract:   C++ sub devices implementation for Linux
+
 #pragma once
 
 #include "metrics_discovery_api.h"

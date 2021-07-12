@@ -20,11 +20,12 @@
 //  FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 //  IN THE SOFTWARE.
 //
-//  File Name:  md_internal.cpp
-//
-//  Abstract:   C++ Metrics Discovery internal implementation
-//
 //////////////////////////////////////////////////////////////////////////////
+
+//     File Name:  md_internal.cpp
+
+//     Abstract:   C++ Metrics Discovery internal implementation
+
 #include "md_internal.h"
 #include "md_metrics.h"
 
@@ -7841,13 +7842,13 @@ namespace MetricsDiscoveryInternal
 
         // Initialize context
         calculationManager->ResetContext( context );
-        context.CommonCalculationContext.DeltaValues     = new( std::nothrow ) TTypedValue_1_0[m_currentParams->MetricsCount];
-        context.CommonCalculationContext.Calculator      = m_metricsCalculator;
-        context.CommonCalculationContext.MetricSet       = this;
-        context.CommonCalculationContext.Out             = out;
-        context.CommonCalculationContext.OutMaxValues    = outMaxValues;
-        context.CommonCalculationContext.RawData         = rawData;
-        context.CommonCalculationContext.RawReportCount  = rawReportCount;
+        context.CommonCalculationContext.DeltaValues    = new( std::nothrow ) TTypedValue_1_0[m_currentParams->MetricsCount];
+        context.CommonCalculationContext.Calculator     = m_metricsCalculator;
+        context.CommonCalculationContext.MetricSet      = this;
+        context.CommonCalculationContext.Out            = out;
+        context.CommonCalculationContext.OutMaxValues   = outMaxValues;
+        context.CommonCalculationContext.RawData        = rawData;
+        context.CommonCalculationContext.RawReportCount = rawReportCount;
         MD_CHECK_PTR_RET( context.CommonCalculationContext.DeltaValues, CC_ERROR_NO_MEMORY );
         if( measurementType == MEASUREMENT_TYPE_SNAPSHOT_IO )
         {
@@ -8239,7 +8240,7 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     TCompletionCode CMetric::SetSnapshotReportReadEquation( const char* equationString )
     {
-        TCompletionCode ret = SetEquation( m_device, &m_ioReadEquation, equationString );
+        TCompletionCode ret         = SetEquation( m_device, &m_ioReadEquation, equationString );
         m_params_1_0.IoReadEquation = (IEquation_1_0*) m_ioReadEquation;
         return ret;
     }
