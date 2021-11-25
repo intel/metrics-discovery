@@ -20,24 +20,47 @@ SPDX-License-Identifier: MIT
     #define MD_IS_INTERNAL_BUILD 0
 #endif // defined(_DEBUG) || defined(_RELEASE_INTERNAL)
 
-// official
-#define MD_INCLUDE_Common_METRICS  1
-#define MD_INCLUDE_HSW_METRICS     1
-#define MD_INCLUDE_BDW_METRICS     1
-#define MD_INCLUDE_SKL_GT2_METRICS 1
-#define MD_INCLUDE_SKL_GT3_METRICS 1
-#define MD_INCLUDE_SKL_GT4_METRICS 1
-#define MD_INCLUDE_CHV_METRICS     1
-#define MD_INCLUDE_BXT_METRICS     1
-#define MD_INCLUDE_GLK_METRICS     1
-#define MD_INCLUDE_KBL_GT2_METRICS 1
-#define MD_INCLUDE_KBL_GT3_METRICS 1
-#define MD_INCLUDE_CNL_METRICS     1
-#define MD_INCLUDE_CFL_GT2_METRICS 1
-#define MD_INCLUDE_CFL_GT3_METRICS 1
-#define MD_INCLUDE_ICL_METRICS     1
-#define MD_INCLUDE_EHL_METRICS     1
-#define MD_INCLUDE_TGL_GT1_METRICS 1
-#define MD_INCLUDE_TGL_GT2_METRICS 1
-#define MD_INCLUDE_DG1_METRICS     1
-#define MD_INCLUDE_RKL_METRICS     1
+#define MD_INCLUDE_Common_METRICS 1
+
+// NOTE:
+//    MD_INCLUDE_{platform}_METRICS preprocessor macros may be added to compilation parameters
+//    to control the scope of metrics.
+//    If none of the macros is defined all platforms with source support will be included
+//    By defining any of the macros one will automatically exclude all other platforms
+
+#if !( MD_INCLUDE_HSW_METRICS || \
+       MD_INCLUDE_BDW_METRICS || \
+       MD_INCLUDE_SKL_GT2_METRICS || \
+       MD_INCLUDE_SKL_GT3_METRICS || \
+       MD_INCLUDE_SKL_GT4_METRICS || \
+       MD_INCLUDE_BXT_METRICS || \
+       MD_INCLUDE_GLK_METRICS || \
+       MD_INCLUDE_KBL_GT2_METRICS || \
+       MD_INCLUDE_KBL_GT3_METRICS || \
+       MD_INCLUDE_CFL_GT2_METRICS || \
+       MD_INCLUDE_CFL_GT3_METRICS || \
+       MD_INCLUDE_ICL_METRICS || \
+       MD_INCLUDE_EHL_METRICS || \
+       MD_INCLUDE_TGL_GT1_METRICS || \
+       MD_INCLUDE_TGL_GT2_METRICS || \
+       MD_INCLUDE_DG1_METRICS || \
+       MD_INCLUDE_RKL_METRICS )
+
+    #define MD_INCLUDE_HSW_METRICS 1
+    #define MD_INCLUDE_BDW_METRICS 1
+    #define MD_INCLUDE_SKL_GT2_METRICS 1
+    #define MD_INCLUDE_SKL_GT3_METRICS 1
+    #define MD_INCLUDE_SKL_GT4_METRICS 1
+    #define MD_INCLUDE_BXT_METRICS 1
+    #define MD_INCLUDE_GLK_METRICS 1
+    #define MD_INCLUDE_KBL_GT2_METRICS 1
+    #define MD_INCLUDE_KBL_GT3_METRICS 1
+    #define MD_INCLUDE_CFL_GT2_METRICS 1
+    #define MD_INCLUDE_CFL_GT3_METRICS 1
+    #define MD_INCLUDE_ICL_METRICS 1
+    #define MD_INCLUDE_EHL_METRICS 1
+    #define MD_INCLUDE_TGL_GT1_METRICS 1
+    #define MD_INCLUDE_TGL_GT2_METRICS 1
+    #define MD_INCLUDE_DG1_METRICS 1
+    #define MD_INCLUDE_RKL_METRICS 1
+#endif
