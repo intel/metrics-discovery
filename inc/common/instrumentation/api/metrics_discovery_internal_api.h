@@ -282,11 +282,11 @@ namespace MetricsDiscovery
     //   concurrently to another group.
     //
     /////////////////////////////////////////////////////////////////////////////
-    class IInternalConcurrentGroup : public IConcurrentGroup_1_5
+    class IInternalConcurrentGroup : public IConcurrentGroupLatest
     {
     public:
         virtual ~IInternalConcurrentGroup();
-        virtual IMetricSet_1_5* AddCustomMetricSet( TAddCustomMetricSetParams* params, IMetricSet_1_0* referenceMetricSet, bool copyInformationOnly = false );
+        virtual IMetricSetLatest* AddCustomMetricSet( TAddCustomMetricSetParams* params, IMetricSet_1_0* referenceMetricSet, bool copyInformationOnly = false );
     };
 
     /////////////////////////////////////////////////////////////////////////////**
@@ -299,11 +299,11 @@ namespace MetricsDiscovery
     //   that should be used exclusively to each other metric set in the concurrent group.
     //
     /////////////////////////////////////////////////////////////////////////////
-    class IInternalMetricSet : public IMetricSet_1_5
+    class IInternalMetricSet : public IMetricSetLatest
     {
     public:
         virtual ~IInternalMetricSet();
-        virtual IMetric_1_0* AddCustomMetric( TAddCustomMetricParams* params );
+        virtual IMetricLatest* AddCustomMetric( TAddCustomMetricParams* params );
     };
 
 }; // namespace MetricsDiscovery

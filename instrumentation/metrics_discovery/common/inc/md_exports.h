@@ -30,18 +30,18 @@ extern "C"
 {
 #endif
 
-    DllExport TCompletionCode OpenAdapterGroup( IAdapterGroup_1_9** adapterGroup );
+    DllExport TCompletionCode OpenAdapterGroup( IAdapterGroupLatest** adapterGroup );
 
     // Note: when changing IMetricsDevice version in params remember about OGL PerfQuery - it needs to be changed too
-    DllExport TCompletionCode OpenMetricsDevice( IMetricsDevice_1_5** metricsDevice );
+    DllExport TCompletionCode OpenMetricsDevice( IMetricsDeviceLatest** metricsDevice );
 
-    DllExport TCompletionCode CloseMetricsDevice( IMetricsDevice_1_5* metricsDevice );
+    DllExport TCompletionCode CloseMetricsDevice( IMetricsDeviceLatest* metricsDevice );
 
-    DllExport TCompletionCode OpenMetricsDeviceFromFile( const char* fileName, void* openParams, IMetricsDevice_1_5** metricsDevice );
+    DllExport TCompletionCode OpenMetricsDeviceFromFile( const char* fileName, void* openParams, IMetricsDeviceLatest** metricsDevice );
 
 #if defined( _DEBUG ) || defined( _RELEASE_INTERNAL )
 
-    DllExport TCompletionCode SaveMetricsDeviceToFile( const char* fileName, void* saveParams, IMetricsDevice_1_5* metricsDevice );
+    DllExport TCompletionCode SaveMetricsDeviceToFile( const char* fileName, void* saveParams, IMetricsDeviceLatest* metricsDevice );
 
 #endif // defined(_DEBUG) || defined(_RELEASE_INTERNAL)
 

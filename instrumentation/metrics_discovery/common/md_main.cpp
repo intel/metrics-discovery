@@ -38,18 +38,18 @@ extern "C"
     //     Open() calls are reference counted.
     //
     // Input:
-    //     IAdapterGroup_1_9** adapterGroup - [out] created / retrieved adapter group
+    //     IAdapterGroupLatest** adapterGroup - [out] created / retrieved adapter group
     //
     // Output:
-    //     TCompletionCode                  - CC_OK or CC_ALREADY_INITIALIZED means success
+    //     TCompletionCode                    - CC_OK or CC_ALREADY_INITIALIZED means success
     //
     //////////////////////////////////////////////////////////////////////////////
-    TCompletionCode OpenAdapterGroup( IAdapterGroup_1_9** adapterGroup )
+    TCompletionCode OpenAdapterGroup( IAdapterGroupLatest** adapterGroup )
     {
         MD_LOG_ENTER();
         MD_CHECK_PTR_RET( adapterGroup, CC_ERROR_INVALID_PARAMETER );
 
-        TCompletionCode retVal = CAdapterGroup::Open( adapterGroup );
+        TCompletionCode retVal = CAdapterGroup::Open( (CAdapterGroup**) adapterGroup );
 
         MD_LOG_EXIT();
         return retVal;
@@ -76,20 +76,20 @@ extern "C"
     //         4. Destroy anything that was created if error
     //
     // Input:
-    //     IMetricsDevice_1_5** metricsDevice - [out] created / retrieved metrics device
+    //     IMetricsDeviceLatest** metricsDevice - [out] created / retrieved metrics device
     //
     // Output:
-    //     TCompletionCode                    - CC_OK or CC_ALREADY_INITIALIZED means success
+    //     TCompletionCode                      - CC_OK or CC_ALREADY_INITIALIZED means success
     //
     //////////////////////////////////////////////////////////////////////////////
-    TCompletionCode OpenMetricsDevice( IMetricsDevice_1_5** metricsDevice )
+    TCompletionCode OpenMetricsDevice( IMetricsDeviceLatest** metricsDevice )
     {
         MD_LOG_ENTER();
         MD_CHECK_PTR_RET( metricsDevice, CC_ERROR_INVALID_PARAMETER );
 
         CAdapterGroup* adapterGroup = NULL;
 
-        TCompletionCode retVal = CAdapterGroup::Open( (IAdapterGroup_1_9**) &adapterGroup );
+        TCompletionCode retVal = CAdapterGroup::Open( &adapterGroup );
         if( retVal != CC_OK && retVal != CC_ALREADY_INITIALIZED )
         {
             MD_LOG( LOG_ERROR, "Failed to open group device" );
@@ -138,22 +138,22 @@ extern "C"
     //         4. Destroy anything that was created if error
     //
     // Input:
-    //     const char*          fileName      - custom metric file
-    //     void*                openParams    - open params
-    //     IMetricsDevice_1_5** metricsDevice - [out] created / retrieved metrics device
+    //     const char*            fileName      - custom metric file
+    //     void*                  openParams    - open params
+    //     IMetricsDeviceLatest** metricsDevice - [out] created / retrieved metrics device
     //
     // Output:
-    //     TCompletionCode                    - CC_OK or CC_ALREADY_INITIALIZED means success
+    //     TCompletionCode                      - CC_OK or CC_ALREADY_INITIALIZED means success
     //
     //////////////////////////////////////////////////////////////////////////////
-    TCompletionCode OpenMetricsDeviceFromFile( const char* fileName, void* openParams, IMetricsDevice_1_5** metricsDevice )
+    TCompletionCode OpenMetricsDeviceFromFile( const char* fileName, void* openParams, IMetricsDeviceLatest** metricsDevice )
     {
         MD_LOG_ENTER();
         MD_CHECK_PTR_RET( metricsDevice, CC_ERROR_INVALID_PARAMETER );
 
         CAdapterGroup* adapterGroup = NULL;
 
-        TCompletionCode retVal = CAdapterGroup::Open( (IAdapterGroup_1_9**) &adapterGroup );
+        TCompletionCode retVal = CAdapterGroup::Open( &adapterGroup );
         if( retVal != CC_OK && retVal != CC_ALREADY_INITIALIZED )
         {
             MD_LOG( LOG_ERROR, "Failed to open adapter group" );
@@ -200,13 +200,13 @@ extern "C"
     //         3. CloseMetricsDevice on it
     //
     // Input:
-    //     IMetricsDevice_1_5* metricsDevice - metrics device to close
+    //     IMetricsDeviceLatest* metricsDevice - metrics device to close
     //
     // Output:
-    //     TCompletionCode                   - CC_OK or CC_STILL_INITIALIZED means success
+    //     TCompletionCode                     - CC_OK or CC_STILL_INITIALIZED means success
     //
     //////////////////////////////////////////////////////////////////////////////
-    TCompletionCode CloseMetricsDevice( IMetricsDevice_1_5* metricsDevice )
+    TCompletionCode CloseMetricsDevice( IMetricsDeviceLatest* metricsDevice )
     {
         MD_LOG_ENTER();
         MD_CHECK_PTR_RET( metricsDevice, CC_ERROR_INVALID_PARAMETER );
@@ -256,15 +256,15 @@ extern "C"
     //         3. SaveMetricsDeviceToFile on it
     //
     // Input:
-    //     const char*         fileName      - target file name
-    //     void*               saveParams    - save params
-    //     IMetricsDevice_1_5* metricsDevice - target metrics device
+    //     const char*           fileName      - target file name
+    //     void*                 saveParams    - save params
+    //     IMetricsDeviceLatest* metricsDevice - target metrics device
     //
     // Output:
-    //     TCompletionCode                   - CC_OK means success
+    //     TCompletionCode                     - CC_OK means success
     //
     //////////////////////////////////////////////////////////////////////////////
-    TCompletionCode SaveMetricsDeviceToFile( const char* fileName, void* saveParams, IMetricsDevice_1_5* metricsDevice )
+    TCompletionCode SaveMetricsDeviceToFile( const char* fileName, void* saveParams, IMetricsDeviceLatest* metricsDevice )
     {
         MD_LOG_ENTER();
         MD_CHECK_PTR_RET( fileName, CC_ERROR_INVALID_PARAMETER );
