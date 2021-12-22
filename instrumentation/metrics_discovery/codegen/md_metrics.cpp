@@ -260,7 +260,6 @@ TCompletionCode CreateMetricTree( CMetricsDevice* metricsDevice )
     MD_CHECK_PTR_RET( metricsDevice, CC_ERROR_INVALID_PARAMETER );
 
     CConcurrentGroup* concurrentGroup      = NULL;
-    CMetricSet*       metricSet            = NULL;
     CMetric*          metric               = NULL;
     CInformation*     information          = NULL;
     const char*       availabilityEquation = NULL;

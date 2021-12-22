@@ -8319,6 +8319,7 @@ namespace MetricsDiscoveryInternal
         m_params_1_0.HwUnitType        = other.m_params_1_0.HwUnitType;
         m_params_1_0.DeltaFunction     = other.m_params_1_0.DeltaFunction;
         m_signalName                   = GetCopiedCString( other.m_signalName );
+        m_isCustom                     = other.m_isCustom;
 
         m_availabilityEquation = ( other.m_availabilityEquation ) ? new( std::nothrow ) CEquation( *other.m_availabilityEquation ) : NULL;
         m_ioReadEquation       = ( other.m_ioReadEquation ) ? new( std::nothrow ) CEquation( *other.m_ioReadEquation ) : NULL;
