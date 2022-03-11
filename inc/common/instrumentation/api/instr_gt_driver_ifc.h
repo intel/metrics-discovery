@@ -308,19 +308,21 @@ typedef enum
     GENERATION_BDW,
     GENERATION_SKL,
     // 8-9 reserved
-    GENERATION_BXT = 10,
+    GENERATION_BXT  = 10,
     // 11 reserved
-    GENERATION_KBL = 12,
-    GENERATION_GLK = 13,
-    GENERATION_ICL = 14,
+    GENERATION_KBL  = 12,
+    GENERATION_GLK  = 13,
+    GENERATION_ICL  = 14,
     // 15-16 reserved
-    GENERATION_TGL = 17,
-    GENERATION_CFL = 18,
-    GENERATION_EHL = 19,
+    GENERATION_TGL  = 17,
+    GENERATION_CFL  = 18,
+    GENERATION_EHL  = 19,
     // 20 reserved
-    GENERATION_DG1 = 21,
+    GENERATION_DG1  = 21,
     // 22 reserved
-    GENERATION_RKL = 23,
+    GENERATION_RKL  = 23,
+    // 24-25 reserved
+    GENERATION_ADLP = 26,
     // ...
     // DO NOT CHANGE ORDER OF THIS ENUM, ADD NEW PLATFORMS AT THE END!
     // It has to be synchronized with metric_discovery_internal_api.h file.
@@ -499,7 +501,14 @@ typedef enum GTDI_DEVICE_PARAM_ENUM
     GTDI_DEVICE_PARAM_OA_BUFFER_EDGE_TRIGGERING_OVERRIDE,
     GTDI_DEVICE_PARAM_DUALSUBSLICES_TOTAL_COUNT,
     GTDI_DEVICE_PARAM_DUALSUBSLICES_MASK,
-    // ...
+
+    // Maximums which bound all supported GT. The values will change as needed with new GT.
+    // These params are intended for internal use only.
+    GTDI_DEVICE_PARAM_MAX_SLICE                  = 1000,
+    GTDI_DEVICE_PARAM_MAX_SUBSLICE_PER_SLICE     = 1001,
+    GTDI_DEVICE_PARAM_MAX_SUBSLICE_PER_DSS       = 1002,
+    GTDI_DEVICE_PARAM_MAX_DUALSUBSLICE_PER_SLICE = 1003,
+
     GTDI_DEVICE_PARAM_MAX = 0xFFFFFFFF
 
 } GTDI_DEVICE_PARAM;

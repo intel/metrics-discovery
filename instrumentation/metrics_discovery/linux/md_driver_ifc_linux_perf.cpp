@@ -12,6 +12,7 @@ SPDX-License-Identifier: MIT
 
 #include "md_driver_ifc_linux_perf.h"
 #include "iu_i915_perf.h"
+#include "gfx_device_info.h"
 
 #include <math.h>
 #include <string.h>
@@ -54,10 +55,10 @@ SPDX-License-Identifier: MIT
 //////////////////////////////////////////////////////////////////////////////
 //
 // Description:
-//     Default GpuTimestampFrequency, used if value obtained from Mesa is invalid.
+//     Default GpuTimestampFrequency, used if value obtained from drm is invalid.
 //
 //////////////////////////////////////////////////////////////////////////////
-#define MD_DEFAULT_GPU_TIMESTAMP_FREQUENCY 12500000; // One tick per 80ns
+#define MD_DEFAULT_GPU_TIMESTAMP_FREQUENCY 12000000; // Default, one tick per 83.333ns.
 
 //////////////////////////////////////////////////////////////////////////////
 //
@@ -87,10 +88,22 @@ SPDX-License-Identifier: MIT
 //
 //////////////////////////////////////////////////////////////////////////////
 #define MD_MAX_SUBSLICE_PER_SLICE     8 // Currently max value
-#define MD_MAX_SLICE                  4 // Currently max value
+#define MD_MAX_SLICE                  8 // Currently max value
 #define MD_MAX_DUALSLICE              8 // Currently max value
 #define MD_MAX_DUALSUBSLICE_PER_SLICE 6 // Currently max value
+#define MD_MAX_SUBSLICE_PER_DSS       2 // Currently max value
 #define MD_DUALSUBSLICE_PER_SLICE     4 // Current value
+
+//////////////////////////////////////////////////////////////////////////////
+//
+// Description:
+//     Masks helping to define OA Adder workaround need
+//
+//////////////////////////////////////////////////////////////////////////////
+#define SLICES0TO3  0x0F
+#define SLICES4TO7  0xF0
+#define SLICES4AND5 0x30
+#define SLICES6AND7 0xC0
 
 using namespace MetricsDiscovery;
 
@@ -388,30 +401,20 @@ namespace MetricsDiscoveryInternal
             TAdapterData adapter = {};
 
             // Get platform info
-            gen_device_info deviceInfo = {};
-            TCompletionCode ret        = CDriverInterfaceLinuxPerf::GetMesaDeviceInfo( drmFd, &deviceInfo );
+            TGfxDeviceInfo gfxDeviceInfo = {};
 
-            if( ret != CC_OK )
+            TCompletionCode ret = CDriverInterfaceLinuxPerf::GetGfxDeviceInfo( device.deviceinfo.pci->device_id, &gfxDeviceInfo );
+
+            if( ret != CC_OK || gfxDeviceInfo.PlatformIndex == GTDI_PLATFORM_MAX )
             {
-                MD_LOG( LOG_ERROR, "ERROR: Cannot get mesa device info" );
+                MD_LOG( LOG_ERROR, "ERROR: Cannot detect platform index" );
 
                 close( drmFd );
                 continue;
             }
 
-            GTDI_PLATFORM_INDEX platformIdx = GTDI_PLATFORM_MAX;
-            ret                             = CDriverInterfaceLinuxPerf::MapMesaToInstrPlatform( &deviceInfo, &platformIdx );
-
-            if( ret != CC_OK || platformIdx == GTDI_PLATFORM_MAX )
-            {
-                MD_LOG( LOG_ERROR, "ERROR: Cannot get platform id" );
-
-                close( drmFd );
-                continue;
-            }
-
-            adapter.Params.Platform = ( 1 << platformIdx );
-            adapter.Params.Type     = CDriverInterfaceLinuxPerf::GetAdapterType( &deviceInfo );
+            adapter.Params.Platform = ( 1 << gfxDeviceInfo.PlatformIndex );
+            adapter.Params.Type     = CDriverInterfaceLinuxPerf::GetAdapterType( &gfxDeviceInfo );
 
             // Get system id (major/minor pair)
             struct stat sbuf = {};
@@ -444,7 +447,7 @@ namespace MetricsDiscoveryInternal
                 adapter.Params.SubVendorId = device.deviceinfo.pci->subvendor_id;
                 adapter.Params.DeviceId    = device.deviceinfo.pci->device_id;
 
-                adapter.Params.ShortName = GetCopiedCString( CDriverInterfaceLinuxPerf::GetDeviceName( device.deviceinfo.pci->device_id ) );
+                adapter.Params.ShortName = GetCopiedCString( drmGetDeviceNameFromFd2( drmFd ) );
             }
 
             adapter.Handle = new( std::nothrow ) CAdapterHandleLinux( drmFd ); // Important: adapterData.Handle has to be deleted later!
@@ -525,9 +528,9 @@ namespace MetricsDiscoveryInternal
         , m_CachedBoostFrequency( 0 )
         , m_CachedMinFrequency( 0 )
         , m_CachedMaxFrequency( 0 )
-        , m_CachedMesaDeviceInfo( {
-              0,
-          } )
+        , m_CachedGfxDeviceInfo( { GTDI_PLATFORM_MAX,
+                                   GFX_GTTYPE_UNDEFINED,
+                                   0 } )
         , m_CachedDeviceId( -1 )
         , m_CachedPerfRevision( -1 )
     {
@@ -611,31 +614,6 @@ namespace MetricsDiscoveryInternal
     //     CDriverInterfaceLinuxPerf
     //
     // Method:
-    //     GetDeviceName
-    //
-    // Description:
-    //     Returns device name, e.g. "Intel HD 6000 Graphics Media Accelerator"
-    //
-    // Input:
-    //     int32_t     - device id
-    //
-    // Output:
-    //     const char* - device name
-    //
-    //////////////////////////////////////////////////////////////////////////////
-    const char* CDriverInterfaceLinuxPerf::GetDeviceName( int32_t deviceId )
-    {
-        const char* deviceName = gen_get_device_name( deviceId );
-
-        return ( deviceName ) ? deviceName : "";
-    }
-
-    //////////////////////////////////////////////////////////////////////////////
-    //
-    // Class:
-    //     CDriverInterfaceLinuxPerf
-    //
-    // Method:
     //     ForceSupportDisable
     //
     // Description:
@@ -698,10 +676,13 @@ namespace MetricsDiscoveryInternal
     {
         MD_CHECK_PTR_RET( out, CC_ERROR_INVALID_PARAMETER );
 
-        TCompletionCode     ret             = CC_OK;
-        GTDI_PLATFORM_INDEX instrPlatformId = GTDI_PLATFORM_MAX;
-        ret                                 = GetInstrPlatformId( &instrPlatformId );
+        TCompletionCode       ret             = CC_OK;
+        GTDI_PLATFORM_INDEX   instrPlatformId = GTDI_PLATFORM_MAX;
+        const TGfxDeviceInfo* gfxDeviceInfo   = NULL;
+
+        ret = GetGfxDeviceInfo( &gfxDeviceInfo );
         MD_CHECK_CC_RET( ret );
+        instrPlatformId = gfxDeviceInfo->PlatformIndex;
 
         switch( param )
         {
@@ -729,11 +710,11 @@ namespace MetricsDiscoveryInternal
 
             case GTDI_DEVICE_PARAM_DUALSUBSLICES_TOTAL_COUNT:
             {
-                if( instrPlatformId == GENERATION_TGL || instrPlatformId == GENERATION_DG1 )
+                if( instrPlatformId == GENERATION_TGL || instrPlatformId == GENERATION_DG1 || instrPlatformId == GENERATION_ADLP )
                 {
                     int32_t dualSubsliceMask = 0;
 
-                    ret = SendGetParamIoctl( m_DrmDeviceHandle, I915_PARAM_SUBSLICE_MASK, &dualSubsliceMask );
+                    ret = GetDualSubsliceMask( &dualSubsliceMask );
                     MD_CHECK_CC_RET( ret );
 
                     out->ValueType   = GTDI_DEVICE_PARAM_VALUE_TYPE_UINT32;
@@ -755,13 +736,15 @@ namespace MetricsDiscoveryInternal
 
             case GTDI_DEVICE_PARAM_SLICES_COUNT:
             {
-                if( instrPlatformId == GENERATION_TGL || instrPlatformId == GENERATION_DG1 )
+                if( instrPlatformId == GENERATION_TGL || instrPlatformId == GENERATION_DG1 || instrPlatformId == GENERATION_ADLP )
                 {
                     // Return value is a mask of enabled dual subslices
                     int32_t dualSubsliceMask = 0;
                     out->ValueUint32         = 0;
 
-                    ret = SendGetParamIoctl( m_DrmDeviceHandle, I915_PARAM_SUBSLICE_MASK, &dualSubsliceMask );
+                    ret = GetDualSubsliceMask( &dualSubsliceMask );
+                    MD_CHECK_CC_RET( ret );
+
                     for( int32_t i = 0; i < MD_MAX_DUALSLICE; ++i )
                     {
                         if( ( dualSubsliceMask >> MD_DUALSUBSLICE_PER_SLICE * i ) & 0x0F )
@@ -786,6 +769,27 @@ namespace MetricsDiscoveryInternal
                 break;
             }
 
+            case GTDI_DEVICE_PARAM_MAX_SLICE:
+            {
+                out->ValueType   = GTDI_DEVICE_PARAM_VALUE_TYPE_UINT32;
+                out->ValueUint32 = MD_MAX_SLICE;
+                break;
+            }
+
+            case GTDI_DEVICE_PARAM_MAX_SUBSLICE_PER_SLICE:
+            {
+                out->ValueType   = GTDI_DEVICE_PARAM_VALUE_TYPE_UINT32;
+                out->ValueUint32 = GetGtMaxSubslicePerSlice();
+                break;
+            }
+
+            case GTDI_DEVICE_PARAM_MAX_DUALSUBSLICE_PER_SLICE:
+            {
+                out->ValueType   = GTDI_DEVICE_PARAM_VALUE_TYPE_UINT32;
+                out->ValueUint32 = MD_MAX_DUALSUBSLICE_PER_SLICE;
+                break;
+            }
+
             case GTDI_DEVICE_PARAM_NUMBER_OF_RENDER_OUTPUT_UNITS:
             {
                 int32_t sliceMask = 0;
@@ -800,31 +804,21 @@ namespace MetricsDiscoveryInternal
 
             case GTDI_DEVICE_PARAM_EU_THREADS_COUNT:
             {
-                const gen_device_info* mesaDeviceInfo = NULL;
-
-                ret = GetMesaDeviceInfo( &mesaDeviceInfo );
-                MD_CHECK_CC_RET( ret );
-
                 out->ValueType   = GTDI_DEVICE_PARAM_VALUE_TYPE_UINT32;
-                out->ValueUint32 = mesaDeviceInfo->num_thread_per_eu;
+                out->ValueUint32 = gfxDeviceInfo->ThreadsPerEu;
                 break;
             }
 
             case GTDI_DEVICE_PARAM_NUMBER_OF_SHADING_UNITS:
             {
-                const gen_device_info* mesaDeviceInfo = NULL;
-
-                ret = GetMesaDeviceInfo( &mesaDeviceInfo );
-                MD_CHECK_CC_RET( ret );
-
                 out->ValueType   = GTDI_DEVICE_PARAM_VALUE_TYPE_UINT32;
-                out->ValueUint32 = MD_EU_SIMD_SIZE_PER_CLOCK * mesaDeviceInfo->num_thread_per_eu; // eu_simd_size_per_clock * euThreadCount
+                out->ValueUint32 = MD_EU_SIMD_SIZE_PER_CLOCK * gfxDeviceInfo->ThreadsPerEu; // eu_simd_size_per_clock * euThreadCount
                 break;
             }
 
             case GTDI_DEVICE_PARAM_SUBSLICES_MASK:
             {
-                if( instrPlatformId == GENERATION_TGL || instrPlatformId == GENERATION_DG1 )
+                if( instrPlatformId == GENERATION_TGL || instrPlatformId == GENERATION_DG1 || instrPlatformId == GENERATION_ADLP )
                 {
                     ret = CC_ERROR_NOT_SUPPORTED;
                 }
@@ -860,12 +854,13 @@ namespace MetricsDiscoveryInternal
             {
                 out->ValueType   = GTDI_DEVICE_PARAM_VALUE_TYPE_UINT64;
                 out->ValueUint64 = 0;
-                if( instrPlatformId == GENERATION_TGL || instrPlatformId == GENERATION_DG1 )
+
+                if( instrPlatformId == GENERATION_TGL || instrPlatformId == GENERATION_DG1 || instrPlatformId == GENERATION_ADLP )
                 {
                     // Return value is a mask of enabled dual subslices
                     int32_t dualSubsliceMask = 0;
 
-                    ret = SendGetParamIoctl( m_DrmDeviceHandle, I915_PARAM_SUBSLICE_MASK, &dualSubsliceMask );
+                    ret = GetDualSubsliceMask( &dualSubsliceMask );
                     MD_CHECK_CC_RET( ret );
                     out->ValueUint64 = 0;
 
@@ -889,13 +884,15 @@ namespace MetricsDiscoveryInternal
 
             case GTDI_DEVICE_PARAM_SLICES_MASK:
             {
-                if( instrPlatformId == GENERATION_TGL || instrPlatformId == GENERATION_DG1 )
+                if( instrPlatformId == GENERATION_TGL || instrPlatformId == GENERATION_DG1 || instrPlatformId == GENERATION_ADLP )
                 {
                     // Return value is a mask of enabled dual subslices
                     int32_t dualSubsliceMask = 0;
-                    out->ValueUint32         = 0;
 
-                    ret = SendGetParamIoctl( m_DrmDeviceHandle, I915_PARAM_SUBSLICE_MASK, &dualSubsliceMask );
+                    ret = GetDualSubsliceMask( &dualSubsliceMask );
+                    MD_CHECK_CC_RET( ret );
+                    out->ValueUint32 = 0;
+
                     for( int32_t i = 0; i < MD_MAX_DUALSLICE; ++i )
                     {
                         if( ( dualSubsliceMask >> ( MD_DUALSUBSLICE_PER_SLICE * i ) ) & 0x0F )
@@ -907,6 +904,7 @@ namespace MetricsDiscoveryInternal
                 else
                 {
                     ret = SendGetParamIoctl( m_DrmDeviceHandle, I915_PARAM_SLICE_MASK, out );
+                    MD_CHECK_CC_RET( ret );
                 }
 
                 break;
@@ -962,14 +960,9 @@ namespace MetricsDiscoveryInternal
 
             case GTDI_DEVICE_PARAM_GT_TYPE:
             {
-                const gen_device_info* mesaDeviceInfo = NULL;
-
-                ret = GetMesaDeviceInfo( &mesaDeviceInfo );
-                MD_CHECK_CC_RET( ret );
-
                 // Returning mapped GtType for compatibility reasons
                 out->ValueType   = GTDI_DEVICE_PARAM_VALUE_TYPE_UINT32;
-                out->ValueUint32 = (uint32_t) MapMesaToInstrGtType( mesaDeviceInfo->gt );
+                out->ValueUint32 = (uint32_t) gfxDeviceInfo->GtType;
                 break;
             }
 
@@ -2645,16 +2638,18 @@ namespace MetricsDiscoveryInternal
         }
 
         // Get platform ID
-        GTDI_PLATFORM_INDEX instrPlatformId = GTDI_PLATFORM_MAX;
-        if( GetInstrPlatformId( &instrPlatformId ) != CC_OK || instrPlatformId == GTDI_PLATFORM_MAX )
-        {
-            MD_LOG( LOG_ERROR, "ERROR: Could not get platform ID" );
-            return static_cast<uint32_t>( -1 );
-        }
+        const TGfxDeviceInfo* gfxDeviceInfo = NULL;
+        GetGfxDeviceInfo( &gfxDeviceInfo );
 
         // Perf requires different format for HSW
-        return ( instrPlatformId == GENERATION_HSW ) ? I915_OA_FORMAT_A45_B8_C8
-                                                     : I915_OA_FORMAT_A32u40_A4u32_B8_C8;
+
+        switch( gfxDeviceInfo->PlatformIndex )
+        {
+            case GENERATION_HSW:
+                return I915_OA_FORMAT_A45_B8_C8;
+            default:
+                return I915_OA_FORMAT_A32u40_A4u32_B8_C8;
+        }
     }
 
     //////////////////////////////////////////////////////////////////////////////
@@ -3102,39 +3097,63 @@ namespace MetricsDiscoveryInternal
     //     CDriverInterfaceLinuxPerf
     //
     // Method:
-    //     GetMesaDeviceInfo
+    //     GetGfxDeviceInfo
     //
     // Description:
-    //     Returns Mesa device info structure, based on DeviceId read from kernel.
-    //     Mesa device info is used for e.g. ChipsetId and Platform matching or
-    //     getting timestamp frequency.
-    //     Struct is obtained only once and cached for later use.
-    //
-    //     Files containing Mesa device info are compiled into MDAPI - Mesa doesn't
-    //     have any interface allowing querying this information.
+    //     Returns Gfx device info structure, based on device id.
+    //     Gfx device info is used for e.g. ChipsetId and Platform matching.
     //
     // Input:
-    //     int32_t                 drmFd          - drm file descriptor
-    //     const gen_device_info** mesaDeviceInfo - (OUT) Mesa device info structure
+    //     int32_t                 deviceId      - Device id
+    //     const TGfxDeviceInfo**  gfxDeviceInfo - (OUT) Gfx device info structure
     //
     // Output:
-    //     TCompletionCode                        - *CC_OK* means success
+    //     TCompletionCode                       - *CC_OK* means success
     //
     //////////////////////////////////////////////////////////////////////////////
-    TCompletionCode CDriverInterfaceLinuxPerf::GetMesaDeviceInfo( int32_t drmFd, gen_device_info* mesaDeviceInfo )
+    TCompletionCode CDriverInterfaceLinuxPerf::GetGfxDeviceInfo( int32_t deviceId, TGfxDeviceInfo* gfxDeviceInfo )
     {
-        if( drmFd == -1 || mesaDeviceInfo == nullptr )
+        MD_CHECK_PTR_RET( gfxDeviceInfo, CC_ERROR_INVALID_PARAMETER );
+        TCompletionCode ret = CC_ERROR_NOT_SUPPORTED;
+
+        if( platformIndexMap.find( deviceId ) != platformIndexMap.end() )
         {
-            return CC_ERROR_INVALID_PARAMETER;
+            gfxDeviceInfo->PlatformIndex = platformIndexMap[deviceId].PlatformIndex;
+            gfxDeviceInfo->GtType        = platformIndexMap[deviceId].GtType;
+            if( threadsPerEuMap.find( gfxDeviceInfo->PlatformIndex ) != threadsPerEuMap.end() )
+            {
+                gfxDeviceInfo->ThreadsPerEu = threadsPerEuMap[gfxDeviceInfo->PlatformIndex];
+                ret                         = CC_OK;
+            }
         }
 
-        if( !gen_get_device_info_from_fd( drmFd, mesaDeviceInfo ) )
-        {
-            MD_LOG( LOG_ERROR, "ERROR: DeviceId not supported" );
-            return CC_ERROR_NOT_SUPPORTED;
-        }
+        return ret;
+    }
 
-        return CC_OK;
+    //////////////////////////////////////////////////////////////////////////////
+    //
+    // Class:
+    //     CDriverInterfaceLinuxPerf
+    //
+    // Method:
+    //     GetDualSubsliceMask
+    //
+    // Description:
+    //     Allows to obtain DualSubsliceMask value per sub device.
+    //
+    // Input:
+    //     int32_t*        dualSubsliceMask - [out] data
+    //
+    // Output:
+    //     TCompletionCode                  - *CC_OK* means success
+    //
+    //////////////////////////////////////////////////////////////////////////////
+    TCompletionCode CDriverInterfaceLinuxPerf::GetDualSubsliceMask( int32_t* dualSubsliceMask )
+    {
+        TCompletionCode ret = CC_OK;
+        ret                 = SendGetParamIoctl( m_DrmDeviceHandle, I915_PARAM_SUBSLICE_MASK, dualSubsliceMask );
+        MD_CHECK_CC_RET( ret );
+        return ret;
     }
 
     //////////////////////////////////////////////////////////////////////////////
@@ -3146,20 +3165,20 @@ namespace MetricsDiscoveryInternal
     //     GetAdapterType
     //
     // Description:
-    //     Returns adapter type based on mesa device info.
+    //     Returns adapter type based on gfx device info.
     //     It can be better to use information about the device type directly from i915 driver.
     //     But now 'is_dgfx' property is not available via standard interface:
     //     https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/tree/drivers/gpu/drm/i915/intel_device_info.h#n110
     // Input:
-    //     const gen_device_info** mesaDeviceInfo - (OUT) Mesa device info structure
+    //     const TGfxDeviceInfo* TGfxDeviceInfo - Gfx device info structure
     //
     // Output:
     //     TAdapterType                           - Discrete or integrated.
     //
     //////////////////////////////////////////////////////////////////////////////
-    TAdapterType CDriverInterfaceLinuxPerf::GetAdapterType( const gen_device_info* mesaDeviceInfo )
+    TAdapterType CDriverInterfaceLinuxPerf::GetAdapterType( const TGfxDeviceInfo* gfxDeviceInfo )
     {
-        return ( mesaDeviceInfo->is_dg1 )
+        return ( gfxDeviceInfo->PlatformIndex == GENERATION_DG1 )
             ? ADAPTER_TYPE_DISCRETE
             : ADAPTER_TYPE_INTEGRATED;
     }
@@ -3170,34 +3189,39 @@ namespace MetricsDiscoveryInternal
     //     CDriverInterfaceLinuxPerf
     //
     // Method:
-    //     GetMesaDeviceInfo
+    //     GetGfxDeviceInfo
     //
     // Description:
-    //     Returns Mesa device info structure, based on DeviceId read from kernel.
-    //     Mesa device info is used for e.g. ChipsetId and Platform matching or
+    //     Returns gfx device info structure, based on DeviceId read from kernel.
+    //     Gfx device info is used for e.g. ChipsetId and Platform matching or
     //     getting timestamp frequency.
     //     Struct is obtained only once and cached for later use.
     //
-    //     Files containing Mesa device info are compiled into MDAPI - Mesa doesn't
-    //     have any interface allowing querying this information.
-    //
     // Input:
-    //     const gen_device_info** mesaDeviceInfo - (OUT) Mesa device info structure
+    //     const gfx_device_info** gfxDeviceInfo - (OUT) gfx device info structure
     //
     // Output:
     //     TCompletionCode                        - *CC_OK* means success
     //
     //////////////////////////////////////////////////////////////////////////////
-    TCompletionCode CDriverInterfaceLinuxPerf::GetMesaDeviceInfo( const gen_device_info** mesaDeviceInfo )
+    TCompletionCode CDriverInterfaceLinuxPerf::GetGfxDeviceInfo( const TGfxDeviceInfo** gfxDeviceInfo )
     {
-        // Get MesaDeviceInfo if not cached already
-        if( m_CachedMesaDeviceInfo.gen == 0 )
+        // Get gfxDeviceInfo if not cached already
+        if( m_CachedGfxDeviceInfo.PlatformIndex == GTDI_PLATFORM_MAX )
         {
-            TCompletionCode ret = GetMesaDeviceInfo( m_DrmDeviceHandle, &m_CachedMesaDeviceInfo );
+            int32_t         deviceId = 0;
+            TCompletionCode ret      = GetDeviceId( &deviceId );
+
             MD_CHECK_CC_RET( ret );
+
+            if( GetGfxDeviceInfo( deviceId, &m_CachedGfxDeviceInfo ) != CC_OK )
+            {
+                return CC_ERROR_NOT_SUPPORTED;
+            }
         }
 
-        *mesaDeviceInfo = &m_CachedMesaDeviceInfo;
+        *gfxDeviceInfo = &m_CachedGfxDeviceInfo;
+
         return CC_OK;
     }
 
@@ -3236,39 +3260,6 @@ namespace MetricsDiscoveryInternal
 
         *deviceId = m_CachedDeviceId;
         return ret;
-    }
-
-    //////////////////////////////////////////////////////////////////////////////
-    //
-    // Class:
-    //     CDriverInterfaceLinuxPerf
-    //
-    // Method:
-    //     GetInstrPlatformId
-    //
-    // Description:
-    //     Returns current platform ID in instrumentation format.
-    //
-    // Input:
-    //     GTDI_PLATFORM_INDEX* instrPlatformId - (OUT) platform ID in instrumentation format
-    //
-    // Output:
-    //     TCompletionCode                      - *CC_OK* means success
-    //
-    //////////////////////////////////////////////////////////////////////////////
-    TCompletionCode CDriverInterfaceLinuxPerf::GetInstrPlatformId( GTDI_PLATFORM_INDEX* instrPlatformId )
-    {
-        MD_CHECK_PTR_RET( instrPlatformId, CC_ERROR_INVALID_PARAMETER );
-
-        const gen_device_info* mesaDeviceInfo = NULL;
-
-        TCompletionCode ret = GetMesaDeviceInfo( &mesaDeviceInfo );
-        MD_CHECK_CC_RET( ret );
-
-        ret = MapMesaToInstrPlatform( mesaDeviceInfo, instrPlatformId );
-        MD_CHECK_CC_RET( ret );
-
-        return CC_OK;
     }
 
     //////////////////////////////////////////////////////////////////////////////
@@ -3435,37 +3426,22 @@ namespace MetricsDiscoveryInternal
     TCompletionCode CDriverInterfaceLinuxPerf::GetGpuTimestampFrequency( uint64_t* gpuTimestampFrequency )
     {
         MD_CHECK_PTR_RET( gpuTimestampFrequency, CC_ERROR_INVALID_PARAMETER );
-        const gen_device_info* mesaDeviceInfo = NULL;
-        int32_t                freq           = 0;
-
-        // 1. Get MesaDeviceInfo
-        TCompletionCode ret = GetMesaDeviceInfo( &mesaDeviceInfo );
-        MD_CHECK_CC_RET( ret );
-
-        // 2. Get TimestampFrequency and pass it to the output
+        int32_t freq = 0;
 
         // Try to get the current timestampFrequency value from DRM directly
         // for the accurate result
-        ret = SendGetParamIoctl( m_DrmDeviceHandle, I915_PARAM_CS_TIMESTAMP_FREQUENCY, &freq );
-        if( ret == CC_OK )
+        auto result = SendGetParamIoctl( m_DrmDeviceHandle, I915_PARAM_CS_TIMESTAMP_FREQUENCY, &freq );
+        if( result == CC_OK )
         {
             *gpuTimestampFrequency = static_cast<uint64_t>( freq );
         }
-        else if( mesaDeviceInfo->gen < 10 )
+        else
         {
-            if( mesaDeviceInfo->timestamp_frequency )
-            {
-                *gpuTimestampFrequency = mesaDeviceInfo->timestamp_frequency;
-            }
-            else
-            {
-                MD_LOG( LOG_WARNING, "WARNING: 0 GPU Timestamp Frequency, default value used" );
-                *gpuTimestampFrequency = MD_DEFAULT_GPU_TIMESTAMP_FREQUENCY;
-            }
-            ret = CC_OK;
+            MD_LOG( LOG_WARNING, "WARNING: 0 GPU Timestamp Frequency, default value used" );
+            *gpuTimestampFrequency = MD_DEFAULT_GPU_TIMESTAMP_FREQUENCY;
         }
 
-        return ret;
+        return result;
     }
 
     //////////////////////////////////////////////////////////////////////////////
@@ -3641,15 +3617,15 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     uint32_t CDriverInterfaceLinuxPerf::GetGtMaxSubslicePerSlice()
     {
-        GTDI_PLATFORM_INDEX instrPlatformId = GTDI_PLATFORM_MAX;
+        const TGfxDeviceInfo* gfxDeviceInfo = NULL;
+        auto                  result        = GetGfxDeviceInfo( &gfxDeviceInfo );
 
-        TCompletionCode result = GetInstrPlatformId( &instrPlatformId );
         if( result != CC_OK )
         {
-            MD_LOG( LOG_WARNING, "WARNING: Failed to get platform ID" );
+            MD_LOG( LOG_ERROR, "WARNING: Failed to get platform ID" );
         }
 
-        switch( instrPlatformId )
+        switch( gfxDeviceInfo->PlatformIndex )
         {
             case GENERATION_HSW:
             case GENERATION_BDW:
@@ -3662,138 +3638,14 @@ namespace MetricsDiscoveryInternal
             case GENERATION_ICL:
             case GENERATION_EHL:
                 return MD_MAX_SUBSLICE_PER_SLICE;
+            case GENERATION_TGL:
+            case GENERATION_DG1:
+            case GENERATION_RKL:
+            case GENERATION_ADLP:
+                return MD_MAX_DUALSUBSLICE_PER_SLICE * MD_MAX_SUBSLICE_PER_DSS;
             default:
                 MD_LOG( LOG_WARNING, "WARNING: Unsupported platform, default MaxSubslicePerSlice used" );
                 return MD_MAX_SUBSLICE_PER_SLICE;
-        }
-    }
-
-    //////////////////////////////////////////////////////////////////////////////
-    //
-    // Class:
-    //     CDriverInterfaceLinuxPerf
-    //
-    // Method:
-    //     MapMesaToInstrPlatform
-    //
-    // Description:
-    //     Maps Mesa platform information to the instrumentation format.
-    //
-    // Input:
-    //     gen_device_info&     mesaDeviceInfo     - Mesa device info struct obtained from GetMesaDeviceInfo()
-    //     GTDI_PLATFORM_INDEX* outInstrPlatformId - (OUT) platform ID in instrumentation format
-    //
-    // Output:
-    //     TCompletionCode                         - *CC_OK* means success
-    //
-    //////////////////////////////////////////////////////////////////////////////
-    TCompletionCode CDriverInterfaceLinuxPerf::MapMesaToInstrPlatform( const gen_device_info* mesaDeviceInfo, GTDI_PLATFORM_INDEX* outInstrPlatformId )
-    {
-        MD_CHECK_PTR_RET( mesaDeviceInfo, CC_ERROR_INVALID_PARAMETER );
-        MD_CHECK_PTR_RET( outInstrPlatformId, CC_ERROR_INVALID_PARAMETER );
-
-        TCompletionCode ret = CC_OK;
-
-        if( mesaDeviceInfo->is_haswell )
-        {
-            *outInstrPlatformId = GENERATION_HSW;
-        }
-        else if( mesaDeviceInfo->is_broadwell )
-        {
-            *outInstrPlatformId = GENERATION_BDW;
-        }
-        else if( mesaDeviceInfo->is_skylake )
-        {
-            *outInstrPlatformId = GENERATION_SKL;
-        }
-        else if( mesaDeviceInfo->is_broxton )
-        {
-            *outInstrPlatformId = GENERATION_BXT;
-        }
-        else if( mesaDeviceInfo->is_kabylake )
-        {
-            *outInstrPlatformId = GENERATION_KBL;
-        }
-        else if( mesaDeviceInfo->is_coffeelake )
-        {
-            *outInstrPlatformId = GENERATION_CFL;
-        }
-        else if( mesaDeviceInfo->is_geminilake )
-        {
-            *outInstrPlatformId = GENERATION_GLK;
-        }
-        else if( mesaDeviceInfo->gen == 11 ) // WA for lack of 'is_icelake' variable
-        {
-            // Gen11 devices have to be identified by simulator_id
-            if( mesaDeviceInfo->simulator_id == 28 )
-            {
-                *outInstrPlatformId = GENERATION_EHL;
-            }
-            else
-            {
-                *outInstrPlatformId = GENERATION_ICL;
-            }
-        }
-        else if( mesaDeviceInfo->gen == 12 )
-        {
-            if( mesaDeviceInfo->is_dg1 )
-            {
-                *outInstrPlatformId = GENERATION_DG1;
-            }
-            else if( mesaDeviceInfo->is_rkl )
-            {
-                *outInstrPlatformId = GENERATION_RKL;
-            }
-            else
-            {
-                *outInstrPlatformId = GENERATION_TGL;
-            }
-        }
-        else
-        {
-            MD_LOG( LOG_ERROR, "ERROR: Unrecognized platform" );
-            ret = CC_ERROR_NOT_SUPPORTED;
-        }
-
-        return ret;
-    }
-
-    //////////////////////////////////////////////////////////////////////////////
-    //
-    // Class:
-    //     CDriverInterfaceLinuxPerf
-    //
-    // Method:
-    //     MapMesaToInstrGtType
-    //
-    // Description:
-    //     Maps GT type format provided by Mesa device info to GT type enum used by
-    //     Intel driver (different OSes compatibility reasons).
-    //
-    // Input:
-    //     int32_t mesaGtType - GT type provided by Mesa (simple integer value, e.g. 1 = GT1)
-    //
-    // Output:
-    //     TGfxGtType         - graphics GT type, used by Intel driver
-    //
-    //////////////////////////////////////////////////////////////////////////////
-    TGfxGtType CDriverInterfaceLinuxPerf::MapMesaToInstrGtType( int32_t mesaGtType )
-    {
-        // Mesa doesn't support reporting GtTypes like 0.5, 1.75, it always rounds down, so GT1_75 = GT1
-        switch( mesaGtType )
-        {
-            case 0:
-                return GFX_GTTYPE_GT0;
-            case 1:
-                return GFX_GTTYPE_GT1;
-            case 2:
-                return GFX_GTTYPE_GT2;
-            case 3:
-                return GFX_GTTYPE_GT3;
-            case 4:
-                return GFX_GTTYPE_GT4;
-            default:
-                return GFX_GTTYPE_UNDEFINED;
         }
     }
 

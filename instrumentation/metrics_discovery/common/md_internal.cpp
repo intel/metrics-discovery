@@ -3870,7 +3870,7 @@ namespace MetricsDiscoveryInternal
         }
         else
         {
-            MD_LOG( LOG_DEBUG, "Metrics device file is not valid" );
+            MD_LOG( LOG_ERROR, "Metrics device file is not valid" );
             retVal = CC_ERROR_INVALID_PARAMETER;
         }
         fclose( metricFile );
@@ -9525,6 +9525,25 @@ namespace MetricsDiscoveryInternal
                     algorithmCheck++;
                     break;
 
+                case EQUATION_ELEM_LOCAL_COUNTER_SYMBOL:
+                    // Push 0 to stack for unavailable unpacked mask symbol.
+                    if( element->SymbolName != nullptr
+                        && strstr( element->SymbolName, "GtSlice" ) != nullptr
+                        && strstr( element->SymbolName, "Mask" ) == nullptr )
+                    {
+                        qwordValue = 0;
+                        equationStack.PushBack( qwordValue );
+                        algorithmCheck++;
+                    }
+                    else
+                    {
+                        MD_LOG( LOG_DEBUG, "Not allowed equation element type in availability equation: %u", element->Type );
+                        MD_ASSERT( false );
+                        equationStack.Clear();
+                        return false;
+                    }
+                    break;
+
                 case EQUATION_ELEM_GLOBAL_SYMBOL:
                 {
                     TTypedValue_1_0* pValue = m_device->GetGlobalSymbolValueByName( element->SymbolName );
@@ -9540,6 +9559,11 @@ namespace MetricsDiscoveryInternal
                     else if( pValue && ( pValue->ValueType == VALUE_TYPE_BOOL ) )
                     {
                         qwordValue = (uint64_t) pValue->ValueBool;
+                    }
+                    else if( pValue && ( pValue->ValueType == VALUE_TYPE_BYTEARRAY ) )
+                    {
+                        // TODO: should be improved (the array can be bigger than 64bits)
+                        qwordValue = *( reinterpret_cast<uint64_t*>( pValue->ValueByteArray->Data ) );
                     }
                     else
                     {
@@ -10093,6 +10117,13 @@ namespace MetricsDiscoveryInternal
             anElement.Element_1_0.ImmediateUInt64 = strtoull( element, NULL, 10 );
             return AddEquationElement( &anElement );
         }
+        else if( strncmp( element, "mask$", sizeof( "mask$" ) - 1 ) == 0 ) //assume hex integer 64
+        {
+            CEquationElementInternal anElement;
+            anElement.Element_1_0.Type = EQUATION_ELEM_MASK;
+            anElement.Element_1_0.Mask = GetByteArrayFromMask( element + sizeof( "mask$" ) );
+            return AddEquationElement( &anElement );
+        }
 
         MD_LOG( LOG_ERROR, "Unknown equation element: %s", element );
         return false;
@@ -10145,8 +10176,16 @@ namespace MetricsDiscoveryInternal
         : m_symbolVector( NULL )
         , m_metricsDevice( metricsDevice )
         , m_driverInterface( driverInterface )
+        , m_maxSlice( 0 )
+        , m_maxSubslicePerSlice( 0 )
+        , m_maxDualSubslicePerSlice( 0 )
     {
         m_symbolVector = new( std::nothrow ) Vector<TGlobalSymbol*>( SYMBOLS_VECTOR_INCREASE );
+
+        if( DetectMaxSlicesInfo() != CC_OK )
+        {
+            MD_LOG( LOG_ERROR, "Cannot detect max slices, subslices per slice or dual subslices per slice" );
+        }
     }
 
     //////////////////////////////////////////////////////////////////////////////
@@ -10171,6 +10210,11 @@ namespace MetricsDiscoveryInternal
             if( symbol->symbol_1_0.SymbolTypedValue.ValueType == VALUE_TYPE_CSTRING )
             {
                 MD_SAFE_DELETE_ARRAY( symbol->symbol_1_0.SymbolTypedValue.ValueCString );
+            }
+            else if( symbol->symbol_1_0.SymbolTypedValue.ValueType == VALUE_TYPE_BYTEARRAY )
+            {
+                MD_SAFE_DELETE_ARRAY( symbol->symbol_1_0.SymbolTypedValue.ValueByteArray->Data );
+                MD_SAFE_DELETE( symbol->symbol_1_0.SymbolTypedValue.ValueByteArray );
             }
         }
 
@@ -10317,11 +10361,24 @@ namespace MetricsDiscoveryInternal
                 ? typedValue.ValueCString // CString is already copied
                 : GetCopiedCString( typedValue.ValueCString );
         }
+        else if( typedValue.ValueType == VALUE_TYPE_BYTEARRAY )
+        {
+            symbol->symbol_1_0.SymbolTypedValue.ValueType      = typedValue.ValueType;
+            symbol->symbol_1_0.SymbolTypedValue.ValueByteArray = ( symbolType == SYMBOL_TYPE_DETECT )
+                ? typedValue.ValueByteArray // ByteArray is already copied
+                : GetCopiedByteArray( typedValue.ValueByteArray );
+        }
         else
         {
             symbol->symbol_1_0.SymbolTypedValue = typedValue;
         }
         m_symbolVector->PushBack( symbol );
+
+        if( typedValue.ValueType == VALUE_TYPE_BYTEARRAY )
+        {
+            // check if this ByteArray is a mask
+            return UnpackMask( symbol );
+        }
 
         MD_LOG( LOG_INFO, "Symbol added successfully." );
 
@@ -10372,7 +10429,6 @@ namespace MetricsDiscoveryInternal
         }
         else if( strcmp( name, "EuSubslicesPerSliceCount" ) == 0 )
         {
-            // not supported for XeHP_SDV, removed all platforms for consitency
             return CC_ERROR_NOT_SUPPORTED;
         }
         else if( strcmp( name, "EuDualSubslicesTotalCount" ) == 0 )
@@ -10398,19 +10454,43 @@ namespace MetricsDiscoveryInternal
         {
             ret = m_driverInterface.SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_SLICES_MASK, &out );
             MD_CHECK_CC_RET( ret );
-            typedValue->ValueUInt32 = out.ValueUint32;
+            if( typedValue->ValueType == VALUE_TYPE_BYTEARRAY )
+            {
+                TByteArray_1_0 byteArray   = { sizeof( out.ValueByteArray ), out.ValueByteArray };
+                typedValue->ValueByteArray = GetCopiedByteArray( &byteArray );
+            }
+            else
+            {
+                typedValue->ValueUInt32 = out.ValueUint32;
+            }
         }
         else if( ( strcmp( name, "SubsliceMask" ) == 0 ) || ( strcmp( name, "GtSubsliceMask" ) == 0 ) )
         {
             ret = m_driverInterface.SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_SUBSLICES_MASK, &out );
             MD_CHECK_CC_RET( ret );
-            typedValue->ValueUInt64 = out.ValueUint64;
+            if( typedValue->ValueType == VALUE_TYPE_BYTEARRAY )
+            {
+                TByteArray_1_0 byteArray   = { sizeof( out.ValueByteArray ), out.ValueByteArray };
+                typedValue->ValueByteArray = GetCopiedByteArray( &byteArray );
+            }
+            else
+            {
+                typedValue->ValueUInt64 = out.ValueUint64;
+            }
         }
         else if( ( strcmp( name, "DualSubsliceMask" ) == 0 ) || ( strcmp( name, "GtDualSubsliceMask" ) == 0 ) )
         {
             ret = m_driverInterface.SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_DUALSUBSLICES_MASK, &out );
             MD_CHECK_CC_RET( ret );
-            typedValue->ValueUInt64 = out.ValueUint64;
+            if( typedValue->ValueType == VALUE_TYPE_BYTEARRAY )
+            {
+                TByteArray_1_0 byteArray   = { sizeof( out.ValueByteArray ), out.ValueByteArray };
+                typedValue->ValueByteArray = GetCopiedByteArray( &byteArray );
+            }
+            else
+            {
+                typedValue->ValueUInt64 = out.ValueUint64;
+            }
         }
 
         else if( strcmp( name, "SamplersTotalCount" ) == 0 )
@@ -10757,6 +10837,40 @@ namespace MetricsDiscoveryInternal
     //     CSymbolSet
     //
     // Method:
+    //     AddSymbolBYTEARRAY
+    //
+    // Description:
+    //     Adds byte array symbol to the symbol set.
+    //
+    // Input:
+    //     const char * name       - symbol name
+    //     TByteArray_1_0 * value  - symbol value
+    //     TSymbolType symbolType  - symbol type
+    //
+    // Output:
+    //     TCompletionCode         - result of the operation
+    //
+    //////////////////////////////////////////////////////////////////////////////
+    TCompletionCode CSymbolSet::AddSymbolBYTEARRAY( const char* name, TByteArray_1_0* value, TSymbolType symbolType )
+    {
+        TCompletionCode ret        = CC_OK;
+        TTypedValue_1_0 typedValue = {};
+
+        typedValue.ValueType      = VALUE_TYPE_BYTEARRAY;
+        typedValue.ValueByteArray = value;
+
+        ret = AddSymbol( name, typedValue, symbolType );
+
+        MD_CHECK_CC_MSG( ret, "Failed to add global symbol: %s, ret: %d", name, ret );
+        return ret;
+    }
+
+    //////////////////////////////////////////////////////////////////////////////
+    //
+    // Class:
+    //     CSymbolSet
+    //
+    // Method:
     //     WriteSymbolSetToFile
     //
     // Description:
@@ -10865,6 +10979,133 @@ namespace MetricsDiscoveryInternal
     bool CSymbolSet::IsPavpDisabled( uint32_t capabilities )
     {
         return ( capabilities & GTDI_CAPABILITY_PAVP_DISABLED ) > 0;
+    }
+
+    ///////////////////////////////////////////////////////////////////////////////
+    //
+    // Class:
+    //     CSymbolSet
+    //
+    // Method:
+    //     UnpackMask
+    //
+    // Description:
+    //     Generate a separate global symbol for each instance from the mask
+    //
+    // Input:
+    //     const TGlobalSymbol* symbol  - global symbol handle
+    //
+    // Output:
+    //     TCompletionCode  - result of the operation
+    //
+    ///////////////////////////////////////////////////////////////////////////////
+    TCompletionCode CSymbolSet::UnpackMask( const TGlobalSymbol* symbol )
+    {
+        const char*     name      = symbol->symbol_1_0.SymbolName;
+        uint8_t*        mask      = symbol->symbol_1_0.SymbolTypedValue.ValueByteArray->Data;
+        TTypedValue_1_0 boolValue = { VALUE_TYPE_BOOL, true };
+
+        // Unpack mask
+        if( strcmp( name, "GtSliceMask" ) == 0 )
+        {
+            for( uint32_t i = 0; i < m_maxSlice; i++ )
+            {
+                uint32_t currentByte = i / MD_BITS_PER_BYTE;
+                uint32_t currentBit  = i % MD_BITS_PER_BYTE;
+
+                if( mask[currentByte] & MD_BIT( currentBit ) )
+                {
+                    std::string dynamicSymbolName = "GtSlice" + std::to_string( i );
+                    AddSymbol( dynamicSymbolName.c_str(), boolValue, SYMBOL_TYPE_IMMEDIATE );
+                }
+            }
+        }
+        else if( strcmp( name, "GtSubsliceMask" ) == 0 )
+        {
+            for( uint32_t i = 0; i < m_maxSlice; i++ )
+            {
+                for( uint32_t j = 0; j < m_maxSubslicePerSlice; j++ )
+                {
+                    uint32_t currentByte = ( i * m_maxSubslicePerSlice + j ) / MD_BITS_PER_BYTE;
+                    uint32_t currentBit  = ( i * m_maxSubslicePerSlice + j ) % MD_BITS_PER_BYTE;
+
+                    if( mask[currentByte] & MD_BIT( currentBit ) )
+                    {
+                        std::string dynamicSymbolName = "GtSlice" + std::to_string( i ) + "Subslice" + std::to_string( j );
+                        AddSymbol( dynamicSymbolName.c_str(), boolValue, SYMBOL_TYPE_IMMEDIATE );
+                    }
+                }
+            }
+        }
+        else if( strcmp( name, "GtDualSubsliceMask" ) == 0 )
+        {
+            TTypedValue_1_0 activeDualSubsliceForHalfSlices = { VALUE_TYPE_UINT32, 0 };
+            TPlatformType   platformType                    = m_metricsDevice.GetPlatformType();
+            uint32_t        halfOfAvailableSlices           = m_maxSlice / 2;
+
+            for( uint32_t i = 0; i < m_maxSlice; i++ )
+            {
+                for( uint32_t j = 0; j < m_maxDualSubslicePerSlice; j++ )
+                {
+                    uint32_t currentByte = ( i * m_maxDualSubslicePerSlice + j ) / MD_BITS_PER_BYTE;
+                    uint32_t currentBit  = ( i * m_maxDualSubslicePerSlice + j ) % MD_BITS_PER_BYTE;
+
+                    if( mask[currentByte] & MD_BIT( currentBit ) )
+                    {
+                        std::string dynamicSymbolName = "GtSlice" + std::to_string( i ) + "DualSubslice" + std::to_string( j );
+                        AddSymbol( dynamicSymbolName.c_str(), boolValue, SYMBOL_TYPE_IMMEDIATE );
+
+                        // Count active dual subslices for a half of available slices
+                        if( i < halfOfAvailableSlices )
+                        {
+                            ++activeDualSubsliceForHalfSlices.ValueUInt32;
+                        }
+                    }
+                }
+            }
+        }
+        else
+        {
+            MD_LOG( LOG_WARNING, "%s - unknown mask, cannot unpack", name );
+        }
+
+        return CC_OK;
+    }
+
+    ///////////////////////////////////////////////////////////////////////////////
+    //
+    // Class:
+    //     CSymbolSet
+    //
+    // Method:
+    //     DetectMaxSlicesInfo
+    //
+    // Description:
+    //     Gets information about max slices, max subslices per slice and
+    //     max dual subslices per slice sending escapes to KMD.
+    //
+    // Output:
+    //     TCompletionCode - result of the operation
+    //
+    ///////////////////////////////////////////////////////////////////////////////
+    TCompletionCode CSymbolSet::DetectMaxSlicesInfo()
+    {
+        TCompletionCode           ret = CC_OK;
+        GTDIDeviceInfoParamExtOut out = {};
+
+        ret = m_driverInterface.SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_MAX_SLICE, &out );
+        MD_CHECK_CC_RET( ret )
+        m_maxSlice = out.ValueUint32;
+
+        ret = m_driverInterface.SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_MAX_SUBSLICE_PER_SLICE, &out );
+        MD_CHECK_CC_RET( ret )
+        m_maxSubslicePerSlice = out.ValueUint32;
+
+        ret = m_driverInterface.SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_MAX_DUALSUBSLICE_PER_SLICE, &out );
+        MD_CHECK_CC_RET( ret )
+        m_maxDualSubslicePerSlice = out.ValueUint32;
+
+        return CC_OK;
     }
 
 } // namespace MetricsDiscoveryInternal

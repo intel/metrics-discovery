@@ -101,6 +101,11 @@ using namespace MetricsDiscoveryInternal;
     TCompletionCode CreateMetricTreeDG1_PipelineStatistics(CMetricsDevice* metricsDevice, CConcurrentGroup* concurrentGroup);
 #endif
 
+#if MD_INCLUDE_ADLP_METRICS
+#define MD_CALL_ADLP_METRICS 1
+    TCompletionCode CreateMetricTreeADLP_PipelineStatistics(CMetricsDevice* metricsDevice, CConcurrentGroup* concurrentGroup);
+#endif
+
 #if MD_INCLUDE_HSW_METRICS
 #define MD_CALL_HSW_METRICS 1
     TCompletionCode CreateMetricTreeHSW_OA(CMetricsDevice* metricsDevice, CConcurrentGroup* concurrentGroup);
@@ -186,6 +191,11 @@ using namespace MetricsDiscoveryInternal;
     TCompletionCode CreateMetricTreeRKL_OA(CMetricsDevice* metricsDevice, CConcurrentGroup* concurrentGroup);
 #endif
 
+#if MD_INCLUDE_ADLP_METRICS
+#define MD_CALL_ADLP_METRICS 1
+    TCompletionCode CreateMetricTreeADLP_OA(CMetricsDevice* metricsDevice, CConcurrentGroup* concurrentGroup);
+#endif
+
 
 TCompletionCode AddGlobalSymbols( CSymbolSet* globalSymbolSet )
 {
@@ -208,6 +218,12 @@ TCompletionCode AddGlobalSymbols( CSymbolSet* globalSymbolSet )
     globalSymbolSet->AddSymbolUINT64( "SubsliceMask", 0x1FF, SYMBOL_TYPE_DETECT );
 
     globalSymbolSet->AddSymbolUINT64( "DualSubsliceMask", 0x0, SYMBOL_TYPE_DETECT );
+
+    globalSymbolSet->AddSymbolBYTEARRAY( "GtSliceMask", NULL, SYMBOL_TYPE_DETECT );
+
+    globalSymbolSet->AddSymbolBYTEARRAY( "GtSubsliceMask", NULL, SYMBOL_TYPE_DETECT );
+
+    globalSymbolSet->AddSymbolBYTEARRAY( "GtDualSubsliceMask", NULL, SYMBOL_TYPE_DETECT );
 
     globalSymbolSet->AddSymbolUINT32( "SamplersTotalCount", 6, SYMBOL_TYPE_DETECT );
 
@@ -423,6 +439,10 @@ TCompletionCode CreateMetricTree( CMetricsDevice* metricsDevice )
     MD_CHECK_CC( CreateMetricTreeDG1_PipelineStatistics(metricsDevice, concurrentGroup) );
 #endif
 
+#if MD_CALL_ADLP_METRICS
+    MD_CHECK_CC( CreateMetricTreeADLP_PipelineStatistics(metricsDevice, concurrentGroup) );
+#endif
+
     concurrentGroup = metricsDevice->AddConcurrentGroup( "OA", "OA Unit Metrics", MEASUREMENT_TYPE_DELTA_QUERY|MEASUREMENT_TYPE_SNAPSHOT_IO );
     MD_CHECK_PTR( concurrentGroup );
     
@@ -493,6 +513,10 @@ TCompletionCode CreateMetricTree( CMetricsDevice* metricsDevice )
 
 #if MD_CALL_RKL_METRICS
     MD_CHECK_CC( CreateMetricTreeRKL_OA(metricsDevice, concurrentGroup) );
+#endif
+
+#if MD_CALL_ADLP_METRICS
+    MD_CHECK_CC( CreateMetricTreeADLP_OA(metricsDevice, concurrentGroup) );
 #endif
 
 

@@ -42,7 +42,7 @@
 // Combines major and minor into one, comparable 64bit value.
 //////////////////////////////////////////////////////////////////////////////////
 #define MD_API_VERSION_COMBINE_MAJOR_MINOR( version ) \
-    ( ( uint64_t )( version ).MajorNumber << 32 | ( uint64_t )( version ).MinorNumber )
+    ( (uint64_t) ( version ).MajorNumber << 32 | (uint64_t) ( version ).MinorNumber )
 
 //////////////////////////////////////////////////////////////////////////////////
 // Macro to check required API version.
@@ -54,7 +54,7 @@
 //////////////////////////////////////////////////////////////////////////////////
 // API build number:
 //////////////////////////////////////////////////////////////////////////////////
-#define MD_API_BUILD_NUMBER_CURRENT 140
+#define MD_API_BUILD_NUMBER_CURRENT 141
 
 namespace MetricsDiscovery
 {
@@ -167,6 +167,7 @@ namespace MetricsDiscovery
         VALUE_TYPE_FLOAT,
         VALUE_TYPE_BOOL,
         VALUE_TYPE_CSTRING,
+        VALUE_TYPE_BYTEARRAY,
         // ...
         VALUE_TYPE_LAST,
     } TValueType;
@@ -195,9 +196,10 @@ namespace MetricsDiscovery
                 uint32_t Low;
                 uint32_t High;
             } ValueUInt64Fields;
-            float ValueFloat;
-            bool  ValueBool;
-            char* ValueCString;
+            float           ValueFloat;
+            bool            ValueBool;
+            char*           ValueCString;
+            TByteArray_1_0* ValueByteArray; // Dynamicaly allocated
         };
     } TTypedValue_1_0;
 
@@ -746,7 +748,7 @@ namespace MetricsDiscovery
         EQUATION_ELEM_INFORMATION_SYMBOL,        // Defined by i$"SymbolName", refers to information value type only
         EQUATION_ELEM_STD_NORM_GPU_DURATION,     // Action is $Self $GpuCoreClocks FDIV 100 FMUL
         EQUATION_ELEM_STD_NORM_EU_AGGR_DURATION, // Action is $Self $GpuCoreClocks $EuCoresTotalCount UMUL FDIV 100 FMUL
-
+        EQUATION_ELEM_MASK,                      //
         EQUATION_ELEM_LAST_1_0
 
     } TEquationElementType;
@@ -808,6 +810,7 @@ namespace MetricsDiscovery
         {
             uint64_t           ImmediateUInt64;
             float              ImmediateFloat;
+            TByteArray_1_0     Mask;
             TEquationOperation Operation;
             TReadParams_1_0    ReadParams;
         };

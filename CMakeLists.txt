@@ -88,6 +88,7 @@ set (_SOURCES ${_SOURCES}
     ${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen/md_metrics_TGL_GT2.cpp
     ${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen/md_metrics_DG1.cpp
     ${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen/md_metrics_RKL.cpp
+    ${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen/md_metrics_ADLP.cpp
     ${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen/md_metrics.cpp
     # mdapi core
     ${BS_DIR_INSTRUMENTATION}/metrics_discovery/common/md_main.cpp
@@ -123,8 +124,6 @@ if ("${PLATFORM}" STREQUAL Windows) # windows
         # instr utils
         ${BS_DIR_INSTRUMENTATION}/utils/linux/iu_std.cpp
         ${BS_DIR_INSTRUMENTATION}/utils/linux/iu_os.cpp
-        # external
-        ${BS_DIR_INSTRUMENTATION}/metrics_discovery/external/mesa/src/intel/dev/gen_device_info.c
         )
     # linux files will not be being built
     set_source_files_properties (
@@ -137,8 +136,6 @@ elseif ("${PLATFORM}" STREQUAL linux) # linux
     ${BS_DIR_INSTRUMENTATION}/metrics_discovery/linux/md_sub_devices_linux.cpp
     ${BS_DIR_INSTRUMENTATION}/utils/linux/iu_std.cpp
     ${BS_DIR_INSTRUMENTATION}/utils/linux/iu_os.cpp
-    # external
-    ${BS_DIR_EXTERNAL}/mesa/src/intel/dev/gen_device_info.c
     )
 else ()
     message ("-- Using platform is ${PLATFORM}")
@@ -220,7 +217,6 @@ if ("${PLATFORM}" STREQUAL Windows) # windows
 
     source_group ("Source Files\\linux"             "(${BS_DIR_INSTRUMENTATION}/metrics_discovery/linux/.*.cpp)")
     source_group ("Source Files\\linux\\iu"         "(${BS_DIR_INSTRUMENTATION}/utils/linux/.*.cpp)")
-    source_group ("Source Files\\external\\mesa"    "(${BS_DIR_INSTRUMENTATION}/metrics_discovery/external/mesa/*)")
 elseif ("${PLATFORM}" STREQUAL linux) # linux
     source_group ("Header Files"                    "(${BS_DIR_INSTRUMENTATION}/metrics_discovery/common/inc/.*.h)|(${BS_DIR_INSTRUMENTATION}/metrics_discovery/linux/inc/.*.h)")
     source_group ("Header Files\\iu"                "(${BS_DIR_INSTRUMENTATION}/utils/common/inc/.*.h)|(${BS_DIR_INSTRUMENTATION}/utils/linux/inc/.*.h)")
@@ -301,10 +297,6 @@ elseif ("${PLATFORM}" STREQUAL linux)
     # generic
     include_directories (
         # external
-        ${BS_DIR_EXTERNAL}/mesa/include
-        ${BS_DIR_EXTERNAL}/mesa/src
-        ${BS_DIR_EXTERNAL}/mesa/src/util
-        ${BS_DIR_EXTERNAL}/mesa/src/intel/dev
         ${BS_DIR_EXTERNAL}/drm
         # mdapi core
         ${BS_DIR_INSTRUMENTATION}/metrics_discovery/linux/inc

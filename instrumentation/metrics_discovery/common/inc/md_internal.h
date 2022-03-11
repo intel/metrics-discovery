@@ -315,18 +315,24 @@ namespace MetricsDiscoveryInternal
         TCompletionCode    AddSymbolBOOL( const char* name, bool value, TSymbolType symbolType );
         TCompletionCode    AddSymbolFLOAT( const char* name, float value, TSymbolType symbolType );
         TCompletionCode    AddSymbolCSTRING( const char* name, char* value, TSymbolType symbolType );
+        TCompletionCode    AddSymbolBYTEARRAY( const char* name, TByteArray_1_0* value, TSymbolType symbolType );
         TCompletionCode    WriteSymbolSetToFile( FILE* metricFile );
         bool               IsSymbolAlreadyAdded( const char* symbolName );
         TCompletionCode    RedetectSymbol( const char* name );
 
     private:
-        bool IsPavpDisabled( uint32_t capabilities );
+        bool            IsPavpDisabled( uint32_t capabilities );
+        TCompletionCode UnpackMask( const TGlobalSymbol* symbol );
+        TCompletionCode DetectMaxSlicesInfo();
 
     private:
         // Variables:
         Vector<TGlobalSymbol*>* m_symbolVector;
         CMetricsDevice&         m_metricsDevice;
         CDriverInterface&       m_driverInterface;
+        uint32_t                m_maxSlice;
+        uint32_t                m_maxSubslicePerSlice;
+        uint32_t                m_maxDualSubslicePerSlice;
 
     private:
         // Static variables:
@@ -804,12 +810,12 @@ namespace MetricsDiscoveryInternal
         virtual ~CMetric();
 
         // Non-API:
-        TCompletionCode SetSnapshotReportReadEquation( const char* equationSting );
-        TCompletionCode SetDeltaReportReadEquation( const char* equationSting );
-        TCompletionCode SetNormalizationEquation( const char* equationSting );
-        TCompletionCode SetSnapshotReportDeltaFunction( const char* equationSting );
-        TCompletionCode SetAvailabilityEquation( const char* equationSting );
-        TCompletionCode SetMaxValueEquation( const char* equationSting );
+        TCompletionCode SetSnapshotReportReadEquation( const char* equationString );
+        TCompletionCode SetDeltaReportReadEquation( const char* equationString );
+        TCompletionCode SetNormalizationEquation( const char* equationString );
+        TCompletionCode SetSnapshotReportDeltaFunction( const char* equationString );
+        TCompletionCode SetAvailabilityEquation( const char* equationString );
+        TCompletionCode SetMaxValueEquation( const char* equationString );
         void            SetIdInSetParam( uint32_t id );
 
         TCompletionCode WriteCMetricToFile( FILE* metricFile );
@@ -857,11 +863,11 @@ namespace MetricsDiscoveryInternal
         virtual ~CInformation();
 
         // Non-API:
-        TCompletionCode SetSnapshotReportReadEquation( const char* equationSting );
-        TCompletionCode SetDeltaReportReadEquation( const char* equationSting );
-        TCompletionCode SetAvailabilityEquation( const char* equationSting );
+        TCompletionCode SetSnapshotReportReadEquation( const char* equationString );
+        TCompletionCode SetDeltaReportReadEquation( const char* equationString );
+        TCompletionCode SetAvailabilityEquation( const char* equationString );
 
-        TCompletionCode SetOverflowFunction( const char* equationSting );
+        TCompletionCode SetOverflowFunction( const char* equationString );
         TCompletionCode SetOverflowFunction( TDeltaFunction_1_0 overflowFunction );
 
         TCompletionCode WriteCInformationToFile( FILE* metricFile );
@@ -899,7 +905,7 @@ namespace MetricsDiscoveryInternal
 
         // Non-API:
         TRegisterSetParams* GetParams();
-        TCompletionCode     SetAvailabilityEquation( const char* equationSting );
+        TCompletionCode     SetAvailabilityEquation( const char* equationString );
         TRegister*          AddConfigRegister( uint32_t offset, uint32_t value, TRegisterType type );
         bool                IsAvailable();
         TCompletionCode     RegsToVector( Vector<TRegister*>* regVector );

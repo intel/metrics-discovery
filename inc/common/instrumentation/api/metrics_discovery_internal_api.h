@@ -30,6 +30,8 @@
 #pragma once
 
 #include "metrics_discovery_api.h"
+#include "md_per_platform_preamble.h"
+#include "instr_gt_driver_ifc.h"
 
 namespace MetricsDiscovery
 {
@@ -40,23 +42,25 @@ namespace MetricsDiscovery
     {
         PLATFORM_UNKNOWN = 0,
         // 4 reserved
-        PLATFORM_HSW = 1 << 5 /*GENERATION_HSW*/,
-        PLATFORM_BDW = 1 << 6 /*GENERATION_BDW*/,
-        PLATFORM_SKL = 1 << 7 /*GENERATION_SKL*/,
+        PLATFORM_HSW  = 1 << 5 /*GENERATION_HSW*/,
+        PLATFORM_BDW  = 1 << 6 /*GENERATION_BDW*/,
+        PLATFORM_SKL  = 1 << 7 /*GENERATION_SKL*/,
         // 8-9 reserved
-        PLATFORM_BXT = 1 << 10 /*GENERATION_BXT*/,
+        PLATFORM_BXT  = 1 << 10 /*GENERATION_BXT*/,
         // 11 reserved
-        PLATFORM_KBL = 1 << 12 /*GENERATION_KBL*/,
-        PLATFORM_GLK = 1 << 13 /*GENERATION_GLK*/,
-        PLATFORM_ICL = 1 << 14 /*GENERATION_ICL*/,
+        PLATFORM_KBL  = 1 << 12 /*GENERATION_KBL*/,
+        PLATFORM_GLK  = 1 << 13 /*GENERATION_GLK*/,
+        PLATFORM_ICL  = 1 << 14 /*GENERATION_ICL*/,
         // 15-16 reserved
-        PLATFORM_TGL = 1 << 17 /*GENERATION_TGL*/,
-        PLATFORM_CFL = 1 << 18 /*GENERATION_CFL*/,
-        PLATFORM_EHL = 1 << 19 /*GENERATION_EHL*/,
+        PLATFORM_TGL  = 1 << 17 /*GENERATION_TGL*/,
+        PLATFORM_CFL  = 1 << 18 /*GENERATION_CFL*/,
+        PLATFORM_EHL  = 1 << 19 /*GENERATION_EHL*/,
         // 20 reserved
-        PLATFORM_DG1 = 1 << 21 /*GENERATION_DG1*/,
+        PLATFORM_DG1  = 1 << 21 /*GENERATION_DG1*/,
         // 22 reserved
-        PLATFORM_RKL = 1 << 23 /*GENERATION_RKL*/,
+        PLATFORM_RKL  = 1 << 23 /*GENERATION_RKL*/,
+        // 24-25 reserved
+        PLATFORM_ADLP = 1 << 26 /*GENERATION_ADLP*/,
         // ...
         PLATFORM_ALL = 0xFFFFFFFF,
     } TPlatformType;

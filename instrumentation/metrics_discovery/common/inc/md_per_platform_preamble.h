@@ -63,4 +63,5 @@ SPDX-License-Identifier: MIT
     #define MD_INCLUDE_TGL_GT2_METRICS 1
     #define MD_INCLUDE_DG1_METRICS 1
     #define MD_INCLUDE_RKL_METRICS 1
+    #define MD_INCLUDE_ADLP_METRICS    1
 #endif

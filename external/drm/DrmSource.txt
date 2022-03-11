@@ -1,6 +1,38 @@
 Files in this folder is taken from: https://github.com/torvalds/linux/tree/master/include/uapi/drm
 And should be used as is, without any modification.
 
+Last Update:
+commit 571a9233fcd44309399ee273d7ce12dc49564839
+Merge: 2 parents 0def4b7 + fed0289
+Author: Dave Airlie <airlied@redhat.com>
+Date: Aug 26 2021
+
+    Merge tag 'drm/tegra/for-5.15-rc1' of ssh://git.freedesktop.org/git/tegra/linux into drm-next
+
+drm/tegra: Changes for v5.15-rc1
+
+The bulk of these changes is a more modern ABI that can be efficiently
+used on newer SoCs as well as older ones. The userspace parts for this
+are available here:
+
+  - libdrm support: https://gitlab.freedesktop.org/tagr/drm/-/commits/drm-tegra-uabi-v8
+  - VAAPI driver: https://github.com/cyndis/vaapi-tegra-driver
+
+In addition, existing userspace from the grate reverse-engineering
+project has been updated to use this new ABI:
+
+  - X11 driver: https://github.com/grate-driver/xf86-video-opentegra
+  - 3D driver: https://github.com/grate-driver/grate
+
+Other than that, there's also support for display memory bandwidth
+management for various generations and a bit of cleanup.
+
+Signed-off-by: Dave Airlie <airlied@redhat.com>
+
+From: Thierry Reding <thierry.reding@gmail.com>
+Link: https://patchwork.freedesktop.org/patch/msgid/20210813163616.2822355-1-thierry.reding@gmail.com
+
+
 Base commit:
 commit b10733527bfd864605c33ab2e9a886eec317ec39
 Merge: 60f2f74978e6 f8aab60422c3
