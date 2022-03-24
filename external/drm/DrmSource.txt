@@ -2,35 +2,33 @@ Files in this folder is taken from: https://github.com/torvalds/linux/tree/maste
 And should be used as is, without any modification.
 
 Last Update:
-commit 571a9233fcd44309399ee273d7ce12dc49564839
-Merge: 2 parents 0def4b7 + fed0289
-Author: Dave Airlie <airlied@redhat.com>
-Date: Aug 26 2021
+commit b06103b5325364e0b9944024db41b400b9028df9
+Merge tag 'amd-drm-next-5.17-2021-12-16' of https://gitlab.freedesktop.org/agd5f/linux into drm-next
+Author: Alex Deucher <alexander.deucher@amd.com>
+Date: Dec 23, 2021
 
-    Merge tag 'drm/tegra/for-5.15-rc1' of ssh://git.freedesktop.org/git/tegra/linux into drm-next
+amdgpu:
+- Add some display debugfs entries
+- RAS fixes
+- SR-IOV fixes
+- W=1 fixes
+- Documentation fixes
+- IH timestamp fix
+- Misc power fixes
+- IP discovery fixes
+- Large driver documentation updates
+- Multi-GPU memory use reductions
+- Misc display fixes and cleanups
+- Add new SMU debug option
 
-drm/tegra: Changes for v5.15-rc1
+amdkfd:
+- SVM fixes
 
-The bulk of these changes is a more modern ABI that can be efficiently
-used on newer SoCs as well as older ones. The userspace parts for this
-are available here:
+radeon:
+- Fix typo in comment
 
-  - libdrm support: https://gitlab.freedesktop.org/tagr/drm/-/commits/drm-tegra-uabi-v8
-  - VAAPI driver: https://github.com/cyndis/vaapi-tegra-driver
-
-In addition, existing userspace from the grate reverse-engineering
-project has been updated to use this new ABI:
-
-  - X11 driver: https://github.com/grate-driver/xf86-video-opentegra
-  - 3D driver: https://github.com/grate-driver/grate
-
-Other than that, there's also support for display memory bandwidth
-management for various generations and a bit of cleanup.
-
-Signed-off-by: Dave Airlie <airlied@redhat.com>
-
-From: Thierry Reding <thierry.reding@gmail.com>
-Link: https://patchwork.freedesktop.org/patch/msgid/20210813163616.2822355-1-thierry.reding@gmail.com
+From: Alex Deucher <alexander.deucher@amd.com>
+Link: https://patchwork.freedesktop.org/patch/msgid/20211216202731.5900-1-alexander.deucher@amd.com
 
 
 Base commit:
