@@ -217,7 +217,7 @@ namespace MetricsDiscoveryInternal
             // Use saved report as 'Prev', 0 offset report as "Last"
             sc->PrevRawDataPtr      = sc->Calculator->GetSavedReport();
             sc->PrevRawReportNumber = MD_SAVED_REPORT_NUMBER;
-            MD_ASSERT( sc->PrevRawDataPtr != NULL );
+            MD_ASSERT( sc->PrevRawDataPtr != nullptr );
         }
 
         // If not using saved report
@@ -337,7 +337,7 @@ namespace MetricsDiscoveryInternal
         for( uint32_t i = 0; i < count; i++ )
         {
             IInformation_1_0* information = metricSet->GetInformation( i );
-            MD_ASSERT( information != NULL );
+            MD_ASSERT( information != nullptr );
 
             TInformationParams_1_0* informationParams = information->GetParams();
             if( informationParams->SymbolName && strcmp( informationParams->SymbolName, symbolName ) == 0 )
@@ -371,7 +371,7 @@ namespace MetricsDiscoveryInternal
         m_device             = metricsDevice;
         m_gpuCoreClocks      = 0;
         m_euCoresCount       = 0;
-        m_savedReport        = NULL;
+        m_savedReport        = nullptr;
         m_savedReportSize    = 0;
         m_contextIdPrev      = 0;
         m_savedReportPresent = false;
@@ -413,15 +413,14 @@ namespace MetricsDiscoveryInternal
     void CMetricsCalculator::Reset( uint32_t rawReportSize /* = 0*/ )
     {
         TTypedValue_1_0* euCoresTotalCount = GetGlobalSymbolValue( "EuCoresTotalCount" );
-
-        m_euCoresCount  = euCoresTotalCount ? euCoresTotalCount->ValueUInt32 : 0;
-        m_gpuCoreClocks = 0;
+        m_euCoresCount                     = euCoresTotalCount ? euCoresTotalCount->ValueUInt32 : 0;
+        m_gpuCoreClocks                    = 0;
 
         if( m_savedReportSize != rawReportSize && rawReportSize > 0 )
         {
             MD_SAFE_DELETE_ARRAY( m_savedReport );
             m_savedReport = new( std::nothrow ) uint8_t[rawReportSize];
-            if( m_savedReport == NULL )
+            if( m_savedReport == nullptr )
             {
                 MD_LOG( LOG_ERROR, "error allocating saved report memory" );
                 m_savedReportSize = 0;
@@ -557,7 +556,7 @@ namespace MetricsDiscoveryInternal
 
             if( metricParams->QueryReadEquation )
             {
-                CEquation& equation = dynamic_cast<CEquation&>( *metricParams->QueryReadEquation );
+                CEquation& equation = static_cast<CEquation&>( *metricParams->QueryReadEquation );
                 outValues[i]        = CalculateReadEquation( equation, rawReport );
             }
             else
@@ -611,7 +610,7 @@ namespace MetricsDiscoveryInternal
 
             if( metricParams->IoReadEquation )
             {
-                CEquation&         equationInternal = dynamic_cast<CEquation&>( *metricParams->IoReadEquation );
+                CEquation&         equationInternal = static_cast<CEquation&>( *metricParams->IoReadEquation );
                 TDeltaFunction_1_0 deltaFunc        = metricParams->DeltaFunction;
                 outValues[i]                        = CalculateReadEquationAndDelta( equationInternal, deltaFunc, rawRaportLast, rawRaportPrev );
             }
@@ -651,9 +650,9 @@ namespace MetricsDiscoveryInternal
     {
         if( !deltaValues || !outValues )
         {
-            MD_ASSERT( deltaValues != NULL );
-            MD_ASSERT( outValues != NULL );
-            MD_LOG( LOG_ERROR, "error: null params" );
+            MD_ASSERT( deltaValues != nullptr );
+            MD_ASSERT( outValues != nullptr );
+            MD_LOG( LOG_ERROR, "error: nullptr params" );
             return;
         }
 
@@ -668,7 +667,7 @@ namespace MetricsDiscoveryInternal
             if( normalizationEquation )
             {
                 // do final calculation, may refer to global symbols, local delta results and local normalization results
-                CEquation& equationInternal = dynamic_cast<CEquation&>( *normalizationEquation );
+                CEquation& equationInternal = static_cast<CEquation&>( *normalizationEquation );
                 outValues[i]                = CalculateLocalNormalizationEquation( equationInternal, deltaValues, outValues, i );
             }
             else
@@ -700,9 +699,9 @@ namespace MetricsDiscoveryInternal
     {
         if( !rawData || !outValues )
         {
-            MD_ASSERT( rawData != NULL );
-            MD_ASSERT( outValues != NULL );
-            MD_LOG( LOG_ERROR, "error: null params" );
+            MD_ASSERT( rawData != nullptr );
+            MD_ASSERT( outValues != nullptr );
+            MD_LOG( LOG_ERROR, "error: nullptr params" );
             return;
         }
 
@@ -811,8 +810,8 @@ namespace MetricsDiscoveryInternal
     {
         if( !outValues )
         {
-            MD_ASSERT( outValues != NULL );
-            MD_LOG( LOG_ERROR, "error: null params" );
+            MD_ASSERT( outValues != nullptr );
+            MD_LOG( LOG_ERROR, "error: nullptr params" );
             return;
         }
 
@@ -821,14 +820,14 @@ namespace MetricsDiscoveryInternal
         for( uint32_t i = 0; i < measurementInfoCount; i++ )
         {
             IInformation_1_0* measurementInfo = concurrentGroup.GetIoMeasurementInformation( i );
-            MD_ASSERT( measurementInfo != NULL );
+            MD_ASSERT( measurementInfo != nullptr );
 
             IEquation_1_0* equation = measurementInfo->GetParams()->IoReadEquation;
 
             if( equation )
             {
-                CEquation& equationInternal = dynamic_cast<CEquation&>( *equation );
-                outValues[i]                = CalculateReadEquation( equationInternal, NULL );
+                CEquation& equationInternal = static_cast<CEquation&>( *equation );
+                outValues[i]                = CalculateReadEquation( equationInternal, nullptr );
             }
             else
             {
@@ -869,10 +868,10 @@ namespace MetricsDiscoveryInternal
     {
         if( !deltaMetricValues || !outMetricValues || !outMaxValues )
         {
-            MD_ASSERT( deltaMetricValues != NULL );
-            MD_ASSERT( outMetricValues != NULL );
-            MD_ASSERT( outMaxValues != NULL );
-            MD_LOG( LOG_ERROR, "error: null params" );
+            MD_ASSERT( deltaMetricValues != nullptr );
+            MD_ASSERT( outMetricValues != nullptr );
+            MD_ASSERT( outMaxValues != nullptr );
+            MD_LOG( LOG_ERROR, "error: nullptr params" );
             return;
         }
 
@@ -888,7 +887,7 @@ namespace MetricsDiscoveryInternal
             {
                 // Do final calculation, may refer to global symbols, local delta results and local normalization results.
                 // Normalization equation function is used because NormalizationEquation has the same restrictions as MaxValueEquation.
-                CEquation& equationInternal = dynamic_cast<CEquation&>( *maxValueEquation );
+                CEquation& equationInternal = static_cast<CEquation&>( *maxValueEquation );
                 outMaxValues[i]             = CalculateLocalNormalizationEquation( equationInternal, deltaMetricValues, outMetricValues, i );
             }
             else
@@ -924,8 +923,7 @@ namespace MetricsDiscoveryInternal
         uint32_t        algorithmCheck = 0;
 
         // Prepare the stack for calculations.
-        isValid = m_equationStack.reserve( equation.GetEquationElementsCount() );
-        m_equationStack.clear();
+        std::stack<TTypedValue_1_0> equationStack = std::stack<TTypedValue_1_0>();
 
         for( uint32_t i = 0; i < equation.GetEquationElementsCount() && isValid; i++ )
         {
@@ -935,7 +933,7 @@ namespace MetricsDiscoveryInternal
                 case EQUATION_ELEM_RD_BITFIELD:
                     typedValue.ValueUInt64 = ReadBitfield( (const uint8_t*) ( rawReport + element->ReadParams.ByteOffset ), element->ReadParams.BitOffset, element->ReadParams.BitsCount );
                     typedValue.ValueType   = VALUE_TYPE_UINT64;
-                    isValid                = EquationStackPush( m_equationStack, typedValue, algorithmCheck );
+                    isValid                = EquationStackPush( equationStack, typedValue, algorithmCheck );
                     break;
 
                 case EQUATION_ELEM_RD_UINT8:
@@ -943,7 +941,7 @@ namespace MetricsDiscoveryInternal
                     uint8_t byteValue      = *( (const uint8_t*) ( rawReport + element->ReadParams.ByteOffset ) );
                     typedValue.ValueUInt64 = (uint64_t) byteValue;
                     typedValue.ValueType   = VALUE_TYPE_UINT64;
-                    isValid                = EquationStackPush( m_equationStack, typedValue, algorithmCheck );
+                    isValid                = EquationStackPush( equationStack, typedValue, algorithmCheck );
                     break;
                 }
 
@@ -952,7 +950,7 @@ namespace MetricsDiscoveryInternal
                     unsigned short shortValue = *( (const unsigned short*) ( rawReport + element->ReadParams.ByteOffset ) );
                     typedValue.ValueUInt64    = (uint64_t) shortValue;
                     typedValue.ValueType      = VALUE_TYPE_UINT64;
-                    isValid                   = EquationStackPush( m_equationStack, typedValue, algorithmCheck );
+                    isValid                   = EquationStackPush( equationStack, typedValue, algorithmCheck );
                     break;
                 }
 
@@ -961,20 +959,20 @@ namespace MetricsDiscoveryInternal
                     uint32_t dwordValue    = *( (const uint32_t*) ( rawReport + element->ReadParams.ByteOffset ) );
                     typedValue.ValueUInt64 = (uint64_t) dwordValue;
                     typedValue.ValueType   = VALUE_TYPE_UINT64;
-                    isValid                = EquationStackPush( m_equationStack, typedValue, algorithmCheck );
+                    isValid                = EquationStackPush( equationStack, typedValue, algorithmCheck );
                     break;
                 }
 
                 case EQUATION_ELEM_RD_UINT64:
                     typedValue.ValueUInt64 = *( (const uint64_t*) ( rawReport + element->ReadParams.ByteOffset ) );
                     typedValue.ValueType   = VALUE_TYPE_UINT64;
-                    isValid                = EquationStackPush( m_equationStack, typedValue, algorithmCheck );
+                    isValid                = EquationStackPush( equationStack, typedValue, algorithmCheck );
                     break;
 
                 case EQUATION_ELEM_RD_FLOAT:
                     typedValue.ValueFloat = *( (const float*) ( rawReport + element->ReadParams.ByteOffset ) );
                     typedValue.ValueType  = VALUE_TYPE_FLOAT;
-                    isValid               = EquationStackPush( m_equationStack, typedValue, algorithmCheck );
+                    isValid               = EquationStackPush( equationStack, typedValue, algorithmCheck );
                     break;
 
                 case EQUATION_ELEM_RD_40BIT_CNTR:
@@ -984,20 +982,20 @@ namespace MetricsDiscoveryInternal
                     largeValue.u.HighPart  = ( uint32_t ) * ( (const uint8_t*) ( rawReport + element->ReadParams.ByteOffsetExt ) );
                     typedValue.ValueUInt64 = largeValue.QuadPart;
                     typedValue.ValueType   = VALUE_TYPE_UINT64;
-                    isValid                = EquationStackPush( m_equationStack, typedValue, algorithmCheck );
+                    isValid                = EquationStackPush( equationStack, typedValue, algorithmCheck );
                     break;
                 }
 
                 case EQUATION_ELEM_IMM_UINT64:
                     typedValue.ValueUInt64 = element->ImmediateUInt64;
                     typedValue.ValueType   = VALUE_TYPE_UINT64;
-                    isValid                = EquationStackPush( m_equationStack, typedValue, algorithmCheck );
+                    isValid                = EquationStackPush( equationStack, typedValue, algorithmCheck );
                     break;
 
                 case EQUATION_ELEM_IMM_FLOAT:
                     typedValue.ValueFloat = element->ImmediateFloat;
                     typedValue.ValueType  = VALUE_TYPE_FLOAT;
-                    isValid               = EquationStackPush( m_equationStack, typedValue, algorithmCheck );
+                    isValid               = EquationStackPush( equationStack, typedValue, algorithmCheck );
                     break;
 
                 case EQUATION_ELEM_GLOBAL_SYMBOL:
@@ -1012,7 +1010,7 @@ namespace MetricsDiscoveryInternal
                         typedValue.ValueUInt64 = 0;
                         typedValue.ValueType   = VALUE_TYPE_UINT64;
                     }
-                    isValid = EquationStackPush( m_equationStack, typedValue, algorithmCheck );
+                    isValid = EquationStackPush( equationStack, typedValue, algorithmCheck );
                     break;
                 }
 
@@ -1030,22 +1028,22 @@ namespace MetricsDiscoveryInternal
                         MD_ASSERT( false );
                     }
                     typedValue.ValueType = VALUE_TYPE_UINT64;
-                    isValid              = EquationStackPush( m_equationStack, typedValue, algorithmCheck );
+                    isValid              = EquationStackPush( equationStack, typedValue, algorithmCheck );
                     break;
                 }
 
                 case EQUATION_ELEM_OPERATION:
                 {
                     // Pop two values from stack
-                    TTypedValue_1_0 valueLast = m_equationStack.top();
-                    m_equationStack.pop();
+                    TTypedValue_1_0 valueLast = equationStack.top();
+                    equationStack.pop();
                     algorithmCheck--;
-                    TTypedValue_1_0 valuePrev = m_equationStack.top();
-                    m_equationStack.pop();
+                    TTypedValue_1_0 valuePrev = equationStack.top();
+                    equationStack.pop();
                     algorithmCheck--;
 
                     typedValue = CalculateEquationElemOperation( element->Operation, valuePrev, valueLast );
-                    isValid    = EquationStackPush( m_equationStack, typedValue, algorithmCheck );
+                    isValid    = EquationStackPush( equationStack, typedValue, algorithmCheck );
                     break;
                 }
 
@@ -1059,8 +1057,8 @@ namespace MetricsDiscoveryInternal
 
         if( isValid && algorithmCheck == 1 )
         {
-            typedValue = m_equationStack.top();
-            m_equationStack.pop();
+            typedValue = equationStack.top();
+            equationStack.pop();
         }
         else
         {
@@ -1112,8 +1110,7 @@ namespace MetricsDiscoveryInternal
         uint32_t algorithmCheck = 0;
 
         // Prepare the stack for calculations.
-        isValid = m_equationStack.reserve( equation.GetEquationElementsCount() );
-        m_equationStack.clear();
+        std::stack<TTypedValue_1_0> equationStack = std::stack<TTypedValue_1_0>();
 
         for( uint32_t i = 0; i < equation.GetEquationElementsCount() && isValid; i++ )
         {
@@ -1129,7 +1126,7 @@ namespace MetricsDiscoveryInternal
                     typedValueLast.ValueType   = VALUE_TYPE_UINT64;
 
                     typedValue = CalculateDeltaFunction( readDeltaFunction, typedValueLast, typedValuePrev );
-                    isValid    = EquationStackPush( m_equationStack, typedValue, algorithmCheck );
+                    isValid    = EquationStackPush( equationStack, typedValue, algorithmCheck );
                     break;
 
                 case EQUATION_ELEM_RD_UINT8:
@@ -1142,7 +1139,7 @@ namespace MetricsDiscoveryInternal
                     typedValueLast.ValueType = VALUE_TYPE_UINT64;
 
                     typedValue = CalculateDeltaFunction( readDeltaFunction, typedValueLast, typedValuePrev );
-                    isValid    = EquationStackPush( m_equationStack, typedValue, algorithmCheck );
+                    isValid    = EquationStackPush( equationStack, typedValue, algorithmCheck );
                     break;
 
                 case EQUATION_ELEM_RD_UINT16:
@@ -1155,7 +1152,7 @@ namespace MetricsDiscoveryInternal
                     typedValueLast.ValueType = VALUE_TYPE_UINT64;
 
                     typedValue = CalculateDeltaFunction( readDeltaFunction, typedValueLast, typedValuePrev );
-                    isValid    = EquationStackPush( m_equationStack, typedValue, algorithmCheck );
+                    isValid    = EquationStackPush( equationStack, typedValue, algorithmCheck );
                     break;
 
                 case EQUATION_ELEM_RD_UINT32:
@@ -1168,7 +1165,7 @@ namespace MetricsDiscoveryInternal
                     typedValueLast.ValueType = VALUE_TYPE_UINT64;
 
                     typedValue = CalculateDeltaFunction( readDeltaFunction, typedValueLast, typedValuePrev );
-                    isValid    = EquationStackPush( m_equationStack, typedValue, algorithmCheck );
+                    isValid    = EquationStackPush( equationStack, typedValue, algorithmCheck );
                     break;
 
                 case EQUATION_ELEM_RD_UINT64:
@@ -1179,7 +1176,7 @@ namespace MetricsDiscoveryInternal
                     typedValueLast.ValueType   = VALUE_TYPE_UINT64;
 
                     typedValue = CalculateDeltaFunction( readDeltaFunction, typedValueLast, typedValuePrev );
-                    isValid    = EquationStackPush( m_equationStack, typedValue, algorithmCheck );
+                    isValid    = EquationStackPush( equationStack, typedValue, algorithmCheck );
                     break;
 
                 case EQUATION_ELEM_RD_FLOAT:
@@ -1190,7 +1187,7 @@ namespace MetricsDiscoveryInternal
                     typedValueLast.ValueType  = VALUE_TYPE_FLOAT;
 
                     typedValue = CalculateDeltaFunction( readDeltaFunction, typedValueLast, typedValuePrev );
-                    isValid    = EquationStackPush( m_equationStack, typedValue, algorithmCheck );
+                    isValid    = EquationStackPush( equationStack, typedValue, algorithmCheck );
                     break;
 
                 case EQUATION_ELEM_RD_40BIT_CNTR:
@@ -1207,20 +1204,20 @@ namespace MetricsDiscoveryInternal
                     typedValueLast.ValueType   = VALUE_TYPE_UINT64;
 
                     typedValue = CalculateDeltaFunction( readDeltaFunction, typedValueLast, typedValuePrev );
-                    isValid    = EquationStackPush( m_equationStack, typedValue, algorithmCheck );
+                    isValid    = EquationStackPush( equationStack, typedValue, algorithmCheck );
                     break;
                 }
 
                 case EQUATION_ELEM_IMM_UINT64:
                     typedValue.ValueUInt64 = element->ImmediateUInt64;
                     typedValue.ValueType   = VALUE_TYPE_UINT64;
-                    isValid                = EquationStackPush( m_equationStack, typedValue, algorithmCheck );
+                    isValid                = EquationStackPush( equationStack, typedValue, algorithmCheck );
                     break;
 
                 case EQUATION_ELEM_IMM_FLOAT:
                     typedValue.ValueFloat = element->ImmediateFloat;
                     typedValue.ValueType  = VALUE_TYPE_FLOAT;
-                    isValid               = EquationStackPush( m_equationStack, typedValue, algorithmCheck );
+                    isValid               = EquationStackPush( equationStack, typedValue, algorithmCheck );
                     break;
 
                 case EQUATION_ELEM_GLOBAL_SYMBOL:
@@ -1235,22 +1232,22 @@ namespace MetricsDiscoveryInternal
                         typedValue.ValueUInt64 = 0LL;
                         typedValue.ValueType   = VALUE_TYPE_UINT64;
                     }
-                    isValid = EquationStackPush( m_equationStack, typedValue, algorithmCheck );
+                    isValid = EquationStackPush( equationStack, typedValue, algorithmCheck );
                     break;
                 }
 
                 case EQUATION_ELEM_OPERATION:
                 {
                     // Pop two values from stack
-                    TTypedValue_1_0 valueLast = m_equationStack.top();
-                    m_equationStack.pop();
+                    TTypedValue_1_0 valueLast = equationStack.top();
+                    equationStack.pop();
                     algorithmCheck--;
-                    TTypedValue_1_0 valuePrev = m_equationStack.top();
-                    m_equationStack.pop();
+                    TTypedValue_1_0 valuePrev = equationStack.top();
+                    equationStack.pop();
                     algorithmCheck--;
 
                     typedValue = CalculateEquationElemOperation( element->Operation, valuePrev, valueLast );
-                    isValid    = EquationStackPush( m_equationStack, typedValue, algorithmCheck );
+                    isValid    = EquationStackPush( equationStack, typedValue, algorithmCheck );
                     break;
                 }
 
@@ -1264,8 +1261,8 @@ namespace MetricsDiscoveryInternal
 
         if( isValid && algorithmCheck == 1 )
         {
-            typedValue = m_equationStack.top();
-            m_equationStack.pop();
+            typedValue = equationStack.top();
+            equationStack.pop();
         }
         else
         {
@@ -1386,8 +1383,7 @@ namespace MetricsDiscoveryInternal
         uint32_t        algorithmCheck = 0;
 
         // Prepare the stack for calculations.
-        isValid = m_equationStack.reserve( equation.GetEquationElementsCount() );
-        m_equationStack.clear();
+        std::stack<TTypedValue_1_0> equationStack = std::stack<TTypedValue_1_0>();
 
         for( uint32_t i = 0; i < equation.GetEquationElementsCount() && isValid; i++ )
         {
@@ -1407,19 +1403,19 @@ namespace MetricsDiscoveryInternal
                 case EQUATION_ELEM_IMM_FLOAT:
                     typedValue.ValueFloat = element->ImmediateFloat;
                     typedValue.ValueType  = VALUE_TYPE_FLOAT;
-                    isValid               = EquationStackPush( m_equationStack, typedValue, algorithmCheck );
+                    isValid               = EquationStackPush( equationStack, typedValue, algorithmCheck );
                     break;
 
                 case EQUATION_ELEM_IMM_UINT64:
                     typedValue.ValueUInt64 = element->ImmediateUInt64;
                     typedValue.ValueType   = VALUE_TYPE_UINT64;
-                    isValid                = EquationStackPush( m_equationStack, typedValue, algorithmCheck );
+                    isValid                = EquationStackPush( equationStack, typedValue, algorithmCheck );
                     break;
 
                 case EQUATION_ELEM_SELF_COUNTER_VALUE:
                     // Get result of delta equation
                     typedValue = deltaValues[currentMetricIdx];
-                    isValid    = EquationStackPush( m_equationStack, typedValue, algorithmCheck );
+                    isValid    = EquationStackPush( equationStack, typedValue, algorithmCheck );
                     break;
 
                 case EQUATION_ELEM_LOCAL_COUNTER_SYMBOL:
@@ -1438,7 +1434,7 @@ namespace MetricsDiscoveryInternal
                         typedValue.ValueType   = VALUE_TYPE_UINT64;
                     }
 
-                    isValid = EquationStackPush( m_equationStack, typedValue, algorithmCheck );
+                    isValid = EquationStackPush( equationStack, typedValue, algorithmCheck );
                     break;
                 }
 
@@ -1458,7 +1454,7 @@ namespace MetricsDiscoveryInternal
                         typedValue.ValueType   = VALUE_TYPE_UINT64;
                     }
 
-                    isValid = EquationStackPush( m_equationStack, typedValue, algorithmCheck );
+                    isValid = EquationStackPush( equationStack, typedValue, algorithmCheck );
                     break;
                 }
 
@@ -1474,30 +1470,30 @@ namespace MetricsDiscoveryInternal
                         typedValue.ValueUInt64 = 0;
                         typedValue.ValueType   = VALUE_TYPE_UINT64;
                     }
-                    isValid = EquationStackPush( m_equationStack, typedValue, algorithmCheck );
+                    isValid = EquationStackPush( equationStack, typedValue, algorithmCheck );
                     break;
                 }
 
                 case EQUATION_ELEM_OPERATION:
                 {
-                    //pop two values from stack
-                    TTypedValue_1_0 valueLast = m_equationStack.top();
-                    m_equationStack.pop();
+                    // pop two values from stack
+                    TTypedValue_1_0 valueLast = equationStack.top();
+                    equationStack.pop();
                     algorithmCheck--;
-                    TTypedValue_1_0 valuePrev = m_equationStack.top();
-                    m_equationStack.pop();
+                    TTypedValue_1_0 valuePrev = equationStack.top();
+                    equationStack.pop();
                     algorithmCheck--;
 
                     typedValue = CalculateEquationElemOperation( element->Operation, valuePrev, valueLast );
-                    isValid    = EquationStackPush( m_equationStack, typedValue, algorithmCheck );
+                    isValid    = EquationStackPush( equationStack, typedValue, algorithmCheck );
                     break;
                 }
 
                 case EQUATION_ELEM_STD_NORM_GPU_DURATION:
-                    //equation stack should be empty
+                    // equation stack should be empty
                     MD_ASSERT( algorithmCheck == 0 );
 
-                    //compute $Self $gpuCoreClocks FDIV 100 FMUL
+                    // compute $Self $gpuCoreClocks FDIV 100 FMUL
                     if( m_gpuCoreClocks != 0 )
                     {
                         float self          = CastToFloat( deltaValues[currentMetricIdx] );
@@ -1516,10 +1512,10 @@ namespace MetricsDiscoveryInternal
                     }
 
                 case EQUATION_ELEM_STD_NORM_EU_AGGR_DURATION:
-                    //equation stack should be empty
+                    // equation stack should be empty
                     MD_ASSERT( algorithmCheck == 0 );
 
-                    //compute $Self $gpuCoreClocks $EUsCount UMUL FDIV 100 FMUL
+                    // compute $Self $gpuCoreClocks $EUsCount UMUL FDIV 100 FMUL
                     if( m_gpuCoreClocks != 0 )
                     {
                         float self          = CastToFloat( deltaValues[currentMetricIdx] );
@@ -1546,8 +1542,8 @@ namespace MetricsDiscoveryInternal
 
         if( isValid && algorithmCheck == 1 )
         {
-            typedValue = m_equationStack.top();
-            m_equationStack.pop();
+            typedValue = equationStack.top();
+            equationStack.pop();
         }
         else
         {
@@ -1777,10 +1773,10 @@ namespace MetricsDiscoveryInternal
     {
         if( !rawReport || !information || !outValue )
         {
-            MD_ASSERT( rawReport != NULL );
-            MD_ASSERT( information != NULL );
-            MD_ASSERT( outValue != NULL );
-            MD_LOG( LOG_ERROR, "error: null params" );
+            MD_ASSERT( rawReport != nullptr );
+            MD_ASSERT( information != nullptr );
+            MD_ASSERT( outValue != nullptr );
+            MD_LOG( LOG_ERROR, "error: nullptr params" );
             return;
         }
 
@@ -1790,7 +1786,7 @@ namespace MetricsDiscoveryInternal
 
         if( equation )
         {
-            CEquation& equationInternal = dynamic_cast<CEquation&>( *equation );
+            CEquation& equationInternal = static_cast<CEquation&>( *equation );
             *outValue                   = CalculateReadEquation( equationInternal, rawReport );
         }
         else
@@ -1919,7 +1915,7 @@ namespace MetricsDiscoveryInternal
         // Get integer in the way in is alignment safe
         uint32_t data = ( *rawReport ) | ( ( *( rawReport + 1 ) ) << 8 ) | ( ( *( rawReport + 2 ) ) << 16 ) | ( ( *( rawReport + 3 ) ) << 24 );
 
-        return ( uint64_t )( ( data & mask ) >> bitOffset );
+        return (uint64_t) ( ( data & mask ) >> bitOffset );
     }
 
     //////////////////////////////////////////////////////////////////////////////
@@ -1942,8 +1938,8 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     TTypedValue_1_0* CMetricsCalculator::GetGlobalSymbolValue( const char* symbolName )
     {
-        MD_CHECK_PTR_RET( m_device, NULL );
-        MD_CHECK_PTR_RET( symbolName, NULL );
+        MD_CHECK_PTR_RET( m_device, nullptr );
+        MD_CHECK_PTR_RET( symbolName, nullptr );
 
         for( uint32_t i = 0; i < m_device->GetParams()->GlobalSymbolsCount; i++ )
         {
@@ -1953,7 +1949,7 @@ namespace MetricsDiscoveryInternal
                 return &( symbol->SymbolTypedValue );
             }
         }
-        return NULL;
+        return nullptr;
     }
 
 } // namespace MetricsDiscoveryInternal

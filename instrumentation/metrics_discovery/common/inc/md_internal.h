@@ -1,6 +1,6 @@
 /*========================== begin_copyright_notice ============================
 
-Copyright (C) 2019-2021 Intel Corporation
+Copyright (C) 2019-2022 Intel Corporation
 
 SPDX-License-Identifier: MIT
 
@@ -17,7 +17,6 @@ SPDX-License-Identifier: MIT
 #include "md_driver_ifc.h"
 #include "md_utils.h"
 #include "md_calculation.h"
-#include <vector>
 #include "md_sub_devices_linux.h"
 
 #define MD_BYTE            8
@@ -28,7 +27,10 @@ SPDX-License-Identifier: MIT
 
 #define MD_METRIC_GROUP_NAME_LEVEL_MAX 3
 
-#define MD_METRICS_FILE_KEY "CUSTOM_METRICS_FILE\n"
+#define MD_METRICS_FILE_KEY     "CUSTOM_METRICS_FILE\n"
+#define MD_METRICS_FILE_KEY_2_0 "CUSTOM_METRICS_FILE_2_0\n"
+
+#define MD_ROOT_DEVICE_INDEX 0
 
 using namespace MetricsDiscovery;
 
@@ -36,7 +38,7 @@ namespace MetricsDiscoveryInternal
 {
     // Forward declarations //
     struct SAdapterData;
-    typedef SAdapterData TAdapterData;
+    using TAdapterData = SAdapterData;
 
     class CSymbolSet;
     class CAdapterHandle;
@@ -54,7 +56,7 @@ namespace MetricsDiscoveryInternal
     class CEquation;
 
     ///////////////////////////////////////////////////////////////////////////////
-    // API versions:                                                              //
+    // API versions:                                                             //
     ///////////////////////////////////////////////////////////////////////////////
     enum EApiVersion
     {
@@ -62,7 +64,7 @@ namespace MetricsDiscoveryInternal
     };
 
     ///////////////////////////////////////////////////////////////////////////////
-    // Symbol types:                                                              //
+    // Symbol types:                                                             //
     ///////////////////////////////////////////////////////////////////////////////
     typedef enum ESymbolType
     {
@@ -71,7 +73,7 @@ namespace MetricsDiscoveryInternal
     } TSymbolType;
 
     ///////////////////////////////////////////////////////////////////////////////
-    // Equation types:                                                            //
+    // Equation types:                                                           //
     ///////////////////////////////////////////////////////////////////////////////
     typedef enum EEquationType
     {
@@ -81,7 +83,7 @@ namespace MetricsDiscoveryInternal
     } TEquationType;
 
     ///////////////////////////////////////////////////////////////////////////////
-    // Metric group id levels:                                                    //
+    // Metric group id levels:                                                   //
     ///////////////////////////////////////////////////////////////////////////////
     typedef enum EMetricGroupLevel
     {
@@ -94,7 +96,7 @@ namespace MetricsDiscoveryInternal
     } TMetricGroupLevel;
 
     ///////////////////////////////////////////////////////////////////////////////
-    // Global symbol:                                                             //
+    // Global symbol:                                                            //
     ///////////////////////////////////////////////////////////////////////////////
     typedef struct SGlobalSymbol
     {
@@ -107,7 +109,7 @@ namespace MetricsDiscoveryInternal
     } TGlobalSymbol;
 
     ///////////////////////////////////////////////////////////////////////////////
-    // Register set params:                                                       //
+    // Register set params:                                                      //
     ///////////////////////////////////////////////////////////////////////////////
     typedef struct SRegisterSetParams
     {
@@ -117,7 +119,7 @@ namespace MetricsDiscoveryInternal
     } TRegisterSetParams;
 
     ///////////////////////////////////////////////////////////////////////////////
-    // PmRegs config info:                                                        //
+    // PmRegs config info:                                                       //
     ///////////////////////////////////////////////////////////////////////////////
     typedef struct SPmRegsConfigInfo
     {
@@ -128,7 +130,7 @@ namespace MetricsDiscoveryInternal
     } TPmRegsConfigInfo;
 
     ///////////////////////////////////////////////////////////////////////////////
-    // Pair of group name and its id:                                             //
+    // Pair of group name and its id:                                            //
     ///////////////////////////////////////////////////////////////////////////////
     typedef struct SMetricGroupNameIdPair
     {
@@ -138,12 +140,24 @@ namespace MetricsDiscoveryInternal
     } TMetricGroupNameIdPair;
 
     ///////////////////////////////////////////////////////////////////////////////
-    // Internal override parameters                                               //
+    // Internal override parameters:                                             //
     ///////////////////////////////////////////////////////////////////////////////
     typedef struct SOverrideInternalParams
     {
         uint32_t QueryOverrideId;
     } TOverrideInternalParams;
+
+    ///////////////////////////////////////////////////////////////////////////////
+    // Custom metric file version:                                               //
+    ///////////////////////////////////////////////////////////////////////////////
+    typedef enum ECustomMetricsFileVersion
+    {
+        CUSTOM_METRICS_FILE_VERSION_0 = 0,
+        CUSTOM_METRICS_FILE_VERSION_1 = 1,
+        CUSTOM_METRICS_FILE_VERSION_2 = 2,
+
+        CUSTOM_METRICS_FILE_CURRENT = CUSTOM_METRICS_FILE_VERSION_2,
+    } TCustomMetricsFileVersion;
 
     //////////////////////////////////////////////////////////////////////////////
     //
@@ -158,12 +172,9 @@ namespace MetricsDiscoveryInternal
     class CAdapterGroup : public IAdapterGroupLatest
     {
     public:
-        //API 1.10
-        virtual IAdapter_1_10* GetAdapter( uint32_t index );
-
-        // API 1.9:
-        virtual const TAdapterGroupParams_1_6* GetParams() const;
-        virtual TCompletionCode                Close();
+        virtual IAdapterLatest*                  GetAdapter( uint32_t index );
+        virtual const TAdapterGroupParamsLatest* GetParams() const;
+        virtual TCompletionCode                  Close();
 
     public:
         // Non-API:
@@ -174,11 +185,12 @@ namespace MetricsDiscoveryInternal
         static bool            IsOpened();
         static CAdapterGroup*  Get();
 
-    private:
+    protected:
         // Constructor & Destructor:
         CAdapterGroup();
         virtual ~CAdapterGroup();
 
+    private:
         CAdapterGroup( const CAdapterGroup& ) = delete;            // Delete copy-constructor
         CAdapterGroup& operator=( const CAdapterGroup& ) = delete; // Delete assignment operator
 
@@ -197,13 +209,13 @@ namespace MetricsDiscoveryInternal
         // Variables:
         TAdapterGroupParamsLatest m_params;
         CAdapter*                 m_defaultAdapter;
-        Vector<CAdapter*>*        m_adapterVector;
+        std::vector<CAdapter*>    m_adapterVector;
 
     private:
         // Static Variables:
-        static void*              m_openCloseSemaphore;
-        static uint32_t           m_agRefCounter;
-        static CAdapterGroup*     m_adapterGroup;
+        static void*          m_openCloseSemaphore;
+        static uint32_t       m_agRefCounter;
+        static CAdapterGroup* m_adapterGroup;
 
         static const uint32_t ADAPTER_VECTOR_INCREASE = 8;
     };
@@ -220,43 +232,57 @@ namespace MetricsDiscoveryInternal
     class CAdapter : public IAdapterLatest
     {
     public:
+        // API 1.11:
+        // New.
+        virtual TCompletionCode SaveMetricsDeviceToFile( const char* fileName, void* saveParams, IMetricsDevice_1_11* metricsDevice, const uint32_t minMajorApiVersion, const uint32_t minMinorApiVersion );
+        // Updates.
+        virtual TCompletionCode OpenMetricsDevice( IMetricsDevice_1_11** metricsDevice );
+        virtual TCompletionCode OpenMetricsDeviceFromFile( const char* fileName, void* openParams, IMetricsDevice_1_11** metricsDevice );
+        virtual TCompletionCode OpenMetricsSubDevice( const uint32_t subDeviceIndex, IMetricsDevice_1_11** metricsDevice );
+        virtual TCompletionCode OpenMetricsSubDeviceFromFile( const uint32_t subDeviceIndex, const char* fileName, void* openParams, IMetricsDevice_1_11** metricsDevice );
+
         // API 1.10:
+        // Updates.
         virtual TCompletionCode OpenMetricsDevice( IMetricsDevice_1_10** metricsDevice );
         virtual TCompletionCode OpenMetricsDeviceFromFile( const char* fileName, void* openParams, IMetricsDevice_1_10** metricsDevice );
         virtual TCompletionCode OpenMetricsSubDevice( const uint32_t subDeviceIndex, IMetricsDevice_1_10** metricsDevice );
         virtual TCompletionCode OpenMetricsSubDeviceFromFile( const uint32_t subDeviceIndex, const char* fileName, void* openParams, IMetricsDevice_1_10** metricsDevice );
 
         // API 1.9:
-        virtual const TSubDeviceParams_1_9* GetSubDeviceParams( const uint32_t subDeviceIndex );
-        virtual const TEngineParams_1_9*    GetEngineParams( const uint32_t subDeviceIndex, const uint32_t engineIndex );
-        virtual TCompletionCode             OpenMetricsSubDevice( const uint32_t subDeviceIndex, IMetricsDevice_1_5** metricsDevice );
-        virtual TCompletionCode             OpenMetricsSubDeviceFromFile( const uint32_t subDeviceIndex, const char* fileName, void* openParams, IMetricsDevice_1_5** metricsDevice );
+        // Updates.
+        virtual const TAdapterParamsLatest*   GetParams() const;
+        virtual const TSubDeviceParamsLatest* GetSubDeviceParams( const uint32_t subDeviceIndex );
+        virtual const TEngineParamsLatest*    GetEngineParams( const uint32_t subDeviceIndex, const uint32_t engineIndex );
+        virtual TCompletionCode               OpenMetricsSubDevice( const uint32_t subDeviceIndex, IMetricsDevice_1_5** metricsDevice );
+        virtual TCompletionCode               OpenMetricsSubDeviceFromFile( const uint32_t subDeviceIndex, const char* fileName, void* openParams, IMetricsDevice_1_5** metricsDevice );
 
-        // API 1.8:
-        virtual const TAdapterParams_1_9* GetParams() const;
-        virtual TCompletionCode           Reset();
-        virtual TCompletionCode           OpenMetricsDevice( IMetricsDevice_1_5** metricsDevice );
-        virtual TCompletionCode           OpenMetricsDeviceFromFile( const char* fileName, void* openParams, IMetricsDevice_1_5** metricsDevice );
-        virtual TCompletionCode           CloseMetricsDevice( IMetricsDevice_1_5* metricsDevice );
-        virtual TCompletionCode           SaveMetricsDeviceToFile( const char* fileName, void* saveParams, IMetricsDevice_1_5* metricsDevice );
-
-        // Non API:
-        CDriverInterface* GetDriverInterface();
-        CSubDevices&      GetSubDevices();
+        // API 1.6:
+        virtual TCompletionCode Reset();
+        virtual TCompletionCode OpenMetricsDevice( IMetricsDevice_1_5** metricsDevice );
+        virtual TCompletionCode OpenMetricsDeviceFromFile( const char* fileName, void* openParams, IMetricsDevice_1_5** metricsDevice );
+        virtual TCompletionCode CloseMetricsDevice( IMetricsDevice_1_5* metricsDevice );
+        virtual TCompletionCode SaveMetricsDeviceToFile( const char* fileName, void* saveParams, IMetricsDevice_1_5* metricsDevice );
 
     public:
         // Constructor & Destructor:
-        CAdapter( CAdapterGroup& adapterGroup, const TAdapterParams_1_9& params, CAdapterHandle& adapterHandle );
+        CAdapter( CAdapterGroup& adapterGroup, const TAdapterParamsLatest& params, CAdapterHandle& adapterHandle );
         virtual ~CAdapter();
 
         CAdapter( const CAdapter& ) = delete;            // Delete copy-constructor
         CAdapter& operator=( const CAdapter& ) = delete; // Delete assignment operator
 
-        // Non API:
+        // Non-API:
         TCompletionCode OpenMetricsSubDevice( const uint32_t subDeviceIndex, CMetricsDevice** metricsDevice );
         TCompletionCode OpenMetricsSubDeviceFromFile( const uint32_t subDeviceIndex, const char* fileName, void* openParams, CMetricsDevice** metricsDevice );
-        TCompletionCode OpenMetricsDevice( CMetricsDevice** metricsDevice );
-        TCompletionCode OpenMetricsDeviceFromFile( const char* fileName, void* openParams, CMetricsDevice** metricsDevice );
+        TCompletionCode CloseMetricsDevice( CMetricsDevice* metricsDevice );
+        TCompletionCode SaveMetricsDeviceToFile( const char* fileName, void* saveParams, CMetricsDevice* metricsDevice, const uint32_t minMajorApiVersion, const uint32_t minMinorApiVersion );
+
+        TCompletionCode OpenMetricsDeviceByIndex( CMetricsDevice** metricsDevice, const uint32_t subDeviceIndex );
+        TCompletionCode OpenMetricsDeviceFromFileByIndex( const char* fileName, void* openParams, CMetricsDevice** metricsDevice, const uint32_t subDeviceIndex );
+
+        CDriverInterface* GetDriverInterface();
+        CSubDevices&      GetSubDevices();
+
     private:
         // Driver interface:
         TCompletionCode CreateDriverInterface();
@@ -268,17 +294,16 @@ namespace MetricsDiscoveryInternal
         TCompletionCode ReleaseOpenCloseSemaphore();
 
         // Metrics device:
-        TCompletionCode CreateMetricsDevice( CMetricsDevice** metricsDevice );
+        TCompletionCode CreateMetricsDevice( CMetricsDevice** metricsDevice, const uint32_t subDeviceIndex = 0 );
         void            DestroyMetricsDevice();
 
     private:
         // Variables:
-        TAdapterParamsLatest   m_params;        // Adapter information
-        CAdapterHandle*        m_adapterHandle; // OS adapter handle which the given CAdapter object represents
-
-        CDriverInterface*      m_driverInterface;    // Driver interface for this adapter
-        CMetricsDevice*        m_metricsDevice;      // Metrics device opened on this adapter
-        void*                  m_openCloseSemaphore; // Semaphore used during metrics device operations
+        TAdapterParamsLatest m_params;             // Adapter information
+        CAdapterHandle*      m_adapterHandle;      // OS adapter handle which the given CAdapter object represents
+        CDriverInterface*    m_driverInterface;    // Driver interface for this adapter
+        CMetricsDevice*      m_metricsDevice;      // Metrics device opened on this adapter
+        void*                m_openCloseSemaphore; // Semaphore used during metrics device operations
 
         // Sub devices.
         CSubDevices            m_subDevices;
@@ -305,20 +330,20 @@ namespace MetricsDiscoveryInternal
         ~CSymbolSet();
 
         // Non-API:
-        uint32_t           GetSymbolCount();
-        TGlobalSymbol_1_0* GetSymbol( uint32_t index );
-        TTypedValue_1_0*   GetSymbolValueByName( const char* name );
-        TCompletionCode    AddSymbol( const char* name, TTypedValue_1_0 typedValue, TSymbolType symbolType );
-        TCompletionCode    DetectSymbolValue( const char* name, TTypedValue_1_0* typedValue );
-        TCompletionCode    AddSymbolUINT32( const char* name, uint32_t value, TSymbolType symbolType );
-        TCompletionCode    AddSymbolUINT64( const char* name, uint64_t value, TSymbolType symbolType );
-        TCompletionCode    AddSymbolBOOL( const char* name, bool value, TSymbolType symbolType );
-        TCompletionCode    AddSymbolFLOAT( const char* name, float value, TSymbolType symbolType );
-        TCompletionCode    AddSymbolCSTRING( const char* name, char* value, TSymbolType symbolType );
-        TCompletionCode    AddSymbolBYTEARRAY( const char* name, TByteArray_1_0* value, TSymbolType symbolType );
-        TCompletionCode    WriteSymbolSetToFile( FILE* metricFile );
-        bool               IsSymbolAlreadyAdded( const char* symbolName );
-        TCompletionCode    RedetectSymbol( const char* name );
+        uint32_t             GetSymbolCount();
+        TGlobalSymbolLatest* GetSymbol( uint32_t index );
+        TTypedValueLatest*   GetSymbolValueByName( const char* name );
+        TCompletionCode      AddSymbol( const char* name, TTypedValueLatest typedValue, TSymbolType symbolType );
+        TCompletionCode      DetectSymbolValue( const char* name, TTypedValueLatest* typedValue );
+        TCompletionCode      AddSymbolUINT32( const char* name, uint32_t value, TSymbolType symbolType );
+        TCompletionCode      AddSymbolUINT64( const char* name, uint64_t value, TSymbolType symbolType );
+        TCompletionCode      AddSymbolBOOL( const char* name, bool value, TSymbolType symbolType );
+        TCompletionCode      AddSymbolFLOAT( const char* name, float value, TSymbolType symbolType );
+        TCompletionCode      AddSymbolCSTRING( const char* name, char* value, TSymbolType symbolType );
+        TCompletionCode      AddSymbolBYTEARRAY( const char* name, TByteArrayLatest* value, TSymbolType symbolType );
+        TCompletionCode      WriteSymbolSetToFile( FILE* metricFile );
+        bool                 IsSymbolAlreadyAdded( const char* symbolName );
+        TCompletionCode      RedetectSymbol( const char* name );
 
     private:
         bool            IsPavpDisabled( uint32_t capabilities );
@@ -327,12 +352,12 @@ namespace MetricsDiscoveryInternal
 
     private:
         // Variables:
-        Vector<TGlobalSymbol*>* m_symbolVector;
-        CMetricsDevice&         m_metricsDevice;
-        CDriverInterface&       m_driverInterface;
-        uint32_t                m_maxSlice;
-        uint32_t                m_maxSubslicePerSlice;
-        uint32_t                m_maxDualSubslicePerSlice;
+        std::vector<TGlobalSymbol*> m_symbolVector;
+        CMetricsDevice&             m_metricsDevice;
+        CDriverInterface&           m_driverInterface;
+        uint32_t                    m_maxSlice;
+        uint32_t                    m_maxSubslicePerSlice;
+        uint32_t                    m_maxDualSubslicePerSlice;
 
     private:
         // Static variables:
@@ -351,7 +376,9 @@ namespace MetricsDiscoveryInternal
     class CMetricsDevice : public IMetricsDeviceLatest
     {
     public:
-        //API 1.10:
+        virtual IConcurrentGroupLatest* GetConcurrentGroup( uint32_t index );
+
+        // API 1.10:
         virtual TCompletionCode GetGpuCpuTimestamps( uint64_t* gpuTimestampNs, uint64_t* cpuTimestampNs, uint32_t* cpuId, uint64_t* correlationIndicatorNs );
 
         // API 1.2:
@@ -360,15 +387,14 @@ namespace MetricsDiscoveryInternal
 
         // API 1.0:
         virtual TMetricsDeviceParams_1_2* GetParams( void );
-        virtual IConcurrentGroup_1_5*     GetConcurrentGroup( uint32_t index );
-        virtual TGlobalSymbol_1_0*        GetGlobalSymbol( uint32_t index );
-        virtual TTypedValue_1_0*          GetGlobalSymbolValueByName( const char* name );
+        virtual TGlobalSymbolLatest*      GetGlobalSymbol( uint32_t index );
+        virtual TTypedValueLatest*        GetGlobalSymbolValueByName( const char* name );
         virtual TCompletionCode           GetLastError();
         virtual TCompletionCode           GetGpuCpuTimestamps( uint64_t* gpuTimestampNs, uint64_t* cpuTimestampNs, uint32_t* cpuId );
 
     public:
         // Constructor & Destructor:
-        CMetricsDevice( CAdapter& adapter, CDriverInterface& driverInterface );
+        CMetricsDevice( CAdapter& adapter, CDriverInterface& driverInterface, const uint32_t subDeviceIndex = 0 );
         virtual ~CMetricsDevice();
 
         // Non-API:
@@ -378,7 +404,7 @@ namespace MetricsDiscoveryInternal
         bool              IsPavpDisabled( uint32_t capabilities );
         bool              IsAvailabilityEquationTrue( const char* availabilityEquation );
 
-        TCompletionCode SaveToFile( const char* fileName );
+        TCompletionCode SaveToFile( const char* fileName, const uint32_t minMajorApiVersion = 0, const uint32_t minMinorApiVersion = 0 );
         TCompletionCode OpenFromFile( const char* fileName, bool isInternalBuild );
 
         CConcurrentGroup* GetConcurrentGroupByName( const char* symbolicName );
@@ -393,7 +419,6 @@ namespace MetricsDiscoveryInternal
 
         // Sub devices.
         uint32_t GetSubDeviceIndex();
-        void     SetSubDeviceIndex( const uint32_t index );
 
         // Performance stream.
         int32_t               GetStreamId();
@@ -411,32 +436,31 @@ namespace MetricsDiscoveryInternal
         TCompletionCode ReadInformationFromFileBuffer( uint8_t** bufferPtr, CMetricSet* set );
         TCompletionCode ReadRegistersFromFileBuffer( uint8_t** bufferPtr, CMetricSet* set );
 
-        IOverride_1_2* AddOverride( TOverrideType overrideType );
-        bool           IsMetricsFileInPlainTextFormat( FILE* metricFile );
+        IOverrideLatest* AddOverride( TOverrideType overrideType );
+        bool             IsMetricsFileInPlainTextFormat( FILE* metricFile, uint32_t& fileVersion );
 
     private:
         // Variables:
-        TMetricsDeviceParamsLatest   m_params;
-
-        Vector<CConcurrentGroup*>*   m_groupsVector;
-        Vector<IOverrideLatest*>*    m_overridesVector;
-        CSymbolSet                   m_symbolSet;
+        TMetricsDeviceParamsLatest     m_params;
+        std::vector<CConcurrentGroup*> m_groupsVector;
+        std::vector<IOverrideLatest*>  m_overridesVector;
+        CSymbolSet                     m_symbolSet;
 
         // Stream:
-        int32_t                      m_streamId;
-        int32_t                      m_streamConfigId;
-        std::vector<uint8_t>         m_streamBuffer;
+        int32_t              m_streamId;
+        int32_t              m_streamConfigId;
+        std::vector<uint8_t> m_streamBuffer;
 
         // Sub device:
-        uint32_t                     m_subDeviceIndex;
+        uint32_t m_subDeviceIndex;
 
-        TPlatformType                m_platform;
-        TGTType                      m_gtType;
-        bool                         m_isOpenedFromFile;
-        uint32_t                     m_referenceCounter;
+        TPlatformType m_platform;
+        TGTType       m_gtType;
+        bool          m_isOpenedFromFile;
+        uint32_t      m_referenceCounter;
 
-        CAdapter&                    m_adapter;
-        CDriverInterface&            m_driverInterface;
+        CAdapter&         m_adapter;
+        CDriverInterface& m_driverInterface;
 
     private:
         // Static variables:
@@ -492,8 +516,8 @@ namespace MetricsDiscoveryInternal
 
     private:
         // Variables:
-        TOverrideParamsLatest m_params;
-        CMetricsDevice*       m_device;
+        TOverrideParams_1_2 m_params;
+        CMetricsDevice*     m_device;
     };
 
     //////////////////////////////////////////////////////////////////////////////
@@ -511,10 +535,10 @@ namespace MetricsDiscoveryInternal
     public:
         // API 1.0:
         virtual TConcurrentGroupParams_1_0* GetParams( void );
-        virtual IMetricSet_1_5*             GetMetricSet( uint32_t index );
+        virtual IMetricSetLatest*           GetMetricSet( uint32_t index );
 
         // Internal API (IInternalConcurrentGroup):
-        virtual IMetricSet_1_5* AddCustomMetricSet( TAddCustomMetricSetParams* params, IMetricSet_1_0* referenceMetricSet, bool copyInformationOnly );
+        virtual IMetricSetLatest* AddCustomMetricSet( TAddCustomMetricSetParams* params, IMetricSetLatest* referenceMetricSet, bool copyInformationOnly );
 
     public:
         // Constructor & Destructor:
@@ -522,36 +546,51 @@ namespace MetricsDiscoveryInternal
         virtual ~CConcurrentGroup();
 
         // Non-API:
-        CMetricSet* AddMetricSet( const char* symbolicName, const char* shortName, uint32_t apiMask, uint32_t categoryMask, uint32_t snapshotReportSize, uint32_t deltaReportSize, TReportType reportType, uint32_t platformMask, uint32_t gtMask = GT_TYPE_ALL, bool isCustom = false );
-        CMetricSet* GetMatchingMetricSet( const char* symbolName, uint32_t platformMask, uint32_t gtMask );
+        CMetricSet* AddMetricSet( const char* symbolicName, const char* shortName, uint32_t apiMask, uint32_t categoryMask, uint32_t snapshotReportSize, uint32_t deltaReportSize, TReportType reportType, uint32_t platformMask, const char* availabilityEquation = nullptr, uint32_t gtMask = GT_TYPE_ALL, bool isCustom = false );
+        CMetricSet* GetMatchingMetricSet( const char* symbolName, uint32_t platformMask, uint32_t gtMask, bool findWithTrueAvailabilityEquation = false );
+
+        CInformation*       AddInformation( const char* symbolName, const char* shortName, const char* longName, const char* groupName, uint32_t apiMask, TInformationType informationType, const char* informationUnits, const char* availabilityEquation, uint32_t informationXmlId );
+        CInformation*       AddInformation( CInformation* information );
+        IInformationLatest* GetInformation( uint32_t index );
+        uint32_t            GetInformationCount();
+
+        CMetricsDevice* GetMetricsDevice();
 
         TCompletionCode Lock();
         TCompletionCode Unlock();
         TCompletionCode WriteCConcurrentGroupToFile( FILE* metricFile );
 
     protected:
-        IMetricSet_1_5* AddCustomMetricSet( CMetricSet* referenceMetricSet, const char* signalName, const char* symbolName, const char* shortName, uint32_t apiMask, uint32_t categoryMask, uint32_t platformMask, uint32_t gtMask, uint32_t rawReportSize, uint32_t queryReportSize, const char* complementarySetsList, TApiSpecificId_1_0 apiSpecificId, TRegisterSet* startRegSets, uint32_t startRegSetsCount, bool copyInformationOnly = false );
-        bool            MatchingSetExists( const char* symbolName, uint32_t platformMask, uint32_t gtMask );
-        bool            AreMetricSetParamsValid( const char* symbolName, const char* shortName, uint32_t platformMask, uint32_t gtMask, TRegisterSet* startRegSets, uint32_t startRegSetsCount );
-        uint32_t        GetCustomSetCount();
-        TCompletionCode FillLockSemaphoreName( char* name, size_t size );
+        IMetricSetLatest* AddCustomMetricSet( CMetricSet* referenceMetricSet, const char* signalName, const char* symbolName, const char* shortName, uint32_t apiMask, uint32_t categoryMask, uint32_t platformMask, uint32_t gtMask, uint32_t rawReportSize, uint32_t queryReportSize, const char* complementarySetsList, TApiSpecificId_1_0 apiSpecificId, TRegisterSet* startRegSets, uint32_t startRegSetsCount, const char* availabilityEquation, bool copyInformationOnly = false );
+        bool              MatchingSetExists( const char* symbolName, uint32_t platformMask, uint32_t gtMask );
+        bool              AreMetricSetParamsValid( const char* symbolName, const char* shortName, uint32_t platformMask, uint32_t gtMask, TRegisterSet* startRegSets, uint32_t startRegSetsCount );
+        uint32_t          GetCustomSetCount();
+        TCompletionCode   FillLockSemaphoreName( char* name, size_t size );
 
         CMetricSet* FindSameMetricSetForPlatform( CMetricSet* metricSet, uint32_t platformMask );
+
+    public:
+        bool m_isAvailabile;
 
     protected:
         // Variables:
         TConcurrentGroupParamsLatest m_params_1_0;
         void*                        m_semaphore;
 
-        Vector<CMetricSet*>*         m_setsVector;
-        List<CMetricSet*>*           m_otherSetsList; // List of sets unavailable on current platform
+        std::vector<CMetricSet*> m_setsVector;
+        std::list<CMetricSet*>   m_otherSetsList; // List of sets unavailable on current platform
 
-        CMetricsDevice*              m_device;
+        std::vector<CInformation*> m_informationVector;
+        std::vector<CInformation*> m_otherInformationVector;
+        uint32_t                   m_informationCount;
+
+        CMetricsDevice* m_device;
 
     protected:
         // Static variables:
         static const uint32_t    SETS_VECTOR_INCREASE           = 16;
         static const TReportType DEFAULT_METRIC_SET_REPORT_TYPE = OA_REPORT_TYPE_256B_A45_NOA16;
+        static const uint32_t    INFORMATION_VECTOR_INCREASE    = 16;
     };
 
     //////////////////////////////////////////////////////////////////////////////
@@ -567,6 +606,9 @@ namespace MetricsDiscoveryInternal
     class COAConcurrentGroup : public CConcurrentGroup
     {
     public:
+        // API 1.3:
+        virtual TCompletionCode SetIoStreamSamplingType( TSamplingType type );
+
         // API 1.0:
         virtual TCompletionCode OpenIoStream( IMetricSet_1_0* metricSet, uint32_t processId, uint32_t* nsTimerPeriod, uint32_t* oaBufferSize );
         virtual TCompletionCode ReadIoStream( uint32_t* reportCount, char* reportData, uint32_t readFlags );
@@ -575,11 +617,8 @@ namespace MetricsDiscoveryInternal
         IInformation_1_0*       GetIoMeasurementInformation( uint32_t index );
         IInformation_1_0*       GetIoGpuContextInformation( uint32_t index );
 
-        // API 1.3:
-        virtual TCompletionCode SetIoStreamSamplingType( TSamplingType type );
-
         // Internal API (IInternalConcurrentGroup):
-        virtual IMetricSet_1_5* AddCustomMetricSet( TAddCustomMetricSetParams* params, IMetricSet_1_0* referenceMetricSet, bool copyInformationOnly = false );
+        virtual IMetricSetLatest* AddCustomMetricSet( TAddCustomMetricSetParams* params, IMetricSetLatest* referenceMetricSet, bool copyInformationOnly = false );
 
     public:
         // Constructor & Destructor:
@@ -596,13 +635,13 @@ namespace MetricsDiscoveryInternal
 
     protected:
         // Variables:
-        TStreamType            m_streamType;
-        CMetricSet*            m_ioMetricSet;
-        bool                   m_contextTagsEnabled;
-        uint32_t               m_processId;
-        void*                  m_streamEventHandle;
-        Vector<CInformation*>* m_ioMeasurementInfoVector;
-        Vector<CInformation*>* m_ioGpuContextInfoVector;
+        TStreamType                m_streamType;
+        CMetricSet*                m_ioMetricSet;
+        bool                       m_contextTagsEnabled;
+        uint32_t                   m_processId;
+        void*                      m_streamEventHandle;
+        std::vector<CInformation*> m_ioMeasurementInfoVector;
+        std::vector<CInformation*> m_ioGpuContextInfoVector;
 
     protected:
         // Static variables:
@@ -648,44 +687,46 @@ namespace MetricsDiscoveryInternal
     class CMetricSet : public IInternalMetricSet
     {
     public:
-        // API 1.0:
-        virtual TMetricSetParams_1_4* GetParams( void );
-        virtual IMetric_1_0*          GetMetric( uint32_t index );
-        virtual IInformation_1_0*     GetInformation( uint32_t index );
-        virtual IMetricSet_1_5*       GetComplementaryMetricSet( uint32_t index );
-        virtual TCompletionCode       Activate( void );   // To enable this configuration before query instance is created or IO stream is opened
-        virtual TCompletionCode       Deactivate( void ); // To disable this configuration after query instance is created or IO stream is closed
-        virtual IMetric_1_0*          AddCustomMetric(
-                     const char*       symbolName,
-                     const char*       shortName,
-                     const char*       groupName,
-                     const char*       longName,
-                     const char*       dxToOglAlias,
-                     uint32_t          usageFlagsMask,
-                     uint32_t          apiMask,
-                     TMetricResultType resultType,
-                     const char*       resultUnits,
-                     TMetricType       metricType,
-                     int64_t           loWatermark,
-                     int64_t           hiWatermark,
-                     THwUnitType       hwType,
-                     const char*       ioReadEquation,
-                     const char*       deltaFunction,
-                     const char*       queryReadEquation,
-                     const char*       normalizationEquation,
-                     const char*       maxValueEquation,
-                     const char*       signalName );
+        // API 1.11:
+        virtual TMetricSetParams_1_11* GetParams( void );
 
-        // Internal API (IInternalMetricSet):
-        virtual IMetric_1_0* AddCustomMetric( TAddCustomMetricParams* params );
+        // API 1.5:
+        virtual TCompletionCode CalculateMetrics( const uint8_t* rawData, uint32_t rawDataSize, TTypedValue_1_0* out, uint32_t outSize, uint32_t* outReportCount, TTypedValue_1_0* outMaxValues, uint32_t outMaxValuesSize );
 
         // API 1.1:
         virtual TCompletionCode SetApiFiltering( uint32_t apiMask );
         virtual TCompletionCode CalculateMetrics( const uint8_t* rawData, uint32_t rawDataSize, TTypedValue_1_0* out, uint32_t outSize, uint32_t* outReportCount, bool enableContextFiltering );
         virtual TCompletionCode CalculateIoMeasurementInformation( TTypedValue_1_0* out, uint32_t outSize );
 
-        // API 1.5:
-        virtual TCompletionCode CalculateMetrics( const uint8_t* rawData, uint32_t rawDataSize, TTypedValue_1_0* out, uint32_t outSize, uint32_t* outReportCount, TTypedValue_1_0* outMaxValues, uint32_t outMaxValuesSize );
+        // API 1.0:
+        virtual IMetric_1_0*      GetMetric( uint32_t index );
+        virtual IInformation_1_0* GetInformation( uint32_t index );
+        virtual IMetricSet_1_11*  GetComplementaryMetricSet( uint32_t index );
+        virtual TCompletionCode   Activate( void );   // To enable this configuration before query instance is created or IO stream is opened
+        virtual TCompletionCode   Deactivate( void ); // To disable this configuration after query instance is created or IO stream is closed
+        virtual IMetric_1_0*      AddCustomMetric(
+                 const char*       symbolName,
+                 const char*       shortName,
+                 const char*       groupName,
+                 const char*       longName,
+                 const char*       dxToOglAlias,
+                 uint32_t          usageFlagsMask,
+                 uint32_t          apiMask,
+                 TMetricResultType resultType,
+                 const char*       resultUnits,
+                 TMetricType       metricType,
+                 int64_t           loWatermark,
+                 int64_t           hiWatermark,
+                 THwUnitType       hwType,
+                 const char*       ioReadEquation,
+                 const char*       deltaFunction,
+                 const char*       queryReadEquation,
+                 const char*       normalizationEquation,
+                 const char*       maxValueEquation,
+                 const char*       signalName );
+
+        // Internal API (IInternalMetricSet):
+        virtual IMetric_1_0* AddCustomMetric( TAddCustomMetricParams* params );
 
     public:
         // Constructor & Destructor:
@@ -706,12 +747,12 @@ namespace MetricsDiscoveryInternal
         TCompletionCode AddComplementaryMetricSet( const char* complementaryMetricSetSymbolicName );
         TCompletionCode AddComplementaryMetricSets( const char* complementarySetsList );
 
-        TCompletionCode AddStartRegisterSet( uint32_t configId, uint32_t configPriority, const char* availabilityEquation = NULL, TConfigType configType = CONFIG_TYPE_COMMON );
+        TCompletionCode AddStartRegisterSet( uint32_t configId, uint32_t configPriority, const char* availabilityEquation = nullptr, TConfigType configType = CONFIG_TYPE_COMMON );
         TCompletionCode AddStartConfigRegister( uint32_t offset, uint32_t value, TRegisterType type );
         TCompletionCode RefreshConfigRegisters();
         TRegister**     GetStartConfiguration( uint32_t* count );
         TCompletionCode SendStartConfiguration( bool sendQueryConfigFlag );
-        void            AppendToConfiguration( Vector<TRegister*>* sourceRegs, Vector<TRegister*>* outPmRegs, Vector<TRegister*>* outReadRegs );
+        void            AppendToConfiguration( std::vector<TRegister*>& sourceRegs, std::vector<TRegister*>& outPmRegs, std::vector<TRegister*>& outReadRegs );
         bool            CheckSendConfigRequired( bool sendQueryConfigFlag );
 
         TCompletionCode ActivateInternal( bool sendConfigFlag, bool sendQueryConfigFlag );
@@ -722,6 +763,14 @@ namespace MetricsDiscoveryInternal
         bool                IsMetricAlreadyAdded( const char* symbolName );
         bool                IsCustom();
         CMetricsCalculator* GetMetricsCalculator();
+
+        TCompletionCode SetAvailabilityEquation( const char* equationString );
+        bool            IsAvailabilityEquationTrue();
+
+    protected:
+        CConcurrentGroup*      m_concurrentGroup;
+        TMetricSetParamsLatest m_params_1_0;
+        CMetricsDevice*        m_device;
 
     private:
         // API filtering:
@@ -743,40 +792,38 @@ namespace MetricsDiscoveryInternal
 
     private:
         // Variables:
-        TMetricSetParamsLatest  m_params_1_0;
-        TReportType             m_reportType;
+        TReportType m_reportType;
 
-        Vector<CMetric*>*       m_metricsVector;
-        Vector<CInformation*>*  m_informationVector;
-        Vector<const char*>*    m_complementarySetsVector;
-        Vector<TRegister*>*     m_startRegsVector;      // Stores only references
-        Vector<TRegister*>*     m_startRegsQueryVector; // Stores only references
+        std::vector<CMetric*>      m_metricsVector;
+        std::vector<CInformation*> m_informationVector;
+        std::vector<const char*>   m_complementarySetsVector;
+        std::vector<TRegister*>    m_startRegsVector;      // Stores only references
+        std::vector<TRegister*>    m_startRegsQueryVector; // Stores only references
 
-        List<CRegisterSet*>*    m_startRegisterSetList;
+        std::list<CRegisterSet*> m_startRegisterSetList;
 
         // List of unavailable metrics and information:
-        Vector<CMetric*>*       m_otherMetricsVector;
-        Vector<CInformation*>*  m_otherInformationVector;
+        std::vector<CMetric*>      m_otherMetricsVector;
+        std::vector<CInformation*> m_otherInformationVector;
 
-        CMetricsDevice*         m_device;
-        CConcurrentGroup*       m_concurrentGroup;
+        CEquation* m_availabilityEquation;
 
         // References to the currently used params/collections - filtered or not:
-        TMetricSetParamsLatest* m_currentParams;
-        Vector<CMetric*>*       m_currentMetricsVector;
-        Vector<CInformation*>*  m_currentInformationVector;
+        TMetricSetParamsLatest*     m_currentParams;
+        std::vector<CMetric*>*      m_currentMetricsVector;
+        std::vector<CInformation*>* m_currentInformationVector;
 
         // API filtered params/collections:
-        TMetricSetParamsLatest  m_filteredParams;
-        Vector<CMetric*>*       m_filteredMetricsVector;     // Stores only references
-        Vector<CInformation*>*  m_filteredInformationVector; // Stores only references
+        TMetricSetParamsLatest     m_filteredParams;
+        std::vector<CMetric*>      m_filteredMetricsVector;     // Stores only references
+        std::vector<CInformation*> m_filteredInformationVector; // Stores only references
 
         // Runtime state:
-        bool                    m_isFiltered;       // if true then 'filtered' variables are used
-        bool                    m_isCustom;         // if true then it has custom metrics or it's a custom set
-        bool                    m_isReadRegsCfgSet; // if true then read regs config will be cleared on Deactivate; determined during Activate
-        TPmRegsConfigInfo       m_pmRegsConfigInfo;
-        CMetricsCalculator*     m_metricsCalculator;
+        bool                m_isFiltered;       // if true then 'filtered' variables are used
+        bool                m_isCustom;         // if true then it has custom metrics or it's a custom set
+        bool                m_isReadRegsCfgSet; // if true then read regs config will be cleared on Deactivate; determined during Activate
+        TPmRegsConfigInfo   m_pmRegsConfigInfo;
+        CMetricsCalculator* m_metricsCalculator;
 
     private:
         // Static variables:
@@ -854,7 +901,7 @@ namespace MetricsDiscoveryInternal
     {
     public:
         // API 1.0:
-        virtual TInformationParams_1_0* GetParams( void );
+        virtual TInformationParamsLatest* GetParams( void );
 
     public:
         // Constructor & Destructor:
@@ -908,16 +955,16 @@ namespace MetricsDiscoveryInternal
         TCompletionCode     SetAvailabilityEquation( const char* equationString );
         TRegister*          AddConfigRegister( uint32_t offset, uint32_t value, TRegisterType type );
         bool                IsAvailable();
-        TCompletionCode     RegsToVector( Vector<TRegister*>* regVector );
+        TCompletionCode     RegsToVector( std::vector<TRegister*>& regVector );
 
         TCompletionCode WriteCRegisterSetToFile( FILE* metricFile );
 
     private:
         // Variables:
-        List<TRegister>*   m_regList;
-        TRegisterSetParams m_params;
-        CEquation*         m_availabilityEquation;
-        CMetricsDevice*    m_device;
+        std::list<TRegister> m_regList;
+        TRegisterSetParams   m_params;
+        CEquation*           m_availabilityEquation;
+        CMetricsDevice*      m_device;
 
         bool m_isAvailable;
     };
@@ -948,16 +995,16 @@ namespace MetricsDiscoveryInternal
         // Non-API:
         bool SolveBooleanEquation( void ); // Used only for availability equations
         bool ParseEquationString( const char* equationString );
-        bool AddEquationElement( CEquationElementInternal* element );
+        bool AddEquationElement( const CEquationElementInternal* element );
         bool ParseEquationElement( const char* element );
 
         TCompletionCode WriteCEquationToFile( FILE* metricFile );
 
     private:
         // Variables:
-        Vector<CEquationElementInternal>* m_elementsVector;
-        const char*                       m_equationString;
-        CMetricsDevice*                   m_device;
+        std::vector<CEquationElementInternal> m_elementsVector;
+        const char*                           m_equationString;
+        CMetricsDevice*                       m_device;
 
     private:
         // Static variables:

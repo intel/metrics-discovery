@@ -15,6 +15,8 @@ SPDX-License-Identifier: MIT
 #include "metrics_discovery_api.h"
 #include "md_utils.h"
 
+#include <stack>
+
 #define MD_SAVED_REPORT_NUMBER 0xFFFFFFFF
 
 using namespace MetricsDiscovery;
@@ -36,9 +38,9 @@ namespace MetricsDiscoveryInternal
         CMetricsCalculator* Calculator; // Required
 
         // ConcurrentGroup and MetricSet
-        IConcurrentGroup_1_5* ConcurrentGroup;
-        CMetricSet*           MetricSet; // Required
-        uint32_t              MetricsAndInformationCount;
+        IConcurrentGroupLatest* ConcurrentGroup;
+        CMetricSet*             MetricSet; // Required
+        uint32_t                MetricsAndInformationCount;
 
         // Input
         const uint8_t* RawData;        // Required
@@ -245,9 +247,9 @@ namespace MetricsDiscoveryInternal
 
         // Inline function
         bool inline EquationStackPush(
-            Stack<TTypedValue_1_0>& stack,
-            TTypedValue_1_0&        value,
-            uint32_t&               algorithmCheck )
+            std::stack<TTypedValue_1_0>& stack,
+            TTypedValue_1_0&             value,
+            uint32_t&                    algorithmCheck )
         {
             stack.push( value );
             algorithmCheck++;
@@ -255,14 +257,13 @@ namespace MetricsDiscoveryInternal
         }
 
     private:
-        Stack<TTypedValue_1_0> m_equationStack;
-        uint64_t               m_gpuCoreClocks;
-        uint32_t               m_euCoresCount;
-        uint32_t               m_savedReportSize;
-        uint8_t*               m_savedReport;
-        bool                   m_savedReportPresent;
-        uint64_t               m_contextIdPrev;
-        CMetricsDevice*        m_device;
+        uint64_t        m_gpuCoreClocks;
+        uint32_t        m_euCoresCount;
+        uint32_t        m_savedReportSize;
+        uint8_t*        m_savedReport;
+        bool            m_savedReportPresent;
+        uint64_t        m_contextIdPrev;
+        CMetricsDevice* m_device;
     };
 
 } // namespace MetricsDiscoveryInternal

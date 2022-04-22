@@ -164,14 +164,14 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     char* GetCopiedCString( const char* cstring )
     {
-        if( cstring == NULL )
+        if( cstring == nullptr )
         {
-            return NULL;
+            return nullptr;
         }
 
         size_t strLength     = strlen( cstring ) + 1;
         char*  copiedCString = new( std::nothrow ) char[strLength](); // Initialize all to 0
-        MD_CHECK_PTR_RET( copiedCString, NULL );
+        MD_CHECK_PTR_RET( copiedCString, nullptr );
 
         iu_strcpy_s( copiedCString, strLength, cstring );
 
@@ -199,22 +199,22 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     TByteArray_1_0* GetCopiedByteArray( const TByteArray_1_0* byteArray )
     {
-        if( byteArray == NULL )
+        if( byteArray == nullptr )
         {
-            return NULL;
+            return nullptr;
         }
 
         TByteArray_1_0* copiedByteArray = new( std::nothrow ) TByteArray_1_0;
-        MD_CHECK_PTR_RET( copiedByteArray, NULL );
+        MD_CHECK_PTR_RET( copiedByteArray, nullptr );
 
         copiedByteArray->Size = byteArray->Size;
         copiedByteArray->Data = new( std::nothrow ) uint8_t[copiedByteArray->Size](); // Initialize all to 0
-        if( copiedByteArray->Data == NULL )
+        if( copiedByteArray->Data == nullptr )
         {
             MD_SAFE_DELETE( copiedByteArray );
             MD_LOG( LOG_DEBUG, "ERROR: null pointer: copiedByteArray->Data" );
             MD_LOG_EXIT();
-            return NULL;
+            return nullptr;
         }
         iu_memcpy_s( copiedByteArray->Data, copiedByteArray->Size, byteArray->Data, byteArray->Size );
 
@@ -242,14 +242,14 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     char* GetCopiedCStringFromWcString( const wchar_t* wcstring )
     {
-        if( wcstring == NULL )
+        if( wcstring == nullptr )
         {
-            return NULL;
+            return nullptr;
         }
 
         size_t wstrLength    = wcslen( wcstring );
         char*  copiedCString = new( std::nothrow ) char[wstrLength + 1](); // One more for '\0', initialize all to 0
-        MD_CHECK_PTR_RET( copiedCString, NULL );
+        MD_CHECK_PTR_RET( copiedCString, nullptr );
 
         iu_wstrtombs_s( copiedCString, wstrLength + 1, wcstring, wstrLength );
 
@@ -278,7 +278,7 @@ namespace MetricsDiscoveryInternal
     {
         TByteArray_1_0 byteArray = {};
 
-        if( cstring != NULL )
+        if( cstring != nullptr )
         {
             size_t strLength = strlen( cstring );
             if( strncmp( cstring, "0x", 2 ) == 0 )
@@ -296,7 +296,7 @@ namespace MetricsDiscoveryInternal
             for( size_t i = 0; i < byteArray.Size; i++ )
             {
                 iu_snprintf( strChar, sizeof( strChar ), "%c", cstring[i] );
-                byteArray.Data[i] = (uint8_t) strtol( strChar, NULL, 16 );
+                byteArray.Data[i] = (uint8_t) strtol( strChar, nullptr, 16 );
             }
         }
 
@@ -321,12 +321,12 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     void WriteCStringToFile( const char* cstring, FILE* pFile )
     {
-        if( pFile == NULL )
+        if( pFile == nullptr )
         {
-            MD_ASSERT( pFile != NULL );
+            MD_ASSERT( pFile != nullptr );
             return;
         }
-        const char* cstr = ( cstring == NULL ) ? "" : cstring;
+        const char* cstr = ( cstring == nullptr ) ? "" : cstring;
 
         size_t strLength = strlen( cstr ) + 1;
         fwrite( cstr, 1, strLength, pFile );
@@ -350,10 +350,10 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     void WriteTTypedValueToFile( TTypedValue_1_0* typedValue, FILE* pFile )
     {
-        if( pFile == NULL || typedValue == NULL )
+        if( pFile == nullptr || typedValue == nullptr )
         {
-            MD_ASSERT( pFile != NULL );
-            MD_ASSERT( typedValue != NULL );
+            MD_ASSERT( pFile != nullptr );
+            MD_ASSERT( typedValue != nullptr );
             return;
         }
 
@@ -409,10 +409,10 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     char* ReadCStringFromFileBuffer( uint8_t** fileBuffer )
     {
-        if( fileBuffer == NULL || *fileBuffer == NULL )
+        if( fileBuffer == nullptr || *fileBuffer == nullptr )
         {
-            MD_ASSERT( fileBuffer != NULL );
-            MD_ASSERT( *fileBuffer != NULL );
+            MD_ASSERT( fileBuffer != nullptr );
+            MD_ASSERT( *fileBuffer != nullptr );
             return (char*) "";
         }
 
@@ -449,10 +449,10 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     uint32_t ReadUInt32FromFileBuffer( uint8_t** fileBuffer )
     {
-        if( fileBuffer == NULL || *fileBuffer == NULL )
+        if( fileBuffer == nullptr || *fileBuffer == nullptr )
         {
-            MD_ASSERT( fileBuffer != NULL );
-            MD_ASSERT( *fileBuffer != NULL );
+            MD_ASSERT( fileBuffer != nullptr );
+            MD_ASSERT( *fileBuffer != nullptr );
             return 0;
         }
 
@@ -482,10 +482,10 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     int64_t ReadInt64FromFileBuffer( uint8_t** fileBuffer )
     {
-        if( fileBuffer == NULL || *fileBuffer == NULL )
+        if( fileBuffer == nullptr || *fileBuffer == nullptr )
         {
-            MD_ASSERT( fileBuffer != NULL );
-            MD_ASSERT( *fileBuffer != NULL );
+            MD_ASSERT( fileBuffer != nullptr );
+            MD_ASSERT( *fileBuffer != nullptr );
             return 0;
         }
 
@@ -519,10 +519,10 @@ namespace MetricsDiscoveryInternal
         typedValue.ValueType   = VALUE_TYPE_UINT32;
         typedValue.ValueUInt32 = 0;
 
-        if( fileBuffer == NULL || *fileBuffer == NULL )
+        if( fileBuffer == nullptr || *fileBuffer == nullptr )
         {
-            MD_ASSERT( fileBuffer != NULL );
-            MD_ASSERT( *fileBuffer != NULL );
+            MD_ASSERT( fileBuffer != nullptr );
+            MD_ASSERT( *fileBuffer != nullptr );
             return typedValue;
         }
 
@@ -585,14 +585,14 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     char* ReadEquationStringFromFile( uint8_t** fileBuffer )
     {
-        if( fileBuffer == NULL || *fileBuffer == NULL )
+        if( fileBuffer == nullptr || *fileBuffer == nullptr )
         {
-            MD_ASSERT( fileBuffer != NULL );
-            MD_ASSERT( *fileBuffer != NULL );
+            MD_ASSERT( fileBuffer != nullptr );
+            MD_ASSERT( *fileBuffer != nullptr );
             return (char*) "";
         }
 
-        char* ret = NULL;
+        char* ret = nullptr;
 
         if( ( **fileBuffer ) == 0xFF )
         {
@@ -607,16 +607,91 @@ namespace MetricsDiscoveryInternal
         return ret;
     }
 
+    //////////////////////////////////////////////////////////////////////////////
+    //
+    // Group:
+    //     Metrics Discovery Utils
+    //
+    // Function:
+    //     ClearVector
+    //
+    // Description:
+    //     Clears given std::vector
+    //     If vector contains pointers to objects these objects are deleted and the
+    //     memory is freed.
+    //     Mirrors the behaviour of MetricsDiscoveryInternal::Vector::Clear
+    //
+    // Input:
+    //     std::vector<T>& / std::vector<T*>& - reference to vector
+    //
+    //////////////////////////////////////////////////////////////////////////////
+    template <typename T>
+    void ClearVector( std::vector<T*>& vector )
+    {
+        for( T* ptr : vector )
+        {
+            MD_SAFE_DELETE( ptr );
+        }
+
+        vector.clear();
+    }
+
+    template <typename T>
+    void ClearVector( std::vector<T>& vector )
+    {
+        vector.clear();
+    }
+
+    //////////////////////////////////////////////////////////////////////////////
+    //
+    // Group:
+    //     Metrics Discovery Utils
+    //
+    // Function:
+    //     ClearList
+    //
+    // Description:
+    //     Clears given std::list
+    //     If list contains pointers to objects these objects are deleted and the
+    //     memory is freed.
+    //     Mirrors the behaviour of MetricsDiscoveryInternal::List::Clear
+    //
+    // Input:
+    //     std::list<T>* / std::list<T*>* - reference to list
+    //
+    //////////////////////////////////////////////////////////////////////////////
+    template <typename T>
+    void ClearList( std::list<T>& list )
+    {
+        list.clear();
+    }
+
+    template <typename T>
+
+    void ClearList( std::list<T*>& list )
+    {
+        for( T* ptr : list )
+        {
+            MD_SAFE_DELETE( ptr );
+        }
+
+        list.clear();
+    }
+
     // Explicit Instantiation
-    template class Vector<TGlobalSymbol*>;
-    template class Vector<CConcurrentGroup*>;
-    template class Vector<CMetricSet*>;
-    template class Vector<CMetric*>;
-    template class Vector<CInformation*>;
-    template class Vector<TRegister>;
-    template class Vector<CEquationElementInternal>;
-    template class Vector<const char*>;
-    template class List<uint64_t>;
-    template class List<CMetric*>;
+    template void ClearVector( std::vector<CInformation*>& );
+    template void ClearVector( std::vector<CAdapter*>& );
+    template void ClearVector( std::vector<CConcurrentGroup*>& );
+    template void ClearVector( std::vector<CMetricSet*>& );
+    template void ClearVector( std::vector<CMetric*>& );
+    template void ClearVector( std::vector<char const*>& );
+    template void ClearVector( std::vector<SRegister*>& );
+    template void ClearVector( std::vector<CEquationElementInternal>& );
+    template void ClearVector( std::vector<SGlobalSymbol*>& );
+    template void ClearVector( std::vector<IOverride_1_2*>& );
+    template void ClearList( std::list<uint64_t>& );
+    template void ClearList( std::list<CRegisterSet*>& );
+    template void ClearList( std::list<CMetricSet*>& );
+    template void ClearList( std::list<SRegister>& );
 
 } // namespace MetricsDiscoveryInternal

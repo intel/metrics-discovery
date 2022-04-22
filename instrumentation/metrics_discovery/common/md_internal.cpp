@@ -1,6 +1,6 @@
 /*========================== begin_copyright_notice ============================
 
-Copyright (C) 2019-2021 Intel Corporation
+Copyright (C) 2019-2022 Intel Corporation
 
 SPDX-License-Identifier: MIT
 
@@ -12,6 +12,7 @@ SPDX-License-Identifier: MIT
 
 #include "md_internal.h"
 #include "md_metrics.h"
+#include "md_utils.h"
 
 #include <string>
 #include <string.h>
@@ -33,7 +34,7 @@ namespace MetricsDiscovery
     }
     TEquationElement_1_0* IEquation_1_0::GetEquationElement( uint32_t index )
     {
-        return NULL;
+        return nullptr;
     }
 
     IMetricsDevice_1_0::~IMetricsDevice_1_0()
@@ -41,19 +42,19 @@ namespace MetricsDiscovery
     }
     TMetricsDeviceParams_1_0* IMetricsDevice_1_0::GetParams( void )
     {
-        return NULL;
+        return nullptr;
     }
     IConcurrentGroup_1_0* IMetricsDevice_1_0::GetConcurrentGroup( uint32_t index )
     {
-        return NULL;
+        return nullptr;
     }
     TGlobalSymbol_1_0* IMetricsDevice_1_0::GetGlobalSymbol( uint32_t index )
     {
-        return NULL;
+        return nullptr;
     }
     TTypedValue_1_0* IMetricsDevice_1_0::GetGlobalSymbolValueByName( const char* name )
     {
-        return NULL;
+        return nullptr;
     }
     TCompletionCode IMetricsDevice_1_0::GetLastError( void )
     {
@@ -65,27 +66,31 @@ namespace MetricsDiscovery
     }
     IConcurrentGroup_1_1* IMetricsDevice_1_1::GetConcurrentGroup( uint32_t index )
     {
-        return NULL;
+        return nullptr;
     }
     TMetricsDeviceParams_1_2* IMetricsDevice_1_2::GetParams( void )
     {
-        return NULL;
+        return nullptr;
     }
     IOverride_1_2* IMetricsDevice_1_2::GetOverride( uint32_t index )
     {
-        return NULL;
+        return nullptr;
     }
     IOverride_1_2* IMetricsDevice_1_2::GetOverrideByName( const char* name )
     {
-        return NULL;
+        return nullptr;
     }
     IConcurrentGroup_1_5* IMetricsDevice_1_5::GetConcurrentGroup( uint32_t index )
     {
-        return NULL;
+        return nullptr;
     }
     TCompletionCode IMetricsDevice_1_10::GetGpuCpuTimestamps( uint64_t* gpuTimestampNs, uint64_t* cpuTimestampNs, uint32_t* cpuId, uint64_t* correlationIndicatorNs )
     {
         return CC_ERROR_NOT_SUPPORTED;
+    }
+    IConcurrentGroup_1_11* IMetricsDevice_1_11::GetConcurrentGroup( uint32_t index )
+    {
+        return nullptr;
     }
 
     IOverride_1_2::~IOverride_1_2()
@@ -93,7 +98,7 @@ namespace MetricsDiscovery
     }
     TOverrideParams_1_2* IOverride_1_2::GetParams( void )
     {
-        return NULL;
+        return nullptr;
     }
     TCompletionCode IOverride_1_2::SetOverride( TSetOverrideParams_1_2* params, uint32_t paramsSize )
     {
@@ -105,11 +110,11 @@ namespace MetricsDiscovery
     }
     TConcurrentGroupParams_1_0* IConcurrentGroup_1_0::GetParams( void )
     {
-        return NULL;
+        return nullptr;
     }
     IMetricSet_1_0* IConcurrentGroup_1_0::GetMetricSet( uint32_t index )
     {
-        return NULL;
+        return nullptr;
     }
     TCompletionCode IConcurrentGroup_1_0::OpenIoStream( IMetricSet_1_0* metricSet, uint32_t processId, uint32_t* nsTimerPeriod, uint32_t* oaBufferSize )
     {
@@ -129,24 +134,29 @@ namespace MetricsDiscovery
     }
     IInformation_1_0* IConcurrentGroup_1_0::GetIoMeasurementInformation( uint32_t index )
     {
-        return NULL;
+        return nullptr;
     }
     IInformation_1_0* IConcurrentGroup_1_0::GetIoGpuContextInformation( uint32_t index )
     {
-        return NULL;
+        return nullptr;
     }
-
     IMetricSet_1_1* IConcurrentGroup_1_1::GetMetricSet( uint32_t index )
     {
-        return NULL;
+        return nullptr;
     }
+
     TCompletionCode IConcurrentGroup_1_3::SetIoStreamSamplingType( TSamplingType type )
     {
         return CC_ERROR_NOT_SUPPORTED;
-    };
+    }
+
     IMetricSet_1_5* IConcurrentGroup_1_5::GetMetricSet( uint32_t index )
     {
-        return NULL;
+        return nullptr;
+    }
+    IMetricSet_1_11* IConcurrentGroup_1_11::GetMetricSet( uint32_t index )
+    {
+        return nullptr;
     }
 
     IMetricSet_1_0::~IMetricSet_1_0()
@@ -154,19 +164,19 @@ namespace MetricsDiscovery
     }
     TMetricSetParams_1_0* IMetricSet_1_0::GetParams( void )
     {
-        return NULL;
+        return nullptr;
     }
     IMetric_1_0* IMetricSet_1_0::GetMetric( uint32_t index )
     {
-        return NULL;
+        return nullptr;
     }
     IInformation_1_0* IMetricSet_1_0::GetInformation( uint32_t index )
     {
-        return NULL;
+        return nullptr;
     }
     IMetricSet_1_0* IMetricSet_1_0::GetComplementaryMetricSet( uint32_t index )
     {
-        return NULL;
+        return nullptr;
     }
     TCompletionCode IMetricSet_1_0::Activate( void )
     {
@@ -178,7 +188,7 @@ namespace MetricsDiscovery
     }
     IMetric_1_0* IMetricSet_1_0::AddCustomMetric( const char* symbolicName, const char* shortName, const char* groupName, const char* longName, const char* dxToOglAlias, uint32_t usageFlagsMask, uint32_t apiMask, TMetricResultType resultType, const char* resultUnits, TMetricType metricType, int64_t loWatermark, int64_t hiWatermark, THwUnitType hwType, const char* ioReadEquation, const char* deltaFunction, const char* queryReadEquation, const char* normalizationEquation, const char* maxValueEquation, const char* signalName )
     {
-        return NULL;
+        return nullptr;
     }
 
     IMetricSet_1_1::~IMetricSet_1_1()
@@ -201,24 +211,29 @@ namespace MetricsDiscovery
     }
     TMetricSetParams_1_4* IMetricSet_1_4::GetParams( void )
     {
-        return NULL;
+        return nullptr;
     }
-
     IMetricSet_1_5* IMetricSet_1_5::GetComplementaryMetricSet( uint32_t index )
     {
-        return NULL;
+        return nullptr;
     }
     TCompletionCode IMetricSet_1_5::CalculateMetrics( const uint8_t* rawData, uint32_t rawDataSize, TTypedValue_1_0* out, uint32_t outSize, uint32_t* outReportCount, TTypedValue_1_0* outMaxValues, uint32_t outMaxValuesSize )
     {
         return CC_ERROR_NOT_SUPPORTED;
     }
-
+    IMetricSet_1_11::~IMetricSet_1_11()
+    {
+    }
+    TMetricSetParams_1_11* IMetricSet_1_11::GetParams( void )
+    {
+        return nullptr;
+    }
     IMetric_1_0::~IMetric_1_0()
     {
     }
     TMetricParams_1_0* IMetric_1_0 ::GetParams()
     {
-        return NULL;
+        return nullptr;
     }
 
     IInformation_1_0::~IInformation_1_0()
@@ -226,26 +241,24 @@ namespace MetricsDiscovery
     }
     TInformationParams_1_0* IInformation_1_0::GetParams()
     {
-        return NULL;
+        return nullptr;
     }
 
     // Internal API
     IInternalConcurrentGroup::~IInternalConcurrentGroup()
     {
     }
-    IMetricSet_1_5* IInternalConcurrentGroup::AddCustomMetricSet( TAddCustomMetricSetParams* params, IMetricSet_1_0* referenceMetricSet, bool copyInformationOnly )
+    IMetricSetLatest* IInternalConcurrentGroup::AddCustomMetricSet( TAddCustomMetricSetParams* params, IMetricSetLatest* referenceMetricSet, bool copyInformationOnly )
     {
-        return NULL;
+        return nullptr;
     }
-
     IInternalMetricSet::~IInternalMetricSet()
     {
     }
-    IMetric_1_0* IInternalMetricSet::AddCustomMetric( TAddCustomMetricParams* params )
+    IMetricLatest* IInternalMetricSet::AddCustomMetric( TAddCustomMetricParams* params )
     {
-        return NULL;
+        return nullptr;
     }
-
     IAdapterGroup_1_6::~IAdapterGroup_1_6()
     {
     }
@@ -255,23 +268,27 @@ namespace MetricsDiscovery
     }
     const TAdapterGroupParams_1_6* IAdapterGroup_1_6::GetParams( void ) const
     {
-        return NULL;
+        return nullptr;
     }
     IAdapter_1_6* IAdapterGroup_1_6::GetAdapter( uint32_t index )
     {
-        return NULL;
+        return nullptr;
     }
     IAdapter_1_8* IAdapterGroup_1_8::GetAdapter( uint32_t index )
     {
-        return NULL;
+        return nullptr;
     }
     IAdapter_1_9* IAdapterGroup_1_9::GetAdapter( uint32_t index )
     {
-        return NULL;
+        return nullptr;
     }
     IAdapter_1_10* IAdapterGroup_1_10::GetAdapter( uint32_t index )
     {
-        return NULL;
+        return nullptr;
+    }
+    IAdapter_1_11* IAdapterGroup_1_11::GetAdapter( uint32_t index )
+    {
+        return nullptr;
     }
 
     IAdapter_1_6::~IAdapter_1_6()
@@ -279,11 +296,7 @@ namespace MetricsDiscovery
     }
     const TAdapterParams_1_6* IAdapter_1_6::GetParams( void ) const
     {
-        return NULL;
-    }
-    const TAdapterParams_1_8* IAdapter_1_8::GetParams( void ) const
-    {
-        return NULL;
+        return nullptr;
     }
     TCompletionCode IAdapter_1_6::Reset( void )
     {
@@ -305,6 +318,10 @@ namespace MetricsDiscovery
     {
         return CC_ERROR_NOT_SUPPORTED;
     }
+    const TAdapterParams_1_8* IAdapter_1_8::GetParams( void ) const
+    {
+        return nullptr;
+    }
     TCompletionCode IAdapter_1_9::OpenMetricsSubDevice( const uint32_t subDeviceIndex, IMetricsDevice_1_5** metricsDevice )
     {
         return CC_ERROR_NOT_SUPPORTED;
@@ -315,15 +332,15 @@ namespace MetricsDiscovery
     }
     const TAdapterParams_1_9* IAdapter_1_9::GetParams( void ) const
     {
-        return NULL;
+        return nullptr;
     }
     const TSubDeviceParams_1_9* IAdapter_1_9::GetSubDeviceParams( const uint32_t subDeviceIndex )
     {
-        return NULL;
+        return nullptr;
     }
     const TEngineParams_1_9* IAdapter_1_9::GetEngineParams( const uint32_t subDeviceIndex, const uint32_t engineIndex )
     {
-        return NULL;
+        return nullptr;
     }
     TCompletionCode IAdapter_1_10::OpenMetricsDevice( IMetricsDevice_1_10** metricsDevice )
     {
@@ -341,11 +358,32 @@ namespace MetricsDiscovery
     {
         return CC_ERROR_NOT_SUPPORTED;
     }
+    TCompletionCode IAdapter_1_11::OpenMetricsDevice( IMetricsDevice_1_11** metricsDevice )
+    {
+        return CC_ERROR_NOT_SUPPORTED;
+    }
+    TCompletionCode IAdapter_1_11::OpenMetricsDeviceFromFile( const char* fileName, void* openParams, IMetricsDevice_1_11** metricsDevice )
+    {
+        return CC_ERROR_NOT_SUPPORTED;
+    }
+    TCompletionCode IAdapter_1_11::OpenMetricsSubDevice( const uint32_t subDeviceIndex, IMetricsDevice_1_11** metricsDevice )
+    {
+        return CC_ERROR_NOT_SUPPORTED;
+    }
+    TCompletionCode IAdapter_1_11::OpenMetricsSubDeviceFromFile( const uint32_t subDeviceIndex, const char* fileName, void* openParams, IMetricsDevice_1_11** metricsDevice )
+    {
+        return CC_ERROR_NOT_SUPPORTED;
+    }
+    TCompletionCode IAdapter_1_11::SaveMetricsDeviceToFile( const char* fileName, void* saveParams, IMetricsDevice_1_11* metricsDevice, const uint32_t minMajorApiVersion, const uint32_t minMinorApiVersion )
+    {
+        return CC_ERROR_NOT_SUPPORTED;
+    }
+
 } // namespace MetricsDiscovery
 
 namespace MetricsDiscoveryInternal
 {
-    static TMetricGroupNameIdPair GroupNamePairs[] = {
+    static const TMetricGroupNameIdPair GroupNamePairs[] = {
         { "GPU", METRIC_GROUP_NAME_ID_GPU, METRIC_GROUP_LEVEL_0 },
         { "GTI", METRIC_GROUP_NAME_ID_GTI, METRIC_GROUP_LEVEL_0 },
         { "LLC", METRIC_GROUP_NAME_ID_LLC, METRIC_GROUP_LEVEL_0 },
@@ -427,9 +465,9 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     static TCompletionCode WriteEquationToFile( CEquation* equation, FILE* metricFile )
     {
-        if( metricFile == NULL )
+        if( metricFile == nullptr )
         {
-            MD_ASSERT( metricFile != NULL );
+            MD_ASSERT( metricFile != nullptr );
             return CC_ERROR_INVALID_PARAMETER;
         }
 
@@ -468,7 +506,7 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     static TCompletionCode SetDeltaFunction( const char* equationString, TDeltaFunction_1_0* deltaFunction )
     {
-        if( equationString == NULL || strcmp( equationString, "" ) == 0 )
+        if( equationString == nullptr || strcmp( equationString, "" ) == 0 )
         {
             deltaFunction->FunctionType = DELTA_FUNCTION_NULL;
             return CC_OK;
@@ -478,11 +516,11 @@ namespace MetricsDiscoveryInternal
             deltaFunction->FunctionType = DELTA_N_BITS;
             if( equationString[5] == ' ' )
             {
-                deltaFunction->BitsCount = strtoul( (char*) &equationString[6], NULL, 10 );
+                deltaFunction->BitsCount = strtoul( (char*) &equationString[6], nullptr, 10 );
             }
             else
             {
-                deltaFunction->BitsCount = strtoul( (char*) &equationString[5], NULL, 10 );
+                deltaFunction->BitsCount = strtoul( (char*) &equationString[5], nullptr, 10 );
             }
             return CC_OK;
         }
@@ -546,11 +584,11 @@ namespace MetricsDiscoveryInternal
         // Delete previous equation if any
         MD_SAFE_DELETE( *equation );
 
-        // NULL is fine condition for "" equations
-        if( equationString != NULL && strcmp( equationString, "" ) != 0 )
+        // nullptr is fine condition for "" equations
+        if( equationString != nullptr && strcmp( equationString, "" ) != 0 )
         {
-            *equation = (CEquation*) new( std::nothrow ) CEquation( device );
-            if( *equation == NULL || !( *equation )->ParseEquationString( equationString ) )
+            *equation = new( std::nothrow ) CEquation( device );
+            if( *equation == nullptr || !( *equation )->ParseEquationString( equationString ) )
             {
                 MD_SAFE_DELETE( *equation );
                 ret = CC_ERROR_GENERAL;
@@ -572,7 +610,7 @@ namespace MetricsDiscoveryInternal
     //     Semaphore used for controlling parallel Open/CloseAdapterGroup calls.
     //
     //////////////////////////////////////////////////////////////////////////////
-    void* CAdapterGroup::m_openCloseSemaphore = NULL;
+    void* CAdapterGroup::m_openCloseSemaphore = nullptr;
 
     //////////////////////////////////////////////////////////////////////////////
     //
@@ -600,7 +638,7 @@ namespace MetricsDiscoveryInternal
     //     Adapter group global instance.
     //
     //////////////////////////////////////////////////////////////////////////////
-    CAdapterGroup* CAdapterGroup::m_adapterGroup = NULL;
+    CAdapterGroup* CAdapterGroup::m_adapterGroup = nullptr;
 
     //////////////////////////////////////////////////////////////////////////////
     //
@@ -616,14 +654,14 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     CAdapterGroup::CAdapterGroup()
         : m_params{}
-        , m_defaultAdapter( NULL )
-        , m_adapterVector( NULL )
+        , m_defaultAdapter( nullptr )
+        , m_adapterVector()
     {
         m_params.Version.MajorNumber = MD_API_MAJOR_NUMBER_CURRENT;
         m_params.Version.MinorNumber = MD_API_MINOR_NUMBER_CURRENT;
         m_params.Version.BuildNumber = MD_API_BUILD_NUMBER_CURRENT;
 
-        m_adapterVector = new( std::nothrow ) Vector<CAdapter*>( ADAPTER_VECTOR_INCREASE );
+        m_adapterVector.reserve( ADAPTER_VECTOR_INCREASE );
     }
 
     //////////////////////////////////////////////////////////////////////////////
@@ -640,7 +678,7 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     CAdapterGroup::~CAdapterGroup()
     {
-        MD_SAFE_DELETE( m_adapterVector );
+        ClearVector( m_adapterVector );
     }
 
     //////////////////////////////////////////////////////////////////////////////
@@ -678,19 +716,17 @@ namespace MetricsDiscoveryInternal
     //     uint32_t index - index of a chosen adapter
     //
     // Output:
-    //     IAdapter_1_10*  - chosen adapter or null
+    //     IAdapterLatest* - chosen adapter or null
     //
     //////////////////////////////////////////////////////////////////////////////
-    IAdapter_1_10* CAdapterGroup::GetAdapter( uint32_t index )
+    IAdapterLatest* CAdapterGroup::GetAdapter( uint32_t index )
     {
-        MD_CHECK_PTR_RET( m_adapterVector, NULL );
-
-        if( index < m_adapterVector->GetCount() )
+        if( index < m_adapterVector.size() )
         {
-            return ( *m_adapterVector )[index];
+            return m_adapterVector[index];
         }
 
-        return NULL;
+        return nullptr;
     }
 
     //////////////////////////////////////////////////////////////////////////////
@@ -822,7 +858,7 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     bool CAdapterGroup::IsOpened()
     {
-        return m_adapterGroup != NULL;
+        return m_adapterGroup != nullptr;
     }
 
     //////////////////////////////////////////////////////////////////////////////
@@ -901,12 +937,12 @@ namespace MetricsDiscoveryInternal
     //     CAdapterGroup** adapterGroup - [optional] created adapter group
     //
     // Output:
-    //     TCompletionCode               - CC_OK if success
+    //     TCompletionCode              - CC_OK if success
     //
     //////////////////////////////////////////////////////////////////////////////
     TCompletionCode CAdapterGroup::CreateAdapterGroup( CAdapterGroup** adapterGroup )
     {
-        MD_ASSERT( m_adapterGroup == NULL );
+        MD_ASSERT( m_adapterGroup == nullptr );
 
         m_adapterGroup = new( std::nothrow ) CAdapterGroup();
         MD_CHECK_PTR_RET( m_adapterGroup, CC_ERROR_NO_MEMORY );
@@ -984,7 +1020,7 @@ namespace MetricsDiscoveryInternal
                 break;
             }
         }
-        MD_ASSERT( m_params.AdapterCount == m_adapterVector->GetCount() );
+        MD_ASSERT( m_params.AdapterCount == m_adapterVector.size() );
 
         // 3. Choose default adapter
         if( ret == CC_OK )
@@ -1025,8 +1061,8 @@ namespace MetricsDiscoveryInternal
         auto adapter = new( std::nothrow ) CAdapter( *this, adapterData.Params, *adapterData.Handle );
         MD_CHECK_PTR_RET( adapter, CC_ERROR_NO_MEMORY );
 
-        m_adapterVector->PushBack( adapter );
-        m_params.AdapterCount = m_adapterVector->GetCount();
+        m_adapterVector.push_back( adapter );
+        m_params.AdapterCount = m_adapterVector.size();
 
         const TAdapterParams_1_6* adapterParams = adapter->GetParams();
 
@@ -1050,10 +1086,10 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     void CAdapterGroup::CleanupAdapters()
     {
-        m_defaultAdapter      = NULL;
+        m_defaultAdapter      = nullptr;
         m_params.AdapterCount = 0;
 
-        m_adapterVector->Clear();
+        ClearVector( m_adapterVector );
     }
 
     //////////////////////////////////////////////////////////////////////////////
@@ -1069,24 +1105,22 @@ namespace MetricsDiscoveryInternal
     //     Currently default is first external GPU.
     //
     // Output:
-    //     CAdapter* - default adapter or NULL if adapter count if 0
+    //     CAdapter* - default adapter or nullptr if adapter count if 0
     //
     //////////////////////////////////////////////////////////////////////////////
     CAdapter* CAdapterGroup::ChooseDefaultAdapter()
     {
-        MD_CHECK_PTR_RET( m_adapterVector, NULL );
-        if( !m_adapterVector->GetCount() )
+        if( !m_adapterVector.size() )
         {
-            return NULL;
+            return nullptr;
         }
 
         // 1. Initialize to first adapter
-        CAdapter* defaultAdapter = ( *m_adapterVector )[0];
+        CAdapter* defaultAdapter = m_adapterVector.front();
 
         // 2. Change to discrete GPU if exists
-        for( uint32_t i = 0; i < m_adapterVector->GetCount(); ++i )
+        for( auto& adapter : m_adapterVector )
         {
-            auto adapter = ( *m_adapterVector )[i];
             if( adapter && adapter->GetParams()->Type == ADAPTER_TYPE_DISCRETE )
             {
                 defaultAdapter = adapter;
@@ -1120,9 +1154,9 @@ namespace MetricsDiscoveryInternal
         : m_params( params )
         , m_adapterHandle( &adapterHandle )
         , m_adapterGroup( adapterGroup )
-        , m_openCloseSemaphore( NULL )
-        , m_driverInterface( NULL )
-        , m_metricsDevice( NULL )
+        , m_openCloseSemaphore( nullptr )
+        , m_driverInterface( nullptr )
+        , m_metricsDevice( nullptr )
         , m_subDevices( *this )
         , m_subDeviceParams{}
         , m_engineParams{}
@@ -1200,7 +1234,7 @@ namespace MetricsDiscoveryInternal
     {
         return ( m_subDevices.GetSubDeviceParams( subDeviceIndex, m_subDeviceParams ) == CC_OK )
             ? &m_subDeviceParams
-            : NULL;
+            : nullptr;
     }
 
     //////////////////////////////////////////////////////////////////////////////
@@ -1226,7 +1260,7 @@ namespace MetricsDiscoveryInternal
     {
         return ( m_subDevices.GetEngineParams( subDeviceIndex, engineIndex, m_engineParams ) == CC_OK )
             ? &m_engineParams
-            : NULL;
+            : nullptr;
     }
 
     //////////////////////////////////////////////////////////////////////////////
@@ -1289,7 +1323,7 @@ namespace MetricsDiscoveryInternal
                 retVal = CreateDriverInterface();
                 if( retVal == CC_OK )
                 {
-                    MD_ASSERT( m_driverInterface != NULL );
+                    MD_ASSERT( m_driverInterface != nullptr );
 
                     // 4. Force disable performance monitoring support
                     retVal = m_driverInterface->ForceSupportDisable();
@@ -1324,21 +1358,22 @@ namespace MetricsDiscoveryInternal
     //     CAdapter
     //
     // Method:
-    //     OpenMetricsDevice
+    //     OpenMetricsDeviceByIndex
     //
     // Description:
-    //     Opens metrics device or retrieves an instance opened before. Only one
+    //     Opens metrics device and sets sub device index or retrieves an instance opened before. Only one
     //     instance per adapter may exist. All OpenMetricsDevice() calls are
     //     reference counted.
     //
     // Input:
-    //     CMetricsDevice** metricsDevice - [out] created / retrieved metrics device
+    //     CMetricsDevice**      metricsDevice   - [out] created / retrieved metrics device
+    //     const uint32_t        subDeviceIndex  - index of sub device to create
     //
     // Output:
-    //     TCompletionCode                - CC_OK or CC_ALREADY_INITIALIZED means success
+    //     TCompletionCode                       - CC_OK or CC_ALREADY_INITIALIZED means success
     //
     //////////////////////////////////////////////////////////////////////////////
-    TCompletionCode CAdapter::OpenMetricsDevice( CMetricsDevice** metricsDevice )
+    TCompletionCode CAdapter::OpenMetricsDeviceByIndex( CMetricsDevice** metricsDevice, const uint32_t subDeviceIndex )
     {
         MD_LOG_ENTER();
         MD_CHECK_PTR_RET( metricsDevice, CC_ERROR_INVALID_PARAMETER );
@@ -1361,7 +1396,7 @@ namespace MetricsDiscoveryInternal
         }
         else
         {
-            retVal = CreateMetricsDevice( metricsDevice );
+            retVal = CreateMetricsDevice( metricsDevice, subDeviceIndex );
             if( retVal == CC_OK )
             {
                 ++m_metricsDevice->GetReferenceCounter();
@@ -1397,7 +1432,7 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     TCompletionCode CAdapter::OpenMetricsDevice( IMetricsDevice_1_5** metricsDevice )
     {
-        return OpenMetricsDevice( (CMetricsDevice**) metricsDevice );
+        return OpenMetricsDeviceByIndex( (CMetricsDevice**) metricsDevice, MD_ROOT_DEVICE_INDEX );
     }
 
     //////////////////////////////////////////////////////////////////////////////
@@ -1422,7 +1457,7 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     TCompletionCode CAdapter::OpenMetricsDevice( IMetricsDevice_1_10** metricsDevice )
     {
-        return OpenMetricsDevice( (CMetricsDevice**) metricsDevice );
+        return OpenMetricsDeviceByIndex( (CMetricsDevice**) metricsDevice, MD_ROOT_DEVICE_INDEX );
     }
 
     //////////////////////////////////////////////////////////////////////////////
@@ -1431,23 +1466,49 @@ namespace MetricsDiscoveryInternal
     //     CAdapter
     //
     // Method:
-    //     OpenMetricsDeviceFromFile
+    //     OpenMetricsDevice
     //
     // Description:
-    //     Opens metrics device or uses an instance opened before (just like OpenMetricsDevice),
+    //     Opens metrics device or retrieves an instance opened before. Only one
+    //     instance per adapter may exist. All OpenMetricsDevice() calls are
+    //     reference counted.
+    //
+    // Input:
+    //     IMetricsDevice_1_11** metricsDevice - [out] created / retrieved metrics device
+    //
+    // Output:
+    //     TCompletionCode                     - CC_OK or CC_ALREADY_INITIALIZED means success
+    //
+    //////////////////////////////////////////////////////////////////////////////
+    TCompletionCode CAdapter::OpenMetricsDevice( IMetricsDevice_1_11** metricsDevice )
+    {
+        return OpenMetricsDeviceByIndex( (CMetricsDevice**) metricsDevice, MD_ROOT_DEVICE_INDEX );
+    }
+
+    //////////////////////////////////////////////////////////////////////////////
+    //
+    // Class:
+    //     CAdapter
+    //
+    // Method:
+    //     OpenMetricsDeviceFromFileByIndex
+    //
+    // Description:
+    //     Opens metrics device and sets sub device index or uses an instance opened before (just like OpenMetricsDeviceByIndex),
     //     then loads custom metric sets / metrics from a file and merged them into the 'standard'
     //     metrics device.
     //
     // Input:
-    //     const char*          fileName      - custom metric file
-    //     void*                openParams    - open params
-    //     CMetricsDevice**     metricsDevice - [out] created / retrieved metrics device
+    //     const char*           fileName        - custom metric file
+    //     void*                 openParams      - open params
+    //     CMetricsDevice**      metricsDevice   - [out] created / retrieved metrics device
+    //     const uint32_t        subDeviceIndex  - index of sub device to create
     //
     // Output:
-    //     TCompletionCode                    - CC_OK or CC_ALREADY_INITIALIZED means success
+    //     TCompletionCode                       - CC_OK or CC_ALREADY_INITIALIZED means success
     //
     //////////////////////////////////////////////////////////////////////////////
-    TCompletionCode CAdapter::OpenMetricsDeviceFromFile( const char* fileName, void* openParams, CMetricsDevice** metricsDevice )
+    TCompletionCode CAdapter::OpenMetricsDeviceFromFileByIndex( const char* fileName, void* openParams, CMetricsDevice** metricsDevice, const uint32_t subDeviceIndex )
     {
         MD_LOG_ENTER();
         MD_CHECK_PTR_RET( fileName, CC_ERROR_INVALID_PARAMETER );
@@ -1465,9 +1526,9 @@ namespace MetricsDiscoveryInternal
         // 2. Create 'standard' metrics device object if needed
         if( !m_metricsDevice )
         {
-            retVal = CreateMetricsDevice( NULL );
+            retVal = CreateMetricsDevice( nullptr, subDeviceIndex );
         }
-        MD_ASSERT( m_driverInterface != NULL );
+        MD_ASSERT( m_driverInterface != nullptr );
 
         // 3. Load from file or return existing metrics device object
         if( retVal == CC_OK )
@@ -1525,7 +1586,7 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     TCompletionCode CAdapter::OpenMetricsDeviceFromFile( const char* fileName, void* openParams, IMetricsDevice_1_5** metricsDevice )
     {
-        return OpenMetricsDeviceFromFile( fileName, openParams, (CMetricsDevice**) metricsDevice );
+        return OpenMetricsDeviceFromFileByIndex( fileName, openParams, (CMetricsDevice**) metricsDevice, MD_ROOT_DEVICE_INDEX );
     }
 
     //////////////////////////////////////////////////////////////////////////////
@@ -1552,7 +1613,34 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     TCompletionCode CAdapter::OpenMetricsDeviceFromFile( const char* fileName, void* openParams, IMetricsDevice_1_10** metricsDevice )
     {
-        return OpenMetricsDeviceFromFile( fileName, openParams, (CMetricsDevice**) metricsDevice );
+        return OpenMetricsDeviceFromFileByIndex( fileName, openParams, (CMetricsDevice**) metricsDevice, MD_ROOT_DEVICE_INDEX );
+    }
+
+    //////////////////////////////////////////////////////////////////////////////
+    //
+    // Class:
+    //     CAdapter
+    //
+    // Method:
+    //     OpenMetricsDeviceFromFile
+    //
+    // Description:
+    //     Opens metrics device or uses an instance opened before (just like OpenMetricsDevice),
+    //     then loads custom metric sets / metrics from a file and merged them into the 'standard'
+    //     metrics device.
+    //
+    // Input:
+    //     const char*           fileName       - custom metric file
+    //     void*                 openParams     - open params
+    //     IMetricsDevice_1_11** metricsDevice  - [out] created / retrieved metrics device
+    //
+    // Output:
+    //     TCompletionCode                      - CC_OK or CC_ALREADY_INITIALIZED means success
+    //
+    //////////////////////////////////////////////////////////////////////////////
+    TCompletionCode CAdapter::OpenMetricsDeviceFromFile( const char* fileName, void* openParams, IMetricsDevice_1_11** metricsDevice )
+    {
+        return OpenMetricsDeviceFromFileByIndex( fileName, openParams, (CMetricsDevice**) metricsDevice, MD_ROOT_DEVICE_INDEX );
     }
 
     //////////////////////////////////////////////////////////////////////////////
@@ -1567,11 +1655,11 @@ namespace MetricsDiscoveryInternal
     //     Opens metrics sub device or retrieves an instance opened before.
     //
     // Input:
-    //     const uint32_t       subDeviceIndex - sub device index to create
-    //     CMetricsDevice**     metricsDevice  - [out] created / retrieved metrics sub device
+    //     const uint32_t     subDeviceIndex - sub device index to create
+    //     CMetricsDevice**   metricsDevice  - [out] created / retrieved metrics sub device
     //
     // Output:
-    //     TCompletionCode                     - CC_OK or CC_ALREADY_INITIALIZED means success
+    //     TCompletionCode                   - CC_OK or CC_ALREADY_INITIALIZED means success
     //
     //////////////////////////////////////////////////////////////////////////////
     TCompletionCode CAdapter::OpenMetricsSubDevice( const uint32_t subDeviceIndex, CMetricsDevice** metricsDevice )
@@ -1674,6 +1762,30 @@ namespace MetricsDiscoveryInternal
     //     CAdapter
     //
     // Method:
+    //     OpenMetricsSubDevice
+    //
+    // Description:
+    //     Opens metrics sub device or retrieves an instance opened before.
+    //
+    // Input:
+    //     const uint32_t          subDeviceIndex - sub device index to create
+    //     IMetricsDevice_1_11**   metricsDevice  - [out] created / retrieved metrics sub device
+    //
+    // Output:
+    //     TCompletionCode                        - CC_OK or CC_ALREADY_INITIALIZED means success
+    //
+    //////////////////////////////////////////////////////////////////////////////
+    TCompletionCode CAdapter::OpenMetricsSubDevice( const uint32_t subDeviceIndex, IMetricsDevice_1_11** metricsDevice )
+    {
+        return OpenMetricsSubDevice( subDeviceIndex, (CMetricsDevice**) metricsDevice );
+    }
+
+    //////////////////////////////////////////////////////////////////////////////
+    //
+    // Class:
+    //     CAdapter
+    //
+    // Method:
     //     OpenMetricsSubDeviceFromFile
     //
     // Description:
@@ -1682,13 +1794,13 @@ namespace MetricsDiscoveryInternal
     //     metrics device.
     //
     // Input:
-    //     const uint32_t       subDeviceIndex - sub device index to create
-    //     const char*          fileName       - custom metric file
-    //     void*                openParams     - open params
-    //     CMetricsDevice**     metricsDevice  - [out] created / retrieved metrics device
+    //     const uint32_t        subDeviceIndex  - sub device index to create
+    //     const char*           fileName        - custom metric file
+    //     void*                 openParams      - open params
+    //     CMetricsDevice**      metricsDevice   - [out] created / retrieved metrics device
     //
     // Output:
-    //     TCompletionCode                     - CC_OK or CC_ALREADY_INITIALIZED means success
+    //     TCompletionCode                       - CC_OK or CC_ALREADY_INITIALIZED means success
     //
     //////////////////////////////////////////////////////////////////////////////
     TCompletionCode CAdapter::OpenMetricsSubDeviceFromFile( const uint32_t subDeviceIndex, const char* fileName, void* openParams, CMetricsDevice** metricsDevice )
@@ -1800,6 +1912,34 @@ namespace MetricsDiscoveryInternal
     //     CAdapter
     //
     // Method:
+    //     OpenMetricsSubDeviceFromFile
+    //
+    // Description:
+    //     Opens metrics device or uses an instance opened before (just like OpenMetricsDevice),
+    //     then loads custom metric sets / metrics from a file and merged them into the 'standard'
+    //     metrics device.
+    //
+    // Input:
+    //     const uint32_t             subDeviceIndex  - sub device index to create
+    //     const char*                fileName        - custom metric file
+    //     void*                      openParams      - open params
+    //     IMetricsDevice_1_11**      metricsDevice   - [out] created / retrieved metrics device
+    //
+    // Output:
+    //     TCompletionCode                            - CC_OK or CC_ALREADY_INITIALIZED means success
+    //
+    //////////////////////////////////////////////////////////////////////////////
+    TCompletionCode CAdapter::OpenMetricsSubDeviceFromFile( const uint32_t subDeviceIndex, const char* fileName, void* openParams, IMetricsDevice_1_11** metricsDevice )
+    {
+        return OpenMetricsSubDeviceFromFile( subDeviceIndex, fileName, openParams, (CMetricsDevice**) metricsDevice );
+    }
+
+    //////////////////////////////////////////////////////////////////////////////
+    //
+    // Class:
+    //     CAdapter
+    //
+    // Method:
     //     CloseMetricsDevice
     //
     // Description:
@@ -1807,13 +1947,13 @@ namespace MetricsDiscoveryInternal
     //     if the counter reaches 0.
     //
     // Input:
-    //     IMetricsDevice_1_5* metricsDevice - metrics device to close
+    //     CMetricsDevice*     metricsDevice - metrics device to close
     //
     // Output:
     //     TCompletionCode                   - CC_OK or CC_STILL_INITIALIZED means success
     //
     //////////////////////////////////////////////////////////////////////////////
-    TCompletionCode CAdapter::CloseMetricsDevice( IMetricsDevice_1_5* metricsDevice )
+    TCompletionCode CAdapter::CloseMetricsDevice( CMetricsDevice* metricsDevice )
     {
         MD_LOG_ENTER();
         MD_CHECK_PTR_RET( metricsDevice, CC_ERROR_INVALID_PARAMETER );
@@ -1851,7 +1991,7 @@ namespace MetricsDiscoveryInternal
         if( retVal == CC_OK )
         {
             // Set as default device to remove.
-            m_metricsDevice = static_cast<CMetricsDevice*>( metricsDevice );
+            m_metricsDevice = metricsDevice;
 
             if( m_metricsDevice->GetReferenceCounter() > 1 )
             {
@@ -1883,6 +2023,30 @@ namespace MetricsDiscoveryInternal
     //     CAdapter
     //
     // Method:
+    //     CloseMetricsDevice
+    //
+    // Description:
+    //     Decreases metrics device reference counter and closes it (frees up recourses)
+    //     if the counter reaches 0.
+    //
+    // Input:
+    //     IMetricsDevice_1_5*     metricsDevice - metrics device to close
+    //
+    // Output:
+    //     TCompletionCode                       - CC_OK or CC_STILL_INITIALIZED means success
+    //
+    //////////////////////////////////////////////////////////////////////////////
+    TCompletionCode CAdapter::CloseMetricsDevice( IMetricsDevice_1_5* metricsDevice )
+    {
+        return CloseMetricsDevice( static_cast<CMetricsDevice*>( metricsDevice ) );
+    }
+
+    //////////////////////////////////////////////////////////////////////////////
+    //
+    // Class:
+    //     CAdapter
+    //
+    // Method:
     //     SaveMetricsDeviceToFile
     //
     // Description:
@@ -1890,15 +2054,17 @@ namespace MetricsDiscoveryInternal
     //     aren't saved.
     //
     // Input:
-    //     const char*         fileName      - target file name
-    //     void*               saveParams    - save params
-    //     IMetricsDevice_1_5* metricsDevice - target metrics device
+    //     const char*          fileName           - target file name
+    //     void*                saveParams         - save params
+    //     CMetricsDevice*      metricsDevice      - target metrics device
+    //     const uint32_t       minMajorApiVersion - required MDAPI major version to open the file
+    //     const uint32_t       minMinorApiVersion - required MDAPI minor version to open the file
     //
     // Output:
-    //     TCompletionCode                   - CC_OK means success
+    //     TCompletionCode                         - CC_OK means success
     //
     //////////////////////////////////////////////////////////////////////////////
-    TCompletionCode CAdapter::SaveMetricsDeviceToFile( const char* fileName, void* saveParams, IMetricsDevice_1_5* metricsDevice )
+    TCompletionCode CAdapter::SaveMetricsDeviceToFile( const char* fileName, void* saveParams, CMetricsDevice* metricsDevice, const uint32_t minMajorApiVersion, const uint32_t minMinorApiVersion )
     {
         MD_LOG_ENTER();
         MD_CHECK_PTR_RET( fileName, CC_ERROR_INVALID_PARAMETER );
@@ -1914,14 +2080,14 @@ namespace MetricsDiscoveryInternal
         }
 
         // 2. Check whether correct metrics device was passed
-        if( static_cast<CMetricsDevice*>( metricsDevice ) != m_metricsDevice )
+        if( metricsDevice != m_metricsDevice )
         {
             MD_LOG( LOG_ERROR, "Pointers mismatch" );
             retVal = CC_ERROR_GENERAL;
         }
 
         // 3. Save metrics device object to a file
-        retVal = m_metricsDevice->SaveToFile( fileName );
+        retVal = m_metricsDevice->SaveToFile( fileName, minMajorApiVersion, minMinorApiVersion );
         if( retVal != CC_OK )
         {
             MD_LOG( LOG_ERROR, "Saving to file failed" );
@@ -1932,6 +2098,60 @@ namespace MetricsDiscoveryInternal
 
         MD_LOG_EXIT();
         return retVal;
+    }
+
+    //////////////////////////////////////////////////////////////////////////////
+    //
+    // Class:
+    //     CAdapter
+    //
+    // Method:
+    //     SaveMetricsDeviceToFile
+    //
+    // Description:
+    //     Creates custom metric file containing only custom metrics - standard ones
+    //     aren't saved.
+    //
+    // Input:
+    //     const char*          fileName      - target file name
+    //     void*                saveParams    - save params
+    //     IMetricsDevice_1_5*  metricsDevice - target metrics device
+    //
+    // Output:
+    //     TCompletionCode                    - CC_OK means success
+    //
+    //////////////////////////////////////////////////////////////////////////////
+    TCompletionCode CAdapter::SaveMetricsDeviceToFile( const char* fileName, void* saveParams, IMetricsDevice_1_5* metricsDevice )
+    {
+        return SaveMetricsDeviceToFile( fileName, saveParams, static_cast<CMetricsDevice*>( metricsDevice ), 0, 0 );
+    }
+
+    //////////////////////////////////////////////////////////////////////////////
+    //
+    // Class:
+    //     CAdapter
+    //
+    // Method:
+    //     SaveMetricsDeviceToFile
+    //
+    // Description:
+    //     Creates custom metric file containing only custom metrics - standard ones
+    //     aren't saved.
+    //
+    // Input:
+    //     const char*           fileName           - target file name
+    //     void*                 saveParams         - save params
+    //     IMetricsDevice_1_11*  metricsDevice      - target metrics device
+    //     const uint32_t        minMajorApiVersion - required MDAPI major version to open the file
+    //     const uint32_t        minMinorApiVersion - required MDAPI minor version to open the file
+    //
+    // Output:
+    //     TCompletionCode                          - CC_OK means success
+    //
+    //////////////////////////////////////////////////////////////////////////////
+    TCompletionCode CAdapter::SaveMetricsDeviceToFile( const char* fileName, void* saveParams, IMetricsDevice_1_11* metricsDevice, const uint32_t minMajorApiVersion, const uint32_t minMinorApiVersion )
+    {
+        return SaveMetricsDeviceToFile( fileName, saveParams, static_cast<CMetricsDevice*>( metricsDevice ), minMajorApiVersion, minMinorApiVersion );
     }
 
     //////////////////////////////////////////////////////////////////////////////
@@ -2070,15 +2290,16 @@ namespace MetricsDiscoveryInternal
     //     May enable instrumentation support if needed.
     //
     // Input:
-    //     CMetricsDevice** metricsDevice - [out][optional] created metrics device
+    //     CMetricsDevice**      metricsDevice  - [out][optional] created metrics device
+    //     const uint32_t        subDeviceIndex - index of sub device to create
     //
     // Output:
-    //     TCompletionCode                - CC_OK means success
+    //     TCompletionCode                      - CC_OK means success
     //
     //////////////////////////////////////////////////////////////////////////////
-    TCompletionCode CAdapter::CreateMetricsDevice( CMetricsDevice** metricsDevice )
+    TCompletionCode CAdapter::CreateMetricsDevice( CMetricsDevice** metricsDevice, const uint32_t subDeviceIndex /* = 0 */ )
     {
-        MD_ASSERT( m_metricsDevice == NULL );
+        MD_ASSERT( m_metricsDevice == nullptr );
 
         // 1. Create driver interface
         TCompletionCode retVal = CreateDriverInterface();
@@ -2087,7 +2308,7 @@ namespace MetricsDiscoveryInternal
             MD_LOG( LOG_ERROR, "Failed to get driver interface" );
             return retVal;
         }
-        MD_ASSERT( m_driverInterface != NULL );
+        MD_ASSERT( m_driverInterface != nullptr );
 
         // 2. Enable instrumentation support if needed
         retVal = EnableDriverSupport( true );
@@ -2098,7 +2319,7 @@ namespace MetricsDiscoveryInternal
         }
 
         // 3. Create metrics device object
-        m_metricsDevice = new( std::nothrow ) CMetricsDevice( *this, *m_driverInterface );
+        m_metricsDevice = new( std::nothrow ) CMetricsDevice( *this, *m_driverInterface, subDeviceIndex );
         if( !m_metricsDevice )
         {
             EnableDriverSupport( false );
@@ -2515,7 +2736,7 @@ namespace MetricsDiscoveryInternal
         CDriverInterface& driverInterface = m_device->GetDriverInterface();
 
         TTypedValue_1_0* oaBufferSize = m_device->GetGlobalSymbolValueByName( "OABufferMaxSize" );
-        if( oaBufferSize == NULL )
+        if( oaBufferSize == nullptr )
         {
             MD_LOG( LOG_ERROR, "Unable to obtain maximum OA buffer size" );
             return CC_ERROR_GENERAL;
@@ -2562,7 +2783,7 @@ namespace MetricsDiscoveryInternal
         CDriverInterface& driverInterface = m_device->GetDriverInterface();
 
         TTypedValue_1_0* oaBufferSize = m_device->GetGlobalSymbolValueByName( "OABufferMaxSize" );
-        if( oaBufferSize == NULL )
+        if( oaBufferSize == nullptr )
         {
             MD_LOG( LOG_ERROR, "Unable to obtain maximum OA buffer size" );
             return CC_ERROR_GENERAL;
@@ -2656,11 +2877,12 @@ namespace MetricsDiscoveryInternal
     //     Constructor. Sends DeviceInfoParam escape.
     //
     //////////////////////////////////////////////////////////////////////////////
-    CMetricsDevice::CMetricsDevice( CAdapter& adapter, CDriverInterface& driverInterface )
+    CMetricsDevice::CMetricsDevice( CAdapter& adapter, CDriverInterface& driverInterface, const uint32_t subDeviceIndex /* = 0 */ )
         : m_params{}
         , m_referenceCounter( 0 )
-        , m_groupsVector( NULL )
-        , m_overridesVector( NULL )
+        , m_groupsVector()
+        , m_overridesVector()
+        , m_subDeviceIndex( subDeviceIndex )
         , m_symbolSet( *this, driverInterface )
         , m_platform( PLATFORM_UNKNOWN )
         , m_gtType( GT_TYPE_UNKNOWN )
@@ -2669,7 +2891,6 @@ namespace MetricsDiscoveryInternal
         , m_driverInterface( driverInterface )
         , m_streamId( -1 )
         , m_streamConfigId( -1 )
-        , m_subDeviceIndex( 0 )
     {
         m_params.DeltaFunctionsCount       = DELTA_FUNCTION_LAST_1_0;
         m_params.EquationOperationsCount   = EQUATION_OPER_LAST_1_0;
@@ -2685,17 +2906,19 @@ namespace MetricsDiscoveryInternal
 
         m_params.DeviceName = GetCopiedCString( m_adapter.GetParams()->ShortName );
 
-        m_groupsVector    = new( std::nothrow ) Vector<CConcurrentGroup*>( GROUPS_VECTOR_INCREASE );
-        m_overridesVector = new( std::nothrow ) Vector<IOverride_1_2*>( OVERRIDES_VECTOR_INCREASE );
+        m_groupsVector.reserve( GROUPS_VECTOR_INCREASE );
+        m_overridesVector.reserve( OVERRIDES_VECTOR_INCREASE );
 
         GTDIDeviceInfoParamExtOut out = {};
         if( m_driverInterface.SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_PLATFORM_INDEX, &out ) == CC_OK )
         {
-            m_platform = ( TPlatformType )( 1 << out.ValueUint32 );
+            m_platform = (TPlatformType) ( 1 << out.ValueUint32 );
+            MD_LOG( LOG_INFO, "PLATFORM_INDEX is %u", m_platform );
         }
         if( m_driverInterface.SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_GT_TYPE, &out ) == CC_OK )
         {
-            m_gtType = ( TGTType )( 1 << out.ValueUint32 );
+            m_gtType = (TGTType) ( 1 << out.ValueUint32 );
+            MD_LOG( LOG_INFO, "GT_TYPE is %u", m_gtType );
         }
     }
 
@@ -2714,8 +2937,8 @@ namespace MetricsDiscoveryInternal
     CMetricsDevice::~CMetricsDevice()
     {
         MD_SAFE_DELETE_ARRAY( m_params.DeviceName );
-        MD_SAFE_DELETE( m_groupsVector );
-        MD_SAFE_DELETE( m_overridesVector );
+        ClearVector( m_groupsVector );
+        ClearVector( m_overridesVector );
     }
 
     //////////////////////////////////////////////////////////////////////////////
@@ -2753,19 +2976,17 @@ namespace MetricsDiscoveryInternal
     //     uint32_t index          - index of concurrent group
     //
     // Output:
-    //     IConcurrentGroup_1_5*   - pointer to concurrent group
+    //     IConcurrentGroupLatest* - pointer to concurrent group
     //
     //////////////////////////////////////////////////////////////////////////////
-    IConcurrentGroup_1_5* CMetricsDevice::GetConcurrentGroup( uint32_t index )
+    IConcurrentGroupLatest* CMetricsDevice::GetConcurrentGroup( uint32_t index )
     {
-        MD_CHECK_PTR_RET( m_groupsVector, NULL );
-
-        if( index < m_groupsVector->GetCount() )
+        if( index < m_groupsVector.size() )
         {
-            return ( *m_groupsVector )[index];
+            return m_groupsVector[index];
         }
 
-        return NULL;
+        return nullptr;
     }
 
     //////////////////////////////////////////////////////////////////////////////
@@ -2934,14 +3155,12 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     IOverride_1_2* CMetricsDevice::GetOverride( uint32_t index )
     {
-        MD_CHECK_PTR_RET( m_overridesVector, NULL );
-
-        if( index < m_overridesVector->GetCount() )
+        if( index < m_overridesVector.size() )
         {
-            return ( *m_overridesVector )[index];
+            return m_overridesVector[index];
         }
 
-        return NULL;
+        return nullptr;
     }
 
     //////////////////////////////////////////////////////////////////////////////
@@ -2953,29 +3172,28 @@ namespace MetricsDiscoveryInternal
     //     GetOverrideByName
     //
     // Description:
-    //     Returns the chosen override object or null if index doesn't exist.
+    //     Returns the chosen override object or nullptr if index doesn't exist.
     //
     // Input:
     //     const char* symbolName - name of an override
     //
     // Output:
-    //     IOverride_1_2* - chosen override object or null
+    //     IOverride_1_2* - chosen override object or nullptr
     //
     //////////////////////////////////////////////////////////////////////////////
     IOverride_1_2* CMetricsDevice::GetOverrideByName( const char* symbolName )
     {
-        MD_CHECK_PTR_RET( m_overridesVector, NULL );
-        MD_CHECK_PTR_RET( symbolName, NULL );
+        MD_CHECK_PTR_RET( symbolName, nullptr );
 
-        for( uint32_t i = 0; i < m_overridesVector->GetCount(); i++ )
+        for( auto& override : m_overridesVector )
         {
-            if( ( ( *m_overridesVector )[i] ) && ( strcmp( symbolName, ( *m_overridesVector )[i]->GetParams()->SymbolName ) == 0 ) )
+            if( override && ( strcmp( symbolName, override->GetParams()->SymbolName ) == 0 ) )
             {
-                return ( *m_overridesVector )[i];
+                return override;
             }
         }
 
-        return NULL;
+        return nullptr;
     }
 
     //////////////////////////////////////////////////////////////////////////////
@@ -2990,35 +3208,31 @@ namespace MetricsDiscoveryInternal
     //     Adds concurrent group to the metrics device.
     //
     // Input:
-    //     const char * symbolicName   - concurrent group name
-    //     const char * shortName      - concurrent group short name
+    //     const char *symbolicName - concurrent group name
+    //     const char *shortName    - concurrent group short name
     //
     // Output:
-    //     CConcurrentGroup*           - pointer to newly created concurrent group
+    //     CConcurrentGroup*        - pointer to newly created concurrent group
     //
     //////////////////////////////////////////////////////////////////////////////
     CConcurrentGroup* CMetricsDevice::AddConcurrentGroup( const char* symbolicName, const char* shortName, uint32_t measurementTypeMask )
     {
-        MD_CHECK_PTR_RET( m_groupsVector, NULL );
-
-        CConcurrentGroup* group = NULL;
-        if( strstr( symbolicName, "OA" ) != NULL )
+        CConcurrentGroup* group = nullptr;
+        if( strstr( symbolicName, "OA" ) != nullptr )
         {
-            group = (COAConcurrentGroup*) new( std::nothrow ) COAConcurrentGroup( this, symbolicName, shortName, measurementTypeMask );
+            group = new( std::nothrow ) COAConcurrentGroup( this, symbolicName, shortName, measurementTypeMask );
         }
-        else if( strstr( symbolicName, "PerfMon" ) != NULL )
+        else if( strstr( symbolicName, "PerfMon" ) != nullptr )
         {
-            group = (CPerfMonConcurrentGroup*) new( std::nothrow ) CPerfMonConcurrentGroup( this, symbolicName, shortName, measurementTypeMask );
+            group = new( std::nothrow ) CPerfMonConcurrentGroup( this, symbolicName, shortName, measurementTypeMask );
         }
         else
         {
-            group = (CConcurrentGroup*) new( std::nothrow ) CConcurrentGroup( this, symbolicName, shortName, measurementTypeMask );
+            group = new( std::nothrow ) CConcurrentGroup( this, symbolicName, shortName, measurementTypeMask );
         }
 
-        MD_CHECK_PTR_RET( group, NULL );
-
-        m_groupsVector->PushBack( group );
-        m_params.ConcurrentGroupsCount = m_groupsVector->GetCount();
+        m_groupsVector.push_back( group );
+        m_params.ConcurrentGroupsCount = m_groupsVector.size();
 
         return group;
     }
@@ -3042,17 +3256,15 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     IOverride_1_2* CMetricsDevice::AddOverride( TOverrideType overrideType )
     {
-        MD_CHECK_PTR_RET( m_overridesVector, NULL );
-
         // 1. CHECK AVAILABILITY ON CURRENT DRIVER INTERFACE
         if( !m_driverInterface.IsOverrideAvailable( overrideType ) )
         {
             MD_LOG( LOG_INFO, "Override %u not available on the current driver interface", overrideType );
-            return NULL;
+            return nullptr;
         }
 
         // 2. CREATE OVERRIDE OBJECT
-        IOverride_1_2* override = NULL;
+        IOverride_1_2* override = nullptr;
         switch( overrideType )
         {
             case OVERRIDE_TYPE_FREQUENCY:
@@ -3080,12 +3292,12 @@ namespace MetricsDiscoveryInternal
         }
 
         // 3. CHECK AVAILABILITY ON CURRENT PLATFORM
-        MD_CHECK_PTR_RET( override, NULL );
+        MD_CHECK_PTR_RET( override, nullptr );
         if( IsPlatformTypeOf( override->GetParams()->PlatformMask ) )
         {
             // Add override and update count
-            m_overridesVector->PushBack( override );
-            m_params.OverrideCount = m_overridesVector->GetCount();
+            m_overridesVector.push_back( override );
+            m_params.OverrideCount = m_overridesVector.size();
             MD_LOG( LOG_INFO, "%s - added", override->GetParams()->SymbolName );
         }
         else
@@ -3116,8 +3328,6 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     TCompletionCode CMetricsDevice::AddOverrides()
     {
-        MD_CHECK_PTR_RET( m_overridesVector, CC_ERROR_GENERAL );
-
         TCompletionCode ret = CC_OK;
 
         AddOverride( OVERRIDE_TYPE_FREQUENCY );
@@ -3200,7 +3410,7 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     bool CMetricsDevice::IsAvailabilityEquationTrue( const char* availabilityEquation )
     {
-        if( availabilityEquation == NULL || strcmp( availabilityEquation, "" ) == 0 )
+        if( availabilityEquation == nullptr || strcmp( availabilityEquation, "" ) == 0 )
         {
             return true;
         }
@@ -3225,22 +3435,28 @@ namespace MetricsDiscoveryInternal
     //     Saves a custom part of MetricsDevice to file.
     //
     // Input:
-    //     const char * fileName       - file name
+    //     const char *    fileName        - file name
+    //     const uint32_t  minMajorVersion - required major MDAPI version to save to file
+    //     const uint32_t  minMinorVersion - required minor MDAPI version to save to file
     //
     // Output:
     //     TCompletionCode             - result
     //
     //////////////////////////////////////////////////////////////////////////////
-    TCompletionCode CMetricsDevice::SaveToFile( const char* fileName )
+    TCompletionCode CMetricsDevice::SaveToFile( const char* fileName, const uint32_t minMajorApiVersion /* =0*/, const uint32_t minMinorApiVersion /* =0*/ )
     {
         TCompletionCode retVal     = CC_OK;
-        FILE*           metricFile = NULL;
+        FILE*           metricFile = nullptr;
 
         iu_fopen_s( &metricFile, fileName, "wb" );
         MD_CHECK_PTR_RET( metricFile, CC_ERROR_FILE_NOT_FOUND );
 
         // Specific key indicating plain text MDAPI file
-        fwrite( MD_METRICS_FILE_KEY, sizeof( char ), sizeof( MD_METRICS_FILE_KEY ), metricFile );
+        fwrite( MD_METRICS_FILE_KEY_2_0, sizeof( char ), sizeof( MD_METRICS_FILE_KEY_2_0 ), metricFile );
+
+        // Minimal api vesrion
+        fwrite( &minMajorApiVersion, sizeof( uint32_t ), 1, metricFile );
+        fwrite( &minMinorApiVersion, sizeof( uint32_t ), 1, metricFile );
 
         // m_platform
         fwrite( &m_platform, sizeof( m_platform ), 1, metricFile );
@@ -3252,11 +3468,11 @@ namespace MetricsDiscoveryInternal
         m_symbolSet.WriteSymbolSetToFile( metricFile );
 
         // m_groupsVector
-        uint32_t groupsCount = m_groupsVector->GetCount();
+        uint32_t groupsCount = m_groupsVector.size();
         fwrite( &groupsCount, sizeof( groupsCount ), 1, metricFile );
-        for( uint32_t i = 0; i < groupsCount; i++ )
+        for( auto& group : m_groupsVector )
         {
-            retVal = ( *m_groupsVector )[i]->WriteCConcurrentGroupToFile( metricFile );
+            retVal = group->WriteCConcurrentGroupToFile( metricFile );
             if( retVal != CC_OK )
             {
                 break;
@@ -3351,9 +3567,9 @@ namespace MetricsDiscoveryInternal
         MD_CHECK_PTR_RET( *bufferPtr, CC_ERROR_INVALID_PARAMETER );
 
         TCompletionCode   ret                 = CC_OK;
-        CConcurrentGroup* aGroup              = NULL;
-        char*             symbolicName        = NULL;
-        char*             shortName           = NULL;
+        CConcurrentGroup* aGroup              = nullptr;
+        char*             symbolicName        = nullptr;
+        char*             shortName           = nullptr;
         uint32_t          measurementTypeMask = 0;
 
         uint32_t groupsCount = ReadUInt32FromFileBuffer( bufferPtr );
@@ -3406,21 +3622,22 @@ namespace MetricsDiscoveryInternal
         MD_CHECK_PTR_RET( *bufferPtr, CC_ERROR_INVALID_PARAMETER );
         MD_CHECK_PTR_RET( group, CC_ERROR_INVALID_PARAMETER );
 
-        TCompletionCode      ret          = CC_OK;
-        CMetricSet*          set          = NULL;
-        CMetricSet*          existingSet  = NULL;
-        char*                symbolicName = NULL;
-        uint32_t             count        = 0;
-        TMetricSetParams_1_4 metricSetParams;
-        TApiSpecificId_1_0   apiSpecificId;
-        TReportType          reportType;
+        TCompletionCode       ret                  = CC_OK;
+        CMetricSet*           set                  = nullptr;
+        CMetricSet*           existingSet          = nullptr;
+        char*                 symbolicName         = nullptr;
+        char*                 availabilityEquation = nullptr;
+        uint32_t              count                = 0;
+        TMetricSetParams_1_11 metricSetParams;
+        TApiSpecificId_1_0    apiSpecificId;
+        TReportType           reportType;
 
         // MetricSets
         uint32_t metricSetsCount = ReadUInt32FromFileBuffer( bufferPtr );
         for( uint32_t j = 0; j < metricSetsCount; j++ )
         {
-            set         = NULL;
-            existingSet = NULL;
+            set         = nullptr;
+            existingSet = nullptr;
 
             // MetricSetParams
             metricSetParams.SymbolName      = ReadCStringFromFileBuffer( bufferPtr );
@@ -3438,6 +3655,12 @@ namespace MetricsDiscoveryInternal
             {
                 metricSetParams.GtMask = (uint32_t) GT_TYPE_ALL;
             }
+
+            if( ( apiVersion->MajorNumber == MD_API_MAJOR_NUMBER_1 && apiVersion->MinorNumber >= MD_API_MINOR_NUMBER_11 ) || ( apiVersion->MajorNumber > MD_API_MAJOR_NUMBER_1 ) )
+            {
+                availabilityEquation = ReadEquationStringFromFile( bufferPtr );
+            }
+
             reportType = (TReportType) ReadUInt32FromFileBuffer( bufferPtr );
 
             // For release builds add sets from current platform only, for internal builds add all
@@ -3456,6 +3679,7 @@ namespace MetricsDiscoveryInternal
                         metricSetParams.QueryReportSize,
                         reportType,
                         metricSetParams.PlatformMask,
+                        availabilityEquation,
                         metricSetParams.GtMask,
                         true );
                     MD_CHECK_PTR_RET( set, CC_ERROR_NO_MEMORY );
@@ -3488,7 +3712,7 @@ namespace MetricsDiscoveryInternal
             }
 
             // Metrics - if set's been existing, add only missing metrics
-            ret = ReadMetricsFromFileBuffer( bufferPtr, existingSet ? existingSet : set, existingSet == NULL );
+            ret = ReadMetricsFromFileBuffer( bufferPtr, existingSet ? existingSet : set, existingSet == nullptr );
             MD_CHECK_CC_RET( ret );
 
             // Information
@@ -3542,18 +3766,18 @@ namespace MetricsDiscoveryInternal
         MD_CHECK_PTR_RET( bufferPtr, CC_ERROR_INVALID_PARAMETER );
         MD_CHECK_PTR_RET( *bufferPtr, CC_ERROR_INVALID_PARAMETER );
 
-        CMetric*           metric         = NULL;
-        char*              equationString = NULL;
-        char*              signalName     = NULL;
+        CMetric*           metric         = nullptr;
+        char*              equationString = nullptr;
+        char*              signalName     = nullptr;
         TMetricParams_1_0  metricParams;
         TDeltaFunction_1_0 deltaFunction;
-        bool               skip = ( set == NULL );
+        bool               skip = ( set == nullptr );
 
         // Metrics
         uint32_t metricsCount = ReadUInt32FromFileBuffer( bufferPtr );
         for( uint32_t i = 0; i < metricsCount; i++ )
         {
-            metric = NULL;
+            metric = nullptr;
 
             // MetricParams
             metricParams.GroupId           = ReadUInt32FromFileBuffer( bufferPtr );
@@ -3665,17 +3889,17 @@ namespace MetricsDiscoveryInternal
         MD_CHECK_PTR_RET( bufferPtr, CC_ERROR_INVALID_PARAMETER );
         MD_CHECK_PTR_RET( *bufferPtr, CC_ERROR_INVALID_PARAMETER );
 
-        CInformation*          aInformation   = NULL;
-        char*                  equationString = NULL;
+        CInformation*          aInformation   = nullptr;
+        char*                  equationString = nullptr;
         TInformationParams_1_0 informationParams;
         TDeltaFunction_1_0     deltaFunction;
-        bool                   skip = ( set == NULL );
+        bool                   skip = ( set == nullptr );
 
         // Information
         uint32_t informationCount = ReadUInt32FromFileBuffer( bufferPtr );
         for( uint32_t k = 0; k < informationCount; k++ )
         {
-            aInformation = NULL;
+            aInformation = nullptr;
 
             // InformationParams
             informationParams.SymbolName = ReadCStringFromFileBuffer( bufferPtr );
@@ -3754,10 +3978,10 @@ namespace MetricsDiscoveryInternal
         MD_CHECK_PTR_RET( *bufferPtr, CC_ERROR_INVALID_PARAMETER );
 
         TRegister          reg;
-        char*              equationString = NULL;
+        char*              equationString = nullptr;
         TRegisterSetParams registerSetParams;
         uint32_t           regCount = 0;
-        bool               skip     = ( set == NULL );
+        bool               skip     = ( set == nullptr );
 
         // Start register sets
         uint32_t regSetCount = ReadUInt32FromFileBuffer( bufferPtr );
@@ -3838,10 +4062,11 @@ namespace MetricsDiscoveryInternal
     TCompletionCode CMetricsDevice::OpenFromFile( const char* fileName, bool isInternalBuild )
     {
         TCompletionCode retVal           = CC_OK;
-        FILE*           metricFile       = NULL;
-        uint8_t*        metricFileBuffer = NULL;
-        uint8_t*        bufferPtr        = NULL;
+        FILE*           metricFile       = nullptr;
+        uint8_t*        metricFileBuffer = nullptr;
+        uint8_t*        bufferPtr        = nullptr;
         uint32_t        fileSize         = 0;
+        uint32_t        fileVersion      = CUSTOM_METRICS_FILE_VERSION_0;
 
         iu_fopen_s( &metricFile, fileName, "rb" );
         MD_CHECK_PTR_RET( metricFile, CC_ERROR_FILE_NOT_FOUND );
@@ -3853,7 +4078,7 @@ namespace MetricsDiscoveryInternal
         }
 
         metricFileBuffer = new( std::nothrow ) uint8_t[fileSize];
-        if( metricFileBuffer == NULL )
+        if( metricFileBuffer == nullptr )
         {
             fclose( metricFile );
             return CC_ERROR_NO_MEMORY;
@@ -3861,12 +4086,20 @@ namespace MetricsDiscoveryInternal
         memset( metricFileBuffer, 0, fileSize );
 
         MD_LOG( LOG_DEBUG, "Check if file is in MDAPI plain text format" );
-        if( IsMetricsFileInPlainTextFormat( metricFile ) )
+        if( IsMetricsFileInPlainTextFormat( metricFile, fileVersion ) )
         {
             // Load plain text format file
             iu_fread_s( metricFileBuffer, fileSize, 1, fileSize, metricFile );
             bufferPtr = metricFileBuffer;
-            bufferPtr += sizeof( MD_METRICS_FILE_KEY );
+
+            if( fileVersion == CUSTOM_METRICS_FILE_VERSION_1 )
+            {
+                bufferPtr += sizeof( MD_METRICS_FILE_KEY );
+            }
+            else if( fileVersion == CUSTOM_METRICS_FILE_VERSION_2 )
+            {
+                bufferPtr += sizeof( MD_METRICS_FILE_KEY_2_0 );
+            }
         }
         else
         {
@@ -3877,6 +4110,20 @@ namespace MetricsDiscoveryInternal
 
         if( retVal == CC_OK )
         {
+            if( fileVersion > CUSTOM_METRICS_FILE_VERSION_1 )
+            {
+                uint32_t majorApiVersion = ReadUInt32FromFileBuffer( &bufferPtr );
+                uint32_t minorApiVersion = ReadUInt32FromFileBuffer( &bufferPtr );
+
+                if( ( majorApiVersion == MD_API_MAJOR_NUMBER_CURRENT && minorApiVersion > MD_API_MINOR_NUMBER_CURRENT ) || majorApiVersion > MD_API_MAJOR_NUMBER_CURRENT )
+                {
+                    MD_LOG( LOG_ERROR, "Requered MDAPI version %d.%d, current version %d.%d", majorApiVersion, minorApiVersion, MD_API_MAJOR_NUMBER_CURRENT, MD_API_MINOR_NUMBER_CURRENT );
+                    m_isOpenedFromFile = false;
+                    MD_SAFE_DELETE_ARRAY( metricFileBuffer );
+                    return CC_ERROR_NOT_SUPPORTED;
+                }
+            }
+
             MD_LOG( LOG_DEBUG, "Metrics device file saved on platform: %d, current: %d", *( (TPlatformType*) bufferPtr ), m_platform );
             bufferPtr += sizeof( TPlatformType );
 
@@ -3914,15 +4161,16 @@ namespace MetricsDiscoveryInternal
     //     Check if metrics file has a proper header with MD_METRICS_FILE_KEY.
     //
     // Input:
-    //     FILE* metricFile - opened file with custom metrics.
+    //     FILE*     metricFile  - opened file with custom metrics.
+    //     uint32_t& fileVersion - custom file version [out]
     //
     // Output:
     //     bool             - true if file in MDAPI plain text format, false otherwise
     //
     //////////////////////////////////////////////////////////////////////////////
-    bool CMetricsDevice::IsMetricsFileInPlainTextFormat( FILE* metricFile )
+    bool CMetricsDevice::IsMetricsFileInPlainTextFormat( FILE* metricFile, uint32_t& fileVersion )
     {
-        const uint32_t metricFileKeySize              = sizeof( MD_METRICS_FILE_KEY );
+        const uint32_t metricFileKeySize              = sizeof( MD_METRICS_FILE_KEY_2_0 );
         uint8_t        readFileKey[metricFileKeySize] = {
             0,
         };
@@ -3932,8 +4180,21 @@ namespace MetricsDiscoveryInternal
         // Move file pointer to the start
         rewind( metricFile );
 
+        if( strcmp( MD_METRICS_FILE_KEY, (const char*) &readFileKey ) == 0 )
+        {
+            fileVersion = CUSTOM_METRICS_FILE_VERSION_1;
+        }
+        else if( strcmp( MD_METRICS_FILE_KEY_2_0, (const char*) &readFileKey ) == 0 )
+        {
+            fileVersion = CUSTOM_METRICS_FILE_VERSION_2;
+        }
+        else
+        {
+            fileVersion = CUSTOM_METRICS_FILE_VERSION_0;
+        }
+
         // Check if the file has MDAPI plain text header
-        return strcmp( MD_METRICS_FILE_KEY, (const char*) &readFileKey ) == 0;
+        return fileVersion > CUSTOM_METRICS_FILE_VERSION_0;
     }
 
     //////////////////////////////////////////////////////////////////////////////
@@ -4082,26 +4343,6 @@ namespace MetricsDiscoveryInternal
     //     CMetricsDevice
     //
     // Method:
-    //     SetSubDeviceIndex
-    //
-    // Description:
-    //     Associates CMetricsDevice with sub device.
-    //
-    // Input:
-    //     const uint32_t index  - sub device index
-    //
-    //////////////////////////////////////////////////////////////////////////////
-    void CMetricsDevice::SetSubDeviceIndex( const uint32_t index )
-    {
-        m_subDeviceIndex = index;
-    }
-
-    //////////////////////////////////////////////////////////////////////////////
-    //
-    // Class:
-    //     CMetricsDevice
-    //
-    // Method:
     //     GetStreamConfigId
     //
     // Description:
@@ -4205,29 +4446,28 @@ namespace MetricsDiscoveryInternal
     //     GetConcurrentGroupByName
     //
     // Description:
-    //     Returns chosen concurrent group by name or null if not exists.
+    //     Returns chosen concurrent group by name or nullptr if not exists.
     //
     // Input:
     //     const char* symbolName - name of a concurrent group to look for
     //
     // Output:
-    //     CConcurrentGroup*      - found concurrent group or NULL
+    //     CConcurrentGroup*      - found concurrent group or nullptr
     //
     //////////////////////////////////////////////////////////////////////////////
     CConcurrentGroup* CMetricsDevice::GetConcurrentGroupByName( const char* symbolName )
     {
-        MD_CHECK_PTR_RET( symbolName, NULL );
-        MD_CHECK_PTR_RET( m_groupsVector, NULL );
+        MD_CHECK_PTR_RET( symbolName, nullptr );
 
-        for( uint32_t i = 0; i < m_groupsVector->GetCount(); i++ )
+        for( auto& group : m_groupsVector )
         {
-            if( ( ( *m_groupsVector )[i] ) && ( strcmp( symbolName, ( *m_groupsVector )[i]->GetParams()->SymbolName ) == 0 ) )
+            if( group && ( strcmp( symbolName, group->GetParams()->SymbolName ) == 0 ) )
             {
-                return ( *m_groupsVector )[i];
+                return group;
             }
         }
 
-        return NULL;
+        return nullptr;
     }
 
     //////////////////////////////////////////////////////////////////////////////
@@ -4249,6 +4489,14 @@ namespace MetricsDiscoveryInternal
     //
     //////////////////////////////////////////////////////////////////////////////
     CConcurrentGroup::CConcurrentGroup( CMetricsDevice* device, const char* name, const char* description, uint32_t measurementTypeMask )
+        : m_setsVector()
+        , m_otherSetsList()
+        , m_informationVector()
+        , m_otherInformationVector()
+        , m_device( device )
+        , m_semaphore( nullptr )
+        , m_informationCount( 0 )
+        , m_isAvailabile( true )
     {
         m_params_1_0.SymbolName                    = GetCopiedCString( name );
         m_params_1_0.Description                   = GetCopiedCString( description );
@@ -4257,11 +4505,9 @@ namespace MetricsDiscoveryInternal
         m_params_1_0.IoMeasurementInformationCount = 0;
         m_params_1_0.IoGpuContextInformationCount  = 0;
 
-        m_device    = device;
-        m_semaphore = NULL;
-
-        m_setsVector    = new( std::nothrow ) Vector<CMetricSet*>( SETS_VECTOR_INCREASE );
-        m_otherSetsList = new( std::nothrow ) List<CMetricSet*>();
+        m_setsVector.reserve( SETS_VECTOR_INCREASE );
+        m_informationVector.reserve( INFORMATION_VECTOR_INCREASE );
+        m_otherInformationVector.reserve( INFORMATION_VECTOR_INCREASE );
     }
 
     //////////////////////////////////////////////////////////////////////////////
@@ -4280,8 +4526,10 @@ namespace MetricsDiscoveryInternal
     {
         MD_SAFE_DELETE_ARRAY( m_params_1_0.SymbolName );
         MD_SAFE_DELETE_ARRAY( m_params_1_0.Description );
-        MD_SAFE_DELETE( m_setsVector );
-        MD_SAFE_DELETE( m_otherSetsList );
+        ClearVector( m_informationVector );
+        ClearVector( m_otherInformationVector );
+        ClearVector( m_setsVector );
+        ClearList( m_otherSetsList );
     }
 
     //////////////////////////////////////////////////////////////////////////////
@@ -4321,30 +4569,30 @@ namespace MetricsDiscoveryInternal
     //     Wrapper function for adding custom metric sets with the given parameters.
     //
     // Input:
-    //     TAddCustomMetricSetParams* params               - params
-    //     IMetricSet_1_0*            referenceMetricSet   - (optional) metric set from which copy metrics and information
+    //     TAddCustomMetricSetParams*  params               - params
+    //     IMetricSetLatest*           referenceMetricSet   - (optional) metric set from which copy metrics and information
     //                                                         *IGNORED IN CConcurrentGroup*
-    //     bool                       copyInformationOnly  - Copy information without metrics from reference set
+    //     bool                        copyInformationOnly  - Copy information without metrics from reference set
     //
     // Output:
-    //     IMetricSet_1_5* - added metric set
+    //     IMetricSetLatest* - added metric set
     //
     //////////////////////////////////////////////////////////////////////////////
-    IMetricSet_1_5* CConcurrentGroup::AddCustomMetricSet( TAddCustomMetricSetParams* params, IMetricSet_1_0* referenceMetricSet, bool copyInformationOnly /*= false*/ )
+    IMetricSetLatest* CConcurrentGroup::AddCustomMetricSet( TAddCustomMetricSetParams* params, IMetricSetLatest* referenceMetricSet, bool copyInformationOnly /*= false*/ )
     {
-        if( params == NULL )
+        if( params == nullptr )
         {
             MD_LOG_INVALID_PARAMETER( LOG_ERROR, params );
-            return NULL;
+            return nullptr;
         }
 
-        IMetricSet_1_5* set = NULL;
+        IMetricSetLatest* set = nullptr;
 
         if( params->Type == METRIC_SET_CUSTOM_PARAMS_1_0 )
         {
             set = AddCustomMetricSet(
-                NULL, // don't inherit any metrics and information
-                NULL,
+                nullptr, // don't inherit any metrics and information
+                nullptr,
                 MD_CUSTOM_METRIC_SET_PARAMS( params, 1_0 ).SymbolName,
                 MD_CUSTOM_METRIC_SET_PARAMS( params, 1_0 ).ShortName,
                 MD_CUSTOM_METRIC_SET_PARAMS( params, 1_0 ).ApiMask,
@@ -4357,6 +4605,27 @@ namespace MetricsDiscoveryInternal
                 MD_CUSTOM_METRIC_SET_PARAMS( params, 1_0 ).ApiSpecificId,
                 MD_CUSTOM_METRIC_SET_PARAMS( params, 1_0 ).StartConfigRegSets,
                 MD_CUSTOM_METRIC_SET_PARAMS( params, 1_0 ).StartConfigRegSetsCount,
+                nullptr,
+                copyInformationOnly );
+        }
+        else if( params->Type == METRIC_SET_CUSTOM_PARAMS_1_1 )
+        {
+            set = AddCustomMetricSet(
+                nullptr, // don't inherit any metrics and information
+                nullptr,
+                MD_CUSTOM_METRIC_SET_PARAMS( params, 1_1 ).SymbolName,
+                MD_CUSTOM_METRIC_SET_PARAMS( params, 1_1 ).ShortName,
+                MD_CUSTOM_METRIC_SET_PARAMS( params, 1_1 ).ApiMask,
+                MD_CUSTOM_METRIC_SET_PARAMS( params, 1_1 ).CategoryMask,
+                MD_CUSTOM_METRIC_SET_PARAMS( params, 1_1 ).PlatformMask,
+                MD_CUSTOM_METRIC_SET_PARAMS( params, 1_1 ).GtMask,
+                MD_CUSTOM_METRIC_SET_PARAMS( params, 1_1 ).RawReportSize,
+                MD_CUSTOM_METRIC_SET_PARAMS( params, 1_1 ).QueryReportSize,
+                MD_CUSTOM_METRIC_SET_PARAMS( params, 1_1 ).ComplementarySetsList,
+                MD_CUSTOM_METRIC_SET_PARAMS( params, 1_1 ).ApiSpecificId,
+                MD_CUSTOM_METRIC_SET_PARAMS( params, 1_1 ).StartConfigRegSets,
+                MD_CUSTOM_METRIC_SET_PARAMS( params, 1_1 ).StartConfigRegSetsCount,
+                MD_CUSTOM_METRIC_SET_PARAMS( params, 1_1 ).AvailabilityEquation,
                 copyInformationOnly );
         }
 
@@ -4391,14 +4660,12 @@ namespace MetricsDiscoveryInternal
             return metricSet;
         }
 
-        Node<CMetricSet*>* metricSetNode = m_otherSetsList->GetHeadNode();
-        while( metricSetNode != NULL )
+        for( auto& otherSet : m_otherSetsList )
         {
-            if( ( metricSetNode->value ) && ( strcmp( metricSet->GetParams()->SymbolName, metricSetNode->value->GetParams()->SymbolName ) == 0 ) && ( metricSetNode->value->GetParams()->PlatformMask & platformMask ) == platformMask )
+            if( otherSet && ( strcmp( otherSet->GetParams()->SymbolName, metricSet->GetParams()->SymbolName ) == 0 ) && ( otherSet->GetParams()->PlatformMask & platformMask ) == platformMask )
             {
-                return ( metricSetNode->value );
+                return otherSet;
             }
-            metricSetNode = metricSetNode->nextNode;
         }
 
         return metricSet;
@@ -4416,48 +4683,46 @@ namespace MetricsDiscoveryInternal
     //     Adds custom metric set with the given parameters.
     //
     // Input:
-    //     CMetricSet*  referenceMetricSet     - (optional) metric set from which inherit metrics and information
-    //     const char*  signalName             - (optional) signal name with which metrics should be inherited
-    //     const char*  symbolName             -
-    //     const char*  shortName              -
-    //     uint32_t     apiMask                -
-    //     uint32_t     categoryMask           -
-    //     uint32_t     rawReportSize          -
-    //     uint32_t     queryReportSize        -
-    //     uint32_t     complementarySetsCount -
-    //     const char*  complementarySetsList  - comma separated copmlementary sets list
-    //     TApiSpecificId_1_0 apiSpecificId    -
-    //     TRegisterSet* startRegSets          -
-    //     uint32_t     startRegSetsCount      -
+    //     CMetricSet*        referenceMetricSet     - (optional) metric set from which inherit metrics and information
+    //     const char*        signalName             - (optional) signal name with which metrics should be inherited
+    //     const char*        symbolName             -
+    //     const char*        shortName              -
+    //     uint32_t           apiMask                -
+    //     uint32_t           categoryMask           -
+    //     uint32_t           rawReportSize          -
+    //     uint32_t           queryReportSize        -
+    //     uint32_t           complementarySetsCount -
+    //     const char*        complementarySetsList  - comma separated copmlementary sets list
+    //     TApiSpecificId_1_0 apiSpecificId          -
+    //     TRegisterSet*      startRegSets           -
+    //     uint32_t           startRegSetsCount      -
     //
     // Output:
-    //     IMetricSet_1_5* - added metric set
+    //     IMetricSetLatest* - added metric set
     //
     //////////////////////////////////////////////////////////////////////////////
-    IMetricSet_1_5* CConcurrentGroup::AddCustomMetricSet( CMetricSet* referenceMetricSet, const char* signalName, const char* symbolName, const char* shortName, uint32_t apiMask, uint32_t categoryMask, uint32_t platformMask, uint32_t gtMask, uint32_t rawReportSize, uint32_t queryReportSize, const char* complementarySetsList, TApiSpecificId_1_0 apiSpecificId, TRegisterSet* startRegSets, uint32_t startRegSetsCount, bool copyInformationOnly )
+    IMetricSetLatest* CConcurrentGroup::AddCustomMetricSet( CMetricSet* referenceMetricSet, const char* signalName, const char* symbolName, const char* shortName, uint32_t apiMask, uint32_t categoryMask, uint32_t platformMask, uint32_t gtMask, uint32_t rawReportSize, uint32_t queryReportSize, const char* complementarySetsList, TApiSpecificId_1_0 apiSpecificId, TRegisterSet* startRegSets, uint32_t startRegSetsCount, const char* availabilityEquation, bool copyInformationOnly /*= false*/ )
     {
         MD_LOG_ENTER();
-        MD_CHECK_PTR_RET( m_setsVector, NULL );
-        MD_CHECK_PTR_RET( m_otherSetsList, NULL );
 
         if( !AreMetricSetParamsValid( symbolName, shortName, platformMask, gtMask, startRegSets, startRegSetsCount ) )
         {
             MD_LOG( LOG_ERROR, "invalid custom metric set parameters" );
             MD_LOG_EXIT();
-            return NULL;
+            return nullptr;
         }
         if( MatchingSetExists( symbolName, platformMask, gtMask ) )
         {
             MD_LOG( LOG_ERROR, "metric set already added: %s", symbolName );
             MD_LOG_EXIT();
-            return NULL;
+            return nullptr;
         }
 
-        CMetricSet* refMetricSetMatchingPlatform = NULL;
-        CMetricSet* set                          = (CMetricSet*) new( std::nothrow ) CMetricSet( m_device, this, symbolName, shortName, apiMask, categoryMask, rawReportSize, queryReportSize, DEFAULT_METRIC_SET_REPORT_TYPE, platformMask, gtMask, true );
-        MD_CHECK_PTR_RET( set, NULL );
+        CMetricSet* refMetricSetMatchingPlatform = nullptr;
+        CMetricSet* set                          = new( std::nothrow ) CMetricSet( m_device, this, symbolName, shortName, apiMask, categoryMask, rawReportSize, queryReportSize, DEFAULT_METRIC_SET_REPORT_TYPE, platformMask, gtMask, true );
+        MD_CHECK_PTR_RET( set, nullptr );
 
-        if( complementarySetsList != NULL && set->AddComplementaryMetricSets( complementarySetsList ) != CC_OK )
+        if( complementarySetsList != nullptr && set->AddComplementaryMetricSets( complementarySetsList ) != CC_OK )
         {
             goto customMetricSetCleanup;
         }
@@ -4469,7 +4734,7 @@ namespace MetricsDiscoveryInternal
         }
 
         refMetricSetMatchingPlatform = FindSameMetricSetForPlatform( referenceMetricSet, platformMask );
-        if( refMetricSetMatchingPlatform != NULL && set->InheritFromMetricSet( refMetricSetMatchingPlatform, signalName, copyInformationOnly ) != CC_OK )
+        if( refMetricSetMatchingPlatform != nullptr && set->InheritFromMetricSet( refMetricSetMatchingPlatform, signalName, copyInformationOnly ) != CC_OK )
         {
             goto customMetricSetCleanup;
         }
@@ -4497,14 +4762,20 @@ namespace MetricsDiscoveryInternal
         }
         set->RefreshConfigRegisters();
 
-        if( m_device->IsPlatformTypeOf( platformMask, gtMask ) )
+        if( set->SetAvailabilityEquation( availabilityEquation ) != CC_OK )
         {
-            m_setsVector->PushBack( set );
-            m_params_1_0.MetricSetsCount = m_setsVector->GetCount();
+            MD_LOG( LOG_ERROR, "Error setting metric set equations" );
+            goto customMetricSetCleanup;
+        }
+
+        if( m_device->IsPlatformTypeOf( platformMask, gtMask ) && m_device->IsAvailabilityEquationTrue( availabilityEquation ) )
+        {
+            m_setsVector.push_back( set );
+            m_params_1_0.MetricSetsCount = m_setsVector.size();
         }
         else
         {
-            m_otherSetsList->PushBack( set );
+            m_otherSetsList.push_back( set );
         }
 
         return set;
@@ -4512,7 +4783,7 @@ namespace MetricsDiscoveryInternal
     customMetricSetCleanup:
         MD_SAFE_DELETE( set );
         MD_LOG_EXIT();
-        return NULL;
+        return nullptr;
     }
 
     //////////////////////////////////////////////////////////////////////////////
@@ -4527,39 +4798,67 @@ namespace MetricsDiscoveryInternal
     //     Adds a new metric set to  the concurrent group.
     //
     // Input:
-    //     const char * symbolicName       -
-    //     const char * shortName          -
-    //     uint32_t     apiMask            -
-    //     TMetricCategory category        - metric set category
-    //     uint32_t     snapshotReportSize -
-    //     uint32_t     deltaReportSize    -
-    //     TReportType  reportType         -
-    //     uint32_t     platformMask       -
-    //     uint32_t     gtMask             -
-    //     bool isCustom                   -
+    //     const char *     symbolicName          -
+    //     const char *     shortName             -
+    //     uint32_t         apiMask               -
+    //     TMetricCategory  category              - metric set category
+    //     uint32_t         snapshotReportSize    -
+    //     uint32_t         deltaReportSize       -
+    //     TReportType      reportType            -
+    //     const char *     availabilityEquation  -
+    //     uint32_t         platformMask          -
+    //     uint32_t         gtMask                -
+    //     bool             isCustom              -
     //
     // Output:
     //     CMetricSet*  - pointer to the newly added metrics set
     //
     //////////////////////////////////////////////////////////////////////////////
-    CMetricSet* CConcurrentGroup::AddMetricSet( const char* symbolicName, const char* shortName, uint32_t apiMask, uint32_t categoryMask, uint32_t snapshotReportSize, uint32_t deltaReportSize, TReportType reportType, uint32_t platformMask, uint32_t gtMask /*= GT_TYPE_ALL*/, bool isCustom /*= false*/ )
+    CMetricSet* CConcurrentGroup::AddMetricSet( const char* symbolicName, const char* shortName, uint32_t apiMask, uint32_t categoryMask, uint32_t snapshotReportSize, uint32_t deltaReportSize, TReportType reportType, uint32_t platformMask, const char* availabilityEquation /*= nullptr*/, uint32_t gtMask /*= GT_TYPE_ALL*/, bool isCustom /*= false*/ )
     {
-        MD_CHECK_PTR_RET( m_setsVector, NULL );
-        MD_CHECK_PTR_RET( m_otherSetsList, NULL );
+        CMetricSet* alreadyAddedSet = nullptr;
+        CMetricSet* set             = new( std::nothrow ) CMetricSet( m_device, this, symbolicName, shortName, apiMask, categoryMask, snapshotReportSize, deltaReportSize, reportType, platformMask, gtMask, isCustom );
 
-        CMetricSet* set = (CMetricSet*) new( std::nothrow ) CMetricSet( m_device, this, symbolicName, shortName, apiMask, categoryMask, snapshotReportSize, deltaReportSize, reportType, platformMask, gtMask, isCustom );
-        MD_CHECK_PTR_RET( set, NULL );
-
-        if( m_device->IsPlatformTypeOf( platformMask, gtMask ) )
+        if( set->SetAvailabilityEquation( availabilityEquation ) != CC_OK )
         {
-            m_setsVector->PushBack( set );
-            m_params_1_0.MetricSetsCount = m_setsVector->GetCount();
+            MD_LOG( LOG_ERROR, "Error setting metric set equations" );
+            MD_SAFE_DELETE( set );
+            return nullptr;
+        }
+
+        bool isSuitablePlatform = m_device->IsPlatformTypeOf( platformMask, gtMask ) && m_device->IsAvailabilityEquationTrue( availabilityEquation );
+
+        if( isSuitablePlatform )
+        {
+            // Check if metric set is already present in m_setsVector or m_otherSetsList.
+            alreadyAddedSet = GetMatchingMetricSet( symbolicName, platformMask, gtMask, true );
+            if( alreadyAddedSet != nullptr )
+            {
+                // If metric set present in m_setsVector it should be move to m_otherSetsList.
+                // Metric set compared to alreadyAddedSet will be added in else section as unavailable on this platform.
+                auto iterator = std::find( m_setsVector.begin(), m_setsVector.end(), alreadyAddedSet );
+                if( iterator != m_setsVector.end() )
+                {
+                    MD_LOG( LOG_WARNING, "Attempt to add metric set with the same name and true availability equation." );
+
+                    m_setsVector.erase( iterator );
+                    m_params_1_0.MetricSetsCount = m_setsVector.size();
+
+                    m_otherSetsList.push_back( alreadyAddedSet );
+                }
+            }
+        }
+
+        if( isSuitablePlatform && alreadyAddedSet == nullptr )
+        {
+            m_setsVector.push_back( set );
+            m_params_1_0.MetricSetsCount = m_setsVector.size();
             MD_LOG( LOG_INFO, "%s - added", set->GetParams()->SymbolName );
         }
         else
         {
             MD_LOG( LOG_INFO, "%s - not available", set->GetParams()->SymbolName );
-            m_otherSetsList->PushBack( set );
+            m_otherSetsList.push_back( set );
         }
 
         return set;
@@ -4577,21 +4876,20 @@ namespace MetricsDiscoveryInternal
     //     Returns the chosen metrics set or null if index doesn't exist.
     //
     // Input:
-    //     uint32_t index      - index of a chosen metrics set
+    //     uint32_t index    - index of a chosen metrics set
     //
     // Output:
-    //     IMetricSet_1_5*     - chosen metrics set
+    //     IMetricSetLatest* - chosen metrics set
     //
     //////////////////////////////////////////////////////////////////////////////
-    IMetricSet_1_5* CConcurrentGroup::GetMetricSet( uint32_t index )
+    IMetricSetLatest* CConcurrentGroup::GetMetricSet( uint32_t index )
     {
-        MD_CHECK_PTR_RET( m_setsVector, NULL );
-        if( index < m_setsVector->GetCount() )
+        if( index < m_setsVector.size() )
         {
-            return ( *m_setsVector )[index];
+            return m_setsVector[index];
         }
 
-        return NULL;
+        return nullptr;
     }
 
     //////////////////////////////////////////////////////////////////////////////
@@ -4685,15 +4983,9 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     TCompletionCode CConcurrentGroup::WriteCConcurrentGroupToFile( FILE* metricFile )
     {
-        uint32_t           count   = 0;
-        Node<CMetricSet*>* setNode = NULL;
-
-        MD_CHECK_PTR_RET( m_setsVector, CC_ERROR_GENERAL );
-        MD_CHECK_PTR_RET( m_otherSetsList, CC_ERROR_GENERAL );
-
-        if( metricFile == NULL )
+        if( metricFile == nullptr )
         {
-            MD_ASSERT( metricFile != NULL );
+            MD_ASSERT( metricFile != nullptr );
             return CC_ERROR_INVALID_PARAMETER;
         }
 
@@ -4703,26 +4995,23 @@ namespace MetricsDiscoveryInternal
         fwrite( &m_params_1_0.MeasurementTypeMask, sizeof( m_params_1_0.MeasurementTypeMask ), 1, metricFile );
 
         // m_setsVector & m_otherSetsList
-        count = GetCustomSetCount();
+        uint32_t count = GetCustomSetCount();
         fwrite( &count, sizeof( count ), 1, metricFile );
 
-        count = m_setsVector->GetCount();
-        for( uint32_t i = 0; i < count; i++ )
+        for( auto& metricSet : m_setsVector )
         {
-            if( ( *m_setsVector )[i]->IsCustom() )
+            if( metricSet->IsCustom() )
             {
-                ( *m_setsVector )[i]->WriteCMetricSetToFile( metricFile );
+                metricSet->WriteCMetricSetToFile( metricFile );
             }
         }
 
-        setNode = m_otherSetsList->GetHeadNode();
-        while( setNode != NULL )
+        for( auto& otherMetricSet : m_otherSetsList )
         {
-            if( setNode->value->IsCustom() )
+            if( otherMetricSet->IsCustom() )
             {
-                setNode->value->WriteCMetricSetToFile( metricFile );
+                otherMetricSet->WriteCMetricSetToFile( metricFile );
             }
-            setNode = setNode->nextNode;
         }
 
         return CC_OK;
@@ -4750,7 +5039,7 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     bool CConcurrentGroup::MatchingSetExists( const char* symbolName, uint32_t platformMask, uint32_t gtMask )
     {
-        return GetMatchingMetricSet( symbolName, platformMask, gtMask ) != NULL;
+        return GetMatchingMetricSet( symbolName, platformMask, gtMask ) != nullptr;
     }
 
     //////////////////////////////////////////////////////////////////////////////
@@ -4779,12 +5068,12 @@ namespace MetricsDiscoveryInternal
     {
         CDriverInterface& driverInterface = m_device->GetDriverInterface();
 
-        if( ( symbolName == NULL ) || ( strcmp( symbolName, "" ) == 0 ) )
+        if( ( symbolName == nullptr ) || ( strcmp( symbolName, "" ) == 0 ) )
         {
             MD_LOG_INVALID_PARAMETER( LOG_ERROR, symbolName );
             return false;
         }
-        if( ( shortName == NULL ) || ( strcmp( shortName, "" ) == 0 ) )
+        if( ( shortName == nullptr ) || ( strcmp( shortName, "" ) == 0 ) )
         {
             MD_LOG_INVALID_PARAMETER( LOG_ERROR, shortName );
             return false;
@@ -4799,7 +5088,7 @@ namespace MetricsDiscoveryInternal
             MD_LOG_INVALID_PARAMETER( LOG_ERROR, gtMask );
             return false;
         }
-        if( startRegSetsCount > 0 && startRegSets == NULL )
+        if( startRegSetsCount > 0 && startRegSets == nullptr )
         {
             MD_LOG_INVALID_PARAMETER( LOG_ERROR, startRegSets );
             return false;
@@ -4809,7 +5098,7 @@ namespace MetricsDiscoveryInternal
         {
             if( startRegSets[i].StartConfigRegsCount > 0 )
             {
-                if( startRegSets[i].StartConfigRegs == NULL )
+                if( startRegSets[i].StartConfigRegs == nullptr )
                 {
                     MD_LOG_INVALID_PARAMETER( LOG_ERROR, startRegSets[i].StartConfigRegs );
                     return false;
@@ -4855,26 +5144,20 @@ namespace MetricsDiscoveryInternal
     {
         uint32_t customSetCount = 0;
 
-        MD_CHECK_PTR_RET( m_setsVector, CC_ERROR_GENERAL );
-        MD_CHECK_PTR_RET( m_otherSetsList, CC_ERROR_GENERAL );
-
-        uint32_t count = m_setsVector->GetCount();
-        for( uint32_t i = 0; i < count; i++ )
+        for( auto& metricSet : m_setsVector )
         {
-            if( ( *m_setsVector )[i]->IsCustom() )
+            if( metricSet->IsCustom() )
             {
                 customSetCount++;
             }
         }
 
-        Node<CMetricSet*>* setNode = m_otherSetsList->GetHeadNode();
-        while( setNode != NULL )
+        for( auto& metricSet : m_otherSetsList )
         {
-            if( setNode->value->IsCustom() )
+            if( metricSet->IsCustom() )
             {
                 customSetCount++;
             }
-            setNode = setNode->nextNode;
         }
 
         return customSetCount;
@@ -4903,7 +5186,7 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     TCompletionCode CConcurrentGroup::FillLockSemaphoreName( char* name, size_t size )
     {
-        MD_ASSERT( name != NULL );
+        MD_ASSERT( name != nullptr );
 
         // Create a semaphore name: "<CcgSymbolName>_<BusNumber>_<DeviceNumber>_<FunctionNumber>"
         const TAdapterParams_1_9* adapterParams = m_device->GetAdapter().GetParams();
@@ -4934,25 +5217,22 @@ namespace MetricsDiscoveryInternal
     //     null if it doesn't exist.
     //
     // Input:
-    //     const char* symbolName   - name of a metric set to look for
-    //     uint32_t    platformMask - platform Id bit mask indicates platforms compatible with set.
-    //     uint32_t    gtMask       - gt type bit mask indicates platform versions compatible with set.
-    //
+    //     const char* symbolName                       - name of a metric set to look for
+    //     uint32_t    platformMask                     - platform Id bit mask indicates platforms compatible with set.
+    //     uint32_t    gtMask                           - gt type bit mask indicates platform versions compatible with set.
+    //     bool        findWithTrueAvailabilityEquation - check if availability equation of set contained in m_otherSetsList is true.
     // Output:
-    //     CMetricSet*              - found metric set or NULL
+    //     CMetricSet*                                  - found metric set or nullptr
     //
     //////////////////////////////////////////////////////////////////////////////
-    CMetricSet* CConcurrentGroup::GetMatchingMetricSet( const char* symbolName, uint32_t platformMask, uint32_t gtMask )
+    CMetricSet* CConcurrentGroup::GetMatchingMetricSet( const char* symbolName, uint32_t platformMask, uint32_t gtMask, bool findWithTrueAvailabilityEquation /* = false */ )
     {
-        MD_CHECK_PTR_RET( symbolName, NULL );
-        MD_CHECK_PTR_RET( m_setsVector, NULL );
-        MD_CHECK_PTR_RET( m_otherSetsList, NULL );
+        MD_CHECK_PTR_RET( symbolName, nullptr );
 
         // List of available sets
-        for( uint32_t i = 0; i < m_setsVector->GetCount(); i++ )
+        for( auto& metricSet : m_setsVector )
         {
-            CMetricSet*           set       = ( *m_setsVector )[i];
-            TMetricSetParams_1_4* setParams = set ? set->GetParams() : NULL;
+            TMetricSetParamsLatest* setParams = metricSet ? metricSet->GetParams() : nullptr;
 
             if( setParams && ( strcmp( symbolName, setParams->SymbolName ) == 0 ) )
             {
@@ -4961,16 +5241,15 @@ namespace MetricsDiscoveryInternal
 
                 if( platformMatch && gtMatch )
                 {
-                    return set;
+                    return metricSet;
                 }
             }
         }
+
         // List of unavailable sets for current platform
-        Node<CMetricSet*>* metricSetNode = m_otherSetsList->GetHeadNode();
-        while( metricSetNode != NULL )
+        for( auto& otherMetricSet : m_otherSetsList )
         {
-            CMetricSet*           set       = metricSetNode->value;
-            TMetricSetParams_1_4* setParams = set ? set->GetParams() : NULL;
+            TMetricSetParamsLatest* setParams = otherMetricSet ? otherMetricSet->GetParams() : nullptr;
 
             if( setParams && strcmp( symbolName, setParams->SymbolName ) == 0 )
             {
@@ -4979,13 +5258,84 @@ namespace MetricsDiscoveryInternal
 
                 if( platformMatch && gtMatch )
                 {
-                    return set;
+                    if( findWithTrueAvailabilityEquation && !otherMetricSet->IsAvailabilityEquationTrue() )
+                    {
+                        continue;
+                    }
+
+                    return otherMetricSet;
                 }
             }
-            metricSetNode = metricSetNode->nextNode;
         }
 
-        return NULL;
+        return nullptr;
+    }
+
+    //////////////////////////////////////////////////////////////////////////////
+    //
+    // Class:
+    //     CConcurrentGroup
+    //
+    // Method:
+    //     GetInformation
+    //
+    // Description:
+    //     Returns the chosen information or nullptr if index doesn't exist.
+    //
+    // Input:
+    //     uint32_t     index  - index of an information
+    //
+    // Output:
+    //     IInformation_1_0*   - chosen information or nullptr
+    //
+    //////////////////////////////////////////////////////////////////////////////
+    IInformation_1_0* CConcurrentGroup::GetInformation( uint32_t index )
+    {
+        if( index < m_informationVector.size() )
+        {
+            return static_cast<IInformation_1_0*>( m_informationVector[index] );
+        }
+        return nullptr;
+    }
+
+    //////////////////////////////////////////////////////////////////////////////
+    //
+    // Class:
+    //     CConcurrentGroup
+    //
+    // Method:
+    //     GetInformationCount
+    //
+    // Description:
+    //     Returns number of Information objects in concurrent group
+    //
+    // Output:
+    //     uint32_t - number of information objects
+    //
+    //////////////////////////////////////////////////////////////////////////////
+    uint32_t CConcurrentGroup::GetInformationCount()
+    {
+        return m_informationCount;
+    }
+
+    //////////////////////////////////////////////////////////////////////////////
+    //
+    // Class:
+    //     CConcurrentGroup
+    //
+    // Method:
+    //     GetMetricsDevice
+    //
+    // Description:
+    //     Returns metrics device.
+    //
+    // Output:
+    //     CMetricsDevice* - a pointer to a metrics device object.
+    //
+    //////////////////////////////////////////////////////////////////////////////
+    CMetricsDevice* CConcurrentGroup::GetMetricsDevice()
+    {
+        return m_device;
     }
 
     //////////////////////////////////////////////////////////////////////////////
@@ -5008,15 +5358,18 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     COAConcurrentGroup::COAConcurrentGroup( CMetricsDevice* device, const char* name, const char* description, uint32_t measurementTypeMask )
         : CConcurrentGroup( device, name, description, measurementTypeMask )
+        , m_ioMeasurementInfoVector()
+        , m_ioGpuContextInfoVector()
+        , m_processId( 0 )
+        , m_contextTagsEnabled( false )
+        , m_ioMetricSet( nullptr )
+        , m_streamEventHandle( nullptr )
+        , m_streamType( STREAM_TYPE_OA )
     {
-        m_processId               = 0;
-        m_contextTagsEnabled      = false;
-        m_ioMetricSet             = NULL;
-        m_streamEventHandle       = NULL;
-        m_streamType              = STREAM_TYPE_OA;
-        m_ioMeasurementInfoVector = new( std::nothrow ) Vector<CInformation*>( EXCEPTIONS_VECTOR_INCREASE );
-        m_ioGpuContextInfoVector  = new( std::nothrow ) Vector<CInformation*>( GPU_CONTEXTS_VECTOR_INCREASE );
         AddIoMeasurementInfoPredefined();
+
+        m_ioMeasurementInfoVector.reserve( EXCEPTIONS_VECTOR_INCREASE );
+        m_ioGpuContextInfoVector.reserve( GPU_CONTEXTS_VECTOR_INCREASE );
     }
 
     //////////////////////////////////////////////////////////////////////////////
@@ -5038,8 +5391,8 @@ namespace MetricsDiscoveryInternal
             CloseIoStream();
         }
 
-        MD_SAFE_DELETE( m_ioMeasurementInfoVector );
-        MD_SAFE_DELETE( m_ioGpuContextInfoVector );
+        ClearVector( m_ioMeasurementInfoVector );
+        ClearVector( m_ioGpuContextInfoVector );
     }
 
     //////////////////////////////////////////////////////////////////////////////
@@ -5054,28 +5407,28 @@ namespace MetricsDiscoveryInternal
     //     Wrapper function for adding custom metric sets with the given parameters.
     //
     // Input:
-    //     TAddCustomMetricSetParams* params              - params
-    //     IMetricSet_1_0*            referenceMetricSet  - (optional) metric set from which copy metrics and information
-    //     bool                       copyInformationOnly - Copy information without metrics from reference set
+    //     TAddCustomMetricSetParams*  params               - params
+    //     IMetricSetLatest*           referenceMetricSet   - (optional) metric set from which copy metrics and information
+    //     bool                        copyInformationOnly  - Copy information without metrics from reference set
     //
     // Output:
-    //     IMetricSet_1_5* - added metric set
+    //     IMetricSetLatest* - added metric set
     //
     //////////////////////////////////////////////////////////////////////////////
-    IMetricSet_1_5* COAConcurrentGroup::AddCustomMetricSet( TAddCustomMetricSetParams* params, IMetricSet_1_0* referenceMetricSet, bool copyInformationOnly /*= false*/ )
+    IMetricSetLatest* COAConcurrentGroup::AddCustomMetricSet( TAddCustomMetricSetParams* params, IMetricSetLatest* referenceMetricSet, bool copyInformationOnly /*= false*/ )
     {
-        if( params == NULL )
+        if( params == nullptr )
         {
             MD_LOG_INVALID_PARAMETER( LOG_ERROR, params );
-            return NULL;
+            return nullptr;
         }
 
-        IMetricSet_1_5* set = NULL;
+        IMetricSetLatest* set = nullptr;
 
         if( params->Type == METRIC_SET_CUSTOM_PARAMS_1_0 )
         {
             set = CConcurrentGroup::AddCustomMetricSet(
-                (CMetricSet*) referenceMetricSet,
+                static_cast<CMetricSet*>( referenceMetricSet ),
                 "oa.fixed", // inherit metrics with signalName containing this string
                 MD_CUSTOM_METRIC_SET_PARAMS( params, 1_0 ).SymbolName,
                 MD_CUSTOM_METRIC_SET_PARAMS( params, 1_0 ).ShortName,
@@ -5089,6 +5442,27 @@ namespace MetricsDiscoveryInternal
                 MD_CUSTOM_METRIC_SET_PARAMS( params, 1_0 ).ApiSpecificId,
                 MD_CUSTOM_METRIC_SET_PARAMS( params, 1_0 ).StartConfigRegSets,
                 MD_CUSTOM_METRIC_SET_PARAMS( params, 1_0 ).StartConfigRegSetsCount,
+                nullptr,
+                copyInformationOnly );
+        }
+        else if( params->Type == METRIC_SET_CUSTOM_PARAMS_1_1 )
+        {
+            set = CConcurrentGroup::AddCustomMetricSet(
+                static_cast<CMetricSet*>( referenceMetricSet ),
+                "oa.fixed", // inherit metrics with signalName containing this string
+                MD_CUSTOM_METRIC_SET_PARAMS( params, 1_1 ).SymbolName,
+                MD_CUSTOM_METRIC_SET_PARAMS( params, 1_1 ).ShortName,
+                MD_CUSTOM_METRIC_SET_PARAMS( params, 1_1 ).ApiMask,
+                MD_CUSTOM_METRIC_SET_PARAMS( params, 1_1 ).CategoryMask,
+                MD_CUSTOM_METRIC_SET_PARAMS( params, 1_1 ).PlatformMask,
+                MD_CUSTOM_METRIC_SET_PARAMS( params, 1_1 ).GtMask,
+                MD_CUSTOM_METRIC_SET_PARAMS( params, 1_1 ).RawReportSize,
+                MD_CUSTOM_METRIC_SET_PARAMS( params, 1_1 ).QueryReportSize,
+                MD_CUSTOM_METRIC_SET_PARAMS( params, 1_1 ).ComplementarySetsList,
+                MD_CUSTOM_METRIC_SET_PARAMS( params, 1_1 ).ApiSpecificId,
+                MD_CUSTOM_METRIC_SET_PARAMS( params, 1_1 ).StartConfigRegSets,
+                MD_CUSTOM_METRIC_SET_PARAMS( params, 1_1 ).StartConfigRegSetsCount,
+                MD_CUSTOM_METRIC_SET_PARAMS( params, 1_1 ).AvailabilityEquation,
                 copyInformationOnly );
         }
 
@@ -5132,7 +5506,7 @@ namespace MetricsDiscoveryInternal
         if( ret == CC_OK && newStreamType != m_streamType )
         {
             // change is disallowed if stream is already opened
-            if( m_ioMetricSet != NULL )
+            if( m_ioMetricSet != nullptr )
             {
                 MD_LOG( LOG_ERROR, "Failed to set IoStream sampling type" );
                 ret = CC_ERROR_GENERAL;
@@ -5160,10 +5534,10 @@ namespace MetricsDiscoveryInternal
     //     (Enables Timer Mode and opens Counter Stream)
     //
     // Input:
-    //     IMetricSet_1_0* metricSet           - metric set
-    //     uint32_t        processId           - PID of the measured app (0 is global context)
-    //     uint32_t*       nsTimerPeriod       - (in/out) requested/set sampling period time in nanoseconds
-    //     uint32_t*       oaBufferSize        - (in/out) requested/set OA Buffer size in bytes
+    //     IMetricSet_1_0*      metricSet           - metric set
+    //     uint32_t             processId           - PID of the measured app (0 is global context)
+    //     uint32_t*            nsTimerPeriod       - (in/out) requested/set sampling period time in nanoseconds
+    //     uint32_t*            oaBufferSize        - (in/out) requested/set OA Buffer size in bytes
     //
     // Output:
     //     TCompletionCode - result of operation (*CC_OK* is ok)
@@ -5179,7 +5553,7 @@ namespace MetricsDiscoveryInternal
         TCompletionCode   ret             = CC_OK;
         CDriverInterface& driverInterface = m_device->GetDriverInterface();
 
-        ret = driverInterface.OpenIoStream( m_streamType, *m_device, (CMetricSet*) metricSet, m_params_1_0.SymbolName, processId, nsTimerPeriod, oaBufferSize, &m_streamEventHandle );
+        ret = driverInterface.OpenIoStream( m_streamType, *m_device, static_cast<CMetricSet*>( metricSet ), m_params_1_0.SymbolName, processId, nsTimerPeriod, oaBufferSize, &m_streamEventHandle );
         if( ret != CC_OK )
         {
             MD_LOG_EXIT();
@@ -5187,14 +5561,14 @@ namespace MetricsDiscoveryInternal
         }
         MD_LOG( LOG_DEBUG, "Stream opened using type: %u", m_streamType );
 
-        m_ioMetricSet          = (CMetricSet*) metricSet;
+        m_ioMetricSet          = static_cast<CMetricSet*>( metricSet );
         m_processId            = processId;
         m_contextTagsEnabled   = m_ioMetricSet->HasInformation( "ContextId" );
         CMetricsCalculator* mc = m_ioMetricSet->GetMetricsCalculator();
         // In case of stream reopen
-        m_ioGpuContextInfoVector->Clear();
+        ClearVector( m_ioGpuContextInfoVector );
         m_params_1_0.IoGpuContextInformationCount = 0;
-        if( mc != NULL )
+        if( mc != nullptr )
         {
             mc->DiscardSavedReport();
         }
@@ -5228,7 +5602,7 @@ namespace MetricsDiscoveryInternal
     {
         MD_CHECK_PTR_RET( reportData, CC_ERROR_INVALID_PARAMETER );
         MD_CHECK_PTR_RET( reportCount, CC_ERROR_INVALID_PARAMETER );
-        if( m_ioMetricSet == NULL )
+        if( m_ioMetricSet == nullptr )
         {
             *reportCount = 0;
             MD_LOG( LOG_ERROR, "stream not opened" );
@@ -5250,26 +5624,19 @@ namespace MetricsDiscoveryInternal
         {
             driverInterface.HandleIoStreamExceptions( m_params_1_0.SymbolName, m_ioMetricSet, m_processId, reportCount, &exceptions );
 
-            if( m_ioMeasurementInfoVector )
-            {
-                // Order (indices) should be in sync with AddIoMeasurementInfoPredefined()
-                uint32_t index = 0;
-                SetIoMeasurementInfoPredefined( IO_MEASUREMENT_INFO_CORE_FREQUENCY_MHZ, frequency, &index );
-                SetIoMeasurementInfoPredefined( IO_MEASUREMENT_INFO_FREQUENCY_CHANGED, exceptions.FrequencyChanged, &index );
-                SetIoMeasurementInfoPredefined( IO_MEASUREMENT_INFO_FREQUENCY_CHANGED_INVALID, exceptions.FrequencyChangedInvalid, &index );
-                SetIoMeasurementInfoPredefined( IO_MEASUREMENT_INFO_SLICE_SHUTDOWN, exceptions.SliceShutdown, &index );
-                SetIoMeasurementInfoPredefined( IO_MEASUREMENT_INFO_REPORT_LOST, exceptions.ReportLost, &index );
-                SetIoMeasurementInfoPredefined( IO_MEASUREMENT_INFO_DATA_OUTSTANDING, exceptions.DataOutstanding, &index );
-                SetIoMeasurementInfoPredefined( IO_MEASUREMENT_INFO_BUFFER_OVERFLOW, exceptions.BufferOverflow, &index );
-                SetIoMeasurementInfoPredefined( IO_MEASUREMENT_INFO_BUFFER_OVERRUN, exceptions.BufferOverrun, &index );
-                SetIoMeasurementInfoPredefined( IO_MEASUREMENT_INFO_COUNTERS_OVERFLOW, exceptions.CountersOverflow, &index );
+            // Order (indices) should be in sync with AddIoMeasurementInfoPredefined()
+            uint32_t index = 0;
+            SetIoMeasurementInfoPredefined( IO_MEASUREMENT_INFO_CORE_FREQUENCY_MHZ, frequency, &index );
+            SetIoMeasurementInfoPredefined( IO_MEASUREMENT_INFO_FREQUENCY_CHANGED, exceptions.FrequencyChanged, &index );
+            SetIoMeasurementInfoPredefined( IO_MEASUREMENT_INFO_FREQUENCY_CHANGED_INVALID, exceptions.FrequencyChangedInvalid, &index );
+            SetIoMeasurementInfoPredefined( IO_MEASUREMENT_INFO_SLICE_SHUTDOWN, exceptions.SliceShutdown, &index );
+            SetIoMeasurementInfoPredefined( IO_MEASUREMENT_INFO_REPORT_LOST, exceptions.ReportLost, &index );
+            SetIoMeasurementInfoPredefined( IO_MEASUREMENT_INFO_DATA_OUTSTANDING, exceptions.DataOutstanding, &index );
+            SetIoMeasurementInfoPredefined( IO_MEASUREMENT_INFO_BUFFER_OVERFLOW, exceptions.BufferOverflow, &index );
+            SetIoMeasurementInfoPredefined( IO_MEASUREMENT_INFO_BUFFER_OVERRUN, exceptions.BufferOverrun, &index );
+            SetIoMeasurementInfoPredefined( IO_MEASUREMENT_INFO_COUNTERS_OVERFLOW, exceptions.CountersOverflow, &index );
 
-                m_params_1_0.IoMeasurementInformationCount = m_ioMeasurementInfoVector->GetCount();
-            }
-            else
-            {
-                m_params_1_0.IoMeasurementInformationCount = 0;
-            }
+            m_params_1_0.IoMeasurementInformationCount = m_ioMeasurementInfoVector.size();
         }
 
         return ret;
@@ -5294,7 +5661,7 @@ namespace MetricsDiscoveryInternal
     TCompletionCode COAConcurrentGroup::CloseIoStream( void )
     {
         MD_LOG_ENTER();
-        if( m_ioMetricSet == NULL )
+        if( m_ioMetricSet == nullptr )
         {
             MD_LOG( LOG_ERROR, "stream not opened" );
             MD_LOG_EXIT();
@@ -5313,7 +5680,7 @@ namespace MetricsDiscoveryInternal
 
         // m_processId is not cleared after close to define if context filtering was used.
         // Stream reopen will override m_processId
-        m_ioMetricSet = NULL;
+        m_ioMetricSet = nullptr;
         MD_LOG_EXIT();
         return ret;
     }
@@ -5363,19 +5730,18 @@ namespace MetricsDiscoveryInternal
     //     uint32_t     index  - index of the measurement information
     //
     // Output:
-    //     IInformation_1_0*   - measurement information, NULL if count is 0
+    //     IInformation_1_0*   - measurement information, nullptr if count is 0
     //
     //////////////////////////////////////////////////////////////////////////////
     IInformation_1_0* COAConcurrentGroup::GetIoMeasurementInformation( uint32_t index )
     {
-        MD_CHECK_PTR_RET( m_ioMeasurementInfoVector, NULL );
-        if( m_params_1_0.IoMeasurementInformationCount != 0 && index < m_ioMeasurementInfoVector->GetCount() )
+        if( m_params_1_0.IoMeasurementInformationCount != 0 && index < m_ioMeasurementInfoVector.size() )
         {
-            return (IInformation_1_0*) ( *m_ioMeasurementInfoVector )[index];
+            return static_cast<IInformation_1_0*>( m_ioMeasurementInfoVector[index] );
         }
         else
         {
-            return NULL;
+            return nullptr;
         }
     }
 
@@ -5395,19 +5761,18 @@ namespace MetricsDiscoveryInternal
     //     uint32_t     index  - index of the GPU context information
     //
     // Output:
-    //     IInformation_1_0*   - GPU context information, NULL if count is 0
+    //     IInformation_1_0*   - GPU context information, nullptr if count is 0
     //
     //////////////////////////////////////////////////////////////////////////////
     IInformation_1_0* COAConcurrentGroup::GetIoGpuContextInformation( uint32_t index )
     {
-        MD_CHECK_PTR_RET( m_ioGpuContextInfoVector, NULL );
-        if( m_params_1_0.IoGpuContextInformationCount != 0 && index < m_ioGpuContextInfoVector->GetCount() )
+        if( m_params_1_0.IoGpuContextInformationCount != 0 && index < m_ioGpuContextInfoVector.size() )
         {
-            return (IInformation_1_0*) ( *m_ioGpuContextInfoVector )[index];
+            return static_cast<IInformation_1_0*>( m_ioGpuContextInfoVector[index] );
         }
         else
         {
-            return NULL;
+            return nullptr;
         }
     }
 
@@ -5434,35 +5799,35 @@ namespace MetricsDiscoveryInternal
         }
         if( driverInterface.IsIoMeasurementInfoAvailable( IO_MEASUREMENT_INFO_FREQUENCY_CHANGED ) )
         {
-            AddIoMeasurementInformation( "FrequencyChanged", "Core Frequency Changed", "The flag indicating that core frequency has changed.", "Exception", INFORMATION_TYPE_FLAG, NULL );
+            AddIoMeasurementInformation( "FrequencyChanged", "Core Frequency Changed", "The flag indicating that core frequency has changed.", "Exception", INFORMATION_TYPE_FLAG, nullptr );
         }
         if( driverInterface.IsIoMeasurementInfoAvailable( IO_MEASUREMENT_INFO_FREQUENCY_CHANGED_INVALID ) )
         {
-            AddIoMeasurementInformation( "FrequencyChangedInvalid", "Core Frequency Changed Invalid", "The flag indicating inability to report freq change due to delayed read.", "Exception", INFORMATION_TYPE_FLAG, NULL );
+            AddIoMeasurementInformation( "FrequencyChangedInvalid", "Core Frequency Changed Invalid", "The flag indicating inability to report freq change due to delayed read.", "Exception", INFORMATION_TYPE_FLAG, nullptr );
         }
         if( driverInterface.IsIoMeasurementInfoAvailable( IO_MEASUREMENT_INFO_SLICE_SHUTDOWN ) )
         {
-            AddIoMeasurementInformation( "SliceShutdown", "Slice Shutdown Occurred", "The flag indicating that the Slice Shutdown has occurred.", "Exception", INFORMATION_TYPE_FLAG, NULL );
+            AddIoMeasurementInformation( "SliceShutdown", "Slice Shutdown Occurred", "The flag indicating that the Slice Shutdown has occurred.", "Exception", INFORMATION_TYPE_FLAG, nullptr );
         }
         if( driverInterface.IsIoMeasurementInfoAvailable( IO_MEASUREMENT_INFO_REPORT_LOST ) )
         {
-            AddIoMeasurementInformation( "ReportLost", "Report Lost reported by HW", "The flag indicating that some samples were lost since last Read.", "Exception", INFORMATION_TYPE_FLAG, NULL );
+            AddIoMeasurementInformation( "ReportLost", "Report Lost reported by HW", "The flag indicating that some samples were lost since last Read.", "Exception", INFORMATION_TYPE_FLAG, nullptr );
         }
         if( driverInterface.IsIoMeasurementInfoAvailable( IO_MEASUREMENT_INFO_DATA_OUTSTANDING ) )
         {
-            AddIoMeasurementInformation( "DataOutstanding", "Data Outstanding", "The flag indicating that there are still some outstanding data.", "Report Meta Data", INFORMATION_TYPE_FLAG, NULL );
+            AddIoMeasurementInformation( "DataOutstanding", "Data Outstanding", "The flag indicating that there are still some outstanding data.", "Report Meta Data", INFORMATION_TYPE_FLAG, nullptr );
         }
         if( driverInterface.IsIoMeasurementInfoAvailable( IO_MEASUREMENT_INFO_BUFFER_OVERFLOW ) )
         {
-            AddIoMeasurementInformation( "BufferOverflow", "Buffer Overflow", "The flag indicating that some reports have been overwritten.", "Report Meta Data", INFORMATION_TYPE_FLAG, NULL );
+            AddIoMeasurementInformation( "BufferOverflow", "Buffer Overflow", "The flag indicating that some reports have been overwritten.", "Report Meta Data", INFORMATION_TYPE_FLAG, nullptr );
         }
         if( driverInterface.IsIoMeasurementInfoAvailable( IO_MEASUREMENT_INFO_BUFFER_OVERRUN ) )
         {
-            AddIoMeasurementInformation( "BufferOverrun", "Buffer Overrun", "The flag indicating that the buffer is full (n-1 reports).", "Report Meta Data", INFORMATION_TYPE_FLAG, NULL );
+            AddIoMeasurementInformation( "BufferOverrun", "Buffer Overrun", "The flag indicating that the buffer is full (n-1 reports).", "Report Meta Data", INFORMATION_TYPE_FLAG, nullptr );
         }
         if( driverInterface.IsIoMeasurementInfoAvailable( IO_MEASUREMENT_INFO_COUNTERS_OVERFLOW ) )
         {
-            AddIoMeasurementInformation( "CountersOverflow", "Counters Overflow", "The flag indicating that counters overflows occurred between two consecutive readings.", "Report Meta Data", INFORMATION_TYPE_FLAG, NULL );
+            AddIoMeasurementInformation( "CountersOverflow", "Counters Overflow", "The flag indicating that counters overflows occurred between two consecutive readings.", "Report Meta Data", INFORMATION_TYPE_FLAG, nullptr );
         }
     }
 
@@ -5487,20 +5852,18 @@ namespace MetricsDiscoveryInternal
     //     const char*         informationUnits    -
     //
     // Output:
-    //     CInformation*   - pointer to the newly added measurement information. NULL if error.
+    //     CInformation*   - pointer to the newly added measurement information. nullptr if error.
     //
     //////////////////////////////////////////////////////////////////////////////
     CInformation* COAConcurrentGroup::AddIoMeasurementInformation( const char* name, const char* shortName, const char* longName, const char* group, TInformationType informationType, const char* informationUnits )
     {
-        MD_CHECK_PTR_RET( m_ioMeasurementInfoVector, NULL );
-
-        CInformation* measurementInfo = (CInformation*) new( std::nothrow ) CInformation( m_device, m_ioMeasurementInfoVector->GetCount(), name, shortName, longName, group, API_TYPE_IOSTREAM | API_TYPE_BBSTREAM, informationType, informationUnits );
-        MD_CHECK_PTR_RET( measurementInfo, NULL );
+        CInformation* measurementInfo = new( std::nothrow ) CInformation( m_device, m_ioMeasurementInfoVector.size(), name, shortName, longName, group, API_TYPE_IOSTREAM | API_TYPE_BBSTREAM, informationType, informationUnits );
+        MD_CHECK_PTR_RET( measurementInfo, nullptr );
 
         measurementInfo->SetSnapshotReportReadEquation( "" );
         measurementInfo->SetDeltaReportReadEquation( "" );
 
-        m_ioMeasurementInfoVector->PushBack( measurementInfo );
+        m_ioMeasurementInfoVector.push_back( measurementInfo );
         return measurementInfo;
     }
 
@@ -5525,20 +5888,18 @@ namespace MetricsDiscoveryInternal
     //     const char*         informationUnits    -
     //
     // Output:
-    //     CInformation*   - pointer to the newly added GPU context information. NULL if error.
+    //     CInformation*   - pointer to the newly added GPU context information. nullptr if error.
     //
     //////////////////////////////////////////////////////////////////////////////
     CInformation* COAConcurrentGroup::AddIoGpuContextInformation( const char* name, const char* shortName, const char* longName, const char* group, TInformationType informationType, const char* informationUnits )
     {
-        MD_CHECK_PTR_RET( m_ioGpuContextInfoVector, NULL );
-
-        CInformation* gpuContextInfo = (CInformation*) new( std::nothrow ) CInformation( m_device, m_ioGpuContextInfoVector->GetCount(), name, shortName, longName, group, API_TYPE_IOSTREAM | 0x0, informationType, informationUnits );
-        MD_CHECK_PTR_RET( gpuContextInfo, NULL );
+        CInformation* gpuContextInfo = new( std::nothrow ) CInformation( m_device, m_ioGpuContextInfoVector.size(), name, shortName, longName, group, API_TYPE_IOSTREAM | 0x0, informationType, informationUnits );
+        MD_CHECK_PTR_RET( gpuContextInfo, nullptr );
 
         gpuContextInfo->SetSnapshotReportReadEquation( "" );
         gpuContextInfo->SetDeltaReportReadEquation( "" );
 
-        m_ioGpuContextInfoVector->PushBack( gpuContextInfo );
+        m_ioGpuContextInfoVector.push_back( gpuContextInfo );
         return gpuContextInfo;
     }
 
@@ -5563,7 +5924,7 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     void COAConcurrentGroup::SetIoMeasurementInfoPredefined( TIoMeasurementInfoType ioMeasurementInfoType, uint32_t value, uint32_t* index )
     {
-        if( !index )
+        if( !index || *index >= m_ioMeasurementInfoVector.size() )
         {
             return;
         }
@@ -5573,7 +5934,7 @@ namespace MetricsDiscoveryInternal
         // Set information if available
         if( driverInterface.IsIoMeasurementInfoAvailable( ioMeasurementInfoType ) )
         {
-            ( *m_ioMeasurementInfoVector )[( *index )++]->SetInformationValue( value, EQUATION_IO_READ );
+            m_ioMeasurementInfoVector[( *index )++]->SetInformationValue( value, EQUATION_IO_READ );
         }
     }
 
@@ -5613,10 +5974,10 @@ namespace MetricsDiscoveryInternal
     //     (Enables Timer Mode and opens Counter Stream)
     //
     // Input:
-    //     IMetricSet_1_0* metricSet           - metric set
-    //     uint32_t        processId           - PID of the measured app (0 is global context)
-    //     uint32_t*       nsTimerPeriod       - (in/out) requested/set sampling period time in nanoseconds
-    //     uint32_t*       sysBufferSize       - (in/out) requested/set Sys Buffer size in bytes
+    //     IMetricSet_1_0*      metricSet           - metric set
+    //     uint32_t             processId           - PID of the measured app (0 is global context)
+    //     uint32_t*            nsTimerPeriod       - (in/out) requested/set sampling period time in nanoseconds
+    //     uint32_t*            sysBufferSize       - (in/out) requested/set Sys Buffer size in bytes
     //
     // Output:
     //     TCompletionCode - result of operation (*CC_OK* is ok)
@@ -5631,13 +5992,13 @@ namespace MetricsDiscoveryInternal
         TCompletionCode   ret             = CC_OK;
         CDriverInterface& driverInterface = m_device->GetDriverInterface();
 
-        ret = driverInterface.OpenIoStream( STREAM_TYPE_SYS, *m_device, (CMetricSet*) metricSet, m_params_1_0.SymbolName, processId, nsTimerPeriod, sysBufferSize, &m_streamEventHandle );
+        ret = driverInterface.OpenIoStream( STREAM_TYPE_SYS, *m_device, static_cast<CMetricSet*>( metricSet ), m_params_1_0.SymbolName, processId, nsTimerPeriod, sysBufferSize, &m_streamEventHandle );
         if( ret != CC_OK )
         {
             return ret;
         }
 
-        m_ioMetricSet = (CMetricSet*) metricSet;
+        m_ioMetricSet = static_cast<CMetricSet*>( metricSet );
         return ret;
     }
 
@@ -5666,7 +6027,7 @@ namespace MetricsDiscoveryInternal
     {
         MD_CHECK_PTR_RET( reportData, CC_ERROR_INVALID_PARAMETER );
         MD_CHECK_PTR_RET( reportCount, CC_ERROR_INVALID_PARAMETER );
-        if( m_ioMetricSet == NULL )
+        if( m_ioMetricSet == nullptr )
         {
             *reportCount = 0;
             MD_LOG( LOG_ERROR, "stream not opened" );
@@ -5679,7 +6040,7 @@ namespace MetricsDiscoveryInternal
         CDriverInterface&               driverInterface = m_device->GetDriverInterface();
 
         ret = driverInterface.ReadIoStream( STREAM_TYPE_SYS, *m_device, m_ioMetricSet, reportData, reportCount, readFlags, &frequency, &exceptions );
-        if( m_ioMeasurementInfoVector && ( ret == CC_OK || ret == CC_READ_PENDING ) )
+        if( ret == CC_OK || ret == CC_READ_PENDING )
         {
             // Order (indices) should be in sync with AddIoMeasurementInfoPredefined()
             uint32_t index = 0;
@@ -5693,7 +6054,7 @@ namespace MetricsDiscoveryInternal
             SetIoMeasurementInfoPredefined( IO_MEASUREMENT_INFO_BUFFER_OVERRUN, exceptions.BufferOverrun, &index );
             SetIoMeasurementInfoPredefined( IO_MEASUREMENT_INFO_COUNTERS_OVERFLOW, exceptions.CountersOverflow, &index );
 
-            m_params_1_0.IoMeasurementInformationCount = m_ioMeasurementInfoVector->GetCount();
+            m_params_1_0.IoMeasurementInformationCount = m_ioMeasurementInfoVector.size();
         }
         else
         {
@@ -5721,7 +6082,7 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     TCompletionCode CPerfMonConcurrentGroup::CloseIoStream()
     {
-        if( m_ioMetricSet == NULL )
+        if( m_ioMetricSet == nullptr )
         {
             MD_LOG( LOG_ERROR, "stream not opened" );
             return CC_ERROR_GENERAL;
@@ -5736,7 +6097,7 @@ namespace MetricsDiscoveryInternal
             return ret;
         }
 
-        m_ioMetricSet = NULL;
+        m_ioMetricSet = nullptr;
         return ret;
     }
 
@@ -5789,6 +6150,23 @@ namespace MetricsDiscoveryInternal
     //
     //////////////////////////////////////////////////////////////////////////////
     CMetricSet::CMetricSet( CMetricsDevice* device, CConcurrentGroup* concurrentGroup, const char* symbolicName, const char* shortName, uint32_t apiMask, uint32_t category, uint32_t snapshotReportSize, uint32_t deltaReportSize, TReportType reportType, uint32_t platformMask, uint32_t gtMask /*= GT_TYPE_ALL*/, bool isCustom /*= false*/ )
+        : m_metricsVector()
+        , m_informationVector()
+        , m_complementarySetsVector()
+        , m_startRegsVector()
+        , m_startRegsQueryVector()
+        , m_startRegisterSetList()
+        , m_otherMetricsVector()
+        , m_otherInformationVector()
+        , m_filteredMetricsVector()
+        , m_filteredInformationVector()
+        , m_reportType( reportType )
+        , m_device( device )
+        , m_concurrentGroup( concurrentGroup )
+        , m_isCustom( isCustom )
+        , m_isReadRegsCfgSet( false )
+        , m_availabilityEquation( nullptr )
+        , m_metricsCalculator( new( std::nothrow ) CMetricsCalculator( m_device ) )
     {
         m_params_1_0.SymbolName      = GetCopiedCString( symbolicName );
         m_params_1_0.ShortName       = GetCopiedCString( shortName );
@@ -5803,35 +6181,30 @@ namespace MetricsDiscoveryInternal
         m_params_1_0.InformationCount       = 0;
         m_params_1_0.ComplementarySetsCount = 0;
 
+        m_params_1_0.AvailabilityEquation = "";
+
         memset( &m_params_1_0.ApiSpecificId, 0, sizeof( m_params_1_0.ApiSpecificId ) );
-
-        m_reportType       = reportType;
-        m_isCustom         = isCustom;
-        m_isReadRegsCfgSet = false;
-
-        m_device          = device;
-        m_concurrentGroup = concurrentGroup;
 
         m_pmRegsConfigInfo.OaConfigHandle = 0;
         m_pmRegsConfigInfo.GpConfigHandle = 0;
         m_pmRegsConfigInfo.RrConfigHandle = 0;
         m_pmRegsConfigInfo.IsQueryConfig  = 0;
 
-        m_metricsVector             = new( std::nothrow ) Vector<CMetric*>( METRICS_VECTOR_INCREASE );
-        m_informationVector         = new( std::nothrow ) Vector<CInformation*>( INFORMATION_VECTOR_INCREASE );
-        m_complementarySetsVector   = new( std::nothrow ) Vector<const char*>( COMPLEMENTARY_SETS_VECTOR_INCREASE );
-        m_startRegsVector           = new( std::nothrow ) Vector<TRegister*>( START_REGS_VECTOR_INCREASE );
-        m_startRegsQueryVector      = new( std::nothrow ) Vector<TRegister*>( START_REGS_QUERY_VECTOR_INCREASE );
-        m_startRegisterSetList      = new( std::nothrow ) List<CRegisterSet*>();
-        m_otherMetricsVector        = new( std::nothrow ) Vector<CMetric*>( METRICS_VECTOR_INCREASE );
-        m_otherInformationVector    = new( std::nothrow ) Vector<CInformation*>( INFORMATION_VECTOR_INCREASE );
-        m_filteredMetricsVector     = new( std::nothrow ) Vector<CMetric*>( METRICS_VECTOR_INCREASE );
-        m_filteredInformationVector = new( std::nothrow ) Vector<CInformation*>( INFORMATION_VECTOR_INCREASE );
-        m_metricsCalculator         = new( std::nothrow ) CMetricsCalculator( m_device );
+        m_metricsVector.reserve( METRICS_VECTOR_INCREASE );
+        m_informationVector.reserve( INFORMATION_VECTOR_INCREASE );
+        m_complementarySetsVector.reserve( COMPLEMENTARY_SETS_VECTOR_INCREASE );
+        m_startRegsVector.reserve( START_REGS_VECTOR_INCREASE );
+        m_startRegsQueryVector.reserve( START_REGS_QUERY_VECTOR_INCREASE );
+        m_otherMetricsVector.reserve( METRICS_VECTOR_INCREASE );
+        m_otherInformationVector.reserve( INFORMATION_VECTOR_INCREASE );
+        m_filteredMetricsVector.reserve( METRICS_VECTOR_INCREASE );
+        m_filteredInformationVector.reserve( INFORMATION_VECTOR_INCREASE );
+
         // Set 'current' variables and mark 'filtered' params as uninitialized
         UseApiFilteredVariables( false );
-        m_filteredParams.ApiMask = 0;
-        m_filteredParams.GtMask  = 0;
+        m_filteredParams.ApiMask              = 0;
+        m_filteredParams.GtMask               = 0;
+        m_filteredParams.AvailabilityEquation = nullptr;
     }
 
     //////////////////////////////////////////////////////////////////////////////
@@ -5852,27 +6225,26 @@ namespace MetricsDiscoveryInternal
         MD_SAFE_DELETE_ARRAY( m_params_1_0.ShortName );
         MD_SAFE_DELETE_ARRAY( m_params_1_0.ApiSpecificId.D3D1XDevDependentName );
         MD_SAFE_DELETE_ARRAY( m_params_1_0.ApiSpecificId.OGLQueryIntelName );
+        MD_SAFE_DELETE_ARRAY( m_params_1_0.AvailabilityEquation );
 
         ClearCachedMetricsAndInformation();
-        MD_SAFE_DELETE( m_filteredMetricsVector );
-        MD_SAFE_DELETE( m_filteredInformationVector );
+        ClearVector( m_filteredMetricsVector );
+        ClearVector( m_filteredInformationVector );
 
-        MD_SAFE_DELETE( m_metricsVector );
-        MD_SAFE_DELETE( m_informationVector );
-        MD_SAFE_DELETE( m_complementarySetsVector );
+        ClearVector( m_metricsVector );
+        ClearVector( m_informationVector );
+        ClearVector( m_complementarySetsVector );
 
-        // To prevent double memory freeing, original instances are in m_startRegisterSetList
-        m_startRegsVector->FillWith( NULL );
-        m_startRegsQueryVector->FillWith( NULL );
+        // Clearing m_startRegsVector and m_startRegsQueryVector is
+        // not neccesary as they share pointers with m_startRegisterSetList
 
-        MD_SAFE_DELETE( m_startRegsVector );
-        MD_SAFE_DELETE( m_startRegsQueryVector );
+        ClearList( m_startRegisterSetList );
 
-        MD_SAFE_DELETE( m_startRegisterSetList );
-
-        MD_SAFE_DELETE( m_otherMetricsVector );
-        MD_SAFE_DELETE( m_otherInformationVector );
+        ClearVector( m_otherMetricsVector );
+        ClearVector( m_otherInformationVector );
         MD_SAFE_DELETE( m_metricsCalculator );
+
+        MD_SAFE_DELETE( m_availabilityEquation );
     }
 
     //////////////////////////////////////////////////////////////////////////////
@@ -5887,10 +6259,10 @@ namespace MetricsDiscoveryInternal
     //     Returns metric set params
     //
     // Output:
-    //     TMetricSetParams_1_4*  - metric set params
+    //     TMetricSetParams_1_11*  - metric set params
     //
     //////////////////////////////////////////////////////////////////////////////
-    TMetricSetParams_1_4* CMetricSet::GetParams( void )
+    TMetricSetParams_1_11* CMetricSet::GetParams( void )
     {
         return m_currentParams;
     }
@@ -5904,24 +6276,25 @@ namespace MetricsDiscoveryInternal
     //     GetMetric
     //
     // Description:
-    //     Returns the chosen metric or null if index doesn't exist.
+    //     Returns the chosen metric or nullptr if index doesn't exist.
     //
     // Input:
     //     uint32_t     index  - index of a metric
     //
     // Output:
-    //     IMetric_1_0*        - chosen metric or null
+    //     IMetric_1_0*        - chosen metric or nullptr
     //
     //////////////////////////////////////////////////////////////////////////////
     IMetric_1_0* CMetricSet::GetMetric( uint32_t index )
     {
-        MD_CHECK_PTR_RET( m_currentMetricsVector, NULL );
-        if( index < m_currentMetricsVector->GetCount() )
+        MD_CHECK_PTR_RET( m_currentMetricsVector, nullptr );
+
+        if( index < m_currentMetricsVector->size() )
         {
-            return (IMetric_1_0*) ( *m_currentMetricsVector )[index];
+            return static_cast<IMetric_1_0*>( ( *m_currentMetricsVector )[index] );
         }
 
-        return NULL;
+        return nullptr;
     }
 
     //////////////////////////////////////////////////////////////////////////////
@@ -5933,24 +6306,42 @@ namespace MetricsDiscoveryInternal
     //     GetInformation
     //
     // Description:
-    //     Returns the chosen information or null if index doesn't exist.
+    //     Returns the chosen information or nullptr if index doesn't exist.
     //
     // Input:
     //     uint32_t     index  - index of an information
     //
     // Output:
-    //     IInformation_1_0*   - chosen information or null
+    //     IInformation_1_0*   - chosen information or nullptr
     //
     //////////////////////////////////////////////////////////////////////////////
     IInformation_1_0* CMetricSet::GetInformation( uint32_t index )
     {
-        MD_CHECK_PTR_RET( m_currentInformationVector, NULL );
-        if( index < m_currentInformationVector->GetCount() )
+        MD_CHECK_PTR_RET( m_currentInformationVector, nullptr );
+
+        if( m_isFiltered )
         {
-            return (IInformation_1_0*) ( *m_currentInformationVector )[index];
+            if( index < m_currentInformationVector->size() )
+            {
+                return static_cast<IInformation_1_0*>( ( *m_currentInformationVector )[index] );
+            }
+            return nullptr;
         }
 
-        return NULL;
+        // if index is in Concurrent Group indexes bounds ( 0..N, N = amount of infs in concurrent group )
+        if( index < m_concurrentGroup->GetInformationCount() )
+        {
+            // return information from Concurrent Group
+            return m_concurrentGroup->GetInformation( index );
+        }
+        else
+        {
+            if( index < m_currentInformationVector->size() + m_concurrentGroup->GetInformationCount() )
+            {
+                return static_cast<IInformation_1_0*>( ( *m_currentInformationVector )[index - m_concurrentGroup->GetInformationCount()] );
+            }
+        }
+        return nullptr;
     }
 
     //////////////////////////////////////////////////////////////////////////////
@@ -5968,28 +6359,27 @@ namespace MetricsDiscoveryInternal
     //     uint32_t     index  - index of a complementary set
     //
     // Output:
-    //     IMetricSet_1_5*     - chosen complementary metric set or null
+    //     IMetricSet_1_11*     - chosen complementary metric set or null
     //
     //////////////////////////////////////////////////////////////////////////////
-    IMetricSet_1_5* CMetricSet::GetComplementaryMetricSet( uint32_t index )
+    IMetricSet_1_11* CMetricSet::GetComplementaryMetricSet( uint32_t index )
     {
-        MD_CHECK_PTR_RET( m_complementarySetsVector, NULL );
-        if( index < m_complementarySetsVector->GetCount() )
+        if( index < m_complementarySetsVector.size() )
         {
-            IMetricSet_1_5* metricSet       = NULL;
-            size_t          stringLength    = strlen( ( *m_complementarySetsVector )[index] );
-            uint32_t        metricSetsCount = m_concurrentGroup->GetParams()->MetricSetsCount;
+            IMetricSet_1_11* metricSet       = nullptr;
+            size_t           stringLength    = strlen( m_complementarySetsVector[index] );
+            uint32_t         metricSetsCount = m_concurrentGroup->GetParams()->MetricSetsCount;
             for( uint32_t i = 0; i < metricSetsCount; i++ )
             {
                 metricSet = m_concurrentGroup->GetMetricSet( i );
-                if( strncmp( metricSet->GetParams()->SymbolName, ( *m_complementarySetsVector )[index], stringLength ) == 0 )
+                if( strncmp( metricSet->GetParams()->SymbolName, m_complementarySetsVector[index], stringLength ) == 0 )
                 {
                     return metricSet;
                 }
             }
         }
 
-        return NULL;
+        return nullptr;
     }
 
     //////////////////////////////////////////////////////////////////////////////
@@ -6033,7 +6423,6 @@ namespace MetricsDiscoveryInternal
     {
         MD_LOG_ENTER();
         TCompletionCode ret = CC_OK;
-
         if( m_isReadRegsCfgSet )
         {
             CDriverInterface& driverInterface  = m_device->GetDriverInterface();
@@ -6078,23 +6467,22 @@ namespace MetricsDiscoveryInternal
         MD_CHECK_PTR_RET( groupName, METRIC_GROUP_NAME_ID_INVALID );
 
         uint32_t groupId = 0, tokenNo = 0;
-        char *   token = NULL, *tokenNext = NULL, *groupNameCopy = NULL;
+        char *   token = nullptr, *tokenNext = nullptr, *groupNameCopy = nullptr;
 
         groupNameCopy = GetCopiedCString( groupName );
         MD_CHECK_PTR_RET( groupNameCopy, METRIC_GROUP_NAME_ID_INVALID );
 
         token = iu_strtok_s( groupNameCopy, "/", &tokenNext );
-        while( token != NULL )
+        while( token != nullptr )
         {
             uint32_t partialGroupId = GetPartialGroupId( token, tokenNo++ );
             if( partialGroupId == METRIC_GROUP_NAME_ID_INVALID )
             {
-                groupId = METRIC_GROUP_NAME_ID_INVALID;
-                break;
+                partialGroupId = METRIC_GROUP_NAME_ID_GPU; // Use default group name ID
             }
 
             groupId += partialGroupId;
-            token = iu_strtok_s( NULL, "/", &tokenNext );
+            token = iu_strtok_s( nullptr, "/", &tokenNext );
         }
 
         MD_SAFE_DELETE_ARRAY( groupNameCopy );
@@ -6122,7 +6510,7 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     uint32_t CMetricSet::GetPartialGroupId( char* groupName, uint32_t level )
     {
-        MD_ASSERT( groupName != NULL );
+        MD_ASSERT( groupName != nullptr );
 
         if( level > MD_METRIC_GROUP_NAME_LEVEL_MAX )
         {
@@ -6171,21 +6559,21 @@ namespace MetricsDiscoveryInternal
     //     TAddCustomMetricParams * params - params
     //
     // Output:
-    //     IMetric_1_0* - newly created metric, NULL if error
+    //     IMetricLatest* - newly created metric, nullptr if error
     //
     //////////////////////////////////////////////////////////////////////////////
-    IMetric_1_0* CMetricSet::AddCustomMetric( TAddCustomMetricParams* params )
+    IMetricLatest* CMetricSet::AddCustomMetric( TAddCustomMetricParams* params )
     {
-        if( params == NULL )
+        if( params == nullptr )
         {
             MD_LOG_INVALID_PARAMETER( LOG_ERROR, params );
-            return NULL;
+            return nullptr;
         }
 
         if( params->Type != METRIC_CUSTOM_PARAMS_1_0 )
         {
             MD_LOG( LOG_ERROR, "Unsupported TAddCustomMetricParams Type: %u", params->Type );
-            return NULL;
+            return nullptr;
         }
 
         const char*       symbolName            = MD_CUSTOM_METRIC_PARAMS( params, 1_0 ).SymbolName;
@@ -6210,39 +6598,33 @@ namespace MetricsDiscoveryInternal
         const char*       availabilityEquation  = MD_CUSTOM_METRIC_PARAMS( params, 1_0 ).AvailabilityEquation;
 
         MD_LOG_ENTER();
-        MD_CHECK_PTR_RET( m_metricsVector, NULL );
 
         if( !AreMetricParamsValid(
                 symbolName, shortName, longName, groupName, metricType, resultType, resultUnits, hwType, dxToOglAlias ) )
         {
             MD_LOG( LOG_ERROR, "invalid custom metric parameters" );
-            return NULL;
+            return nullptr;
         }
         if( IsMetricAlreadyAdded( symbolName ) )
         {
             MD_LOG( LOG_ERROR, "metric already added: %s", symbolName );
-            return NULL;
+            return nullptr;
         }
 
         uint32_t groupId = MetricGroupNameToId( groupName );
-        if( groupId == METRIC_GROUP_NAME_ID_INVALID )
-        {
-            MD_LOG( LOG_ERROR, "invalid metric group name" );
-            return NULL;
-        }
 
-        CMetric* metric = (CMetric*) new( std::nothrow ) CMetric( m_device, m_metricsVector->GetCount(), symbolName, shortName, longName, groupName, groupId, usageFlagsMask, apiMask, metricType, resultType, resultUnits, loWatermark, hiWatermark, hwType, dxToOglAlias, signalName, true );
-        MD_CHECK_PTR_RET( metric, NULL );
+        CMetric* metric = new( std::nothrow ) CMetric( m_device, m_metricsVector.size(), symbolName, shortName, longName, groupName, groupId, usageFlagsMask, apiMask, metricType, resultType, resultUnits, loWatermark, hiWatermark, hwType, dxToOglAlias, signalName, true );
+        MD_CHECK_PTR_RET( metric, nullptr );
 
         if( metric->SetAvailabilityEquation( availabilityEquation ) != CC_OK || metric->SetSnapshotReportReadEquation( ioReadEquation ) != CC_OK || metric->SetDeltaReportReadEquation( queryReadEquation ) != CC_OK || metric->SetNormalizationEquation( normalizationEquation ) != CC_OK || metric->SetSnapshotReportDeltaFunction( deltaFunction ) != CC_OK || metric->SetMaxValueEquation( maxValueEquation ) != CC_OK )
         {
             MD_LOG( LOG_ERROR, "error setting custom metric equations" );
             MD_SAFE_DELETE( metric );
-            return NULL;
+            return nullptr;
         }
 
-        m_metricsVector->PushBack( metric );
-        m_params_1_0.MetricsCount = m_metricsVector->GetCount();
+        m_metricsVector.push_back( metric );
+        m_params_1_0.MetricsCount = m_metricsVector.size();
         m_isCustom                = true;
 
         // Refresh cached filtered metrics
@@ -6286,7 +6668,7 @@ namespace MetricsDiscoveryInternal
     //     const char * signalName                  -
     //
     // Output:
-    //     IMetric_1_0* - newly created metric, NULL if error
+    //     IMetric_1_0* - newly created metric, nullptr if error
     //
     //////////////////////////////////////////////////////////////////////////////
     IMetric_1_0* CMetricSet::AddCustomMetric( const char* symbolName, const char* shortName, const char* groupName, const char* longName, const char* dxToOglAlias, uint32_t usageFlagsMask, uint32_t apiMask, TMetricResultType resultType, const char* resultUnits, TMetricType metricType, int64_t loWatermark, int64_t hiWatermark, THwUnitType hwType, const char* ioReadEquation, const char* deltaFunction, const char* queryReadEquation, const char* normalizationEquation, const char* maxValueEquation, const char* signalName )
@@ -6421,40 +6803,37 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     CMetric* CMetricSet::AddMetric( const char* symbolName, const char* shortName, const char* longName, const char* groupName, uint32_t groupId, uint32_t usageFlagsMask, uint32_t apiMask, TMetricType metricType, TMetricResultType resultType, const char* units, int64_t loWatermark, int64_t hiWatermark, THwUnitType hwType, const char* availabilityEquation, const char* alias, const char* signalName, uint32_t metricXmlId, bool isCustom /*= false*/ )
     {
-        MD_CHECK_PTR_RET( m_metricsVector, NULL );
-        MD_CHECK_PTR_RET( m_otherMetricsVector, NULL );
-
-        if( groupName == NULL )
+        if( groupName == nullptr )
         {
             groupName = "";
         }
 
-        CMetric* metric = (CMetric*) new( std::nothrow ) CMetric( m_device, metricXmlId, symbolName, shortName, longName, groupName, groupId, usageFlagsMask, apiMask, metricType, resultType, units, loWatermark, hiWatermark, hwType, alias, signalName );
-        MD_CHECK_PTR_RET( metric, NULL );
+        CMetric* metric = new( std::nothrow ) CMetric( m_device, metricXmlId, symbolName, shortName, longName, groupName, groupId, usageFlagsMask, apiMask, metricType, resultType, units, loWatermark, hiWatermark, hwType, alias, signalName, isCustom );
+        MD_CHECK_PTR_RET( metric, nullptr );
 
         if( metric->SetAvailabilityEquation( availabilityEquation ) != CC_OK )
         {
             MD_SAFE_DELETE( metric );
-            return NULL;
+            return nullptr;
         }
 
         if( m_device->IsAvailabilityEquationTrue( availabilityEquation ) )
         {
             if( IsMetricAlreadyAdded( symbolName ) )
             {
-                m_otherMetricsVector->PushBack( metric );
+                m_otherMetricsVector.push_back( metric );
             }
             else
             {
-                uint32_t count = m_metricsVector->GetCount();
+                uint32_t count = m_metricsVector.size();
                 metric->SetIdInSetParam( count );
-                m_metricsVector->PushBack( metric );
+                m_metricsVector.push_back( metric );
                 m_params_1_0.MetricsCount = count + 1;
             }
         }
         else
         {
-            m_otherMetricsVector->PushBack( metric );
+            m_otherMetricsVector.push_back( metric );
         }
 
         if( isCustom )
@@ -6474,29 +6853,27 @@ namespace MetricsDiscoveryInternal
     //     AddMetric
     //
     // Description:
-    //     Adds a new metric to the metric set. Null if failed.
+    //     Adds a new metric to the metric set. nullptr if failed.
     //
     // Input:
     //     CMetric* metric - metric to add
     //
     // Output:
-    //     CMetric*        - added metric, NULL if error
+    //     CMetric*        - added metric, nullptr if error
     //
     //////////////////////////////////////////////////////////////////////////////
     CMetric* CMetricSet::AddMetric( CMetric* metric )
     {
-        MD_CHECK_PTR_RET( m_metricsVector, NULL );
-        MD_CHECK_PTR_RET( m_otherMetricsVector, NULL );
-        MD_CHECK_PTR_RET( metric, NULL );
+        MD_CHECK_PTR_RET( metric, nullptr );
 
         if( IsMetricAlreadyAdded( metric->GetParams()->SymbolName ) )
         {
-            m_otherMetricsVector->PushBack( metric );
+            m_otherMetricsVector.push_back( metric );
         }
         else
         {
-            m_metricsVector->PushBack( metric );
-            m_params_1_0.MetricsCount = m_metricsVector->GetCount();
+            m_metricsVector.push_back( metric );
+            m_params_1_0.MetricsCount = m_metricsVector.size();
         }
 
         return metric;
@@ -6529,28 +6906,76 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     CInformation* CMetricSet::AddInformation( const char* symbolName, const char* shortName, const char* longName, const char* groupName, uint32_t apiMask, TInformationType informationType, const char* informationUnits, const char* availabilityEquation, uint32_t informationXmlId )
     {
-        MD_CHECK_PTR_RET( m_informationVector, NULL );
-        MD_CHECK_PTR_RET( m_otherInformationVector, NULL );
-
-        CInformation* information = (CInformation*) new( std::nothrow ) CInformation( m_device, informationXmlId, symbolName, shortName, longName, groupName, apiMask, informationType, informationUnits );
-        MD_CHECK_PTR_RET( information, NULL );
+        CInformation* information = new( std::nothrow ) CInformation( m_device, informationXmlId, symbolName, shortName, longName, groupName, apiMask, informationType, informationUnits );
+        MD_CHECK_PTR_RET( information, nullptr );
 
         if( information->SetAvailabilityEquation( availabilityEquation ) != CC_OK )
         {
             MD_SAFE_DELETE( information );
-            return NULL;
+            return nullptr;
         }
 
         if( m_device->IsAvailabilityEquationTrue( availabilityEquation ) )
         {
-            uint32_t count = m_informationVector->GetCount();
+            uint32_t count = m_informationVector.size();
             information->SetIdInSetParam( count );
-            m_informationVector->PushBack( information );
-            m_params_1_0.InformationCount = count + 1;
+            m_informationVector.push_back( information );
+            m_params_1_0.InformationCount++;
         }
         else
         {
-            m_otherInformationVector->PushBack( information );
+            m_otherInformationVector.push_back( information );
+        }
+
+        return information;
+    }
+
+    //////////////////////////////////////////////////////////////////////////////
+    //
+    // Class:
+    //     CInformation
+    //
+    // Method:
+    //     AddInformation
+    //
+    // Description:
+    //     Adds a new information to the metric set. Null if failed.
+    //
+    // Input:
+    //     const char * symbolicName           -
+    //     const char * shortName              -
+    //     const char * longName               -
+    //     const char * groupName              -
+    //     uint32_t     apiMask                -
+    //     TInformationType informationType    -
+    //     const char*  availabilityEquation   -
+    //     uint32_t informationXmlId           -
+    //
+    // Output:
+    //     CInformation*   - pointer to the newly created information
+    //
+    //////////////////////////////////////////////////////////////////////////////
+    CInformation* CConcurrentGroup::AddInformation( const char* symbolName, const char* shortName, const char* longName, const char* groupName, uint32_t apiMask, TInformationType informationType, const char* informationUnits, const char* availabilityEquation, uint32_t informationXmlId )
+    {
+        CInformation* information = new( std::nothrow ) CInformation( m_device, informationXmlId, symbolName, shortName, longName, groupName, apiMask, informationType, informationUnits );
+        MD_CHECK_PTR_RET( information, nullptr );
+
+        if( information->SetAvailabilityEquation( availabilityEquation ) != CC_OK )
+        {
+            MD_SAFE_DELETE( information );
+            return nullptr;
+        }
+
+        if( m_device->IsAvailabilityEquationTrue( availabilityEquation ) )
+        {
+            uint32_t count = m_informationVector.size();
+            information->SetIdInSetParam( count );
+            m_informationVector.push_back( information );
+            m_informationCount = count + 1;
+        }
+        else
+        {
+            m_otherInformationVector.push_back( information );
         }
 
         return information;
@@ -6565,7 +6990,7 @@ namespace MetricsDiscoveryInternal
     //     AddInformation
     //
     // Description:
-    //     Adds a new information to the metric set. Null if failed.
+    //     Adds a new information to the metric set. nullptr if failed.
     //
     // Input:
     //     CInformation* information  - information to add
@@ -6576,11 +7001,36 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     CInformation* CMetricSet::AddInformation( CInformation* information )
     {
-        MD_CHECK_PTR_RET( m_informationVector, NULL );
-        MD_CHECK_PTR_RET( information, NULL );
+        MD_CHECK_PTR_RET( information, nullptr );
 
-        m_informationVector->PushBack( information );
-        m_params_1_0.InformationCount = m_informationVector->GetCount();
+        m_informationVector.push_back( information );
+        m_params_1_0.InformationCount = m_informationVector.size() + m_concurrentGroup->GetInformationCount();
+
+        return information;
+    }
+
+    //////////////////////////////////////////////////////////////////////////////
+    //
+    // Class:
+    //     CMetricSet
+    //
+    // Method:
+    //     AddInformation
+    //
+    // Description:
+    //     Adds a new information to the metric set. nullptr if failed.
+    //
+    // Input:
+    //     CInformation* information  - information to add
+    //
+    // Output:
+    //     CInformation*              - pointer to the added information
+    //
+    //////////////////////////////////////////////////////////////////////////////
+    CInformation* CConcurrentGroup::AddInformation( CInformation* information )
+    {
+        m_informationVector.push_back( information );
+        m_informationCount = m_informationVector.size();
 
         return information;
     }
@@ -6606,17 +7056,16 @@ namespace MetricsDiscoveryInternal
     TCompletionCode CMetricSet::AddComplementaryMetricSet( const char* complementaryMetricSetSymbolicName )
     {
         MD_CHECK_PTR_RET( complementaryMetricSetSymbolicName, CC_ERROR_INVALID_PARAMETER );
-        MD_CHECK_PTR_RET( m_complementarySetsVector, CC_ERROR_GENERAL );
 
         if( strcmp( complementaryMetricSetSymbolicName, "" ) == 0 )
         {
-            return CC_OK; //NULL is fine condition for "" name
+            return CC_OK; // 0 is fine condition for "" name
         }
 
         char* metricSetName = GetCopiedCString( complementaryMetricSetSymbolicName );
 
-        m_complementarySetsVector->PushBack( metricSetName );
-        m_params_1_0.ComplementarySetsCount = m_complementarySetsVector->GetCount();
+        m_complementarySetsVector.push_back( metricSetName );
+        m_params_1_0.ComplementarySetsCount = m_complementarySetsVector.size();
 
         return CC_OK;
     }
@@ -6643,13 +7092,13 @@ namespace MetricsDiscoveryInternal
     {
         MD_CHECK_PTR_RET( complementarySetsList, CC_ERROR_INVALID_PARAMETER );
 
-        char *token = NULL, *tokenNext = NULL, *complementarySets = NULL;
+        char *token = nullptr, *tokenNext = nullptr, *complementarySets = nullptr;
 
         complementarySets = GetCopiedCString( complementarySetsList );
         MD_CHECK_PTR_RET( complementarySets, CC_ERROR_NO_MEMORY );
 
         token = iu_strtok_s( complementarySets, ",", &tokenNext );
-        while( token != NULL )
+        while( token != nullptr )
         {
             if( AddComplementaryMetricSet( token ) != CC_OK )
             {
@@ -6657,7 +7106,7 @@ namespace MetricsDiscoveryInternal
                 MD_SAFE_DELETE_ARRAY( complementarySets );
                 return CC_ERROR_GENERAL;
             }
-            token = iu_strtok_s( NULL, ",", &tokenNext );
+            token = iu_strtok_s( nullptr, ",", &tokenNext );
         }
         MD_SAFE_DELETE_ARRAY( complementarySets );
 
@@ -6718,18 +7167,16 @@ namespace MetricsDiscoveryInternal
     // Input:
     //     uint32_t     configId             - config id
     //     uint32_t     configPriority       - priority, lower is more important
-    //     const char*  availabilityEquation - availability equation (default NULL - available)
+    //     const char*  availabilityEquation - availability equation (default nullptr - available)
     //     TConfigType  configType           - e.g. COMMON, SNAPSHOT (default COMMON)
     //
     // Output:
     //     TCompletionCode - result, *CC_OK* is ok
     //
     //////////////////////////////////////////////////////////////////////////////
-    TCompletionCode CMetricSet::AddStartRegisterSet( uint32_t configId, uint32_t configPriority, const char* availabilityEquation /*= NULL */, TConfigType configType /*= CONFIG_TYPE_COMMON*/ )
+    TCompletionCode CMetricSet::AddStartRegisterSet( uint32_t configId, uint32_t configPriority, const char* availabilityEquation /*= nullptr */, TConfigType configType /*= CONFIG_TYPE_COMMON*/ )
     {
-        MD_CHECK_PTR_RET( m_startRegisterSetList, CC_ERROR_GENERAL );
-
-        CRegisterSet* registerSet = (CRegisterSet*) new( std::nothrow ) CRegisterSet( m_device, configId, configPriority, configType );
+        CRegisterSet* registerSet = new( std::nothrow ) CRegisterSet( m_device, configId, configPriority, configType );
         MD_CHECK_PTR_RET( registerSet, CC_ERROR_NO_MEMORY );
 
         if( registerSet->SetAvailabilityEquation( availabilityEquation ) != CC_OK )
@@ -6737,7 +7184,7 @@ namespace MetricsDiscoveryInternal
             MD_SAFE_DELETE( registerSet );
             return CC_ERROR_GENERAL;
         }
-        m_startRegisterSetList->PushBack( registerSet );
+        m_startRegisterSetList.push_back( registerSet );
 
         return CC_OK;
     }
@@ -6766,10 +7213,7 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     TCompletionCode CMetricSet::AddStartConfigRegister( uint32_t offset, uint32_t value, TRegisterType type )
     {
-        MD_CHECK_PTR_RET( m_startRegsVector, CC_ERROR_GENERAL );
-        MD_CHECK_PTR_RET( m_startRegisterSetList, CC_ERROR_GENERAL );
-
-        CRegisterSet* registerSet = m_startRegisterSetList->GetCount() > 0 ? m_startRegisterSetList->Back() : NULL;
+        CRegisterSet* registerSet = m_startRegisterSetList.size() > 0 ? m_startRegisterSetList.back() : nullptr;
         MD_CHECK_PTR_RET( registerSet, CC_ERROR_GENERAL );
 
         TRegister* reg = registerSet->AddConfigRegister( offset, value, type );
@@ -6797,7 +7241,7 @@ namespace MetricsDiscoveryInternal
     TCompletionCode CMetricSet::RefreshConfigRegisters()
     {
         uint32_t      id          = 0;
-        CRegisterSet* registerSet = NULL;
+        CRegisterSet* registerSet = nullptr;
 
         while( GetStartRegSetHiPriority( id++, &registerSet ) )
         {
@@ -6834,12 +7278,12 @@ namespace MetricsDiscoveryInternal
     //
     // Description:
     //     Iterates through all the start register sets looking for a set with the highest
-    //     priority and a given ID. If there's no such registerSet is NULL. If there's no
+    //     priority and a given ID. If there's no such registerSet is nullptr. If there's no
     //     sets with the given ID or higher it returns false.
     //
     // Input:
     //     uint32_t       id          - config id to look for
-    //     CRegisterSet** registerSet - (out) found register set, NULL if not found
+    //     CRegisterSet** registerSet - (out) found register set, nullptr if not found
     //
     // Output:
     //     bool - false if there is no register sets with given id or higher (end of search)
@@ -6848,26 +7292,23 @@ namespace MetricsDiscoveryInternal
     bool CMetricSet::GetStartRegSetHiPriority( uint32_t id, CRegisterSet** registerSet )
     {
         MD_CHECK_PTR_RET( registerSet, false );
-        MD_CHECK_PTR_RET( m_startRegisterSetList, false );
 
         bool          ret             = false;
-        CRegisterSet* set             = NULL;
+        CRegisterSet* set             = nullptr;
         uint32_t      highestPriority = 0xFFFFFFFF; // Lower is more important
 
-        Node<CRegisterSet*>* registerSetNode = m_startRegisterSetList->GetHeadNode();
-        while( registerSetNode != NULL )
+        for( auto& registerSet : m_startRegisterSetList )
         {
-            TRegisterSetParams* params = registerSetNode->value->GetParams();
+            TRegisterSetParams* params = registerSet->GetParams();
             if( params->ConfigId >= id )
             {
                 ret = true;
-                if( params->ConfigId == id && registerSetNode->value->IsAvailable() && params->ConfigPriority < highestPriority )
+                if( params->ConfigId == id && registerSet->IsAvailable() && params->ConfigPriority < highestPriority )
                 {
                     highestPriority = params->ConfigPriority;
-                    set             = registerSetNode->value;
+                    set             = registerSet;
                 }
             }
-            registerSetNode = registerSetNode->nextNode;
         }
         *registerSet = set;
 
@@ -6894,13 +7335,11 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     TRegister** CMetricSet::GetStartConfiguration( uint32_t* count )
     {
-        MD_CHECK_PTR_RET( m_startRegsVector, NULL );
-
-        if( count != NULL )
+        if( count != nullptr )
         {
-            *count = m_startRegsVector->GetCount();
+            *count = m_startRegsVector.size();
         }
-        return m_startRegsVector->GetMemoryPointer();
+        return m_startRegsVector.data();
     }
 
     //////////////////////////////////////////////////////////////////////////////
@@ -6923,23 +7362,16 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     TCompletionCode CMetricSet::SendStartConfiguration( bool sendQueryConfigFlag )
     {
-        MD_CHECK_PTR_RET( m_startRegsVector, CC_ERROR_GENERAL );
-        MD_CHECK_PTR_RET( m_startRegsQueryVector, CC_ERROR_GENERAL );
-
         TCompletionCode   ret             = CC_OK;
         CDriverInterface& driverInterface = m_device->GetDriverInterface();
 
         if( CheckSendConfigRequired( sendQueryConfigFlag ) )
         {
             // Prepare register reference lists to sent
-            Vector<TRegister*>* pmRegs   = new( std::nothrow ) Vector<TRegister*>( START_REGS_VECTOR_INCREASE );
-            Vector<TRegister*>* readRegs = new( std::nothrow ) Vector<TRegister*>( START_REGS_VECTOR_INCREASE );
-            if( !pmRegs || !readRegs )
-            {
-                MD_SAFE_DELETE( pmRegs );
-                MD_SAFE_DELETE( readRegs );
-                return CC_ERROR_NO_MEMORY;
-            }
+            std::vector<TRegister*> pmRegs;
+            std::vector<TRegister*> readRegs;
+            pmRegs.reserve( START_REGS_VECTOR_INCREASE );
+            readRegs.reserve( START_REGS_VECTOR_INCREASE );
 
             AppendToConfiguration( m_startRegsVector, pmRegs, readRegs );
             if( sendQueryConfigFlag )
@@ -6949,18 +7381,18 @@ namespace MetricsDiscoveryInternal
 
             // Verify if programming is present
             // "m_startRegisterSetList may be empty for e.g. PipelineStatistics"
-            if( ( pmRegs->GetCount() > 0 || readRegs->GetCount() > 0 ) || m_startRegisterSetList->GetCount() == 0 )
+            if( ( pmRegs.size() > 0 || readRegs.size() > 0 ) || m_startRegisterSetList.size() == 0 )
             {
                 // Send configurations
-                ret = driverInterface.SendPmRegsConfig( pmRegs->GetMemoryPointer(), pmRegs->GetCount(), m_currentParams->ApiMask );
-                if( ret == CC_OK && readRegs->GetCount() )
+                ret = driverInterface.SendPmRegsConfig( pmRegs.data(), pmRegs.size(), m_currentParams->ApiMask );
+                if( ret == CC_OK && readRegs.size() )
                 {
-                    ret = driverInterface.SendReadRegsConfig( readRegs->GetMemoryPointer(), readRegs->GetCount(), m_currentParams->ApiMask );
+                    ret = driverInterface.SendReadRegsConfig( readRegs.data(), readRegs.size(), m_currentParams->ApiMask );
                 }
 
                 if( ret == CC_OK )
                 {
-                    m_isReadRegsCfgSet = readRegs->GetCount() > 0;
+                    m_isReadRegsCfgSet = readRegs.size() > 0;
 
                     m_pmRegsConfigInfo.IsQueryConfig = sendQueryConfigFlag;
                     driverInterface.GetPmRegsConfigHandles( m_params_1_0.ApiSpecificId.HwConfigId, &m_pmRegsConfigInfo.OaConfigHandle, &m_pmRegsConfigInfo.GpConfigHandle, &m_pmRegsConfigInfo.RrConfigHandle );
@@ -6972,12 +7404,7 @@ namespace MetricsDiscoveryInternal
                 ret = CC_ERROR_NOT_SUPPORTED;
             }
 
-            // To prevent deleting of the original references
-            pmRegs->FillWith( NULL );
-            readRegs->FillWith( NULL );
-
-            MD_SAFE_DELETE( pmRegs );
-            MD_SAFE_DELETE( readRegs );
+            // Do not clear local register vectors to preserve original references
         }
 
         return ret;
@@ -6996,26 +7423,22 @@ namespace MetricsDiscoveryInternal
     //     vectors. It's because read and pm regs are sent using different way.
     //
     // Input:
-    //     Vector<TRegister*>* sourceRegs  - source vector for all regs
-    //     Vector<TRegister*>* outPmRegs   - dest vector for PmRegs
-    //     Vector<TRegister*>* outReadRegs - dest vector for ReadRegs
+    //     Vector<TRegister*>& sourceRegs  - source vector for all regs
+    //     Vector<TRegister*>& outPmRegs   - dest vector for PmRegs
+    //     Vector<TRegister*>& outReadRegs - dest vector for ReadRegs
     //
     //////////////////////////////////////////////////////////////////////////////
-    void CMetricSet::AppendToConfiguration( Vector<TRegister*>* sourceRegs, Vector<TRegister*>* outPmRegs, Vector<TRegister*>* outReadRegs )
+    void CMetricSet::AppendToConfiguration( std::vector<TRegister*>& sourceRegs, std::vector<TRegister*>& outPmRegs, std::vector<TRegister*>& outReadRegs )
     {
-        MD_ASSERT( sourceRegs != NULL );
-        MD_ASSERT( outReadRegs != NULL );
-        MD_ASSERT( outPmRegs != NULL );
-
-        for( uint32_t i = 0; i < sourceRegs->GetCount(); i++ )
+        for( auto& sourceRegister : sourceRegs )
         {
-            if( ( *sourceRegs )[i]->type == REGISTER_TYPE_MMIO )
+            if( sourceRegister->type == REGISTER_TYPE_MMIO )
             {
-                outReadRegs->PushBack( ( *sourceRegs )[i] );
+                outReadRegs.push_back( sourceRegister );
             }
             else
             {
-                outPmRegs->PushBack( ( *sourceRegs )[i] );
+                outPmRegs.push_back( sourceRegister );
             }
         }
     }
@@ -7106,21 +7529,13 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     TCompletionCode CMetricSet::WriteCMetricSetToFile( FILE* metricFile )
     {
-        uint32_t             count           = 0;
-        Node<CRegisterSet*>* registerSetNode = NULL;
+        uint32_t count = 0;
 
-        if( metricFile == NULL )
+        if( metricFile == nullptr )
         {
-            MD_ASSERT( metricFile != NULL );
+            MD_ASSERT( metricFile != nullptr );
             return CC_ERROR_INVALID_PARAMETER;
         }
-
-        MD_CHECK_PTR_RET( m_metricsVector, CC_ERROR_GENERAL );
-        MD_CHECK_PTR_RET( m_informationVector, CC_ERROR_GENERAL );
-        MD_CHECK_PTR_RET( m_otherMetricsVector, CC_ERROR_GENERAL );
-        MD_CHECK_PTR_RET( m_otherInformationVector, CC_ERROR_GENERAL );
-        MD_CHECK_PTR_RET( m_startRegisterSetList, CC_ERROR_GENERAL );
-        MD_CHECK_PTR_RET( m_complementarySetsVector, CC_ERROR_GENERAL );
 
         // m_params_1_0
         WriteCStringToFile( m_params_1_0.SymbolName, metricFile );
@@ -7131,6 +7546,7 @@ namespace MetricsDiscoveryInternal
         fwrite( &m_params_1_0.QueryReportSize, sizeof( m_params_1_0.QueryReportSize ), 1, metricFile );
         fwrite( &m_params_1_0.PlatformMask, sizeof( m_params_1_0.PlatformMask ), 1, metricFile );
         fwrite( &m_params_1_0.GtMask, sizeof( m_params_1_0.GtMask ), 1, metricFile );
+        WriteEquationToFile( m_availabilityEquation, metricFile );
         fwrite( &m_reportType, sizeof( m_reportType ), 1, metricFile );
         // m_params_1_0.ApiSpecificId (placeholder is not saved!)
         fwrite( &m_params_1_0.ApiSpecificId.D3D9QueryId, sizeof( m_params_1_0.ApiSpecificId.D3D9QueryId ), 1, metricFile );
@@ -7145,87 +7561,85 @@ namespace MetricsDiscoveryInternal
         fwrite( &m_params_1_0.ApiSpecificId.HwConfigId, sizeof( m_params_1_0.ApiSpecificId.HwConfigId ), 1, metricFile );
 
         // m_metricsVector & m_otherMetricsVector
-        count = m_metricsVector->GetCount() + m_otherMetricsVector->GetCount();
+        count = m_metricsVector.size() + m_otherMetricsVector.size();
         fwrite( &count, sizeof( uint32_t ), 1, metricFile );
         uint32_t i = 0;
         uint32_t j = 0;
-        while( i < m_metricsVector->GetCount() || j < m_otherMetricsVector->GetCount() )
+        while( i < m_metricsVector.size() || j < m_otherMetricsVector.size() )
         {
             // Define which vector is not finished and write remaining available metrics
-            if( i == m_metricsVector->GetCount() )
+            if( i == m_metricsVector.size() )
             {
-                for( uint32_t k = j; k < m_otherMetricsVector->GetCount(); k++ )
+                for( uint32_t k = j; k < m_otherMetricsVector.size(); k++ )
                 {
-                    ( *m_otherMetricsVector )[k]->WriteCMetricToFile( metricFile );
+                    m_otherMetricsVector[k]->WriteCMetricToFile( metricFile );
                 }
                 break;
             }
-            if( j == m_otherMetricsVector->GetCount() )
+            if( j == m_otherMetricsVector.size() )
             {
-                for( uint32_t k = i; k < m_metricsVector->GetCount(); k++ )
+                for( uint32_t k = i; k < m_metricsVector.size(); k++ )
                 {
-                    ( *m_metricsVector )[k]->WriteCMetricToFile( metricFile );
+                    m_metricsVector[k]->WriteCMetricToFile( metricFile );
                 }
                 break;
             }
 
             // Write in the correct order
-            if( ( *m_metricsVector )[i]->m_id < ( *m_otherMetricsVector )[j]->m_id )
+            if( m_metricsVector[i]->m_id < m_otherMetricsVector[j]->m_id )
             {
-                ( *m_metricsVector )[i]->WriteCMetricToFile( metricFile );
+                m_metricsVector[i]->WriteCMetricToFile( metricFile );
                 i++;
             }
             else
             {
-                ( *m_otherMetricsVector )[j]->WriteCMetricToFile( metricFile );
+                m_otherMetricsVector[j]->WriteCMetricToFile( metricFile );
                 j++;
             }
         }
 
         // m_informationVector & m_otherInformationVector
-        count = m_informationVector->GetCount() + m_otherInformationVector->GetCount();
+        count = m_informationVector.size() + m_otherInformationVector.size();
         fwrite( &count, sizeof( uint32_t ), 1, metricFile );
         i = 0;
         j = 0;
-        while( i < m_informationVector->GetCount() || j < m_otherInformationVector->GetCount() )
+        while( i < m_informationVector.size() || j < m_otherInformationVector.size() )
         {
             // Define which vector is not finished and write remaining available informations
-            if( i == m_informationVector->GetCount() )
+            if( i == m_informationVector.size() )
             {
-                for( uint32_t k = j; k < m_otherInformationVector->GetCount(); k++ )
+                for( uint32_t k = j; k < m_otherInformationVector.size(); k++ )
                 {
-                    ( *m_otherInformationVector )[k]->WriteCInformationToFile( metricFile );
+                    m_otherInformationVector[k]->WriteCInformationToFile( metricFile );
                 }
                 break;
             }
-            if( j == m_otherInformationVector->GetCount() )
+            if( j == m_otherInformationVector.size() )
             {
-                for( uint32_t k = i; k < m_informationVector->GetCount(); k++ )
+                for( uint32_t k = i; k < m_informationVector.size(); k++ )
                 {
-                    ( *m_informationVector )[k]->WriteCInformationToFile( metricFile );
+                    m_informationVector[k]->WriteCInformationToFile( metricFile );
                 }
                 break;
             }
 
             // Write in the correct order
-            if( ( *m_informationVector )[i]->m_id < ( *m_otherInformationVector )[j]->m_id )
+            if( m_informationVector[i]->m_id < m_otherInformationVector[j]->m_id )
             {
-                ( *m_informationVector )[i++]->WriteCInformationToFile( metricFile );
+                m_informationVector[i++]->WriteCInformationToFile( metricFile );
             }
             else
             {
-                ( *m_otherInformationVector )[j++]->WriteCInformationToFile( metricFile );
+                m_otherInformationVector[j++]->WriteCInformationToFile( metricFile );
             }
         }
 
         // m_startRegisterSetList
-        count = m_startRegisterSetList->GetCount();
+        count = m_startRegisterSetList.size();
         fwrite( &count, sizeof( uint32_t ), 1, metricFile );
-        registerSetNode = m_startRegisterSetList->GetHeadNode();
-        while( registerSetNode != NULL )
+        for( auto& registerSet : m_startRegisterSetList )
         {
-            registerSetNode->value->WriteCRegisterSetToFile( metricFile );
-            registerSetNode = registerSetNode->nextNode;
+            registerSet->WriteCRegisterSetToFile( metricFile );
         }
 
         // m_stopRegisterSetList - remains to be backward compatible, count is always 0
@@ -7233,11 +7647,11 @@ namespace MetricsDiscoveryInternal
         fwrite( &count, sizeof( uint32_t ), 1, metricFile );
 
         // m_complementarySetsVector
-        count = m_complementarySetsVector->GetCount();
+        count = m_complementarySetsVector.size();
         fwrite( &count, sizeof( uint32_t ), 1, metricFile );
-        for( uint32_t i = 0; i < count; i++ )
+        for( i = 0; i < count; i++ )
         {
-            WriteCStringToFile( ( *m_complementarySetsVector )[i], metricFile );
+            WriteCStringToFile( m_complementarySetsVector[i], metricFile );
         }
 
         return CC_OK;
@@ -7253,7 +7667,7 @@ namespace MetricsDiscoveryInternal
     //
     // Description:
     //     Inherits metrics with signal name containing specified string and all the information from
-    //     the reference metric set. When signalName is NULL copy all the metrics.
+    //     the reference metric set. When signalName is nullptr copy all the metrics.
     //
     // Input:
     //     CMetricSet* referenceMetricSet   - metric set to be copied
@@ -7268,11 +7682,11 @@ namespace MetricsDiscoveryInternal
     {
         MD_CHECK_PTR_RET( referenceMetricSet, CC_ERROR_INVALID_PARAMETER );
 
-        CMetric*      metric               = NULL;
-        CMetric*      referenceMetric      = NULL;
-        CInformation* information          = NULL;
-        CInformation* referenceInformation = NULL;
-        const char*   metricSignalName     = NULL;
+        CMetric*      metric               = nullptr;
+        CMetric*      referenceMetric      = nullptr;
+        CInformation* information          = nullptr;
+        CInformation* referenceInformation = nullptr;
+        const char*   metricSignalName     = nullptr;
         uint32_t      count                = 0;
 
         // Copy metrics with signal name containing signalName
@@ -7281,14 +7695,14 @@ namespace MetricsDiscoveryInternal
             count = referenceMetricSet->GetParams()->MetricsCount;
             for( uint32_t i = 0; i < count; i++ )
             {
-                referenceMetric = (CMetric*) referenceMetricSet->GetMetric( i );
-                if( referenceMetric == NULL )
+                referenceMetric = static_cast<CMetric*>( referenceMetricSet->GetMetric( i ) );
+                if( referenceMetric == nullptr )
                 {
                     MD_ASSERT( false );
                     return CC_ERROR_GENERAL;
                 }
                 metricSignalName = referenceMetric->GetSignalName();
-                if( signalName == NULL || ( metricSignalName != NULL && strstr( metricSignalName, signalName ) != NULL ) )
+                if( signalName == nullptr || ( metricSignalName != nullptr && strstr( metricSignalName, signalName ) != nullptr ) )
                 {
                     metric = new( std::nothrow ) CMetric( *referenceMetric );
                     if( !metric )
@@ -7305,8 +7719,8 @@ namespace MetricsDiscoveryInternal
         count = referenceMetricSet->GetParams()->InformationCount;
         for( uint32_t i = 0; i < count; i++ )
         {
-            referenceInformation = (CInformation*) referenceMetricSet->GetInformation( i );
-            if( referenceInformation == NULL )
+            referenceInformation = static_cast<CInformation*>( referenceMetricSet->GetInformation( i ) );
+            if( referenceInformation == nullptr )
             {
                 MD_ASSERT( false );
                 return CC_ERROR_GENERAL;
@@ -7343,22 +7757,19 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     bool CMetricSet::IsMetricAlreadyAdded( const char* symbolName )
     {
-        MD_CHECK_PTR_RET( m_metricsVector, false );
-        MD_CHECK_PTR_RET( m_otherMetricsVector, false );
         MD_CHECK_PTR_RET( symbolName, false );
 
-        for( uint32_t i = 0; i < m_metricsVector->GetCount(); i++ )
+        for( auto& metric : m_metricsVector )
         {
-            if( ( ( *m_metricsVector )[i] ) && ( strcmp( symbolName, ( *m_metricsVector )[i]->GetParams()->SymbolName ) == 0 ) )
+            if( metric && ( strcmp( symbolName, metric->GetParams()->SymbolName ) == 0 ) )
             {
                 return true;
             }
         }
 
-        uint32_t count = m_otherMetricsVector->GetCount();
-        for( uint32_t i = 0; i < count; i++ )
+        for( auto& metric : m_otherMetricsVector )
         {
-            if( strcmp( symbolName, ( *m_otherMetricsVector )[i]->GetParams()->SymbolName ) == 0 )
+            if( strcmp( symbolName, metric->GetParams()->SymbolName ) == 0 )
             {
                 return true;
             }
@@ -7407,8 +7818,6 @@ namespace MetricsDiscoveryInternal
     TCompletionCode CMetricSet::SetApiFiltering( uint32_t apiMask )
     {
         MD_LOG_ENTER();
-        MD_CHECK_PTR_RET( m_filteredMetricsVector, CC_ERROR_GENERAL );
-        MD_CHECK_PTR_RET( m_filteredInformationVector, CC_ERROR_GENERAL );
 
         if( !IsApiFilteringMaskValid( apiMask ) )
         {
@@ -7599,15 +8008,15 @@ namespace MetricsDiscoveryInternal
         if( enable )
         {
             m_currentParams            = &m_filteredParams;
-            m_currentMetricsVector     = m_filteredMetricsVector;
-            m_currentInformationVector = m_filteredInformationVector;
+            m_currentMetricsVector     = &m_filteredMetricsVector;
+            m_currentInformationVector = &m_filteredInformationVector;
             m_isFiltered               = true;
         }
         else
         {
             m_currentParams            = &m_params_1_0;
-            m_currentMetricsVector     = m_metricsVector;
-            m_currentInformationVector = m_informationVector;
+            m_currentMetricsVector     = &m_metricsVector;
+            m_currentInformationVector = &m_informationVector;
             m_isFiltered               = false;
         }
 
@@ -7650,10 +8059,10 @@ namespace MetricsDiscoveryInternal
             IMetric_1_0* metric = GetMetric( i );
             if( metric && ( metric->GetParams()->ApiMask & m_filteredParams.ApiMask ) > 0 )
             {
-                CMetric* filteredMetric = (CMetric*) ( metric );
+                CMetric* filteredMetric = static_cast<CMetric*>( metric );
                 filteredMetric->SetIdInSetParam( j++ );
 
-                m_filteredMetricsVector->PushBack( filteredMetric );
+                m_filteredMetricsVector.push_back( filteredMetric );
             }
         }
 
@@ -7663,16 +8072,16 @@ namespace MetricsDiscoveryInternal
             IInformation_1_0* information = GetInformation( i );
             if( information && ( information->GetParams()->ApiMask & m_filteredParams.ApiMask ) > 0 )
             {
-                CInformation* filteredInformation = (CInformation*) ( information );
+                CInformation* filteredInformation = static_cast<CInformation*>( information );
                 filteredInformation->SetIdInSetParam( j++ );
 
-                m_filteredInformationVector->PushBack( filteredInformation );
+                m_filteredInformationVector.push_back( filteredInformation );
             }
         }
 
         // Modify counts
-        m_filteredParams.MetricsCount     = m_filteredMetricsVector->GetCount();
-        m_filteredParams.InformationCount = m_filteredInformationVector->GetCount();
+        m_filteredParams.MetricsCount     = m_filteredMetricsVector.size();
+        m_filteredParams.InformationCount = m_filteredInformationVector.size();
 
         if( filteringEnabled )
         {
@@ -7689,26 +8098,26 @@ namespace MetricsDiscoveryInternal
     //     ClearCachedMetricsAndInformation
     //
     // Description:
-    //     Clear cached metrics and information. Instances are set to NULL because
+    //     Clear cached metrics and information. Instances are set to nullptr because
     //     Clear() method deletes objects stored in the List. This's not desired.
     //
     //////////////////////////////////////////////////////////////////////////////
     void CMetricSet::ClearCachedMetricsAndInformation()
     {
         // To prevent double memory freeing, original instances are in m_metrics/informationVector
-        uint32_t count = m_filteredMetricsVector->GetCount();
+        uint32_t count = m_filteredMetricsVector.size();
         for( uint32_t i = 0; i < count; i++ )
         {
-            ( *m_filteredMetricsVector )[i] = NULL;
+            m_filteredMetricsVector[i] = nullptr;
         }
-        count = m_filteredInformationVector->GetCount();
+        count = m_filteredInformationVector.size();
         for( uint32_t i = 0; i < count; i++ )
         {
-            ( *m_filteredInformationVector )[i] = NULL;
+            m_filteredInformationVector[i] = nullptr;
         }
 
-        m_filteredMetricsVector->Clear();
-        m_filteredInformationVector->Clear();
+        m_filteredMetricsVector.clear();
+        m_filteredInformationVector.clear();
     }
 
     //////////////////////////////////////////////////////////////////////////////
@@ -7746,7 +8155,7 @@ namespace MetricsDiscoveryInternal
             return CC_ERROR_NOT_SUPPORTED;
         }
 
-        return CalculateMetrics( rawData, rawDataSize, out, outSize, outReportCount, NULL, 0 );
+        return CalculateMetrics( rawData, rawDataSize, out, outSize, outReportCount, nullptr, 0 );
     }
 
     //////////////////////////////////////////////////////////////////////////////
@@ -7773,7 +8182,7 @@ namespace MetricsDiscoveryInternal
     //     TTypedValue_1_0* out                    - (OUT) buffer for calculated reports
     //     uint32_t         outSize                - size of the provided output buffer in bytes
     //     uint32_t*        outReportCount         - (OUT - optional) how much reports were calculated and are stored in the out buffer
-    //     TTypedValue_1_0* outMaxValues           - (OUT - optional) should have a memory for at least 'MetricCount * RawReportCount' values, can be NULL. Calculated maxValues for each metric.
+    //     TTypedValue_1_0* outMaxValues           - (OUT - optional) should have a memory for at least 'MetricCount * RawReportCount' values, can be nullptr. Calculated maxValues for each metric.
     //                                               If MaxValueEquation isn't defined for the metric, MaxValue will be equal to the current, normalized metric value.
     //     uint32_t         outMaxValuesSize       - size of the provided buffer for max values in bytes
     //
@@ -7795,7 +8204,7 @@ namespace MetricsDiscoveryInternal
         if( !outMaxValues || !outMaxValuesSize )
         {
             MD_LOG( LOG_DEBUG, "max values won't be calculated, outMaxValues: %p, outMaxValuesSize: %u", outMaxValues, outMaxValuesSize );
-            outMaxValues     = NULL;
+            outMaxValues     = nullptr;
             outMaxValuesSize = 0;
         }
 
@@ -7824,7 +8233,7 @@ namespace MetricsDiscoveryInternal
         MD_CHECK_CC_RET( ret );
 
         // Initialize manager and context
-        CCalculationManager* calculationManager = NULL;
+        CCalculationManager* calculationManager = nullptr;
         TCalculationContext  calculationContext;
 
         InitializeCalculationManager( measurementType, &calculationManager, true );
@@ -7851,7 +8260,7 @@ namespace MetricsDiscoveryInternal
             *outReportCount = calculationContext.CommonCalculationContext.OutReportCount;
         }
 
-        InitializeCalculationContext( calculationContext, NULL, measurementType, NULL, NULL, NULL, 0, false );
+        InitializeCalculationContext( calculationContext, nullptr, measurementType, nullptr, nullptr, nullptr, 0, false );
     deinitialize_manager:
         InitializeCalculationManager( measurementType, &calculationManager, false );
 
@@ -7994,7 +8403,7 @@ namespace MetricsDiscoveryInternal
             return;
         }
 
-        MD_ASSERT( *calculationManager == NULL );
+        MD_ASSERT( *calculationManager == nullptr );
         switch( measurementType )
         {
             case MEASUREMENT_TYPE_DELTA_QUERY:
@@ -8008,7 +8417,7 @@ namespace MetricsDiscoveryInternal
                 return;
 
             default:
-                *calculationManager = NULL;
+                *calculationManager = nullptr;
                 MD_LOG( LOG_ERROR, "not supported measurement type" );
                 return;
         }
@@ -8031,7 +8440,7 @@ namespace MetricsDiscoveryInternal
     //     CalcManager*         calculationManager - already initialized calculation manager
     //     TMeasurementType     measurementType    - type of measurements
     //     TTypedValue_1_0*     out                - output buffer
-    //     TTypedValue_1_0*     outMaxValues       - output buffer for MaxValues, can be NULL
+    //     TTypedValue_1_0*     outMaxValues       - output buffer for MaxValues, can be nullptr
     //     const uint8_t*       rawData            - input buffer with raw report data
     //     uint32_t             rawReportCount     - raw report count
     //     bool                 init               - if true initialization,
@@ -8070,7 +8479,7 @@ namespace MetricsDiscoveryInternal
         if( calculationManager->PrepareContext( context ) != CC_OK )
         {
             // Deinitialize and return error
-            InitializeCalculationContext( context, NULL, measurementType, NULL, NULL, NULL, 0, false );
+            InitializeCalculationContext( context, nullptr, measurementType, nullptr, nullptr, nullptr, 0, false );
             MD_LOG_EXIT();
             return CC_ERROR_GENERAL;
         }
@@ -8109,22 +8518,22 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     bool CMetricSet::AreMetricParamsValid( const char* symbolName, const char* shortName, const char* longName, const char* groupName, TMetricType metricType, TMetricResultType resultType, const char* units, THwUnitType hwType, const char* alias )
     {
-        if( ( symbolName == NULL ) || ( strcmp( symbolName, "" ) == 0 ) )
+        if( ( symbolName == nullptr ) || ( strcmp( symbolName, "" ) == 0 ) )
         {
             MD_LOG_INVALID_PARAMETER( LOG_ERROR, symbolName );
             return false;
         }
-        if( ( shortName == NULL ) || ( strcmp( shortName, "" ) == 0 ) )
+        if( ( shortName == nullptr ) || ( strcmp( shortName, "" ) == 0 ) )
         {
             MD_LOG_INVALID_PARAMETER( LOG_ERROR, shortName );
             return false;
         }
-        if( ( longName == NULL ) || ( strcmp( longName, "" ) == 0 ) )
+        if( ( longName == nullptr ) || ( strcmp( longName, "" ) == 0 ) )
         {
             MD_LOG_INVALID_PARAMETER( LOG_ERROR, longName );
             return false;
         }
-        if( ( groupName == NULL ) || ( strcmp( groupName, "" ) == 0 ) )
+        if( ( groupName == nullptr ) || ( strcmp( groupName, "" ) == 0 ) )
         {
             MD_LOG_INVALID_PARAMETER( LOG_ERROR, groupName );
             return false;
@@ -8139,7 +8548,7 @@ namespace MetricsDiscoveryInternal
             MD_LOG_INVALID_PARAMETER( LOG_ERROR, resultType );
             return false;
         }
-        if( ( units == NULL ) || ( strcmp( units, "" ) == 0 ) )
+        if( ( units == nullptr ) || ( strcmp( units, "" ) == 0 ) )
         {
             MD_LOG_INVALID_PARAMETER( LOG_ERROR, units );
             return false;
@@ -8149,7 +8558,7 @@ namespace MetricsDiscoveryInternal
             MD_LOG_INVALID_PARAMETER( LOG_ERROR, hwType );
             return false;
         }
-        if( alias == NULL )
+        if( alias == nullptr )
         {
             MD_LOG_INVALID_PARAMETER( LOG_ERROR, alias );
             return false;
@@ -8179,13 +8588,12 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     bool CMetricSet::HasInformation( const char* symbolName )
     {
-        MD_CHECK_PTR_RET( m_informationVector, false );
         MD_CHECK_PTR_RET( symbolName, false );
 
         for( uint32_t i = 0; i < m_params_1_0.InformationCount; i++ )
         {
             IInformation_1_0* information = GetInformation( i );
-            if( information && information->GetParams()->SymbolName != NULL && strcmp( information->GetParams()->SymbolName, symbolName ) == 0 )
+            if( information && information->GetParams()->SymbolName != nullptr && strcmp( information->GetParams()->SymbolName, symbolName ) == 0 )
             {
                 return true;
             }
@@ -8206,12 +8614,63 @@ namespace MetricsDiscoveryInternal
     //     Returns metrics calculator.
     //
     // Output:
-    //     CMetricsCalculator* - metrics calculator or *NULL* if error
+    //     CMetricsCalculator* - metrics calculator or *nullptr* if error
     //
     //////////////////////////////////////////////////////////////////////////////
     CMetricsCalculator* CMetricSet::GetMetricsCalculator()
     {
         return m_metricsCalculator;
+    }
+
+    //////////////////////////////////////////////////////////////////////////////
+    //
+    // Class:
+    //     CMetricSet
+    //
+    // Method:
+    //     SetAvailabilityEquation
+    //
+    // Description:
+    //     Sets the availability equation in the metric set. It's used to determine if the metric
+    //     set is available on the current platform.
+    //
+    // Input:
+    //     const char * equationString - equation string, could be empty
+    //
+    // Output:
+    //     TCompletionCode             - result of the operation
+    //
+    //////////////////////////////////////////////////////////////////////////////
+    TCompletionCode CMetricSet::SetAvailabilityEquation( const char* equationString )
+    {
+        TCompletionCode ret = SetEquation( m_device, &m_availabilityEquation, equationString );
+
+        if( ret == CC_OK )
+        {
+            m_params_1_0.AvailabilityEquation = GetCopiedCString( equationString );
+        }
+
+        return ret;
+    }
+
+    //////////////////////////////////////////////////////////////////////////////
+    //
+    // Class:
+    //     CMetricSet
+    //
+    // Method:
+    //     IsAvailabilityEquationTrue
+    //
+    // Description:
+    //     Returns true if metric set availability equation is true.
+    //
+    // Output:
+    //     bool -
+    //
+    //////////////////////////////////////////////////////////////////////////////
+    bool CMetricSet::IsAvailabilityEquationTrue()
+    {
+        return m_availabilityEquation->SolveBooleanEquation();
     }
 
     //////////////////////////////////////////////////////////////////////////////
@@ -8269,16 +8728,16 @@ namespace MetricsDiscoveryInternal
 
         m_params_1_0.DeltaFunction.FunctionType = DELTA_FUNCTION_NULL;
         m_params_1_0.DeltaFunction.BitsCount    = 0;
-        m_params_1_0.IoReadEquation             = NULL;
-        m_params_1_0.QueryReadEquation          = NULL;
-        m_params_1_0.NormEquation               = NULL;
-        m_params_1_0.MaxValueEquation           = NULL;
-        m_availabilityEquation                  = NULL;
+        m_params_1_0.IoReadEquation             = nullptr;
+        m_params_1_0.QueryReadEquation          = nullptr;
+        m_params_1_0.NormEquation               = nullptr;
+        m_params_1_0.MaxValueEquation           = nullptr;
+        m_availabilityEquation                  = nullptr;
 
-        m_normEquation      = NULL;
-        m_ioReadEquation    = NULL;
-        m_queryReadEquation = NULL;
-        m_maxValueEquation  = NULL;
+        m_normEquation      = nullptr;
+        m_ioReadEquation    = nullptr;
+        m_queryReadEquation = nullptr;
+        m_maxValueEquation  = nullptr;
 
         m_device   = device;
         m_isCustom = isCustom;
@@ -8321,11 +8780,11 @@ namespace MetricsDiscoveryInternal
         m_signalName                   = GetCopiedCString( other.m_signalName );
         m_isCustom                     = other.m_isCustom;
 
-        m_availabilityEquation = ( other.m_availabilityEquation ) ? new( std::nothrow ) CEquation( *other.m_availabilityEquation ) : NULL;
-        m_ioReadEquation       = ( other.m_ioReadEquation ) ? new( std::nothrow ) CEquation( *other.m_ioReadEquation ) : NULL;
-        m_queryReadEquation    = ( other.m_queryReadEquation ) ? new( std::nothrow ) CEquation( *other.m_queryReadEquation ) : NULL;
-        m_normEquation         = ( other.m_normEquation ) ? new( std::nothrow ) CEquation( *other.m_normEquation ) : NULL;
-        m_maxValueEquation     = ( other.m_maxValueEquation ) ? new( std::nothrow ) CEquation( *other.m_maxValueEquation ) : NULL;
+        m_availabilityEquation = ( other.m_availabilityEquation ) ? new( std::nothrow ) CEquation( *other.m_availabilityEquation ) : nullptr;
+        m_ioReadEquation       = ( other.m_ioReadEquation ) ? new( std::nothrow ) CEquation( *other.m_ioReadEquation ) : nullptr;
+        m_queryReadEquation    = ( other.m_queryReadEquation ) ? new( std::nothrow ) CEquation( *other.m_queryReadEquation ) : nullptr;
+        m_normEquation         = ( other.m_normEquation ) ? new( std::nothrow ) CEquation( *other.m_normEquation ) : nullptr;
+        m_maxValueEquation     = ( other.m_maxValueEquation ) ? new( std::nothrow ) CEquation( *other.m_maxValueEquation ) : nullptr;
 
         m_params_1_0.IoReadEquation    = (IEquation_1_0*) m_ioReadEquation;
         m_params_1_0.QueryReadEquation = (IEquation_1_0*) m_queryReadEquation;
@@ -8404,7 +8863,7 @@ namespace MetricsDiscoveryInternal
     {
         uint64_t ret = 0LL;
 
-        if( ( valueString == NULL ) || ( strcmp( valueString, "" ) == 0 ) )
+        if( ( valueString == nullptr ) || ( strcmp( valueString, "" ) == 0 ) )
         {
             return 0LL;
         }
@@ -8655,9 +9114,9 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     TCompletionCode CMetric::WriteCMetricToFile( FILE* metricFile )
     {
-        if( metricFile == NULL )
+        if( metricFile == nullptr )
         {
-            MD_ASSERT( metricFile != NULL );
+            MD_ASSERT( metricFile != nullptr );
             return CC_ERROR_INVALID_PARAMETER;
         }
 
@@ -8704,7 +9163,7 @@ namespace MetricsDiscoveryInternal
     //     GetSignalName
     //
     // Description:
-    //     Returns signal name, can be NULL.
+    //     Returns signal name, can be nullptr.
     //
     // Output:
     //     const char* - signal name
@@ -8751,12 +9210,12 @@ namespace MetricsDiscoveryInternal
 
         m_params_1_0.OverflowFunction.FunctionType = DELTA_FUNCTION_NULL;
 
-        m_params_1_0.IoReadEquation    = NULL;
-        m_params_1_0.QueryReadEquation = NULL;
+        m_params_1_0.IoReadEquation    = nullptr;
+        m_params_1_0.QueryReadEquation = nullptr;
 
-        m_availabilityEquation = NULL;
-        m_ioReadEquation       = NULL;
-        m_queryReadEquation    = NULL;
+        m_availabilityEquation = nullptr;
+        m_ioReadEquation       = nullptr;
+        m_queryReadEquation    = nullptr;
 
         m_device = device;
     }
@@ -8788,9 +9247,9 @@ namespace MetricsDiscoveryInternal
 
         m_params_1_0.OverflowFunction = other.m_params_1_0.OverflowFunction;
 
-        m_availabilityEquation = ( other.m_availabilityEquation ) ? new( std::nothrow ) CEquation( *other.m_availabilityEquation ) : NULL;
-        m_ioReadEquation       = ( other.m_ioReadEquation ) ? new( std::nothrow ) CEquation( *other.m_ioReadEquation ) : NULL;
-        m_queryReadEquation    = ( other.m_queryReadEquation ) ? new( std::nothrow ) CEquation( *other.m_queryReadEquation ) : NULL;
+        m_availabilityEquation = ( other.m_availabilityEquation ) ? new( std::nothrow ) CEquation( *other.m_availabilityEquation ) : nullptr;
+        m_ioReadEquation       = ( other.m_ioReadEquation ) ? new( std::nothrow ) CEquation( *other.m_ioReadEquation ) : nullptr;
+        m_queryReadEquation    = ( other.m_queryReadEquation ) ? new( std::nothrow ) CEquation( *other.m_queryReadEquation ) : nullptr;
 
         m_params_1_0.IoReadEquation    = (IEquation_1_0*) m_ioReadEquation;
         m_params_1_0.QueryReadEquation = (IEquation_1_0*) m_queryReadEquation;
@@ -8988,9 +9447,9 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     TCompletionCode CInformation::WriteCInformationToFile( FILE* metricFile )
     {
-        if( metricFile == NULL )
+        if( metricFile == nullptr )
         {
-            MD_ASSERT( metricFile != NULL );
+            MD_ASSERT( metricFile != nullptr );
             return CC_ERROR_INVALID_PARAMETER;
         }
 
@@ -9101,15 +9560,14 @@ namespace MetricsDiscoveryInternal
     //
     //////////////////////////////////////////////////////////////////////////////
     CRegisterSet::CRegisterSet( CMetricsDevice* device, uint32_t configId, uint32_t configPriority, TConfigType configType )
+        : m_regList()
+        , m_device( device )
+        , m_availabilityEquation( nullptr )
+        , m_isAvailable( true )
     {
-        m_device                = device;
         m_params.ConfigId       = configId;
         m_params.ConfigPriority = configPriority;
         m_params.ConfigType     = configType;
-        m_availabilityEquation  = NULL;
-        m_isAvailable           = true;
-
-        m_regList = new( std::nothrow ) List<TRegister>();
     }
 
     //////////////////////////////////////////////////////////////////////////////
@@ -9126,7 +9584,7 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     CRegisterSet::~CRegisterSet()
     {
-        MD_SAFE_DELETE( m_regList );
+        ClearList( m_regList );
         MD_SAFE_DELETE( m_availabilityEquation );
     }
 
@@ -9207,16 +9665,14 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     TRegister* CRegisterSet::AddConfigRegister( uint32_t offset, uint32_t value, TRegisterType type )
     {
-        MD_CHECK_PTR_RET( m_regList, NULL );
-
         TRegister reg;
         reg.offset = offset;
         reg.value  = value;
         reg.type   = ( type > REGISTER_TYPE_UNKNOWN && type < REGISTER_TYPE_LAST ) ? type : REGISTER_TYPE_UNKNOWN;
 
-        m_regList->PushBack( reg );
+        m_regList.push_back( reg );
 
-        return &m_regList->Back();
+        return &m_regList.back();
     }
 
     //////////////////////////////////////////////////////////////////////////////
@@ -9252,21 +9708,17 @@ namespace MetricsDiscoveryInternal
     //     !!WATCH OUT FOR DOUBLE MEMORY FREEING!!
     //
     // Input:
-    //     Vector<TRegister*>* regVector - destination vector
+    //     Vector<TRegister*>& regVector - destination vector
     //
     // Output:
     //     TCompletionCode - result, *CC_OK* is ok
     //
     //////////////////////////////////////////////////////////////////////////////
-    TCompletionCode CRegisterSet::RegsToVector( Vector<TRegister*>* regVector )
+    TCompletionCode CRegisterSet::RegsToVector( std::vector<TRegister*>& regVector )
     {
-        MD_CHECK_PTR_RET( regVector, CC_ERROR_INVALID_PARAMETER );
-
-        Node<TRegister>* registerNode = m_regList->GetHeadNode();
-        while( registerNode != NULL )
+        for( TRegister& registerNode : m_regList )
         {
-            regVector->PushBack( &registerNode->value );
-            registerNode = registerNode->nextNode;
+            regVector.push_back( &registerNode );
         }
 
         return CC_OK;
@@ -9293,10 +9745,8 @@ namespace MetricsDiscoveryInternal
     TCompletionCode CRegisterSet::WriteCRegisterSetToFile( FILE* metricFile )
     {
         MD_CHECK_PTR_RET( metricFile, CC_ERROR_INVALID_PARAMETER );
-        MD_CHECK_PTR_RET( m_regList, CC_ERROR_GENERAL );
 
-        uint32_t         count        = 0;
-        Node<TRegister>* registerNode = NULL;
+        uint32_t count = 0;
 
         // m_params and availability equation
         fwrite( &m_params.ConfigId, sizeof( m_params.ConfigId ), 1, metricFile );
@@ -9305,13 +9755,12 @@ namespace MetricsDiscoveryInternal
         WriteEquationToFile( m_availabilityEquation, metricFile );
 
         // Registers
-        count = m_regList->GetCount();
+        count = m_regList.size();
         fwrite( &count, sizeof( uint32_t ), 1, metricFile );
-        registerNode = m_regList->GetHeadNode();
-        while( registerNode != NULL )
+
+        for( TRegister& reg : m_regList )
         {
-            fwrite( &registerNode->value, sizeof( registerNode->value ), 1, metricFile );
-            registerNode = registerNode->nextNode;
+            fwrite( &reg, sizeof( reg ), 1, metricFile );
         }
 
         return CC_OK;
@@ -9394,9 +9843,10 @@ namespace MetricsDiscoveryInternal
     //
     //////////////////////////////////////////////////////////////////////////////
     CEquation::CEquation( CMetricsDevice* device )
+        : m_elementsVector()
+        , m_device( device )
     {
-        m_elementsVector = new( std::nothrow ) Vector<CEquationElementInternal>( EQUATION_VECTOR_INCREASE );
-        m_device         = device;
+        m_elementsVector.reserve( EQUATION_VECTOR_INCREASE );
         m_equationString = nullptr;
     }
 
@@ -9414,15 +9864,9 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     CEquation::CEquation( const CEquation& other )
         : m_device( other.m_device )
+        , m_elementsVector( other.m_elementsVector )
     {
         m_equationString = GetCopiedCString( other.m_equationString );
-        m_elementsVector = new( std::nothrow ) Vector<CEquationElementInternal>( EQUATION_VECTOR_INCREASE );
-
-        uint32_t elementsCount = other.m_elementsVector->GetCount();
-        for( uint32_t i = 0; i < elementsCount; i++ )
-        {
-            AddEquationElement( &( *other.m_elementsVector )[i] );
-        }
     }
 
     //////////////////////////////////////////////////////////////////////////////
@@ -9440,7 +9884,7 @@ namespace MetricsDiscoveryInternal
     CEquation::~CEquation()
     {
         MD_SAFE_DELETE_ARRAY( m_equationString );
-        MD_SAFE_DELETE( m_elementsVector );
+        ClearVector( m_elementsVector );
     }
 
     //////////////////////////////////////////////////////////////////////////////
@@ -9460,8 +9904,7 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     uint32_t CEquation::GetEquationElementsCount()
     {
-        MD_CHECK_PTR_RET( m_elementsVector, 0 );
-        return m_elementsVector->GetCount();
+        return m_elementsVector.size();
     }
 
     //////////////////////////////////////////////////////////////////////////////
@@ -9484,12 +9927,11 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     TEquationElement_1_0* CEquation::GetEquationElement( uint32_t index )
     {
-        MD_CHECK_PTR_RET( m_elementsVector, NULL );
-        if( index < m_elementsVector->GetCount() )
+        if( index < m_elementsVector.size() )
         {
-            return &( ( *m_elementsVector )[index].Element_1_0 );
+            return &( m_elementsVector[index].Element_1_0 );
         }
-        return NULL;
+        return nullptr;
     }
 
     //////////////////////////////////////////////////////////////////////////////
@@ -9509,19 +9951,17 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     bool CEquation::SolveBooleanEquation( void )
     {
-        List<uint64_t> equationStack;
-        uint64_t       qwordValue;
-        uint32_t       algorithmCheck = 0;
+        std::list<uint64_t> equationStack;
+        uint64_t            qwordValue;
+        uint32_t            algorithmCheck = 0;
 
-        MD_CHECK_PTR_RET( m_elementsVector, false );
-
-        for( uint32_t i = 0; i < m_elementsVector->GetCount(); i++ )
+        for( uint32_t i = 0; i < m_elementsVector.size(); i++ )
         {
-            TEquationElement_1_0* element = &( ( *m_elementsVector )[i].Element_1_0 );
+            TEquationElement_1_0* element = &( m_elementsVector[i].Element_1_0 );
             switch( element->Type )
             {
                 case EQUATION_ELEM_IMM_UINT64:
-                    equationStack.PushBack( element->ImmediateUInt64 );
+                    equationStack.push_back( element->ImmediateUInt64 );
                     algorithmCheck++;
                     break;
 
@@ -9532,14 +9972,14 @@ namespace MetricsDiscoveryInternal
                         && strstr( element->SymbolName, "Mask" ) == nullptr )
                     {
                         qwordValue = 0;
-                        equationStack.PushBack( qwordValue );
+                        equationStack.push_back( qwordValue );
                         algorithmCheck++;
                     }
                     else
                     {
                         MD_LOG( LOG_DEBUG, "Not allowed equation element type in availability equation: %u", element->Type );
                         MD_ASSERT( false );
-                        equationStack.Clear();
+                        ClearList( equationStack );
                         return false;
                     }
                     break;
@@ -9570,7 +10010,7 @@ namespace MetricsDiscoveryInternal
                         MD_ASSERT( false );
                         qwordValue = 0;
                     }
-                    equationStack.PushBack( qwordValue );
+                    equationStack.push_back( qwordValue );
                     algorithmCheck++;
                     break;
                 }
@@ -9578,11 +10018,11 @@ namespace MetricsDiscoveryInternal
                 case EQUATION_ELEM_OPERATION:
                 {
                     // Pop two values from stack
-                    uint64_t valueLast = equationStack.Back();
-                    equationStack.PopBack();
+                    uint64_t valueLast = equationStack.back();
+                    equationStack.pop_back();
                     algorithmCheck--;
-                    uint64_t valuePrev = equationStack.Back();
-                    equationStack.PopBack();
+                    uint64_t valuePrev = equationStack.back();
+                    equationStack.pop_back();
                     algorithmCheck--;
 
                     switch( element->Operation )
@@ -9654,10 +10094,10 @@ namespace MetricsDiscoveryInternal
                         default:
                             MD_LOG( LOG_DEBUG, "Not allowed equation element operation in availability equation: %u", element->Operation );
                             MD_ASSERT( false );
-                            equationStack.Clear();
+                            ClearList( equationStack );
                             return false;
                     }
-                    equationStack.PushBack( qwordValue );
+                    equationStack.push_back( qwordValue );
                     algorithmCheck++;
                     break;
                 }
@@ -9665,21 +10105,21 @@ namespace MetricsDiscoveryInternal
                 default:
                     MD_LOG( LOG_DEBUG, "Not allowed equation element type in availability equation: %u", element->Type );
                     MD_ASSERT( false );
-                    equationStack.Clear();
+                    ClearList( equationStack );
                     return false;
             }
         }
-        if( m_elementsVector->GetCount() > 0 )
+        if( m_elementsVector.size() > 0 )
         {
             // here should be only 1 element on the list - the result (if the equation is fine)
             MD_ASSERT( algorithmCheck == 1 );
-            qwordValue = equationStack.Back();
+            qwordValue = equationStack.back();
         }
         else
         {
             qwordValue = 0LL;
         }
-        equationStack.Clear();
+        ClearList( equationStack );
 
         return ( qwordValue != 0LL );
     }
@@ -9704,26 +10144,26 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     bool CEquation::ParseEquationString( const char* equationString )
     {
-        if( ( equationString == NULL ) || ( strcmp( equationString, "" ) == 0 ) )
+        if( ( equationString == nullptr ) || ( strcmp( equationString, "" ) == 0 ) )
         {
-            m_equationString = NULL;
+            m_equationString = nullptr;
             return false;
         }
 
-        char *token = NULL, *tokenNext = NULL, *string = NULL;
+        char *token = nullptr, *tokenNext = nullptr, *string = nullptr;
 
         string = GetCopiedCString( equationString );
         MD_CHECK_PTR_RET( string, false );
 
         token = iu_strtok_s( string, " ", &tokenNext );
-        while( token != NULL )
+        while( token != nullptr )
         {
             if( !ParseEquationElement( token ) )
             {
                 delete[] string;
                 return false;
             }
-            token = iu_strtok_s( NULL, " ", &tokenNext );
+            token = iu_strtok_s( nullptr, " ", &tokenNext );
         }
 
         m_equationString = GetCopiedCString( equationString );
@@ -9743,16 +10183,15 @@ namespace MetricsDiscoveryInternal
     //     Adds the element to the equation list.
     //
     // Input:
-    //     CEquationElementInternal * element  - equation element to add
+    //     const CEquationElementInternal * element  - equation element to add
     //
     // Output:
     //     bool                                - result of the operation
     //
     //////////////////////////////////////////////////////////////////////////////
-    bool CEquation::AddEquationElement( CEquationElementInternal* element )
+    bool CEquation::AddEquationElement( const CEquationElementInternal* element )
     {
-        MD_CHECK_PTR_RET( m_elementsVector, false );
-        m_elementsVector->PushBack( *element );
+        m_elementsVector.push_back( *element );
 
         return true;
     }
@@ -9770,7 +10209,7 @@ namespace MetricsDiscoveryInternal
     //
     // Input:
     //     const char* element    - equation element string to parse;
-    //                              expected to be NULL-terminated
+    //                              expected to be nullptr-terminated
     //
     // Output:
     //     bool                   - result of the operation
@@ -9998,21 +10437,21 @@ namespace MetricsDiscoveryInternal
         {
             CEquationElementInternal anElement;
             anElement.Element_1_0.Type                  = EQUATION_ELEM_RD_UINT32;
-            anElement.Element_1_0.ReadParams.ByteOffset = strtoul( &element[3], NULL, 0 );
+            anElement.Element_1_0.ReadParams.ByteOffset = strtoul( &element[3], nullptr, 0 );
             return AddEquationElement( &anElement );
         }
         else if( strncmp( element, "fl@", sizeof( "fl@" ) - 1 ) == 0 )
         {
             CEquationElementInternal anElement;
             anElement.Element_1_0.Type                  = EQUATION_ELEM_RD_FLOAT;
-            anElement.Element_1_0.ReadParams.ByteOffset = strtoul( &element[3], NULL, 0 );
+            anElement.Element_1_0.ReadParams.ByteOffset = strtoul( &element[3], nullptr, 0 );
             return AddEquationElement( &anElement );
         }
         else if( strncmp( element, "qw@", sizeof( "qw@" ) - 1 ) == 0 )
         {
             CEquationElementInternal anElement;
             anElement.Element_1_0.Type                  = EQUATION_ELEM_RD_UINT64;
-            anElement.Element_1_0.ReadParams.ByteOffset = strtoul( &element[3], NULL, 0 );
+            anElement.Element_1_0.ReadParams.ByteOffset = strtoul( &element[3], nullptr, 0 );
             return AddEquationElement( &anElement );
         }
         else if( strncmp( element, "rd40@", sizeof( "rd40@" ) - 1 ) == 0 )
@@ -10054,11 +10493,11 @@ namespace MetricsDiscoveryInternal
         }
         else if( strncmp( element, "$$", sizeof( "$$" ) - 1 ) == 0 )
         {
-            //Add element
+            // Add element
             CEquationElementInternal anElement;
 
             iu_strncpy_s( anElement.SymbolNameInternal, sizeof( anElement.SymbolNameInternal ), &element[2], sizeof( anElement.SymbolNameInternal ) - 1 );
-            //finish element
+            // finish element
             anElement.Element_1_0.SymbolName = anElement.SymbolNameInternal;
             anElement.Element_1_0.Type       = EQUATION_ELEM_LOCAL_METRIC_SYMBOL;
 
@@ -10072,7 +10511,7 @@ namespace MetricsDiscoveryInternal
             iu_strncpy_s( anElement.SymbolNameInternal, sizeof( anElement.SymbolNameInternal ), &element[1], sizeof( anElement.SymbolNameInternal ) - 1 );
             anElement.Element_1_0.SymbolName = anElement.SymbolNameInternal;
 
-            if( value == NULL )
+            if( value == nullptr )
             {
                 // Finish element as local counter symbol
                 anElement.Element_1_0.Type = EQUATION_ELEM_LOCAL_COUNTER_SYMBOL;
@@ -10086,38 +10525,38 @@ namespace MetricsDiscoveryInternal
         }
         else if( strncmp( element, "i$", sizeof( "i$" ) - 1 ) == 0 )
         {
-            //Add element
+            // Add element
             CEquationElementInternal anElement;
 
             iu_strncpy_s( anElement.SymbolNameInternal, sizeof( anElement.SymbolNameInternal ), &element[2], sizeof( anElement.SymbolNameInternal ) - 1 );
-            //finish element
+            // finish element
             anElement.Element_1_0.SymbolName = anElement.SymbolNameInternal;
             anElement.Element_1_0.Type       = EQUATION_ELEM_INFORMATION_SYMBOL;
 
             return AddEquationElement( &anElement );
         }
-        else if( strchr( element, '.' ) != NULL ) //assume float number
+        else if( strchr( element, '.' ) != nullptr ) // assume float number
         {
             CEquationElementInternal anElement;
             anElement.Element_1_0.Type           = EQUATION_ELEM_IMM_FLOAT;
             anElement.Element_1_0.ImmediateFloat = (float) atof( element );
             return AddEquationElement( &anElement );
         }
-        else if( strncmp( element, "0x", sizeof( "0x" ) - 1 ) == 0 ) //assume hex integer 64
+        else if( strncmp( element, "0x", sizeof( "0x" ) - 1 ) == 0 ) // assume hex integer 64
         {
             CEquationElementInternal anElement;
             anElement.Element_1_0.Type            = EQUATION_ELEM_IMM_UINT64;
-            anElement.Element_1_0.ImmediateUInt64 = strtoull( element, NULL, 0 );
+            anElement.Element_1_0.ImmediateUInt64 = strtoull( element, nullptr, 0 );
             return AddEquationElement( &anElement );
         }
-        else if( element[0] >= '0' && element[0] <= '9' ) //assume decimal integer 64
+        else if( element[0] >= '0' && element[0] <= '9' ) // assume decimal integer 64
         {
             CEquationElementInternal anElement;
             anElement.Element_1_0.Type            = EQUATION_ELEM_IMM_UINT64;
-            anElement.Element_1_0.ImmediateUInt64 = strtoull( element, NULL, 10 );
+            anElement.Element_1_0.ImmediateUInt64 = strtoull( element, nullptr, 10 );
             return AddEquationElement( &anElement );
         }
-        else if( strncmp( element, "mask$", sizeof( "mask$" ) - 1 ) == 0 ) //assume hex integer 64
+        else if( strncmp( element, "mask$", sizeof( "mask$" ) - 1 ) == 0 ) // assume hex integer 64
         {
             CEquationElementInternal anElement;
             anElement.Element_1_0.Type = EQUATION_ELEM_MASK;
@@ -10149,9 +10588,9 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     TCompletionCode CEquation::WriteCEquationToFile( FILE* metricFile )
     {
-        if( metricFile == NULL )
+        if( metricFile == nullptr )
         {
-            MD_ASSERT( metricFile != NULL );
+            MD_ASSERT( metricFile != nullptr );
             return CC_ERROR_INVALID_PARAMETER;
         }
 
@@ -10173,14 +10612,14 @@ namespace MetricsDiscoveryInternal
     //
     //////////////////////////////////////////////////////////////////////////////
     CSymbolSet::CSymbolSet( CMetricsDevice& metricsDevice, CDriverInterface& driverInterface )
-        : m_symbolVector( NULL )
+        : m_symbolVector()
         , m_metricsDevice( metricsDevice )
         , m_driverInterface( driverInterface )
         , m_maxSlice( 0 )
         , m_maxSubslicePerSlice( 0 )
         , m_maxDualSubslicePerSlice( 0 )
     {
-        m_symbolVector = new( std::nothrow ) Vector<TGlobalSymbol*>( SYMBOLS_VECTOR_INCREASE );
+        m_symbolVector.reserve( SYMBOLS_VECTOR_INCREASE );
 
         if( DetectMaxSlicesInfo() != CC_OK )
         {
@@ -10202,10 +10641,8 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     CSymbolSet::~CSymbolSet()
     {
-        TGlobalSymbol* symbol = NULL;
-        for( uint32_t i = 0; i < m_symbolVector->GetCount(); i++ )
+        for( auto& symbol : m_symbolVector )
         {
-            symbol = ( *m_symbolVector )[i];
             MD_SAFE_DELETE_ARRAY( symbol->symbol_1_0.SymbolName );
             if( symbol->symbol_1_0.SymbolTypedValue.ValueType == VALUE_TYPE_CSTRING )
             {
@@ -10218,7 +10655,7 @@ namespace MetricsDiscoveryInternal
             }
         }
 
-        MD_SAFE_DELETE( m_symbolVector );
+        ClearVector( m_symbolVector );
     }
 
     //////////////////////////////////////////////////////////////////////////////
@@ -10238,8 +10675,7 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     uint32_t CSymbolSet::GetSymbolCount()
     {
-        MD_CHECK_PTR_RET( m_symbolVector, 0 );
-        return m_symbolVector->GetCount();
+        return m_symbolVector.size();
     }
 
     //////////////////////////////////////////////////////////////////////////////
@@ -10262,14 +10698,12 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     TGlobalSymbol_1_0* CSymbolSet::GetSymbol( uint32_t index )
     {
-        MD_CHECK_PTR_RET( m_symbolVector, NULL );
-
-        if( ( index < m_symbolVector->GetCount() ) && ( ( *m_symbolVector )[index] ) )
+        if( index < m_symbolVector.size() && m_symbolVector[index] )
         {
-            return &( ( *m_symbolVector )[index]->symbol_1_0 );
+            return &( m_symbolVector[index]->symbol_1_0 );
         }
 
-        return NULL;
+        return nullptr;
     }
 
     //////////////////////////////////////////////////////////////////////////////
@@ -10281,7 +10715,7 @@ namespace MetricsDiscoveryInternal
     //     GetSymbolValueByName
     //
     // Description:
-    //     Returns chosen symbol by name or null if not exists.
+    //     Returns chosen symbol by name or nullptr if not exists.
     //
     // Input:
     //     const char * name   - name of symbol
@@ -10292,18 +10726,17 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     TTypedValue_1_0* CSymbolSet::GetSymbolValueByName( const char* name )
     {
-        MD_CHECK_PTR_RET( name, NULL );
-        MD_CHECK_PTR_RET( m_symbolVector, NULL );
+        MD_CHECK_PTR_RET( name, nullptr );
 
-        for( uint32_t i = 0; i < m_symbolVector->GetCount(); i++ )
+        for( auto& symbol : m_symbolVector )
         {
-            if( ( ( *m_symbolVector )[i] ) && ( strcmp( name, ( *m_symbolVector )[i]->symbol_1_0.SymbolName ) == 0 ) )
+            if( symbol && ( strcmp( name, symbol->symbol_1_0.SymbolName ) == 0 ) )
             {
-                return &( ( *m_symbolVector )[i]->symbol_1_0.SymbolTypedValue );
+                return &( symbol->symbol_1_0.SymbolTypedValue );
             }
         }
 
-        return NULL;
+        return nullptr;
     }
 
     //////////////////////////////////////////////////////////////////////////////
@@ -10328,15 +10761,14 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     TCompletionCode CSymbolSet::AddSymbol( const char* name, TTypedValue_1_0 typedValue, TSymbolType symbolType )
     {
-        MD_CHECK_PTR_RET( m_symbolVector, CC_ERROR_GENERAL );
         MD_CHECK_PTR_RET( name, CC_ERROR_GENERAL );
-
         MD_LOG( LOG_DEBUG, "%s - adding...", name );
+        TCompletionCode ret = CC_OK;
 
         if( symbolType == SYMBOL_TYPE_DETECT )
         {
             // if it is a CString or a ByteArray, a memory is allocated here
-            TCompletionCode ret = DetectSymbolValue( name, &typedValue );
+            ret = DetectSymbolValue( name, &typedValue );
 
             if( ret == CC_ERROR_NOT_SUPPORTED )
             {
@@ -10372,7 +10804,7 @@ namespace MetricsDiscoveryInternal
         {
             symbol->symbol_1_0.SymbolTypedValue = typedValue;
         }
-        m_symbolVector->PushBack( symbol );
+        m_symbolVector.push_back( symbol );
 
         if( typedValue.ValueType == VALUE_TYPE_BYTEARRAY )
         {
@@ -10411,15 +10843,26 @@ namespace MetricsDiscoveryInternal
 
         if( strcmp( name, "EuCoresTotalCount" ) == 0 )
         {
-            ret = m_driverInterface.SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_EU_CORES_TOTAL_COUNT, &out );
+            ret = m_driverInterface.SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_EU_CORES_TOTAL_COUNT, &out, &m_metricsDevice );
             MD_CHECK_CC_RET( ret );
             typedValue->ValueUInt32 = out.ValueUint32;
         }
         else if( strcmp( name, "EuCoresPerSubsliceCount" ) == 0 )
         {
-            ret = m_driverInterface.SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_EU_CORES_PER_SUBSLICE_COUNT, &out );
+            uint32_t euCoresTotalCount   = 0;
+            uint32_t subslicesTotalCount = 0;
+
+            ret = m_driverInterface.SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_EU_CORES_TOTAL_COUNT, &out, &m_metricsDevice );
             MD_CHECK_CC_RET( ret );
-            typedValue->ValueUInt32 = out.ValueUint32;
+            euCoresTotalCount = out.ValueUint32;
+
+            {
+                ret = m_driverInterface.SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_SUBSLICES_TOTAL_COUNT, &out );
+                MD_CHECK_CC_RET( ret );
+                subslicesTotalCount = out.ValueUint32;
+            }
+
+            typedValue->ValueUInt32 = ( subslicesTotalCount != 0 ) ? euCoresTotalCount / subslicesTotalCount : 0;
         }
         else if( strcmp( name, "EuSubslicesTotalCount" ) == 0 )
         {
@@ -10433,13 +10876,13 @@ namespace MetricsDiscoveryInternal
         }
         else if( strcmp( name, "EuDualSubslicesTotalCount" ) == 0 )
         {
-            ret = m_driverInterface.SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_DUALSUBSLICES_TOTAL_COUNT, &out );
+            ret = m_driverInterface.SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_DUALSUBSLICES_TOTAL_COUNT, &out, &m_metricsDevice );
             MD_CHECK_CC_RET( ret );
             typedValue->ValueUInt32 = out.ValueUint32;
         }
         else if( strcmp( name, "EuSlicesTotalCount" ) == 0 )
         {
-            ret = m_driverInterface.SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_SLICES_COUNT, &out );
+            ret = m_driverInterface.SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_SLICES_COUNT, &out, &m_metricsDevice );
             MD_CHECK_CC_RET( ret );
             typedValue->ValueUInt32 = out.ValueUint32;
         }
@@ -10449,10 +10892,9 @@ namespace MetricsDiscoveryInternal
             MD_CHECK_CC_RET( ret );
             typedValue->ValueUInt32 = out.ValueUint32;
         }
-
         else if( ( strcmp( name, "SliceMask" ) == 0 ) || ( strcmp( name, "GtSliceMask" ) == 0 ) )
         {
-            ret = m_driverInterface.SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_SLICES_MASK, &out );
+            ret = m_driverInterface.SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_SLICES_MASK, &out, &m_metricsDevice );
             MD_CHECK_CC_RET( ret );
             if( typedValue->ValueType == VALUE_TYPE_BYTEARRAY )
             {
@@ -10480,7 +10922,7 @@ namespace MetricsDiscoveryInternal
         }
         else if( ( strcmp( name, "DualSubsliceMask" ) == 0 ) || ( strcmp( name, "GtDualSubsliceMask" ) == 0 ) )
         {
-            ret = m_driverInterface.SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_DUALSUBSLICES_MASK, &out );
+            ret = m_driverInterface.SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_DUALSUBSLICES_MASK, &out, &m_metricsDevice );
             MD_CHECK_CC_RET( ret );
             if( typedValue->ValueType == VALUE_TYPE_BYTEARRAY )
             {
@@ -10575,12 +11017,14 @@ namespace MetricsDiscoveryInternal
             ret = m_driverInterface.SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_REVISION_ID, &out );
             MD_CHECK_CC_RET( ret );
             typedValue->ValueUInt32 = out.ValueUint32;
+            MD_LOG( LOG_INFO, "SkuRevisionId is %u", typedValue->ValueUInt32 );
         }
         else if( strcmp( name, "PlatformIndex" ) == 0 )
         {
             ret = m_driverInterface.SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_PLATFORM_INDEX, &out );
             MD_CHECK_CC_RET( ret );
             typedValue->ValueUInt32 = out.ValueUint32;
+            MD_LOG( LOG_INFO, "PlatformIndex is %u", typedValue->ValueUInt32 );
         }
         else if( strcmp( name, "ApertureSize" ) == 0 )
         {
@@ -10885,20 +11329,16 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     TCompletionCode CSymbolSet::WriteSymbolSetToFile( FILE* metricFile )
     {
-        if( metricFile == NULL )
+        if( metricFile == nullptr )
         {
-            MD_ASSERT( metricFile != NULL );
+            MD_ASSERT( metricFile != nullptr );
             return CC_ERROR_INVALID_PARAMETER;
         }
 
-        MD_CHECK_PTR_RET( m_symbolVector, CC_ERROR_GENERAL );
-
-        TGlobalSymbol* symbol      = NULL;
-        uint32_t       symbolCount = m_symbolVector->GetCount();
+        uint32_t symbolCount = m_symbolVector.size();
         fwrite( &symbolCount, sizeof( symbolCount ), 1, metricFile );
-        for( uint32_t i = 0; i < symbolCount; i++ )
+        for( auto& symbol : m_symbolVector )
         {
-            symbol = ( *m_symbolVector )[i];
             // symbol_1_0
             WriteCStringToFile( symbol->symbol_1_0.SymbolName, metricFile );
             WriteTTypedValueToFile( &symbol->symbol_1_0.SymbolTypedValue, metricFile );
@@ -10928,7 +11368,7 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     bool CSymbolSet::IsSymbolAlreadyAdded( const char* symbolName )
     {
-        return ( GetSymbolValueByName( symbolName ) != NULL );
+        return ( GetSymbolValueByName( symbolName ) != nullptr );
     }
 
     //////////////////////////////////////////////////////////////////////////////

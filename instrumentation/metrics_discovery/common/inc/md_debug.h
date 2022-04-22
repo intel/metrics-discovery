@@ -22,10 +22,10 @@ SPDX-License-Identifier: MIT
     #define MDAPI_LOG_TAG "[MDAPI]"
 #endif
 
-#define MD_ASSERT( expr )    IU_ASSERT_TAGGED( expr, IU_DBG_LAYER_MDAPI, MDAPI_LOG_TAG )
-#define MD_LOG( level, ... ) IU_DBG_PRINT_TAGGED( _##level, IU_DBG_LAYER_MDAPI, MDAPI_LOG_TAG, __FUNCTION__, __VA_ARGS__ )
-#define MD_LOG_ENTER()       IU_DBG_FUNCTION_ENTER_TAGGED( _LOG_DEBUG, IU_DBG_LAYER_MDAPI, MDAPI_LOG_TAG );
-#define MD_LOG_EXIT()        IU_DBG_FUNCTION_EXIT_TAGGED( _LOG_DEBUG, IU_DBG_LAYER_MDAPI, MDAPI_LOG_TAG )
+#define MD_ASSERT( expr )    IU_ASSERT_TAGGED( IU_ADAPTER_ID_UNKNOWN, expr, IU_DBG_LAYER_MDAPI, MDAPI_LOG_TAG )
+#define MD_LOG( level, ... ) IU_DBG_PRINT_TAGGED( IU_ADAPTER_ID_UNKNOWN, _##level, IU_DBG_LAYER_MDAPI, MDAPI_LOG_TAG, __FUNCTION__, __VA_ARGS__ )
+#define MD_LOG_ENTER()       IU_DBG_FUNCTION_ENTER_TAGGED( IU_ADAPTER_ID_UNKNOWN, _LOG_DEBUG, IU_DBG_LAYER_MDAPI, MDAPI_LOG_TAG );
+#define MD_LOG_EXIT()        IU_DBG_FUNCTION_EXIT_TAGGED( IU_ADAPTER_ID_UNKNOWN, _LOG_DEBUG, IU_DBG_LAYER_MDAPI, MDAPI_LOG_TAG )
 
 #define MD_LOG_INVALID_PARAMETER( level, variable ) MD_LOG( level, "invalid parameter: %s", #variable );
 
@@ -43,12 +43,12 @@ SPDX-License-Identifier: MIT
 #define __LOG_INFO    IU_DBG_SEV_INFO
 #define __LOG_DEBUG   IU_DBG_SEV_DEBUG
 
-#define F__LOG_ERROR( level, layer, ... )   F_IU_DBG_SEV_ERROR( level, layer, __VA_ARGS__ )
-#define F__LOG_WARNING( level, layer, ... ) F_IU_DBG_SEV_WARNING( level, layer, __VA_ARGS__ )
-#define F__LOG_INFO( level, layer, ... )    F_IU_DBG_SEV_INFO( level, layer, __VA_ARGS__ )
-#define F__LOG_DEBUG( level, layer, ... )   F_IU_DBG_SEV_DEBUG( level, layer, __VA_ARGS__ )
+#define F__LOG_ERROR( adapter, level, layer, ... )   F_IU_DBG_SEV_ERROR( adapter, level, layer, __VA_ARGS__ )
+#define F__LOG_WARNING( adapter, level, layer, ... ) F_IU_DBG_SEV_WARNING( adapter, level, layer, __VA_ARGS__ )
+#define F__LOG_INFO( adapter, level, layer, ... )    F_IU_DBG_SEV_INFO( adapter, level, layer, __VA_ARGS__ )
+#define F__LOG_DEBUG( adapter, level, layer, ... )   F_IU_DBG_SEV_DEBUG( adapter, level, layer, __VA_ARGS__ )
 
-#define F___LOG_ERROR( level, layer, ... )   F_IU_DBG_SEV_ERROR( level, layer, __VA_ARGS__ )
-#define F___LOG_WARNING( level, layer, ... ) F_IU_DBG_SEV_WARNING( level, layer, __VA_ARGS__ )
-#define F___LOG_INFO( level, layer, ... )    F_IU_DBG_SEV_INFO( level, layer, __VA_ARGS__ )
-#define F___LOG_DEBUG( level, layer, ... )   F_IU_DBG_SEV_DEBUG( level, layer, __VA_ARGS__ )
+#define F___LOG_ERROR( adapter, level, layer, ... )   F_IU_DBG_SEV_ERROR( adapter, level, layer, __VA_ARGS__ )
+#define F___LOG_WARNING( adapter, level, layer, ... ) F_IU_DBG_SEV_WARNING( adapter, level, layer, __VA_ARGS__ )
+#define F___LOG_INFO( adapter, level, layer, ... )    F_IU_DBG_SEV_INFO( adapter, level, layer, __VA_ARGS__ )
+#define F___LOG_DEBUG( adapter, level, layer, ... )   F_IU_DBG_SEV_DEBUG( adapter, level, layer, __VA_ARGS__ )

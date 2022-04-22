@@ -87,7 +87,7 @@ extern "C"
         MD_LOG_ENTER();
         MD_CHECK_PTR_RET( metricsDevice, CC_ERROR_INVALID_PARAMETER );
 
-        CAdapterGroup* adapterGroup = NULL;
+        CAdapterGroup* adapterGroup = nullptr;
 
         TCompletionCode retVal = CAdapterGroup::Open( &adapterGroup );
         if( retVal != CC_OK && retVal != CC_ALREADY_INITIALIZED )
@@ -138,12 +138,12 @@ extern "C"
     //         4. Destroy anything that was created if error
     //
     // Input:
-    //     const char*            fileName      - custom metric file
-    //     void*                  openParams    - open params
-    //     IMetricsDeviceLatest** metricsDevice - [out] created / retrieved metrics device
+    //     const char*             fileName       - custom metric file
+    //     void*                   openParams     - open params
+    //     IMetricsDeviceLatest**  metricsDevice  - [out] created / retrieved metrics device
     //
     // Output:
-    //     TCompletionCode                      - CC_OK or CC_ALREADY_INITIALIZED means success
+    //     TCompletionCode                        - CC_OK or CC_ALREADY_INITIALIZED means success
     //
     //////////////////////////////////////////////////////////////////////////////
     TCompletionCode OpenMetricsDeviceFromFile( const char* fileName, void* openParams, IMetricsDeviceLatest** metricsDevice )
@@ -151,7 +151,7 @@ extern "C"
         MD_LOG_ENTER();
         MD_CHECK_PTR_RET( metricsDevice, CC_ERROR_INVALID_PARAMETER );
 
-        CAdapterGroup* adapterGroup = NULL;
+        CAdapterGroup* adapterGroup = nullptr;
 
         TCompletionCode retVal = CAdapterGroup::Open( &adapterGroup );
         if( retVal != CC_OK && retVal != CC_ALREADY_INITIALIZED )
@@ -256,12 +256,12 @@ extern "C"
     //         3. SaveMetricsDeviceToFile on it
     //
     // Input:
-    //     const char*           fileName      - target file name
-    //     void*                 saveParams    - save params
-    //     IMetricsDeviceLatest* metricsDevice - target metrics device
+    //     const char*           fileName       - target file name
+    //     void*                 saveParams     - save params
+    //     IMetricsDeviceLatest* metricsDevice  - target metrics device
     //
     // Output:
-    //     TCompletionCode                     - CC_OK means success
+    //     TCompletionCode                      - CC_OK means success
     //
     //////////////////////////////////////////////////////////////////////////////
     TCompletionCode SaveMetricsDeviceToFile( const char* fileName, void* saveParams, IMetricsDeviceLatest* metricsDevice )

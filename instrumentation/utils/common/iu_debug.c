@@ -1,30 +1,15 @@
-///////////////////////////////////////////////////////////////////////////////
-//
-//  Copyright © 2019-2021, Intel Corporation
-//
-//  Permission is hereby granted, free of charge, to any person obtaining a
-//  copy of this software and associated documentation files (the "Software"),
-//  to deal in the Software without restriction, including without limitation
-//  the rights to use, copy, modify, merge, publish, distribute, sublicense,
-//  and/or sell copies of the Software, and to permit persons to whom the
-//  Software is furnished to do so, subject to the following conditions:
-//
-//  The above copyright notice and this permission notice shall be included
-//  in all copies or substantial portions of the Software.
-//
-//  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-//  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-//  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
-//  THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-//  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
-//  FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
-//  IN THE SOFTWARE.
-//
-//  File Name:  iu_debug.c
-//
-//  Abstract:   Instrumentation Utils common debug routines and structures.
-//
-///////////////////////////////////////////////////////////////////////////////
+/*========================== begin_copyright_notice ============================
+
+Copyright (C) 2019-2022 Intel Corporation
+
+SPDX-License-Identifier: MIT
+
+============================= end_copyright_notice ===========================*/
+
+//     File Name:  iu_debug.c
+
+//     Abstract:   Instrumentation Utils common debug routines and structures.
+
 #include "iu_debug.h"
 #include "iu_std.h"
 #include "iu_os.h"
@@ -43,21 +28,18 @@ IU_LOGS_CONTROL g_IuLogsControl = {
     true,                                       // AssertEnable
     IU_DBG_LAYER_ALL,                           // LogLayerEnable
     IU_DBG_SEV_ERROR | IU_DBG_SEV_CRITICAL | 0, // LogLevel.severity & LogLevel.show_flags
-    IU_ADAPTER_ID_DEFAULT,                      // AdapterId
 
 #elif defined( _RELEASE_INTERNAL )
 
     false,                                                                                          // AssertEnable
     IU_DBG_LAYER_ALL,                                                                               // LogLayerEnable
     IU_DBG_SEV_WARNING | IU_DBG_SEV_ERROR | IU_DBG_SEV_CRITICAL | IU_DBG_SHOW_ALL | IU_DBG_ALIGNED, // LogLevel.severity & LogLevel.show_flags
-    IU_ADAPTER_ID_DEFAULT,                                                                          // AdapterId
 
 #else // RELEASE
 
     false,                                               // AssertEnable
     IU_DBG_LAYER_ALL,                                    // LogLayerEnable
     IU_DBG_SEV_ERROR | IU_DBG_SHOW_TAG | IU_DBG_ALIGNED, // LogLevel.severity & LogLevel.show_flags
-    IU_ADAPTER_ID_DEFAULT,                               // AdapterId
 
 #endif
 
@@ -108,20 +90,26 @@ bool IuLogCheckShowMode(
 ///////////////////////////////////////////////////////////////////////////////
 // Function: __IuLogGetModuleInfo
 ///////////////////////////////////////////////////////////////////////////////
-static char* __IuLogGetModuleInfo()
+static const char* __IuLogGetModuleInfo()
 {
-    static char* IU_EMPTY_MODULE_INFO = "";
-    static char* pModuleInfo          = NULL;
+#if _RELEASE
+
+    return IuOsGetModuleInfo( NULL );
+
+#else
+
+    static const char* const IU_EMPTY_MODULE_INFO = "";
+    static const char* pModuleInfo = NULL;
 
     if( !pModuleInfo )
     {
-        static char  moduleInfo[IU_MODULE_NAME_SIZE_MAX] = { 0 };
-        static char* dlName                              = NULL;
-        static char* processName                         = NULL;
+        static char moduleInfo[IU_MODULE_NAME_SIZE_MAX] = { 0 };
+        const char* dlName = NULL;
+        char* processName = NULL;
 
         iu_zeromem( moduleInfo, sizeof( moduleInfo ) );
 
-        IuOsGetModuleInfo( &dlName, &processName );
+        dlName = IuOsGetModuleInfo( &processName );
 
         if( ( processName ) && ( ( iu_strnlen_s( moduleInfo, IU_MODULE_NAME_SIZE_MAX ) + iu_strnlen_s( processName, IU_MODULE_NAME_SIZE_MAX ) + 1 ) // 1 => '\0'
                                  < IU_MODULE_NAME_SIZE_MAX ) )
@@ -148,6 +136,8 @@ static char* __IuLogGetModuleInfo()
     }
 
     return pModuleInfo;
+
+#endif
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -159,6 +149,7 @@ static char* __IuLogGetModuleInfo()
 #pragma warning( disable : 4100 ) // unreferenced formal parameter
 
 void __IuLogPrint(
+    const uint32_t adapterId,
     const char*    sevTag,
     const uint32_t level,
     const char*    layerTag,
@@ -180,7 +171,14 @@ void __IuLogPrint(
     size_t outFormatOffset = 0;
 
     // adapter Id
-    iu_snprintf( outFormat + outFormatOffset, IU_FORMAT_SIZE, "(A%d)", g_IuLogsControl.AdapterId );
+    if( adapterId == IU_ADAPTER_ID_UNKNOWN )
+    {
+        iu_snprintf( outFormat + outFormatOffset, IU_FORMAT_SIZE, "(A?)" );
+    }
+    else
+    {
+        iu_snprintf( outFormat + outFormatOffset, IU_FORMAT_SIZE, "(A%u)", adapterId );
+    }
 
     // severity tag
     outFormatOffset = iu_strnlen_s( outFormat, sizeof( outFormat ) );
@@ -211,7 +209,7 @@ void __IuLogPrint(
         outFormatOffset           = iu_strnlen_s( outFormat, sizeof( outFormat ) );
 
         // TODO: The '*s' printf parameter doesn't work in KMD drv - used a hardcoded version instead
-        //iu_snprintf(outFormat+outFormatOffset, IU_FORMAT_SIZE-outFormatOffset, ":%*s", functionAlignment, fncName);
+        // iu_snprintf(outFormat+outFormatOffset, IU_FORMAT_SIZE-outFormatOffset, ":%*s", functionAlignment, fncName);
         if( functionAlignment )
         {
             iu_snprintf( outFormat + outFormatOffset, IU_FORMAT_SIZE - outFormatOffset, ":%-50s", fncName );
@@ -254,11 +252,11 @@ void __IuLogPrint(
 //
 // Description: Overrides default (complied) log settings
 ///////////////////////////////////////////////////////////////////////////////
-void IuLogGetSettings( const uint32_t adapterId )
+void IuLogGetSettings(
+    void* deviceContext )
 {
-    g_IuLogsControl.AdapterId = adapterId;
-
     IuOsLogGetSystemSettings(
+        deviceContext,
         &g_IuLogsControl.AssertEnable,
         &g_IuLogsControl.LogLayerEnable,
         &g_IuLogsControl.LogLevel );
@@ -268,6 +266,5 @@ void IuLogGetSettings( const uint32_t adapterId )
         &g_IuLogsControl.LogLayerEnable,
         &g_IuLogsControl.LogLevel );
 
-    IU_DBG_FUNCTION_INPUT( IU_DBG_SEV_INFO, adapterId );
     IU_DBG_PRINT( IU_DBG_SEV_INFO, "&g_IuLogsControl = %#010x", g_IuLogsControl );
 }

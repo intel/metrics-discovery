@@ -180,12 +180,12 @@ namespace MetricsDiscoveryInternal
         static TCompletionCode GetGfxDeviceInfo( int32_t deviceId, TGfxDeviceInfo* gfxDeviceInfo );
         static TAdapterType    GetAdapterType( const TGfxDeviceInfo* gfxDeviceInfo );
 
-        TCompletionCode GetDualSubsliceMask( int32_t* dualSubsliceMask );
+        TCompletionCode GetDualSubsliceMask( int64_t* dualSubsliceMask, CMetricsDevice* metricsDevice );
 
         // General
         virtual TCompletionCode ForceSupportDisable();
         virtual TCompletionCode SendSupportEnableEscape( bool enable );
-        virtual TCompletionCode SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM param, GTDIDeviceInfoParamExtOut* out );
+        virtual TCompletionCode SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM param, GTDIDeviceInfoParamExtOut* out, CMetricsDevice* metricsDevice = nullptr );
         virtual TCompletionCode SendPmRegsConfig( TRegister** regVector, uint32_t regCount, uint32_t apiMask );
         virtual TCompletionCode SendReadRegsConfig( TRegister** regVector, uint32_t regCount, uint32_t apiMask );
         virtual TCompletionCode GetPmRegsConfigHandles( uint32_t configId, uint32_t* oaConfigHandle, uint32_t* gpConfigHandle, uint32_t* rrConfigHandle );
@@ -199,7 +199,7 @@ namespace MetricsDiscoveryInternal
 
         // Stream
         virtual TCompletionCode OpenIoStream( TStreamType streamType, CMetricsDevice& metricsDevice, CMetricSet* metricSet, const char* concurrentGroupName, uint32_t processId, uint32_t* nsTimerPeriod, uint32_t* bufferSize, void** streamEventHandle );
-        virtual TCompletionCode ReadIoStream( TStreamType streamType, CMetricsDevice& metricDevice, IMetricSet_1_0* metricSet, char* reportData, uint32_t* reportsCount, uint32_t readFlags, uint32_t* frequency, GTDIReadCounterStreamExceptions* exceptions );
+        virtual TCompletionCode ReadIoStream( TStreamType streamType, CMetricsDevice& metricDevice, CMetricSet* metricSet, char* reportData, uint32_t* reportsCount, uint32_t readFlags, uint32_t* frequency, GTDIReadCounterStreamExceptions* exceptions );
         virtual TCompletionCode CloseIoStream( TStreamType streamType, CMetricsDevice& metricDevice, void** openStreamEventHandle, const char* concurrentGroupName, CMetricSet* metricSet );
         virtual TCompletionCode HandleIoStreamExceptions( const char* concurrentGroupName, CMetricSet* metricSet, uint32_t processId, uint32_t* reportCount, GTDIReadCounterStreamExceptions* exceptions );
         virtual TCompletionCode WaitForIoStreamReports( TStreamType streamType, CMetricsDevice& metricDevice, uint32_t milliseconds, void* streamEventHandle );
@@ -264,9 +264,11 @@ namespace MetricsDiscoveryInternal
 
         // Device info utils
         uint32_t GetGtMaxSubslicePerSlice();
+        uint32_t GetGtMaxDualSubslicePerSlice();
+        bool     DualSubslicesSupported();
 
         // General utils
-        uint32_t CalculateEnabledBits( uint32_t value, uint32_t mask );
+        uint32_t CalculateEnabledBits( uint64_t value, uint64_t mask );
         uint32_t GetTimerPeriodExponent( uint32_t nsTimerPeriod );
         uint32_t GetNsTimerPeriod( uint32_t timerPeriodExponent );
 

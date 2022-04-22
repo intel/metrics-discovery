@@ -1,6 +1,6 @@
 /*========================== begin_copyright_notice ============================
 
-Copyright (C) 2019-2021 Intel Corporation
+Copyright (C) 2019-2022 Intel Corporation
 
 SPDX-License-Identifier: MIT
 
@@ -17,26 +17,29 @@ SPDX-License-Identifier: MIT
 #include "md_debug.h"
 #include "iu_std.h"
 
+#include <algorithm>
 #include <stdio.h>
-#include <string.h>
+#include <string>
 #include <new>
+#include <vector>
+#include <list>
 
 #define MD_SAFE_DELETE( object ) \
     delete object;               \
-    object = NULL;
+    object = nullptr;
 
 #define MD_SAFE_DELETE_ARRAY( object ) \
     delete[] object;                   \
-    object = NULL;
+    object = nullptr;
 
-#define MD_CHECK_PTR( object ) \
-    if( ( object ) == NULL )   \
-    {                          \
-        goto exception;        \
+#define MD_CHECK_PTR( object )  \
+    if( ( object ) == nullptr ) \
+    {                           \
+        goto exception;         \
     }
 
 #define MD_CHECK_PTR_RET( object, ret )                          \
-    if( ( object ) == NULL )                                     \
+    if( ( object ) == nullptr )                                  \
     {                                                            \
         MD_LOG( LOG_DEBUG, "ERROR: null pointer: %s", #object ); \
         MD_LOG_EXIT();                                           \
@@ -70,7 +73,7 @@ SPDX-License-Identifier: MIT
     }
 
 #define MD_BIT( i )                          ( 1 << ( i ) )
-#define MD_BITMASK( n )                      ( ~( ( uint64_t )( -1 ) << ( n ) ) )
+#define MD_BITMASK( n )                      ( ~( (uint64_t) ( -1 ) << ( n ) ) )
 #define MD_BITMASK_RANGE( startbit, endbit ) ( MD_BITMASK( ( endbit ) + 1 ) & ~MD_BITMASK( startbit ) )
 #define MD_BITS_PER_BYTE                     ( 8 )
 
@@ -98,6 +101,15 @@ namespace MetricsDiscoveryInternal
     int64_t         ReadInt64FromFileBuffer( uint8_t** fileBuffer );
     TTypedValue_1_0 ReadTTypedValueFromFileBuffer( uint8_t** fileBuffer );
     char*           ReadEquationStringFromFile( uint8_t** fileBuffer );
+
+    template <typename T>
+    void ClearVector( std::vector<T>& vector );
+    template <typename T>
+    void ClearVector( std::vector<T*>& vector );
+    template <typename T>
+    void ClearList( std::list<T>& list );
+    template <typename T>
+    void ClearList( std::list<T*>& list );
 
     ///////////////////////////////////////////////////////////////////////////////
     // List node template:                                                        //
@@ -203,8 +215,8 @@ namespace MetricsDiscoveryInternal
         List()
         {
             m_elementsCount = 0;
-            m_head          = NULL;
-            m_tail          = NULL;
+            m_head          = nullptr;
+            m_tail          = nullptr;
         }
 
         //////////////////////////////////////////////////////////////////////////////
@@ -262,7 +274,7 @@ namespace MetricsDiscoveryInternal
         //////////////////////////////////////////////////////////////////////////////
         T& Back()
         {
-            MD_ASSERT( m_tail != NULL );
+            MD_ASSERT( m_tail != nullptr );
 
             return m_tail->value;
         }
@@ -301,7 +313,7 @@ namespace MetricsDiscoveryInternal
                 m_tail->nextNode = newNode;
             }
 
-            newNode->nextNode = NULL;
+            newNode->nextNode = nullptr;
             newNode->prevNode = m_tail;
             m_tail            = newNode;
             m_elementsCount++;
@@ -341,7 +353,7 @@ namespace MetricsDiscoveryInternal
                 m_head->prevNode = newNode;
             }
 
-            newNode->prevNode = NULL;
+            newNode->prevNode = nullptr;
             newNode->nextNode = m_head; // !
             m_head            = newNode;
             m_elementsCount++;
@@ -366,9 +378,9 @@ namespace MetricsDiscoveryInternal
             if( m_elementsCount != 0 )
             {
                 m_tail = m_tail->prevNode;
-                if( m_tail != NULL )
+                if( m_tail != nullptr )
                 {
-                    m_tail->nextNode = NULL;
+                    m_tail->nextNode = nullptr;
                 }
                 m_elementsCount--;
 
@@ -401,9 +413,9 @@ namespace MetricsDiscoveryInternal
             if( m_elementsCount != 0 )
             {
                 m_head = m_head->nextNode;
-                if( m_head != NULL )
+                if( m_head != nullptr )
                 {
-                    m_head->prevNode = NULL;
+                    m_head->prevNode = nullptr;
                 }
                 m_elementsCount--;
 
@@ -452,9 +464,9 @@ namespace MetricsDiscoveryInternal
         void Clear()
         {
             Node<T>* node     = m_head;
-            Node<T>* nextNode = NULL;
+            Node<T>* nextNode = nullptr;
 
-            while( node != NULL )
+            while( node != nullptr )
             {
                 nextNode = node->nextNode;
                 DeleteElement( &node->value );
@@ -463,8 +475,8 @@ namespace MetricsDiscoveryInternal
             }
 
             m_elementsCount = 0;
-            m_head          = NULL;
-            m_tail          = NULL;
+            m_head          = nullptr;
+            m_tail          = nullptr;
         }
     };
 
@@ -503,7 +515,7 @@ namespace MetricsDiscoveryInternal
             : m_count( 0 )
             , m_capacity( 0 )
             , m_increaseFactor( 50 )
-            , m_container( NULL )
+            , m_container( nullptr )
         {
         }
 
@@ -664,7 +676,7 @@ namespace MetricsDiscoveryInternal
             {
                 // Allocate memory for a bigger stack.
                 T* newContainer = new( std::nothrow ) T[size];
-                if( newContainer == NULL )
+                if( newContainer == nullptr )
                 {
                     MD_ASSERT( false );
                     return false;
@@ -900,7 +912,7 @@ namespace MetricsDiscoveryInternal
         //         Fills entire vector with the single, specified value.
         //
         //     Input:
-        //         T element - element with which the vector will be filled, e.g. NULL
+        //         T element - element with which the vector will be filled, e.g. nullptr
         //
         //////////////////////////////////////////////////////////////////////////////
         void FillWith( T element )

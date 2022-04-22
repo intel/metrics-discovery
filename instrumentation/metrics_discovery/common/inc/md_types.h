@@ -102,6 +102,7 @@ namespace MetricsDiscoveryInternal
         uint32_t        PID;
         uint32_t        ContextTag;
         TContextTagType ContextTagType;
+        uint32_t        Node;
     } TContextTag;
 
     ///////////////////////////////////////////////////////////////////////////////

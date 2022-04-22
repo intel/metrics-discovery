@@ -154,10 +154,10 @@ namespace MetricsDiscoveryInternal
     //     Removes sub device.
     //
     // Input:
-    //     const IMetricsDevice_1_5* metricsDevice
+    //     const CMetricsDevice* metricsDevice - sub device
     //
     //////////////////////////////////////////////////////////////////////////////
-    void CSubDevices::RemoveDevice( const IMetricsDevice_1_5* metricsDevice )
+    void CSubDevices::RemoveDevice( const CMetricsDevice* metricsDevice )
     {
     }
 
@@ -192,13 +192,13 @@ namespace MetricsDiscoveryInternal
     //     Checks if given sub device exists.
     //
     // Input:
-    //     const IMetricsDevice_1_5* metricsDevice  - sub device
+    //     const CMetricsDevice* metricsDevice  - sub device
     //
     // Output:
-    //     bool                                     - sub device pointer
+    //     bool                                 - sub device pointer
     //
     //////////////////////////////////////////////////////////////////////////////
-    bool CSubDevices::FindDevice( const IMetricsDevice_1_5* metricsDevice )
+    bool CSubDevices::FindDevice( const CMetricsDevice* metricsDevice )
     {
         return false;
     }

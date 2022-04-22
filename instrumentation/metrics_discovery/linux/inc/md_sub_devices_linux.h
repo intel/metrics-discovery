@@ -53,10 +53,10 @@ namespace MetricsDiscoveryInternal
 
         CMetricsDevice* GetDevice( const uint32_t index );
         uint32_t        GetDeviceCount();
-        bool            FindDevice( const IMetricsDevice_1_5* metricsDevice );
+        bool            FindDevice( const CMetricsDevice* metricsDevice );
 
         CMetricsDevice* OpenDevice( const uint32_t index );
         CMetricsDevice* OpenDeviceFromFile( const uint32_t index, const char* filename, void* parameters );
-        void            RemoveDevice( const IMetricsDevice_1_5* metricsDevice );
+        void            RemoveDevice( const CMetricsDevice* metricsDevice );
     };
 }; // namespace MetricsDiscoveryInternal

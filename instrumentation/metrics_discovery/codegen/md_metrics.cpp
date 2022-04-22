@@ -1,6 +1,6 @@
 /*========================== begin_copyright_notice ============================
 
-Copyright (C) 2019-2021 Intel Corporation
+Copyright (C) 2019-2022 Intel Corporation
 
 SPDX-License-Identifier: MIT
 
@@ -219,11 +219,11 @@ TCompletionCode AddGlobalSymbols( CSymbolSet* globalSymbolSet )
 
     globalSymbolSet->AddSymbolUINT64( "DualSubsliceMask", 0x0, SYMBOL_TYPE_DETECT );
 
-    globalSymbolSet->AddSymbolBYTEARRAY( "GtSliceMask", NULL, SYMBOL_TYPE_DETECT );
+    globalSymbolSet->AddSymbolBYTEARRAY( "GtSliceMask", nullptr, SYMBOL_TYPE_DETECT );
 
-    globalSymbolSet->AddSymbolBYTEARRAY( "GtSubsliceMask", NULL, SYMBOL_TYPE_DETECT );
+    globalSymbolSet->AddSymbolBYTEARRAY( "GtSubsliceMask", nullptr, SYMBOL_TYPE_DETECT );
 
-    globalSymbolSet->AddSymbolBYTEARRAY( "GtDualSubsliceMask", NULL, SYMBOL_TYPE_DETECT );
+    globalSymbolSet->AddSymbolBYTEARRAY( "GtDualSubsliceMask", nullptr, SYMBOL_TYPE_DETECT );
 
     globalSymbolSet->AddSymbolUINT32( "SamplersTotalCount", 6, SYMBOL_TYPE_DETECT );
 
@@ -275,13 +275,11 @@ TCompletionCode CreateMetricTree( CMetricsDevice* metricsDevice )
     MD_LOG_ENTER();
     MD_CHECK_PTR_RET( metricsDevice, CC_ERROR_INVALID_PARAMETER );
 
-    CConcurrentGroup* concurrentGroup      = NULL;
-    CMetric*          metric               = NULL;
-    CInformation*     information          = NULL;
-    const char*       availabilityEquation = NULL;
+    CConcurrentGroup* concurrentGroup      = nullptr;
+    CMetricSet*       metricSet            = nullptr;
+    CMetric*          metric               = nullptr;
+    const char*       availabilityEquation = nullptr;
     uint32_t          platformMask         = PLATFORM_ALL;
-
-    information = NULL; // To omit warning C4189 - local variable is initialized but not referenced
 
     CSymbolSet* symbolSet = metricsDevice->GetSymbolSet();
     MD_CHECK_PTR( symbolSet );
@@ -291,21 +289,18 @@ TCompletionCode CreateMetricTree( CMetricsDevice* metricsDevice )
     concurrentGroup = metricsDevice->AddConcurrentGroup( "OcclusionQueryStats", "Occlusion Query Statistics", MEASUREMENT_TYPE_DELTA_QUERY );
     MD_CHECK_PTR( concurrentGroup );
     
-    platformMask = PLATFORM_ALL;
-    if( metricsDevice->IsPlatformTypeOf( platformMask ) )
-    {
-        CMetricSet* metricSet = concurrentGroup->AddMetricSet( "RenderedPixelsStats", "Rendered Pixels Statistics", API_TYPE_VULKAN|API_TYPE_OGL4_X,
-           GPU_RENDER, 0, 8, OA_REPORT_TYPE_256B_A45_NOA16, platformMask );
+        metricSet = concurrentGroup->AddMetricSet( "RenderedPixelsStats", "Rendered Pixels Statistics", API_TYPE_VULKAN|API_TYPE_OGL4_X,
+           GPU_RENDER, 0, 8, OA_REPORT_TYPE_256B_A45_NOA16, platformMask, nullptr );
         MD_CHECK_PTR( metricSet );
-        
-        MD_CHECK_CC( metricSet->SetApiSpecificId(NULL, 9, 0, 0, 0, 0,
+    
+        MD_CHECK_CC( metricSet->SetApiSpecificId(nullptr, 9, 0, 0, 0, 0,
             "", 1, "", 0) );
   
-        availabilityEquation = NULL;
+        availabilityEquation = nullptr;
         metric = metricSet->AddMetric( "PixelsRendered", "Depth passed pixels",
             "The total number of pixels that passed depth test. Note: not all rendered pixels are necessarily written to render targets.",
             "3D Pipe/Output Merger", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_OM * 0x10000), USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X,
-            METRIC_TYPE_EVENT, RESULT_UINT64, "pixels", 0, 0, HW_UNIT_GPU, availabilityEquation, "Pixel|Fragment,PS|FS,pixel|fragment", NULL, 0 );
+            METRIC_TYPE_EVENT, RESULT_UINT64, "pixels", 0, 0, HW_UNIT_GPU, availabilityEquation, "Pixel|Fragment,PS|FS,pixel|fragment", nullptr, 0 );
         if( metric )
         {
             
@@ -313,23 +308,19 @@ TCompletionCode CreateMetricTree( CMetricsDevice* metricsDevice )
         }
 
         MD_CHECK_CC( metricSet->RefreshConfigRegisters() );
-    }
-     
-    platformMask = PLATFORM_ALL;
-    if( metricsDevice->IsPlatformTypeOf( platformMask ) )
-    {
-        CMetricSet* metricSet = concurrentGroup->AddMetricSet( "RenderedFragmentsStats", "Rendered Fragments Statistics", API_TYPE_OGL|API_TYPE_OGL4_X,
-           GPU_RENDER, 0, 8, OA_REPORT_TYPE_256B_A45_NOA16, platformMask );
+
+        metricSet = concurrentGroup->AddMetricSet( "RenderedFragmentsStats", "Rendered Fragments Statistics", API_TYPE_OGL|API_TYPE_OGL4_X,
+           GPU_RENDER, 0, 8, OA_REPORT_TYPE_256B_A45_NOA16, platformMask, nullptr );
         MD_CHECK_PTR( metricSet );
-        
-        MD_CHECK_CC( metricSet->SetApiSpecificId(NULL, 0, 0, 0, 0, 0,
+    
+        MD_CHECK_CC( metricSet->SetApiSpecificId(nullptr, 0, 0, 0, 0, 0,
             "", 0, "", 0x8C2F) );
   
-        availabilityEquation = NULL;
+        availabilityEquation = nullptr;
         metric = metricSet->AddMetric( "PixelsRendered", "Depth passed fragments",
             "The total number of fragments that passed depth test. Note: not all rendered fragments are necessarily written to render targets.",
             "3D Pipe/Output Merger", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_OM * 0x10000), USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X,
-            METRIC_TYPE_EVENT, RESULT_UINT64, "fragments", 0, 0, HW_UNIT_GPU, availabilityEquation, "Pixel|Fragment,PS|FS,pixel|fragment", NULL, 0 );
+            METRIC_TYPE_EVENT, RESULT_UINT64, "fragments", 0, 0, HW_UNIT_GPU, availabilityEquation, "Pixel|Fragment,PS|FS,pixel|fragment", nullptr, 0 );
         if( metric )
         {
             
@@ -337,26 +328,22 @@ TCompletionCode CreateMetricTree( CMetricsDevice* metricsDevice )
         }
 
         MD_CHECK_CC( metricSet->RefreshConfigRegisters() );
-    }
-     
+
     concurrentGroup = metricsDevice->AddConcurrentGroup( "TimestampQuery", "Timestamp Query", MEASUREMENT_TYPE_SNAPSHOT_QUERY );
     MD_CHECK_PTR( concurrentGroup );
     
-    platformMask = PLATFORM_ALL;
-    if( metricsDevice->IsPlatformTypeOf( platformMask ) )
-    {
-        CMetricSet* metricSet = concurrentGroup->AddMetricSet( "GPUTimestamp", "GPU Timestamp", API_TYPE_VULKAN|API_TYPE_OGL4_X,
-           GPU_GENERIC, 8, 0, OA_REPORT_TYPE_256B_A45_NOA16, platformMask );
+        metricSet = concurrentGroup->AddMetricSet( "GPUTimestamp", "GPU Timestamp", API_TYPE_VULKAN|API_TYPE_OGL4_X,
+           GPU_GENERIC, 8, 0, OA_REPORT_TYPE_256B_A45_NOA16, platformMask, nullptr );
         MD_CHECK_PTR( metricSet );
-        
-        MD_CHECK_CC( metricSet->SetApiSpecificId(NULL, 10, 0, 0, 0, 0,
+    
+        MD_CHECK_CC( metricSet->SetApiSpecificId(nullptr, 10, 0, 0, 0, 0,
             "", 2, "", 0x88BF) );
   
-        availabilityEquation = NULL;
+        availabilityEquation = nullptr;
         metric = metricSet->AddMetric( "GpuDuration", "GPU Duration",
             "Total GPU duration for selected work items.",
             "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_TIER_1|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X,
-            METRIC_TYPE_DURATION, RESULT_UINT64, "ns", 0, 0, HW_UNIT_GPU, availabilityEquation, NULL, NULL, 0 );
+            METRIC_TYPE_DURATION, RESULT_UINT64, "ns", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 0 );
         if( metric )
         {
             MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "qw@0x00" ));
@@ -365,8 +352,7 @@ TCompletionCode CreateMetricTree( CMetricsDevice* metricsDevice )
         }
 
         MD_CHECK_CC( metricSet->RefreshConfigRegisters() );
-    }
-     
+
     concurrentGroup = metricsDevice->AddConcurrentGroup( "PipelineStatistics", "Pipeline Statistics", MEASUREMENT_TYPE_DELTA_QUERY );
     MD_CHECK_PTR( concurrentGroup );
     

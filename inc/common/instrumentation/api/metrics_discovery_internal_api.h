@@ -1,32 +1,15 @@
-//////////////////////////////////////////////////////////////////////////////
-//
-//  Copyright © 2019-2020, Intel Corporation
-//
-//  Permission is hereby granted, free of charge, to any person obtaining a
-//  copy of this software and associated documentation files (the "Software"),
-//  to deal in the Software without restriction, including without limitation
-//  the rights to use, copy, modify, merge, publish, distribute, sublicense,
-//  and/or sell copies of the Software, and to permit persons to whom the
-//  Software is furnished to do so, subject to the following conditions:
-//
-//  The above copyright notice and this permission notice shall be included
-//  in all copies or substantial portions of the Software.
-//
-//  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-//  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-//  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
-//  THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-//  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
-//  FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
-//  IN THE SOFTWARE.
-//
-//  File Name:  metrics_discovery_internal_api.h
-//
-//  Abstract:   Internal interface for metrics discovery DLL
-//
-//  Notes:
-//
-//////////////////////////////////////////////////////////////////////////////
+/*========================== begin_copyright_notice ============================
+
+Copyright (C) 2019-2022 Intel Corporation
+
+SPDX-License-Identifier: MIT
+
+============================= end_copyright_notice ===========================*/
+
+//     File Name:  metrics_discovery_internal_api.h
+
+//     Abstract:   Internal interface for metrics discovery DLL
+
 #pragma once
 
 #include "metrics_discovery_api.h"
@@ -88,6 +71,7 @@ namespace MetricsDiscovery
     typedef enum EAddCustomMetricSetParamsType
     {
         METRIC_SET_CUSTOM_PARAMS_1_0,
+        METRIC_SET_CUSTOM_PARAMS_1_1,
     } TAddCustomMetricSetParamsType;
 
     ////////////////////////////////////////////////////////////////////////////////
@@ -173,6 +157,7 @@ namespace MetricsDiscovery
         METRIC_GROUP_NAME_ID_EU_INSTR      = 204,
         METRIC_GROUP_NAME_ID_EU_BARRIER    = 208,
     } TMetricGroupNameId;
+
     ////////////////////////////////////////////////////////////////////////////////
     // Config register methods:
     ////////////////////////////////////////////////////////////////////////////////
@@ -228,6 +213,23 @@ namespace MetricsDiscovery
                 uint32_t           StartConfigRegSetsCount;
                 uint32_t           GtMask;
             } CustomMetricSetParams_1_0;
+
+            struct
+            {
+                const char*        SymbolName; // For example "Dx11Tessellation"
+                const char*        ShortName;  // For example "DX11 Tessellation Metrics Set"
+                uint32_t           ApiMask;
+                uint32_t           CategoryMask;
+                uint32_t           PlatformMask;
+                uint32_t           RawReportSize;         // As in HW
+                uint32_t           QueryReportSize;       // As in Query API
+                const char*        ComplementarySetsList; // Comma separated list of complementary sets
+                TApiSpecificId_1_0 ApiSpecificId;
+                TRegisterSet*      StartConfigRegSets; // Optional
+                uint32_t           StartConfigRegSetsCount;
+                uint32_t           GtMask;
+                const char*        AvailabilityEquation;
+            } CustomMetricSetParams_1_1;
 
             struct
             {
@@ -290,7 +292,7 @@ namespace MetricsDiscovery
     {
     public:
         virtual ~IInternalConcurrentGroup();
-        virtual IMetricSetLatest* AddCustomMetricSet( TAddCustomMetricSetParams* params, IMetricSet_1_0* referenceMetricSet, bool copyInformationOnly = false );
+        virtual IMetricSetLatest* AddCustomMetricSet( TAddCustomMetricSetParams* params, IMetricSetLatest* referenceMetricSet, bool copyInformationOnly = false );
     };
 
     /////////////////////////////////////////////////////////////////////////////**
