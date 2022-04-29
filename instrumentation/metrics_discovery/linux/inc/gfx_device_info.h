@@ -275,6 +275,23 @@ namespace MetricsDiscoveryInternal
         { 0x4906, SPlatformIndexGt( GENERATION_DG1, GFX_GTTYPE_UNDEFINED ) },
         { 0x4907, SPlatformIndexGt( GENERATION_DG1, GFX_GTTYPE_UNDEFINED ) },
         { 0x4908, SPlatformIndexGt( GENERATION_DG1, GFX_GTTYPE_UNDEFINED ) },
+
+        { 0x0201, SPlatformIndexGt( GENERATION_XEHP_SDV, GFX_GTTYPE_UNDEFINED ) },
+        { 0x0202, SPlatformIndexGt( GENERATION_XEHP_SDV, GFX_GTTYPE_UNDEFINED ) },
+        { 0x0203, SPlatformIndexGt( GENERATION_XEHP_SDV, GFX_GTTYPE_UNDEFINED ) },
+        { 0x0204, SPlatformIndexGt( GENERATION_XEHP_SDV, GFX_GTTYPE_UNDEFINED ) },
+        { 0x0205, SPlatformIndexGt( GENERATION_XEHP_SDV, GFX_GTTYPE_UNDEFINED ) },
+        { 0x0206, SPlatformIndexGt( GENERATION_XEHP_SDV, GFX_GTTYPE_UNDEFINED ) },
+        { 0x0207, SPlatformIndexGt( GENERATION_XEHP_SDV, GFX_GTTYPE_UNDEFINED ) },
+        { 0x0208, SPlatformIndexGt( GENERATION_XEHP_SDV, GFX_GTTYPE_UNDEFINED ) },
+        { 0x0209, SPlatformIndexGt( GENERATION_XEHP_SDV, GFX_GTTYPE_UNDEFINED ) },
+        { 0x020B, SPlatformIndexGt( GENERATION_XEHP_SDV, GFX_GTTYPE_UNDEFINED ) },
+        { 0x020C, SPlatformIndexGt( GENERATION_XEHP_SDV, GFX_GTTYPE_UNDEFINED ) },
+        { 0x020D, SPlatformIndexGt( GENERATION_XEHP_SDV, GFX_GTTYPE_UNDEFINED ) },
+        { 0x020E, SPlatformIndexGt( GENERATION_XEHP_SDV, GFX_GTTYPE_UNDEFINED ) },
+        { 0x020F, SPlatformIndexGt( GENERATION_XEHP_SDV, GFX_GTTYPE_UNDEFINED ) },
+        { 0x0210, SPlatformIndexGt( GENERATION_XEHP_SDV, GFX_GTTYPE_UNDEFINED ) },
+
     };
 
     std::map<GTDI_PLATFORM_INDEX, uint32_t> threadsPerEuMap{
@@ -291,6 +308,7 @@ namespace MetricsDiscoveryInternal
         { GENERATION_DG1, 7 },
         { GENERATION_RKL, 7 },
         { GENERATION_ADLP, 7 },
+        { GENERATION_XEHP_SDV, 8 },
     };
 
 } // namespace MetricsDiscoveryInternal

@@ -1,6 +1,6 @@
 /*========================== begin_copyright_notice ============================
 
-Copyright (C) 2020-2021 Intel Corporation
+Copyright (C) 2020-2022 Intel Corporation
 
 SPDX-License-Identifier: MIT
 
@@ -59,8 +59,9 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     typedef struct SPerfCapabilities
     {
-        bool IsOaInterruptSupported; // Available since i915 Perf revision '2'
-        bool IsSubDeviceSupported;   // Available since i915 Perf revision '10'
+        bool IsOaInterruptSupported;     // Available since i915 Perf revision '2'
+        bool IsSubDeviceSupported;       // Available since i915 Perf revision '10'
+        bool IsGpuCpuTimestampSupported; // Available since i915 Perf revision '11'
     } TPerfCapabilities;
 
     //////////////////////////////////////////////////////////////////////////////
@@ -180,6 +181,15 @@ namespace MetricsDiscoveryInternal
         static TCompletionCode GetGfxDeviceInfo( int32_t deviceId, TGfxDeviceInfo* gfxDeviceInfo );
         static TAdapterType    GetAdapterType( const TGfxDeviceInfo* gfxDeviceInfo );
 
+        // Drm queries.
+        uint32_t        GetQueryDrmDataLength( const uint32_t queryId, const uint32_t flags = 0 );
+        TCompletionCode QueryDrm( const uint32_t queryId, std::vector<uint8_t>& data, const uint32_t flags = 0 );
+        TCompletionCode QueryDrm( drm_i915_query& query );
+
+        // Read global symbols per tile.
+        TCompletionCode GetQueryGeometrySlices( std::vector<uint8_t>& buffer, CMetricsDevice* metricsDevice );
+        TCompletionCode GetQueryTopologyInfo( std::vector<uint8_t>& buffer );
+        TCompletionCode GetEuCoresTotalCount( GTDIDeviceInfoParamExtOut* out, CMetricsDevice* metricsDevice );
         TCompletionCode GetDualSubsliceMask( int64_t* dualSubsliceMask, CMetricsDevice* metricsDevice );
 
         // General
@@ -263,9 +273,10 @@ namespace MetricsDiscoveryInternal
         TCompletionCode GetCpuTimestampNs( uint64_t* cpuTimestampNs );
 
         // Device info utils
-        uint32_t GetGtMaxSubslicePerSlice();
-        uint32_t GetGtMaxDualSubslicePerSlice();
-        bool     DualSubslicesSupported();
+        uint32_t   GetGtMaxSubslicePerSlice();
+        uint32_t   GetGtMaxDualSubslicePerSlice();
+        bool       DualSubslicesSupported();
+        TGfxGtType MapDeviceInfoToInstrGtTypeGfxVer12( const TGfxDeviceInfo* gfxDeviceInfo );
 
         // General utils
         uint32_t CalculateEnabledBits( uint64_t value, uint64_t mask );

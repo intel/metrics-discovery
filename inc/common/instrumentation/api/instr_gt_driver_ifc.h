@@ -287,25 +287,25 @@ typedef struct GTDIBaseOutStruct
 typedef enum
 {
     // 0-4 reserved
-    GENERATION_HSW = 5,
+    GENERATION_HSW      = 5,
     GENERATION_BDW,
     GENERATION_SKL,
     // 8-9 reserved
-    GENERATION_BXT  = 10,
+    GENERATION_BXT      = 10,
     // 11 reserved
-    GENERATION_KBL  = 12,
-    GENERATION_GLK  = 13,
-    GENERATION_ICL  = 14,
+    GENERATION_KBL      = 12,
+    GENERATION_GLK      = 13,
+    GENERATION_ICL      = 14,
     // 15-16 reserved
-    GENERATION_TGL  = 17,
-    GENERATION_CFL  = 18,
-    GENERATION_EHL  = 19,
+    GENERATION_TGL      = 17,
+    GENERATION_CFL      = 18,
+    GENERATION_EHL      = 19,
     // 20 reserved
-    GENERATION_DG1  = 21,
-    // 22 reserved
-    GENERATION_RKL  = 23,
+    GENERATION_DG1      = 21,
+    GENERATION_XEHP_SDV = 22,
+    GENERATION_RKL      = 23,
     // 24-25 reserved
-    GENERATION_ADLP = 26,
+    GENERATION_ADLP     = 26,
     // ...
     // DO NOT CHANGE ORDER OF THIS ENUM, ADD NEW PLATFORMS AT THE END!
     // It has to be synchronized with metric_discovery_internal_api.h file.

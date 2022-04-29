@@ -1,6 +1,8 @@
 Files in this folder is taken from: https://github.com/torvalds/linux/tree/master/include/uapi/drm
 And should be used as is, without any modification.
 
+"i915_drm_prelim.h" is taken from https://github.com/intel-gpu/drm-uapi-helper/blob/master/drm-uapi/i915_drm_prelim.h
+
 Last Update:
 commit b06103b5325364e0b9944024db41b400b9028df9
 Merge tag 'amd-drm-next-5.17-2021-12-16' of https://gitlab.freedesktop.org/agd5f/linux into drm-next

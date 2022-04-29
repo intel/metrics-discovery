@@ -1479,6 +1479,7 @@ namespace MetricsDiscoveryInternal
                     // pop two values from stack
                     TTypedValue_1_0 valueLast = equationStack.top();
                     equationStack.pop();
+
                     algorithmCheck--;
                     TTypedValue_1_0 valuePrev = equationStack.top();
                     equationStack.pop();

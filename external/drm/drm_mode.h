@@ -312,48 +312,16 @@ struct drm_mode_set_plane {
 	__u32 src_w;
 };
 
-/**
- * struct drm_mode_get_plane - Get plane metadata.
- *
- * Userspace can perform a GETPLANE ioctl to retrieve information about a
- * plane.
- *
- * To retrieve the number of formats supported, set @count_format_types to zero
- * and call the ioctl. @count_format_types will be updated with the value.
- *
- * To retrieve these formats, allocate an array with the memory needed to store
- * @count_format_types formats. Point @format_type_ptr to this array and call
- * the ioctl again (with @count_format_types still set to the value returned in
- * the first ioctl call).
- */
 struct drm_mode_get_plane {
-	/**
-	 * @plane_id: Object ID of the plane whose information should be
-	 * retrieved. Set by caller.
-	 */
 	__u32 plane_id;
 
-	/** @crtc_id: Object ID of the current CRTC. */
 	__u32 crtc_id;
-	/** @fb_id: Object ID of the current fb. */
 	__u32 fb_id;
 
-	/**
-	 * @possible_crtcs: Bitmask of CRTC's compatible with the plane. CRTC's
-	 * are created and they receive an index, which corresponds to their
-	 * position in the bitmask. Bit N corresponds to
-	 * :ref:`CRTC index<crtc_index>` N.
-	 */
 	__u32 possible_crtcs;
-	/** @gamma_size: Never used. */
 	__u32 gamma_size;
 
-	/** @count_format_types: Number of formats. */
 	__u32 count_format_types;
-	/**
-	 * @format_type_ptr: Pointer to ``__u32`` array of formats that are
-	 * supported by the plane. These formats do not require modifiers.
-	 */
 	__u64 format_type_ptr;
 };
 
@@ -420,7 +388,6 @@ enum drm_mode_subconnector {
 #define DRM_MODE_CONNECTOR_DPI		17
 #define DRM_MODE_CONNECTOR_WRITEBACK	18
 #define DRM_MODE_CONNECTOR_SPI		19
-#define DRM_MODE_CONNECTOR_USB		20
 
 /**
  * struct drm_mode_get_connector - Get connector metadata.
@@ -445,10 +412,9 @@ enum drm_mode_subconnector {
  *
  * **Force-probing a connector**
  *
- * If the @count_modes field is set to zero and the DRM client is the current
- * DRM master, the kernel will perform a forced probe on the connector to
- * refresh the connector status, modes and EDID. A forced-probe can be slow,
- * might cause flickering and the ioctl will block.
+ * If the @count_modes field is set to zero, the kernel will perform a forced
+ * probe on the connector to refresh the connector status, modes and EDID.
+ * A forced-probe can be slow, might cause flickering and the ioctl will block.
  *
  * User-space needs to force-probe connectors to ensure their metadata is
  * up-to-date at startup and after receiving a hot-plug event. User-space
@@ -541,74 +507,22 @@ struct drm_mode_get_connector {
  */
 #define DRM_MODE_PROP_ATOMIC        0x80000000
 
-/**
- * struct drm_mode_property_enum - Description for an enum/bitfield entry.
- * @value: numeric value for this enum entry.
- * @name: symbolic name for this enum entry.
- *
- * See struct drm_property_enum for details.
- */
 struct drm_mode_property_enum {
 	__u64 value;
 	char name[DRM_PROP_NAME_LEN];
 };
 
-/**
- * struct drm_mode_get_property - Get property metadata.
- *
- * User-space can perform a GETPROPERTY ioctl to retrieve information about a
- * property. The same property may be attached to multiple objects, see
- * "Modeset Base Object Abstraction".
- *
- * The meaning of the @values_ptr field changes depending on the property type.
- * See &drm_property.flags for more details.
- *
- * The @enum_blob_ptr and @count_enum_blobs fields are only meaningful when the
- * property has the type &DRM_MODE_PROP_ENUM or &DRM_MODE_PROP_BITMASK. For
- * backwards compatibility, the kernel will always set @count_enum_blobs to
- * zero when the property has the type &DRM_MODE_PROP_BLOB. User-space must
- * ignore these two fields if the property has a different type.
- *
- * User-space is expected to retrieve values and enums by performing this ioctl
- * at least twice: the first time to retrieve the number of elements, the
- * second time to retrieve the elements themselves.
- *
- * To retrieve the number of elements, set @count_values and @count_enum_blobs
- * to zero, then call the ioctl. @count_values will be updated with the number
- * of elements. If the property has the type &DRM_MODE_PROP_ENUM or
- * &DRM_MODE_PROP_BITMASK, @count_enum_blobs will be updated as well.
- *
- * To retrieve the elements themselves, allocate an array for @values_ptr and
- * set @count_values to its capacity. If the property has the type
- * &DRM_MODE_PROP_ENUM or &DRM_MODE_PROP_BITMASK, allocate an array for
- * @enum_blob_ptr and set @count_enum_blobs to its capacity. Calling the ioctl
- * again will fill the arrays.
- */
 struct drm_mode_get_property {
-	/** @values_ptr: Pointer to a ``__u64`` array. */
-	__u64 values_ptr;
-	/** @enum_blob_ptr: Pointer to a struct drm_mode_property_enum array. */
-	__u64 enum_blob_ptr;
+	__u64 values_ptr; /* values and blob lengths */
+	__u64 enum_blob_ptr; /* enum and blob id ptrs */
 
-	/**
-	 * @prop_id: Object ID of the property which should be retrieved. Set
-	 * by the caller.
-	 */
 	__u32 prop_id;
-	/**
-	 * @flags: ``DRM_MODE_PROP_*`` bitfield. See &drm_property.flags for
-	 * a definition of the flags.
-	 */
 	__u32 flags;
-	/**
-	 * @name: Symbolic property name. User-space should use this field to
-	 * recognize properties.
-	 */
 	char name[DRM_PROP_NAME_LEN];
 
-	/** @count_values: Number of elements in @values_ptr. */
 	__u32 count_values;
-	/** @count_enum_blobs: Number of elements in @enum_blob_ptr. */
+	/* This is only used to count enum values, not blobs. The _blobs is
+	 * simply because of a historical reason, i.e. backwards compat. */
 	__u32 count_enum_blobs;
 };
 
@@ -903,6 +817,64 @@ struct hdr_output_metadata {
 	};
 };
 
+/*
+ * DRM_MODE_LUT_GAMMA|DRM_MODE_LUT_DEGAMMA is legal and means the LUT
+ * can be used for either purpose, but not simultaneously. To expose
+ * modes that support gamma and degamma simultaneously the gamma mode
+ * must declare distinct DRM_MODE_LUT_GAMMA and DRM_MODE_LUT_DEGAMMA
+ * ranges.
+ */
+/* LUT is for gamma (after CTM) */
+#define DRM_MODE_LUT_GAMMA BIT(0)
+/* LUT is for degamma (before CTM) */
+#define DRM_MODE_LUT_DEGAMMA BIT(1)
+/* linearly interpolate between the points */
+#define DRM_MODE_LUT_INTERPOLATE BIT(2)
+/*
+ * the last value of the previous range is the
+ * first value of the current range.
+ */
+#define DRM_MODE_LUT_REUSE_LAST BIT(3)
+/* the curve must be non-decreasing */
+#define DRM_MODE_LUT_NON_DECREASING BIT(4)
+/* the curve is reflected across origin for negative inputs */
+#define DRM_MODE_LUT_REFLECT_NEGATIVE BIT(5)
+/* the same curve (red) is used for blue and green channels as well */
+#define DRM_MODE_LUT_SINGLE_CHANNEL BIT(6)
+
+struct drm_color_lut_range {
+	/* DRM_MODE_LUT_* */
+	__u32 flags;
+	/* number of points on the curve */
+	__u16 count;
+	/* input/output bits per component */
+	__u8 input_bpc, output_bpc;
+	/* input start/end values */
+	__s32 start, end;
+	/* output min/max values */
+	__s32 min, max;
+};
+
+enum lut_type {
+	LUT_TYPE_DEGAMMA = 0,
+	LUT_TYPE_GAMMA = 1,
+};
+
+/*
+ * Creating 64 bit palette entries for better data
+ * precision. This will be required for HDR and
+ * similar color processing usecases.
+ */
+struct drm_color_lut_ext {
+	/*
+	 * Data is U32.32 fixed point format.
+	 */
+	__u64 red;
+	__u64 green;
+	__u64 blue;
+	__u64 reserved;
+};
+
 #define DRM_MODE_PAGE_FLIP_EVENT 0x01
 #define DRM_MODE_PAGE_FLIP_ASYNC 0x02
 #define DRM_MODE_PAGE_FLIP_TARGET_ABSOLUTE 0x4
@@ -1076,7 +1048,7 @@ struct drm_format_modifier {
 };
 
 /**
- * struct drm_mode_create_blob - Create New blob property
+ * struct drm_mode_create_blob - Create New block property
  *
  * Create a new 'blob' data property, copying length bytes from data pointer,
  * and returning new blob ID.

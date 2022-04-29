@@ -91,14 +91,19 @@ using namespace MetricsDiscoveryInternal;
     TCompletionCode CreateMetricTreeTGL_GT2_PipelineStatistics(CMetricsDevice* metricsDevice, CConcurrentGroup* concurrentGroup);
 #endif
 
+#if MD_INCLUDE_DG1_METRICS
+#define MD_CALL_DG1_METRICS 1
+    TCompletionCode CreateMetricTreeDG1_PipelineStatistics(CMetricsDevice* metricsDevice, CConcurrentGroup* concurrentGroup);
+#endif
+
 #if MD_INCLUDE_RKL_METRICS
 #define MD_CALL_RKL_METRICS 1
     TCompletionCode CreateMetricTreeRKL_PipelineStatistics(CMetricsDevice* metricsDevice, CConcurrentGroup* concurrentGroup);
 #endif
 
-#if MD_INCLUDE_DG1_METRICS
-#define MD_CALL_DG1_METRICS 1
-    TCompletionCode CreateMetricTreeDG1_PipelineStatistics(CMetricsDevice* metricsDevice, CConcurrentGroup* concurrentGroup);
+#if MD_INCLUDE_XEHP_SDV_GT1_GT2_METRICS
+#define MD_CALL_XEHP_SDV_GT1_GT2_METRICS 1
+    TCompletionCode CreateMetricTreeXEHP_SDV_GT1_GT2_PipelineStatistics(CMetricsDevice* metricsDevice, CConcurrentGroup* concurrentGroup);
 #endif
 
 #if MD_INCLUDE_ADLP_METRICS
@@ -189,6 +194,21 @@ using namespace MetricsDiscoveryInternal;
 #if MD_INCLUDE_RKL_METRICS
 #define MD_CALL_RKL_METRICS 1
     TCompletionCode CreateMetricTreeRKL_OA(CMetricsDevice* metricsDevice, CConcurrentGroup* concurrentGroup);
+#endif
+
+#if MD_INCLUDE_XEHP_SDV_GT1_GT2_METRICS
+#define MD_CALL_XEHP_SDV_GT1_GT2_METRICS 1
+    TCompletionCode CreateMetricTreeXEHP_SDV_GT1_GT2_OA(CMetricsDevice* metricsDevice, CConcurrentGroup* concurrentGroup);
+#endif
+
+#if MD_INCLUDE_XEHP_SDV_GT1_METRICS
+#define MD_CALL_XEHP_SDV_GT1_METRICS 1
+    TCompletionCode CreateMetricTreeXEHP_SDV_GT1_OA(CMetricsDevice* metricsDevice, CConcurrentGroup* concurrentGroup);
+#endif
+
+#if MD_INCLUDE_XEHP_SDV_GT2_METRICS
+#define MD_CALL_XEHP_SDV_GT2_METRICS 1
+    TCompletionCode CreateMetricTreeXEHP_SDV_GT2_OA(CMetricsDevice* metricsDevice, CConcurrentGroup* concurrentGroup);
 #endif
 
 #if MD_INCLUDE_ADLP_METRICS
@@ -417,12 +437,16 @@ TCompletionCode CreateMetricTree( CMetricsDevice* metricsDevice )
     MD_CHECK_CC( CreateMetricTreeTGL_GT2_PipelineStatistics(metricsDevice, concurrentGroup) );
 #endif
 
+#if MD_CALL_DG1_METRICS
+    MD_CHECK_CC( CreateMetricTreeDG1_PipelineStatistics(metricsDevice, concurrentGroup) );
+#endif
+
 #if MD_CALL_RKL_METRICS
     MD_CHECK_CC( CreateMetricTreeRKL_PipelineStatistics(metricsDevice, concurrentGroup) );
 #endif
 
-#if MD_CALL_DG1_METRICS
-    MD_CHECK_CC( CreateMetricTreeDG1_PipelineStatistics(metricsDevice, concurrentGroup) );
+#if MD_CALL_XEHP_SDV_GT1_GT2_METRICS
+    MD_CHECK_CC( CreateMetricTreeXEHP_SDV_GT1_GT2_PipelineStatistics(metricsDevice, concurrentGroup) );
 #endif
 
 #if MD_CALL_ADLP_METRICS
@@ -499,6 +523,18 @@ TCompletionCode CreateMetricTree( CMetricsDevice* metricsDevice )
 
 #if MD_CALL_RKL_METRICS
     MD_CHECK_CC( CreateMetricTreeRKL_OA(metricsDevice, concurrentGroup) );
+#endif
+
+#if MD_CALL_XEHP_SDV_GT1_GT2_METRICS
+    MD_CHECK_CC( CreateMetricTreeXEHP_SDV_GT1_GT2_OA(metricsDevice, concurrentGroup) );
+#endif
+
+#if MD_CALL_XEHP_SDV_GT1_METRICS
+    MD_CHECK_CC( CreateMetricTreeXEHP_SDV_GT1_OA(metricsDevice, concurrentGroup) );
+#endif
+
+#if MD_CALL_XEHP_SDV_GT2_METRICS
+    MD_CHECK_CC( CreateMetricTreeXEHP_SDV_GT2_OA(metricsDevice, concurrentGroup) );
 #endif
 
 #if MD_CALL_ADLP_METRICS

@@ -10856,11 +10856,9 @@ namespace MetricsDiscoveryInternal
             MD_CHECK_CC_RET( ret );
             euCoresTotalCount = out.ValueUint32;
 
-            {
-                ret = m_driverInterface.SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_SUBSLICES_TOTAL_COUNT, &out );
-                MD_CHECK_CC_RET( ret );
-                subslicesTotalCount = out.ValueUint32;
-            }
+            ret = m_driverInterface.SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_SUBSLICES_TOTAL_COUNT, &out );
+            MD_CHECK_CC_RET( ret );
+            subslicesTotalCount = out.ValueUint32;
 
             typedValue->ValueUInt32 = ( subslicesTotalCount != 0 ) ? euCoresTotalCount / subslicesTotalCount : 0;
         }
@@ -11441,9 +11439,10 @@ namespace MetricsDiscoveryInternal
     ///////////////////////////////////////////////////////////////////////////////
     TCompletionCode CSymbolSet::UnpackMask( const TGlobalSymbol* symbol )
     {
-        const char*     name      = symbol->symbol_1_0.SymbolName;
-        uint8_t*        mask      = symbol->symbol_1_0.SymbolTypedValue.ValueByteArray->Data;
-        TTypedValue_1_0 boolValue = { VALUE_TYPE_BOOL, true };
+        const char*     name         = symbol->symbol_1_0.SymbolName;
+        uint8_t*        mask         = symbol->symbol_1_0.SymbolTypedValue.ValueByteArray->Data;
+        TTypedValue_1_0 boolValue    = { VALUE_TYPE_BOOL, true };
+        TPlatformType   platformType = m_metricsDevice.GetPlatformType();
 
         // Unpack mask
         if( strcmp( name, "GtSliceMask" ) == 0 )
@@ -11479,9 +11478,8 @@ namespace MetricsDiscoveryInternal
         }
         else if( strcmp( name, "GtDualSubsliceMask" ) == 0 )
         {
-            TTypedValue_1_0 activeDualSubsliceForHalfSlices = { VALUE_TYPE_UINT32, 0 };
-            TPlatformType   platformType                    = m_metricsDevice.GetPlatformType();
-            uint32_t        halfOfAvailableSlices           = m_maxSlice / 2;
+            const uint32_t  first4Slices                      = 4;
+            TTypedValue_1_0 activeDualSubsliceForFirst4Slices = { VALUE_TYPE_UINT32, 0 };
 
             for( uint32_t i = 0; i < m_maxSlice; i++ )
             {
@@ -11495,13 +11493,18 @@ namespace MetricsDiscoveryInternal
                         std::string dynamicSymbolName = "GtSlice" + std::to_string( i ) + "DualSubslice" + std::to_string( j );
                         AddSymbol( dynamicSymbolName.c_str(), boolValue, SYMBOL_TYPE_IMMEDIATE );
 
-                        // Count active dual subslices for a half of available slices
-                        if( i < halfOfAvailableSlices )
+                        // Count active dual subslices for first four slices
+                        if( i < first4Slices )
                         {
-                            ++activeDualSubsliceForHalfSlices.ValueUInt32;
+                            ++activeDualSubsliceForFirst4Slices.ValueUInt32;
                         }
                     }
                 }
+            }
+
+            if( platformType == PLATFORM_XEHP_SDV )
+            {
+                AddSymbol( "EuDualSubslicesSlice0123Count", activeDualSubsliceForFirst4Slices, SYMBOL_TYPE_IMMEDIATE );
             }
         }
         else

@@ -964,8 +964,15 @@ namespace MetricsDiscoveryInternal
             case GTDI_DEVICE_PARAM_GT_TYPE:
             {
                 // Returning mapped GtType for compatibility reasons
-                out->ValueType   = GTDI_DEVICE_PARAM_VALUE_TYPE_UINT32;
-                out->ValueUint32 = (uint32_t) gfxDeviceInfo->GtType;
+                out->ValueType = GTDI_DEVICE_PARAM_VALUE_TYPE_UINT32;
+                if( gfxDeviceInfo->PlatformIndex == GENERATION_XEHP_SDV )
+                {
+                    out->ValueUint32 = (uint32_t) MapDeviceInfoToInstrGtTypeGfxVer12( gfxDeviceInfo );
+                }
+                else
+                {
+                    out->ValueUint32 = (uint32_t) gfxDeviceInfo->GtType;
+                }
                 break;
             }
 
@@ -1231,14 +1238,46 @@ namespace MetricsDiscoveryInternal
         MD_CHECK_PTR_RET( cpuId, CC_ERROR_INVALID_PARAMETER );
         MD_CHECK_PTR_RET( correlationIndicator, CC_ERROR_INVALID_PARAMETER );
 
-        uint64_t gpuTimestampNs = 0;
-        uint64_t cpuTimestampNs = 0;
-
-        TCompletionCode result = GetGpuTimestampNs( &gpuTimestampNs );
+        auto                  platform              = GTDI_PLATFORM_INDEX::GTDI_PLATFORM_MAX;
+        uint64_t              gpuTimestampFrequency = 0;
+        uint64_t              gpuTimestampNs        = 0;
+        uint64_t              cpuTimestampNs        = 0;
+        const TGfxDeviceInfo* gfxDeviceInfo         = nullptr;
+        TCompletionCode       result                = GetGfxDeviceInfo( &gfxDeviceInfo );
         MD_CHECK_CC_RET( result );
+        platform = gfxDeviceInfo->PlatformIndex;
 
-        result = GetCpuTimestampNs( &cpuTimestampNs );
-        MD_CHECK_CC_RET( result );
+        auto& subDevices       = device.GetAdapter().GetSubDevices();
+        bool  useKernelVersion = false;
+
+        switch( platform )
+        {
+            case GENERATION_XEHP_SDV:
+                useKernelVersion = m_PerfCapabilities.IsGpuCpuTimestampSupported;
+                break;
+
+            default:
+                break;
+        }
+
+        if( useKernelVersion )
+        {
+            result = GetGpuTimestampFrequency( &gpuTimestampFrequency );
+            MD_CHECK_CC_RET( result );
+
+            result = subDevices.GetGpuCpuTimestamps( device.GetSubDeviceIndex(), gpuTimestampFrequency, gpuTimestampNs, cpuTimestampNs );
+            MD_CHECK_CC_RET( result );
+        }
+        else
+        {
+            MD_ASSERT( device.GetSubDeviceIndex() == 0 );
+
+            result = GetGpuTimestampNs( &gpuTimestampNs );
+            MD_CHECK_CC_RET( result );
+
+            result = GetCpuTimestampNs( &cpuTimestampNs );
+            MD_CHECK_CC_RET( result );
+        }
 
         // Set GPU & CPU timestamps
         *cpuTimestamp = cpuTimestampNs;
@@ -1986,8 +2025,9 @@ namespace MetricsDiscoveryInternal
 
         // Check capabilities. Update when OA interrupt will be mergerd.
 
-        m_PerfCapabilities.IsOaInterruptSupported = false; // requirePerfRevision( 2 );
-        m_PerfCapabilities.IsSubDeviceSupported   = false; // requirePerfRevision( 10 );
+        m_PerfCapabilities.IsOaInterruptSupported     = false;
+        m_PerfCapabilities.IsSubDeviceSupported       = requirePerfRevision( 10 );
+        m_PerfCapabilities.IsGpuCpuTimestampSupported = requirePerfRevision( 11 );
 
         PrintPerfCapabilities();
     }
@@ -2028,6 +2068,7 @@ namespace MetricsDiscoveryInternal
 
         MD_LOG( LOG_INFO, "Oa interrupt: %s", getSupportedString( m_PerfCapabilities.IsOaInterruptSupported ) );
         MD_LOG( LOG_INFO, "Sub devices supported: %s", getSupportedString( m_PerfCapabilities.IsSubDeviceSupported ) );
+        MD_LOG( LOG_INFO, "Cpu gpu timestamps supported: %s", getSupportedString( m_PerfCapabilities.IsGpuCpuTimestampSupported ) );
     }
 
     //////////////////////////////////////////////////////////////////////////////
@@ -2650,6 +2691,8 @@ namespace MetricsDiscoveryInternal
         {
             case GENERATION_HSW:
                 return I915_OA_FORMAT_A45_B8_C8;
+            case GENERATION_XEHP_SDV:
+                return PRELIM_I915_OA_FORMAT_A24u40_A14u32_B8_C8;
             default:
                 return I915_OA_FORMAT_A32u40_A4u32_B8_C8;
         }
@@ -3139,6 +3182,207 @@ namespace MetricsDiscoveryInternal
     //     CDriverInterfaceLinuxPerf
     //
     // Method:
+    //     GetQueryDrmDataLength
+    //
+    // Description:
+    //     Returns drm data information length.
+    //
+    // Input:
+    //     const uint32_t   queryId   - query identifier
+    //     const uint32_t   flags     - query item flags
+    //
+    // Output:
+    //     uint32_t                   - drm query information length
+    //
+    //////////////////////////////////////////////////////////////////////////////
+    uint32_t CDriverInterfaceLinuxPerf::GetQueryDrmDataLength( const uint32_t queryId, const uint32_t flags /* = 0 */ )
+    {
+        auto query = drm_i915_query{};
+        auto item  = drm_i915_query_item{};
+
+        // Query length.
+        item.query_id   = queryId;
+        item.length     = 0;
+        item.flags      = flags;
+        query.items_ptr = reinterpret_cast<uint64_t>( &item );
+        query.num_items = 1;
+
+        const bool validCall   = SendIoctl( m_DrmDeviceHandle, DRM_IOCTL_I915_QUERY, &query ) == 0;
+        const bool validLength = item.length > 0;
+
+        return ( validCall && validLength )
+            ? item.length
+            : 0;
+    }
+
+    //////////////////////////////////////////////////////////////////////////////
+    //
+    // Class:
+    //     CDriverInterfaceLinuxPerf
+    //
+    // Method:
+    //     QueryDrm
+    //
+    // Description:
+    //     Allows to query drm to obtain needed information.
+    //
+    // Input:
+    //     const uint32_t           queryId   - query identifier
+    //     const uint32_t           flags     - query item flags
+    //
+    // Output:
+    //     std::vector<uint8_t>&    data      - query data
+    //     TCompletionCode                    - *CC_OK* means success
+    //
+    //////////////////////////////////////////////////////////////////////////////
+    TCompletionCode CDriverInterfaceLinuxPerf::QueryDrm(
+        const uint32_t        queryId,
+        std::vector<uint8_t>& data,
+        const uint32_t        flags /* = 0 */ )
+    {
+        auto query = drm_i915_query{};
+        auto item  = drm_i915_query_item{};
+
+        // Prepare space for query data.
+        data.resize( GetQueryDrmDataLength( queryId, flags ) );
+
+        // Prepare query item.
+        item.query_id   = queryId;
+        item.length     = data.size();
+        item.flags      = flags;
+        item.data_ptr   = reinterpret_cast<uint64_t>( data.data() );
+        query.items_ptr = reinterpret_cast<uint64_t>( &item );
+        query.num_items = 1;
+
+        // Input check.
+        if( item.length == 0 )
+        {
+            MD_LOG( LOG_ERROR, "ERROR: invalid drm query data length" );
+            return TCompletionCode::CC_ERROR_GENERAL;
+        }
+
+        // Send io control.
+        if( SendIoctl( m_DrmDeviceHandle, DRM_IOCTL_I915_QUERY, &query ) )
+        {
+            MD_LOG( LOG_ERROR, "ERROR: invalid drm query result" );
+            return TCompletionCode::CC_ERROR_GENERAL;
+        }
+
+        return TCompletionCode::CC_OK;
+    }
+
+    //////////////////////////////////////////////////////////////////////////////
+    //
+    // Class:
+    //     CDriverInterfaceLinuxPerf
+    //
+    // Method:
+    //     QueryDrm
+    //
+    // Description:
+    //     Allows to query drm to obtain needed information.
+    //
+    // Input:
+    //     drm_i915_query&          query   - [In/Out] query data
+    //
+    // Output:
+    //     TCompletionCode                  - *CC_OK* means success
+    //
+    //////////////////////////////////////////////////////////////////////////////
+    TCompletionCode CDriverInterfaceLinuxPerf::QueryDrm( drm_i915_query& query )
+    {
+        if( SendIoctl( m_DrmDeviceHandle, DRM_IOCTL_I915_QUERY, &query ) )
+        {
+            MD_LOG( LOG_ERROR, "ERROR: invalid drm query result" );
+            return TCompletionCode::CC_ERROR_GENERAL;
+        }
+
+        return TCompletionCode::CC_OK;
+    }
+
+    //////////////////////////////////////////////////////////////////////////////
+    //
+    // Class:
+    //     CDriverInterfaceLinuxPerf
+    //
+    // Method:
+    //     GetQueryGeometrySlices
+    //
+    // Description:
+    //     Allows to query drm to obtain query information per subdevice.
+    //
+    // Input:
+    //     std::vector<uint8_t>&    buffer         - [In/Out] data
+    //     CMetricsDevice*          metricsDevice  - pointer to device
+    //
+    // Output:
+    //     TCompletionCode                         - *CC_OK* means success
+    //
+    //////////////////////////////////////////////////////////////////////////////
+    TCompletionCode CDriverInterfaceLinuxPerf::GetQueryGeometrySlices( std::vector<uint8_t>& buffer, CMetricsDevice* metricsDevice )
+    {
+        MD_CHECK_CC_RET( metricsDevice != nullptr ? CC_OK : CC_ERROR_GENERAL );
+
+        const uint32_t subDeviceIndex = metricsDevice->GetSubDeviceIndex();
+        // For root device we don't need prelim function and can use GetQueryTopologyInfo
+        if( subDeviceIndex == 0 )
+        {
+            return GetQueryTopologyInfo( buffer );
+        }
+
+        auto subDevices = metricsDevice->GetAdapter().GetSubDevices();
+        auto engine     = TEngineParams_1_9{};
+
+        // Obtain sub device engines.
+        MD_CHECK_CC_RET( subDevices.GetTbsEngineParams( subDeviceIndex, engine ) );
+
+        // Check sub device engines support.
+        const bool enginesSupported = IsSubDeviceSupported();
+        if( !enginesSupported )
+        {
+            MD_LOG( LOG_ERROR, "ERROR: Sub devices are not supported by i915 kernel" );
+            return CC_ERROR_GENERAL;
+        }
+
+        uint32_t flags = ( engine.EngineId.ClassInstance.Class & 0xFF ) | ( ( engine.EngineId.ClassInstance.Instance & 0xFF ) << 8 );
+        MD_CHECK_CC_RET( QueryDrm( PRELIM_DRM_I915_QUERY_GEOMETRY_SLICES, buffer, flags ) );
+        MD_CHECK_CC_RET( buffer.size() ? CC_OK : CC_ERROR_GENERAL );
+
+        return CC_OK;
+    }
+
+    //////////////////////////////////////////////////////////////////////////////
+    //
+    // Class:
+    //     CDriverInterfaceLinuxPerf
+    //
+    // Method:
+    //     GetQueryTopologyInfo
+    //
+    // Description:
+    //     Allows to query drm to obtain query topology information.
+    //
+    // Input:
+    //     std::vector<uint8_t>&    buffer         - [In/Out] data
+    //
+    // Output:
+    //     TCompletionCode                         - *CC_OK* means success
+    //
+    //////////////////////////////////////////////////////////////////////////////
+    TCompletionCode CDriverInterfaceLinuxPerf::GetQueryTopologyInfo( std::vector<uint8_t>& buffer )
+    {
+        MD_CHECK_CC_RET( QueryDrm( DRM_I915_QUERY_TOPOLOGY_INFO, buffer ) );
+        MD_CHECK_CC_RET( buffer.size() ? CC_OK : CC_ERROR_GENERAL );
+
+        return CC_OK;
+    }
+
+    //////////////////////////////////////////////////////////////////////////////
+    //
+    // Class:
+    //     CDriverInterfaceLinuxPerf
+    //
+    // Method:
     //     GetDualSubsliceMask
     //
     // Description:
@@ -3184,7 +3428,8 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     TAdapterType CDriverInterfaceLinuxPerf::GetAdapterType( const TGfxDeviceInfo* gfxDeviceInfo )
     {
-        return ( gfxDeviceInfo->PlatformIndex == GENERATION_DG1 )
+        return ( gfxDeviceInfo->PlatformIndex == GENERATION_DG1
+                 || gfxDeviceInfo->PlatformIndex == GENERATION_XEHP_SDV )
             ? ADAPTER_TYPE_DISCRETE
             : ADAPTER_TYPE_INTEGRATED;
     }
@@ -3648,6 +3893,7 @@ namespace MetricsDiscoveryInternal
             case GENERATION_DG1:
             case GENERATION_RKL:
             case GENERATION_ADLP:
+            case GENERATION_XEHP_SDV:
                 return MD_MAX_DUALSUBSLICE_PER_SLICE * MD_MAX_SUBSLICE_PER_DSS;
             default:
                 MD_LOG( LOG_WARNING, "WARNING: Unsupported platform, default MaxSubslicePerSlice used" );
@@ -3672,7 +3918,21 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     uint32_t CDriverInterfaceLinuxPerf::GetGtMaxDualSubslicePerSlice()
     {
-        return MD_MAX_DUALSUBSLICE_PER_SLICE;
+        const TGfxDeviceInfo* gfxDeviceInfo = nullptr;
+        auto                  result        = GetGfxDeviceInfo( &gfxDeviceInfo );
+
+        switch( gfxDeviceInfo->PlatformIndex )
+        {
+            case GENERATION_TGL:
+            case GENERATION_DG1:
+            case GENERATION_ADLP:
+            case GENERATION_RKL:
+                return MD_MAX_DUALSUBSLICE_PER_SLICE;
+            case GENERATION_XEHP_SDV:
+                return MD_DUALSUBSLICE_PER_SLICE;
+            default:
+                return MD_MAX_DUALSUBSLICE_PER_SLICE;
+        }
     }
 
     //////////////////////////////////////////////////////////////////////////////
@@ -3706,11 +3966,69 @@ namespace MetricsDiscoveryInternal
             case GENERATION_TGL:
             case GENERATION_DG1:
             case GENERATION_RKL:
+            case GENERATION_XEHP_SDV:
             case GENERATION_ADLP:
                 return true;
             default:
                 return false;
         }
+    }
+
+    //////////////////////////////////////////////////////////////////////////////
+    //
+    // Class:
+    //     CDriverInterfaceLinuxPerf
+    //
+    // Method:
+    //     MapDeviceInfoToInstrGtTypeGfxVer12
+    //
+    // Description:
+    //     Gfx version 12 platforms need additional logic to determine their type using slice mask,
+    //     device id and PCI revision id.
+    //
+    // Input:
+    //     const TGfxDeviceInfo* gfxDeviceInfo - Basic device information.
+    //
+    // Output:
+    //     TGfxGtType                          - graphics GT type, used by Intel driver
+    //
+    //////////////////////////////////////////////////////////////////////////////
+    TGfxGtType CDriverInterfaceLinuxPerf::MapDeviceInfoToInstrGtTypeGfxVer12( const TGfxDeviceInfo* gfxDeviceInfo )
+    {
+        TGfxGtType gtType                 = GFX_GTTYPE_UNDEFINED;
+        bool       isAdderWorkaroundValid = false;
+        bool       isAdderWaNeeded        = false;
+
+        int32_t sliceMask = 0;
+
+        TCompletionCode ret = SendGetParamIoctl( m_DrmDeviceHandle, I915_PARAM_SLICE_MASK, &sliceMask );
+        if( ret != CC_OK )
+        {
+            MD_LOG( LOG_ERROR, "Unable to obtain slice mask while defining GT type" );
+            return gtType;
+        }
+
+        if( ( sliceMask & SLICES0TO3 ) && ( sliceMask & SLICES4TO7 ) )
+        {
+            isAdderWorkaroundValid = true;
+            isAdderWaNeeded        = true;
+        }
+        else if( !( ( sliceMask & SLICES4AND5 ) && ( sliceMask & SLICES6AND7 ) ) )
+        {
+            isAdderWorkaroundValid = true;
+        }
+
+        if( gfxDeviceInfo->PlatformIndex == GENERATION_XEHP_SDV )
+        {
+            if( isAdderWorkaroundValid )
+            {
+                gtType = isAdderWaNeeded ? GFX_GTTYPE_GT1 : GFX_GTTYPE_GT2;
+            }
+        }
+
+        m_CachedGfxDeviceInfo.GtType = gtType;
+
+        return gtType;
     }
 
     //////////////////////////////////////////////////////////////////////////////
