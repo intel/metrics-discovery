@@ -150,7 +150,7 @@ namespace MetricsDiscoveryInternal
         CAdapterHandleLinux( int32_t adapterHandle );
         virtual ~CAdapterHandleLinux();
 
-        virtual TCompletionCode Close();
+        virtual TCompletionCode Close( const uint32_t adapterId );
         virtual bool            IsValid() const;
 
         operator int() const;
@@ -202,6 +202,8 @@ namespace MetricsDiscoveryInternal
         virtual TCompletionCode ValidatePmRegsConfig( TRegister* regVector, uint32_t regCount, TPlatformType platform );
         virtual TCompletionCode GetGpuCpuTimestamps( CMetricsDevice& device, uint64_t* gpuTimestamp, uint64_t* cpuTimestamp, uint32_t* cpuId, uint64_t* correlationIndicator );
         virtual TCompletionCode SendGetCtxIdTagsEscape( TGetCtxTagsIdParams* params );
+        virtual uint32_t        GetAdapterId();
+        TCompletionCode         GetOaTimestamp( const uint64_t csTimestamp, uint64_t& oaTimestamp );
 
         // Synchronization
         virtual TCompletionCode LockConcurrentGroup( const char* name, void** semaphore );
@@ -242,13 +244,16 @@ namespace MetricsDiscoveryInternal
         TCompletionCode GetPerfMetricSetId( const char* guid, uint32_t* perfMetricSetId );
         bool            PerfMetricSetExists( const char* guid );
         uint32_t        GetPerfReportType( TReportType reportType );
+        TCompletionCode GetOaTimestampFrequency( uint64_t& frequency );
+        TCompletionCode GetCsTimestampFrequency( uint64_t& frequency );
 
         // DRM
-        bool    InitializeIntelDrm();
-        void    DeinitializeIntelDrm();
-        int32_t OpenIntelDrm();
-        void    CloseIntelDrm( int32_t drmFd );
-        int32_t GetDrmCardNumber( int32_t drmFd );
+        bool            InitializeIntelDrm();
+        void            DeinitializeIntelDrm();
+        int32_t         OpenIntelDrm();
+        void            CloseIntelDrm( int32_t drmFd );
+        int32_t         GetDrmCardNumber( int32_t drmFd );
+        TCompletionCode AcquireAdapterId();
 
         // SysFs
         TCompletionCode ReadSysFsFile( const char* fileName, uint64_t* readValue );

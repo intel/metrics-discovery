@@ -304,7 +304,8 @@ typedef enum
     GENERATION_DG1      = 21,
     GENERATION_XEHP_SDV = 22,
     GENERATION_RKL      = 23,
-    // 24-25 reserved
+    GENERATION_ACM      = 24,
+    // 25 reserved
     GENERATION_ADLP     = 26,
     // ...
     // DO NOT CHANGE ORDER OF THIS ENUM, ADD NEW PLATFORMS AT THE END!

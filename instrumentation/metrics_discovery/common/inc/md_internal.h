@@ -283,6 +283,8 @@ namespace MetricsDiscoveryInternal
         CDriverInterface* GetDriverInterface();
         CSubDevices&      GetSubDevices();
 
+        uint32_t GetAdapterId() const;
+
     private:
         // Driver interface:
         TCompletionCode CreateDriverInterface();
@@ -299,6 +301,7 @@ namespace MetricsDiscoveryInternal
 
     private:
         // Variables:
+        uint32_t             m_adapterId;          // System-dependent adapter id
         TAdapterParamsLatest m_params;             // Adapter information
         CAdapterHandle*      m_adapterHandle;      // OS adapter handle which the given CAdapter object represents
         CDriverInterface*    m_driverInterface;    // Driver interface for this adapter
@@ -349,6 +352,7 @@ namespace MetricsDiscoveryInternal
         bool            IsPavpDisabled( uint32_t capabilities );
         TCompletionCode UnpackMask( const TGlobalSymbol* symbol );
         TCompletionCode DetectMaxSlicesInfo();
+        bool            IsSymbolNameSupported( const char* name );
 
     private:
         // Variables:

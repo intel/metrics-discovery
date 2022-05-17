@@ -91,6 +91,9 @@ set (_SOURCES ${_SOURCES}
     ${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen/md_metrics_XEHP_SDV_GT1_GT2.cpp
     ${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen/md_metrics_XEHP_SDV_GT1.cpp
     ${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen/md_metrics_XEHP_SDV_GT2.cpp
+    ${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen/md_metrics_ACM_GT1.cpp
+    ${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen/md_metrics_ACM_GT2.cpp
+    ${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen/md_metrics_ACM_GT3.cpp
     ${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen/md_metrics_ADLP.cpp
     ${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen/md_metrics.cpp
     # mdapi core

@@ -14,6 +14,7 @@ SPDX-License-Identifier: MIT
 
 #include "md_types.h"
 #include "md_internal.h"
+#include "md_debug.h"
 
 #include "instr_gt_driver_ifc.h"
 
@@ -74,8 +75,8 @@ namespace MetricsDiscoveryInternal
     public:
         virtual ~CAdapterHandle() = default;
 
-        virtual TCompletionCode Close()         = 0;
-        virtual bool            IsValid() const = 0;
+        virtual TCompletionCode Close( const uint32_t adapterId ) = 0;
+        virtual bool            IsValid() const                   = 0;
     };
 
     //////////////////////////////////////////////////////////////////////////////
@@ -101,12 +102,12 @@ namespace MetricsDiscoveryInternal
         static bool              IsSupportEnableRequired();
 
         // Adapter enumeration static:
-        static TCompletionCode GetAvailableAdapters( std::vector<TAdapterData>& adapters );
+        static TCompletionCode GetAvailableAdapters( std::vector<TAdapterData>& adapters, const uint32_t adapterId );
 
         // Synchronization static:
-        static TCompletionCode      SemaphoreCreate( const char* name, void** semaphore );
-        static TSemaphoreWaitResult SemaphoreWait( uint32_t milliseconds, void* semaphore );
-        static TCompletionCode      SemaphoreRelease( void** semaphore );
+        static TCompletionCode      SemaphoreCreate( const char* name, void** semaphore, const uint32_t adapterId );
+        static TSemaphoreWaitResult SemaphoreWait( uint32_t milliseconds, void* semaphore, const uint32_t adapterId );
+        static TCompletionCode      SemaphoreRelease( void** semaphore, const uint32_t adapterId );
 
         // General:
         virtual TCompletionCode ForceSupportDisable()                                                                                                                          = 0;
@@ -118,6 +119,7 @@ namespace MetricsDiscoveryInternal
         virtual TCompletionCode ValidatePmRegsConfig( TRegister* regVector, uint32_t regCount, TPlatformType platform )                                                        = 0;
         virtual TCompletionCode GetGpuCpuTimestamps( CMetricsDevice& device, uint64_t* gpuTimestamp, uint64_t* cpuTimestamp, uint32_t* cpuId, uint64_t* correlationIndicator ) = 0;
         virtual TCompletionCode SendGetCtxIdTagsEscape( TGetCtxTagsIdParams* params )                                                                                          = 0;
+        virtual uint32_t        GetAdapterId()                                                                                                                                 = 0;
 
         // Synchronization:
         virtual TCompletionCode LockConcurrentGroup( const char* name, void** semaphore )   = 0;
@@ -141,6 +143,7 @@ namespace MetricsDiscoveryInternal
     protected:
         virtual bool CreateContext() = 0;
         virtual void DeleteContext() = 0;
+        uint32_t     m_adapterId     = IU_ADAPTER_ID_UNKNOWN;
     };
 
 } // namespace MetricsDiscoveryInternal

@@ -49,14 +49,14 @@ namespace MetricsDiscoveryInternal
 
         if( !( *semaphorePtr ) )
         {
-            if( CDriverInterface::SemaphoreCreate( semaphoreName, semaphorePtr ) != CC_OK )
+            if( CDriverInterface::SemaphoreCreate( semaphoreName, semaphorePtr, IU_ADAPTER_ID_UNKNOWN ) != CC_OK )
             {
                 MD_LOG( LOG_ERROR, "semaphore create failed" );
                 return CC_ERROR_GENERAL;
             }
         }
 
-        TSemaphoreWaitResult result = CDriverInterface::SemaphoreWait( 1000L, *semaphorePtr ); // Wait 1 sec
+        TSemaphoreWaitResult result = CDriverInterface::SemaphoreWait( 1000L, *semaphorePtr, IU_ADAPTER_ID_UNKNOWN ); // Wait 1 sec
         switch( result )
         {
             case WAIT_RESULT_SUCCESSFUL: // The semaphore object was signaled
@@ -101,7 +101,7 @@ namespace MetricsDiscoveryInternal
     {
         MD_LOG_ENTER();
 
-        if( CDriverInterface::SemaphoreRelease( semaphorePtr ) != CC_OK )
+        if( CDriverInterface::SemaphoreRelease( semaphorePtr, IU_ADAPTER_ID_UNKNOWN ) != CC_OK )
         {
             // Error while releasing semaphore
             MD_LOG( LOG_ERROR, "semaphore release failed" );

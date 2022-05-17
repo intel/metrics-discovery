@@ -20,6 +20,7 @@ SPDX-License-Identifier: MIT
 #include <new>
 #include <unordered_map>
 #include <algorithm>
+#include <map>
 
 using namespace MetricsDiscovery;
 
@@ -1006,7 +1007,7 @@ namespace MetricsDiscoveryInternal
         std::vector<TAdapterData> availableAdapters;
 
         // 1. Get adapter information from OS
-        auto ret = CDriverInterface::GetAvailableAdapters( availableAdapters );
+        auto ret = CDriverInterface::GetAvailableAdapters( availableAdapters, IU_ADAPTER_ID_UNKNOWN );
         MD_CHECK_CC_RET( ret );
 
         // 2. Create adapter objects
@@ -1064,11 +1065,13 @@ namespace MetricsDiscoveryInternal
         m_adapterVector.push_back( adapter );
         m_params.AdapterCount = m_adapterVector.size();
 
-        const TAdapterParams_1_6* adapterParams = adapter->GetParams();
+        const TAdapterParamsLatest* adapterParams = adapter->GetParams();
+        const uint32_t              adapterId     = adapter->GetAdapterId();
 
-        MD_LOG( LOG_INFO, "Adapter %s - added", adapterParams->ShortName );
-        MD_LOG( LOG_INFO, "Platform ID: %u", adapterParams->Platform );
-        MD_LOG( LOG_INFO, "Device ID: %u", adapterParams->DeviceId );
+        MD_LOG_A( adapterId, LOG_INFO, "Adapter %s - added", adapterParams->ShortName );
+        MD_LOG_A( adapterId, LOG_INFO, "Platform ID: %u", adapterParams->Platform );
+        MD_LOG_A( adapterId, LOG_INFO, "Device ID: %u", adapterParams->DeviceId );
+        MD_LOG_A( adapterId, LOG_INFO, "Adapter ID: %u", adapterId );
         return CC_OK;
     }
 
@@ -1151,7 +1154,8 @@ namespace MetricsDiscoveryInternal
     //
     //////////////////////////////////////////////////////////////////////////////
     CAdapter::CAdapter( CAdapterGroup& adapterGroup, const TAdapterParams_1_9& params, CAdapterHandle& adapterHandle )
-        : m_params( params )
+        : m_adapterId( IU_ADAPTER_ID_UNKNOWN )
+        , m_params( params )
         , m_adapterHandle( &adapterHandle )
         , m_adapterGroup( adapterGroup )
         , m_openCloseSemaphore( nullptr )
@@ -1164,6 +1168,11 @@ namespace MetricsDiscoveryInternal
         // Initialize sub device information.
         m_subDevices.Enumerate();
         m_subDevices.GetAdapterParams( m_params );
+
+        if( CreateDriverInterface() != CC_OK )
+        {
+            MD_LOG( LOG_ERROR, "Failed to create driver interface for an adapter" );
+        }
     }
 
     //////////////////////////////////////////////////////////////////////////////
@@ -1187,7 +1196,7 @@ namespace MetricsDiscoveryInternal
 
         if( m_adapterHandle )
         {
-            m_adapterHandle->Close();
+            m_adapterHandle->Close( m_adapterId );
             MD_SAFE_DELETE( m_adapterHandle );
         }
     }
@@ -1289,6 +1298,26 @@ namespace MetricsDiscoveryInternal
     //     CAdapter
     //
     // Method:
+    //     GetAdapterId
+    //
+    // Description:
+    //     Returns the id of the adapter.
+    //
+    // Output:
+    //     uint32_t - id of the adapter.
+    //
+    //////////////////////////////////////////////////////////////////////////////
+    uint32_t CAdapter::GetAdapterId() const
+    {
+        return m_adapterId;
+    }
+
+    //////////////////////////////////////////////////////////////////////////////
+    //
+    // Class:
+    //     CAdapter
+    //
+    // Method:
     //     Reset
     //
     // Description:
@@ -1303,14 +1332,14 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     TCompletionCode CAdapter::Reset()
     {
-        MD_LOG_ENTER();
+        MD_LOG_ENTER_A( m_adapterId );
 
         // 1. Obtain semaphore
         TCompletionCode retVal = GetOpenCloseSemaphore();
         if( retVal != CC_OK )
         {
-            MD_LOG( LOG_ERROR, "Get semaphore failed" );
-            MD_LOG_EXIT();
+            MD_LOG_A( m_adapterId, LOG_ERROR, "Get semaphore failed" );
+            MD_LOG_EXIT_A( m_adapterId );
             return retVal;
         }
 
@@ -1323,20 +1352,20 @@ namespace MetricsDiscoveryInternal
                 retVal = CreateDriverInterface();
                 if( retVal == CC_OK )
                 {
-                    MD_ASSERT( m_driverInterface != nullptr );
+                    MD_ASSERT_A( m_adapterId, m_driverInterface != nullptr );
 
                     // 4. Force disable performance monitoring support
                     retVal = m_driverInterface->ForceSupportDisable();
                     if( retVal != CC_OK )
                     {
-                        MD_LOG( LOG_ERROR, "Resetting adapter state failed" );
+                        MD_LOG_A( m_adapterId, LOG_ERROR, "Resetting adapter state failed" );
                     }
 
                     DestroyDriverInterface();
                 }
                 else
                 {
-                    MD_LOG( LOG_ERROR, "Failed to get driver interface" );
+                    MD_LOG_A( m_adapterId, LOG_ERROR, "Failed to get driver interface" );
                 }
             }
         }
@@ -1348,7 +1377,7 @@ namespace MetricsDiscoveryInternal
         // 5. Release semaphore
         ReleaseOpenCloseSemaphore();
 
-        MD_LOG_EXIT();
+        MD_LOG_EXIT_A( m_adapterId );
         return retVal;
     }
 
@@ -1375,15 +1404,15 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     TCompletionCode CAdapter::OpenMetricsDeviceByIndex( CMetricsDevice** metricsDevice, const uint32_t subDeviceIndex )
     {
-        MD_LOG_ENTER();
+        MD_LOG_ENTER_A( m_adapterId );
         MD_CHECK_PTR_RET( metricsDevice, CC_ERROR_INVALID_PARAMETER );
 
         // 1. Obtain semaphore
         TCompletionCode retVal = GetOpenCloseSemaphore();
         if( retVal != CC_OK )
         {
-            MD_LOG( LOG_ERROR, "Get semaphore failed" );
-            MD_LOG_EXIT();
+            MD_LOG_A( m_adapterId, LOG_ERROR, "Get semaphore failed" );
+            MD_LOG_EXIT_A( m_adapterId );
             return retVal;
         }
 
@@ -1406,7 +1435,7 @@ namespace MetricsDiscoveryInternal
         // 5. Release semaphore
         ReleaseOpenCloseSemaphore();
 
-        MD_LOG_EXIT();
+        MD_LOG_EXIT_A( m_adapterId );
         return retVal;
     }
 
@@ -1510,7 +1539,7 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     TCompletionCode CAdapter::OpenMetricsDeviceFromFileByIndex( const char* fileName, void* openParams, CMetricsDevice** metricsDevice, const uint32_t subDeviceIndex )
     {
-        MD_LOG_ENTER();
+        MD_LOG_ENTER_A( m_adapterId );
         MD_CHECK_PTR_RET( fileName, CC_ERROR_INVALID_PARAMETER );
         MD_CHECK_PTR_RET( metricsDevice, CC_ERROR_INVALID_PARAMETER );
 
@@ -1518,8 +1547,8 @@ namespace MetricsDiscoveryInternal
         TCompletionCode retVal = GetOpenCloseSemaphore();
         if( retVal != CC_OK )
         {
-            MD_LOG( LOG_ERROR, "Get semaphore failed" );
-            MD_LOG_EXIT();
+            MD_LOG_A( m_adapterId, LOG_ERROR, "Get semaphore failed" );
+            MD_LOG_EXIT_A( m_adapterId );
             return retVal;
         }
 
@@ -1528,7 +1557,7 @@ namespace MetricsDiscoveryInternal
         {
             retVal = CreateMetricsDevice( nullptr, subDeviceIndex );
         }
-        MD_ASSERT( m_driverInterface != nullptr );
+        MD_ASSERT_A( m_adapterId, m_driverInterface != nullptr );
 
         // 3. Load from file or return existing metrics device object
         if( retVal == CC_OK )
@@ -1558,7 +1587,7 @@ namespace MetricsDiscoveryInternal
         // 4. Release semaphore
         ReleaseOpenCloseSemaphore();
 
-        MD_LOG_EXIT();
+        MD_LOG_EXIT_A( m_adapterId );
         return retVal;
     }
 
@@ -1664,7 +1693,7 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     TCompletionCode CAdapter::OpenMetricsSubDevice( const uint32_t subDeviceIndex, CMetricsDevice** metricsDevice )
     {
-        MD_LOG_ENTER();
+        MD_LOG_ENTER_A( m_adapterId );
         MD_CHECK_PTR_RET( metricsDevice, CC_ERROR_INVALID_PARAMETER );
 
         const bool      isFirstDevice        = subDeviceIndex == 0;
@@ -1675,16 +1704,16 @@ namespace MetricsDiscoveryInternal
         // Check sub device support (first device is always supported).
         if( !isFirstDevice && !isSubDeviceSupported )
         {
-            MD_LOG( LOG_ERROR, "Sub devices are not supported" );
-            MD_LOG_EXIT();
+            MD_LOG_A( m_adapterId, LOG_ERROR, "Sub devices are not supported" );
+            MD_LOG_EXIT_A( m_adapterId );
             return TCompletionCode::CC_ERROR_NOT_SUPPORTED;
         }
 
         // Check sub device index.
         if( !isValidIndex )
         {
-            MD_LOG( LOG_ERROR, "Invalid sub device index" );
-            MD_LOG_EXIT();
+            MD_LOG_A( m_adapterId, LOG_ERROR, "Invalid sub device index" );
+            MD_LOG_EXIT_A( m_adapterId );
             return TCompletionCode::CC_ERROR_INVALID_PARAMETER;
         }
 
@@ -1703,7 +1732,7 @@ namespace MetricsDiscoveryInternal
             result = CC_ALREADY_INITIALIZED;
         }
 
-        MD_LOG_EXIT()
+        MD_LOG_EXIT_A( m_adapterId )
         *metricsDevice = m_metricsDevice;
         return result;
     }
@@ -1805,7 +1834,7 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     TCompletionCode CAdapter::OpenMetricsSubDeviceFromFile( const uint32_t subDeviceIndex, const char* fileName, void* openParams, CMetricsDevice** metricsDevice )
     {
-        MD_LOG_ENTER();
+        MD_LOG_ENTER_A( m_adapterId );
         MD_CHECK_PTR_RET( fileName, CC_ERROR_INVALID_PARAMETER );
         MD_CHECK_PTR_RET( metricsDevice, CC_ERROR_INVALID_PARAMETER );
 
@@ -1817,16 +1846,16 @@ namespace MetricsDiscoveryInternal
         // Check sub device support (first device is always supported).
         if( !isFirstDevice && !isSubDeviceSupported )
         {
-            MD_LOG( LOG_ERROR, "Sub devices are not supported" );
-            MD_LOG_EXIT();
+            MD_LOG_A( m_adapterId, LOG_ERROR, "Sub devices are not supported" );
+            MD_LOG_EXIT_A( m_adapterId );
             return TCompletionCode::CC_ERROR_NOT_SUPPORTED;
         }
 
         // Check sub device index.
         if( !isValidIndex )
         {
-            MD_LOG( LOG_ERROR, "Invalid sub device index" );
-            MD_LOG_EXIT();
+            MD_LOG_A( m_adapterId, LOG_ERROR, "Invalid sub device index" );
+            MD_LOG_EXIT_A( m_adapterId );
             return TCompletionCode::CC_ERROR_INVALID_PARAMETER;
         }
 
@@ -1845,7 +1874,7 @@ namespace MetricsDiscoveryInternal
             result = CC_ALREADY_INITIALIZED;
         }
 
-        MD_LOG_EXIT()
+        MD_LOG_EXIT_A( m_adapterId )
         *metricsDevice = m_metricsDevice;
         return result;
     }
@@ -1955,22 +1984,22 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     TCompletionCode CAdapter::CloseMetricsDevice( CMetricsDevice* metricsDevice )
     {
-        MD_LOG_ENTER();
+        MD_LOG_ENTER_A( m_adapterId );
         MD_CHECK_PTR_RET( metricsDevice, CC_ERROR_INVALID_PARAMETER );
 
         // 1. Obtain semaphore
         TCompletionCode retVal = GetOpenCloseSemaphore();
         if( retVal != CC_OK )
         {
-            MD_LOG( LOG_ERROR, "Get semaphore failed" );
-            MD_LOG_EXIT();
+            MD_LOG_A( m_adapterId, LOG_ERROR, "Get semaphore failed" );
+            MD_LOG_EXIT_A( m_adapterId );
             return retVal;
         }
 
         // 2. Check driver interface - it should be created during OpenMetricsDevice
         if( !m_driverInterface )
         {
-            MD_LOG( LOG_ERROR, "Driver interface not found" );
+            MD_LOG_A( m_adapterId, LOG_ERROR, "Driver interface not found" );
             retVal = CC_ERROR_GENERAL;
         }
 
@@ -1982,7 +2011,7 @@ namespace MetricsDiscoveryInternal
 
             if( !validDevice && !validSubDevice )
             {
-                MD_LOG( LOG_ERROR, "Pointers mismatch" );
+                MD_LOG_A( m_adapterId, LOG_ERROR, "Pointers mismatch" );
                 retVal = CC_ERROR_GENERAL;
             }
         }
@@ -2013,7 +2042,7 @@ namespace MetricsDiscoveryInternal
         // 5. Release semaphore
         ReleaseOpenCloseSemaphore();
 
-        MD_LOG_EXIT();
+        MD_LOG_EXIT_A( m_adapterId );
         return retVal;
     }
 
@@ -2066,7 +2095,7 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     TCompletionCode CAdapter::SaveMetricsDeviceToFile( const char* fileName, void* saveParams, CMetricsDevice* metricsDevice, const uint32_t minMajorApiVersion, const uint32_t minMinorApiVersion )
     {
-        MD_LOG_ENTER();
+        MD_LOG_ENTER_A( m_adapterId );
         MD_CHECK_PTR_RET( fileName, CC_ERROR_INVALID_PARAMETER );
         MD_CHECK_PTR_RET( metricsDevice, CC_ERROR_INVALID_PARAMETER );
 
@@ -2074,15 +2103,15 @@ namespace MetricsDiscoveryInternal
         TCompletionCode retVal = GetOpenCloseSemaphore();
         if( retVal != CC_OK )
         {
-            MD_LOG( LOG_ERROR, "Get semaphore failed" );
-            MD_LOG_EXIT();
+            MD_LOG_A( m_adapterId, LOG_ERROR, "Get semaphore failed" );
+            MD_LOG_EXIT_A( m_adapterId );
             return retVal;
         }
 
         // 2. Check whether correct metrics device was passed
         if( metricsDevice != m_metricsDevice )
         {
-            MD_LOG( LOG_ERROR, "Pointers mismatch" );
+            MD_LOG_A( m_adapterId, LOG_ERROR, "Pointers mismatch" );
             retVal = CC_ERROR_GENERAL;
         }
 
@@ -2090,13 +2119,13 @@ namespace MetricsDiscoveryInternal
         retVal = m_metricsDevice->SaveToFile( fileName, minMajorApiVersion, minMinorApiVersion );
         if( retVal != CC_OK )
         {
-            MD_LOG( LOG_ERROR, "Saving to file failed" );
+            MD_LOG_A( m_adapterId, LOG_ERROR, "Saving to file failed" );
         }
 
         // 4. Release semaphore
         ReleaseOpenCloseSemaphore();
 
-        MD_LOG_EXIT();
+        MD_LOG_EXIT_A( m_adapterId );
         return retVal;
     }
 
@@ -2204,8 +2233,14 @@ namespace MetricsDiscoveryInternal
             m_driverInterface = CDriverInterface::CreateInstance( *m_adapterHandle );
         }
 
-        return m_driverInterface ? CC_OK
-                                 : CC_ERROR_NOT_SUPPORTED;
+        if( m_driverInterface )
+        {
+            m_adapterId = m_driverInterface->GetAdapterId();
+            return CC_OK;
+        }
+
+        m_adapterId = IU_ADAPTER_ID_UNKNOWN;
+        return CC_ERROR_NOT_SUPPORTED;
     }
 
     //////////////////////////////////////////////////////////////////////////////
@@ -2299,16 +2334,16 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     TCompletionCode CAdapter::CreateMetricsDevice( CMetricsDevice** metricsDevice, const uint32_t subDeviceIndex /* = 0 */ )
     {
-        MD_ASSERT( m_metricsDevice == nullptr );
+        MD_ASSERT_A( m_adapterId, m_metricsDevice == nullptr );
 
         // 1. Create driver interface
         TCompletionCode retVal = CreateDriverInterface();
         if( retVal != CC_OK )
         {
-            MD_LOG( LOG_ERROR, "Failed to get driver interface" );
+            MD_LOG_A( m_adapterId, LOG_ERROR, "Failed to get driver interface" );
             return retVal;
         }
-        MD_ASSERT( m_driverInterface != nullptr );
+        MD_ASSERT_A( m_adapterId, m_driverInterface != nullptr );
 
         // 2. Enable instrumentation support if needed
         retVal = EnableDriverSupport( true );
@@ -2399,11 +2434,11 @@ namespace MetricsDiscoveryInternal
 
         if( m_driverInterface->IsSupportEnableRequired() )
         {
-            MD_LOG( LOG_INFO, "Driver support %s...", enablePrint( enable ) );
+            MD_LOG_A( m_adapterId, LOG_INFO, "Driver support %s...", enablePrint( enable ) );
             retVal = m_driverInterface->SendSupportEnableEscape( enable );
             if( retVal != CC_OK )
             {
-                MD_LOG( LOG_ERROR, "Driver support %s failed", enablePrint( enable ) );
+                MD_LOG_A( m_adapterId, LOG_ERROR, "Driver support %s failed", enablePrint( enable ) );
             }
         }
 
@@ -2682,7 +2717,8 @@ namespace MetricsDiscoveryInternal
     template <>
     TCompletionCode COverride<OVERRIDE_TYPE_FREQUENCY>::SetOverride( TSetOverrideParams_1_2* params, uint32_t paramsSize )
     {
-        MD_LOG_ENTER();
+        const uint32_t adapterId = m_device->GetAdapter().GetAdapterId();
+        MD_LOG_ENTER_A( adapterId );
         MD_CHECK_PTR_RET( params, CC_ERROR_INVALID_PARAMETER );
         MD_CHECK_SIZE_RET( paramsSize, TSetFrequencyOverrideParams_1_2, CC_ERROR_INVALID_PARAMETER );
 
@@ -2693,7 +2729,7 @@ namespace MetricsDiscoveryInternal
         ret = driverInterface.SetFrequencyOverride( frequencyOverrideParams );
         if( ret != CC_OK )
         {
-            MD_LOG( LOG_ERROR, "Setting frequency override failed, res: %u", ret );
+            MD_LOG_A( adapterId, LOG_ERROR, "Setting frequency override failed, res: %u", ret );
         }
         else
         {
@@ -2702,7 +2738,7 @@ namespace MetricsDiscoveryInternal
             symbolSet->RedetectSymbol( "GpuCurrentFrequencyMHz" );
         }
 
-        MD_LOG_EXIT();
+        MD_LOG_EXIT_A( adapterId );
         return ret;
     }
 
@@ -2729,7 +2765,8 @@ namespace MetricsDiscoveryInternal
     template <>
     TCompletionCode COverride<OVERRIDE_TYPE_EXTENDED_QUERY>::SetOverride( TSetOverrideParams_1_2* params, uint32_t paramsSize )
     {
-        MD_LOG_ENTER();
+        const uint32_t adapterId = m_device->GetAdapter().GetAdapterId();
+        MD_LOG_ENTER_A( adapterId );
         MD_CHECK_PTR_RET( params, CC_ERROR_INVALID_PARAMETER );
         MD_CHECK_SIZE_RET( paramsSize, TSetQueryOverrideParams_1_2, CC_ERROR_INVALID_PARAMETER );
 
@@ -2738,7 +2775,7 @@ namespace MetricsDiscoveryInternal
         TTypedValue_1_0* oaBufferSize = m_device->GetGlobalSymbolValueByName( "OABufferMaxSize" );
         if( oaBufferSize == nullptr )
         {
-            MD_LOG( LOG_ERROR, "Unable to obtain maximum OA buffer size" );
+            MD_LOG_A( adapterId, LOG_ERROR, "Unable to obtain maximum OA buffer size" );
             return CC_ERROR_GENERAL;
         }
 
@@ -2746,10 +2783,10 @@ namespace MetricsDiscoveryInternal
         TCompletionCode              ret                 = driverInterface.SetQueryOverride( OVERRIDE_TYPE_EXTENDED_QUERY, m_device->GetPlatformType(), oaBufferSize->ValueUInt32, queryOverrideParams );
         if( ret != CC_OK )
         {
-            MD_LOG( LOG_ERROR, "Setting extended query override failed, res: %u", ret );
+            MD_LOG_A( adapterId, LOG_ERROR, "Setting extended query override failed, res: %u", ret );
         }
 
-        MD_LOG_EXIT();
+        MD_LOG_EXIT_A( adapterId );
         return ret;
     }
 
@@ -2776,7 +2813,8 @@ namespace MetricsDiscoveryInternal
     template <>
     TCompletionCode COverride<OVERRIDE_TYPE_MULTISAMPLED_QUERY>::SetOverride( TSetOverrideParams_1_2* params, uint32_t paramsSize )
     {
-        MD_LOG_ENTER();
+        const uint32_t adapterId = m_device->GetAdapter().GetAdapterId();
+        MD_LOG_ENTER_A( adapterId );
         MD_CHECK_PTR_RET( params, CC_ERROR_INVALID_PARAMETER );
         MD_CHECK_SIZE_RET( paramsSize, TSetQueryOverrideParams_1_2, CC_ERROR_INVALID_PARAMETER );
 
@@ -2785,7 +2823,7 @@ namespace MetricsDiscoveryInternal
         TTypedValue_1_0* oaBufferSize = m_device->GetGlobalSymbolValueByName( "OABufferMaxSize" );
         if( oaBufferSize == nullptr )
         {
-            MD_LOG( LOG_ERROR, "Unable to obtain maximum OA buffer size" );
+            MD_LOG_A( adapterId, LOG_ERROR, "Unable to obtain maximum OA buffer size" );
             return CC_ERROR_GENERAL;
         }
 
@@ -2793,10 +2831,10 @@ namespace MetricsDiscoveryInternal
         TCompletionCode              ret                 = driverInterface.SetQueryOverride( OVERRIDE_TYPE_MULTISAMPLED_QUERY, m_device->GetPlatformType(), oaBufferSize->ValueUInt32, queryOverrideParams );
         if( ret != CC_OK )
         {
-            MD_LOG( LOG_ERROR, "Setting multisampled query override failed, res: %u", ret );
+            MD_LOG_A( adapterId, LOG_ERROR, "Setting multisampled query override failed, res: %u", ret );
         }
 
-        MD_LOG_EXIT();
+        MD_LOG_EXIT_A( adapterId );
         return ret;
     }
 
@@ -2823,7 +2861,8 @@ namespace MetricsDiscoveryInternal
     template <>
     TCompletionCode COverride<OVERRIDE_TYPE_FREQUENCY_CHANGE_REPORTS>::SetOverride( TSetOverrideParams_1_2* params, uint32_t paramsSize )
     {
-        MD_LOG_ENTER();
+        const uint32_t adapterId = m_device->GetAdapter().GetAdapterId();
+        MD_LOG_ENTER_A( adapterId );
         MD_CHECK_PTR_RET( params, CC_ERROR_INVALID_PARAMETER );
         MD_CHECK_SIZE_RET( paramsSize, TSetOverrideParams_1_2, CC_ERROR_INVALID_PARAMETER );
 
@@ -2832,10 +2871,10 @@ namespace MetricsDiscoveryInternal
         TCompletionCode ret = driverInterface.SetFreqChangeReportsOverride( params->Enable );
         if( ret != CC_OK )
         {
-            MD_LOG( LOG_ERROR, "Setting frequency change reports override failed, res: %u", ret );
+            MD_LOG_A( adapterId, LOG_ERROR, "Setting frequency change reports override failed, res: %u", ret );
         }
 
-        MD_LOG_EXIT();
+        MD_LOG_EXIT_A( adapterId );
         return ret;
     }
 
@@ -2861,7 +2900,7 @@ namespace MetricsDiscoveryInternal
     template <TOverrideType overrideType>
     TCompletionCode COverride<overrideType>::SetOverride( TSetOverrideParams_1_2* params, uint32_t paramsSize )
     {
-        MD_LOG( LOG_ERROR, "Override %u not supported in global mode", overrideType );
+        MD_LOG_A( m_device->GetAdapter().GetAdapterId(), LOG_ERROR, "Override %u not supported in global mode", overrideType );
         return CC_ERROR_NOT_SUPPORTED;
     }
 
@@ -2892,6 +2931,7 @@ namespace MetricsDiscoveryInternal
         , m_streamId( -1 )
         , m_streamConfigId( -1 )
     {
+        const uint32_t adapterId           = m_adapter.GetAdapterId();
         m_params.DeltaFunctionsCount       = DELTA_FUNCTION_LAST_1_0;
         m_params.EquationOperationsCount   = EQUATION_OPER_LAST_1_0;
         m_params.EquationElementTypesCount = EQUATION_ELEM_LAST_1_0;
@@ -2913,12 +2953,12 @@ namespace MetricsDiscoveryInternal
         if( m_driverInterface.SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_PLATFORM_INDEX, &out ) == CC_OK )
         {
             m_platform = (TPlatformType) ( 1 << out.ValueUint32 );
-            MD_LOG( LOG_INFO, "PLATFORM_INDEX is %u", m_platform );
+            MD_LOG_A( adapterId, LOG_INFO, "PLATFORM_INDEX is %u", m_platform );
         }
         if( m_driverInterface.SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_GT_TYPE, &out ) == CC_OK )
         {
             m_gtType = (TGTType) ( 1 << out.ValueUint32 );
-            MD_LOG( LOG_INFO, "GT_TYPE is %u", m_gtType );
+            MD_LOG_A( adapterId, LOG_INFO, "GT_TYPE is %u", m_gtType );
         }
     }
 
@@ -3256,10 +3296,11 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     IOverride_1_2* CMetricsDevice::AddOverride( TOverrideType overrideType )
     {
+        const uint32_t adapterId = GetAdapter().GetAdapterId();
         // 1. CHECK AVAILABILITY ON CURRENT DRIVER INTERFACE
         if( !m_driverInterface.IsOverrideAvailable( overrideType ) )
         {
-            MD_LOG( LOG_INFO, "Override %u not available on the current driver interface", overrideType );
+            MD_LOG_A( adapterId, LOG_INFO, "Override %u not available on the current driver interface", overrideType );
             return nullptr;
         }
 
@@ -3298,12 +3339,12 @@ namespace MetricsDiscoveryInternal
             // Add override and update count
             m_overridesVector.push_back( override );
             m_params.OverrideCount = m_overridesVector.size();
-            MD_LOG( LOG_INFO, "%s - added", override->GetParams()->SymbolName );
+            MD_LOG_A( adapterId, LOG_INFO, "%s - added", override->GetParams()->SymbolName );
         }
         else
         {
             // Override isn't available on the current platform
-            MD_LOG( LOG_INFO, "%s - not available", override->GetParams()->SymbolName );
+            MD_LOG_A( adapterId, LOG_INFO, "%s - not available", override->GetParams()->SymbolName );
             MD_SAFE_DELETE( override );
         }
 
@@ -3622,12 +3663,14 @@ namespace MetricsDiscoveryInternal
         MD_CHECK_PTR_RET( *bufferPtr, CC_ERROR_INVALID_PARAMETER );
         MD_CHECK_PTR_RET( group, CC_ERROR_INVALID_PARAMETER );
 
-        TCompletionCode       ret                  = CC_OK;
-        CMetricSet*           set                  = nullptr;
-        CMetricSet*           existingSet          = nullptr;
-        char*                 symbolicName         = nullptr;
-        char*                 availabilityEquation = nullptr;
-        uint32_t              count                = 0;
+        const uint32_t  adapterId            = GetAdapter().GetAdapterId();
+        TCompletionCode ret                  = CC_OK;
+        CMetricSet*     set                  = nullptr;
+        CMetricSet*     existingSet          = nullptr;
+        char*           symbolicName         = nullptr;
+        char*           availabilityEquation = nullptr;
+        uint32_t        count                = 0;
+
         TMetricSetParams_1_11 metricSetParams;
         TApiSpecificId_1_0    apiSpecificId;
         TReportType           reportType;
@@ -3683,16 +3726,16 @@ namespace MetricsDiscoveryInternal
                         metricSetParams.GtMask,
                         true );
                     MD_CHECK_PTR_RET( set, CC_ERROR_NO_MEMORY );
-                    MD_LOG( LOG_DEBUG, "adding set: %s", metricSetParams.ShortName );
+                    MD_LOG_A( adapterId, LOG_DEBUG, "adding set: %s", metricSetParams.ShortName );
                 }
                 else
                 {
-                    MD_LOG( LOG_DEBUG, "set not added, using existing one: %s", metricSetParams.ShortName );
+                    MD_LOG_A( adapterId, LOG_DEBUG, "set not added, using existing one: %s", metricSetParams.ShortName );
                 }
             }
             else
             {
-                MD_LOG( LOG_DEBUG, "skipping set: %s", metricSetParams.ShortName );
+                MD_LOG_A( adapterId, LOG_DEBUG, "skipping set: %s", metricSetParams.ShortName );
             }
 
             // ApiSpecificId
@@ -4067,6 +4110,7 @@ namespace MetricsDiscoveryInternal
         uint8_t*        bufferPtr        = nullptr;
         uint32_t        fileSize         = 0;
         uint32_t        fileVersion      = CUSTOM_METRICS_FILE_VERSION_0;
+        const uint32_t  adapterId        = GetAdapter().GetAdapterId();
 
         iu_fopen_s( &metricFile, fileName, "rb" );
         MD_CHECK_PTR_RET( metricFile, CC_ERROR_FILE_NOT_FOUND );
@@ -4085,7 +4129,7 @@ namespace MetricsDiscoveryInternal
         }
         memset( metricFileBuffer, 0, fileSize );
 
-        MD_LOG( LOG_DEBUG, "Check if file is in MDAPI plain text format" );
+        MD_LOG_A( adapterId, LOG_DEBUG, "Check if file is in MDAPI plain text format" );
         if( IsMetricsFileInPlainTextFormat( metricFile, fileVersion ) )
         {
             // Load plain text format file
@@ -4103,7 +4147,7 @@ namespace MetricsDiscoveryInternal
         }
         else
         {
-            MD_LOG( LOG_ERROR, "Metrics device file is not valid" );
+            MD_LOG_A( adapterId, LOG_ERROR, "Metrics device file is not valid" );
             retVal = CC_ERROR_INVALID_PARAMETER;
         }
         fclose( metricFile );
@@ -4117,14 +4161,14 @@ namespace MetricsDiscoveryInternal
 
                 if( ( majorApiVersion == MD_API_MAJOR_NUMBER_CURRENT && minorApiVersion > MD_API_MINOR_NUMBER_CURRENT ) || majorApiVersion > MD_API_MAJOR_NUMBER_CURRENT )
                 {
-                    MD_LOG( LOG_ERROR, "Requered MDAPI version %d.%d, current version %d.%d", majorApiVersion, minorApiVersion, MD_API_MAJOR_NUMBER_CURRENT, MD_API_MINOR_NUMBER_CURRENT );
+                    MD_LOG_A( adapterId, LOG_ERROR, "Requered MDAPI version %d.%d, current version %d.%d", majorApiVersion, minorApiVersion, MD_API_MAJOR_NUMBER_CURRENT, MD_API_MINOR_NUMBER_CURRENT );
                     m_isOpenedFromFile = false;
                     MD_SAFE_DELETE_ARRAY( metricFileBuffer );
                     return CC_ERROR_NOT_SUPPORTED;
                 }
             }
 
-            MD_LOG( LOG_DEBUG, "Metrics device file saved on platform: %d, current: %d", *( (TPlatformType*) bufferPtr ), m_platform );
+            MD_LOG_A( adapterId, LOG_DEBUG, "Metrics device file saved on platform: %d, current: %d", *( (TPlatformType*) bufferPtr ), m_platform );
             bufferPtr += sizeof( TPlatformType );
 
             // MetricsDeviceParams
@@ -4132,7 +4176,7 @@ namespace MetricsDiscoveryInternal
             apiVersion.MajorNumber     = ReadUInt32FromFileBuffer( &bufferPtr );
             apiVersion.MinorNumber     = ReadUInt32FromFileBuffer( &bufferPtr );
             apiVersion.BuildNumber     = ReadUInt32FromFileBuffer( &bufferPtr );
-            MD_LOG( LOG_DEBUG, "Metrics device file saved with MDAPI v. %d.%d.%d, current v: %d.%d.%d", apiVersion.MajorNumber, apiVersion.MinorNumber, apiVersion.BuildNumber, MD_API_MAJOR_NUMBER_CURRENT, MD_API_MINOR_NUMBER_CURRENT, MD_API_BUILD_NUMBER_CURRENT );
+            MD_LOG_A( adapterId, LOG_DEBUG, "Metrics device file saved with MDAPI v. %d.%d.%d, current v: %d.%d.%d", apiVersion.MajorNumber, apiVersion.MinorNumber, apiVersion.BuildNumber, MD_API_MAJOR_NUMBER_CURRENT, MD_API_MINOR_NUMBER_CURRENT, MD_API_BUILD_NUMBER_CURRENT );
 
             // GlobalSymbols
             retVal = ReadGlobalSymbolsFromFileBuffer( &bufferPtr );
@@ -4582,7 +4626,7 @@ namespace MetricsDiscoveryInternal
     {
         if( params == nullptr )
         {
-            MD_LOG_INVALID_PARAMETER( LOG_ERROR, params );
+            MD_LOG_INVALID_PARAMETER_A( this->m_device->GetAdapter().GetAdapterId(), LOG_ERROR, params );
             return nullptr;
         }
 
@@ -4703,18 +4747,19 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     IMetricSetLatest* CConcurrentGroup::AddCustomMetricSet( CMetricSet* referenceMetricSet, const char* signalName, const char* symbolName, const char* shortName, uint32_t apiMask, uint32_t categoryMask, uint32_t platformMask, uint32_t gtMask, uint32_t rawReportSize, uint32_t queryReportSize, const char* complementarySetsList, TApiSpecificId_1_0 apiSpecificId, TRegisterSet* startRegSets, uint32_t startRegSetsCount, const char* availabilityEquation, bool copyInformationOnly /*= false*/ )
     {
-        MD_LOG_ENTER();
+        const uint32_t adapterId = m_device->GetAdapter().GetAdapterId();
+        MD_LOG_ENTER_A( adapterId );
 
         if( !AreMetricSetParamsValid( symbolName, shortName, platformMask, gtMask, startRegSets, startRegSetsCount ) )
         {
-            MD_LOG( LOG_ERROR, "invalid custom metric set parameters" );
-            MD_LOG_EXIT();
+            MD_LOG_A( adapterId, LOG_ERROR, "invalid custom metric set parameters" );
+            MD_LOG_EXIT_A( adapterId );
             return nullptr;
         }
         if( MatchingSetExists( symbolName, platformMask, gtMask ) )
         {
-            MD_LOG( LOG_ERROR, "metric set already added: %s", symbolName );
-            MD_LOG_EXIT();
+            MD_LOG_A( adapterId, LOG_ERROR, "metric set already added: %s", symbolName );
+            MD_LOG_EXIT_A( adapterId );
             return nullptr;
         }
 
@@ -4729,7 +4774,7 @@ namespace MetricsDiscoveryInternal
 
         if( set->SetApiSpecificId( apiSpecificId ) != CC_OK )
         {
-            MD_LOG( LOG_DEBUG, "error setting apiSpecificId" );
+            MD_LOG_A( adapterId, LOG_DEBUG, "error setting apiSpecificId" );
             goto customMetricSetCleanup;
         }
 
@@ -4764,7 +4809,7 @@ namespace MetricsDiscoveryInternal
 
         if( set->SetAvailabilityEquation( availabilityEquation ) != CC_OK )
         {
-            MD_LOG( LOG_ERROR, "Error setting metric set equations" );
+            MD_LOG_A( adapterId, LOG_ERROR, "Error setting metric set equations" );
             goto customMetricSetCleanup;
         }
 
@@ -4782,7 +4827,7 @@ namespace MetricsDiscoveryInternal
 
     customMetricSetCleanup:
         MD_SAFE_DELETE( set );
-        MD_LOG_EXIT();
+        MD_LOG_EXIT_A( adapterId );
         return nullptr;
     }
 
@@ -4816,12 +4861,13 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     CMetricSet* CConcurrentGroup::AddMetricSet( const char* symbolicName, const char* shortName, uint32_t apiMask, uint32_t categoryMask, uint32_t snapshotReportSize, uint32_t deltaReportSize, TReportType reportType, uint32_t platformMask, const char* availabilityEquation /*= nullptr*/, uint32_t gtMask /*= GT_TYPE_ALL*/, bool isCustom /*= false*/ )
     {
-        CMetricSet* alreadyAddedSet = nullptr;
-        CMetricSet* set             = new( std::nothrow ) CMetricSet( m_device, this, symbolicName, shortName, apiMask, categoryMask, snapshotReportSize, deltaReportSize, reportType, platformMask, gtMask, isCustom );
+        const uint32_t adapterId       = m_device->GetAdapter().GetAdapterId();
+        CMetricSet*    alreadyAddedSet = nullptr;
+        CMetricSet*    set             = new( std::nothrow ) CMetricSet( m_device, this, symbolicName, shortName, apiMask, categoryMask, snapshotReportSize, deltaReportSize, reportType, platformMask, gtMask, isCustom );
 
         if( set->SetAvailabilityEquation( availabilityEquation ) != CC_OK )
         {
-            MD_LOG( LOG_ERROR, "Error setting metric set equations" );
+            MD_LOG_A( adapterId, LOG_ERROR, "Error setting metric set equations" );
             MD_SAFE_DELETE( set );
             return nullptr;
         }
@@ -4839,7 +4885,7 @@ namespace MetricsDiscoveryInternal
                 auto iterator = std::find( m_setsVector.begin(), m_setsVector.end(), alreadyAddedSet );
                 if( iterator != m_setsVector.end() )
                 {
-                    MD_LOG( LOG_WARNING, "Attempt to add metric set with the same name and true availability equation." );
+                    MD_LOG_A( adapterId, LOG_WARNING, "Attempt to add metric set with the same name and true availability equation." );
 
                     m_setsVector.erase( iterator );
                     m_params_1_0.MetricSetsCount = m_setsVector.size();
@@ -4853,11 +4899,11 @@ namespace MetricsDiscoveryInternal
         {
             m_setsVector.push_back( set );
             m_params_1_0.MetricSetsCount = m_setsVector.size();
-            MD_LOG( LOG_INFO, "%s - added", set->GetParams()->SymbolName );
+            MD_LOG_A( adapterId, LOG_INFO, "%s - added", set->GetParams()->SymbolName );
         }
         else
         {
-            MD_LOG( LOG_INFO, "%s - not available", set->GetParams()->SymbolName );
+            MD_LOG_A( adapterId, LOG_INFO, "%s - not available", set->GetParams()->SymbolName );
             m_otherSetsList.push_back( set );
         }
 
@@ -4983,9 +5029,10 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     TCompletionCode CConcurrentGroup::WriteCConcurrentGroupToFile( FILE* metricFile )
     {
+        const uint32_t adapterId = m_device->GetAdapter().GetAdapterId();
         if( metricFile == nullptr )
         {
-            MD_ASSERT( metricFile != nullptr );
+            MD_ASSERT_A( adapterId, metricFile != nullptr );
             return CC_ERROR_INVALID_PARAMETER;
         }
 
@@ -5067,30 +5114,31 @@ namespace MetricsDiscoveryInternal
     bool CConcurrentGroup::AreMetricSetParamsValid( const char* symbolName, const char* shortName, uint32_t platformMask, uint32_t gtMask, TRegisterSet* startRegSets, uint32_t startRegSetsCount )
     {
         CDriverInterface& driverInterface = m_device->GetDriverInterface();
+        const uint32_t    adapterId       = m_device->GetAdapter().GetAdapterId();
 
         if( ( symbolName == nullptr ) || ( strcmp( symbolName, "" ) == 0 ) )
         {
-            MD_LOG_INVALID_PARAMETER( LOG_ERROR, symbolName );
+            MD_LOG_INVALID_PARAMETER_A( adapterId, LOG_ERROR, symbolName );
             return false;
         }
         if( ( shortName == nullptr ) || ( strcmp( shortName, "" ) == 0 ) )
         {
-            MD_LOG_INVALID_PARAMETER( LOG_ERROR, shortName );
+            MD_LOG_INVALID_PARAMETER_A( adapterId, LOG_ERROR, shortName );
             return false;
         }
         if( platformMask == 0 )
         {
-            MD_LOG_INVALID_PARAMETER( LOG_ERROR, platformMask );
+            MD_LOG_INVALID_PARAMETER_A( adapterId, LOG_ERROR, platformMask );
             return false;
         }
         if( gtMask == 0 )
         {
-            MD_LOG_INVALID_PARAMETER( LOG_ERROR, gtMask );
+            MD_LOG_INVALID_PARAMETER_A( adapterId, LOG_ERROR, gtMask );
             return false;
         }
         if( startRegSetsCount > 0 && startRegSets == nullptr )
         {
-            MD_LOG_INVALID_PARAMETER( LOG_ERROR, startRegSets );
+            MD_LOG_INVALID_PARAMETER_A( adapterId, LOG_ERROR, startRegSets );
             return false;
         }
 
@@ -5100,7 +5148,7 @@ namespace MetricsDiscoveryInternal
             {
                 if( startRegSets[i].StartConfigRegs == nullptr )
                 {
-                    MD_LOG_INVALID_PARAMETER( LOG_ERROR, startRegSets[i].StartConfigRegs );
+                    MD_LOG_INVALID_PARAMETER_A( adapterId, LOG_ERROR, startRegSets[i].StartConfigRegs );
                     return false;
                 }
 
@@ -5110,10 +5158,10 @@ namespace MetricsDiscoveryInternal
                 {
                     if( platformMask & platform )
                     {
-                        MD_LOG( LOG_DEBUG, "validating register offsets for platform: %u", platform );
+                        MD_LOG_A( adapterId, LOG_DEBUG, "validating register offsets for platform: %u", platform );
                         if( driverInterface.ValidatePmRegsConfig( startRegSets[i].StartConfigRegs, startRegSets[i].StartConfigRegsCount, (TPlatformType) platform ) != CC_OK )
                         {
-                            MD_LOG( LOG_ERROR, "invalid start register offsets for platform: %u", platform );
+                            MD_LOG_A( adapterId, LOG_ERROR, "invalid start register offsets for platform: %u", platform );
                             return false;
                         }
                     }
@@ -5186,7 +5234,8 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     TCompletionCode CConcurrentGroup::FillLockSemaphoreName( char* name, size_t size )
     {
-        MD_ASSERT( name != nullptr );
+        const uint32_t adapterId = m_device->GetAdapter().GetAdapterId();
+        MD_ASSERT_A( adapterId, name != nullptr );
 
         // Create a semaphore name: "<CcgSymbolName>_<BusNumber>_<DeviceNumber>_<FunctionNumber>"
         const TAdapterParams_1_9* adapterParams = m_device->GetAdapter().GetParams();
@@ -5419,7 +5468,7 @@ namespace MetricsDiscoveryInternal
     {
         if( params == nullptr )
         {
-            MD_LOG_INVALID_PARAMETER( LOG_ERROR, params );
+            MD_LOG_INVALID_PARAMETER_A( m_device->GetAdapter().GetAdapterId(), LOG_ERROR, params );
             return nullptr;
         }
 
@@ -5489,9 +5538,10 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     TCompletionCode COAConcurrentGroup::SetIoStreamSamplingType( TSamplingType type )
     {
+        const uint32_t  adapterId     = m_device->GetAdapter().GetAdapterId();
         TStreamType     newStreamType = STREAM_TYPE_OA;
         TCompletionCode ret           = CC_OK;
-        MD_LOG_ENTER();
+        MD_LOG_ENTER_A( adapterId );
         switch( type )
         {
             case SAMPLING_TYPE_OA_TIMER:
@@ -5508,16 +5558,16 @@ namespace MetricsDiscoveryInternal
             // change is disallowed if stream is already opened
             if( m_ioMetricSet != nullptr )
             {
-                MD_LOG( LOG_ERROR, "Failed to set IoStream sampling type" );
+                MD_LOG_A( adapterId, LOG_ERROR, "Failed to set IoStream sampling type" );
                 ret = CC_ERROR_GENERAL;
             }
             else
             {
                 m_streamType = newStreamType;
-                MD_LOG( LOG_DEBUG, "Stream type changed to: %u", m_streamType );
+                MD_LOG_A( adapterId, LOG_DEBUG, "Stream type changed to: %u", m_streamType );
             }
         }
-        MD_LOG_EXIT();
+        MD_LOG_EXIT_A( adapterId );
         return ret;
     }
 
@@ -5545,7 +5595,8 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     TCompletionCode COAConcurrentGroup::OpenIoStream( IMetricSet_1_0* metricSet, uint32_t processId, uint32_t* nsTimerPeriod, uint32_t* oaBufferSize )
     {
-        MD_LOG_ENTER();
+        const uint32_t adapterId = m_device->GetAdapter().GetAdapterId();
+        MD_LOG_ENTER_A( adapterId );
         MD_CHECK_PTR_RET( metricSet, CC_ERROR_INVALID_PARAMETER );
         MD_CHECK_PTR_RET( nsTimerPeriod, CC_ERROR_INVALID_PARAMETER );
         MD_CHECK_PTR_RET( oaBufferSize, CC_ERROR_INVALID_PARAMETER );
@@ -5556,10 +5607,10 @@ namespace MetricsDiscoveryInternal
         ret = driverInterface.OpenIoStream( m_streamType, *m_device, static_cast<CMetricSet*>( metricSet ), m_params_1_0.SymbolName, processId, nsTimerPeriod, oaBufferSize, &m_streamEventHandle );
         if( ret != CC_OK )
         {
-            MD_LOG_EXIT();
+            MD_LOG_EXIT_A( adapterId );
             return ret;
         }
-        MD_LOG( LOG_DEBUG, "Stream opened using type: %u", m_streamType );
+        MD_LOG_A( adapterId, LOG_DEBUG, "Stream opened using type: %u", m_streamType );
 
         m_ioMetricSet          = static_cast<CMetricSet*>( metricSet );
         m_processId            = processId;
@@ -5573,7 +5624,7 @@ namespace MetricsDiscoveryInternal
             mc->DiscardSavedReport();
         }
 
-        MD_LOG_EXIT();
+        MD_LOG_EXIT_A( adapterId );
         return ret;
     }
 
@@ -5600,17 +5651,18 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     TCompletionCode COAConcurrentGroup::ReadIoStream( uint32_t* reportCount, char* reportData, uint32_t readFlags )
     {
+        const uint32_t adapterId = m_device->GetAdapter().GetAdapterId();
         MD_CHECK_PTR_RET( reportData, CC_ERROR_INVALID_PARAMETER );
         MD_CHECK_PTR_RET( reportCount, CC_ERROR_INVALID_PARAMETER );
         if( m_ioMetricSet == nullptr )
         {
             *reportCount = 0;
-            MD_LOG( LOG_ERROR, "stream not opened" );
+            MD_LOG_A( adapterId, LOG_ERROR, "stream not opened" );
             return CC_ERROR_GENERAL;
         }
         if( *reportCount == 0 )
         {
-            MD_LOG( LOG_DEBUG, "0 reports to read" );
+            MD_LOG_A( adapterId, LOG_DEBUG, "0 reports to read" );
             return CC_OK;
         }
 
@@ -5660,11 +5712,12 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     TCompletionCode COAConcurrentGroup::CloseIoStream( void )
     {
-        MD_LOG_ENTER();
+        const uint32_t adapterId = m_device->GetAdapter().GetAdapterId();
+        MD_LOG_ENTER_A( adapterId );
         if( m_ioMetricSet == nullptr )
         {
-            MD_LOG( LOG_ERROR, "stream not opened" );
-            MD_LOG_EXIT();
+            MD_LOG_A( adapterId, LOG_ERROR, "stream not opened" );
+            MD_LOG_EXIT_A( adapterId );
             return CC_ERROR_GENERAL;
         }
 
@@ -5674,14 +5727,14 @@ namespace MetricsDiscoveryInternal
         ret = driverInterface.CloseIoStream( m_streamType, *m_device, &m_streamEventHandle, m_params_1_0.SymbolName, m_ioMetricSet );
         if( ret != CC_OK )
         {
-            MD_LOG_EXIT();
+            MD_LOG_EXIT_A( adapterId );
             return ret;
         }
 
         // m_processId is not cleared after close to define if context filtering was used.
         // Stream reopen will override m_processId
         m_ioMetricSet = nullptr;
-        MD_LOG_EXIT();
+        MD_LOG_EXIT_A( adapterId );
         return ret;
     }
 
@@ -6030,7 +6083,7 @@ namespace MetricsDiscoveryInternal
         if( m_ioMetricSet == nullptr )
         {
             *reportCount = 0;
-            MD_LOG( LOG_ERROR, "stream not opened" );
+            MD_LOG_A( m_device->GetAdapter().GetAdapterId(), LOG_ERROR, "stream not opened" );
             return CC_ERROR_GENERAL;
         }
 
@@ -6084,7 +6137,7 @@ namespace MetricsDiscoveryInternal
     {
         if( m_ioMetricSet == nullptr )
         {
-            MD_LOG( LOG_ERROR, "stream not opened" );
+            MD_LOG_A( m_device->GetAdapter().GetAdapterId(), LOG_ERROR, "stream not opened" );
             return CC_ERROR_GENERAL;
         }
 
@@ -6421,7 +6474,8 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     TCompletionCode CMetricSet::Deactivate( void )
     {
-        MD_LOG_ENTER();
+        const uint32_t adapterId = m_device->GetAdapter().GetAdapterId();
+        MD_LOG_ENTER_A( adapterId );
         TCompletionCode ret = CC_OK;
         if( m_isReadRegsCfgSet )
         {
@@ -6443,7 +6497,7 @@ namespace MetricsDiscoveryInternal
             ret = m_concurrentGroup->Unlock();
         }
 
-        MD_LOG_EXIT();
+        MD_LOG_EXIT_A( adapterId );
         return ret;
     }
 
@@ -6510,11 +6564,12 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     uint32_t CMetricSet::GetPartialGroupId( char* groupName, uint32_t level )
     {
-        MD_ASSERT( groupName != nullptr );
+        const uint32_t adapterId = m_device->GetAdapter().GetAdapterId();
+        MD_ASSERT_A( adapterId, groupName != nullptr );
 
         if( level > MD_METRIC_GROUP_NAME_LEVEL_MAX )
         {
-            MD_LOG( LOG_ERROR, "maximum group name level allowed is %u", MD_METRIC_GROUP_NAME_LEVEL_MAX );
+            MD_LOG_A( adapterId, LOG_ERROR, "maximum group name level allowed is %u", MD_METRIC_GROUP_NAME_LEVEL_MAX );
             return METRIC_GROUP_NAME_ID_INVALID;
         }
 
@@ -6534,7 +6589,7 @@ namespace MetricsDiscoveryInternal
 
         if( groupId == METRIC_GROUP_NAME_ID_INVALID )
         {
-            MD_LOG( LOG_ERROR, "invalid group name: %s at level: %u", groupName, level );
+            MD_LOG_A( adapterId, LOG_ERROR, "invalid group name: %s at level: %u", groupName, level );
         }
         return groupId;
     }
@@ -6564,15 +6619,17 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     IMetricLatest* CMetricSet::AddCustomMetric( TAddCustomMetricParams* params )
     {
+        const uint32_t adapterId = m_device->GetAdapter().GetAdapterId();
+
         if( params == nullptr )
         {
-            MD_LOG_INVALID_PARAMETER( LOG_ERROR, params );
+            MD_LOG_INVALID_PARAMETER_A( adapterId, LOG_ERROR, params );
             return nullptr;
         }
 
         if( params->Type != METRIC_CUSTOM_PARAMS_1_0 )
         {
-            MD_LOG( LOG_ERROR, "Unsupported TAddCustomMetricParams Type: %u", params->Type );
+            MD_LOG_A( adapterId, LOG_ERROR, "Unsupported TAddCustomMetricParams Type: %u", params->Type );
             return nullptr;
         }
 
@@ -6597,17 +6654,17 @@ namespace MetricsDiscoveryInternal
         const char*       signalName            = MD_CUSTOM_METRIC_PARAMS( params, 1_0 ).SignalName;
         const char*       availabilityEquation  = MD_CUSTOM_METRIC_PARAMS( params, 1_0 ).AvailabilityEquation;
 
-        MD_LOG_ENTER();
+        MD_LOG_ENTER_A( adapterId );
 
         if( !AreMetricParamsValid(
                 symbolName, shortName, longName, groupName, metricType, resultType, resultUnits, hwType, dxToOglAlias ) )
         {
-            MD_LOG( LOG_ERROR, "invalid custom metric parameters" );
+            MD_LOG_A( adapterId, LOG_ERROR, "invalid custom metric parameters" );
             return nullptr;
         }
         if( IsMetricAlreadyAdded( symbolName ) )
         {
-            MD_LOG( LOG_ERROR, "metric already added: %s", symbolName );
+            MD_LOG_A( adapterId, LOG_ERROR, "metric already added: %s", symbolName );
             return nullptr;
         }
 
@@ -6618,7 +6675,7 @@ namespace MetricsDiscoveryInternal
 
         if( metric->SetAvailabilityEquation( availabilityEquation ) != CC_OK || metric->SetSnapshotReportReadEquation( ioReadEquation ) != CC_OK || metric->SetDeltaReportReadEquation( queryReadEquation ) != CC_OK || metric->SetNormalizationEquation( normalizationEquation ) != CC_OK || metric->SetSnapshotReportDeltaFunction( deltaFunction ) != CC_OK || metric->SetMaxValueEquation( maxValueEquation ) != CC_OK )
         {
-            MD_LOG( LOG_ERROR, "error setting custom metric equations" );
+            MD_LOG_A( adapterId, LOG_ERROR, "error setting custom metric equations" );
             MD_SAFE_DELETE( metric );
             return nullptr;
         }
@@ -6630,8 +6687,8 @@ namespace MetricsDiscoveryInternal
         // Refresh cached filtered metrics
         RefreshCachedMetricsAndInformation();
 
-        MD_LOG( LOG_DEBUG, "Custom metric %s is added", symbolName );
-        MD_LOG_EXIT();
+        MD_LOG_A( adapterId, LOG_DEBUG, "Custom metric %s is added", symbolName );
+        MD_LOG_EXIT_A( adapterId );
         return metric;
     }
 
@@ -7102,7 +7159,7 @@ namespace MetricsDiscoveryInternal
         {
             if( AddComplementaryMetricSet( token ) != CC_OK )
             {
-                MD_LOG( LOG_DEBUG, "error adding complementary metric sets" );
+                MD_LOG_A( m_device->GetAdapter().GetAdapterId(), LOG_DEBUG, "error adding complementary metric sets" );
                 MD_SAFE_DELETE_ARRAY( complementarySets );
                 return CC_ERROR_GENERAL;
             }
@@ -7135,7 +7192,8 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     TCompletionCode CMetricSet::ActivateInternal( bool sendConfigFlag, bool sendQueryConfigFlag )
     {
-        MD_LOG_ENTER();
+        const uint32_t adapterId = m_device->GetAdapter().GetAdapterId();
+        MD_LOG_ENTER_A( adapterId );
         TCompletionCode retVal = CC_OK;
 
         retVal = m_concurrentGroup->Lock();
@@ -7144,12 +7202,12 @@ namespace MetricsDiscoveryInternal
             if( SendStartConfiguration( sendQueryConfigFlag ) != CC_OK )
             {
                 m_concurrentGroup->Unlock();
-                MD_LOG( LOG_DEBUG, "sending start configuration failed" );
+                MD_LOG_A( adapterId, LOG_DEBUG, "sending start configuration failed" );
                 retVal = CC_ERROR_GENERAL;
             }
         }
 
-        MD_LOG_EXIT();
+        MD_LOG_EXIT_A( adapterId );
         return retVal;
     }
 
@@ -7259,7 +7317,7 @@ namespace MetricsDiscoveryInternal
                 }
                 else
                 {
-                    MD_LOG( LOG_ERROR, "Unknown register method" );
+                    MD_LOG_A( m_device->GetAdapter().GetAdapterId(), LOG_ERROR, "Unknown register method" );
                     return CC_ERROR_GENERAL;
                 }
             }
@@ -7400,7 +7458,7 @@ namespace MetricsDiscoveryInternal
             }
             else
             {
-                MD_LOG( LOG_ERROR, "Programming missing" );
+                MD_LOG_A( m_device->GetAdapter().GetAdapterId(), LOG_ERROR, "Programming missing" );
                 ret = CC_ERROR_NOT_SUPPORTED;
             }
 
@@ -7463,6 +7521,7 @@ namespace MetricsDiscoveryInternal
     {
         bool              ret             = true;
         CDriverInterface& driverInterface = m_device->GetDriverInterface();
+        const uint32_t    adapterId       = m_device->GetAdapter().GetAdapterId();
 
         // If measurement type didn't change and config handles were checked before
         if( m_pmRegsConfigInfo.IsQueryConfig == sendQueryConfigFlag && ( m_pmRegsConfigInfo.OaConfigHandle != 0 || m_pmRegsConfigInfo.GpConfigHandle != 0 || m_pmRegsConfigInfo.RrConfigHandle != 0 ) )
@@ -7477,13 +7536,13 @@ namespace MetricsDiscoveryInternal
             if( retCode == CC_OK && oaCfgHandle == m_pmRegsConfigInfo.OaConfigHandle && gpCfgHandle == m_pmRegsConfigInfo.GpConfigHandle && rrCfgHandle == m_pmRegsConfigInfo.RrConfigHandle )
             {
                 ret = false;
-                MD_LOG( LOG_DEBUG, "No need to send PmRegs configuration" );
+                MD_LOG_A( adapterId, LOG_DEBUG, "No need to send PmRegs configuration" );
             }
         }
 
         if( ret )
         {
-            MD_LOG( LOG_DEBUG, "Sending PmRegs configuration required" );
+            MD_LOG_A( adapterId, LOG_DEBUG, "Sending PmRegs configuration required" );
         }
 
         return ret;
@@ -7533,7 +7592,7 @@ namespace MetricsDiscoveryInternal
 
         if( metricFile == nullptr )
         {
-            MD_ASSERT( metricFile != nullptr );
+            MD_ASSERT_A( m_device->GetAdapter().GetAdapterId(), metricFile != nullptr );
             return CC_ERROR_INVALID_PARAMETER;
         }
 
@@ -7698,7 +7757,7 @@ namespace MetricsDiscoveryInternal
                 referenceMetric = static_cast<CMetric*>( referenceMetricSet->GetMetric( i ) );
                 if( referenceMetric == nullptr )
                 {
-                    MD_ASSERT( false );
+                    MD_ASSERT_A( m_device->GetAdapter().GetAdapterId(), false );
                     return CC_ERROR_GENERAL;
                 }
                 metricSignalName = referenceMetric->GetSignalName();
@@ -7707,7 +7766,7 @@ namespace MetricsDiscoveryInternal
                     metric = new( std::nothrow ) CMetric( *referenceMetric );
                     if( !metric )
                     {
-                        MD_LOG( LOG_DEBUG, "error copying metrics" );
+                        MD_LOG_A( m_device->GetAdapter().GetAdapterId(), LOG_DEBUG, "error copying metrics" );
                         return CC_ERROR_GENERAL;
                     }
                     AddMetric( metric );
@@ -7722,13 +7781,13 @@ namespace MetricsDiscoveryInternal
             referenceInformation = static_cast<CInformation*>( referenceMetricSet->GetInformation( i ) );
             if( referenceInformation == nullptr )
             {
-                MD_ASSERT( false );
+                MD_ASSERT_A( m_device->GetAdapter().GetAdapterId(), false );
                 return CC_ERROR_GENERAL;
             }
             information = new( std::nothrow ) CInformation( *referenceInformation );
             if( !information )
             {
-                MD_LOG( LOG_DEBUG, "error copying information" );
+                MD_LOG_A( m_device->GetAdapter().GetAdapterId(), LOG_DEBUG, "error copying information" );
                 return CC_ERROR_GENERAL;
             }
             AddInformation( information );
@@ -7817,29 +7876,30 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     TCompletionCode CMetricSet::SetApiFiltering( uint32_t apiMask )
     {
-        MD_LOG_ENTER();
+        const uint32_t adapterId = m_device->GetAdapter().GetAdapterId();
+        MD_LOG_ENTER_A( adapterId );
 
         if( !IsApiFilteringMaskValid( apiMask ) )
         {
-            MD_LOG( LOG_ERROR, "error: invalid filtering API mask" );
-            MD_LOG_EXIT();
+            MD_LOG_A( adapterId, LOG_ERROR, "error: invalid filtering API mask" );
+            MD_LOG_EXIT_A( adapterId );
             return CC_ERROR_INVALID_PARAMETER;
         }
 
         if( apiMask == 0 || apiMask == API_TYPE_ALL )
         {
             // Disable API filtering
-            MD_LOG( LOG_INFO, "disabling API filtering, apiMask: %u", apiMask );
+            MD_LOG_A( adapterId, LOG_INFO, "disabling API filtering, apiMask: %u", apiMask );
             EnableApiFiltering( apiMask, false );
         }
         else
         {
             // Enable API filtering
-            MD_LOG( LOG_INFO, "enabling API filtering, apiMask: %u", apiMask );
+            MD_LOG_A( adapterId, LOG_INFO, "enabling API filtering, apiMask: %u", apiMask );
             EnableApiFiltering( apiMask, true );
         }
 
-        MD_LOG_EXIT();
+        MD_LOG_EXIT_A( adapterId );
         return CC_OK;
     }
 
@@ -7871,7 +7931,7 @@ namespace MetricsDiscoveryInternal
         // Do not allow mixing stream and query metrics
         else if( ( apiMask & streamMask ) && ( apiMask & ~streamMask ) )
         {
-            MD_LOG( LOG_DEBUG, "error: IoStream and Query api mask mixed, apiMask: %u", apiMask );
+            MD_LOG_A( m_device->GetAdapter().GetAdapterId(), LOG_DEBUG, "error: IoStream and Query api mask mixed, apiMask: %u", apiMask );
             ret = false;
         }
 
@@ -7897,7 +7957,8 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     void CMetricSet::EnableApiFiltering( uint32_t apiMask, bool enable )
     {
-        MD_LOG_ENTER();
+        const uint32_t adapterId = m_device->GetAdapter().GetAdapterId();
+        MD_LOG_ENTER_A( adapterId );
         if( !enable )
         {
             UseApiFilteredVariables( false );
@@ -7907,7 +7968,7 @@ namespace MetricsDiscoveryInternal
             // Used cached metrics if possible
             if( apiMask == m_filteredParams.ApiMask )
             {
-                MD_LOG( LOG_DEBUG, "using cached metrics for API filtering, apiMask: %u", apiMask );
+                MD_LOG_A( adapterId, LOG_DEBUG, "using cached metrics for API filtering, apiMask: %u", apiMask );
             }
             else
             {
@@ -7924,8 +7985,8 @@ namespace MetricsDiscoveryInternal
 
         UpdateMetricIndicesInEquations();
 
-        MD_LOG( LOG_DEBUG, "API filtering %s", m_isFiltered ? "enabled" : "disabled" );
-        MD_LOG_EXIT();
+        MD_LOG_A( adapterId, LOG_DEBUG, "API filtering %s", m_isFiltered ? "enabled" : "disabled" );
+        MD_LOG_EXIT_A( adapterId );
     }
 
     //////////////////////////////////////////////////////////////////////////////
@@ -8020,7 +8081,7 @@ namespace MetricsDiscoveryInternal
             m_isFiltered               = false;
         }
 
-        MD_LOG( LOG_DEBUG, "use API filtered variables: %s", enable ? "TRUE" : "FALSE" );
+        MD_LOG_A( m_device->GetAdapter().GetAdapterId(), LOG_DEBUG, "use API filtered variables: %s", enable ? "TRUE" : "FALSE" );
     }
 
     //////////////////////////////////////////////////////////////////////////////
@@ -8151,7 +8212,7 @@ namespace MetricsDiscoveryInternal
     {
         if( enableContextFiltering )
         {
-            MD_LOG( LOG_ERROR, "error: context filtering not supported" );
+            MD_LOG_A( m_device->GetAdapter().GetAdapterId(), LOG_ERROR, "error: context filtering not supported" );
             return CC_ERROR_NOT_SUPPORTED;
         }
 
@@ -8192,33 +8253,34 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     TCompletionCode CMetricSet::CalculateMetrics( const uint8_t* rawData, uint32_t rawDataSize, TTypedValue_1_0* out, uint32_t outSize, uint32_t* outReportCount, TTypedValue_1_0* outMaxValues, uint32_t outMaxValuesSize )
     {
-        MD_LOG_ENTER();
+        const uint32_t adapterId = m_device->GetAdapter().GetAdapterId();
+        MD_LOG_ENTER_A( adapterId );
         MD_CHECK_PTR_RET( rawData, CC_ERROR_INVALID_PARAMETER );
         MD_CHECK_PTR_RET( out, CC_ERROR_INVALID_PARAMETER );
         if( !rawDataSize )
         {
-            MD_LOG( LOG_DEBUG, "nothing to calculate, rawDataSize: 0" );
-            MD_LOG_EXIT();
+            MD_LOG_A( adapterId, LOG_DEBUG, "nothing to calculate, rawDataSize: 0" );
+            MD_LOG_EXIT_A( adapterId );
             return CC_OK;
         }
         if( !outMaxValues || !outMaxValuesSize )
         {
-            MD_LOG( LOG_DEBUG, "max values won't be calculated, outMaxValues: %p, outMaxValuesSize: %u", outMaxValues, outMaxValuesSize );
+            MD_LOG_A( adapterId, LOG_DEBUG, "max values won't be calculated, outMaxValues: %p, outMaxValuesSize: %u", outMaxValues, outMaxValuesSize );
             outMaxValues     = nullptr;
             outMaxValuesSize = 0;
         }
 
         if( !m_isFiltered )
         {
-            MD_LOG( LOG_ERROR, "error: API filtering must be enabled first" );
-            MD_LOG_EXIT();
+            MD_LOG_A( adapterId, LOG_ERROR, "error: API filtering must be enabled first" );
+            MD_LOG_EXIT_A( adapterId );
             return CC_ERROR_GENERAL;
         }
         if( ( m_currentParams->MetricsCount + m_currentParams->InformationCount ) == 0 )
         {
             // May happen when unsupported API is used in MetricSet filtering
-            MD_LOG( LOG_WARNING, "nothing to calculate, empty MetricSet" );
-            MD_LOG_EXIT();
+            MD_LOG_A( adapterId, LOG_WARNING, "nothing to calculate, empty MetricSet" );
+            MD_LOG_EXIT_A( adapterId );
             return CC_OK;
         }
 
@@ -8245,15 +8307,15 @@ namespace MetricsDiscoveryInternal
             goto deinitialize_manager;
         }
 
-        MD_LOG( LOG_DEBUG, "about to calculate %u raw reports", rawReportCount );
+        MD_LOG_A( adapterId, LOG_DEBUG, "about to calculate %u raw reports", rawReportCount );
 
         // CALCULATE METRICS
         while( calculationManager->CalculateNextReport( calculationContext ) )
         { // void
         }
 
-        MD_LOG( LOG_DEBUG, "calculated %u out reports", calculationContext.CommonCalculationContext.OutReportCount );
-        MD_LOG( LOG_DEBUG, "max values%s calculated", outMaxValues ? "" : " not" );
+        MD_LOG_A( adapterId, LOG_DEBUG, "calculated %u out reports", calculationContext.CommonCalculationContext.OutReportCount );
+        MD_LOG_A( adapterId, LOG_DEBUG, "max values%s calculated", outMaxValues ? "" : " not" );
 
         if( outReportCount )
         {
@@ -8264,7 +8326,7 @@ namespace MetricsDiscoveryInternal
     deinitialize_manager:
         InitializeCalculationManager( measurementType, &calculationManager, false );
 
-        MD_LOG_EXIT();
+        MD_LOG_EXIT_A( adapterId );
         return ret;
     }
 
@@ -8290,24 +8352,25 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     TCompletionCode CMetricSet::CalculateIoMeasurementInformation( TTypedValue_1_0* out, uint32_t outSize )
     {
-        MD_LOG_ENTER();
+        const uint32_t adapterId = m_device->GetAdapter().GetAdapterId();
+        MD_LOG_ENTER_A( adapterId );
         MD_CHECK_PTR_RET( m_concurrentGroup, CC_ERROR_GENERAL );
 
         MD_CHECK_PTR_RET( out, CC_ERROR_INVALID_PARAMETER );
         if( outSize < m_concurrentGroup->GetParams()->IoMeasurementInformationCount )
         {
-            MD_LOG( LOG_ERROR, "error: output buffer has incorrect size" );
-            MD_LOG( LOG_DEBUG, "outSize: %u", outSize );
-            MD_LOG_EXIT();
+            MD_LOG_A( adapterId, LOG_ERROR, "error: output buffer has incorrect size" );
+            MD_LOG_A( adapterId, LOG_DEBUG, "outSize: %u", outSize );
+            MD_LOG_EXIT_A( adapterId );
             return CC_ERROR_INVALID_PARAMETER;
         }
 
         MD_CHECK_PTR_RET( m_metricsCalculator, CC_ERROR_GENERAL );
 
         m_metricsCalculator->ReadIoMeasurementInformation( *m_concurrentGroup, out );
-        MD_LOG( LOG_DEBUG, "calculated %u out io information", m_concurrentGroup->GetParams()->IoMeasurementInformationCount );
+        MD_LOG_A( adapterId, LOG_DEBUG, "calculated %u out io information", m_concurrentGroup->GetParams()->IoMeasurementInformationCount );
 
-        MD_LOG_EXIT();
+        MD_LOG_EXIT_A( adapterId );
         return CC_OK;
     }
 
@@ -8341,35 +8404,36 @@ namespace MetricsDiscoveryInternal
         // Size of one individual calculated max values report in bytes
         uint32_t maxValuesReportSize = m_currentParams->MetricsCount * sizeof( TTypedValue_1_0 );
 
-        MD_ASSERT( rawReportSize != 0 );
+        const uint32_t adapterId = m_device->GetAdapter().GetAdapterId();
+        MD_ASSERT_A( adapterId, rawReportSize != 0 );
 
         if( rawDataSize % rawReportSize != 0 )
         {
-            MD_LOG( LOG_ERROR, "error: input buffer has incorrect size" );
-            MD_LOG( LOG_DEBUG, "rawDataSize: %u, rawReportSize: %u", rawDataSize, rawReportSize );
+            MD_LOG_A( adapterId, LOG_ERROR, "error: input buffer has incorrect size" );
+            MD_LOG_A( adapterId, LOG_DEBUG, "rawDataSize: %u, rawReportSize: %u", rawDataSize, rawReportSize );
             return CC_ERROR_INVALID_PARAMETER;
         }
         if( outReportSize == 0 )
         {
-            MD_LOG( LOG_DEBUG, "outReportSize: 0. Nothing to calculate." );
+            MD_LOG_A( adapterId, LOG_DEBUG, "outReportSize: 0. Nothing to calculate." );
             return CC_OK;
         }
         if( outSize % outReportSize != 0 )
         {
-            MD_LOG( LOG_ERROR, "error: output buffer has incorrect size" );
-            MD_LOG( LOG_DEBUG, "outSize: %u, outReportSize: %u", outSize, outReportSize );
+            MD_LOG_A( adapterId, LOG_ERROR, "error: output buffer has incorrect size" );
+            MD_LOG_A( adapterId, LOG_DEBUG, "outSize: %u, outReportSize: %u", outSize, outReportSize );
             return CC_ERROR_INVALID_PARAMETER;
         }
         if( rawReportCount > ( outSize / outReportSize ) )
         {
-            MD_LOG( LOG_ERROR, "error: output buffer to small" );
-            MD_LOG( LOG_DEBUG, "rawReportCount: %u, outSize: %u, outReportSize: %u", rawReportCount, outSize, outReportSize );
+            MD_LOG_A( adapterId, LOG_ERROR, "error: output buffer to small" );
+            MD_LOG_A( adapterId, LOG_DEBUG, "rawReportCount: %u, outSize: %u, outReportSize: %u", rawReportCount, outSize, outReportSize );
             return CC_ERROR_INVALID_PARAMETER;
         }
         if( outMaxValuesSize && maxValuesReportSize && rawReportCount > ( outMaxValuesSize / maxValuesReportSize ) )
         {
-            MD_LOG( LOG_ERROR, "error: maxValues buffer to small" );
-            MD_LOG( LOG_DEBUG, "rawReportCount: %u, outMaxValuesSize: %u, maxValueReportSize: %u", rawReportCount, outMaxValuesSize, maxValuesReportSize );
+            MD_LOG_A( adapterId, LOG_ERROR, "error: maxValues buffer to small" );
+            MD_LOG_A( adapterId, LOG_DEBUG, "rawReportCount: %u, outMaxValuesSize: %u, maxValueReportSize: %u", rawReportCount, outMaxValuesSize, maxValuesReportSize );
             return CC_ERROR_INVALID_PARAMETER;
         }
 
@@ -8396,29 +8460,30 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     void CMetricSet::InitializeCalculationManager( TMeasurementType measurementType, CCalculationManager** calculationManager, bool init )
     {
+        const uint32_t adapterId = m_device->GetAdapter().GetAdapterId();
         if( !init )
         {
             MD_SAFE_DELETE( *calculationManager );
-            MD_LOG( LOG_DEBUG, "calculation manager deinitialization" );
+            MD_LOG_A( adapterId, LOG_DEBUG, "calculation manager deinitialization" );
             return;
         }
 
-        MD_ASSERT( *calculationManager == nullptr );
+        MD_ASSERT_A( adapterId, *calculationManager == nullptr );
         switch( measurementType )
         {
             case MEASUREMENT_TYPE_DELTA_QUERY:
                 *calculationManager = new( std::nothrow ) CMetricsCalculationManager<MEASUREMENT_TYPE_DELTA_QUERY>();
-                MD_LOG( LOG_DEBUG, "query calculation manager created" );
+                MD_LOG_A( adapterId, LOG_DEBUG, "query calculation manager created" );
                 return;
 
             case MEASUREMENT_TYPE_SNAPSHOT_IO:
                 *calculationManager = new( std::nothrow ) CMetricsCalculationManager<MEASUREMENT_TYPE_SNAPSHOT_IO>();
-                MD_LOG( LOG_DEBUG, "ioStream calculation manager created" );
+                MD_LOG_A( adapterId, LOG_DEBUG, "ioStream calculation manager created" );
                 return;
 
             default:
                 *calculationManager = nullptr;
-                MD_LOG( LOG_ERROR, "not supported measurement type" );
+                MD_LOG_A( adapterId, LOG_ERROR, "not supported measurement type" );
                 return;
         }
     }
@@ -8452,12 +8517,13 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     TCompletionCode CMetricSet::InitializeCalculationContext( TCalculationContext& context, CCalculationManager* calculationManager, TMeasurementType measurementType, TTypedValue_1_0* out, TTypedValue_1_0* outMaxValues, const uint8_t* rawData, uint32_t rawReportCount, bool init )
     {
-        MD_LOG_ENTER();
+        const uint32_t adapterId = m_device->GetAdapter().GetAdapterId();
+        MD_LOG_ENTER_A( adapterId );
         if( !init )
         {
             MD_SAFE_DELETE_ARRAY( context.CommonCalculationContext.DeltaValues );
-            MD_LOG( LOG_DEBUG, "calculation context deinitialization" );
-            MD_LOG_EXIT();
+            MD_LOG_A( adapterId, LOG_DEBUG, "calculation context deinitialization" );
+            MD_LOG_EXIT_A( adapterId );
             return CC_OK;
         }
 
@@ -8480,13 +8546,13 @@ namespace MetricsDiscoveryInternal
         {
             // Deinitialize and return error
             InitializeCalculationContext( context, nullptr, measurementType, nullptr, nullptr, nullptr, 0, false );
-            MD_LOG_EXIT();
+            MD_LOG_EXIT_A( adapterId );
             return CC_ERROR_GENERAL;
         }
 
-        MD_LOG( LOG_DEBUG, "calculation context initialized" );
-        MD_LOG( LOG_DEBUG, "metricSet: %s", context.CommonCalculationContext.MetricSet->GetParams()->ShortName );
-        MD_LOG_EXIT();
+        MD_LOG_A( adapterId, LOG_DEBUG, "calculation context initialized" );
+        MD_LOG_A( adapterId, LOG_DEBUG, "metricSet: %s", context.CommonCalculationContext.MetricSet->GetParams()->ShortName );
+        MD_LOG_EXIT_A( adapterId );
         return CC_OK;
     }
 
@@ -8518,49 +8584,51 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     bool CMetricSet::AreMetricParamsValid( const char* symbolName, const char* shortName, const char* longName, const char* groupName, TMetricType metricType, TMetricResultType resultType, const char* units, THwUnitType hwType, const char* alias )
     {
+        uint32_t adapterId = m_device->GetAdapter().GetAdapterId();
+
         if( ( symbolName == nullptr ) || ( strcmp( symbolName, "" ) == 0 ) )
         {
-            MD_LOG_INVALID_PARAMETER( LOG_ERROR, symbolName );
+            MD_LOG_INVALID_PARAMETER_A( adapterId, LOG_ERROR, symbolName );
             return false;
         }
         if( ( shortName == nullptr ) || ( strcmp( shortName, "" ) == 0 ) )
         {
-            MD_LOG_INVALID_PARAMETER( LOG_ERROR, shortName );
+            MD_LOG_INVALID_PARAMETER_A( adapterId, LOG_ERROR, shortName );
             return false;
         }
         if( ( longName == nullptr ) || ( strcmp( longName, "" ) == 0 ) )
         {
-            MD_LOG_INVALID_PARAMETER( LOG_ERROR, longName );
+            MD_LOG_INVALID_PARAMETER_A( adapterId, LOG_ERROR, longName );
             return false;
         }
         if( ( groupName == nullptr ) || ( strcmp( groupName, "" ) == 0 ) )
         {
-            MD_LOG_INVALID_PARAMETER( LOG_ERROR, groupName );
+            MD_LOG_INVALID_PARAMETER_A( adapterId, LOG_ERROR, groupName );
             return false;
         }
         if( (uint32_t) metricType >= METRIC_TYPE_LAST )
         {
-            MD_LOG_INVALID_PARAMETER( LOG_ERROR, metricType );
+            MD_LOG_INVALID_PARAMETER_A( adapterId, LOG_ERROR, metricType );
             return false;
         }
         if( (uint32_t) resultType >= RESULT_LAST )
         {
-            MD_LOG_INVALID_PARAMETER( LOG_ERROR, resultType );
+            MD_LOG_INVALID_PARAMETER_A( adapterId, LOG_ERROR, resultType );
             return false;
         }
         if( ( units == nullptr ) || ( strcmp( units, "" ) == 0 ) )
         {
-            MD_LOG_INVALID_PARAMETER( LOG_ERROR, units );
+            MD_LOG_INVALID_PARAMETER_A( adapterId, LOG_ERROR, units );
             return false;
         }
         if( (uint32_t) hwType >= HW_UNIT_LAST )
         {
-            MD_LOG_INVALID_PARAMETER( LOG_ERROR, hwType );
+            MD_LOG_INVALID_PARAMETER_A( adapterId, LOG_ERROR, hwType );
             return false;
         }
         if( alias == nullptr )
         {
-            MD_LOG_INVALID_PARAMETER( LOG_ERROR, alias );
+            MD_LOG_INVALID_PARAMETER_A( adapterId, LOG_ERROR, alias );
             return false;
         }
 
@@ -8881,7 +8949,7 @@ namespace MetricsDiscoveryInternal
             }
             else
             {
-                MD_ASSERT( false );
+                MD_ASSERT_A( m_device->GetAdapter().GetAdapterId(), false );
             }
         }
         else
@@ -9116,7 +9184,7 @@ namespace MetricsDiscoveryInternal
     {
         if( metricFile == nullptr )
         {
-            MD_ASSERT( metricFile != nullptr );
+            MD_ASSERT_A( m_device->GetAdapter().GetAdapterId(), metricFile != nullptr );
             return CC_ERROR_INVALID_PARAMETER;
         }
 
@@ -9449,7 +9517,7 @@ namespace MetricsDiscoveryInternal
     {
         if( metricFile == nullptr )
         {
-            MD_ASSERT( metricFile != nullptr );
+            MD_ASSERT_A( m_device->GetAdapter().GetAdapterId(), metricFile != nullptr );
             return CC_ERROR_INVALID_PARAMETER;
         }
 
@@ -9636,7 +9704,7 @@ namespace MetricsDiscoveryInternal
         }
         else
         {
-            MD_LOG( LOG_ERROR, "Error setting availability equation" );
+            MD_LOG_A( m_device->GetAdapter().GetAdapterId(), LOG_ERROR, "Error setting availability equation" );
             m_isAvailable = false;
         }
 
@@ -9954,6 +10022,7 @@ namespace MetricsDiscoveryInternal
         std::list<uint64_t> equationStack;
         uint64_t            qwordValue;
         uint32_t            algorithmCheck = 0;
+        const uint32_t      adapterId      = m_device->GetAdapter().GetAdapterId();
 
         for( uint32_t i = 0; i < m_elementsVector.size(); i++ )
         {
@@ -9977,8 +10046,8 @@ namespace MetricsDiscoveryInternal
                     }
                     else
                     {
-                        MD_LOG( LOG_DEBUG, "Not allowed equation element type in availability equation: %u", element->Type );
-                        MD_ASSERT( false );
+                        MD_LOG_A( adapterId, LOG_DEBUG, "Not allowed equation element type in availability equation: %u", element->Type );
+                        MD_ASSERT_A( adapterId, false );
                         ClearList( equationStack );
                         return false;
                     }
@@ -10007,7 +10076,7 @@ namespace MetricsDiscoveryInternal
                     }
                     else
                     {
-                        MD_ASSERT( false );
+                        MD_ASSERT_A( adapterId, false );
                         qwordValue = 0;
                     }
                     equationStack.push_back( qwordValue );
@@ -10092,8 +10161,8 @@ namespace MetricsDiscoveryInternal
                             break;
 
                         default:
-                            MD_LOG( LOG_DEBUG, "Not allowed equation element operation in availability equation: %u", element->Operation );
-                            MD_ASSERT( false );
+                            MD_LOG_A( adapterId, LOG_DEBUG, "Not allowed equation element operation in availability equation: %u", element->Operation );
+                            MD_ASSERT_A( adapterId, false );
                             ClearList( equationStack );
                             return false;
                     }
@@ -10103,8 +10172,8 @@ namespace MetricsDiscoveryInternal
                 }
 
                 default:
-                    MD_LOG( LOG_DEBUG, "Not allowed equation element type in availability equation: %u", element->Type );
-                    MD_ASSERT( false );
+                    MD_LOG_A( adapterId, LOG_DEBUG, "Not allowed equation element type in availability equation: %u", element->Type );
+                    MD_ASSERT_A( adapterId, false );
                     ClearList( equationStack );
                     return false;
             }
@@ -10112,7 +10181,7 @@ namespace MetricsDiscoveryInternal
         if( m_elementsVector.size() > 0 )
         {
             // here should be only 1 element on the list - the result (if the equation is fine)
-            MD_ASSERT( algorithmCheck == 1 );
+            MD_ASSERT_A( adapterId, algorithmCheck == 1 );
             qwordValue = equationStack.back();
         }
         else
@@ -10219,7 +10288,12 @@ namespace MetricsDiscoveryInternal
     {
         if( strcmp( element, "EuAggrDurationSlice" ) == 0 )
         {
-            return ParseEquationString( "$Self $GpuSliceClocksCount $EuCoresTotalCount UMUL FDIV 100 FMUL" );
+            // Workaround for renamed EuCoresTotalCount
+            bool platformXeHpPlus = false;
+            auto platformType     = m_device->GetPlatformType();
+
+            platformXeHpPlus |= ( ( platformType & PLATFORM_ACM ) != 0 );
+            return ParseEquationString( platformXeHpPlus ? "$Self $GpuSliceClocksCount $VectorEngineTotalCount UMUL FDIV 100 FMUL" : "$Self $GpuSliceClocksCount $EuCoresTotalCount UMUL FDIV 100 FMUL" );
         }
         else if( strcmp( element, "EuAggrDuration" ) == 0 )
         {
@@ -10564,7 +10638,7 @@ namespace MetricsDiscoveryInternal
             return AddEquationElement( &anElement );
         }
 
-        MD_LOG( LOG_ERROR, "Unknown equation element: %s", element );
+        MD_LOG_A( m_device->GetAdapter().GetAdapterId(), LOG_ERROR, "Unknown equation element: %s", element );
         return false;
     }
 
@@ -10590,7 +10664,7 @@ namespace MetricsDiscoveryInternal
     {
         if( metricFile == nullptr )
         {
-            MD_ASSERT( metricFile != nullptr );
+            MD_ASSERT_A( m_device->GetAdapter().GetAdapterId(), metricFile != nullptr );
             return CC_ERROR_INVALID_PARAMETER;
         }
 
@@ -10623,7 +10697,7 @@ namespace MetricsDiscoveryInternal
 
         if( DetectMaxSlicesInfo() != CC_OK )
         {
-            MD_LOG( LOG_ERROR, "Cannot detect max slices, subslices per slice or dual subslices per slice" );
+            MD_LOG_A( metricsDevice.GetAdapter().GetAdapterId(), LOG_ERROR, "Cannot detect max slices, subslices per slice or dual subslices per slice" );
         }
     }
 
@@ -10761,8 +10835,10 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     TCompletionCode CSymbolSet::AddSymbol( const char* name, TTypedValue_1_0 typedValue, TSymbolType symbolType )
     {
+        const uint32_t adapterId = m_metricsDevice.GetAdapter().GetAdapterId();
+
         MD_CHECK_PTR_RET( name, CC_ERROR_GENERAL );
-        MD_LOG( LOG_DEBUG, "%s - adding...", name );
+        MD_LOG_A( adapterId, LOG_DEBUG, "%s - adding...", name );
         TCompletionCode ret = CC_OK;
 
         if( symbolType == SYMBOL_TYPE_DETECT )
@@ -10772,7 +10848,7 @@ namespace MetricsDiscoveryInternal
 
             if( ret == CC_ERROR_NOT_SUPPORTED )
             {
-                MD_LOG( LOG_INFO, "Symbol is not supported." );
+                MD_LOG_A( adapterId, LOG_INFO, "Symbol is not supported." );
                 // do nothing if a symbol is not supported and return success
                 return CC_OK;
             }
@@ -10812,7 +10888,7 @@ namespace MetricsDiscoveryInternal
             return UnpackMask( symbol );
         }
 
-        MD_LOG( LOG_INFO, "Symbol added successfully." );
+        MD_LOG_A( adapterId, LOG_INFO, "Symbol added successfully." );
 
         return CC_OK;
     }
@@ -10838,16 +10914,27 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     TCompletionCode CSymbolSet::DetectSymbolValue( const char* name, TTypedValue_1_0* typedValue )
     {
-        TCompletionCode           ret = CC_OK;
-        GTDIDeviceInfoParamExtOut out = {};
+        TCompletionCode           ret       = CC_OK;
+        GTDIDeviceInfoParamExtOut out       = {};
+        const uint32_t            adapterId = m_metricsDevice.GetAdapter().GetAdapterId();
+        if( !IsSymbolNameSupported( name ) )
+        {
+            return CC_ERROR_NOT_SUPPORTED;
+        }
 
-        if( strcmp( name, "EuCoresTotalCount" ) == 0 )
+        TPlatformType platformType = m_metricsDevice.GetPlatformType();
+
+        bool useDualSubslice = false;
+
+        useDualSubslice |= ( ( platformType & PLATFORM_ACM ) != 0 );
+
+        if( ( strcmp( name, "EuCoresTotalCount" ) == 0 ) || ( strcmp( name, "VectorEngineTotalCount" ) == 0 ) )
         {
             ret = m_driverInterface.SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_EU_CORES_TOTAL_COUNT, &out, &m_metricsDevice );
             MD_CHECK_CC_RET( ret );
             typedValue->ValueUInt32 = out.ValueUint32;
         }
-        else if( strcmp( name, "EuCoresPerSubsliceCount" ) == 0 )
+        else if( ( strcmp( name, "EuCoresPerSubsliceCount" ) == 0 ) || ( strcmp( name, "VectorEnginePerXeCoreCount" ) == 0 ) )
         {
             uint32_t euCoresTotalCount   = 0;
             uint32_t subslicesTotalCount = 0;
@@ -10856,35 +10943,45 @@ namespace MetricsDiscoveryInternal
             MD_CHECK_CC_RET( ret );
             euCoresTotalCount = out.ValueUint32;
 
-            ret = m_driverInterface.SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_SUBSLICES_TOTAL_COUNT, &out );
-            MD_CHECK_CC_RET( ret );
-            subslicesTotalCount = out.ValueUint32;
+            if( useDualSubslice )
+            {
+                ret = m_driverInterface.SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_DUALSUBSLICES_TOTAL_COUNT, &out, &m_metricsDevice );
+                MD_CHECK_CC_RET( ret );
+                subslicesTotalCount = out.ValueUint32;
+            }
+            else
+            {
+                ret = m_driverInterface.SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_SUBSLICES_TOTAL_COUNT, &out );
+                MD_CHECK_CC_RET( ret );
+                subslicesTotalCount = out.ValueUint32;
+            }
 
             typedValue->ValueUInt32 = ( subslicesTotalCount != 0 ) ? euCoresTotalCount / subslicesTotalCount : 0;
         }
-        else if( strcmp( name, "EuSubslicesTotalCount" ) == 0 )
+        else if( ( strcmp( name, "EuSubslicesTotalCount" ) == 0 ) || ( !useDualSubslice && ( strcmp( name, "XeCoreTotalCount" ) == 0 ) ) )
         {
             ret = m_driverInterface.SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_SUBSLICES_TOTAL_COUNT, &out );
             MD_CHECK_CC_RET( ret );
             typedValue->ValueUInt32 = out.ValueUint32;
         }
+        // not supported for XeHP_SDV, removed all platforms for consistency
         else if( strcmp( name, "EuSubslicesPerSliceCount" ) == 0 )
         {
             return CC_ERROR_NOT_SUPPORTED;
         }
-        else if( strcmp( name, "EuDualSubslicesTotalCount" ) == 0 )
+        else if( ( strcmp( name, "EuDualSubslicesTotalCount" ) == 0 ) || ( useDualSubslice && ( strcmp( name, "XeCoreTotalCount" ) == 0 ) ) )
         {
             ret = m_driverInterface.SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_DUALSUBSLICES_TOTAL_COUNT, &out, &m_metricsDevice );
             MD_CHECK_CC_RET( ret );
             typedValue->ValueUInt32 = out.ValueUint32;
         }
-        else if( strcmp( name, "EuSlicesTotalCount" ) == 0 )
+        else if( ( strcmp( name, "EuSlicesTotalCount" ) == 0 ) || ( strcmp( name, "SliceTotalCount" ) == 0 ) )
         {
             ret = m_driverInterface.SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_SLICES_COUNT, &out, &m_metricsDevice );
             MD_CHECK_CC_RET( ret );
             typedValue->ValueUInt32 = out.ValueUint32;
         }
-        else if( strcmp( name, "EuThreadsCount" ) == 0 )
+        else if( ( strcmp( name, "EuThreadsCount" ) == 0 ) || ( strcmp( name, "VectorEngineThreadsCount" ) == 0 ) )
         {
             ret = m_driverInterface.SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_EU_THREADS_COUNT, &out );
             MD_CHECK_CC_RET( ret );
@@ -10904,7 +11001,7 @@ namespace MetricsDiscoveryInternal
                 typedValue->ValueUInt32 = out.ValueUint32;
             }
         }
-        else if( ( strcmp( name, "SubsliceMask" ) == 0 ) || ( strcmp( name, "GtSubsliceMask" ) == 0 ) )
+        else if( ( strcmp( name, "SubsliceMask" ) == 0 ) || ( strcmp( name, "GtSubsliceMask" ) == 0 ) || ( !useDualSubslice && ( ( strcmp( name, "XeCoreMask" ) == 0 ) || ( strcmp( name, "GtXeCoreMask" ) == 0 ) ) ) )
         {
             ret = m_driverInterface.SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_SUBSLICES_MASK, &out );
             MD_CHECK_CC_RET( ret );
@@ -10918,7 +11015,7 @@ namespace MetricsDiscoveryInternal
                 typedValue->ValueUInt64 = out.ValueUint64;
             }
         }
-        else if( ( strcmp( name, "DualSubsliceMask" ) == 0 ) || ( strcmp( name, "GtDualSubsliceMask" ) == 0 ) )
+        else if( ( strcmp( name, "DualSubsliceMask" ) == 0 ) || ( strcmp( name, "GtDualSubsliceMask" ) == 0 ) || ( useDualSubslice && ( ( strcmp( name, "XeCoreMask" ) == 0 ) || ( strcmp( name, "GtXeCoreMask" ) == 0 ) ) ) )
         {
             ret = m_driverInterface.SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_DUALSUBSLICES_MASK, &out, &m_metricsDevice );
             MD_CHECK_CC_RET( ret );
@@ -10972,7 +11069,7 @@ namespace MetricsDiscoveryInternal
             if( ret != CC_OK )
             {
                 // Possibly caused by disabled Turbo
-                MD_LOG( LOG_WARNING, "%s not available, GpuCurrentFrequencyMHz used instead", name );
+                MD_LOG_A( adapterId, LOG_WARNING, "%s not available, GpuCurrentFrequencyMHz used instead", name );
                 ret = DetectSymbolValue( "GpuCurrentFrequencyMHz", typedValue );
                 MD_CHECK_CC_RET( ret );
             }
@@ -10988,7 +11085,7 @@ namespace MetricsDiscoveryInternal
             if( ret != CC_OK )
             {
                 // Possibly caused by disabled Turbo
-                MD_LOG( LOG_WARNING, "%s not available, GpuCurrentFrequencyMHz used instead", name );
+                MD_LOG_A( adapterId, LOG_WARNING, "%s not available, GpuCurrentFrequencyMHz used instead", name );
                 ret = DetectSymbolValue( "GpuCurrentFrequencyMHz", typedValue );
                 MD_CHECK_CC_RET( ret );
             }
@@ -11015,14 +11112,14 @@ namespace MetricsDiscoveryInternal
             ret = m_driverInterface.SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_REVISION_ID, &out );
             MD_CHECK_CC_RET( ret );
             typedValue->ValueUInt32 = out.ValueUint32;
-            MD_LOG( LOG_INFO, "SkuRevisionId is %u", typedValue->ValueUInt32 );
+            MD_LOG_A( adapterId, LOG_INFO, "SkuRevisionId is %u", typedValue->ValueUInt32 );
         }
         else if( strcmp( name, "PlatformIndex" ) == 0 )
         {
             ret = m_driverInterface.SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_PLATFORM_INDEX, &out );
             MD_CHECK_CC_RET( ret );
             typedValue->ValueUInt32 = out.ValueUint32;
-            MD_LOG( LOG_INFO, "PlatformIndex is %u", typedValue->ValueUInt32 );
+            MD_LOG_A( adapterId, LOG_INFO, "PlatformIndex is %u", typedValue->ValueUInt32 );
         }
         else if( strcmp( name, "ApertureSize" ) == 0 )
         {
@@ -11101,11 +11198,93 @@ namespace MetricsDiscoveryInternal
         }
         else
         {
-            MD_LOG( LOG_ERROR, "Unknown global symbol name: %s", name );
+            MD_LOG_A( adapterId, LOG_ERROR, "Unknown global symbol name: %s", name );
             return CC_ERROR_INVALID_PARAMETER;
         }
 
         return CC_OK;
+    }
+
+    //////////////////////////////////////////////////////////////////////////////
+    //
+    // Class:
+    //     CSymbolSet
+    //
+    // Method:
+    //     IsSymbolNameSupported
+    //
+    // Description:
+    //     Check if symbol name is valid for current platform.
+    //
+    // Input:
+    //     char * name - base symbol name
+    //
+    // Output:
+    //     bool - True if supported on this platform.
+    //
+    //////////////////////////////////////////////////////////////////////////////
+    bool CSymbolSet::IsSymbolNameSupported( const char* name )
+    {
+        bool platformXeHpPlus = false;
+        bool useDualSubslice  = false;
+        auto platformType     = m_metricsDevice.GetPlatformType();
+
+        platformXeHpPlus |= ( ( platformType & PLATFORM_ACM ) != 0 );
+        useDualSubslice |= ( ( platformType & PLATFORM_ACM ) != 0 );
+
+        std::map<std::string, std::string> globalSymbolMap{
+            { "EuCoresTotalCount", "VectorEngineTotalCount" },
+            { "EuCoresPerSubsliceCount", "VectorEnginePerXeCoreCount" },
+            { "EuSlicesTotalCount", "SliceTotalCount" },
+            { "EuThreadsCount", "VectorEngineThreadsCount" },
+        };
+
+        if( useDualSubslice )
+        {
+            globalSymbolMap.emplace( "EuSubslicesTotalCount", "" );
+            globalSymbolMap.emplace( "EuDualSubslicesTotalCount", "XeCoreTotalCount" );
+
+            globalSymbolMap.emplace( "SubsliceMask", "" );
+            globalSymbolMap.emplace( "DualSubsliceMask", "XeCoreMask" );
+
+            globalSymbolMap.emplace( "GtSubsliceMask", "" );
+            globalSymbolMap.emplace( "GtDualSubsliceMask", "GtXeCoreMask" );
+        }
+        else
+        {
+            globalSymbolMap.emplace( "EuSubslicesTotalCount", "XeCoreTotalCount" );
+            globalSymbolMap.emplace( "EuDualSubslicesTotalCount", "" );
+
+            globalSymbolMap.emplace( "SubsliceMask", "XeCoreMask" );
+            globalSymbolMap.emplace( "DualSubsliceMask", "" );
+
+            globalSymbolMap.emplace( "GtSubsliceMask", "GtXeCoreMask" );
+            globalSymbolMap.emplace( "GtDualSubsliceMask", "" );
+        }
+
+        // Not supported symbol names or old ones
+        if( platformXeHpPlus )
+        {
+            if( globalSymbolMap.find( name ) != globalSymbolMap.end() )
+            {
+                MD_LOG_A( m_metricsDevice.GetAdapter().GetAdapterId(), LOG_DEBUG, "Not supported symbol names or old ones %s", name );
+                return false;
+            }
+        }
+        else
+        {
+            for( auto it = globalSymbolMap.begin(); it != globalSymbolMap.end(); ++it )
+            {
+                // Xe symbol but platform is not Xe
+                if( strcmp( name, it->second.c_str() ) == 0 )
+                {
+                    MD_LOG_A( m_metricsDevice.GetAdapter().GetAdapterId(), LOG_DEBUG, "Xe symbol but platform is not Xe %s", name );
+                    return false;
+                }
+            }
+        }
+        MD_LOG_A( m_metricsDevice.GetAdapter().GetAdapterId(), LOG_DEBUG, "Symbol supported %s", name );
+        return true;
     }
 
     //////////////////////////////////////////////////////////////////////////////
@@ -11329,7 +11508,7 @@ namespace MetricsDiscoveryInternal
     {
         if( metricFile == nullptr )
         {
-            MD_ASSERT( metricFile != nullptr );
+            MD_ASSERT_A( m_metricsDevice.GetAdapter().GetAdapterId(), metricFile != nullptr );
             return CC_ERROR_INVALID_PARAMETER;
         }
 
@@ -11392,7 +11571,7 @@ namespace MetricsDiscoveryInternal
         TTypedValue_1_0* symbolValue = GetSymbolValueByName( symbolName );
         if( !symbolValue )
         {
-            MD_LOG( LOG_DEBUG, "Symbol doesn't exist, name: %s", symbolName );
+            MD_LOG_A( m_metricsDevice.GetAdapter().GetAdapterId(), LOG_DEBUG, "Symbol doesn't exist, name: %s", symbolName );
             return CC_ERROR_INVALID_PARAMETER;
         }
 
@@ -11444,6 +11623,10 @@ namespace MetricsDiscoveryInternal
         TTypedValue_1_0 boolValue    = { VALUE_TYPE_BOOL, true };
         TPlatformType   platformType = m_metricsDevice.GetPlatformType();
 
+        bool useDualSubslice = false;
+
+        useDualSubslice |= ( ( platformType & PLATFORM_ACM ) != 0 );
+
         // Unpack mask
         if( strcmp( name, "GtSliceMask" ) == 0 )
         {
@@ -11459,7 +11642,7 @@ namespace MetricsDiscoveryInternal
                 }
             }
         }
-        else if( strcmp( name, "GtSubsliceMask" ) == 0 )
+        else if( ( strcmp( name, "GtSubsliceMask" ) == 0 ) || ( !useDualSubslice && ( strcmp( name, "GtXeCoreMask" ) == 0 ) ) )
         {
             for( uint32_t i = 0; i < m_maxSlice; i++ )
             {
@@ -11471,12 +11654,16 @@ namespace MetricsDiscoveryInternal
                     if( mask[currentByte] & MD_BIT( currentBit ) )
                     {
                         std::string dynamicSymbolName = "GtSlice" + std::to_string( i ) + "Subslice" + std::to_string( j );
+                        if( strcmp( name, "GtXeCoreMask" ) == 0 )
+                        {
+                            dynamicSymbolName = "GtSlice" + std::to_string( i ) + "XeCore" + std::to_string( j );
+                        }
                         AddSymbol( dynamicSymbolName.c_str(), boolValue, SYMBOL_TYPE_IMMEDIATE );
                     }
                 }
             }
         }
-        else if( strcmp( name, "GtDualSubsliceMask" ) == 0 )
+        else if( ( strcmp( name, "GtDualSubsliceMask" ) == 0 ) || ( useDualSubslice && ( strcmp( name, "GtXeCoreMask" ) == 0 ) ) )
         {
             const uint32_t  first4Slices                      = 4;
             TTypedValue_1_0 activeDualSubsliceForFirst4Slices = { VALUE_TYPE_UINT32, 0 };
@@ -11491,6 +11678,10 @@ namespace MetricsDiscoveryInternal
                     if( mask[currentByte] & MD_BIT( currentBit ) )
                     {
                         std::string dynamicSymbolName = "GtSlice" + std::to_string( i ) + "DualSubslice" + std::to_string( j );
+                        if( strcmp( name, "GtXeCoreMask" ) == 0 )
+                        {
+                            dynamicSymbolName = "GtSlice" + std::to_string( i ) + "XeCore" + std::to_string( j );
+                        }
                         AddSymbol( dynamicSymbolName.c_str(), boolValue, SYMBOL_TYPE_IMMEDIATE );
 
                         // Count active dual subslices for first four slices
@@ -11509,7 +11700,7 @@ namespace MetricsDiscoveryInternal
         }
         else
         {
-            MD_LOG( LOG_WARNING, "%s - unknown mask, cannot unpack", name );
+            MD_LOG_A( m_metricsDevice.GetAdapter().GetAdapterId(), LOG_WARNING, "%s - unknown mask, cannot unpack", name );
         }
 
         return CC_OK;

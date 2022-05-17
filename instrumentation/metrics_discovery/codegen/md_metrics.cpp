@@ -1,4 +1,4 @@
-/*========================== begin_copyright_notice ============================
+﻿/*========================== begin_copyright_notice ============================
 
 Copyright (C) 2019-2022 Intel Corporation
 
@@ -106,6 +106,21 @@ using namespace MetricsDiscoveryInternal;
     TCompletionCode CreateMetricTreeXEHP_SDV_GT1_GT2_PipelineStatistics(CMetricsDevice* metricsDevice, CConcurrentGroup* concurrentGroup);
 #endif
 
+#if MD_INCLUDE_ACM_GT1_METRICS
+#define MD_CALL_ACM_GT1_METRICS 1
+    TCompletionCode CreateMetricTreeACM_GT1_PipelineStatistics(CMetricsDevice* metricsDevice, CConcurrentGroup* concurrentGroup);
+#endif
+
+#if MD_INCLUDE_ACM_GT2_METRICS
+#define MD_CALL_ACM_GT2_METRICS 1
+    TCompletionCode CreateMetricTreeACM_GT2_PipelineStatistics(CMetricsDevice* metricsDevice, CConcurrentGroup* concurrentGroup);
+#endif
+
+#if MD_INCLUDE_ACM_GT3_METRICS
+#define MD_CALL_ACM_GT3_METRICS 1
+    TCompletionCode CreateMetricTreeACM_GT3_PipelineStatistics(CMetricsDevice* metricsDevice, CConcurrentGroup* concurrentGroup);
+#endif
+
 #if MD_INCLUDE_ADLP_METRICS
 #define MD_CALL_ADLP_METRICS 1
     TCompletionCode CreateMetricTreeADLP_PipelineStatistics(CMetricsDevice* metricsDevice, CConcurrentGroup* concurrentGroup);
@@ -211,6 +226,21 @@ using namespace MetricsDiscoveryInternal;
     TCompletionCode CreateMetricTreeXEHP_SDV_GT2_OA(CMetricsDevice* metricsDevice, CConcurrentGroup* concurrentGroup);
 #endif
 
+#if MD_INCLUDE_ACM_GT1_METRICS
+#define MD_CALL_ACM_GT1_METRICS 1
+    TCompletionCode CreateMetricTreeACM_GT1_OA(CMetricsDevice* metricsDevice, CConcurrentGroup* concurrentGroup);
+#endif
+
+#if MD_INCLUDE_ACM_GT2_METRICS
+#define MD_CALL_ACM_GT2_METRICS 1
+    TCompletionCode CreateMetricTreeACM_GT2_OA(CMetricsDevice* metricsDevice, CConcurrentGroup* concurrentGroup);
+#endif
+
+#if MD_INCLUDE_ACM_GT3_METRICS
+#define MD_CALL_ACM_GT3_METRICS 1
+    TCompletionCode CreateMetricTreeACM_GT3_OA(CMetricsDevice* metricsDevice, CConcurrentGroup* concurrentGroup);
+#endif
+
 #if MD_INCLUDE_ADLP_METRICS
 #define MD_CALL_ADLP_METRICS 1
     TCompletionCode CreateMetricTreeADLP_OA(CMetricsDevice* metricsDevice, CConcurrentGroup* concurrentGroup);
@@ -309,69 +339,69 @@ TCompletionCode CreateMetricTree( CMetricsDevice* metricsDevice )
     concurrentGroup = metricsDevice->AddConcurrentGroup( "OcclusionQueryStats", "Occlusion Query Statistics", MEASUREMENT_TYPE_DELTA_QUERY );
     MD_CHECK_PTR( concurrentGroup );
     
-        metricSet = concurrentGroup->AddMetricSet( "RenderedPixelsStats", "Rendered Pixels Statistics", API_TYPE_VULKAN|API_TYPE_OGL4_X,
-           GPU_RENDER, 0, 8, OA_REPORT_TYPE_256B_A45_NOA16, platformMask, nullptr );
-        MD_CHECK_PTR( metricSet );
-    
-        MD_CHECK_CC( metricSet->SetApiSpecificId(nullptr, 9, 0, 0, 0, 0,
-            "", 1, "", 0) );
+    metricSet = concurrentGroup->AddMetricSet( "RenderedPixelsStats", "Rendered Pixels Statistics", API_TYPE_VULKAN|API_TYPE_OGL4_X,
+        GPU_RENDER, 0, 8, OA_REPORT_TYPE_256B_A45_NOA16, platformMask, nullptr );
+    MD_CHECK_PTR_RET( metricSet, CC_ERROR_GENERAL );
+
+    MD_CHECK_CC_RET( metricSet->SetApiSpecificId(nullptr, 9, 0, 0, 0, 0,
+        "", 1, "", 0) );
   
-        availabilityEquation = nullptr;
-        metric = metricSet->AddMetric( "PixelsRendered", "Depth passed pixels",
-            "The total number of pixels that passed depth test. Note: not all rendered pixels are necessarily written to render targets.",
-            "3D Pipe/Output Merger", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_OM * 0x10000), USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X,
-            METRIC_TYPE_EVENT, RESULT_UINT64, "pixels", 0, 0, HW_UNIT_GPU, availabilityEquation, "Pixel|Fragment,PS|FS,pixel|fragment", nullptr, 0 );
-        if( metric )
-        {
-            
-            MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x00" ));
-        }
+    availabilityEquation = nullptr;
+    metric = metricSet->AddMetric( "PixelsRendered", "Depth passed pixels",
+        "The total number of pixels that passed depth test. Note: not all rendered pixels are necessarily written to render targets.",
+        "3D Pipe/Output Merger", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_OM * 0x10000), USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X,
+        METRIC_TYPE_EVENT, RESULT_UINT64, "pixels", 0, 0, HW_UNIT_GPU, availabilityEquation, "Pixel|Fragment,PS|FS,pixel|fragment", nullptr, 0 );
+    if( metric )
+    {
+        
+        MD_CHECK_CC_RET( metric->SetDeltaReportReadEquation( "qw@0x00" ));
+    }
 
-        MD_CHECK_CC( metricSet->RefreshConfigRegisters() );
+    MD_CHECK_CC_RET( metricSet->RefreshConfigRegisters() );
 
-        metricSet = concurrentGroup->AddMetricSet( "RenderedFragmentsStats", "Rendered Fragments Statistics", API_TYPE_OGL|API_TYPE_OGL4_X,
-           GPU_RENDER, 0, 8, OA_REPORT_TYPE_256B_A45_NOA16, platformMask, nullptr );
-        MD_CHECK_PTR( metricSet );
-    
-        MD_CHECK_CC( metricSet->SetApiSpecificId(nullptr, 0, 0, 0, 0, 0,
-            "", 0, "", 0x8C2F) );
+    metricSet = concurrentGroup->AddMetricSet( "RenderedFragmentsStats", "Rendered Fragments Statistics", API_TYPE_OGL|API_TYPE_OGL4_X,
+        GPU_RENDER, 0, 8, OA_REPORT_TYPE_256B_A45_NOA16, platformMask, nullptr );
+    MD_CHECK_PTR_RET( metricSet, CC_ERROR_GENERAL );
+
+    MD_CHECK_CC_RET( metricSet->SetApiSpecificId(nullptr, 0, 0, 0, 0, 0,
+        "", 0, "", 0x8C2F) );
   
-        availabilityEquation = nullptr;
-        metric = metricSet->AddMetric( "PixelsRendered", "Depth passed fragments",
-            "The total number of fragments that passed depth test. Note: not all rendered fragments are necessarily written to render targets.",
-            "3D Pipe/Output Merger", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_OM * 0x10000), USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X,
-            METRIC_TYPE_EVENT, RESULT_UINT64, "fragments", 0, 0, HW_UNIT_GPU, availabilityEquation, "Pixel|Fragment,PS|FS,pixel|fragment", nullptr, 0 );
-        if( metric )
-        {
-            
-            MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x00" ));
-        }
+    availabilityEquation = nullptr;
+    metric = metricSet->AddMetric( "PixelsRendered", "Depth passed fragments",
+        "The total number of fragments that passed depth test. Note: not all rendered fragments are necessarily written to render targets.",
+        "3D Pipe/Output Merger", (METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000) | (METRIC_GROUP_NAME_ID_OM * 0x10000), USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_OGL|API_TYPE_OGL4_X,
+        METRIC_TYPE_EVENT, RESULT_UINT64, "fragments", 0, 0, HW_UNIT_GPU, availabilityEquation, "Pixel|Fragment,PS|FS,pixel|fragment", nullptr, 0 );
+    if( metric )
+    {
+        
+        MD_CHECK_CC_RET( metric->SetDeltaReportReadEquation( "qw@0x00" ));
+    }
 
-        MD_CHECK_CC( metricSet->RefreshConfigRegisters() );
+    MD_CHECK_CC_RET( metricSet->RefreshConfigRegisters() );
 
     concurrentGroup = metricsDevice->AddConcurrentGroup( "TimestampQuery", "Timestamp Query", MEASUREMENT_TYPE_SNAPSHOT_QUERY );
     MD_CHECK_PTR( concurrentGroup );
     
-        metricSet = concurrentGroup->AddMetricSet( "GPUTimestamp", "GPU Timestamp", API_TYPE_VULKAN|API_TYPE_OGL4_X,
-           GPU_GENERIC, 8, 0, OA_REPORT_TYPE_256B_A45_NOA16, platformMask, nullptr );
-        MD_CHECK_PTR( metricSet );
-    
-        MD_CHECK_CC( metricSet->SetApiSpecificId(nullptr, 10, 0, 0, 0, 0,
-            "", 2, "", 0x88BF) );
-  
-        availabilityEquation = nullptr;
-        metric = metricSet->AddMetric( "GpuDuration", "GPU Duration",
-            "Total GPU duration for selected work items.",
-            "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_TIER_1|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X,
-            METRIC_TYPE_DURATION, RESULT_UINT64, "ns", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 0 );
-        if( metric )
-        {
-            MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "qw@0x00" ));
-            MD_CHECK_CC( metric->SetNormalizationEquation( "$Self 1000000000 UMUL $GpuTimestampFrequency UDIV" ));
-            MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 64" ));
-        }
+    metricSet = concurrentGroup->AddMetricSet( "GPUTimestamp", "GPU Timestamp", API_TYPE_VULKAN|API_TYPE_OGL4_X,
+        GPU_GENERIC, 8, 0, OA_REPORT_TYPE_256B_A45_NOA16, platformMask, nullptr );
+    MD_CHECK_PTR_RET( metricSet, CC_ERROR_GENERAL );
 
-        MD_CHECK_CC( metricSet->RefreshConfigRegisters() );
+    MD_CHECK_CC_RET( metricSet->SetApiSpecificId(nullptr, 10, 0, 0, 0, 0,
+        "", 2, "", 0x88BF) );
+  
+    availabilityEquation = nullptr;
+    metric = metricSet->AddMetric( "GpuDuration", "GPU Duration",
+        "Total GPU duration for selected work items.",
+        "GPU", (METRIC_GROUP_NAME_ID_GPU * 0x1000000), USAGE_FLAG_TIER_1|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X,
+        METRIC_TYPE_DURATION, RESULT_UINT64, "ns", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 0 );
+    if( metric )
+    {
+        MD_CHECK_CC_RET( metric->SetSnapshotReportReadEquation( "qw@0x00" ));
+        MD_CHECK_CC_RET( metric->SetNormalizationEquation( "$Self 1000000000 UMUL $GpuTimestampFrequency UDIV" ));
+        MD_CHECK_CC_RET( metric->SetSnapshotReportDeltaFunction( "DELTA 64" ));
+    }
+
+    MD_CHECK_CC_RET( metricSet->RefreshConfigRegisters() );
 
     concurrentGroup = metricsDevice->AddConcurrentGroup( "PipelineStatistics", "Pipeline Statistics", MEASUREMENT_TYPE_DELTA_QUERY );
     MD_CHECK_PTR( concurrentGroup );
@@ -447,6 +477,18 @@ TCompletionCode CreateMetricTree( CMetricsDevice* metricsDevice )
 
 #if MD_CALL_XEHP_SDV_GT1_GT2_METRICS
     MD_CHECK_CC( CreateMetricTreeXEHP_SDV_GT1_GT2_PipelineStatistics(metricsDevice, concurrentGroup) );
+#endif
+
+#if MD_CALL_ACM_GT1_METRICS
+    MD_CHECK_CC( CreateMetricTreeACM_GT1_PipelineStatistics(metricsDevice, concurrentGroup) );
+#endif
+
+#if MD_CALL_ACM_GT2_METRICS
+    MD_CHECK_CC( CreateMetricTreeACM_GT2_PipelineStatistics(metricsDevice, concurrentGroup) );
+#endif
+
+#if MD_CALL_ACM_GT3_METRICS
+    MD_CHECK_CC( CreateMetricTreeACM_GT3_PipelineStatistics(metricsDevice, concurrentGroup) );
 #endif
 
 #if MD_CALL_ADLP_METRICS
@@ -535,6 +577,18 @@ TCompletionCode CreateMetricTree( CMetricsDevice* metricsDevice )
 
 #if MD_CALL_XEHP_SDV_GT2_METRICS
     MD_CHECK_CC( CreateMetricTreeXEHP_SDV_GT2_OA(metricsDevice, concurrentGroup) );
+#endif
+
+#if MD_CALL_ACM_GT1_METRICS
+    MD_CHECK_CC( CreateMetricTreeACM_GT1_OA(metricsDevice, concurrentGroup) );
+#endif
+
+#if MD_CALL_ACM_GT2_METRICS
+    MD_CHECK_CC( CreateMetricTreeACM_GT2_OA(metricsDevice, concurrentGroup) );
+#endif
+
+#if MD_CALL_ACM_GT3_METRICS
+    MD_CHECK_CC( CreateMetricTreeACM_GT3_OA(metricsDevice, concurrentGroup) );
 #endif
 
 #if MD_CALL_ADLP_METRICS

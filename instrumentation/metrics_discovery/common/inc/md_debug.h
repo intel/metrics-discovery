@@ -22,12 +22,18 @@ SPDX-License-Identifier: MIT
     #define MDAPI_LOG_TAG "[MDAPI]"
 #endif
 
-#define MD_ASSERT( expr )    IU_ASSERT_TAGGED( IU_ADAPTER_ID_UNKNOWN, expr, IU_DBG_LAYER_MDAPI, MDAPI_LOG_TAG )
-#define MD_LOG( level, ... ) IU_DBG_PRINT_TAGGED( IU_ADAPTER_ID_UNKNOWN, _##level, IU_DBG_LAYER_MDAPI, MDAPI_LOG_TAG, __FUNCTION__, __VA_ARGS__ )
-#define MD_LOG_ENTER()       IU_DBG_FUNCTION_ENTER_TAGGED( IU_ADAPTER_ID_UNKNOWN, _LOG_DEBUG, IU_DBG_LAYER_MDAPI, MDAPI_LOG_TAG );
-#define MD_LOG_EXIT()        IU_DBG_FUNCTION_EXIT_TAGGED( IU_ADAPTER_ID_UNKNOWN, _LOG_DEBUG, IU_DBG_LAYER_MDAPI, MDAPI_LOG_TAG )
+#define MD_ASSERT_A( adapterId, expr )    IU_ASSERT_TAGGED( adapterId, expr, IU_DBG_LAYER_MDAPI, MDAPI_LOG_TAG )
+#define MD_LOG_A( adapterId, level, ... ) IU_DBG_PRINT_TAGGED( adapterId, _##level, IU_DBG_LAYER_MDAPI, MDAPI_LOG_TAG, __FUNCTION__, __VA_ARGS__ )
+#define MD_LOG_ENTER_A( adapterId )       IU_DBG_FUNCTION_ENTER_TAGGED( adapterId, _LOG_DEBUG, IU_DBG_LAYER_MDAPI, MDAPI_LOG_TAG );
+#define MD_LOG_EXIT_A( adapterId )        IU_DBG_FUNCTION_EXIT_TAGGED( adapterId, _LOG_DEBUG, IU_DBG_LAYER_MDAPI, MDAPI_LOG_TAG )
 
-#define MD_LOG_INVALID_PARAMETER( level, variable ) MD_LOG( level, "invalid parameter: %s", #variable );
+#define MD_ASSERT( expr )    MD_ASSERT_A( IU_ADAPTER_ID_UNKNOWN, expr )
+#define MD_LOG( level, ... ) MD_LOG_A( IU_ADAPTER_ID_UNKNOWN, level, __VA_ARGS__ )
+#define MD_LOG_ENTER()       MD_LOG_ENTER_A( IU_ADAPTER_ID_UNKNOWN )
+#define MD_LOG_EXIT()        MD_LOG_EXIT_A( IU_ADAPTER_ID_UNKNOWN )
+
+#define MD_LOG_INVALID_PARAMETER_A( adapterId, level, variable ) MD_LOG_A( adapterId, level, "invalid parameter: %s", #variable );
+#define MD_LOG_INVALID_PARAMETER( level, variable )              MD_LOG_INVALID_PARAMETER_A( IU_ADAPTER_ID_UNKNOWN, level, variable )
 
 //////////////////////////////////////////////////////////////////////////////
 // MACRO: Following macros are required for compatibility between IU debug framework

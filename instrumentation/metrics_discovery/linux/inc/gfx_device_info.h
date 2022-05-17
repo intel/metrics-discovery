@@ -292,6 +292,27 @@ namespace MetricsDiscoveryInternal
         { 0x020F, SPlatformIndexGt( GENERATION_XEHP_SDV, GFX_GTTYPE_UNDEFINED ) },
         { 0x0210, SPlatformIndexGt( GENERATION_XEHP_SDV, GFX_GTTYPE_UNDEFINED ) },
 
+        { 0x5690, SPlatformIndexGt( GENERATION_ACM, GFX_GTTYPE_UNDEFINED ) },
+        { 0x5691, SPlatformIndexGt( GENERATION_ACM, GFX_GTTYPE_UNDEFINED ) },
+        { 0x5692, SPlatformIndexGt( GENERATION_ACM, GFX_GTTYPE_UNDEFINED ) },
+        { 0x5695, SPlatformIndexGt( GENERATION_ACM, GFX_GTTYPE_UNDEFINED ) },
+        { 0x5696, SPlatformIndexGt( GENERATION_ACM, GFX_GTTYPE_UNDEFINED ) },
+        { 0x5697, SPlatformIndexGt( GENERATION_ACM, GFX_GTTYPE_UNDEFINED ) },
+        { 0x5698, SPlatformIndexGt( GENERATION_ACM, GFX_GTTYPE_UNDEFINED ) },
+        { 0x56a0, SPlatformIndexGt( GENERATION_ACM, GFX_GTTYPE_UNDEFINED ) },
+        { 0x56a1, SPlatformIndexGt( GENERATION_ACM, GFX_GTTYPE_UNDEFINED ) },
+        { 0x56a2, SPlatformIndexGt( GENERATION_ACM, GFX_GTTYPE_UNDEFINED ) },
+        { 0x56a3, SPlatformIndexGt( GENERATION_ACM, GFX_GTTYPE_UNDEFINED ) },
+        { 0x56a4, SPlatformIndexGt( GENERATION_ACM, GFX_GTTYPE_UNDEFINED ) },
+        { 0x56a5, SPlatformIndexGt( GENERATION_ACM, GFX_GTTYPE_UNDEFINED ) },
+        { 0x56a6, SPlatformIndexGt( GENERATION_ACM, GFX_GTTYPE_UNDEFINED ) },
+        { 0x56a7, SPlatformIndexGt( GENERATION_ACM, GFX_GTTYPE_UNDEFINED ) },
+        { 0x56a8, SPlatformIndexGt( GENERATION_ACM, GFX_GTTYPE_UNDEFINED ) },
+        { 0x56a9, SPlatformIndexGt( GENERATION_ACM, GFX_GTTYPE_UNDEFINED ) },
+        { 0x56b0, SPlatformIndexGt( GENERATION_ACM, GFX_GTTYPE_UNDEFINED ) },
+        { 0x56b1, SPlatformIndexGt( GENERATION_ACM, GFX_GTTYPE_UNDEFINED ) },
+        { 0x56c0, SPlatformIndexGt( GENERATION_ACM, GFX_GTTYPE_UNDEFINED ) },
+        { 0x56c1, SPlatformIndexGt( GENERATION_ACM, GFX_GTTYPE_UNDEFINED ) },
     };
 
     std::map<GTDI_PLATFORM_INDEX, uint32_t> threadsPerEuMap{
@@ -309,6 +330,7 @@ namespace MetricsDiscoveryInternal
         { GENERATION_RKL, 7 },
         { GENERATION_ADLP, 7 },
         { GENERATION_XEHP_SDV, 8 },
+        { GENERATION_ACM, 8 },
     };
 
 } // namespace MetricsDiscoveryInternal

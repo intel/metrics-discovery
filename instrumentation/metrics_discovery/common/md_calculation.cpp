@@ -422,7 +422,7 @@ namespace MetricsDiscoveryInternal
             m_savedReport = new( std::nothrow ) uint8_t[rawReportSize];
             if( m_savedReport == nullptr )
             {
-                MD_LOG( LOG_ERROR, "error allocating saved report memory" );
+                MD_LOG_A( m_device->GetAdapter().GetAdapterId(), LOG_ERROR, "error allocating saved report memory" );
                 m_savedReportSize = 0;
             }
             else
@@ -650,9 +650,10 @@ namespace MetricsDiscoveryInternal
     {
         if( !deltaValues || !outValues )
         {
-            MD_ASSERT( deltaValues != nullptr );
-            MD_ASSERT( outValues != nullptr );
-            MD_LOG( LOG_ERROR, "error: nullptr params" );
+            const uint32_t adapterId = m_device->GetAdapter().GetAdapterId();
+            MD_ASSERT_A( adapterId, deltaValues != nullptr );
+            MD_ASSERT_A( adapterId, outValues != nullptr );
+            MD_LOG_A( adapterId, LOG_ERROR, "error: nullptr params" );
             return;
         }
 
@@ -699,9 +700,10 @@ namespace MetricsDiscoveryInternal
     {
         if( !rawData || !outValues )
         {
-            MD_ASSERT( rawData != nullptr );
-            MD_ASSERT( outValues != nullptr );
-            MD_LOG( LOG_ERROR, "error: nullptr params" );
+            const uint32_t adapterId = m_device->GetAdapter().GetAdapterId();
+            MD_ASSERT_A( adapterId, rawData != nullptr );
+            MD_ASSERT_A( adapterId, outValues != nullptr );
+            MD_LOG_A( adapterId, LOG_ERROR, "error: nullptr params" );
             return;
         }
 
@@ -808,10 +810,11 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     void CMetricsCalculator::ReadIoMeasurementInformation( IConcurrentGroup_1_1& concurrentGroup, TTypedValue_1_0* outValues )
     {
+        const uint32_t adapterId = m_device->GetAdapter().GetAdapterId();
         if( !outValues )
         {
-            MD_ASSERT( outValues != nullptr );
-            MD_LOG( LOG_ERROR, "error: nullptr params" );
+            MD_ASSERT_A( adapterId, outValues != nullptr );
+            MD_LOG_A( adapterId, LOG_ERROR, "error: nullptr params" );
             return;
         }
 
@@ -820,7 +823,7 @@ namespace MetricsDiscoveryInternal
         for( uint32_t i = 0; i < measurementInfoCount; i++ )
         {
             IInformation_1_0* measurementInfo = concurrentGroup.GetIoMeasurementInformation( i );
-            MD_ASSERT( measurementInfo != nullptr );
+            MD_ASSERT_A( adapterId, measurementInfo != nullptr );
 
             IEquation_1_0* equation = measurementInfo->GetParams()->IoReadEquation;
 
@@ -868,10 +871,11 @@ namespace MetricsDiscoveryInternal
     {
         if( !deltaMetricValues || !outMetricValues || !outMaxValues )
         {
-            MD_ASSERT( deltaMetricValues != nullptr );
-            MD_ASSERT( outMetricValues != nullptr );
-            MD_ASSERT( outMaxValues != nullptr );
-            MD_LOG( LOG_ERROR, "error: nullptr params" );
+            const uint32_t adapterId = m_device->GetAdapter().GetAdapterId();
+            MD_ASSERT_A( adapterId, deltaMetricValues != nullptr );
+            MD_ASSERT_A( adapterId, outMetricValues != nullptr );
+            MD_ASSERT_A( adapterId, outMaxValues != nullptr );
+            MD_LOG_A( adapterId, LOG_ERROR, "error: nullptr params" );
             return;
         }
 
@@ -919,6 +923,7 @@ namespace MetricsDiscoveryInternal
     TTypedValue_1_0 CMetricsCalculator::CalculateReadEquation( CEquation& equation, const uint8_t* rawReport )
     {
         TTypedValue_1_0 typedValue;
+        const uint32_t  adapterId      = m_device->GetAdapter().GetAdapterId();
         bool            isValid        = true;
         uint32_t        algorithmCheck = 0;
 
@@ -1025,7 +1030,7 @@ namespace MetricsDiscoveryInternal
                     {
                         // TODO: not supported yet
                         typedValue.ValueUInt64 = 0;
-                        MD_ASSERT( false );
+                        MD_ASSERT_A( adapterId, false );
                     }
                     typedValue.ValueType = VALUE_TYPE_UINT64;
                     isValid              = EquationStackPush( equationStack, typedValue, algorithmCheck );
@@ -1048,12 +1053,12 @@ namespace MetricsDiscoveryInternal
                 }
 
                 default:
-                    MD_ASSERT( false );
+                    MD_ASSERT_A( adapterId, false );
                     break;
             }
         }
         // Here should be only 1 element on the list - the result (if the equation is fine)
-        MD_ASSERT( algorithmCheck == 1 );
+        MD_ASSERT_A( adapterId, algorithmCheck == 1 );
 
         if( isValid && algorithmCheck == 1 )
         {
@@ -1106,8 +1111,9 @@ namespace MetricsDiscoveryInternal
             readDeltaFunction = deltaFunction;
         }
 
-        bool     isValid        = true;
-        uint32_t algorithmCheck = 0;
+        const uint32_t adapterId      = m_device->GetAdapter().GetAdapterId();
+        bool           isValid        = true;
+        uint32_t       algorithmCheck = 0;
 
         // Prepare the stack for calculations.
         std::stack<TTypedValue_1_0> equationStack = std::stack<TTypedValue_1_0>();
@@ -1252,12 +1258,12 @@ namespace MetricsDiscoveryInternal
                 }
 
                 default:
-                    MD_ASSERT( false );
+                    MD_ASSERT_A( adapterId, false );
                     break;
             }
         }
         // here should be only 1 element on the list - the result (if the equation is fine)
-        MD_ASSERT( algorithmCheck == 1 );
+        MD_ASSERT_A( adapterId, algorithmCheck == 1 );
 
         if( isValid && algorithmCheck == 1 )
         {
@@ -1344,7 +1350,7 @@ namespace MetricsDiscoveryInternal
                 return typedValue;
 
             default:
-                MD_ASSERT( false );
+                MD_ASSERT_A( m_device->GetAdapter().GetAdapterId(), false );
                 break;
         }
 
@@ -1381,6 +1387,7 @@ namespace MetricsDiscoveryInternal
         TTypedValue_1_0 typedValue;
         bool            isValid        = true;
         uint32_t        algorithmCheck = 0;
+        const uint32_t  adapterId      = m_device->GetAdapter().GetAdapterId();
 
         // Prepare the stack for calculations.
         std::stack<TTypedValue_1_0> equationStack = std::stack<TTypedValue_1_0>();
@@ -1492,7 +1499,7 @@ namespace MetricsDiscoveryInternal
 
                 case EQUATION_ELEM_STD_NORM_GPU_DURATION:
                     // equation stack should be empty
-                    MD_ASSERT( algorithmCheck == 0 );
+                    MD_ASSERT_A( adapterId, algorithmCheck == 0 );
 
                     // compute $Self $gpuCoreClocks FDIV 100 FMUL
                     if( m_gpuCoreClocks != 0 )
@@ -1514,7 +1521,7 @@ namespace MetricsDiscoveryInternal
 
                 case EQUATION_ELEM_STD_NORM_EU_AGGR_DURATION:
                     // equation stack should be empty
-                    MD_ASSERT( algorithmCheck == 0 );
+                    MD_ASSERT_A( adapterId, algorithmCheck == 0 );
 
                     // compute $Self $gpuCoreClocks $EUsCount UMUL FDIV 100 FMUL
                     if( m_gpuCoreClocks != 0 )
@@ -1539,7 +1546,7 @@ namespace MetricsDiscoveryInternal
             }
         }
         // here should be only 1 element on the list - the result (if the equation is fine)
-        MD_ASSERT( algorithmCheck == 1 );
+        MD_ASSERT_A( adapterId, algorithmCheck == 1 );
 
         if( isValid && algorithmCheck == 1 )
         {
@@ -1774,10 +1781,11 @@ namespace MetricsDiscoveryInternal
     {
         if( !rawReport || !information || !outValue )
         {
-            MD_ASSERT( rawReport != nullptr );
-            MD_ASSERT( information != nullptr );
-            MD_ASSERT( outValue != nullptr );
-            MD_LOG( LOG_ERROR, "error: nullptr params" );
+            const uint32_t adapterId = m_device->GetAdapter().GetAdapterId();
+            MD_ASSERT_A( adapterId, rawReport != nullptr );
+            MD_ASSERT_A( adapterId, information != nullptr );
+            MD_ASSERT_A( adapterId, outValue != nullptr );
+            MD_LOG_A( adapterId, LOG_ERROR, "error: nullptr params" );
             return;
         }
 
@@ -1905,8 +1913,9 @@ namespace MetricsDiscoveryInternal
     {
         if( !rawReport || ( bitCount > 32 ) || ( bitCount == 0 ) || ( bitCount + bitOffset > 32 ) )
         {
-            MD_ASSERT( false );
-            MD_LOG( LOG_ERROR, "error: invalid params" );
+            const uint32_t adapterId = m_device->GetAdapter().GetAdapterId();
+            MD_ASSERT_A( adapterId, false );
+            MD_LOG_A( adapterId, LOG_ERROR, "error: invalid params" );
             return 0;
         }
 

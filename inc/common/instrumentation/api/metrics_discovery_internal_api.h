@@ -42,6 +42,7 @@ namespace MetricsDiscovery
         PLATFORM_DG1      = 1 << 21 /*GENERATION_DG1*/,
         PLATFORM_XEHP_SDV = 1 << 22 /*GENERATION_XEHP_SDV*/,
         PLATFORM_RKL      = 1 << 23 /*GENERATION_RKL*/,
+        PLATFORM_ACM      = 1 << 24 /*GENERATION_ACM*/,
         // 24-25 reserved
         PLATFORM_ADLP     = 1 << 26 /*GENERATION_ADLP*/,
         // ...

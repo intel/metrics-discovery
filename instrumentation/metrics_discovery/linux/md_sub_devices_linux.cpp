@@ -511,6 +511,7 @@ namespace MetricsDiscoveryInternal
         switch( escape.ValueUint32 )
         {
             case GENERATION_XEHP_SDV:
+            case GENERATION_ACM:
                 validPlatform = true;
                 break;
         }
@@ -814,7 +815,8 @@ namespace MetricsDiscoveryInternal
         MD_CHECK_CC_RET( result = driver->QueryDrm( query ) );
 
         // Return cpu and gpu timestamp information.
-        oaGpuTimestampNs = ( queryTimestamp.cs_cycles & MD_GPU_TIMESTAMP_MASK ) * MD_SECOND_IN_NS / gpuTimestampFrequency;
+        MD_CHECK_CC_RET( result = driver->GetOaTimestamp( queryTimestamp.cs_cycles, oaGpuTimestampCycles ) );
+        oaGpuTimestampNs = ( oaGpuTimestampCycles & MD_GPU_TIMESTAMP_MASK ) * MD_SECOND_IN_NS / gpuTimestampFrequency;
         gpuTimestampNs   = oaGpuTimestampNs;
         cpuTimestampNs   = queryTimestamp.cpu_timestamp;
 
