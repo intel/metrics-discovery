@@ -11,15 +11,175 @@ SPDX-License-Identifier: MIT
 //     Abstract:   C++ metrics discovery utils implementation.
 
 #include "md_utils.h"
-#include "md_internal.h"
+#include "md_adapter.h"
+#include "md_concurrent_group.h"
+#include "md_driver_ifc.h"
+#include "md_equation.h"
+#include "md_information.h"
+#include "md_metric.h"
+#include "md_metric_set.h"
+#include "md_register_set.h"
 
-#include <string.h>
-#include <stdlib.h>
-
-using namespace MetricsDiscovery;
+#include <cstring>
+#include <cstdlib>
 
 namespace MetricsDiscoveryInternal
 {
+
+    //////////////////////////////////////////////////////////////////////////////
+    //
+    // Group:
+    //     Metrics Discovery Utils
+    //
+    // Method:
+    //     WriteEquationToFile
+    //
+    // Description:
+    //     Writes CEquation class to file. If it's equal to null 0xFF will be written.
+    //
+    // Input:
+    //     CEquation* equation    - CEquation to be written
+    //     FILE*      metricFile  - handle to metric file
+    //
+    // Output:
+    //     TCompletionCode        - result
+    //
+    //////////////////////////////////////////////////////////////////////////////
+    TCompletionCode WriteEquationToFile( CEquation* equation, FILE* metricFile )
+    {
+        if( metricFile == nullptr )
+        {
+            MD_ASSERT( metricFile != nullptr );
+            return CC_ERROR_INVALID_PARAMETER;
+        }
+
+        TCompletionCode ret = CC_OK;
+
+        if( equation )
+        {
+            ret = equation->WriteCEquationToFile( metricFile );
+        }
+        else
+        {
+            fputc( 0xFF, metricFile );
+        }
+
+        return ret;
+    }
+
+    //////////////////////////////////////////////////////////////////////////////
+    //
+    // Group:
+    //     Metrics Discovery Utils
+    //
+    // Method:
+    //     SetDeltaFunction
+    //
+    // Description:
+    //     Sets the delta function from parsed string.
+    //
+    // Input:
+    //     const char* equationString - equation string, could be empty
+    //     TDeltaFunction_1_0*        - (out) delta function
+    //
+    // Output:
+    //     TCompletionCode             - result of the operation
+    //
+    //////////////////////////////////////////////////////////////////////////////
+    TCompletionCode SetDeltaFunction( const char* equationString, TDeltaFunction_1_0* deltaFunction )
+    {
+        if( equationString == nullptr || strcmp( equationString, "" ) == 0 )
+        {
+            deltaFunction->FunctionType = DELTA_FUNCTION_NULL;
+            return CC_OK;
+        }
+        if( strncmp( equationString, "DELTA", sizeof( "DELTA" ) - 1 ) == 0 )
+        {
+            deltaFunction->FunctionType = DELTA_N_BITS;
+            if( equationString[5] == ' ' )
+            {
+                deltaFunction->BitsCount = strtoul( (char*) &equationString[6], nullptr, 10 );
+            }
+            else
+            {
+                deltaFunction->BitsCount = strtoul( (char*) &equationString[5], nullptr, 10 );
+            }
+            return CC_OK;
+        }
+        if( strcmp( equationString, "OR" ) == 0 )
+        {
+            deltaFunction->FunctionType = DELTA_BOOL_OR;
+            return CC_OK;
+        }
+        if( strcmp( equationString, "XOR" ) == 0 )
+        {
+            deltaFunction->FunctionType = DELTA_BOOL_XOR;
+            return CC_OK;
+        }
+        if( strcmp( equationString, "PREV" ) == 0 )
+        {
+            deltaFunction->FunctionType = DELTA_GET_PREVIOUS;
+            return CC_OK;
+        }
+        if( strcmp( equationString, "LAST" ) == 0 )
+        {
+            deltaFunction->FunctionType = DELTA_GET_LAST;
+            return CC_OK;
+        }
+        if( strcmp( equationString, "NS_TIME" ) == 0 )
+        {
+            deltaFunction->FunctionType = DELTA_NS_TIME;
+            return CC_OK;
+        }
+
+        MD_LOG( LOG_ERROR, "Unknown delta function: %s", equationString );
+        return CC_ERROR_GENERAL;
+    }
+
+    //////////////////////////////////////////////////////////////////////////////
+    //
+    // Group:
+    //     Metrics Discovery Utils
+    //
+    // Method:
+    //     SetEquation
+    //
+    // Description:
+    //     Sets the given equation.
+    //
+    // Input:
+    //     CMetricsDevice* device         - metric device
+    //     CEquation**     equation       - pointer to the equation to be set
+    //     const char*     equationString - euqation string, could be empty or null
+    //
+    // Output:
+    //     TCompletionCode            - result of the operation
+    //
+    //////////////////////////////////////////////////////////////////////////////
+    TCompletionCode SetEquation( CMetricsDevice* device, CEquation** equation, const char* equationString )
+    {
+        MD_CHECK_PTR_RET( device, CC_ERROR_INVALID_PARAMETER );
+        MD_CHECK_PTR_RET( equation, CC_ERROR_INVALID_PARAMETER );
+
+        TCompletionCode ret = CC_OK;
+
+        // Delete previous equation if any
+        MD_SAFE_DELETE( *equation );
+
+        // nullptr is fine condition for "" equations
+        if( equationString != nullptr && strcmp( equationString, "" ) != 0 )
+        {
+            *equation = new( std::nothrow ) CEquation( device );
+            if( *equation == nullptr || !( *equation )->ParseEquationString( equationString ) )
+            {
+                MD_SAFE_DELETE( *equation );
+                ret = CC_ERROR_GENERAL;
+            }
+        }
+
+        return ret;
+    }
+
     //////////////////////////////////////////////////////////////////////////////
     //
     // Group:

@@ -11,14 +11,16 @@ SPDX-License-Identifier: MIT
 //     Abstract:   C++ metrics discovery metrics calculation features implementation.
 
 #include "md_calculation.h"
-#include "md_utils.h"
+#include "md_adapter.h"
+#include "md_equation.h"
+#include "md_information.h"
+#include "md_metric.h"
+#include "md_metric_set.h"
+#include "md_metrics_device.h"
 #include "md_types.h"
-#include "md_internal.h"
 
 #include <algorithm>
-#include <string.h>
-
-using namespace MetricsDiscovery;
+#include <cstring>
 
 namespace MetricsDiscoveryInternal
 {

@@ -13,7 +13,6 @@ SPDX-License-Identifier: MIT
 #pragma once
 
 #include "md_types.h"
-#include "md_internal.h"
 #include "md_debug.h"
 
 #include "instr_gt_driver_ifc.h"

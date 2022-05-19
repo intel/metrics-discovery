@@ -1,60 +1,11 @@
-Files in this folder is taken from: https://github.com/torvalds/linux/tree/master/include/uapi/drm
-And should be used as is, without any modification.
-
-"i915_drm_prelim.h" is taken from https://github.com/intel-gpu/drm-uapi-helper/blob/master/drm-uapi/i915_drm_prelim.h
-
-Last Update:
-commit b06103b5325364e0b9944024db41b400b9028df9
-Merge tag 'amd-drm-next-5.17-2021-12-16' of https://gitlab.freedesktop.org/agd5f/linux into drm-next
-Author: Alex Deucher <alexander.deucher@amd.com>
-Date: Dec 23, 2021
-
-amdgpu:
-- Add some display debugfs entries
-- RAS fixes
-- SR-IOV fixes
-- W=1 fixes
-- Documentation fixes
-- IH timestamp fix
-- Misc power fixes
-- IP discovery fixes
-- Large driver documentation updates
-- Multi-GPU memory use reductions
-- Misc display fixes and cleanups
-- Add new SMU debug option
-
-amdkfd:
-- SVM fixes
-
-radeon:
-- Fix typo in comment
-
-From: Alex Deucher <alexander.deucher@amd.com>
-Link: https://patchwork.freedesktop.org/patch/msgid/20211216202731.5900-1-alexander.deucher@amd.com
-
+https://github.com/intel-gpu/drm-uapi-helper/tree/master/drm-uapi
 
 Base commit:
-commit b10733527bfd864605c33ab2e9a886eec317ec39
-Merge: 60f2f74978e6 f8aab60422c3
-Author: Dave Airlie <airlied@redhat.com>
-Date:   Thu Dec 10 16:55:41 2020 +1000
+commit aea73597c31f5c318fff6ccfeacf95a020f64617
+Author: Ashutosh Dixit <ashutosh.dixit@intel.com>
+Date:   23 Apr 2022 03:55:41 +02:00
 
-    Merge tag 'amd-drm-next-5.11-2020-12-09' of git://people.freedesktop.org/~agd5f/linux into drm-next
+	Identical to previous commit (499d67e06436) except minor change to revert a
+	manual change made to i915_drm.h.
 
-    amd-drm-next-5.11-2020-12-09:
-
-    amdgpu:
-    - SR-IOV fixes
-    - Navy Flounder updates
-    - Sienna Cichlid updates
-    - Dimgrey Cavefish updates
-    - Vangogh updates
-    - Misc SMU fixes
-    - Misc display fixes
-    - Last big hunk of W=1 warning fixes
-    - Cursor validation fixes
-    - CI BACO updates
-
-    From: Alex Deucher <alexdeucher@gmail.com>
-    Link: https://patchwork.freedesktop.org/patch/msgid/20201210045344.21566-1-alexander.deucher@amd.com
-    Signed-off-by: Dave Airlie <airlied@redhat.com>
+	Signed-off-by: Ashutosh Dixit <ashutosh.dixit@intel.com>

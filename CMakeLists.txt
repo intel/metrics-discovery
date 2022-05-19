@@ -99,7 +99,18 @@ set (_SOURCES ${_SOURCES}
     # mdapi core
     ${BS_DIR_INSTRUMENTATION}/metrics_discovery/common/md_main.cpp
     ${BS_DIR_INSTRUMENTATION}/metrics_discovery/common/md_utils.cpp
-    ${BS_DIR_INSTRUMENTATION}/metrics_discovery/common/md_internal.cpp
+    ${BS_DIR_INSTRUMENTATION}/metrics_discovery/common/internal/md_common.cpp
+    ${BS_DIR_INSTRUMENTATION}/metrics_discovery/common/internal/md_adapter.cpp
+    ${BS_DIR_INSTRUMENTATION}/metrics_discovery/common/internal/md_adapter_group.cpp
+    ${BS_DIR_INSTRUMENTATION}/metrics_discovery/common/internal/md_concurrent_group.cpp
+    ${BS_DIR_INSTRUMENTATION}/metrics_discovery/common/internal/md_equation.cpp
+    ${BS_DIR_INSTRUMENTATION}/metrics_discovery/common/internal/md_information.cpp
+    ${BS_DIR_INSTRUMENTATION}/metrics_discovery/common/internal/md_metric.cpp
+    ${BS_DIR_INSTRUMENTATION}/metrics_discovery/common/internal/md_metric_set.cpp
+    ${BS_DIR_INSTRUMENTATION}/metrics_discovery/common/internal/md_metrics_device.cpp
+    ${BS_DIR_INSTRUMENTATION}/metrics_discovery/common/internal/md_override.cpp
+    ${BS_DIR_INSTRUMENTATION}/metrics_discovery/common/internal/md_register_set.cpp
+    ${BS_DIR_INSTRUMENTATION}/metrics_discovery/common/internal/md_symbol_set.cpp
     ${BS_DIR_INSTRUMENTATION}/metrics_discovery/common/md_calculation.cpp
     # utils
     ${BS_DIR_INSTRUMENTATION}/utils/common/iu_debug.c
@@ -288,11 +299,16 @@ endif ()
 #################################################################################
 # INCLUDES
 #################################################################################
+set (COMMON_TARGET_INCLUDE_DIRECTORIES
+    ${BS_DIR_INSTRUMENTATION}/metrics_discovery/common/inc
+    ${BS_DIR_INSTRUMENTATION}/metrics_discovery/common/inc/internal
+    )
+
 if ("${PLATFORM}" STREQUAL Windows) # windows
     target_include_directories (${PROJECT_NAME} PUBLIC
+        ${COMMON_TARGET_INCLUDE_DIRECTORIES}
         # instrumentation
         ${BS_DIR_INSTRUMENTATION}/utils/windows/inc
-        ${BS_DIR_INSTRUMENTATION}/metrics_discovery/common/inc
         ${BS_DIR_INSTRUMENTATION}/metrics_discovery/windows/inc
         # dx12
         ${BS_DIR_D3D12}/PCH
@@ -302,11 +318,11 @@ if ("${PLATFORM}" STREQUAL Windows) # windows
 elseif ("${PLATFORM}" STREQUAL linux)
     # generic
     include_directories (
+        ${COMMON_TARGET_INCLUDE_DIRECTORIES}
         # external
         ${BS_DIR_EXTERNAL}/drm
         # mdapi core
         ${BS_DIR_INSTRUMENTATION}/metrics_discovery/linux/inc
-        ${BS_DIR_INSTRUMENTATION}/metrics_discovery/common/inc
         # utils
         ${BS_DIR_INSTRUMENTATION}/utils/common/inc
         ${BS_DIR_INSTRUMENTATION}/utils/linux/inc

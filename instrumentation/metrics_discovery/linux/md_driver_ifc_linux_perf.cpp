@@ -11,11 +11,15 @@ SPDX-License-Identifier: MIT
 //     Abstract:   C++ implementation for Linux/Android with Perf
 
 #include "md_driver_ifc_linux_perf.h"
+#include "md_adapter.h"
+#include "md_metrics_device.h"
+#include "md_metric_set.h"
+#include "md_utils.h"
 #include "iu_i915_perf.h"
 #include "gfx_device_info.h"
 
-#include <math.h>
-#include <string.h>
+#include <cmath>
+#include <cstring>
 #include <inttypes.h> // for PRIu64 (printing uint64_t)
 #include <errno.h>
 #include <array>

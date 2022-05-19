@@ -84,6 +84,16 @@ using namespace MetricsDiscovery;
 
 namespace MetricsDiscoveryInternal
 {
+    ///////////////////////////////////////////////////////////////////////////////
+    // Forward declarations:                                                     //
+    ///////////////////////////////////////////////////////////////////////////////
+    class CEquation;
+    class CMetricsDevice;
+
+    TCompletionCode WriteEquationToFile( CEquation* equation, FILE* metricFile );
+    TCompletionCode SetDeltaFunction( const char* equationString, TDeltaFunction_1_0* deltaFunction );
+    TCompletionCode SetEquation( CMetricsDevice* device, CEquation** equation, const char* equationString );
+
     TCompletionCode GetNamedSemaphore( const char* semaphoreName, void** semaphorePtr );
     TCompletionCode ReleaseNamedSemaphore( void** semaphorePtr );
 

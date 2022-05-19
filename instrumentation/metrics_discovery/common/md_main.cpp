@@ -11,9 +11,10 @@ SPDX-License-Identifier: MIT
 //     Abstract:   Metrics Discovery main file
 
 #include "metrics_discovery_api.h"
-#include "md_metrics.h"
+#include "md_adapter.h"
+#include "md_adapter_group.h"
 #include "md_exports.h"
-#include "md_internal.h"
+#include "md_metrics.h"
 #include "md_per_platform_preamble.h"
 #include "md_utils.h"
 

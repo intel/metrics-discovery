@@ -13,9 +13,15 @@ SPDX-License-Identifier: MIT
 #pragma once
 
 #include "metrics_discovery_api.h"
-#include "md_internal.h"
 
 using namespace MetricsDiscovery;
-using MetricsDiscoveryInternal::CMetricsDevice;
 
-TCompletionCode CreateMetricTree( CMetricsDevice* metricsDevice );
+///////////////////////////////////////////////////////////////////////////////
+// Forward declarations:                                                     //
+///////////////////////////////////////////////////////////////////////////////
+namespace MetricsDiscoveryInternal
+{
+    class CMetricsDevice;
+}
+
+TCompletionCode CreateMetricTree( MetricsDiscoveryInternal::CMetricsDevice* metricsDevice );

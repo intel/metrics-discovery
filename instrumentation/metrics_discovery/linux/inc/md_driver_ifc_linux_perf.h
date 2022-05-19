@@ -12,12 +12,13 @@ SPDX-License-Identifier: MIT
 
 #pragma once
 
+#include "md_driver_ifc.h"
+#include "i915_drm.h"
+
 #include <mutex>
 #include <chrono>
 #include <vector> // for Query
 #include <condition_variable>
-
-#include "md_driver_ifc.h"
 
 using namespace MetricsDiscovery;
 

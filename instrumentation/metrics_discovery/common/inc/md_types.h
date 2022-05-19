@@ -12,17 +12,28 @@ SPDX-License-Identifier: MIT
 
 #pragma once
 
-#include "metrics_discovery_api.h"
+#include "metrics_discovery_internal_api.h"
 
 // Defines
 #define MD_MAX_CONTEXT_TAGS 128 // Should match max count used by Intel driver
+
+#define MD_BYTE            8
+#define MD_MBYTE           1048576
+#define MD_MHERTZ          1000000
+#define MD_NSEC_PER_SEC    1000000000ULL
+#define MD_INTEL_VENDOR_ID 0x8086
 
 using namespace MetricsDiscovery;
 
 namespace MetricsDiscoveryInternal
 {
     ///////////////////////////////////////////////////////////////////////////////
-    // OA report types:                                                           //
+    // Forward declarations:                                                     //
+    ///////////////////////////////////////////////////////////////////////////////
+    class CEquation;
+
+    ///////////////////////////////////////////////////////////////////////////////
+    // OA report types:                                                          //
     ///////////////////////////////////////////////////////////////////////////////
     typedef enum EReportType
     {
@@ -39,7 +50,7 @@ namespace MetricsDiscoveryInternal
     } TReportType;
 
     ///////////////////////////////////////////////////////////////////////////////
-    // Stream types:                                                              //
+    // Stream types:                                                             //
     ///////////////////////////////////////////////////////////////////////////////
     typedef enum EStreamType
     {
@@ -50,7 +61,7 @@ namespace MetricsDiscoveryInternal
     } TStreamType;
 
     ///////////////////////////////////////////////////////////////////////////////
-    // Override types:                                                            //
+    // Override types:                                                           //
     ///////////////////////////////////////////////////////////////////////////////
     typedef enum EOverrideType
     {
@@ -65,7 +76,7 @@ namespace MetricsDiscoveryInternal
     } TOverrideType;
 
     ///////////////////////////////////////////////////////////////////////////////
-    // Io Measurement Info types:                                                 //
+    // Io Measurement Info types:                                                //
     ///////////////////////////////////////////////////////////////////////////////
     typedef enum EIoMeasurementInfoType
     {
@@ -83,7 +94,7 @@ namespace MetricsDiscoveryInternal
     } TIoMeasurementInfoType;
 
     ///////////////////////////////////////////////////////////////////////////////
-    // Context Tag types:                                                         //
+    // Context Tag types:                                                        //
     ///////////////////////////////////////////////////////////////////////////////
     typedef enum EContextTagType
     {
@@ -95,7 +106,7 @@ namespace MetricsDiscoveryInternal
     } TContextTagType;
 
     ///////////////////////////////////////////////////////////////////////////////
-    // Context Tag                                                                //
+    // Context Tag                                                               //
     ///////////////////////////////////////////////////////////////////////////////
     typedef struct SContextTag
     {
@@ -106,7 +117,7 @@ namespace MetricsDiscoveryInternal
     } TContextTag;
 
     ///////////////////////////////////////////////////////////////////////////////
-    // Get context id tags params:                                                //
+    // Get context id tags params:                                               //
     ///////////////////////////////////////////////////////////////////////////////
     typedef struct SGetCtxIdTagsParams
     {
@@ -121,7 +132,7 @@ namespace MetricsDiscoveryInternal
     } TGetCtxTagsIdParams;
 
     ///////////////////////////////////////////////////////////////////////////////
-    // Same as LARGE_INTEGER, used in metric calculation:                         //
+    // Same as LARGE_INTEGER, used in metric calculation:                        //
     ///////////////////////////////////////////////////////////////////////////////
     typedef union ULargeInteger
     {
@@ -133,25 +144,44 @@ namespace MetricsDiscoveryInternal
         int64_t QuadPart;
     } TLargeInteger;
 
-    //////////////////////////////////////////////////////////////////////////////
-    //
-    // Class:
-    //     CEquationElementInternal
-    //
-    // Description:
-    //     Class which represents equation element.
-    //     It's moved here (from md_internal.h) to avoid including md_internal.h in md_calculation.cpp.
-    //
-    //////////////////////////////////////////////////////////////////////////////
-    class CEquationElementInternal
+    ///////////////////////////////////////////////////////////////////////////////
+    // API versions:                                                             //
+    ///////////////////////////////////////////////////////////////////////////////
+    enum EApiVersion
     {
-    public:
-        CEquationElementInternal();
-        CEquationElementInternal( const CEquationElementInternal& element );
-        CEquationElementInternal& operator=( const CEquationElementInternal& element );
-
-        TEquationElement_1_0 Element_1_0;
-        char                 SymbolNameInternal[32];
-        int32_t              MetricIndexInternal;
+        API_VERSION_1_0 = 0,
     };
+
+    ///////////////////////////////////////////////////////////////////////////////
+    // Symbol types:                                                             //
+    ///////////////////////////////////////////////////////////////////////////////
+    typedef enum ESymbolType
+    {
+        SYMBOL_TYPE_IMMEDIATE,
+        SYMBOL_TYPE_DETECT,
+    } TSymbolType;
+
+    ///////////////////////////////////////////////////////////////////////////////
+    // Global symbol:                                                            //
+    ///////////////////////////////////////////////////////////////////////////////
+    typedef struct SGlobalSymbol
+    {
+        EApiVersion version;
+        union
+        {
+            TGlobalSymbol_1_0 symbol_1_0;
+        };
+        TSymbolType symbolType;
+    } TGlobalSymbol;
+
+    ///////////////////////////////////////////////////////////////////////////////
+    // Register set params:                                                      //
+    ///////////////////////////////////////////////////////////////////////////////
+    typedef struct SRegisterSetParams
+    {
+        uint32_t    ConfigId;
+        uint32_t    ConfigPriority;
+        TConfigType ConfigType;
+    } TRegisterSetParams;
+
 }; // namespace MetricsDiscoveryInternal

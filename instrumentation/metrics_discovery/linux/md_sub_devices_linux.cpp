@@ -12,7 +12,9 @@ SPDX-License-Identifier: MIT
 
 #include "md_sub_devices_linux.h"
 #include "md_driver_ifc_linux_perf.h"
+#include "md_adapter.h"
 #include "md_utils.h"
+
 #include <cmath>
 #include <algorithm>
 
