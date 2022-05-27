@@ -838,7 +838,18 @@ namespace MetricsDiscoveryInternal
 
             case GTDI_DEVICE_PARAM_SUBSLICES_MASK:
             {
-                if( DualSubslicesSupported() )
+                out->ValueType   = GTDI_DEVICE_PARAM_VALUE_TYPE_UINT64;
+                out->ValueUint64 = 0;
+
+                if( instrPlatformId == GENERATION_PVC )
+                {
+                    // Return value is a mask of enabled subslices
+                    int64_t dualSubsliceMask = 0;
+                    ret                      = GetDualSubsliceMask( &dualSubsliceMask, metricsDevice );
+                    MD_CHECK_CC_RET( ret );
+                    out->ValueUint64 = static_cast<uint64_t>( dualSubsliceMask );
+                }
+                else if( DualSubslicesSupported() )
                 {
                     ret = CC_ERROR_NOT_SUPPORTED;
                 }
@@ -853,9 +864,6 @@ namespace MetricsDiscoveryInternal
                     MD_CHECK_CC_RET( ret );
                     ret = SendGetParamIoctl( m_DrmDeviceHandle, I915_PARAM_SLICE_MASK, &sliceMask );
                     MD_CHECK_CC_RET( ret );
-
-                    out->ValueType   = GTDI_DEVICE_PARAM_VALUE_TYPE_UINT64;
-                    out->ValueUint64 = 0;
 
                     for( int32_t i = 0; i < MD_MAX_SLICE; ++i )
                     {
@@ -971,8 +979,10 @@ namespace MetricsDiscoveryInternal
             {
                 // Returning mapped GtType for compatibility reasons
                 out->ValueType = GTDI_DEVICE_PARAM_VALUE_TYPE_UINT32;
+                // GfxVer12 gt values is based of revId and slicesMask
                 if( gfxDeviceInfo->PlatformIndex == GENERATION_ACM
-                    || gfxDeviceInfo->PlatformIndex == GENERATION_XEHP_SDV )
+                    || gfxDeviceInfo->PlatformIndex == GENERATION_XEHP_SDV
+                    || gfxDeviceInfo->PlatformIndex == GENERATION_PVC )
                 {
                     out->ValueUint32 = (uint32_t) MapDeviceInfoToInstrGtTypeGfxVer12( gfxDeviceInfo );
                 }
@@ -1261,6 +1271,7 @@ namespace MetricsDiscoveryInternal
         {
             case GENERATION_XEHP_SDV:
             case GENERATION_ACM:
+            case GENERATION_PVC:
                 useKernelVersion = m_PerfCapabilities.IsGpuCpuTimestampSupported;
                 break;
 
@@ -2730,6 +2741,7 @@ namespace MetricsDiscoveryInternal
                 return I915_OA_FORMAT_A45_B8_C8;
             case GENERATION_XEHP_SDV:
             case GENERATION_ACM:
+            case GENERATION_PVC:
                 return PRELIM_I915_OA_FORMAT_A24u40_A14u32_B8_C8;
             default:
                 return I915_OA_FORMAT_A32u40_A4u32_B8_C8;
@@ -3411,7 +3423,16 @@ namespace MetricsDiscoveryInternal
         }
 
         uint32_t flags = ( engine.EngineId.ClassInstance.Class & 0xFF ) | ( ( engine.EngineId.ClassInstance.Instance & 0xFF ) << 8 );
-        MD_CHECK_CC_RET( QueryDrm( PRELIM_DRM_I915_QUERY_GEOMETRY_SLICES, buffer, flags ) );
+        // PRELIM_DRM_I915_QUERY_GEOMETRY_SLICES is returning empty subslice mask on PVC.
+        // Use PRELIM_DRM_I915_QUERY_COMPUTE_SLICES instead.
+        if( m_CachedGfxDeviceInfo.PlatformIndex == GENERATION_PVC )
+        {
+            MD_CHECK_CC_RET( QueryDrm( PRELIM_DRM_I915_QUERY_COMPUTE_SLICES, buffer, flags ) );
+        }
+        else
+        {
+            MD_CHECK_CC_RET( QueryDrm( PRELIM_DRM_I915_QUERY_GEOMETRY_SLICES, buffer, flags ) );
+        }
         MD_CHECK_CC_RET( buffer.size() ? CC_OK : CC_ERROR_GENERAL );
 
         return CC_OK;
@@ -3902,6 +3923,7 @@ namespace MetricsDiscoveryInternal
         switch( gfxDeviceInfo->PlatformIndex )
         {
             case GENERATION_ACM:
+            case GENERATION_PVC:
                 MD_CHECK_CC_RET( GetOaTimestampFrequency( oaTimestampFrequency ) );
                 MD_CHECK_CC_RET( GetCsTimestampFrequency( csTimestampFrequency ) );
                 oaTimestamp = csTimestamp * oaTimestampFrequency / csTimestampFrequency;
@@ -3944,6 +3966,7 @@ namespace MetricsDiscoveryInternal
         switch( gfxDeviceInfo->PlatformIndex )
         {
             case GENERATION_ACM:
+            case GENERATION_PVC:
                 result = GetOaTimestampFrequency( *gpuTimestampFrequency );
                 break;
 
@@ -4156,6 +4179,7 @@ namespace MetricsDiscoveryInternal
             case GENERATION_ADLP:
             case GENERATION_XEHP_SDV:
             case GENERATION_ACM:
+            case GENERATION_PVC:
                 return MD_MAX_DUALSUBSLICE_PER_SLICE * MD_MAX_SUBSLICE_PER_DSS;
             default:
                 MD_LOG_A( m_adapterId, LOG_WARNING, "WARNING: Unsupported platform, default MaxSubslicePerSlice used" );
@@ -4193,6 +4217,8 @@ namespace MetricsDiscoveryInternal
             case GENERATION_XEHP_SDV:
             case GENERATION_ACM:
                 return MD_DUALSUBSLICE_PER_SLICE;
+            case GENERATION_PVC:
+                return MD_MAX_SUBSLICE_PER_SLICE;
             default:
                 return MD_MAX_DUALSUBSLICE_PER_SLICE;
         }
@@ -4232,6 +4258,7 @@ namespace MetricsDiscoveryInternal
             case GENERATION_XEHP_SDV:
             case GENERATION_ADLP:
             case GENERATION_ACM:
+            case GENERATION_PVC:
                 return true;
             default:
                 return false;
@@ -4347,6 +4374,27 @@ namespace MetricsDiscoveryInternal
             if( isAdderWorkaroundValid )
             {
                 gtType = isAdderWaNeeded ? GFX_GTTYPE_GT1 : GFX_GTTYPE_GT2;
+            }
+        }
+        else if( gfxDeviceInfo->PlatformIndex == GENERATION_PVC )
+        {
+            drmDevicePtr drmDevice = nullptr;
+
+            if( drmGetDevice( m_DrmDeviceHandle, &drmDevice ) != 0 || drmDevice == nullptr )
+            {
+                MD_LOG_A( m_adapterId, LOG_ERROR, "PCI revision_id not recognized. drmGetDevice failed." );
+                return gtType;
+            }
+
+            MD_LOG_A( m_adapterId, LOG_INFO, "PCI revision_id is %u", drmDevice->deviceinfo.pci->revision_id );
+
+            if( drmDevice->deviceinfo.pci->revision_id >= 0x1E )
+            {
+                gtType = GFX_GTTYPE_GT2;
+            }
+            else
+            {
+                gtType = GFX_GTTYPE_GT1;
             }
         }
 

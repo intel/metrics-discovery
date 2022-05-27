@@ -5727,7 +5727,7 @@ static TCompletionCode CreateMetricSet_GLK_HDCAndSF( CMetricsDevice* metricsDevi
     if( metric )
     {
         
-        MD_CHECK_CC_RET( metric->SetNormalizationEquation( "$GpuCoreClocks 1000 UMUL $GpuTime UDIV" ));
+        MD_CHECK_CC_RET( metric->SetNormalizationEquation( "$GpuCoreClocks 1000 UMUL $$GpuTime UDIV" ));
     }
 
     availabilityEquation = nullptr;
@@ -5759,8 +5759,8 @@ static TCompletionCode CreateMetricSet_GLK_HDCAndSF( CMetricsDevice* metricsDevi
     availabilityEquation = nullptr;
     metric = metricSet->AddMetric( "HsThreads", "HS Threads Dispatched",
         "The total number of hull shader hardware threads dispatched.",
-        "EU Array/Hull Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_HS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
-        METRIC_TYPE_EVENT, RESULT_UINT64, "threads", 0, 0, HW_UNIT_GPU, availabilityEquation, "Hull|Control,hull|control,HS|TCS", "oa.fixed", 5 );
+        "EU Array/Hull Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_HS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+        METRIC_TYPE_EVENT, RESULT_UINT64, "threads", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, "oa.fixed", 5 );
     if( metric )
     {
         MD_CHECK_CC_RET( metric->SetSnapshotReportReadEquation( "rd40@0x18:0xa2" ));
@@ -5771,8 +5771,8 @@ static TCompletionCode CreateMetricSet_GLK_HDCAndSF( CMetricsDevice* metricsDevi
     availabilityEquation = nullptr;
     metric = metricSet->AddMetric( "DsThreads", "DS Threads Dispatched",
         "The total number of domain shader hardware threads dispatched.",
-        "EU Array/Domain Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_DS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
-        METRIC_TYPE_EVENT, RESULT_UINT64, "threads", 0, 0, HW_UNIT_GPU, availabilityEquation, "Domain|Evaluation,domain|evaluation,DS|TES", "oa.fixed", 6 );
+        "EU Array/Domain Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_DS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+        METRIC_TYPE_EVENT, RESULT_UINT64, "threads", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, "oa.fixed", 6 );
     if( metric )
     {
         MD_CHECK_CC_RET( metric->SetSnapshotReportReadEquation( "rd40@0x1c:0xa3" ));
@@ -5783,7 +5783,7 @@ static TCompletionCode CreateMetricSet_GLK_HDCAndSF( CMetricsDevice* metricsDevi
     availabilityEquation = nullptr;
     metric = metricSet->AddMetric( "GsThreads", "GS Threads Dispatched",
         "The total number of geometry shader hardware threads dispatched.",
-        "EU Array/Geometry Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_GS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+        "EU Array/Geometry Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_GS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
         METRIC_TYPE_EVENT, RESULT_UINT64, "threads", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, "oa.fixed", 7 );
     if( metric )
     {
@@ -5807,7 +5807,7 @@ static TCompletionCode CreateMetricSet_GLK_HDCAndSF( CMetricsDevice* metricsDevi
     availabilityEquation = nullptr;
     metric = metricSet->AddMetric( "CsThreads", "CS Threads Dispatched",
         "The total number of compute shader hardware threads dispatched.",
-        "EU Array/Compute Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_CS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+        "EU Array/Compute Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_CS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
         METRIC_TYPE_EVENT, RESULT_UINT64, "threads", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, "oa.fixed", 9 );
     if( metric )
     {
@@ -5904,7 +5904,7 @@ static TCompletionCode CreateMetricSet_GLK_HDCAndSF( CMetricsDevice* metricsDevi
     metric = metricSet->AddMetric( "PsFpu0Active", "PS FPU0 Pipe Active",
         "The percentage of time in which EU FPU0 pipeline was actively processing a pixel shader instruction.",
         "EU Array/Pixel Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_PS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
-        METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, "Pixel|Fragment,PS|FS,pixel|fragment", nullptr, 16 );
+        METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 16 );
     if( metric )
     {
         MD_CHECK_CC_RET( metric->SetSnapshotReportReadEquation( "rd40@0x4c:0xaf" ));
@@ -5918,7 +5918,7 @@ static TCompletionCode CreateMetricSet_GLK_HDCAndSF( CMetricsDevice* metricsDevi
     metric = metricSet->AddMetric( "PsFpu1Active", "PS FPU1 Pipe Active",
         "The percentage of time in which EU FPU1 pipeline was actively processing a pixel shader instruction.",
         "EU Array/Pixel Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_PS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
-        METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, "Pixel|Fragment,PS|FS,pixel|fragment", nullptr, 17 );
+        METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 17 );
     if( metric )
     {
         MD_CHECK_CC_RET( metric->SetSnapshotReportReadEquation( "rd40@0x50:0xb0" ));
@@ -5932,7 +5932,7 @@ static TCompletionCode CreateMetricSet_GLK_HDCAndSF( CMetricsDevice* metricsDevi
     metric = metricSet->AddMetric( "PsSendActive", "PS Send Pipeline Active",
         "The percentage of time in which EU send pipeline was actively processing a pixel shader instruction.",
         "EU Array/Pixel Shader", (METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000) | (METRIC_GROUP_NAME_ID_PS * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
-        METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, "Pixel|Fragment,PS|FS,pixel|fragment", nullptr, 18 );
+        METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 18 );
     if( metric )
     {
         MD_CHECK_CC_RET( metric->SetSnapshotReportReadEquation( "rd40@0x54:0xb1" ));
@@ -6076,7 +6076,7 @@ static TCompletionCode CreateMetricSet_GLK_HDCAndSF( CMetricsDevice* metricsDevi
     availabilityEquation = nullptr;
     metric = metricSet->AddMetric( "SlmBytesRead", "SLM Bytes Read",
         "The total number of GPU memory bytes read from shared local memory.",
-        "L3/Data Port/SLM", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000) | (METRIC_GROUP_NAME_ID_SLM * 0x100), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+        "L3/Data Port/SLM", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000) | (METRIC_GROUP_NAME_ID_SLM * 0x100), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
         METRIC_TYPE_THROUGHPUT, RESULT_UINT64, "bytes", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, "oa.fixed", 29 );
     if( metric )
     {
@@ -6090,7 +6090,7 @@ static TCompletionCode CreateMetricSet_GLK_HDCAndSF( CMetricsDevice* metricsDevi
     availabilityEquation = nullptr;
     metric = metricSet->AddMetric( "SlmBytesWritten", "SLM Bytes Written",
         "The total number of GPU memory bytes written into shared local memory.",
-        "L3/Data Port/SLM", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000) | (METRIC_GROUP_NAME_ID_SLM * 0x100), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+        "L3/Data Port/SLM", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000) | (METRIC_GROUP_NAME_ID_SLM * 0x100), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
         METRIC_TYPE_THROUGHPUT, RESULT_UINT64, "bytes", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, "oa.fixed", 30 );
     if( metric )
     {
@@ -6128,12 +6128,12 @@ static TCompletionCode CreateMetricSet_GLK_HDCAndSF( CMetricsDevice* metricsDevi
     availabilityEquation = nullptr;
     metric = metricSet->AddMetric( "L3ShaderThroughput", "L3 Shader Throughput",
         "The total number of GPU memory bytes transferred between shaders and L3 caches w/o URB.",
-        "L3/Data Port", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000), USAGE_FLAG_TIER_2|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+        "L3/Data Port", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000), USAGE_FLAG_TIER_2|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
         METRIC_TYPE_THROUGHPUT, RESULT_UINT64, "bytes", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, "oa.fixed", 33 );
     if( metric )
     {
         
-        MD_CHECK_CC_RET( metric->SetNormalizationEquation( "$SlmBytesRead $SlmBytesWritten $ShaderMemoryAccesses UADD UADD 64 UMUL" ));
+        MD_CHECK_CC_RET( metric->SetNormalizationEquation( "$SlmBytesRead $SlmBytesWritten UADD $ShaderMemoryAccesses UADD 64 UMUL" ));
         MD_CHECK_CC_RET( metric->SetMaxValueEquation( "$GpuCoreClocks 64 UMUL $EuSlicesTotalCount UMUL 4 UMUL" ));
     }
 
@@ -6149,13 +6149,44 @@ static TCompletionCode CreateMetricSet_GLK_HDCAndSF( CMetricsDevice* metricsDevi
         MD_CHECK_CC_RET( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
     }
 
-    availabilityEquation = "";
+    availabilityEquation = nullptr;
+    metric = metricSet->AddMetric( "PolyDataReady", "Polygon Data Ready",
+        "The percentage of time in which geometry pipeline output is ready",
+        "GPU/3D Pipe/Strip-Fans", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_3D_PIPE * 0x10000) | (METRIC_GROUP_NAME_ID_SF * 0x100), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+        METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 35 );
+    if( metric )
+    {
+        MD_CHECK_CC_RET( metric->SetSnapshotReportReadEquation( "dw@0xc8" ));
+        MD_CHECK_CC_RET( metric->SetDeltaReportReadEquation( "qw@0x140" ));
+        MD_CHECK_CC_RET( metric->SetNormalizationEquation( "GpuDuration" ));
+        MD_CHECK_CC_RET( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
+        MD_CHECK_CC_RET( metric->SetMaxValueEquation( "100" ));
+    }
+
+    availabilityEquation = "$SubsliceMask 1 AND";
     if( MD_IS_INTERNAL_BUILD || metricsDevice->IsAvailabilityEquationTrue( availabilityEquation ) )
     {
-        metric = metricSet->AddMetric( "PolyDataReady", "Polygon Data Ready",
-            "The percentage of time in which geometry pipeline output is ready",
-            "GPU/3D Pipe/Strip-Fans", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_3D_PIPE * 0x10000) | (METRIC_GROUP_NAME_ID_SF * 0x100), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
-            METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 35 );
+        metric = metricSet->AddMetric( "NonSamplerShader00AccessStalledOnL3", "Slice0 Subslice0 Non-sampler Shader Access Stalled On L3",
+            "Percentage of time when HDC has messages to L3, but it's stalled due to lack of credits (Slice0 Subslice0)",
+            "GPU/Data Port", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, nullptr, nullptr, 36 );
+        if( metric )
+        {
+            MD_CHECK_CC_RET( metric->SetSnapshotReportReadEquation( "dw@0xc4" ));
+            MD_CHECK_CC_RET( metric->SetDeltaReportReadEquation( "qw@0x138" ));
+            MD_CHECK_CC_RET( metric->SetNormalizationEquation( "GpuDuration" ));
+            MD_CHECK_CC_RET( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
+            MD_CHECK_CC_RET( metric->SetMaxValueEquation( "100" ));
+        }
+    }
+
+    availabilityEquation = "$SubsliceMask 2 AND";
+    if( MD_IS_INTERNAL_BUILD || metricsDevice->IsAvailabilityEquationTrue( availabilityEquation ) )
+    {
+        metric = metricSet->AddMetric( "NonSamplerShader01AccessStalledOnL3", "Slice0 Subslice1 Non-sampler Shader Access Stalled On L3",
+            "Percentage of time when HDC has messages to L3, but it's stalled due to lack of credits (Slice0 Subslice1)",
+            "GPU/Data Port", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+            METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, nullptr, nullptr, 37 );
         if( metric )
         {
             MD_CHECK_CC_RET( metric->SetSnapshotReportReadEquation( "dw@0xc0" ));
@@ -6166,98 +6197,68 @@ static TCompletionCode CreateMetricSet_GLK_HDCAndSF( CMetricsDevice* metricsDevi
         }
     }
 
-    availabilityEquation = "$SubsliceMask 0x1 AND";
-    if( MD_IS_INTERNAL_BUILD || metricsDevice->IsAvailabilityEquationTrue( availabilityEquation ) )
-    {
-        metric = metricSet->AddMetric( "NonSamplerShader00AccessStalledOnL3", "HDC stalled by L3 (s0.ss0)",
-            "Percentage of time when HDC has messges to L3, but it's stalled due to lack of credits (s0.ss0)",
-            "GPU/Data Port", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
-            METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, nullptr, nullptr, 36 );
-        if( metric )
-        {
-            MD_CHECK_CC_RET( metric->SetSnapshotReportReadEquation( "dw@0xfc dw@0xf8 USUB" ));
-            MD_CHECK_CC_RET( metric->SetDeltaReportReadEquation( "qw@0x1a8 qw@0x1a0 USUB" ));
-            MD_CHECK_CC_RET( metric->SetNormalizationEquation( "GpuDuration" ));
-            MD_CHECK_CC_RET( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
-            MD_CHECK_CC_RET( metric->SetMaxValueEquation( "100" ));
-        }
-    }
-
-    availabilityEquation = "$SubsliceMask 0x2 AND";
-    if( MD_IS_INTERNAL_BUILD || metricsDevice->IsAvailabilityEquationTrue( availabilityEquation ) )
-    {
-        metric = metricSet->AddMetric( "NonSamplerShader01AccessStalledOnL3", "HDC stalled by L3 (s0.ss1)",
-            "Percentage of time when HDC has messges to L3, but it's stalled due to lack of credits (s0.ss1)",
-            "GPU/Data Port", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
-            METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, nullptr, nullptr, 37 );
-        if( metric )
-        {
-            MD_CHECK_CC_RET( metric->SetSnapshotReportReadEquation( "dw@0xf4 dw@0xf0 USUB" ));
-            MD_CHECK_CC_RET( metric->SetDeltaReportReadEquation( "qw@0x198 qw@0x190 USUB" ));
-            MD_CHECK_CC_RET( metric->SetNormalizationEquation( "GpuDuration" ));
-            MD_CHECK_CC_RET( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
-            MD_CHECK_CC_RET( metric->SetMaxValueEquation( "100" ));
-        }
-    }
-
         MD_CHECK_CC_RET( metricSet->AddStartRegisterSet( 0, 0 ));
+        MD_CHECK_CC_RET( metricSet->AddStartConfigRegister( 0x9840, 0x00000080, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC_RET( metricSet->AddStartConfigRegister( 0x9888, 0x104f0251, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC_RET( metricSet->AddStartConfigRegister( 0x9888, 0x124f4a20, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC_RET( metricSet->AddStartConfigRegister( 0x9888, 0x11834400, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC_RET( metricSet->AddStartConfigRegister( 0x9888, 0x002d1000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC_RET( metricSet->AddStartConfigRegister( 0x9888, 0x062d4000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC_RET( metricSet->AddStartConfigRegister( 0x9888, 0x082d5000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC_RET( metricSet->AddStartConfigRegister( 0x9888, 0x0c2e0400, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC_RET( metricSet->AddStartConfigRegister( 0x9888, 0x0e2e1500, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC_RET( metricSet->AddStartConfigRegister( 0x9888, 0x044c4000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC_RET( metricSet->AddStartConfigRegister( 0x9888, 0x0a4c8000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC_RET( metricSet->AddStartConfigRegister( 0x9888, 0x0c4cc000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC_RET( metricSet->AddStartConfigRegister( 0x9888, 0x004e2000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC_RET( metricSet->AddStartConfigRegister( 0x9888, 0x064e8000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC_RET( metricSet->AddStartConfigRegister( 0x9888, 0x084ea000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC_RET( metricSet->AddStartConfigRegister( 0x9888, 0x004f0063, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC_RET( metricSet->AddStartConfigRegister( 0x9888, 0x064f6900, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC_RET( metricSet->AddStartConfigRegister( 0x9888, 0x084f4943, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC_RET( metricSet->AddStartConfigRegister( 0x9888, 0x1a4f0000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC_RET( metricSet->AddStartConfigRegister( 0x9888, 0x1c4f0000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC_RET( metricSet->AddStartConfigRegister( 0x9888, 0x180f1000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC_RET( metricSet->AddStartConfigRegister( 0x9888, 0x1a0fa800, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC_RET( metricSet->AddStartConfigRegister( 0x9888, 0x182c4000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC_RET( metricSet->AddStartConfigRegister( 0x9888, 0x1c2c0015, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC_RET( metricSet->AddStartConfigRegister( 0x9888, 0x0b804000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC_RET( metricSet->AddStartConfigRegister( 0x9888, 0x23810800, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC_RET( metricSet->AddStartConfigRegister( 0x9888, 0x0b830017, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC_RET( metricSet->AddStartConfigRegister( 0x9888, 0x01938000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC_RET( metricSet->AddStartConfigRegister( 0x9888, 0x0f938000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC_RET( metricSet->AddStartConfigRegister( 0x9888, 0x1993000a, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC_RET( metricSet->AddStartConfigRegister( 0x9888, 0x1f950004, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC_RET( metricSet->AddStartConfigRegister( 0x9888, 0x11928000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC_RET( metricSet->AddStartConfigRegister( 0x9888, 0x13904000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC_RET( metricSet->AddStartConfigRegister( 0x9888, 0x21904000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC_RET( metricSet->AddStartConfigRegister( 0x9888, 0x23904000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC_RET( metricSet->AddStartConfigRegister( 0x9888, 0x25904000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC_RET( metricSet->AddStartConfigRegister( 0x9888, 0x27908000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC_RET( metricSet->AddStartConfigRegister( 0x9888, 0x53900000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC_RET( metricSet->AddStartConfigRegister( 0x9888, 0x43900000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC_RET( metricSet->AddStartConfigRegister( 0x9888, 0x55900000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC_RET( metricSet->AddStartConfigRegister( 0x9888, 0x47900000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC_RET( metricSet->AddStartConfigRegister( 0x9888, 0x57900000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC_RET( metricSet->AddStartConfigRegister( 0x9888, 0x49900060, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC_RET( metricSet->AddStartConfigRegister( 0x9888, 0x37900000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC_RET( metricSet->AddStartConfigRegister( 0x9888, 0x33900000, REGISTER_TYPE_NOA ));
         MD_CHECK_CC_RET( metricSet->AddStartConfigRegister( 0x2740, 0x00000000, REGISTER_TYPE_OA ));
-        MD_CHECK_CC_RET( metricSet->AddStartConfigRegister( 0x2744, 0x00800000, REGISTER_TYPE_OA ));
         MD_CHECK_CC_RET( metricSet->AddStartConfigRegister( 0x2710, 0x00000000, REGISTER_TYPE_OA ));
-        MD_CHECK_CC_RET( metricSet->AddStartConfigRegister( 0x2714, 0x10800000, REGISTER_TYPE_OA ));
+        MD_CHECK_CC_RET( metricSet->AddStartConfigRegister( 0x2714, 0x70800000, REGISTER_TYPE_OA ));
         MD_CHECK_CC_RET( metricSet->AddStartConfigRegister( 0x2720, 0x00000000, REGISTER_TYPE_OA ));
         MD_CHECK_CC_RET( metricSet->AddStartConfigRegister( 0x2724, 0x00800000, REGISTER_TYPE_OA ));
-        MD_CHECK_CC_RET( metricSet->AddStartConfigRegister( 0x2770, 0x00000002, REGISTER_TYPE_OA ));
-        MD_CHECK_CC_RET( metricSet->AddStartConfigRegister( 0x2774, 0x0000fdff, REGISTER_TYPE_OA ));
-        MD_CHECK_CC_RET( metricSet->AddStartConfigRegister( 0xE458, 0x00005004, REGISTER_TYPE_FLEX ));
-        MD_CHECK_CC_RET( metricSet->AddStartConfigRegister( 0xE558, 0x00010003, REGISTER_TYPE_FLEX ));
-        MD_CHECK_CC_RET( metricSet->AddStartConfigRegister( 0xE658, 0x00012011, REGISTER_TYPE_FLEX ));
-        MD_CHECK_CC_RET( metricSet->AddStartConfigRegister( 0xE758, 0x00015014, REGISTER_TYPE_FLEX ));
-        MD_CHECK_CC_RET( metricSet->AddStartConfigRegister( 0xE45c, 0x00051050, REGISTER_TYPE_FLEX ));
-        MD_CHECK_CC_RET( metricSet->AddStartConfigRegister( 0xE55c, 0x00053052, REGISTER_TYPE_FLEX ));
-        MD_CHECK_CC_RET( metricSet->AddStartConfigRegister( 0xE65c, 0x00055054, REGISTER_TYPE_FLEX ));
-        MD_CHECK_CC_RET( metricSet->AddStartConfigRegister( 0x00009840, 0x00000080, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC_RET( metricSet->AddStartConfigRegister( 0x00009888, 0x104F0232, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC_RET( metricSet->AddStartConfigRegister( 0x00009888, 0x124F4640, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC_RET( metricSet->AddStartConfigRegister( 0x00009888, 0x11834400, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC_RET( metricSet->AddStartConfigRegister( 0x00009888, 0x022D4000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC_RET( metricSet->AddStartConfigRegister( 0x00009888, 0x042D5000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC_RET( metricSet->AddStartConfigRegister( 0x00009888, 0x062D1000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC_RET( metricSet->AddStartConfigRegister( 0x00009888, 0x0E2E0055, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC_RET( metricSet->AddStartConfigRegister( 0x00009888, 0x064C8000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC_RET( metricSet->AddStartConfigRegister( 0x00009888, 0x084CC000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC_RET( metricSet->AddStartConfigRegister( 0x00009888, 0x0A4C4000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC_RET( metricSet->AddStartConfigRegister( 0x00009888, 0x024E8000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC_RET( metricSet->AddStartConfigRegister( 0x00009888, 0x044EA000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC_RET( metricSet->AddStartConfigRegister( 0x00009888, 0x064E2000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC_RET( metricSet->AddStartConfigRegister( 0x00009888, 0x024F6100, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC_RET( metricSet->AddStartConfigRegister( 0x00009888, 0x044F416B, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC_RET( metricSet->AddStartConfigRegister( 0x00009888, 0x064F004B, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC_RET( metricSet->AddStartConfigRegister( 0x00009888, 0x1A4F0000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC_RET( metricSet->AddStartConfigRegister( 0x00009888, 0x1A0F02A8, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC_RET( metricSet->AddStartConfigRegister( 0x00009888, 0x1A2C5500, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC_RET( metricSet->AddStartConfigRegister( 0x00009888, 0x0F808000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC_RET( metricSet->AddStartConfigRegister( 0x00009888, 0x25810020, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC_RET( metricSet->AddStartConfigRegister( 0x00009888, 0x0F8305C0, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC_RET( metricSet->AddStartConfigRegister( 0x00009888, 0x07938000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC_RET( metricSet->AddStartConfigRegister( 0x00009888, 0x09938000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC_RET( metricSet->AddStartConfigRegister( 0x00009888, 0x0B938000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC_RET( metricSet->AddStartConfigRegister( 0x00009888, 0x0D938000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC_RET( metricSet->AddStartConfigRegister( 0x00009888, 0x1F951000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC_RET( metricSet->AddStartConfigRegister( 0x00009888, 0x13920200, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC_RET( metricSet->AddStartConfigRegister( 0x00009888, 0x31908000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC_RET( metricSet->AddStartConfigRegister( 0x00009888, 0x19904000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC_RET( metricSet->AddStartConfigRegister( 0x00009888, 0x1B904000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC_RET( metricSet->AddStartConfigRegister( 0x00009888, 0x1D904000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC_RET( metricSet->AddStartConfigRegister( 0x00009888, 0x1F904000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC_RET( metricSet->AddStartConfigRegister( 0x00009888, 0x37900000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC_RET( metricSet->AddStartConfigRegister( 0x00009888, 0x59900000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC_RET( metricSet->AddStartConfigRegister( 0x00009888, 0x4D900003, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC_RET( metricSet->AddStartConfigRegister( 0x00009888, 0x53900000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC_RET( metricSet->AddStartConfigRegister( 0x00009888, 0x45900000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC_RET( metricSet->AddStartConfigRegister( 0x00009888, 0x55900000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC_RET( metricSet->AddStartConfigRegister( 0x00009888, 0x47900000, REGISTER_TYPE_NOA ));
-        MD_CHECK_CC_RET( metricSet->AddStartConfigRegister( 0x00009888, 0x33900000, REGISTER_TYPE_NOA ));
+        MD_CHECK_CC_RET( metricSet->AddStartConfigRegister( 0x2770, 0x0000000a, REGISTER_TYPE_OA ));
+        MD_CHECK_CC_RET( metricSet->AddStartConfigRegister( 0x2774, 0x0000fffc, REGISTER_TYPE_OA ));
+        MD_CHECK_CC_RET( metricSet->AddStartConfigRegister( 0x2778, 0x00000022, REGISTER_TYPE_OA ));
+        MD_CHECK_CC_RET( metricSet->AddStartConfigRegister( 0x277c, 0x0000fff3, REGISTER_TYPE_OA ));
+        MD_CHECK_CC_RET( metricSet->AddStartConfigRegister( 0x2780, 0x00000002, REGISTER_TYPE_OA ));
+        MD_CHECK_CC_RET( metricSet->AddStartConfigRegister( 0x2784, 0x0000ffef, REGISTER_TYPE_OA ));
+        MD_CHECK_CC_RET( metricSet->AddStartConfigRegister( 0xe458, 0x00005004, REGISTER_TYPE_FLEX ));
+        MD_CHECK_CC_RET( metricSet->AddStartConfigRegister( 0xe558, 0x00010003, REGISTER_TYPE_FLEX ));
+        MD_CHECK_CC_RET( metricSet->AddStartConfigRegister( 0xe658, 0x00012011, REGISTER_TYPE_FLEX ));
+        MD_CHECK_CC_RET( metricSet->AddStartConfigRegister( 0xe45c, 0x00051050, REGISTER_TYPE_FLEX ));
+        MD_CHECK_CC_RET( metricSet->AddStartConfigRegister( 0xe55c, 0x00053052, REGISTER_TYPE_FLEX ));
   
     MD_CHECK_CC_RET( metricSet->RefreshConfigRegisters() );
 

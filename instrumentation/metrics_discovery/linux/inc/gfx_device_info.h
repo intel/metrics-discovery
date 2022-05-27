@@ -292,6 +292,16 @@ namespace MetricsDiscoveryInternal
         { 0x020F, SPlatformIndexGt( GENERATION_XEHP_SDV, GFX_GTTYPE_UNDEFINED ) },
         { 0x0210, SPlatformIndexGt( GENERATION_XEHP_SDV, GFX_GTTYPE_UNDEFINED ) },
 
+        { 0x0BD0, SPlatformIndexGt( GENERATION_PVC, GFX_GTTYPE_UNDEFINED ) },
+        { 0x0BD5, SPlatformIndexGt( GENERATION_PVC, GFX_GTTYPE_UNDEFINED ) },
+        { 0x0BD6, SPlatformIndexGt( GENERATION_PVC, GFX_GTTYPE_UNDEFINED ) },
+        { 0x0BD7, SPlatformIndexGt( GENERATION_PVC, GFX_GTTYPE_UNDEFINED ) },
+        { 0x0BD8, SPlatformIndexGt( GENERATION_PVC, GFX_GTTYPE_UNDEFINED ) },
+        { 0x0BD9, SPlatformIndexGt( GENERATION_PVC, GFX_GTTYPE_UNDEFINED ) },
+        { 0x0BE0, SPlatformIndexGt( GENERATION_PVC, GFX_GTTYPE_UNDEFINED ) },
+        { 0x0BE1, SPlatformIndexGt( GENERATION_PVC, GFX_GTTYPE_UNDEFINED ) },
+        { 0x0BE5, SPlatformIndexGt( GENERATION_PVC, GFX_GTTYPE_UNDEFINED ) },
+
         { 0x5690, SPlatformIndexGt( GENERATION_ACM, GFX_GTTYPE_UNDEFINED ) },
         { 0x5691, SPlatformIndexGt( GENERATION_ACM, GFX_GTTYPE_UNDEFINED ) },
         { 0x5692, SPlatformIndexGt( GENERATION_ACM, GFX_GTTYPE_UNDEFINED ) },
@@ -331,6 +341,7 @@ namespace MetricsDiscoveryInternal
         { GENERATION_ADLP, 7 },
         { GENERATION_XEHP_SDV, 8 },
         { GENERATION_ACM, 8 },
+        { GENERATION_PVC, 8 },
     };
 
 } // namespace MetricsDiscoveryInternal

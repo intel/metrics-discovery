@@ -514,6 +514,7 @@ namespace MetricsDiscoveryInternal
         {
             case GENERATION_XEHP_SDV:
             case GENERATION_ACM:
+            case GENERATION_PVC:
                 validPlatform = true;
                 break;
         }

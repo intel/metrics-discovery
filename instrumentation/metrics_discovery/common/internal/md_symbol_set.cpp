@@ -582,6 +582,7 @@ namespace MetricsDiscoveryInternal
 
         platformXeHpPlus |= ( ( platformType & PLATFORM_ACM ) != 0 );
         useDualSubslice |= ( ( platformType & PLATFORM_ACM ) != 0 );
+        platformXeHpPlus |= ( ( platformType & PLATFORM_PVC ) != 0 );
         std::map<std::string, std::string> globalSymbolMap{
             { "EuCoresTotalCount", "VectorEngineTotalCount" },
             { "EuCoresPerSubsliceCount", "VectorEnginePerXeCoreCount" },

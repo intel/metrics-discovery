@@ -43,7 +43,7 @@ namespace MetricsDiscovery
         PLATFORM_XEHP_SDV = 1 << 22 /*GENERATION_XEHP_SDV*/,
         PLATFORM_RKL      = 1 << 23 /*GENERATION_RKL*/,
         PLATFORM_ACM      = 1 << 24 /*GENERATION_ACM*/,
-        // 24-25 reserved
+        PLATFORM_PVC      = 1 << 25 /*GENERATION_PVC*/,
         PLATFORM_ADLP     = 1 << 26 /*GENERATION_ADLP*/,
         // ...
         PLATFORM_ALL = 0xFFFFFFFF,

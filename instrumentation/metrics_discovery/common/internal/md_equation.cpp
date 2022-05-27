@@ -480,6 +480,7 @@ namespace MetricsDiscoveryInternal
             auto platformType     = m_device->GetPlatformType();
 
             platformXeHpPlus |= ( ( platformType & PLATFORM_ACM ) != 0 );
+            platformXeHpPlus |= ( ( platformType & PLATFORM_PVC ) != 0 );
             return ParseEquationString( platformXeHpPlus ? "$Self $GpuSliceClocksCount $VectorEngineTotalCount UMUL FDIV 100 FMUL" : "$Self $GpuSliceClocksCount $EuCoresTotalCount UMUL FDIV 100 FMUL" );
         }
         else if( strcmp( element, "EuAggrDuration" ) == 0 )

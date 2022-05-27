@@ -126,6 +126,16 @@ using namespace MetricsDiscoveryInternal;
     TCompletionCode CreateMetricTreeACM_GT3_PipelineStatistics(CMetricsDevice* metricsDevice, CConcurrentGroup* concurrentGroup);
 #endif
 
+#if MD_INCLUDE_PVC_GT1_METRICS
+#define MD_CALL_PVC_GT1_METRICS 1
+    TCompletionCode CreateMetricTreePVC_GT1_PipelineStatistics(CMetricsDevice* metricsDevice, CConcurrentGroup* concurrentGroup);
+#endif
+
+#if MD_INCLUDE_PVC_GT2_METRICS
+#define MD_CALL_PVC_GT2_METRICS 1
+    TCompletionCode CreateMetricTreePVC_GT2_PipelineStatistics(CMetricsDevice* metricsDevice, CConcurrentGroup* concurrentGroup);
+#endif
+
 #if MD_INCLUDE_ADLP_METRICS
 #define MD_CALL_ADLP_METRICS 1
     TCompletionCode CreateMetricTreeADLP_PipelineStatistics(CMetricsDevice* metricsDevice, CConcurrentGroup* concurrentGroup);
@@ -246,6 +256,16 @@ using namespace MetricsDiscoveryInternal;
     TCompletionCode CreateMetricTreeACM_GT3_OA(CMetricsDevice* metricsDevice, CConcurrentGroup* concurrentGroup);
 #endif
 
+#if MD_INCLUDE_PVC_GT1_METRICS
+#define MD_CALL_PVC_GT1_METRICS 1
+    TCompletionCode CreateMetricTreePVC_GT1_OA(CMetricsDevice* metricsDevice, CConcurrentGroup* concurrentGroup);
+#endif
+
+#if MD_INCLUDE_PVC_GT2_METRICS
+#define MD_CALL_PVC_GT2_METRICS 1
+    TCompletionCode CreateMetricTreePVC_GT2_OA(CMetricsDevice* metricsDevice, CConcurrentGroup* concurrentGroup);
+#endif
+
 #if MD_INCLUDE_ADLP_METRICS
 #define MD_CALL_ADLP_METRICS 1
     TCompletionCode CreateMetricTreeADLP_OA(CMetricsDevice* metricsDevice, CConcurrentGroup* concurrentGroup);
@@ -321,6 +341,20 @@ TCompletionCode AddGlobalSymbols( CSymbolSet* globalSymbolSet )
     globalSymbolSet->AddSymbolUINT32( "L3Size", 0, SYMBOL_TYPE_DETECT );
 
     globalSymbolSet->AddSymbolUINT64( "MaxTimestamp", 0, SYMBOL_TYPE_DETECT );
+
+    globalSymbolSet->AddSymbolUINT32( "VectorEngineTotalCount", 60, SYMBOL_TYPE_DETECT );
+
+    globalSymbolSet->AddSymbolUINT32( "VectorEnginePerXeCoreCount", 10, SYMBOL_TYPE_DETECT );
+
+    globalSymbolSet->AddSymbolUINT32( "XeCoreTotalCount", 0, SYMBOL_TYPE_DETECT );
+
+    globalSymbolSet->AddSymbolUINT32( "SliceTotalCount", 2, SYMBOL_TYPE_DETECT );
+
+    globalSymbolSet->AddSymbolUINT32( "VectorEngineThreadsCount", 8, SYMBOL_TYPE_DETECT );
+
+    globalSymbolSet->AddSymbolUINT64( "XeCoreMask", 0x0, SYMBOL_TYPE_DETECT );
+
+    globalSymbolSet->AddSymbolBYTEARRAY( "GtXeCoreMask", nullptr, SYMBOL_TYPE_DETECT );
 
     return CC_OK;
 }
@@ -496,6 +530,14 @@ TCompletionCode CreateMetricTree( CMetricsDevice* metricsDevice )
     MD_CHECK_CC( CreateMetricTreeACM_GT3_PipelineStatistics(metricsDevice, concurrentGroup) );
 #endif
 
+#if MD_CALL_PVC_GT1_METRICS
+    MD_CHECK_CC( CreateMetricTreePVC_GT1_PipelineStatistics(metricsDevice, concurrentGroup) );
+#endif
+
+#if MD_CALL_PVC_GT2_METRICS
+    MD_CHECK_CC( CreateMetricTreePVC_GT2_PipelineStatistics(metricsDevice, concurrentGroup) );
+#endif
+
 #if MD_CALL_ADLP_METRICS
     MD_CHECK_CC( CreateMetricTreeADLP_PipelineStatistics(metricsDevice, concurrentGroup) );
 #endif
@@ -594,6 +636,14 @@ TCompletionCode CreateMetricTree( CMetricsDevice* metricsDevice )
 
 #if MD_CALL_ACM_GT3_METRICS
     MD_CHECK_CC( CreateMetricTreeACM_GT3_OA(metricsDevice, concurrentGroup) );
+#endif
+
+#if MD_CALL_PVC_GT1_METRICS
+    MD_CHECK_CC( CreateMetricTreePVC_GT1_OA(metricsDevice, concurrentGroup) );
+#endif
+
+#if MD_CALL_PVC_GT2_METRICS
+    MD_CHECK_CC( CreateMetricTreePVC_GT2_OA(metricsDevice, concurrentGroup) );
 #endif
 
 #if MD_CALL_ADLP_METRICS
