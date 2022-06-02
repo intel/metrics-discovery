@@ -4172,6 +4172,7 @@ namespace MetricsDiscoveryInternal
                 return MD_MAX_SUBSLICE_PER_SLICE_OLD;
             case GENERATION_ICL:
             case GENERATION_EHL:
+            case GENERATION_PVC:
                 return MD_MAX_SUBSLICE_PER_SLICE;
             case GENERATION_TGL:
             case GENERATION_DG1:
@@ -4179,7 +4180,6 @@ namespace MetricsDiscoveryInternal
             case GENERATION_ADLP:
             case GENERATION_XEHP_SDV:
             case GENERATION_ACM:
-            case GENERATION_PVC:
                 return MD_MAX_DUALSUBSLICE_PER_SLICE * MD_MAX_SUBSLICE_PER_DSS;
             default:
                 MD_LOG_A( m_adapterId, LOG_WARNING, "WARNING: Unsupported platform, default MaxSubslicePerSlice used" );
