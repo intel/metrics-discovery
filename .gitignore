@@ -1,6 +1,6 @@
 # Build
 dump/*
-libmd.pc
+libigdmd.pc
 
 # CMake
 CMakeFiles/*

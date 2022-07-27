@@ -1,4 +1,4 @@
-# Copyright © 2020, Intel Corporation
+# Copyright © 2020-2022, Intel Corporation
 #
 # Permission is hereby granted, free of charge, to any person obtaining a
 # copy of this software and associated documentation files (the "Software"),
@@ -47,8 +47,8 @@ endif (COMMAND cmake_policy)
 set (PROJECT_NAME metrics_discovery)
 project (${PROJECT_NAME})
 
-set (LIB md)
-set (LIB_NAME libmd)
+set (LIB igdmd)
+set (LIB_NAME libigdmd)
 
 # instrumentation common settings & macros
 if (CMAKE_SYSTEM_NAME STREQUAL "Linux")
@@ -270,7 +270,7 @@ if ("${PLATFORM}" STREQUAL Windows) # windows
     set (CMAKE_C_STANDARD_LIBRARIES "")
     set_target_properties(${PROJECT_NAME} PROPERTIES VS_GLOBAL_DriverTargetPlatform Universal)
     set_target_properties(${PROJECT_NAME} PROPERTIES VS_PLATFORM_TOOLSET "WindowsApplicationForDrivers10.0")
-    set_property (TARGET ${PROJECT_NAME} PROPERTY OUTPUT_NAME igd${LIB}${ARCH})
+    set_property (TARGET ${PROJECT_NAME} PROPERTY OUTPUT_NAME ${LIB}${ARCH})
     target_link_libraries (${PROJECT_NAME}
         dxgi.lib    # used in performance_api_dx12.cpp
         gdi32.lib

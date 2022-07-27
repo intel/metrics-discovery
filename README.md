@@ -54,7 +54,7 @@ make -j$(nproc)
 4\. Built library will be here (for 64-bit Linux):
 
 ```shell
-(project_root)/dump/linux64/release/md/libmd.so
+(project_root)/dump/linux64/release/metrics_discovery/libigdmd.so
 ```
 
 5\. Install:
