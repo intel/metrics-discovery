@@ -187,7 +187,7 @@ namespace MetricsDiscoveryInternal
                  const char*       signalName );
 
         // Internal API (IInternalMetricSet):
-        virtual IMetric_1_0* AddCustomMetric( TAddCustomMetricParams* params );
+        virtual IMetricLatest* AddCustomMetric( TAddCustomMetricParams* params );
 
     public:
         // Constructor & Destructor:

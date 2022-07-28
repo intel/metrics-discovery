@@ -309,6 +309,8 @@ namespace MetricsDiscovery
     class IInternalMetricSet : public IMetricSetLatest
     {
     public:
+        using IMetricSet_1_0::AddCustomMetric; // To avoid hiding by 1.0 interface function
+
         virtual ~IInternalMetricSet();
         virtual IMetricLatest* AddCustomMetric( TAddCustomMetricParams* params );
     };

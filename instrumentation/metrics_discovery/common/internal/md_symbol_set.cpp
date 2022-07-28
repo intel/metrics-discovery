@@ -971,7 +971,7 @@ namespace MetricsDiscoveryInternal
     {
         const char*     name            = symbol->symbol_1_0.SymbolName;
         uint8_t*        mask            = symbol->symbol_1_0.SymbolTypedValue.ValueByteArray->Data;
-        TTypedValue_1_0 boolValue       = { VALUE_TYPE_BOOL, true };
+        TTypedValue_1_0 boolValue       = { VALUE_TYPE_BOOL, { true } };    // clang suggest braces around initialization of subobject
         bool            useDualSubslice = false;
         auto            platformType    = m_metricsDevice.GetPlatformType();
 
@@ -1017,7 +1017,7 @@ namespace MetricsDiscoveryInternal
 
         {
             const uint32_t  first4Slices                      = 4;
-            TTypedValue_1_0 activeDualSubsliceForFirst4Slices = { VALUE_TYPE_UINT32, 0 };
+            TTypedValue_1_0 activeDualSubsliceForFirst4Slices = { VALUE_TYPE_UINT32, { 0 } };    //clang suggest braces around initialization of subobject
 
             for( uint32_t i = 0; i < m_maxSlice; i++ )
             {

@@ -118,8 +118,8 @@ namespace MetricsDiscoveryInternal
     //
     //////////////////////////////////////////////////////////////////////////////
     CEquation::CEquation( const CEquation& other )
-        : m_device( other.m_device )
-        , m_elementsVector( other.m_elementsVector )
+        : m_elementsVector( other.m_elementsVector )
+        , m_device( other.m_device )
     {
         m_equationString = GetCopiedCString( other.m_equationString );
     }

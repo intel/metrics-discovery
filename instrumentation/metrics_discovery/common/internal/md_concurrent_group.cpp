@@ -41,14 +41,14 @@ namespace MetricsDiscoveryInternal
     //
     //////////////////////////////////////////////////////////////////////////////
     CConcurrentGroup::CConcurrentGroup( CMetricsDevice* device, const char* name, const char* description, uint32_t measurementTypeMask )
-        : m_setsVector()
+        : m_isAvailabile( true )
+        , m_semaphore( nullptr )
+        , m_setsVector()
         , m_otherSetsList()
         , m_informationVector()
         , m_otherInformationVector()
-        , m_device( device )
-        , m_semaphore( nullptr )
         , m_informationCount( 0 )
-        , m_isAvailabile( true )
+        , m_device( device )
     {
         m_params_1_0.SymbolName                    = GetCopiedCString( name );
         m_params_1_0.Description                   = GetCopiedCString( description );
@@ -915,13 +915,13 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     COAConcurrentGroup::COAConcurrentGroup( CMetricsDevice* device, const char* name, const char* description, uint32_t measurementTypeMask )
         : CConcurrentGroup( device, name, description, measurementTypeMask )
+        , m_streamType( STREAM_TYPE_OA )
+        , m_ioMetricSet( nullptr )
+        , m_contextTagsEnabled( false )
+        , m_processId( 0 )
+        , m_streamEventHandle( nullptr )
         , m_ioMeasurementInfoVector()
         , m_ioGpuContextInfoVector()
-        , m_processId( 0 )
-        , m_contextTagsEnabled( false )
-        , m_ioMetricSet( nullptr )
-        , m_streamEventHandle( nullptr )
-        , m_streamType( STREAM_TYPE_OA )
     {
         AddIoMeasurementInfoPredefined();
 

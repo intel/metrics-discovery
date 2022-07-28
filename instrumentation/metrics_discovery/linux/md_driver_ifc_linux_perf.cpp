@@ -2487,7 +2487,7 @@ namespace MetricsDiscoveryInternal
 
         // 3. SET PARAMS
         struct drm_i915_perf_oa_config param = {
-            0,
+            { 0 },      //clang suggest braces around initialization of subobject
         };
 
         static_assert( sizeof( param.uuid ) == ( MD_PERF_GUID_LENGTH - 1 ), "GUID length mismatch with i915 Perf API" );

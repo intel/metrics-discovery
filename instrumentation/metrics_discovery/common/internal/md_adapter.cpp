@@ -43,13 +43,13 @@ namespace MetricsDiscoveryInternal
         : m_adapterId( IU_ADAPTER_ID_UNKNOWN )
         , m_params( params )
         , m_adapterHandle( &adapterHandle )
-        , m_adapterGroup( adapterGroup )
-        , m_openCloseSemaphore( nullptr )
         , m_driverInterface( nullptr )
         , m_metricsDevice( nullptr )
+        , m_openCloseSemaphore( nullptr )
         , m_subDevices( *this )
         , m_subDeviceParams{}
         , m_engineParams{}
+        , m_adapterGroup( adapterGroup )
     {
         // Initialize sub device information.
         m_subDevices.Enumerate();

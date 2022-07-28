@@ -40,18 +40,18 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     CMetricsDevice::CMetricsDevice( CAdapter& adapter, CDriverInterface& driverInterface, const uint32_t subDeviceIndex /* = 0 */ )
         : m_params{}
-        , m_referenceCounter( 0 )
         , m_groupsVector()
         , m_overridesVector()
-        , m_subDeviceIndex( subDeviceIndex )
+        , m_adapter( adapter )
+        , m_driverInterface( driverInterface )
         , m_symbolSet( *this, driverInterface )
+        , m_streamId( -1 )
+        , m_streamConfigId( -1 )
+        , m_subDeviceIndex( subDeviceIndex )
         , m_platform( PLATFORM_UNKNOWN )
         , m_gtType( GT_TYPE_UNKNOWN )
         , m_isOpenedFromFile( false )
-        , m_adapter( adapter )
-        , m_driverInterface( driverInterface )
-        , m_streamId( -1 )
-        , m_streamConfigId( -1 )
+        , m_referenceCounter( 0 )
     {
         const uint32_t adapterId           = m_adapter.GetAdapterId();
         m_params.DeltaFunctionsCount       = DELTA_FUNCTION_LAST_1_0;

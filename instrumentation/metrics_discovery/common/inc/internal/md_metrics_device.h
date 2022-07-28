@@ -125,6 +125,8 @@ namespace MetricsDiscoveryInternal
         TMetricsDeviceParamsLatest     m_params;
         std::vector<CConcurrentGroup*> m_groupsVector;
         std::vector<IOverrideLatest*>  m_overridesVector;
+        CAdapter&                      m_adapter;
+        CDriverInterface&              m_driverInterface;
         CSymbolSet                     m_symbolSet;
 
         // Stream:
@@ -139,9 +141,6 @@ namespace MetricsDiscoveryInternal
         TGTType       m_gtType;
         bool          m_isOpenedFromFile;
         uint32_t      m_referenceCounter;
-
-        CAdapter&         m_adapter;
-        CDriverInterface& m_driverInterface;
 
     private:
         // Static variables:

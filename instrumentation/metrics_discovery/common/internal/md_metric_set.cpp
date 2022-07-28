@@ -57,7 +57,10 @@ namespace MetricsDiscoveryInternal
     //
     //////////////////////////////////////////////////////////////////////////////
     CMetricSet::CMetricSet( CMetricsDevice* device, CConcurrentGroup* concurrentGroup, const char* symbolicName, const char* shortName, uint32_t apiMask, uint32_t category, uint32_t snapshotReportSize, uint32_t deltaReportSize, TReportType reportType, uint32_t platformMask, uint32_t gtMask /*= GT_TYPE_ALL*/, bool isCustom /*= false*/ )
-        : m_metricsVector()
+        : m_concurrentGroup( concurrentGroup )
+        , m_device( device )
+        , m_reportType( reportType )
+        , m_metricsVector()
         , m_informationVector()
         , m_complementarySetsVector()
         , m_startRegsVector()
@@ -65,14 +68,11 @@ namespace MetricsDiscoveryInternal
         , m_startRegisterSetList()
         , m_otherMetricsVector()
         , m_otherInformationVector()
+        , m_availabilityEquation( nullptr )
         , m_filteredMetricsVector()
         , m_filteredInformationVector()
-        , m_reportType( reportType )
-        , m_device( device )
-        , m_concurrentGroup( concurrentGroup )
         , m_isCustom( isCustom )
         , m_isReadRegsCfgSet( false )
-        , m_availabilityEquation( nullptr )
         , m_metricsCalculator( new( std::nothrow ) CMetricsCalculator( m_device ) )
     {
         m_params_1_0.SymbolName      = GetCopiedCString( symbolicName );

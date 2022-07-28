@@ -392,6 +392,7 @@ elseif ("${PLATFORM}" STREQUAL "linux") # linux
         add_definitions(-D_DEBUG)
     endif ()
 
+    add_definitions(-Wall)
     add_definitions(-fdiagnostics-color=auto) # color=auto only to colorize compiler output
     add_definitions(-fstack-protector)
     add_definitions(-fvisibility=hidden)      # to disable exporting internal symbols (by default gcc exports all symbols)
@@ -416,7 +417,7 @@ elseif ("${PLATFORM}" STREQUAL "linux") # linux
     add_definitions(-DMD_USE_PERF)
     add_definitions(-DMETRICS_DISCOVERY)
     add_definitions(-fno-inline)
-    add_definitions(-Wall)
+    add_definitions(-Wno-extern-c-compat)
 
     # to enable x86 build on x64 host
     if ("${TARGET_ARCH}" STREQUAL "32")

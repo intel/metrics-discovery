@@ -40,8 +40,8 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     CRegisterSet::CRegisterSet( CMetricsDevice* device, uint32_t configId, uint32_t configPriority, TConfigType configType )
         : m_regList()
-        , m_device( device )
         , m_availabilityEquation( nullptr )
+        , m_device( device )
         , m_isAvailable( true )
     {
         m_params.ConfigId       = configId;
