@@ -47,6 +47,8 @@ SPDX-License-Identifier: MIT
            MD_INCLUDE_DG1_METRICS              || \
            MD_INCLUDE_RKL_METRICS              || \
            MD_INCLUDE_ADLP_METRICS             || \
+           MD_INCLUDE_ADLS_METRICS             || \
+           MD_INCLUDE_ADLN_METRICS             || \
            MD_INCLUDE_XEHP_SDV_GT1_GT2_METRICS || \
            MD_INCLUDE_XEHP_SDV_GT1_METRICS     || \
            MD_INCLUDE_XEHP_SDV_GT2_METRICS     || \
@@ -75,6 +77,8 @@ SPDX-License-Identifier: MIT
     #define MD_INCLUDE_DG1_METRICS              1
     #define MD_INCLUDE_RKL_METRICS              1
     #define MD_INCLUDE_ADLP_METRICS             1
+    #define MD_INCLUDE_ADLS_METRICS             1
+    #define MD_INCLUDE_ADLN_METRICS             1
     #define MD_INCLUDE_XEHP_SDV_GT1_GT2_METRICS 1
     #define MD_INCLUDE_XEHP_SDV_GT1_METRICS     1
     #define MD_INCLUDE_XEHP_SDV_GT2_METRICS     1

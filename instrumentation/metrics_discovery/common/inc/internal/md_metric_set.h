@@ -224,6 +224,7 @@ namespace MetricsDiscoveryInternal
         bool                IsMetricAlreadyAdded( const char* symbolName );
         bool                IsCustom();
         CMetricsCalculator* GetMetricsCalculator();
+        CMetricsDevice*     GetMetricsDevice();
 
         TCompletionCode SetAvailabilityEquation( const char* equationString );
         bool            IsAvailabilityEquationTrue();

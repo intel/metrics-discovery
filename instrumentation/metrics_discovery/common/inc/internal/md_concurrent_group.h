@@ -72,7 +72,7 @@ namespace MetricsDiscoveryInternal
         TCompletionCode WriteCConcurrentGroupToFile( FILE* metricFile );
 
     protected:
-        IMetricSetLatest* AddCustomMetricSet( CMetricSet* referenceMetricSet, const char* signalName, const char* symbolName, const char* shortName, uint32_t apiMask, uint32_t categoryMask, uint32_t platformMask, uint32_t gtMask, uint32_t rawReportSize, uint32_t queryReportSize, const char* complementarySetsList, TApiSpecificId_1_0 apiSpecificId, TRegisterSet* startRegSets, uint32_t startRegSetsCount, const char* availabilityEquation, bool copyInformationOnly = false );
+        IMetricSetLatest* AddCustomMetricSet( CMetricSet* referenceMetricSet, const char* signalName, const char* symbolName, const char* shortName, uint32_t apiMask, uint32_t categoryMask, uint32_t platformMask, uint32_t gtMask, uint32_t rawReportSize, uint32_t queryReportSize, const char* complementarySetsList, TApiSpecificId_1_0 apiSpecificId, TRegisterSet* startRegSets, uint32_t startRegSetsCount, const char* availabilityEquation, TReportType reportType, bool copyInformationOnly = false );
         bool              MatchingSetExists( const char* symbolName, uint32_t platformMask, uint32_t gtMask );
         bool              AreMetricSetParamsValid( const char* symbolName, const char* shortName, uint32_t platformMask, uint32_t gtMask, TRegisterSet* startRegSets, uint32_t startRegSetsCount );
         uint32_t          GetCustomSetCount();
@@ -100,8 +100,8 @@ namespace MetricsDiscoveryInternal
     protected:
         // Static variables:
         static const uint32_t    SETS_VECTOR_INCREASE           = 16;
-        static const TReportType DEFAULT_METRIC_SET_REPORT_TYPE = OA_REPORT_TYPE_256B_A45_NOA16;
         static const uint32_t    INFORMATION_VECTOR_INCREASE    = 16;
+        static const TReportType DEFAULT_METRIC_SET_REPORT_TYPE = OA_REPORT_TYPE_256B_A45_NOA16;
     };
 
     //////////////////////////////////////////////////////////////////////////////

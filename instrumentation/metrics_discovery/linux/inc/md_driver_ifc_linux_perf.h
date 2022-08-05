@@ -179,7 +179,7 @@ namespace MetricsDiscoveryInternal
 
     public: // Methods
         // Static
-        static TCompletionCode GetGfxDeviceInfo( int32_t deviceId, TGfxDeviceInfo* gfxDeviceInfo );
+        static TCompletionCode GetGfxDeviceInfo( int32_t deviceId, TGfxDeviceInfo* gfxDeviceInfo, const uint32_t adapterId );
         static TAdapterType    GetAdapterType( const TGfxDeviceInfo* gfxDeviceInfo );
 
         // Drm queries.
@@ -191,7 +191,8 @@ namespace MetricsDiscoveryInternal
         TCompletionCode GetQueryGeometrySlices( std::vector<uint8_t>& buffer, CMetricsDevice* metricsDevice );
         TCompletionCode GetQueryTopologyInfo( std::vector<uint8_t>& buffer );
         TCompletionCode GetEuCoresTotalCount( GTDIDeviceInfoParamExtOut* out, CMetricsDevice* metricsDevice );
-        TCompletionCode GetDualSubsliceMask( int64_t* dualSubsliceMask, CMetricsDevice* metricsDevice );
+        TCompletionCode GetSliceMask( int32_t* sliceMask, CMetricsDevice* metricsDevice );
+        TCompletionCode GetSubsliceMask( int64_t* subsliceMask, CMetricsDevice* metricsDevice );
 
         // General
         virtual TCompletionCode ForceSupportDisable();
@@ -281,11 +282,12 @@ namespace MetricsDiscoveryInternal
         // Device info utils
         uint32_t   GetGtMaxSubslicePerSlice();
         uint32_t   GetGtMaxDualSubslicePerSlice();
-        bool       DualSubslicesSupported();
-        TGfxGtType MapDeviceInfoToInstrGtTypeGfxVer12( const TGfxDeviceInfo* gfxDeviceInfo );
+        bool       IsXePlus();
+        bool       IsDualSubsliceSupported();
+        TGfxGtType MapDeviceInfoToInstrGtTypeGfxVer12( const TGfxDeviceInfo* gfxDeviceInfo, CMetricsDevice* metricsDevice );
 
         // General utils
-        uint32_t CalculateEnabledBits( uint64_t value, uint64_t mask );
+        uint32_t CalculateEnabledBits( uint64_t value, uint64_t mask = UINT64_MAX );
         uint32_t GetTimerPeriodExponent( uint32_t nsTimerPeriod );
         uint32_t GetNsTimerPeriod( uint32_t timerPeriodExponent );
 

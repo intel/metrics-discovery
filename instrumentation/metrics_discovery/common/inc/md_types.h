@@ -18,6 +18,7 @@ SPDX-License-Identifier: MIT
 #define MD_MAX_CONTEXT_TAGS 128 // Should match max count used by Intel driver
 
 #define MD_BYTE            8
+#define MD_KBYTE           1024
 #define MD_MBYTE           1048576
 #define MD_MHERTZ          1000000
 #define MD_NSEC_PER_SEC    1000000000ULL

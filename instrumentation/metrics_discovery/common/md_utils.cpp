@@ -25,7 +25,6 @@ SPDX-License-Identifier: MIT
 
 namespace MetricsDiscoveryInternal
 {
-
     //////////////////////////////////////////////////////////////////////////////
     //
     // Group:
@@ -38,18 +37,19 @@ namespace MetricsDiscoveryInternal
     //     Writes CEquation class to file. If it's equal to null 0xFF will be written.
     //
     // Input:
-    //     CEquation* equation    - CEquation to be written
-    //     FILE*      metricFile  - handle to metric file
+    //     CEquation*     equation   - CEquation to be written
+    //     FILE*          metricFile - handle to metric file
+    //     const uint32_t adapterId  - adapter id for purpose of logging
     //
     // Output:
     //     TCompletionCode        - result
     //
     //////////////////////////////////////////////////////////////////////////////
-    TCompletionCode WriteEquationToFile( CEquation* equation, FILE* metricFile )
+    TCompletionCode WriteEquationToFile( CEquation* equation, FILE* metricFile, const uint32_t adapterId )
     {
         if( metricFile == nullptr )
         {
-            MD_ASSERT( metricFile != nullptr );
+            MD_ASSERT_A( adapterId, metricFile != nullptr );
             return CC_ERROR_INVALID_PARAMETER;
         }
 
@@ -79,14 +79,15 @@ namespace MetricsDiscoveryInternal
     //     Sets the delta function from parsed string.
     //
     // Input:
-    //     const char* equationString - equation string, could be empty
-    //     TDeltaFunction_1_0*        - (out) delta function
+    //     const char*         equationString - equation string, could be empty
+    //     TDeltaFunction_1_0* deltaFunction  - (out) delta function
+    //     const uint32_t      adapterId      - adapter id for purpose of logging
     //
     // Output:
     //     TCompletionCode             - result of the operation
     //
     //////////////////////////////////////////////////////////////////////////////
-    TCompletionCode SetDeltaFunction( const char* equationString, TDeltaFunction_1_0* deltaFunction )
+    TCompletionCode SetDeltaFunction( const char* equationString, TDeltaFunction_1_0* deltaFunction, const uint32_t adapterId )
     {
         if( equationString == nullptr || strcmp( equationString, "" ) == 0 )
         {
@@ -132,7 +133,7 @@ namespace MetricsDiscoveryInternal
             return CC_OK;
         }
 
-        MD_LOG( LOG_ERROR, "Unknown delta function: %s", equationString );
+        MD_LOG_A( adapterId, LOG_ERROR, "Unknown delta function: %s", equationString );
         return CC_ERROR_GENERAL;
     }
 
@@ -158,8 +159,10 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     TCompletionCode SetEquation( CMetricsDevice* device, CEquation** equation, const char* equationString )
     {
-        MD_CHECK_PTR_RET( device, CC_ERROR_INVALID_PARAMETER );
-        MD_CHECK_PTR_RET( equation, CC_ERROR_INVALID_PARAMETER );
+        const uint32_t adapterId = OBTAIN_ADAPTER_ID( device );
+
+        MD_CHECK_PTR_RET_A( adapterId, device, CC_ERROR_INVALID_PARAMETER );
+        MD_CHECK_PTR_RET_A( adapterId, equation, CC_ERROR_INVALID_PARAMETER );
 
         TCompletionCode ret = CC_OK;
 
@@ -192,18 +195,19 @@ namespace MetricsDiscoveryInternal
     //     Creates / Opens semaphore and waits 1s if needed. *CC_OK* if wait was successful.
     //
     // Input:
-    //     const char* semaphoreName - semaphore name
-    //     void**      semaphorePtr  - (out) pointer to the newly created sempahore
+    //     const char*    semaphoreName - semaphore name
+    //     void**         semaphorePtr  - (out) pointer to the newly created sempahore
+    //     const uint32_t adapterId     - adapter id for purpose of logging
     //
     // Output:
     //     TCompletionCode           - result, *CC_OK* means success
     //
     //////////////////////////////////////////////////////////////////////////////
-    TCompletionCode GetNamedSemaphore( const char* semaphoreName, void** semaphorePtr )
+    TCompletionCode GetNamedSemaphore( const char* semaphoreName, void** semaphorePtr, const uint32_t adapterId )
     {
-        MD_LOG_ENTER();
-        MD_CHECK_PTR_RET( semaphoreName, CC_ERROR_INVALID_PARAMETER );
-        MD_CHECK_PTR_RET( semaphorePtr, CC_ERROR_INVALID_PARAMETER );
+        MD_LOG_ENTER_A( adapterId );
+        MD_CHECK_PTR_RET_A( adapterId, semaphoreName, CC_ERROR_INVALID_PARAMETER );
+        MD_CHECK_PTR_RET_A( adapterId, semaphorePtr, CC_ERROR_INVALID_PARAMETER );
 
         TCompletionCode retVal = CC_OK;
 
@@ -211,7 +215,7 @@ namespace MetricsDiscoveryInternal
         {
             if( CDriverInterface::SemaphoreCreate( semaphoreName, semaphorePtr, IU_ADAPTER_ID_UNKNOWN ) != CC_OK )
             {
-                MD_LOG( LOG_ERROR, "semaphore create failed" );
+                MD_LOG_A( adapterId, LOG_ERROR, "semaphore create failed" );
                 return CC_ERROR_GENERAL;
             }
         }
@@ -220,22 +224,22 @@ namespace MetricsDiscoveryInternal
         switch( result )
         {
             case WAIT_RESULT_SUCCESSFUL: // The semaphore object was signaled
-                MD_LOG( LOG_DEBUG, "semaphore wait successful" );
+                MD_LOG_A( adapterId, LOG_DEBUG, "semaphore wait successful" );
                 retVal = CC_OK;
                 break;
 
             case WAIT_RESULT_TIMEOUT: // A time-out occurred
-                MD_LOG( LOG_DEBUG, "semaphore wait timeout" );
+                MD_LOG_A( adapterId, LOG_DEBUG, "semaphore wait timeout" );
                 retVal = CC_ERROR_GENERAL;
                 break;
 
             default:
                 retVal = CC_ERROR_GENERAL;
-                MD_LOG( LOG_ERROR, "semaphore wait error" );
+                MD_LOG_A( adapterId, LOG_ERROR, "semaphore wait error" );
                 break;
         }
 
-        MD_LOG_EXIT();
+        MD_LOG_EXIT_A( adapterId );
         return retVal;
     }
 
@@ -251,24 +255,25 @@ namespace MetricsDiscoveryInternal
     //     Releases semaphore.
     //
     // Input:
-    //     void** semaphorePtr - pointer to the semaphore
+    //     void**         semaphorePtr - pointer to the semaphore
+    //     const uint32_t adapterId    - adapter id for purpose of logging
     //
     // Output:
     //     TCompletionCode     - result, *CC_OK* means success
     //
     //////////////////////////////////////////////////////////////////////////////
-    TCompletionCode ReleaseNamedSemaphore( void** semaphorePtr )
+    TCompletionCode ReleaseNamedSemaphore( void** semaphorePtr, const uint32_t adapterId )
     {
-        MD_LOG_ENTER();
+        MD_LOG_ENTER_A( adapterId );
 
         if( CDriverInterface::SemaphoreRelease( semaphorePtr, IU_ADAPTER_ID_UNKNOWN ) != CC_OK )
         {
             // Error while releasing semaphore
-            MD_LOG( LOG_ERROR, "semaphore release failed" );
+            MD_LOG_A( adapterId, LOG_ERROR, "semaphore release failed" );
             return CC_ERROR_GENERAL;
         }
 
-        MD_LOG_EXIT();
+        MD_LOG_EXIT_A( adapterId );
         return CC_OK;
     }
 
@@ -283,11 +288,15 @@ namespace MetricsDiscoveryInternal
     // Description:
     //     Obtains file size.
     //
+    // Input
+    //     FILE*          pFile     - handle to file
+    //     const uint32_t adapterId - adapter id for purpose of logging
+    //
     // Output:
     //     int32_t - file size
     //
     //////////////////////////////////////////////////////////////////////////////
-    int32_t GetFileSize( FILE* pFile )
+    int32_t GetFileSize( FILE* pFile, const uint32_t adapterId )
     {
         int32_t lSize = 0;
         if( !fseek( pFile, 0, SEEK_END ) )
@@ -297,45 +306,10 @@ namespace MetricsDiscoveryInternal
         }
         else
         {
-            MD_LOG( LOG_ERROR, "fseek failed" );
+            MD_LOG_A( adapterId, LOG_ERROR, "fseek failed" );
         }
 
         return lSize;
-    }
-
-    //////////////////////////////////////////////////////////////////////////////
-    //
-    // Group:
-    //     Metrics Discovery Utils
-    //
-    // Function:
-    //     GetCopiedCString
-    //
-    // Description:
-    //     Allocates memory and copies given cstring. Copy is returned.
-    //     It HAVE TO be deleted later.
-    //
-    // Input:
-    //     const char* cstring - cstring to be copied
-    //
-    // Output:
-    //     char*               - copied cstring
-    //
-    //////////////////////////////////////////////////////////////////////////////
-    char* GetCopiedCString( const char* cstring )
-    {
-        if( cstring == nullptr )
-        {
-            return nullptr;
-        }
-
-        size_t strLength     = strlen( cstring ) + 1;
-        char*  copiedCString = new( std::nothrow ) char[strLength](); // Initialize all to 0
-        MD_CHECK_PTR_RET( copiedCString, nullptr );
-
-        iu_strcpy_s( copiedCString, strLength, cstring );
-
-        return copiedCString;
     }
 
     //////////////////////////////////////////////////////////////////////////////
@@ -351,34 +325,140 @@ namespace MetricsDiscoveryInternal
     //     It HAVE TO be deleted later.
     //
     // Input:
-    //     const TByteArray_1_0* byteArray - byte array to be copied
+    //     const TByteArrayLatest* byteArray - byte array to be copied
+    //     const uint32_t          adapterId - adapter id for purpose of logging
     //
     // Output:
-    //     TByteArray_1_0*                 - copied byteArray
+    //     TByteArrayLatest*                 - copied byte array
     //
     //////////////////////////////////////////////////////////////////////////////
-    TByteArray_1_0* GetCopiedByteArray( const TByteArray_1_0* byteArray )
+    TByteArrayLatest* GetCopiedByteArray( const TByteArrayLatest* byteArray, const uint32_t adapterId )
     {
-        if( byteArray == nullptr )
-        {
-            return nullptr;
-        }
+        MD_CHECK_PTR_RET_A( adapterId, byteArray, nullptr );
 
-        TByteArray_1_0* copiedByteArray = new( std::nothrow ) TByteArray_1_0;
-        MD_CHECK_PTR_RET( copiedByteArray, nullptr );
+        TByteArrayLatest* copiedByteArray = new( std::nothrow ) TByteArrayLatest();
+        MD_CHECK_PTR_RET_A( adapterId, copiedByteArray, nullptr );
 
         copiedByteArray->Size = byteArray->Size;
         copiedByteArray->Data = new( std::nothrow ) uint8_t[copiedByteArray->Size](); // Initialize all to 0
         if( copiedByteArray->Data == nullptr )
         {
             MD_SAFE_DELETE( copiedByteArray );
-            MD_LOG( LOG_DEBUG, "ERROR: null pointer: copiedByteArray->Data" );
-            MD_LOG_EXIT();
+            MD_LOG_A( adapterId, LOG_DEBUG, "ERROR: null pointer: copiedByteArray->Data" );
+            MD_LOG_EXIT_A( adapterId );
             return nullptr;
         }
+
         iu_memcpy_s( copiedByteArray->Data, copiedByteArray->Size, byteArray->Data, byteArray->Size );
 
         return copiedByteArray;
+    }
+
+    //////////////////////////////////////////////////////////////////////////////
+    //
+    // Group:
+    //     Metrics Discovery Utils
+    //
+    // Function:
+    //     GetByteArrayFromCStringMask
+    //
+    // Description:
+    //     Converts string into byte array
+    //
+    // Input:
+    //     const char*    cstring   - cstring to be converted
+    //     const uint32_t adapterId - adapter id for purpose of logging
+    //
+    // Output:
+    //     TByteArrayLatest         - byte array
+    //
+    //////////////////////////////////////////////////////////////////////////////
+    TByteArrayLatest GetByteArrayFromCStringMask( const char* cstring, const uint32_t adapterId )
+    {
+        TByteArrayLatest byteArray = {};
+
+        MD_CHECK_PTR_RET_A( adapterId, cstring, byteArray );
+
+        size_t strLength = strlen( cstring );
+        if( strncmp( cstring, "0x", 2 ) == 0 )
+        {
+            // Skip hex marker, if exist
+            strLength -= 2;
+            cstring += 2;
+        }
+
+        bool strLengthIsOdd = false;
+        if( strLength % 2 != 0 )
+        {
+            strLengthIsOdd = true;
+            strLength++;
+        }
+
+        byteArray.Data = new( std::nothrow ) uint8_t[strLength / 2](); // Initialize all to 0
+        MD_CHECK_PTR_RET_A( adapterId, byteArray.Data, byteArray );
+        byteArray.Size = strLength / 2;
+
+        char           strChar[3]; // container for two characters (one byte) + '/0'
+        const uint32_t strCharLength = sizeof( strChar );
+
+        for( uint32_t i = 0; i < byteArray.Size; ++i )
+        {
+            uint32_t j = 0;
+            if( strLengthIsOdd )
+            {
+                strChar[0]     = '0';
+                j              = 1;
+                strLengthIsOdd = false;
+            }
+
+            for( ; j < strCharLength - 1; ++j )
+            {
+                strChar[j] = cstring[0];
+                cstring++;
+            }
+
+            strChar[strCharLength - 1] = '\0';
+
+            byteArray.Data[byteArray.Size - i - 1] = (uint8_t) strtol( strChar, nullptr, 16 );
+        }
+
+        return byteArray;
+    }
+
+    //////////////////////////////////////////////////////////////////////////////
+    //
+    // Group:
+    //     Metrics Discovery Utils
+    //
+    // Function:
+    //     GetCopiedCString
+    //
+    // Description:
+    //     Allocates memory and copies given cstring. Copy is returned.
+    //     It HAVE TO be deleted later.
+    //
+    // Input:
+    //     const char*    cstring   - cstring to be copied
+    //     const uint32_t adapterId - adapter id for purpose of logging
+    //
+    // Output:
+    //     char*               - copied cstring
+    //
+    //////////////////////////////////////////////////////////////////////////////
+    char* GetCopiedCString( const char* cstring, const uint32_t adapterId )
+    {
+        if( cstring == nullptr )
+        {
+            return nullptr;
+        }
+
+        size_t strLength     = strlen( cstring ) + 1;
+        char*  copiedCString = new( std::nothrow ) char[strLength](); // Initialize all to 0
+        MD_CHECK_PTR_RET_A( adapterId, copiedCString, nullptr );
+
+        iu_strcpy_s( copiedCString, strLength, cstring );
+
+        return copiedCString;
     }
 
     //////////////////////////////////////////////////////////////////////////////
@@ -394,13 +474,14 @@ namespace MetricsDiscoveryInternal
     //     It HAVE TO be deleted later.
     //
     // Input:
-    //     const wchar_t* wcstring - wide-char cstring to be copied
+    //     const wchar_t* wcstring  - wide-char cstring to be copied
+    //     const uint32_t adapterId - adapter id for purpose of logging
     //
     // Output:
     //     char*                   - copied cstring
     //
     //////////////////////////////////////////////////////////////////////////////
-    char* GetCopiedCStringFromWcString( const wchar_t* wcstring )
+    char* GetCopiedCStringFromWcString( const wchar_t* wcstring, const uint32_t adapterId )
     {
         if( wcstring == nullptr )
         {
@@ -409,7 +490,7 @@ namespace MetricsDiscoveryInternal
 
         size_t wstrLength    = wcslen( wcstring );
         char*  copiedCString = new( std::nothrow ) char[wstrLength + 1](); // One more for '\0', initialize all to 0
-        MD_CHECK_PTR_RET( copiedCString, nullptr );
+        MD_CHECK_PTR_RET_A( adapterId, copiedCString, nullptr );
 
         iu_wstrtombs_s( copiedCString, wstrLength + 1, wcstring, wstrLength );
 
@@ -422,45 +503,28 @@ namespace MetricsDiscoveryInternal
     //     Metrics Discovery Utils
     //
     // Function:
-    //     GetByteArrayFromMask
+    //     WriteByteArrayToFile
     //
     // Description:
-    //     Converts string into byte array
+    //     Writes byte array to file.
     //
     // Input:
-    //     const char* cstring - cstring to be converted
-    //
-    // Output:
-    //     TByteArray_1_0     - byte array
+    //     const TByteArrayLatest* byteArray    - byte array to be written
+    //     FILE*                   pFile        - handle to file
+    //     const uint32_t          adapterId    - adapter id for purpose of logging
     //
     //////////////////////////////////////////////////////////////////////////////
-    TByteArray_1_0 GetByteArrayFromMask( const char* cstring )
+    void WriteByteArrayToFile( const TByteArrayLatest* byteArray, FILE* pFile, const uint32_t adapterId )
     {
-        TByteArray_1_0 byteArray = {};
+        MD_CHECK_PTR_RET_A( adapterId, byteArray, MD_EMPTY );
+        MD_CHECK_PTR_RET_A( adapterId, pFile, MD_EMPTY );
+        MD_CHECK_PTR_RET_A( adapterId, byteArray->Data, MD_EMPTY );
 
-        if( cstring != nullptr )
-        {
-            size_t strLength = strlen( cstring );
-            if( strncmp( cstring, "0x", 2 ) == 0 )
-            {
-                // skip hex marker, if exist
-                strLength -= 2;
-                cstring += 2;
-            }
+        const uint32_t magicNumber = MD_BYTE_ARRAY_MAGIC_NUMBER;
 
-            byteArray.Data = new( std::nothrow ) uint8_t[strLength](); // Initialize all to 0
-            MD_CHECK_PTR_RET( byteArray.Data, byteArray );
-            byteArray.Size = strLength;
-
-            char strChar[2]; // container for single character + /0
-            for( size_t i = 0; i < byteArray.Size; i++ )
-            {
-                iu_snprintf( strChar, sizeof( strChar ), "%c", cstring[i] );
-                byteArray.Data[i] = (uint8_t) strtol( strChar, nullptr, 16 );
-            }
-        }
-
-        return byteArray;
+        fwrite( &magicNumber, sizeof( magicNumber ), 1, pFile );
+        fwrite( &byteArray->Size, sizeof( byteArray->Size ), 1, pFile );
+        fwrite( byteArray->Data, 1, byteArray->Size, pFile );
     }
 
     //////////////////////////////////////////////////////////////////////////////
@@ -475,15 +539,16 @@ namespace MetricsDiscoveryInternal
     //     Writes null-character ended cstring to file.
     //
     // Input:
-    //     const char* cstring - cstring to be written
-    //     FILE* pFile         - handle to file
+    //     const char* cstring      - cstring to be written
+    //     FILE* pFile              - handle to file
+    //     const uint32_t adapterId - adapter id for purpose of logging
     //
     //////////////////////////////////////////////////////////////////////////////
-    void WriteCStringToFile( const char* cstring, FILE* pFile )
+    void WriteCStringToFile( const char* cstring, FILE* pFile, const uint32_t adapterId )
     {
         if( pFile == nullptr )
         {
-            MD_ASSERT( pFile != nullptr );
+            MD_ASSERT_A( adapterId, pFile != nullptr );
             return;
         }
         const char* cstr = ( cstring == nullptr ) ? "" : cstring;
@@ -505,15 +570,16 @@ namespace MetricsDiscoveryInternal
     //
     // Input:
     //     TTypedValue_1_0* typedValue - TypedValue to be written
-    //     FILE* pFile                 - handle to file
+    //     FILE*            pFile      - handle to file
+    //     const uint32_t   adapterId  - adapter id for purpose of logging
     //
     //////////////////////////////////////////////////////////////////////////////
-    void WriteTTypedValueToFile( TTypedValue_1_0* typedValue, FILE* pFile )
+    void WriteTTypedValueToFile( TTypedValue_1_0* typedValue, FILE* pFile, const uint32_t adapterId )
     {
         if( pFile == nullptr || typedValue == nullptr )
         {
-            MD_ASSERT( pFile != nullptr );
-            MD_ASSERT( typedValue != nullptr );
+            MD_ASSERT_A( adapterId, pFile != nullptr );
+            MD_ASSERT_A( adapterId, typedValue != nullptr );
             return;
         }
 
@@ -538,14 +604,81 @@ namespace MetricsDiscoveryInternal
                 break;
 
             case VALUE_TYPE_CSTRING:
-                MD_LOG( LOG_DEBUG, "calling WriteCStringToFile()..." );
-                WriteCStringToFile( typedValue->ValueCString, pFile );
+                MD_LOG_A( adapterId, LOG_DEBUG, "calling WriteCStringToFile()..." );
+                WriteCStringToFile( typedValue->ValueCString, pFile, adapterId );
+                break;
+
+            case VALUE_TYPE_BYTEARRAY:
+                MD_LOG_A( adapterId, LOG_DEBUG, "calling WriteByteArrayToFile()..." );
+                WriteByteArrayToFile( typedValue->ValueByteArray, pFile, adapterId );
                 break;
 
             default:
-                MD_ASSERT( false );
+                MD_ASSERT_A( adapterId, false );
                 break;
         }
+    }
+
+    //////////////////////////////////////////////////////////////////////////////
+    //
+    // Group:
+    //     Metrics Discovery Utils
+    //
+    // Function:
+    //     ReadByteArrayFromFileBuffer
+    //
+    // Description:
+    //     Read byte array from file buffer.
+    //
+    // Input:
+    //     uint8_t**       fileBuffer - pointer to the binary file buffer array
+    //     const uint32_t  adapterId  - adapter id for purpose of logging
+    //
+    // Output:
+    //     TByteArrayLatest*          - pointer to the created TByteArrayLatest object
+    //
+    //////////////////////////////////////////////////////////////////////////////
+    TByteArrayLatest* ReadByteArrayFromFileBuffer( uint8_t** fileBuffer, const uint32_t adapterId )
+    {
+        MD_CHECK_PTR_RET_A( adapterId, fileBuffer, nullptr );
+        MD_CHECK_PTR_RET_A( adapterId, *fileBuffer, nullptr );
+
+        auto magicNumber = *( (uint32_t*) *fileBuffer );
+        if( magicNumber != MD_BYTE_ARRAY_MAGIC_NUMBER )
+        {
+            MD_LOG_A( adapterId, LOG_WARNING, "WARNING: No ByteArray present in fileBuffer " );
+            return nullptr;
+        }
+
+        *fileBuffer += sizeof( uint32_t );
+        auto byteArraySize = *( (uint32_t*) *fileBuffer );
+        *fileBuffer += sizeof( uint32_t );
+
+        auto byteArray = new( std::nothrow ) TByteArrayLatest();
+        MD_CHECK_PTR_RET_A( adapterId, byteArray, nullptr );
+
+        byteArray->Size = byteArraySize;
+        if( byteArray->Size == 0 )
+        {
+            MD_LOG_A( adapterId, LOG_WARNING, "WARNING: Read ByteArray has size 0" );
+            byteArray->Data = nullptr;
+            return byteArray;
+        }
+
+        byteArray->Data = new( std::nothrow ) uint8_t[byteArray->Size]();
+        if( byteArray->Data == nullptr )
+        {
+            MD_SAFE_DELETE( byteArray );
+
+            MD_LOG_A( adapterId, LOG_DEBUG, "ERROR: null pointer: byteArray->Data" );
+            MD_LOG_EXIT_A( adapterId );
+            return nullptr;
+        }
+
+        iu_memcpy_s( byteArray->Data, byteArray->Size, *fileBuffer, byteArray->Size );
+        *fileBuffer += byteArray->Size;
+
+        return byteArray;
     }
 
     //////////////////////////////////////////////////////////////////////////////
@@ -561,18 +694,19 @@ namespace MetricsDiscoveryInternal
     //     It only advances the fileBuffer pointer and returns a pointer to cstring in buffer.
     //
     // Input:
-    //     uint8_t** fileBuffer  - pointer to the binary file buffer array
+    //     uint8_t**      fileBuffer - pointer to the binary file buffer array
+    //     const uint32_t adapterId  - adapter id for purpose of logging
     //
     // Output:
     //     char*                 - pointer to the cstring in buffer (not copied)
     //
     //////////////////////////////////////////////////////////////////////////////
-    char* ReadCStringFromFileBuffer( uint8_t** fileBuffer )
+    char* ReadCStringFromFileBuffer( uint8_t** fileBuffer, const uint32_t adapterId )
     {
         if( fileBuffer == nullptr || *fileBuffer == nullptr )
         {
-            MD_ASSERT( fileBuffer != nullptr );
-            MD_ASSERT( *fileBuffer != nullptr );
+            MD_ASSERT_A( adapterId, fileBuffer != nullptr );
+            MD_ASSERT_A( adapterId, *fileBuffer != nullptr );
             return (char*) "";
         }
 
@@ -601,18 +735,19 @@ namespace MetricsDiscoveryInternal
     //     Reads uint32_t from file buffer.
     //
     // Input:
-    //     uint8_t** fileBuffer  - pointer to the binary file buffer array
+    //     uint8_t**      fileBuffer - pointer to the binary file buffer array
+    //     const uint32_t adapterId  - adapter id for purpose of logging
     //
     // Output:
     //     uint32_t              - read uint32_t
     //
     //////////////////////////////////////////////////////////////////////////////
-    uint32_t ReadUInt32FromFileBuffer( uint8_t** fileBuffer )
+    uint32_t ReadUInt32FromFileBuffer( uint8_t** fileBuffer, const uint32_t adapterId )
     {
         if( fileBuffer == nullptr || *fileBuffer == nullptr )
         {
-            MD_ASSERT( fileBuffer != nullptr );
-            MD_ASSERT( *fileBuffer != nullptr );
+            MD_ASSERT_A( adapterId, fileBuffer != nullptr );
+            MD_ASSERT_A( adapterId, *fileBuffer != nullptr );
             return 0;
         }
 
@@ -634,18 +769,19 @@ namespace MetricsDiscoveryInternal
     //     Reads int64_t int from file buffer.
     //
     // Input:
-    //     uint8_t** fileBuffer  - pointer to the binary file buffer array
+    //     uint8_t**      fileBuffer - pointer to the binary file buffer array
+    //     const uint32_t adapterId  - adapter id for purpose of logging
     //
     // Output:
     //     int64_t               - read int64_t
     //
     //////////////////////////////////////////////////////////////////////////////
-    int64_t ReadInt64FromFileBuffer( uint8_t** fileBuffer )
+    int64_t ReadInt64FromFileBuffer( uint8_t** fileBuffer, const uint32_t adapterId )
     {
         if( fileBuffer == nullptr || *fileBuffer == nullptr )
         {
-            MD_ASSERT( fileBuffer != nullptr );
-            MD_ASSERT( *fileBuffer != nullptr );
+            MD_ASSERT_A( adapterId, fileBuffer != nullptr );
+            MD_ASSERT_A( adapterId, *fileBuffer != nullptr );
             return 0;
         }
 
@@ -667,13 +803,14 @@ namespace MetricsDiscoveryInternal
     //     Reads TTypedValue struct from file buffer.
     //
     // Input:
-    //     uint8_t** fileBuffer  - pointer to the binary file buffer array
+    //     uint8_t**      fileBuffer - pointer to the binary file buffer array
+    //     const uint32_t adapterId  - adapter id for purpose of logging
     //
     // Output:
     //     TTypedValue_1_0       - read TTypedValue
     //
     //////////////////////////////////////////////////////////////////////////////
-    TTypedValue_1_0 ReadTTypedValueFromFileBuffer( uint8_t** fileBuffer )
+    TTypedValue_1_0 ReadTTypedValueFromFileBuffer( uint8_t** fileBuffer, const uint32_t adapterId )
     {
         TTypedValue_1_0 typedValue;
         typedValue.ValueType   = VALUE_TYPE_UINT32;
@@ -681,8 +818,8 @@ namespace MetricsDiscoveryInternal
 
         if( fileBuffer == nullptr || *fileBuffer == nullptr )
         {
-            MD_ASSERT( fileBuffer != nullptr );
-            MD_ASSERT( *fileBuffer != nullptr );
+            MD_ASSERT_A( adapterId, fileBuffer != nullptr );
+            MD_ASSERT_A( adapterId, *fileBuffer != nullptr );
             return typedValue;
         }
 
@@ -712,13 +849,17 @@ namespace MetricsDiscoveryInternal
                 break;
 
             case VALUE_TYPE_CSTRING:
-                MD_LOG( LOG_DEBUG, "calling ReadCStringFromFileBuffer()..." );
-                typedValue.ValueCString = ReadCStringFromFileBuffer( fileBuffer );
+                MD_LOG_A( adapterId, LOG_DEBUG, "calling ReadCStringFromFileBuffer()..." );
+                typedValue.ValueCString = ReadCStringFromFileBuffer( fileBuffer, adapterId );
                 *fileBuffer += sizeof( bool );
                 break;
 
+            case VALUE_TYPE_BYTEARRAY:
+                MD_LOG_A( adapterId, LOG_DEBUG, "calling ReadByteArrayFromFileBuffer()..." );
+                typedValue.ValueByteArray = ReadByteArrayFromFileBuffer( fileBuffer, adapterId );
+                break;
             default:
-                MD_ASSERT( false );
+                MD_ASSERT_A( adapterId, false );
                 break;
         }
 
@@ -737,18 +878,19 @@ namespace MetricsDiscoveryInternal
     //     Reads equation string from file buffer.
     //
     // Input:
-    //     uint8_t** fileBuffer  - pointer to the binary file buffer array
+    //     uint8_t**      fileBuffer - pointer to the binary file buffer array
+    //     const uint32_t adapterId  - adapter id for purpose of logging
     //
     // Output:
     //     char*                 - if not empty, pointer to the cstring in buffer (not copied)
     //
     //////////////////////////////////////////////////////////////////////////////
-    char* ReadEquationStringFromFile( uint8_t** fileBuffer )
+    char* ReadEquationStringFromFile( uint8_t** fileBuffer, const uint32_t adapterId )
     {
         if( fileBuffer == nullptr || *fileBuffer == nullptr )
         {
-            MD_ASSERT( fileBuffer != nullptr );
-            MD_ASSERT( *fileBuffer != nullptr );
+            MD_ASSERT_A( adapterId, fileBuffer != nullptr );
+            MD_ASSERT_A( adapterId, *fileBuffer != nullptr );
             return (char*) "";
         }
 
@@ -761,7 +903,7 @@ namespace MetricsDiscoveryInternal
         }
         else
         {
-            ret = ReadCStringFromFileBuffer( fileBuffer );
+            ret = ReadCStringFromFileBuffer( fileBuffer, adapterId );
         }
 
         return ret;

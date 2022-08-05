@@ -77,7 +77,7 @@ namespace MetricsDiscoveryInternal
         CAdapter( CAdapterGroup& adapterGroup, const TAdapterParamsLatest& params, CAdapterHandle& adapterHandle );
         virtual ~CAdapter();
 
-        CAdapter( const CAdapter& ) = delete;            // Delete copy-constructor
+        CAdapter( const CAdapter& )            = delete; // Delete copy-constructor
         CAdapter& operator=( const CAdapter& ) = delete; // Delete assignment operator
 
         // Non-API:

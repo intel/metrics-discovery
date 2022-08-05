@@ -240,24 +240,49 @@ namespace MetricsDiscoveryInternal
         { 0x46A0, SPlatformIndexGt( GENERATION_ADLP, GFX_GTTYPE_GT2 ) },
         { 0x46A1, SPlatformIndexGt( GENERATION_ADLP, GFX_GTTYPE_GT2 ) },
         { 0x46A2, SPlatformIndexGt( GENERATION_ADLP, GFX_GTTYPE_GT2 ) },
+
         { 0x46A3, SPlatformIndexGt( GENERATION_ADLP, GFX_GTTYPE_GT2 ) },
         { 0x46A6, SPlatformIndexGt( GENERATION_ADLP, GFX_GTTYPE_GT2 ) },
         { 0x46A8, SPlatformIndexGt( GENERATION_ADLP, GFX_GTTYPE_GT2 ) },
         { 0x46AA, SPlatformIndexGt( GENERATION_ADLP, GFX_GTTYPE_GT2 ) },
+
         { 0x46B0, SPlatformIndexGt( GENERATION_ADLP, GFX_GTTYPE_GT2 ) },
         { 0x46B1, SPlatformIndexGt( GENERATION_ADLP, GFX_GTTYPE_GT2 ) },
         { 0x46B2, SPlatformIndexGt( GENERATION_ADLP, GFX_GTTYPE_GT2 ) },
+
         { 0x46B3, SPlatformIndexGt( GENERATION_ADLP, GFX_GTTYPE_GT2 ) },
         { 0x46C0, SPlatformIndexGt( GENERATION_ADLP, GFX_GTTYPE_GT2 ) },
         { 0x46C1, SPlatformIndexGt( GENERATION_ADLP, GFX_GTTYPE_GT2 ) },
         { 0x46C2, SPlatformIndexGt( GENERATION_ADLP, GFX_GTTYPE_GT2 ) },
         { 0x46C3, SPlatformIndexGt( GENERATION_ADLP, GFX_GTTYPE_GT2 ) },
-        { 0xA7A0, SPlatformIndexGt( GENERATION_ADLP, GFX_GTTYPE_GT2 ) },
+        { 0xA7A0, SPlatformIndexGt( GENERATION_ADLP, GFX_GTTYPE_GT2 ) }, // RPLP
         { 0xA720, SPlatformIndexGt( GENERATION_ADLP, GFX_GTTYPE_GT2 ) },
         { 0xA7A8, SPlatformIndexGt( GENERATION_ADLP, GFX_GTTYPE_GT2 ) },
         { 0xA7A1, SPlatformIndexGt( GENERATION_ADLP, GFX_GTTYPE_GT2 ) },
         { 0xA721, SPlatformIndexGt( GENERATION_ADLP, GFX_GTTYPE_GT2 ) },
         { 0xA7A9, SPlatformIndexGt( GENERATION_ADLP, GFX_GTTYPE_GT2 ) },
+
+        { 0x4680, SPlatformIndexGt( GENERATION_ADLS, GFX_GTTYPE_GT1 ) },
+        { 0x4682, SPlatformIndexGt( GENERATION_ADLS, GFX_GTTYPE_GT1 ) },
+        { 0x4688, SPlatformIndexGt( GENERATION_ADLS, GFX_GTTYPE_GT1 ) },
+        { 0x468A, SPlatformIndexGt( GENERATION_ADLS, GFX_GTTYPE_GT1 ) },
+        { 0x468B, SPlatformIndexGt( GENERATION_ADLS, GFX_GTTYPE_GT1 ) },
+        { 0x4690, SPlatformIndexGt( GENERATION_ADLS, GFX_GTTYPE_GT1 ) },
+        { 0x4692, SPlatformIndexGt( GENERATION_ADLS, GFX_GTTYPE_GT1 ) },
+        { 0x4693, SPlatformIndexGt( GENERATION_ADLS, GFX_GTTYPE_GT1 ) },
+
+        { 0xA780, SPlatformIndexGt( GENERATION_ADLS, GFX_GTTYPE_GT1 ) }, // RPLS
+        { 0xA781, SPlatformIndexGt( GENERATION_ADLS, GFX_GTTYPE_GT1 ) },
+        { 0xA782, SPlatformIndexGt( GENERATION_ADLS, GFX_GTTYPE_GT1 ) },
+        { 0xA783, SPlatformIndexGt( GENERATION_ADLS, GFX_GTTYPE_GT1 ) },
+        { 0xA788, SPlatformIndexGt( GENERATION_ADLS, GFX_GTTYPE_GT1 ) },
+        { 0xA789, SPlatformIndexGt( GENERATION_ADLS, GFX_GTTYPE_GT1 ) },
+        { 0xA78A, SPlatformIndexGt( GENERATION_ADLS, GFX_GTTYPE_GT1 ) },
+        { 0xA78B, SPlatformIndexGt( GENERATION_ADLS, GFX_GTTYPE_GT1 ) },
+
+        { 0x46D0, SPlatformIndexGt( GENERATION_ADLN, GFX_GTTYPE_GT1 ) }, // ADLN
+        { 0x46D1, SPlatformIndexGt( GENERATION_ADLN, GFX_GTTYPE_GT1 ) },
+        { 0x46D2, SPlatformIndexGt( GENERATION_ADLN, GFX_GTTYPE_GT1 ) },
 
         { 0x9A40, SPlatformIndexGt( GENERATION_TGL, GFX_GTTYPE_GT2 ) },
         { 0x9A49, SPlatformIndexGt( GENERATION_TGL, GFX_GTTYPE_GT2 ) },
@@ -298,9 +323,8 @@ namespace MetricsDiscoveryInternal
         { 0x0BD7, SPlatformIndexGt( GENERATION_PVC, GFX_GTTYPE_UNDEFINED ) },
         { 0x0BD8, SPlatformIndexGt( GENERATION_PVC, GFX_GTTYPE_UNDEFINED ) },
         { 0x0BD9, SPlatformIndexGt( GENERATION_PVC, GFX_GTTYPE_UNDEFINED ) },
-        { 0x0BE0, SPlatformIndexGt( GENERATION_PVC, GFX_GTTYPE_UNDEFINED ) },
-        { 0x0BE1, SPlatformIndexGt( GENERATION_PVC, GFX_GTTYPE_UNDEFINED ) },
-        { 0x0BE5, SPlatformIndexGt( GENERATION_PVC, GFX_GTTYPE_UNDEFINED ) },
+        { 0x0BDA, SPlatformIndexGt( GENERATION_PVC, GFX_GTTYPE_UNDEFINED ) },
+        { 0x0BDB, SPlatformIndexGt( GENERATION_PVC, GFX_GTTYPE_UNDEFINED ) },
 
         { 0x5690, SPlatformIndexGt( GENERATION_ACM, GFX_GTTYPE_UNDEFINED ) },
         { 0x5691, SPlatformIndexGt( GENERATION_ACM, GFX_GTTYPE_UNDEFINED ) },
@@ -339,6 +363,8 @@ namespace MetricsDiscoveryInternal
         { GENERATION_DG1, 7 },
         { GENERATION_RKL, 7 },
         { GENERATION_ADLP, 7 },
+        { GENERATION_ADLS, 7 },
+        { GENERATION_ADLN, 7 },
         { GENERATION_XEHP_SDV, 8 },
         { GENERATION_ACM, 8 },
         { GENERATION_PVC, 8 },

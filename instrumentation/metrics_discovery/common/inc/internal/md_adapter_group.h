@@ -60,7 +60,7 @@ namespace MetricsDiscoveryInternal
         virtual ~CAdapterGroup();
 
     private:
-        CAdapterGroup( const CAdapterGroup& ) = delete;            // Delete copy-constructor
+        CAdapterGroup( const CAdapterGroup& )            = delete; // Delete copy-constructor
         CAdapterGroup& operator=( const CAdapterGroup& ) = delete; // Delete assignment operator
 
         // Adapter handling:

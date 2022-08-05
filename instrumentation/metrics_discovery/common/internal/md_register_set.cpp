@@ -115,7 +115,7 @@ namespace MetricsDiscoveryInternal
         }
         else
         {
-            MD_LOG_A( m_device->GetAdapter().GetAdapterId(), LOG_ERROR, "Error setting availability equation" );
+            MD_LOG_A( OBTAIN_ADAPTER_ID( m_device ), LOG_ERROR, "Error setting availability equation" );
             m_isAvailable = false;
         }
 
@@ -223,7 +223,9 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     TCompletionCode CRegisterSet::WriteCRegisterSetToFile( FILE* metricFile )
     {
-        MD_CHECK_PTR_RET( metricFile, CC_ERROR_INVALID_PARAMETER );
+        const uint32_t adapterId = OBTAIN_ADAPTER_ID( m_device );
+
+        MD_CHECK_PTR_RET_A( adapterId, metricFile, CC_ERROR_INVALID_PARAMETER );
 
         uint32_t count = 0;
 
@@ -231,7 +233,7 @@ namespace MetricsDiscoveryInternal
         fwrite( &m_params.ConfigId, sizeof( m_params.ConfigId ), 1, metricFile );
         fwrite( &m_params.ConfigPriority, sizeof( m_params.ConfigPriority ), 1, metricFile );
         fwrite( &m_params.ConfigType, sizeof( m_params.ConfigType ), 1, metricFile );
-        WriteEquationToFile( m_availabilityEquation, metricFile );
+        WriteEquationToFile( m_availabilityEquation, metricFile, adapterId );
 
         // Registers
         count = m_regList.size();

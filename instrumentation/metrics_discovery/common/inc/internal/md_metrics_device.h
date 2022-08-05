@@ -19,6 +19,8 @@ SPDX-License-Identifier: MIT
 #define MD_METRICS_FILE_KEY     "CUSTOM_METRICS_FILE\n"
 #define MD_METRICS_FILE_KEY_2_0 "CUSTOM_METRICS_FILE_2_0\n"
 
+#define OBTAIN_ADAPTER_ID( device ) device ? device->GetAdapter().GetAdapterId() : IU_ADAPTER_ID_UNKNOWN
+
 using namespace MetricsDiscovery;
 
 namespace MetricsDiscoveryInternal
@@ -83,7 +85,6 @@ namespace MetricsDiscoveryInternal
         TCompletionCode   AddOverrides();
         bool              IsPlatformTypeOf( uint32_t hwMask, uint32_t gtMask = GT_TYPE_ALL );
         bool              IsPavpDisabled( uint32_t capabilities );
-        bool              IsAvailabilityEquationTrue( const char* availabilityEquation );
 
         TCompletionCode SaveToFile( const char* fileName, const uint32_t minMajorApiVersion = 0, const uint32_t minMinorApiVersion = 0 );
         TCompletionCode OpenFromFile( const char* fileName, bool isInternalBuild );

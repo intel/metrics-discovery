@@ -95,12 +95,14 @@ namespace MetricsDiscoveryInternal
     TCompletionCode CMetricsCalculationManager<MEASUREMENT_TYPE_SNAPSHOT_IO>::PrepareContext( TCalculationContext& context )
     {
         TStreamCalculationContext* sc = &context.StreamCalculationContext;
-
         MD_CHECK_PTR_RET( sc->Calculator, CC_ERROR_INVALID_PARAMETER );
-        MD_CHECK_PTR_RET( sc->MetricSet, CC_ERROR_INVALID_PARAMETER );
-        MD_CHECK_PTR_RET( sc->RawData, CC_ERROR_INVALID_PARAMETER );
-        MD_CHECK_PTR_RET( sc->Out, CC_ERROR_INVALID_PARAMETER );
-        MD_CHECK_PTR_RET( sc->DeltaValues, CC_ERROR_INVALID_PARAMETER );
+
+        const uint32_t adapterId = OBTAIN_ADAPTER_ID( sc->Calculator->GetMetricsDevice() );
+
+        MD_CHECK_PTR_RET_A( adapterId, sc->MetricSet, CC_ERROR_INVALID_PARAMETER );
+        MD_CHECK_PTR_RET_A( adapterId, sc->RawData, CC_ERROR_INVALID_PARAMETER );
+        MD_CHECK_PTR_RET_A( adapterId, sc->Out, CC_ERROR_INVALID_PARAMETER );
+        MD_CHECK_PTR_RET_A( adapterId, sc->DeltaValues, CC_ERROR_INVALID_PARAMETER );
 
         // Find required indices for context filtering, report filtering and PreviousContextId information
         sc->ContextIdIdx    = GetInformationIndex( "ContextId", sc->MetricSet );
@@ -110,8 +112,8 @@ namespace MetricsDiscoveryInternal
         {
             if( sc->ContextIdIdx < 0 )
             {
-                MD_LOG( LOG_ERROR, "error: can't find required information for context filtering" );
-                MD_LOG_EXIT();
+                MD_LOG_A( adapterId, LOG_ERROR, "error: can't find required information for context filtering" );
+                MD_LOG_EXIT_A( adapterId );
                 return CC_ERROR_INVALID_PARAMETER;
             }
         }
@@ -155,12 +157,14 @@ namespace MetricsDiscoveryInternal
     TCompletionCode CMetricsCalculationManager<MEASUREMENT_TYPE_DELTA_QUERY>::PrepareContext( TCalculationContext& context )
     {
         TQueryCalculationContext* qc = &context.QueryCalculationContext;
-
         MD_CHECK_PTR_RET( qc->Calculator, CC_ERROR_INVALID_PARAMETER );
-        MD_CHECK_PTR_RET( qc->MetricSet, CC_ERROR_INVALID_PARAMETER );
-        MD_CHECK_PTR_RET( qc->RawData, CC_ERROR_INVALID_PARAMETER );
-        MD_CHECK_PTR_RET( qc->Out, CC_ERROR_INVALID_PARAMETER );
-        MD_CHECK_PTR_RET( qc->DeltaValues, CC_ERROR_INVALID_PARAMETER );
+
+        const uint32_t adapterId = OBTAIN_ADAPTER_ID( qc->Calculator->GetMetricsDevice() );
+
+        MD_CHECK_PTR_RET_A( adapterId, qc->MetricSet, CC_ERROR_INVALID_PARAMETER );
+        MD_CHECK_PTR_RET_A( adapterId, qc->RawData, CC_ERROR_INVALID_PARAMETER );
+        MD_CHECK_PTR_RET_A( adapterId, qc->Out, CC_ERROR_INVALID_PARAMETER );
+        MD_CHECK_PTR_RET_A( adapterId, qc->DeltaValues, CC_ERROR_INVALID_PARAMETER );
 
         qc->Calculator->Reset();
 
@@ -201,14 +205,17 @@ namespace MetricsDiscoveryInternal
     bool CMetricsCalculationManager<MEASUREMENT_TYPE_SNAPSHOT_IO>::CalculateNextReport( TCalculationContext& context )
     {
         TStreamCalculationContext* sc = &context.StreamCalculationContext;
+        MD_CHECK_PTR_RET( sc->Calculator, false );
+
+        const uint32_t adapterId = OBTAIN_ADAPTER_ID( sc->Calculator->GetMetricsDevice() );
 
         if( sc->LastRawReportNumber >= sc->RawReportCount || sc->PrevRawReportNumber >= sc->RawReportCount - 1 )
         {
             // Nothing to be calculated
-            MD_LOG( LOG_DEBUG, "Calculation complete" );
+            MD_LOG_A( adapterId, LOG_DEBUG, "Calculation complete" );
             if( CC_OK != sc->Calculator->SaveReport( sc->LastRawDataPtr ) )
             {
-                MD_LOG( LOG_DEBUG, "Unable to store last raw report for reuse." );
+                MD_LOG_A( adapterId, LOG_DEBUG, "Unable to store last raw report for reuse." );
             }
 
             return false;
@@ -219,7 +226,7 @@ namespace MetricsDiscoveryInternal
             // Use saved report as 'Prev', 0 offset report as "Last"
             sc->PrevRawDataPtr      = sc->Calculator->GetSavedReport();
             sc->PrevRawReportNumber = MD_SAVED_REPORT_NUMBER;
-            MD_ASSERT( sc->PrevRawDataPtr != nullptr );
+            MD_ASSERT_A( adapterId, sc->PrevRawDataPtr != nullptr );
         }
 
         // If not using saved report
@@ -281,11 +288,14 @@ namespace MetricsDiscoveryInternal
     bool CMetricsCalculationManager<MEASUREMENT_TYPE_DELTA_QUERY>::CalculateNextReport( TCalculationContext& context )
     {
         TQueryCalculationContext* qc = &context.QueryCalculationContext;
+        MD_CHECK_PTR_RET( qc->Calculator, false );
+
+        const uint32_t adapterId = OBTAIN_ADAPTER_ID( qc->Calculator->GetMetricsDevice() );
 
         if( qc->OutReportCount >= qc->RawReportCount )
         {
             // Nothing to be calculated
-            MD_LOG( LOG_DEBUG, "Calculation complete" );
+            MD_LOG_A( adapterId, LOG_DEBUG, "Calculation complete" );
             return false;
         }
 
@@ -332,14 +342,17 @@ namespace MetricsDiscoveryInternal
     template <>
     int CMetricsCalculationManager<MEASUREMENT_TYPE_SNAPSHOT_IO>::GetInformationIndex( const char* symbolName, CMetricSet* metricSet )
     {
-        MD_CHECK_PTR_RET( symbolName, -1 );
         MD_CHECK_PTR_RET( metricSet, -1 );
+
+        const uint32_t adapterId = OBTAIN_ADAPTER_ID( metricSet->GetMetricsDevice() );
+
+        MD_CHECK_PTR_RET_A( adapterId, symbolName, -1 );
 
         uint32_t count = metricSet->GetParams()->InformationCount;
         for( uint32_t i = 0; i < count; i++ )
         {
             IInformation_1_0* information = metricSet->GetInformation( i );
-            MD_ASSERT( information != nullptr );
+            MD_ASSERT_A( adapterId, information != nullptr );
 
             TInformationParams_1_0* informationParams = information->GetParams();
             if( informationParams->SymbolName && strcmp( informationParams->SymbolName, symbolName ) == 0 )
@@ -348,7 +361,7 @@ namespace MetricsDiscoveryInternal
             }
         }
 
-        MD_LOG( LOG_DEBUG, "can't find information index: %s", symbolName );
+        MD_LOG_A( adapterId, LOG_DEBUG, "can't find information index: %s", symbolName );
         return -1;
     }
 
@@ -455,8 +468,10 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     TCompletionCode CMetricsCalculator::SaveReport( const uint8_t* reportToSave )
     {
-        MD_CHECK_PTR_RET( m_savedReport, CC_ERROR_INVALID_PARAMETER );
-        MD_CHECK_PTR_RET( reportToSave, CC_ERROR_INVALID_PARAMETER );
+        const uint32_t adapterId = OBTAIN_ADAPTER_ID( m_device );
+
+        MD_CHECK_PTR_RET_A( adapterId, m_savedReport, CC_ERROR_INVALID_PARAMETER );
+        MD_CHECK_PTR_RET_A( adapterId, reportToSave, CC_ERROR_INVALID_PARAMETER );
 
         bool res = iu_memcpy_s( m_savedReport, m_savedReportSize, reportToSave, m_savedReportSize );
         if( res )
@@ -546,8 +561,10 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     TCompletionCode CMetricsCalculator::ReadMetricsFromQueryReport( const uint8_t* rawReport, TTypedValue_1_0* outValues, CMetricSet& metricSet )
     {
-        MD_CHECK_PTR_RET( rawReport, CC_ERROR_INVALID_PARAMETER );
-        MD_CHECK_PTR_RET( outValues, CC_ERROR_INVALID_PARAMETER );
+        const uint32_t adapterId = OBTAIN_ADAPTER_ID( m_device );
+
+        MD_CHECK_PTR_RET_A( adapterId, rawReport, CC_ERROR_INVALID_PARAMETER );
+        MD_CHECK_PTR_RET_A( adapterId, outValues, CC_ERROR_INVALID_PARAMETER );
 
         m_gpuCoreClocks = 0;
 
@@ -599,9 +616,11 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     TCompletionCode CMetricsCalculator::ReadMetricsFromIoReport( const uint8_t* rawRaportLast, const uint8_t* rawRaportPrev, TTypedValue_1_0* outValues, CMetricSet& metricSet )
     {
-        MD_CHECK_PTR_RET( rawRaportLast, CC_ERROR_INVALID_PARAMETER );
-        MD_CHECK_PTR_RET( rawRaportPrev, CC_ERROR_INVALID_PARAMETER );
-        MD_CHECK_PTR_RET( outValues, CC_ERROR_INVALID_PARAMETER );
+        const uint32_t adapterId = OBTAIN_ADAPTER_ID( m_device );
+
+        MD_CHECK_PTR_RET_A( adapterId, rawRaportLast, CC_ERROR_INVALID_PARAMETER );
+        MD_CHECK_PTR_RET_A( adapterId, rawRaportPrev, CC_ERROR_INVALID_PARAMETER );
+        MD_CHECK_PTR_RET_A( adapterId, outValues, CC_ERROR_INVALID_PARAMETER );
 
         uint32_t metricsCount = metricSet.GetParams()->MetricsCount;
         m_gpuCoreClocks       = 0;
@@ -650,9 +669,10 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     void CMetricsCalculator::NormalizeMetrics( TTypedValue_1_0* deltaValues, TTypedValue_1_0* outValues, CMetricSet& metricSet )
     {
+        const uint32_t adapterId = OBTAIN_ADAPTER_ID( m_device );
+
         if( !deltaValues || !outValues )
         {
-            const uint32_t adapterId = m_device->GetAdapter().GetAdapterId();
             MD_ASSERT_A( adapterId, deltaValues != nullptr );
             MD_ASSERT_A( adapterId, outValues != nullptr );
             MD_LOG_A( adapterId, LOG_ERROR, "error: nullptr params" );
@@ -676,6 +696,44 @@ namespace MetricsDiscoveryInternal
             else
             {
                 outValues[i] = deltaValues[i];
+            }
+
+            switch( metricParams->ResultType )
+            {
+                case RESULT_UINT32:
+                    if( outValues[i].ValueType != VALUE_TYPE_UINT32 )
+                    {
+                        outValues[i].ValueUInt32 = CastToUInt32( outValues[i] );
+                        outValues[i].ValueType   = VALUE_TYPE_UINT32;
+                    }
+                    break;
+
+                case RESULT_UINT64:
+                    if( outValues[i].ValueType != VALUE_TYPE_UINT64 )
+                    {
+                        outValues[i].ValueUInt64 = CastToUInt64( outValues[i] );
+                        outValues[i].ValueType   = VALUE_TYPE_UINT64;
+                    }
+                    break;
+
+                case RESULT_FLOAT:
+                    if( outValues[i].ValueType != VALUE_TYPE_FLOAT )
+                    {
+                        outValues[i].ValueFloat = CastToFloat( outValues[i] );
+                        outValues[i].ValueType  = VALUE_TYPE_FLOAT;
+                    }
+                    break;
+
+                case RESULT_BOOL:
+                    if( outValues[i].ValueType != VALUE_TYPE_BOOL )
+                    {
+                        outValues[i].ValueBool = CastToBoolean( outValues[i] );
+                        outValues[i].ValueType = VALUE_TYPE_BOOL;
+                    }
+                    break;
+
+                default:
+                    MD_ASSERT_A( adapterId, false );
             }
         }
     }
@@ -702,7 +760,8 @@ namespace MetricsDiscoveryInternal
     {
         if( !rawData || !outValues )
         {
-            const uint32_t adapterId = m_device->GetAdapter().GetAdapterId();
+            const uint32_t adapterId = OBTAIN_ADAPTER_ID( m_device );
+
             MD_ASSERT_A( adapterId, rawData != nullptr );
             MD_ASSERT_A( adapterId, outValues != nullptr );
             MD_LOG_A( adapterId, LOG_ERROR, "error: nullptr params" );
@@ -812,7 +871,8 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     void CMetricsCalculator::ReadIoMeasurementInformation( IConcurrentGroup_1_1& concurrentGroup, TTypedValue_1_0* outValues )
     {
-        const uint32_t adapterId = m_device->GetAdapter().GetAdapterId();
+        const uint32_t adapterId = OBTAIN_ADAPTER_ID( m_device );
+
         if( !outValues )
         {
             MD_ASSERT_A( adapterId, outValues != nullptr );
@@ -873,7 +933,8 @@ namespace MetricsDiscoveryInternal
     {
         if( !deltaMetricValues || !outMetricValues || !outMaxValues )
         {
-            const uint32_t adapterId = m_device->GetAdapter().GetAdapterId();
+            const uint32_t adapterId = OBTAIN_ADAPTER_ID( m_device );
+
             MD_ASSERT_A( adapterId, deltaMetricValues != nullptr );
             MD_ASSERT_A( adapterId, outMetricValues != nullptr );
             MD_ASSERT_A( adapterId, outMaxValues != nullptr );
@@ -1783,7 +1844,8 @@ namespace MetricsDiscoveryInternal
     {
         if( !rawReport || !information || !outValue )
         {
-            const uint32_t adapterId = m_device->GetAdapter().GetAdapterId();
+            const uint32_t adapterId = OBTAIN_ADAPTER_ID( m_device );
+
             MD_ASSERT_A( adapterId, rawReport != nullptr );
             MD_ASSERT_A( adapterId, information != nullptr );
             MD_ASSERT_A( adapterId, outValue != nullptr );
@@ -1821,6 +1883,45 @@ namespace MetricsDiscoveryInternal
     //     CMetricsCalculator
     //
     // Method:
+    //     CastToUInt32
+    //
+    // Description:
+    //     Casts data to uint32.
+    //
+    // Input:
+    //     const TTypedValue_1_0& value - typed value to cast
+    //
+    // Output:
+    //     uint32_t - cast uint32 value
+    //
+    //////////////////////////////////////////////////////////////////////////////
+    uint32_t CMetricsCalculator::CastToUInt32( const TTypedValue_1_0& value )
+    {
+        switch( value.ValueType )
+        {
+            case VALUE_TYPE_BOOL:
+                return ( value.ValueBool ) ? 1U : 0U;
+
+            case VALUE_TYPE_UINT32:
+                return value.ValueUInt32;
+
+            case VALUE_TYPE_UINT64:
+                return static_cast<uint32_t>( value.ValueUInt64 );
+
+            case VALUE_TYPE_FLOAT:
+                return static_cast<uint32_t>( value.ValueFloat );
+
+            default:
+                return 0U;
+        }
+    }
+
+    //////////////////////////////////////////////////////////////////////////////
+    //
+    // Class:
+    //     CMetricsCalculator
+    //
+    // Method:
     //     CastToUInt64
     //
     // Description:
@@ -1841,13 +1942,14 @@ namespace MetricsDiscoveryInternal
                 return ( value.ValueBool ) ? 1LL : 0LL;
 
             case VALUE_TYPE_UINT32:
-                return (uint64_t) value.ValueUInt32;
+                return static_cast<uint64_t>( value.ValueUInt32 );
 
             case VALUE_TYPE_UINT64:
                 return value.ValueUInt64;
 
             case VALUE_TYPE_FLOAT:
-                return (uint64_t) value.ValueFloat;
+                return static_cast<uint64_t>( value.ValueFloat );
+
             default:
                 return 0LL;
         }
@@ -1879,15 +1981,55 @@ namespace MetricsDiscoveryInternal
                 return ( value.ValueBool ) ? 1.0f : 0.0f;
 
             case VALUE_TYPE_UINT32:
-                return (float) value.ValueUInt32;
+                return static_cast<float>( value.ValueUInt32 );
 
             case VALUE_TYPE_UINT64:
-                return (float) value.ValueUInt64;
+                return static_cast<float>( value.ValueUInt64 );
 
             case VALUE_TYPE_FLOAT:
                 return value.ValueFloat;
+
             default:
                 return 0.0f;
+        }
+    }
+
+    //////////////////////////////////////////////////////////////////////////////
+    //
+    // Class:
+    //     CMetricsCalculator
+    //
+    // Method:
+    //     CastToBoolean
+    //
+    // Description:
+    //     Casts data to boolean.
+    //
+    // Input:
+    //     const TTypedValue_1_0& value - typed value to cast
+    //
+    // Output:
+    //     bool - cast boolean value
+    //
+    //////////////////////////////////////////////////////////////////////////////
+    bool CMetricsCalculator::CastToBoolean( const TTypedValue_1_0& value )
+    {
+        switch( value.ValueType )
+        {
+            case VALUE_TYPE_BOOL:
+                return value.ValueBool;
+
+            case VALUE_TYPE_UINT32:
+                return value.ValueUInt32 != 0U;
+
+            case VALUE_TYPE_UINT64:
+                return value.ValueUInt64 != 0LL;
+
+            case VALUE_TYPE_FLOAT:
+                return value.ValueFloat != 0.0f;
+
+            default:
+                return false;
         }
     }
 
@@ -1915,7 +2057,8 @@ namespace MetricsDiscoveryInternal
     {
         if( !rawReport || ( bitCount > 32 ) || ( bitCount == 0 ) || ( bitCount + bitOffset > 32 ) )
         {
-            const uint32_t adapterId = m_device->GetAdapter().GetAdapterId();
+            const uint32_t adapterId = OBTAIN_ADAPTER_ID( m_device );
+
             MD_ASSERT_A( adapterId, false );
             MD_LOG_A( adapterId, LOG_ERROR, "error: invalid params" );
             return 0;
@@ -1928,6 +2071,26 @@ namespace MetricsDiscoveryInternal
         uint32_t data = ( *rawReport ) | ( ( *( rawReport + 1 ) ) << 8 ) | ( ( *( rawReport + 2 ) ) << 16 ) | ( ( *( rawReport + 3 ) ) << 24 );
 
         return (uint64_t) ( ( data & mask ) >> bitOffset );
+    }
+
+    //////////////////////////////////////////////////////////////////////////////
+    //
+    // Class:
+    //     CMetricsCalculator
+    //
+    // Method:
+    //     GetMetricsDevice
+    //
+    // Description:
+    //     Returns metrics device
+    //
+    // Output:
+    //     CMetricsDevice* - metrics device
+    //
+    //////////////////////////////////////////////////////////////////////////////
+    CMetricsDevice* CMetricsCalculator::GetMetricsDevice()
+    {
+        return m_device;
     }
 
     //////////////////////////////////////////////////////////////////////////////
@@ -1950,8 +2113,10 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     TTypedValue_1_0* CMetricsCalculator::GetGlobalSymbolValue( const char* symbolName )
     {
-        MD_CHECK_PTR_RET( m_device, nullptr );
-        MD_CHECK_PTR_RET( symbolName, nullptr );
+        const uint32_t adapterId = OBTAIN_ADAPTER_ID( m_device );
+
+        MD_CHECK_PTR_RET_A( adapterId, m_device, nullptr );
+        MD_CHECK_PTR_RET_A( adapterId, symbolName, nullptr );
 
         for( uint32_t i = 0; i < m_device->GetParams()->GlobalSymbolsCount; i++ )
         {

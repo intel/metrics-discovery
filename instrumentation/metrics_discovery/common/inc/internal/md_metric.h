@@ -52,6 +52,7 @@ namespace MetricsDiscoveryInternal
         TCompletionCode SetNormalizationEquation( const char* equationString );
         TCompletionCode SetSnapshotReportDeltaFunction( const char* equationString );
         TCompletionCode SetAvailabilityEquation( const char* equationString );
+        bool            IsAvailabilityEquationTrue();
         TCompletionCode SetMaxValueEquation( const char* equationString );
         void            SetIdInSetParam( uint32_t id );
 

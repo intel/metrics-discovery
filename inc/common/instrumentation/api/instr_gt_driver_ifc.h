@@ -307,6 +307,9 @@ typedef enum
     GENERATION_ACM      = 24,
     GENERATION_PVC      = 25,
     GENERATION_ADLP     = 26,
+    // 27-28 reserved
+    GENERATION_ADLS     = 29,
+    GENERATION_ADLN     = 30,
     // ...
     // DO NOT CHANGE ORDER OF THIS ENUM, ADD NEW PLATFORMS AT THE END!
     // It has to be synchronized with metric_discovery_internal_api.h file.

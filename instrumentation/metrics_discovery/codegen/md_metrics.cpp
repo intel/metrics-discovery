@@ -141,6 +141,16 @@ using namespace MetricsDiscoveryInternal;
     TCompletionCode CreateMetricTreeADLP_PipelineStatistics(CMetricsDevice* metricsDevice, CConcurrentGroup* concurrentGroup);
 #endif
 
+#if MD_INCLUDE_ADLS_METRICS
+#define MD_CALL_ADLS_METRICS 1
+    TCompletionCode CreateMetricTreeADLS_PipelineStatistics(CMetricsDevice* metricsDevice, CConcurrentGroup* concurrentGroup);
+#endif
+
+#if MD_INCLUDE_ADLN_METRICS
+#define MD_CALL_ADLN_METRICS 1
+    TCompletionCode CreateMetricTreeADLN_PipelineStatistics(CMetricsDevice* metricsDevice, CConcurrentGroup* concurrentGroup);
+#endif
+
 #if MD_INCLUDE_HSW_METRICS
 #define MD_CALL_HSW_METRICS 1
     TCompletionCode CreateMetricTreeHSW_OA(CMetricsDevice* metricsDevice, CConcurrentGroup* concurrentGroup);
@@ -269,6 +279,16 @@ using namespace MetricsDiscoveryInternal;
 #if MD_INCLUDE_ADLP_METRICS
 #define MD_CALL_ADLP_METRICS 1
     TCompletionCode CreateMetricTreeADLP_OA(CMetricsDevice* metricsDevice, CConcurrentGroup* concurrentGroup);
+#endif
+
+#if MD_INCLUDE_ADLS_METRICS
+#define MD_CALL_ADLS_METRICS 1
+    TCompletionCode CreateMetricTreeADLS_OA(CMetricsDevice* metricsDevice, CConcurrentGroup* concurrentGroup);
+#endif
+
+#if MD_INCLUDE_ADLN_METRICS
+#define MD_CALL_ADLN_METRICS 1
+    TCompletionCode CreateMetricTreeADLN_OA(CMetricsDevice* metricsDevice, CConcurrentGroup* concurrentGroup);
 #endif
 
 
@@ -542,6 +562,14 @@ TCompletionCode CreateMetricTree( CMetricsDevice* metricsDevice )
     MD_CHECK_CC( CreateMetricTreeADLP_PipelineStatistics(metricsDevice, concurrentGroup) );
 #endif
 
+#if MD_CALL_ADLS_METRICS
+    MD_CHECK_CC( CreateMetricTreeADLS_PipelineStatistics(metricsDevice, concurrentGroup) );
+#endif
+
+#if MD_CALL_ADLN_METRICS
+    MD_CHECK_CC( CreateMetricTreeADLN_PipelineStatistics(metricsDevice, concurrentGroup) );
+#endif
+
     concurrentGroup = metricsDevice->AddConcurrentGroup( "OA", "OA Unit Metrics", MEASUREMENT_TYPE_DELTA_QUERY|MEASUREMENT_TYPE_SNAPSHOT_IO );
     MD_CHECK_PTR( concurrentGroup );
     
@@ -648,6 +676,14 @@ TCompletionCode CreateMetricTree( CMetricsDevice* metricsDevice )
 
 #if MD_CALL_ADLP_METRICS
     MD_CHECK_CC( CreateMetricTreeADLP_OA(metricsDevice, concurrentGroup) );
+#endif
+
+#if MD_CALL_ADLS_METRICS
+    MD_CHECK_CC( CreateMetricTreeADLS_OA(metricsDevice, concurrentGroup) );
+#endif
+
+#if MD_CALL_ADLN_METRICS
+    MD_CHECK_CC( CreateMetricTreeADLN_OA(metricsDevice, concurrentGroup) );
 #endif
 
 

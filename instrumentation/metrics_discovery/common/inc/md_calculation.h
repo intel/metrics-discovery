@@ -207,13 +207,17 @@ namespace MetricsDiscoveryInternal
         uint8_t*        GetSavedReport();
         void            DiscardSavedReport();
 
+        uint32_t CastToUInt32( const TTypedValue_1_0& value );
         uint64_t CastToUInt64( const TTypedValue_1_0& value );
         float    CastToFloat( const TTypedValue_1_0& value );
+        bool     CastToBoolean( const TTypedValue_1_0& value );
 
         uint64_t ReadBitfield(
             const uint8_t* rawReport,
             uint32_t       bitOffset,
             uint32_t       bitCount );
+
+        CMetricsDevice* GetMetricsDevice();
 
     private:
         TTypedValue_1_0 CalculateDeltaFunction(

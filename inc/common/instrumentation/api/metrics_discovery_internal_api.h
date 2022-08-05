@@ -45,6 +45,9 @@ namespace MetricsDiscovery
         PLATFORM_ACM      = 1 << 24 /*GENERATION_ACM*/,
         PLATFORM_PVC      = 1 << 25 /*GENERATION_PVC*/,
         PLATFORM_ADLP     = 1 << 26 /*GENERATION_ADLP*/,
+        // 27-28 reserved
+        PLATFORM_ADLS     = 1 << 29 /*GENERATION_ADLS*/,
+        PLATFORM_ADLN     = 1 << 30 /*GENERATION_ADLN*/,
         // ...
         PLATFORM_ALL = 0xFFFFFFFF,
     } TPlatformType;
@@ -73,6 +76,7 @@ namespace MetricsDiscovery
     {
         METRIC_SET_CUSTOM_PARAMS_1_0,
         METRIC_SET_CUSTOM_PARAMS_1_1,
+        METRIC_SET_CUSTOM_PARAMS_1_2,
     } TAddCustomMetricSetParamsType;
 
     ////////////////////////////////////////////////////////////////////////////////
@@ -234,7 +238,25 @@ namespace MetricsDiscovery
 
             struct
             {
-                uint32_t reserved[32];
+                const char*        SymbolName; // For example "Dx11Tessellation"
+                const char*        ShortName;  // For example "DX11 Tessellation Metrics Set"
+                uint32_t           ApiMask;
+                uint32_t           CategoryMask;
+                uint32_t           PlatformMask;
+                uint32_t           RawReportSize;         // As in HW
+                uint32_t           QueryReportSize;       // As in Query API
+                const char*        ComplementarySetsList; // Comma separated list of complementary sets
+                TApiSpecificId_1_0 ApiSpecificId;
+                TRegisterSet*      StartConfigRegSets; // Optional
+                uint32_t           StartConfigRegSetsCount;
+                uint32_t           GtMask;
+                const char*        AvailabilityEquation;
+                uint32_t           ReportType; // TReportType from md_types.h
+            } CustomMetricSetParams_1_2;
+
+            struct
+            {
+                uint32_t reserved[64];
             } Padding;
         };
 

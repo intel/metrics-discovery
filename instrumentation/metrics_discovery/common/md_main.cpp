@@ -114,7 +114,7 @@ extern "C"
             adapterGroup->Close();
         }
 
-        MD_LOG_EXIT();
+        MD_LOG_EXIT_A( defaultAdapter->GetAdapterId() );
         return retVal;
     }
 
@@ -178,7 +178,7 @@ extern "C"
             adapterGroup->Close();
         }
 
-        MD_LOG_EXIT();
+        MD_LOG_EXIT_A( defaultAdapter->GetAdapterId() );
         return retVal;
     }
 
@@ -234,7 +234,7 @@ extern "C"
             adapterGroup->Close();
         }
 
-        MD_LOG_EXIT();
+        MD_LOG_EXIT_A( defaultAdapter->GetAdapterId() );
         return retVal;
     }
 
@@ -288,7 +288,7 @@ extern "C"
 
         TCompletionCode retVal = defaultAdapter->SaveMetricsDeviceToFile( fileName, saveParams, metricsDevice );
 
-        MD_LOG_EXIT();
+        MD_LOG_EXIT_A( defaultAdapter->GetAdapterId() );
         return retVal;
     }
 

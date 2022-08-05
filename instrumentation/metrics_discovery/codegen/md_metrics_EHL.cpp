@@ -189,10 +189,12 @@ TCompletionCode CreateMetricTreeEHL_MMIO_Regs( CMetricsDevice* metricsDevice, CC
     if( metricsDevice->IsPlatformTypeOf( platformMask ) )
     {
 
+    uint32_t informationCount = 0;
+
         information = concurrentGroup->AddInformation( "QueryBeginTime", "Query Begin Time",
             "The measurement begin time.",
             "Report Meta Data", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
-            INFORMATION_TYPE_TIMESTAMP, "ns", nullptr, 0 );
+            INFORMATION_TYPE_TIMESTAMP, "ns", nullptr, informationCount++ );
         if( information )
         {
             MD_CHECK_CC_RET( information->SetSnapshotReportReadEquation( "dw@0x04 1000000000 UMUL $GpuTimestampFrequency UDIV" ));
@@ -203,7 +205,7 @@ TCompletionCode CreateMetricTreeEHL_MMIO_Regs( CMetricsDevice* metricsDevice, CC
         information = concurrentGroup->AddInformation( "CoreFrequencyMHz", "GPU Core Frequency",
             "The last core frequency in the measurement.",
             "Report Meta Data", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
-            INFORMATION_TYPE_VALUE, "MHz", nullptr, 1 );
+            INFORMATION_TYPE_VALUE, "MHz", nullptr, informationCount++ );
         if( information )
         {
             MD_CHECK_CC_RET( information->SetDeltaReportReadEquation( "qw@0x208 1000000 UDIV" ));
@@ -212,7 +214,7 @@ TCompletionCode CreateMetricTreeEHL_MMIO_Regs( CMetricsDevice* metricsDevice, CC
         information = concurrentGroup->AddInformation( "CoreFrequencyChanged", "Core Frequency Changed",
             "The flag indicating that core frequency has changed.",
             "Exception", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
-            INFORMATION_TYPE_FLAG, nullptr, nullptr, 2 );
+            INFORMATION_TYPE_FLAG, nullptr, nullptr, informationCount++ );
         if( information )
         {
             MD_CHECK_CC_RET( information->SetDeltaReportReadEquation( "dw@0x204" ));
@@ -221,7 +223,7 @@ TCompletionCode CreateMetricTreeEHL_MMIO_Regs( CMetricsDevice* metricsDevice, CC
         information = concurrentGroup->AddInformation( "QuerySplitOccurred", "Query Split Occurred",
             "The flag indicating that query has been split during execution on the GPU.",
             "Exception", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
-            INFORMATION_TYPE_FLAG, nullptr, nullptr, 3 );
+            INFORMATION_TYPE_FLAG, nullptr, nullptr, informationCount++ );
         if( information )
         {
             MD_CHECK_CC_RET( information->SetDeltaReportReadEquation( "dw@0x200" ));
@@ -230,7 +232,7 @@ TCompletionCode CreateMetricTreeEHL_MMIO_Regs( CMetricsDevice* metricsDevice, CC
         information = concurrentGroup->AddInformation( "ReportId", "Query report id",
             "Query report identification number.",
             "Report Meta Data", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
-            INFORMATION_TYPE_VALUE, nullptr, nullptr, 4 );
+            INFORMATION_TYPE_VALUE, nullptr, nullptr, informationCount++ );
         if( information )
         {
             MD_CHECK_CC_RET( information->SetDeltaReportReadEquation( "dw@0x210" ));
@@ -239,7 +241,7 @@ TCompletionCode CreateMetricTreeEHL_MMIO_Regs( CMetricsDevice* metricsDevice, CC
         information = concurrentGroup->AddInformation( "ReportsCount", "Query reports count",
             "The number of available query reports.",
             "Report Meta Data", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
-            INFORMATION_TYPE_VALUE, nullptr, nullptr, 5 );
+            INFORMATION_TYPE_VALUE, nullptr, nullptr, informationCount++ );
         if( information )
         {
             MD_CHECK_CC_RET( information->SetDeltaReportReadEquation( "dw@0x214" ));
@@ -248,7 +250,7 @@ TCompletionCode CreateMetricTreeEHL_MMIO_Regs( CMetricsDevice* metricsDevice, CC
         information = concurrentGroup->AddInformation( "OverrunOccured", "Query Overrun Occurred",
             "The flag indicating that Oa buffer has been overran.",
             "Exception", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
-            INFORMATION_TYPE_FLAG, nullptr, nullptr, 6 );
+            INFORMATION_TYPE_FLAG, nullptr, nullptr, informationCount++ );
         if( information )
         {
             MD_CHECK_CC_RET( information->SetDeltaReportReadEquation( "dw@0x1cc" ));
@@ -719,52 +721,43 @@ static TCompletionCode CreateMetricSet_EHL_RenderBasic( CMetricsDevice* metricsD
     }
 
     availabilityEquation = "$SubsliceMask 1 AND";
-    if( MD_IS_INTERNAL_BUILD || metricsDevice->IsAvailabilityEquationTrue( availabilityEquation ) )
+    metric = metricSet->AddMetric( "Sampler00Busy", "Sampler00 Busy",
+        "The percentage of time in which Slice0 Sampler0 has been processing EU requests.",
+        "Sampler", (METRIC_GROUP_NAME_ID_SAMPLER * 0x1000000), USAGE_FLAG_TIER_3|USAGE_FLAG_BATCH|USAGE_FLAG_FRAME|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+        METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, nullptr, nullptr, 19 );
+    if( metric )
     {
-        metric = metricSet->AddMetric( "Sampler00Busy", "Sampler00 Busy",
-            "The percentage of time in which Slice0 Sampler0 has been processing EU requests.",
-            "Sampler", (METRIC_GROUP_NAME_ID_SAMPLER * 0x1000000), USAGE_FLAG_TIER_3|USAGE_FLAG_BATCH|USAGE_FLAG_FRAME|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
-            METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, nullptr, nullptr, 19 );
-        if( metric )
-        {
-            MD_CHECK_CC_RET( metric->SetSnapshotReportReadEquation( "dw@0xe4" ));
-            MD_CHECK_CC_RET( metric->SetDeltaReportReadEquation( "qw@0x178" ));
-            MD_CHECK_CC_RET( metric->SetNormalizationEquation( "GpuDuration" ));
-            MD_CHECK_CC_RET( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
-            MD_CHECK_CC_RET( metric->SetMaxValueEquation( "100" ));
-        }
+        MD_CHECK_CC_RET( metric->SetSnapshotReportReadEquation( "dw@0xe4" ));
+        MD_CHECK_CC_RET( metric->SetDeltaReportReadEquation( "qw@0x178" ));
+        MD_CHECK_CC_RET( metric->SetNormalizationEquation( "GpuDuration" ));
+        MD_CHECK_CC_RET( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
+        MD_CHECK_CC_RET( metric->SetMaxValueEquation( "100" ));
     }
 
     availabilityEquation = "$SubsliceMask 9 AND";
-    if( MD_IS_INTERNAL_BUILD || metricsDevice->IsAvailabilityEquationTrue( availabilityEquation ) )
+    metric = metricSet->AddMetric( "SamplersBusy", "Samplers Busy",
+        "The percentage of time in which samplers have been processing EU requests.",
+        "Sampler", (METRIC_GROUP_NAME_ID_SAMPLER * 0x1000000), USAGE_FLAG_TIER_2|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+        METRIC_TYPE_DURATION, RESULT_UINT64, "percent", 0, 0, HW_UNIT_SLICE, availabilityEquation, nullptr, nullptr, 20 );
+    if( metric )
     {
-        metric = metricSet->AddMetric( "SamplersBusy", "Samplers Busy",
-            "The percentage of time in which samplers have been processing EU requests.",
-            "Sampler", (METRIC_GROUP_NAME_ID_SAMPLER * 0x1000000), USAGE_FLAG_TIER_2|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
-            METRIC_TYPE_DURATION, RESULT_UINT64, "percent", 0, 0, HW_UNIT_SLICE, availabilityEquation, nullptr, nullptr, 20 );
-        if( metric )
-        {
-            
-            MD_CHECK_CC_RET( metric->SetNormalizationEquation( "$$Sampler00Busy" ));
-            MD_CHECK_CC_RET( metric->SetMaxValueEquation( "100" ));
-        }
+        
+        MD_CHECK_CC_RET( metric->SetNormalizationEquation( "$$Sampler00Busy" ));
+        MD_CHECK_CC_RET( metric->SetMaxValueEquation( "100" ));
     }
 
     availabilityEquation = "$SubsliceMask 1 AND";
-    if( MD_IS_INTERNAL_BUILD || metricsDevice->IsAvailabilityEquationTrue( availabilityEquation ) )
+    metric = metricSet->AddMetric( "Sampler00Bottleneck", "Sampler00 Bottleneck",
+        "The percentage of time in which Slice0 Sampler0 has been slowing down the pipe when processing EU requests.",
+        "Sampler", (METRIC_GROUP_NAME_ID_SAMPLER * 0x1000000), USAGE_FLAG_TIER_3|USAGE_FLAG_INDICATE|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+        METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 5, 15, HW_UNIT_SUBSLICE, availabilityEquation, nullptr, nullptr, 21 );
+    if( metric )
     {
-        metric = metricSet->AddMetric( "Sampler00Bottleneck", "Sampler00 Bottleneck",
-            "The percentage of time in which Slice0 Sampler0 has been slowing down the pipe when processing EU requests.",
-            "Sampler", (METRIC_GROUP_NAME_ID_SAMPLER * 0x1000000), USAGE_FLAG_TIER_3|USAGE_FLAG_INDICATE|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
-            METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 5, 15, HW_UNIT_SUBSLICE, availabilityEquation, nullptr, nullptr, 21 );
-        if( metric )
-        {
-            MD_CHECK_CC_RET( metric->SetSnapshotReportReadEquation( "dw@0xe0" ));
-            MD_CHECK_CC_RET( metric->SetDeltaReportReadEquation( "qw@0x170" ));
-            MD_CHECK_CC_RET( metric->SetNormalizationEquation( "GpuDuration" ));
-            MD_CHECK_CC_RET( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
-            MD_CHECK_CC_RET( metric->SetMaxValueEquation( "100" ));
-        }
+        MD_CHECK_CC_RET( metric->SetSnapshotReportReadEquation( "dw@0xe0" ));
+        MD_CHECK_CC_RET( metric->SetDeltaReportReadEquation( "qw@0x170" ));
+        MD_CHECK_CC_RET( metric->SetNormalizationEquation( "GpuDuration" ));
+        MD_CHECK_CC_RET( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
+        MD_CHECK_CC_RET( metric->SetMaxValueEquation( "100" ));
     }
 
     availabilityEquation = nullptr;
@@ -1002,24 +995,23 @@ static TCompletionCode CreateMetricSet_EHL_RenderBasic( CMetricsDevice* metricsD
     }
 
     availabilityEquation = "$SubsliceMask 9 AND";
-    if( MD_IS_INTERNAL_BUILD || metricsDevice->IsAvailabilityEquationTrue( availabilityEquation ) )
+    metric = metricSet->AddMetric( "SamplerBottleneck", "Samplers Bottleneck",
+        "The percentage of time in which samplers have been slowing down the pipe when processing EU requests.",
+        "Sampler", (METRIC_GROUP_NAME_ID_SAMPLER * 0x1000000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_INDICATE|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+        METRIC_TYPE_DURATION, RESULT_UINT64, "percent", 5, 15, HW_UNIT_SLICE, availabilityEquation, nullptr, nullptr, 40 );
+    if( metric )
     {
-        metric = metricSet->AddMetric( "SamplerBottleneck", "Samplers Bottleneck",
-            "The percentage of time in which samplers have been slowing down the pipe when processing EU requests.",
-            "Sampler", (METRIC_GROUP_NAME_ID_SAMPLER * 0x1000000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_INDICATE|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
-            METRIC_TYPE_DURATION, RESULT_UINT64, "percent", 5, 15, HW_UNIT_SLICE, availabilityEquation, nullptr, nullptr, 40 );
-        if( metric )
-        {
-            
-            MD_CHECK_CC_RET( metric->SetNormalizationEquation( "$$Sampler00Bottleneck" ));
-            MD_CHECK_CC_RET( metric->SetMaxValueEquation( "100" ));
-        }
+        
+        MD_CHECK_CC_RET( metric->SetNormalizationEquation( "$$Sampler00Bottleneck" ));
+        MD_CHECK_CC_RET( metric->SetMaxValueEquation( "100" ));
     }
 
-        information = concurrentGroup->AddInformation( "StreamMarker", "Stream marker",
+        uint32_t informationCount = concurrentGroup->GetInformationCount();
+
+        information = metricSet->AddInformation( "StreamMarker", "Stream marker",
             "Stream marker value.",
             "Report Meta Data", API_TYPE_IOSTREAM,
-            INFORMATION_TYPE_VALUE, nullptr, nullptr, 0 );
+            INFORMATION_TYPE_VALUE, nullptr, nullptr, informationCount++ );
         if( information )
         {
             MD_CHECK_CC_RET( information->SetSnapshotReportReadEquation( "dw@0x5c dw@0x0 19 >> 0x4 AND 0x4 == UMUL" ));
@@ -1636,10 +1628,12 @@ static TCompletionCode CreateMetricSet_EHL_ComputeBasic( CMetricsDevice* metrics
         MD_CHECK_CC_RET( metric->SetMaxValueEquation( "$GpuCoreClocks 64 UMUL" ));
     }
 
-        information = concurrentGroup->AddInformation( "StreamMarker", "Stream marker",
+        uint32_t informationCount = concurrentGroup->GetInformationCount();
+
+        information = metricSet->AddInformation( "StreamMarker", "Stream marker",
             "Stream marker value.",
             "Report Meta Data", API_TYPE_IOSTREAM,
-            INFORMATION_TYPE_VALUE, nullptr, nullptr, 0 );
+            INFORMATION_TYPE_VALUE, nullptr, nullptr, informationCount++ );
         if( information )
         {
             MD_CHECK_CC_RET( information->SetSnapshotReportReadEquation( "dw@0x5c dw@0x0 19 >> 0x4 AND 0x4 == UMUL" ));
@@ -1850,225 +1844,180 @@ static TCompletionCode CreateMetricSet_EHL_ComputeExtended( CMetricsDevice* metr
     }
 
     availabilityEquation = "$SubsliceMask 1 AND";
-    if( MD_IS_INTERNAL_BUILD || metricsDevice->IsAvailabilityEquationTrue( availabilityEquation ) )
+    metric = metricSet->AddMetric( "TypedAtomics00", "Typed Atomics 00",
+        "Slice 0 Subslice group 0 typed atomics.",
+        "L3/Data Port", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+        METRIC_TYPE_EVENT, RESULT_UINT64, "messages", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, nullptr, nullptr, 5 );
+    if( metric )
     {
-        metric = metricSet->AddMetric( "TypedAtomics00", "Typed Atomics 00",
-            "Slice 0 Subslice group 0 typed atomics.",
-            "L3/Data Port", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
-            METRIC_TYPE_EVENT, RESULT_UINT64, "messages", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, nullptr, nullptr, 5 );
-        if( metric )
-        {
-            MD_CHECK_CC_RET( metric->SetSnapshotReportReadEquation( "dw@0xfc" ));
-            MD_CHECK_CC_RET( metric->SetDeltaReportReadEquation( "qw@0x1a8" ));
-            MD_CHECK_CC_RET( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
-        }
+        MD_CHECK_CC_RET( metric->SetSnapshotReportReadEquation( "dw@0xfc" ));
+        MD_CHECK_CC_RET( metric->SetDeltaReportReadEquation( "qw@0x1a8" ));
+        MD_CHECK_CC_RET( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
     }
 
     availabilityEquation = "$SubsliceMask 1 AND";
-    if( MD_IS_INTERNAL_BUILD || metricsDevice->IsAvailabilityEquationTrue( availabilityEquation ) )
+    metric = metricSet->AddMetric( "TypedReads00", "Typed Reads 00",
+        "Slice 0 Subslice group 0 typed reads.",
+        "L3/Data Port", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+        METRIC_TYPE_EVENT, RESULT_UINT64, "messages", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, nullptr, nullptr, 6 );
+    if( metric )
     {
-        metric = metricSet->AddMetric( "TypedReads00", "Typed Reads 00",
-            "Slice 0 Subslice group 0 typed reads.",
-            "L3/Data Port", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
-            METRIC_TYPE_EVENT, RESULT_UINT64, "messages", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, nullptr, nullptr, 6 );
-        if( metric )
-        {
-            MD_CHECK_CC_RET( metric->SetSnapshotReportReadEquation( "dw@0xf8" ));
-            MD_CHECK_CC_RET( metric->SetDeltaReportReadEquation( "qw@0x1a0" ));
-            MD_CHECK_CC_RET( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
-        }
+        MD_CHECK_CC_RET( metric->SetSnapshotReportReadEquation( "dw@0xf8" ));
+        MD_CHECK_CC_RET( metric->SetDeltaReportReadEquation( "qw@0x1a0" ));
+        MD_CHECK_CC_RET( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
     }
 
     availabilityEquation = "$SubsliceMask 1 AND";
-    if( MD_IS_INTERNAL_BUILD || metricsDevice->IsAvailabilityEquationTrue( availabilityEquation ) )
+    metric = metricSet->AddMetric( "TypedWrites00", "Typed Writes 00",
+        "Slice 0 Subslice group 0 typed writes.",
+        "L3/Data Port", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+        METRIC_TYPE_EVENT, RESULT_UINT64, "messages", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, nullptr, nullptr, 7 );
+    if( metric )
     {
-        metric = metricSet->AddMetric( "TypedWrites00", "Typed Writes 00",
-            "Slice 0 Subslice group 0 typed writes.",
-            "L3/Data Port", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
-            METRIC_TYPE_EVENT, RESULT_UINT64, "messages", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, nullptr, nullptr, 7 );
-        if( metric )
-        {
-            MD_CHECK_CC_RET( metric->SetSnapshotReportReadEquation( "dw@0xf4" ));
-            MD_CHECK_CC_RET( metric->SetDeltaReportReadEquation( "qw@0x198" ));
-            MD_CHECK_CC_RET( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
-        }
+        MD_CHECK_CC_RET( metric->SetSnapshotReportReadEquation( "dw@0xf4" ));
+        MD_CHECK_CC_RET( metric->SetDeltaReportReadEquation( "qw@0x198" ));
+        MD_CHECK_CC_RET( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
     }
 
     availabilityEquation = "$SubsliceMask 1 AND";
-    if( MD_IS_INTERNAL_BUILD || metricsDevice->IsAvailabilityEquationTrue( availabilityEquation ) )
+    metric = metricSet->AddMetric( "UntypedReads00", "Untyped Reads 00",
+        "Slice 0 Subslice group 0 untyped reads (including SLM reads).",
+        "L3/Data Port", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+        METRIC_TYPE_EVENT, RESULT_UINT64, "messages", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, nullptr, nullptr, 8 );
+    if( metric )
     {
-        metric = metricSet->AddMetric( "UntypedReads00", "Untyped Reads 00",
-            "Slice 0 Subslice group 0 untyped reads (including SLM reads).",
-            "L3/Data Port", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
-            METRIC_TYPE_EVENT, RESULT_UINT64, "messages", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, nullptr, nullptr, 8 );
-        if( metric )
-        {
-            MD_CHECK_CC_RET( metric->SetSnapshotReportReadEquation( "dw@0xf0" ));
-            MD_CHECK_CC_RET( metric->SetDeltaReportReadEquation( "qw@0x190" ));
-            MD_CHECK_CC_RET( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
-        }
+        MD_CHECK_CC_RET( metric->SetSnapshotReportReadEquation( "dw@0xf0" ));
+        MD_CHECK_CC_RET( metric->SetDeltaReportReadEquation( "qw@0x190" ));
+        MD_CHECK_CC_RET( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
     }
 
     availabilityEquation = "$SubsliceMask 1 AND";
-    if( MD_IS_INTERNAL_BUILD || metricsDevice->IsAvailabilityEquationTrue( availabilityEquation ) )
+    metric = metricSet->AddMetric( "UntypedWrites00", "Untyped Writes 00",
+        "Slice 0 Subslice group 0 untyped writes (including SLM writes).",
+        "L3/Data Port", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+        METRIC_TYPE_EVENT, RESULT_UINT64, "messages", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, nullptr, nullptr, 9 );
+    if( metric )
     {
-        metric = metricSet->AddMetric( "UntypedWrites00", "Untyped Writes 00",
-            "Slice 0 Subslice group 0 untyped writes (including SLM writes).",
-            "L3/Data Port", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
-            METRIC_TYPE_EVENT, RESULT_UINT64, "messages", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, nullptr, nullptr, 9 );
-        if( metric )
-        {
-            MD_CHECK_CC_RET( metric->SetSnapshotReportReadEquation( "dw@0xec" ));
-            MD_CHECK_CC_RET( metric->SetDeltaReportReadEquation( "qw@0x188" ));
-            MD_CHECK_CC_RET( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
-        }
+        MD_CHECK_CC_RET( metric->SetSnapshotReportReadEquation( "dw@0xec" ));
+        MD_CHECK_CC_RET( metric->SetDeltaReportReadEquation( "qw@0x188" ));
+        MD_CHECK_CC_RET( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
     }
 
     availabilityEquation = "$SubsliceMask 1 AND";
-    if( MD_IS_INTERNAL_BUILD || metricsDevice->IsAvailabilityEquationTrue( availabilityEquation ) )
+    metric = metricSet->AddMetric( "EuTypedReads00", "Eu Typed Reads 00",
+        "Slice0 Subslice group 0 Eu Typed Reads",
+        "L3/Data Port", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+        METRIC_TYPE_EVENT, RESULT_UINT64, "messages", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, nullptr, nullptr, 10 );
+    if( metric )
     {
-        metric = metricSet->AddMetric( "EuTypedReads00", "Eu Typed Reads 00",
-            "Slice0 Subslice group 0 Eu Typed Reads",
-            "L3/Data Port", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
-            METRIC_TYPE_EVENT, RESULT_UINT64, "messages", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, nullptr, nullptr, 10 );
-        if( metric )
-        {
-            MD_CHECK_CC_RET( metric->SetSnapshotReportReadEquation( "dw@0xcc" ));
-            MD_CHECK_CC_RET( metric->SetDeltaReportReadEquation( "qw@0x148" ));
-            MD_CHECK_CC_RET( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
-        }
+        MD_CHECK_CC_RET( metric->SetSnapshotReportReadEquation( "dw@0xcc" ));
+        MD_CHECK_CC_RET( metric->SetDeltaReportReadEquation( "qw@0x148" ));
+        MD_CHECK_CC_RET( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
     }
 
     availabilityEquation = "$SubsliceMask 1 AND";
-    if( MD_IS_INTERNAL_BUILD || metricsDevice->IsAvailabilityEquationTrue( availabilityEquation ) )
+    metric = metricSet->AddMetric( "EuTypedWrites00", "Eu Typed Writes 00",
+        "Slice0 Subslice group 0 Eu Typed Writes",
+        "L3/Data Port", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+        METRIC_TYPE_EVENT, RESULT_UINT64, "messages", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, nullptr, nullptr, 11 );
+    if( metric )
     {
-        metric = metricSet->AddMetric( "EuTypedWrites00", "Eu Typed Writes 00",
-            "Slice0 Subslice group 0 Eu Typed Writes",
-            "L3/Data Port", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
-            METRIC_TYPE_EVENT, RESULT_UINT64, "messages", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, nullptr, nullptr, 11 );
-        if( metric )
-        {
-            MD_CHECK_CC_RET( metric->SetSnapshotReportReadEquation( "dw@0xd0" ));
-            MD_CHECK_CC_RET( metric->SetDeltaReportReadEquation( "qw@0x150" ));
-            MD_CHECK_CC_RET( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
-        }
+        MD_CHECK_CC_RET( metric->SetSnapshotReportReadEquation( "dw@0xd0" ));
+        MD_CHECK_CC_RET( metric->SetDeltaReportReadEquation( "qw@0x150" ));
+        MD_CHECK_CC_RET( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
     }
 
     availabilityEquation = "$SubsliceMask 1 AND";
-    if( MD_IS_INTERNAL_BUILD || metricsDevice->IsAvailabilityEquationTrue( availabilityEquation ) )
+    metric = metricSet->AddMetric( "EuTypedAtomics00", "Eu Typed Atomics 00",
+        "Slice0 Subslice group 0 Eu Typed Atomics",
+        "L3/Data Port", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+        METRIC_TYPE_EVENT, RESULT_UINT64, "messages", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, nullptr, nullptr, 12 );
+    if( metric )
     {
-        metric = metricSet->AddMetric( "EuTypedAtomics00", "Eu Typed Atomics 00",
-            "Slice0 Subslice group 0 Eu Typed Atomics",
-            "L3/Data Port", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
-            METRIC_TYPE_EVENT, RESULT_UINT64, "messages", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, nullptr, nullptr, 12 );
-        if( metric )
-        {
-            MD_CHECK_CC_RET( metric->SetSnapshotReportReadEquation( "dw@0xc8" ));
-            MD_CHECK_CC_RET( metric->SetDeltaReportReadEquation( "qw@0x140" ));
-            MD_CHECK_CC_RET( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
-        }
+        MD_CHECK_CC_RET( metric->SetSnapshotReportReadEquation( "dw@0xc8" ));
+        MD_CHECK_CC_RET( metric->SetDeltaReportReadEquation( "qw@0x140" ));
+        MD_CHECK_CC_RET( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
     }
 
     availabilityEquation = "$SubsliceMask 1 AND";
-    if( MD_IS_INTERNAL_BUILD || metricsDevice->IsAvailabilityEquationTrue( availabilityEquation ) )
+    metric = metricSet->AddMetric( "EuA32UntypedReads00", "Eu A32 Untyped Reads 00",
+        "Slice0 Subslice group 0 Eu A32 Untyped Reads",
+        "L3/Data Port", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+        METRIC_TYPE_EVENT, RESULT_UINT64, "messages", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, nullptr, nullptr, 13 );
+    if( metric )
     {
-        metric = metricSet->AddMetric( "EuA32UntypedReads00", "Eu A32 Untyped Reads 00",
-            "Slice0 Subslice group 0 Eu A32 Untyped Reads",
-            "L3/Data Port", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
-            METRIC_TYPE_EVENT, RESULT_UINT64, "messages", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, nullptr, nullptr, 13 );
-        if( metric )
-        {
-            MD_CHECK_CC_RET( metric->SetSnapshotReportReadEquation( "dw@0xc0" ));
-            MD_CHECK_CC_RET( metric->SetDeltaReportReadEquation( "qw@0x130" ));
-            MD_CHECK_CC_RET( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
-        }
+        MD_CHECK_CC_RET( metric->SetSnapshotReportReadEquation( "dw@0xc0" ));
+        MD_CHECK_CC_RET( metric->SetDeltaReportReadEquation( "qw@0x130" ));
+        MD_CHECK_CC_RET( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
     }
 
     availabilityEquation = "$SubsliceMask 1 AND";
-    if( MD_IS_INTERNAL_BUILD || metricsDevice->IsAvailabilityEquationTrue( availabilityEquation ) )
+    metric = metricSet->AddMetric( "EuA32UntypedWrites00", "Eu A32 Untyped Writes 00",
+        "Slice0 Subslice group 0 Eu A32 Untyped Writes",
+        "L3/Data Port", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+        METRIC_TYPE_EVENT, RESULT_UINT64, "messages", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, nullptr, nullptr, 14 );
+    if( metric )
     {
-        metric = metricSet->AddMetric( "EuA32UntypedWrites00", "Eu A32 Untyped Writes 00",
-            "Slice0 Subslice group 0 Eu A32 Untyped Writes",
-            "L3/Data Port", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
-            METRIC_TYPE_EVENT, RESULT_UINT64, "messages", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, nullptr, nullptr, 14 );
-        if( metric )
-        {
-            MD_CHECK_CC_RET( metric->SetSnapshotReportReadEquation( "dw@0xdc dw@0xc4 UADD" ));
-            MD_CHECK_CC_RET( metric->SetDeltaReportReadEquation( "qw@0x168 qw@0x138 UADD" ));
-            MD_CHECK_CC_RET( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
-        }
+        MD_CHECK_CC_RET( metric->SetSnapshotReportReadEquation( "dw@0xdc dw@0xc4 UADD" ));
+        MD_CHECK_CC_RET( metric->SetDeltaReportReadEquation( "qw@0x168 qw@0x138 UADD" ));
+        MD_CHECK_CC_RET( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
     }
 
     availabilityEquation = "$SubsliceMask 1 AND";
-    if( MD_IS_INTERNAL_BUILD || metricsDevice->IsAvailabilityEquationTrue( availabilityEquation ) )
+    metric = metricSet->AddMetric( "EuA64UntypedReads00", "Eu 64 Untyped Reads 00",
+        "Slice0 Subslice group 0 Eu 64 Untyped Reads",
+        "L3/Data Port", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+        METRIC_TYPE_EVENT, RESULT_FLOAT, "messages", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, nullptr, nullptr, 15 );
+    if( metric )
     {
-        metric = metricSet->AddMetric( "EuA64UntypedReads00", "Eu 64 Untyped Reads 00",
-            "Slice0 Subslice group 0 Eu 64 Untyped Reads",
-            "L3/Data Port", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
-            METRIC_TYPE_EVENT, RESULT_FLOAT, "messages", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, nullptr, nullptr, 15 );
-        if( metric )
-        {
-            MD_CHECK_CC_RET( metric->SetSnapshotReportReadEquation( "dw@0xd4 dw@0xe4 FADD dw@0xd8 FADD" ));
-            MD_CHECK_CC_RET( metric->SetDeltaReportReadEquation( "qw@0x158 qw@0x178 FADD qw@0x160 FADD" ));
-            MD_CHECK_CC_RET( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
-        }
+        MD_CHECK_CC_RET( metric->SetSnapshotReportReadEquation( "dw@0xd4 dw@0xe4 FADD dw@0xd8 FADD" ));
+        MD_CHECK_CC_RET( metric->SetDeltaReportReadEquation( "qw@0x158 qw@0x178 FADD qw@0x160 FADD" ));
+        MD_CHECK_CC_RET( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
     }
 
     availabilityEquation = "$SubsliceMask 1 AND";
-    if( MD_IS_INTERNAL_BUILD || metricsDevice->IsAvailabilityEquationTrue( availabilityEquation ) )
+    metric = metricSet->AddMetric( "EuA64UntypedWrites00", "Eu A64 Untyped Writes 00",
+        "Slice0 Subslice group 0 Eu A64 Untyped Writes",
+        "L3/Data Port", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+        METRIC_TYPE_EVENT, RESULT_UINT64, "messages", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, nullptr, nullptr, 16 );
+    if( metric )
     {
-        metric = metricSet->AddMetric( "EuA64UntypedWrites00", "Eu A64 Untyped Writes 00",
-            "Slice0 Subslice group 0 Eu A64 Untyped Writes",
-            "L3/Data Port", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
-            METRIC_TYPE_EVENT, RESULT_UINT64, "messages", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, nullptr, nullptr, 16 );
-        if( metric )
-        {
-            MD_CHECK_CC_RET( metric->SetSnapshotReportReadEquation( "dw@0xe8" ));
-            MD_CHECK_CC_RET( metric->SetDeltaReportReadEquation( "qw@0x180" ));
-            MD_CHECK_CC_RET( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
-        }
+        MD_CHECK_CC_RET( metric->SetSnapshotReportReadEquation( "dw@0xe8" ));
+        MD_CHECK_CC_RET( metric->SetDeltaReportReadEquation( "qw@0x180" ));
+        MD_CHECK_CC_RET( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
     }
 
     availabilityEquation = "$SubsliceMask 1 AND";
-    if( MD_IS_INTERNAL_BUILD || metricsDevice->IsAvailabilityEquationTrue( availabilityEquation ) )
+    metric = metricSet->AddMetric( "TypedAtomicsPerCacheLine", "TypedAtomicsPerCacheLine",
+        "The ratio of EU typed atomics requests to L3 cache line writes.",
+        "L3/Data Port", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+        METRIC_TYPE_RATIO, RESULT_FLOAT, "EU sends to L3 cache lines", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, nullptr, nullptr, 17 );
+    if( metric )
     {
-        metric = metricSet->AddMetric( "TypedAtomicsPerCacheLine", "TypedAtomicsPerCacheLine",
-            "The ratio of EU typed atomics requests to L3 cache line writes.",
-            "L3/Data Port", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
-            METRIC_TYPE_RATIO, RESULT_FLOAT, "EU sends to L3 cache lines", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, nullptr, nullptr, 17 );
-        if( metric )
-        {
-            
-            MD_CHECK_CC_RET( metric->SetNormalizationEquation( "$$EuTypedAtomics00 $$TypedAtomics00 FDIV" ));
-        }
+        
+        MD_CHECK_CC_RET( metric->SetNormalizationEquation( "$$EuTypedAtomics00 $$TypedAtomics00 FDIV" ));
     }
 
     availabilityEquation = "$SubsliceMask 1 AND";
-    if( MD_IS_INTERNAL_BUILD || metricsDevice->IsAvailabilityEquationTrue( availabilityEquation ) )
+    metric = metricSet->AddMetric( "TypedReadsPerCacheLine", "TypedReadsPerCacheLine",
+        "The ratio of EU typed read requests to L3 cache line reads.",
+        "L3/Data Port", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+        METRIC_TYPE_RATIO, RESULT_FLOAT, "EU sends to L3 cache lines", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, nullptr, nullptr, 18 );
+    if( metric )
     {
-        metric = metricSet->AddMetric( "TypedReadsPerCacheLine", "TypedReadsPerCacheLine",
-            "The ratio of EU typed read requests to L3 cache line reads.",
-            "L3/Data Port", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
-            METRIC_TYPE_RATIO, RESULT_FLOAT, "EU sends to L3 cache lines", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, nullptr, nullptr, 18 );
-        if( metric )
-        {
-            
-            MD_CHECK_CC_RET( metric->SetNormalizationEquation( "$$EuTypedReads00 $$TypedReads00 FDIV" ));
-        }
+        
+        MD_CHECK_CC_RET( metric->SetNormalizationEquation( "$$EuTypedReads00 $$TypedReads00 FDIV" ));
     }
 
     availabilityEquation = "$SubsliceMask 1 AND";
-    if( MD_IS_INTERNAL_BUILD || metricsDevice->IsAvailabilityEquationTrue( availabilityEquation ) )
+    metric = metricSet->AddMetric( "TypedWritesPerCacheLine", "TypedWritesPerCacheLine",
+        "The ratio of EU typed write requests to L3 cache line writes.",
+        "L3/Data Port", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+        METRIC_TYPE_RATIO, RESULT_FLOAT, "EU sends to L3 cache lines", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, nullptr, nullptr, 19 );
+    if( metric )
     {
-        metric = metricSet->AddMetric( "TypedWritesPerCacheLine", "TypedWritesPerCacheLine",
-            "The ratio of EU typed write requests to L3 cache line writes.",
-            "L3/Data Port", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
-            METRIC_TYPE_RATIO, RESULT_FLOAT, "EU sends to L3 cache lines", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, nullptr, nullptr, 19 );
-        if( metric )
-        {
-            
-            MD_CHECK_CC_RET( metric->SetNormalizationEquation( "$$EuTypedWrites00 $$TypedWrites00 FDIV" ));
-        }
+        
+        MD_CHECK_CC_RET( metric->SetNormalizationEquation( "$$EuTypedWrites00 $$TypedWrites00 FDIV" ));
     }
 
     availabilityEquation = nullptr;
@@ -2084,18 +2033,15 @@ static TCompletionCode CreateMetricSet_EHL_ComputeExtended( CMetricsDevice* metr
     }
 
     availabilityEquation = "$SubsliceMask 1 AND";
-    if( MD_IS_INTERNAL_BUILD || metricsDevice->IsAvailabilityEquationTrue( availabilityEquation ) )
+    metric = metricSet->AddMetric( "UntypedWritesPerCacheLine", "UntypedWritesPerCacheLine",
+        "The ratio of EU untyped write requests to L3 cache line writes.",
+        "L3/Data Port", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+        METRIC_TYPE_RATIO, RESULT_FLOAT, "EU sends to L3 cache lines", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, nullptr, nullptr, 21 );
+    if( metric )
     {
-        metric = metricSet->AddMetric( "UntypedWritesPerCacheLine", "UntypedWritesPerCacheLine",
-            "The ratio of EU untyped write requests to L3 cache line writes.",
-            "L3/Data Port", (METRIC_GROUP_NAME_ID_L3 * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
-            METRIC_TYPE_RATIO, RESULT_FLOAT, "EU sends to L3 cache lines", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, nullptr, nullptr, 21 );
-        if( metric )
-        {
-            MD_CHECK_CC_RET( metric->SetSnapshotReportReadEquation( "dw@0xdc dw@0xc4 FADD dw@0xe8 FADD dw@0xec FDIV" ));
-            MD_CHECK_CC_RET( metric->SetDeltaReportReadEquation( "qw@0x168 qw@0x138 FADD qw@0x180 FADD qw@0x188 FDIV" ));
-            MD_CHECK_CC_RET( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
-        }
+        MD_CHECK_CC_RET( metric->SetSnapshotReportReadEquation( "dw@0xdc dw@0xc4 FADD dw@0xe8 FADD dw@0xec FDIV" ));
+        MD_CHECK_CC_RET( metric->SetDeltaReportReadEquation( "qw@0x168 qw@0x138 FADD qw@0x180 FADD qw@0x188 FDIV" ));
+        MD_CHECK_CC_RET( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
     }
 
         MD_CHECK_CC_RET( metricSet->AddStartRegisterSet( 0, 0 ));
@@ -2759,131 +2705,107 @@ static TCompletionCode CreateMetricSet_EHL_ComputeL3Cache( CMetricsDevice* metri
     }
 
     availabilityEquation = "$SliceMask 1 AND";
-    if( MD_IS_INTERNAL_BUILD || metricsDevice->IsAvailabilityEquationTrue( availabilityEquation ) )
+    metric = metricSet->AddMetric( "L3Bank00Accesses", "Slice0 L3 Bank0 Accesses",
+        "The total number of accesses to Slice0 L3 Bank0.",
+        "L3", (METRIC_GROUP_NAME_ID_L3 * 0x1000000), USAGE_FLAG_TIER_4|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+        METRIC_TYPE_EVENT, RESULT_UINT64, "messages", 0, 0, HW_UNIT_SLICE, availabilityEquation, nullptr, nullptr, 40 );
+    if( metric )
     {
-        metric = metricSet->AddMetric( "L3Bank00Accesses", "Slice0 L3 Bank0 Accesses",
-            "The total number of accesses to Slice0 L3 Bank0.",
-            "L3", (METRIC_GROUP_NAME_ID_L3 * 0x1000000), USAGE_FLAG_TIER_4|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
-            METRIC_TYPE_EVENT, RESULT_UINT64, "messages", 0, 0, HW_UNIT_SLICE, availabilityEquation, nullptr, nullptr, 40 );
-        if( metric )
-        {
-            MD_CHECK_CC_RET( metric->SetSnapshotReportReadEquation( "dw@0xfc" ));
-            MD_CHECK_CC_RET( metric->SetDeltaReportReadEquation( "qw@0x1a8" ));
-            MD_CHECK_CC_RET( metric->SetNormalizationEquation( "$Self 2 UMUL" ));
-            MD_CHECK_CC_RET( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
-        }
+        MD_CHECK_CC_RET( metric->SetSnapshotReportReadEquation( "dw@0xfc" ));
+        MD_CHECK_CC_RET( metric->SetDeltaReportReadEquation( "qw@0x1a8" ));
+        MD_CHECK_CC_RET( metric->SetNormalizationEquation( "$Self 2 UMUL" ));
+        MD_CHECK_CC_RET( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
     }
 
     availabilityEquation = "$SliceMask 1 AND";
-    if( MD_IS_INTERNAL_BUILD || metricsDevice->IsAvailabilityEquationTrue( availabilityEquation ) )
+    metric = metricSet->AddMetric( "L3Bank01Accesses", "Slice0 L3 Bank1 Accesses",
+        "The total number of accesses to Slice0 L3 Bank1.",
+        "L3", (METRIC_GROUP_NAME_ID_L3 * 0x1000000), USAGE_FLAG_TIER_4|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+        METRIC_TYPE_EVENT, RESULT_UINT64, "messages", 0, 0, HW_UNIT_SLICE, availabilityEquation, nullptr, nullptr, 41 );
+    if( metric )
     {
-        metric = metricSet->AddMetric( "L3Bank01Accesses", "Slice0 L3 Bank1 Accesses",
-            "The total number of accesses to Slice0 L3 Bank1.",
-            "L3", (METRIC_GROUP_NAME_ID_L3 * 0x1000000), USAGE_FLAG_TIER_4|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
-            METRIC_TYPE_EVENT, RESULT_UINT64, "messages", 0, 0, HW_UNIT_SLICE, availabilityEquation, nullptr, nullptr, 41 );
-        if( metric )
-        {
-            MD_CHECK_CC_RET( metric->SetSnapshotReportReadEquation( "dw@0xf8" ));
-            MD_CHECK_CC_RET( metric->SetDeltaReportReadEquation( "qw@0x1a0" ));
-            MD_CHECK_CC_RET( metric->SetNormalizationEquation( "$Self 2 UMUL" ));
-            MD_CHECK_CC_RET( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
-        }
+        MD_CHECK_CC_RET( metric->SetSnapshotReportReadEquation( "dw@0xf8" ));
+        MD_CHECK_CC_RET( metric->SetDeltaReportReadEquation( "qw@0x1a0" ));
+        MD_CHECK_CC_RET( metric->SetNormalizationEquation( "$Self 2 UMUL" ));
+        MD_CHECK_CC_RET( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
     }
 
     availabilityEquation = "$SliceMask 1 AND";
-    if( MD_IS_INTERNAL_BUILD || metricsDevice->IsAvailabilityEquationTrue( availabilityEquation ) )
+    metric = metricSet->AddMetric( "L3Bank02Accesses", "Slice0 L3 Bank2 Accesses",
+        "The total number of accesses to Slice0 L3 Bank2.",
+        "L3", (METRIC_GROUP_NAME_ID_L3 * 0x1000000), USAGE_FLAG_TIER_4|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+        METRIC_TYPE_EVENT, RESULT_UINT64, "messages", 0, 0, HW_UNIT_SLICE, availabilityEquation, nullptr, nullptr, 42 );
+    if( metric )
     {
-        metric = metricSet->AddMetric( "L3Bank02Accesses", "Slice0 L3 Bank2 Accesses",
-            "The total number of accesses to Slice0 L3 Bank2.",
-            "L3", (METRIC_GROUP_NAME_ID_L3 * 0x1000000), USAGE_FLAG_TIER_4|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
-            METRIC_TYPE_EVENT, RESULT_UINT64, "messages", 0, 0, HW_UNIT_SLICE, availabilityEquation, nullptr, nullptr, 42 );
-        if( metric )
-        {
-            MD_CHECK_CC_RET( metric->SetSnapshotReportReadEquation( "dw@0xf4" ));
-            MD_CHECK_CC_RET( metric->SetDeltaReportReadEquation( "qw@0x198" ));
-            MD_CHECK_CC_RET( metric->SetNormalizationEquation( "$Self 2 UMUL" ));
-            MD_CHECK_CC_RET( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
-        }
+        MD_CHECK_CC_RET( metric->SetSnapshotReportReadEquation( "dw@0xf4" ));
+        MD_CHECK_CC_RET( metric->SetDeltaReportReadEquation( "qw@0x198" ));
+        MD_CHECK_CC_RET( metric->SetNormalizationEquation( "$Self 2 UMUL" ));
+        MD_CHECK_CC_RET( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
     }
 
     availabilityEquation = "$SliceMask 1 AND";
-    if( MD_IS_INTERNAL_BUILD || metricsDevice->IsAvailabilityEquationTrue( availabilityEquation ) )
+    metric = metricSet->AddMetric( "L3Bank03Accesses", "Slice0 L3 Bank3 Accesses",
+        "The total number of accesses to Slice0 L3 Bank3.",
+        "L3", (METRIC_GROUP_NAME_ID_L3 * 0x1000000), USAGE_FLAG_TIER_4|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+        METRIC_TYPE_EVENT, RESULT_UINT64, "messages", 0, 0, HW_UNIT_SLICE, availabilityEquation, nullptr, nullptr, 43 );
+    if( metric )
     {
-        metric = metricSet->AddMetric( "L3Bank03Accesses", "Slice0 L3 Bank3 Accesses",
-            "The total number of accesses to Slice0 L3 Bank3.",
-            "L3", (METRIC_GROUP_NAME_ID_L3 * 0x1000000), USAGE_FLAG_TIER_4|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
-            METRIC_TYPE_EVENT, RESULT_UINT64, "messages", 0, 0, HW_UNIT_SLICE, availabilityEquation, nullptr, nullptr, 43 );
-        if( metric )
-        {
-            MD_CHECK_CC_RET( metric->SetSnapshotReportReadEquation( "dw@0xf0" ));
-            MD_CHECK_CC_RET( metric->SetDeltaReportReadEquation( "qw@0x190" ));
-            MD_CHECK_CC_RET( metric->SetNormalizationEquation( "$Self 2 UMUL" ));
-            MD_CHECK_CC_RET( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
-        }
+        MD_CHECK_CC_RET( metric->SetSnapshotReportReadEquation( "dw@0xf0" ));
+        MD_CHECK_CC_RET( metric->SetDeltaReportReadEquation( "qw@0x190" ));
+        MD_CHECK_CC_RET( metric->SetNormalizationEquation( "$Self 2 UMUL" ));
+        MD_CHECK_CC_RET( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
     }
 
     availabilityEquation = "$SliceMask 1 AND";
-    if( MD_IS_INTERNAL_BUILD || metricsDevice->IsAvailabilityEquationTrue( availabilityEquation ) )
+    metric = metricSet->AddMetric( "L3Bank04Accesses", "Slice0 L3 Bank4 Accesses",
+        "The total number of accesses to Slice0 L3 Bank4.",
+        "L3", (METRIC_GROUP_NAME_ID_L3 * 0x1000000), USAGE_FLAG_TIER_4|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+        METRIC_TYPE_EVENT, RESULT_UINT64, "messages", 0, 0, HW_UNIT_SLICE, availabilityEquation, nullptr, nullptr, 44 );
+    if( metric )
     {
-        metric = metricSet->AddMetric( "L3Bank04Accesses", "Slice0 L3 Bank4 Accesses",
-            "The total number of accesses to Slice0 L3 Bank4.",
-            "L3", (METRIC_GROUP_NAME_ID_L3 * 0x1000000), USAGE_FLAG_TIER_4|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
-            METRIC_TYPE_EVENT, RESULT_UINT64, "messages", 0, 0, HW_UNIT_SLICE, availabilityEquation, nullptr, nullptr, 44 );
-        if( metric )
-        {
-            MD_CHECK_CC_RET( metric->SetSnapshotReportReadEquation( "dw@0xec" ));
-            MD_CHECK_CC_RET( metric->SetDeltaReportReadEquation( "qw@0x188" ));
-            MD_CHECK_CC_RET( metric->SetNormalizationEquation( "$Self 2 UMUL" ));
-            MD_CHECK_CC_RET( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
-        }
+        MD_CHECK_CC_RET( metric->SetSnapshotReportReadEquation( "dw@0xec" ));
+        MD_CHECK_CC_RET( metric->SetDeltaReportReadEquation( "qw@0x188" ));
+        MD_CHECK_CC_RET( metric->SetNormalizationEquation( "$Self 2 UMUL" ));
+        MD_CHECK_CC_RET( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
     }
 
     availabilityEquation = "$SliceMask 1 AND";
-    if( MD_IS_INTERNAL_BUILD || metricsDevice->IsAvailabilityEquationTrue( availabilityEquation ) )
+    metric = metricSet->AddMetric( "L3Bank05Accesses", "Slice0 L3 Bank5 Accesses",
+        "The total number of accesses to Slice0 L3 Bank5.",
+        "L3", (METRIC_GROUP_NAME_ID_L3 * 0x1000000), USAGE_FLAG_TIER_4|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+        METRIC_TYPE_EVENT, RESULT_UINT64, "messages", 0, 0, HW_UNIT_SLICE, availabilityEquation, nullptr, nullptr, 45 );
+    if( metric )
     {
-        metric = metricSet->AddMetric( "L3Bank05Accesses", "Slice0 L3 Bank5 Accesses",
-            "The total number of accesses to Slice0 L3 Bank5.",
-            "L3", (METRIC_GROUP_NAME_ID_L3 * 0x1000000), USAGE_FLAG_TIER_4|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
-            METRIC_TYPE_EVENT, RESULT_UINT64, "messages", 0, 0, HW_UNIT_SLICE, availabilityEquation, nullptr, nullptr, 45 );
-        if( metric )
-        {
-            MD_CHECK_CC_RET( metric->SetSnapshotReportReadEquation( "dw@0xe8" ));
-            MD_CHECK_CC_RET( metric->SetDeltaReportReadEquation( "qw@0x180" ));
-            MD_CHECK_CC_RET( metric->SetNormalizationEquation( "$Self 2 UMUL" ));
-            MD_CHECK_CC_RET( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
-        }
+        MD_CHECK_CC_RET( metric->SetSnapshotReportReadEquation( "dw@0xe8" ));
+        MD_CHECK_CC_RET( metric->SetDeltaReportReadEquation( "qw@0x180" ));
+        MD_CHECK_CC_RET( metric->SetNormalizationEquation( "$Self 2 UMUL" ));
+        MD_CHECK_CC_RET( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
     }
 
     availabilityEquation = "$SliceMask 1 AND";
-    if( MD_IS_INTERNAL_BUILD || metricsDevice->IsAvailabilityEquationTrue( availabilityEquation ) )
+    metric = metricSet->AddMetric( "L3Bank06Accesses", "Slice0 L3 Bank6 Accesses",
+        "The total number of accesses to Slice0 L3 Bank6.",
+        "L3", (METRIC_GROUP_NAME_ID_L3 * 0x1000000), USAGE_FLAG_TIER_4|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+        METRIC_TYPE_EVENT, RESULT_UINT64, "messages", 0, 0, HW_UNIT_SLICE, availabilityEquation, nullptr, nullptr, 46 );
+    if( metric )
     {
-        metric = metricSet->AddMetric( "L3Bank06Accesses", "Slice0 L3 Bank6 Accesses",
-            "The total number of accesses to Slice0 L3 Bank6.",
-            "L3", (METRIC_GROUP_NAME_ID_L3 * 0x1000000), USAGE_FLAG_TIER_4|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
-            METRIC_TYPE_EVENT, RESULT_UINT64, "messages", 0, 0, HW_UNIT_SLICE, availabilityEquation, nullptr, nullptr, 46 );
-        if( metric )
-        {
-            MD_CHECK_CC_RET( metric->SetSnapshotReportReadEquation( "dw@0xe4" ));
-            MD_CHECK_CC_RET( metric->SetDeltaReportReadEquation( "qw@0x178" ));
-            MD_CHECK_CC_RET( metric->SetNormalizationEquation( "$Self 2 UMUL" ));
-            MD_CHECK_CC_RET( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
-        }
+        MD_CHECK_CC_RET( metric->SetSnapshotReportReadEquation( "dw@0xe4" ));
+        MD_CHECK_CC_RET( metric->SetDeltaReportReadEquation( "qw@0x178" ));
+        MD_CHECK_CC_RET( metric->SetNormalizationEquation( "$Self 2 UMUL" ));
+        MD_CHECK_CC_RET( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
     }
 
     availabilityEquation = "$SliceMask 1 AND";
-    if( MD_IS_INTERNAL_BUILD || metricsDevice->IsAvailabilityEquationTrue( availabilityEquation ) )
+    metric = metricSet->AddMetric( "L3Bank07Accesses", "Slice0 L3 Bank7 Accesses",
+        "The total number of accesses to Slice0 L3 Bank7.",
+        "L3", (METRIC_GROUP_NAME_ID_L3 * 0x1000000), USAGE_FLAG_TIER_4|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+        METRIC_TYPE_EVENT, RESULT_UINT64, "messages", 0, 0, HW_UNIT_SLICE, availabilityEquation, nullptr, nullptr, 47 );
+    if( metric )
     {
-        metric = metricSet->AddMetric( "L3Bank07Accesses", "Slice0 L3 Bank7 Accesses",
-            "The total number of accesses to Slice0 L3 Bank7.",
-            "L3", (METRIC_GROUP_NAME_ID_L3 * 0x1000000), USAGE_FLAG_TIER_4|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
-            METRIC_TYPE_EVENT, RESULT_UINT64, "messages", 0, 0, HW_UNIT_SLICE, availabilityEquation, nullptr, nullptr, 47 );
-        if( metric )
-        {
-            MD_CHECK_CC_RET( metric->SetSnapshotReportReadEquation( "dw@0xe0" ));
-            MD_CHECK_CC_RET( metric->SetDeltaReportReadEquation( "qw@0x170" ));
-            MD_CHECK_CC_RET( metric->SetNormalizationEquation( "$Self 2 UMUL" ));
-            MD_CHECK_CC_RET( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
-        }
+        MD_CHECK_CC_RET( metric->SetSnapshotReportReadEquation( "dw@0xe0" ));
+        MD_CHECK_CC_RET( metric->SetDeltaReportReadEquation( "qw@0x170" ));
+        MD_CHECK_CC_RET( metric->SetNormalizationEquation( "$Self 2 UMUL" ));
+        MD_CHECK_CC_RET( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
     }
 
     availabilityEquation = nullptr;
@@ -4237,71 +4159,59 @@ static TCompletionCode CreateMetricSet_EHL_HDCAndSF( CMetricsDevice* metricsDevi
     }
 
     availabilityEquation = "$SubsliceMask 3 AND";
-    if( MD_IS_INTERNAL_BUILD || metricsDevice->IsAvailabilityEquationTrue( availabilityEquation ) )
+    metric = metricSet->AddMetric( "NonSamplerShader00AccessStalledOnL3", "Slice0 Subslice group 0 Non-sampler Shader Access Stalled On L3",
+        "Percentage of time when HDC has messages to L3, but it's stalled due to lack of credits (Slice0 Subslice group 0)",
+        "GPU/Data Port", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+        METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, nullptr, nullptr, 35 );
+    if( metric )
     {
-        metric = metricSet->AddMetric( "NonSamplerShader00AccessStalledOnL3", "Slice0 Subslice group 0 Non-sampler Shader Access Stalled On L3",
-            "Percentage of time when HDC has messages to L3, but it's stalled due to lack of credits (Slice0 Subslice group 0)",
-            "GPU/Data Port", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
-            METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, nullptr, nullptr, 35 );
-        if( metric )
-        {
-            MD_CHECK_CC_RET( metric->SetSnapshotReportReadEquation( "dw@0xe0 dw@0xdc FSUB" ));
-            MD_CHECK_CC_RET( metric->SetDeltaReportReadEquation( "qw@0x170 qw@0x168 FSUB" ));
-            MD_CHECK_CC_RET( metric->SetNormalizationEquation( "GpuDuration" ));
-            MD_CHECK_CC_RET( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
-            MD_CHECK_CC_RET( metric->SetMaxValueEquation( "100" ));
-        }
+        MD_CHECK_CC_RET( metric->SetSnapshotReportReadEquation( "dw@0xe0 dw@0xdc FSUB" ));
+        MD_CHECK_CC_RET( metric->SetDeltaReportReadEquation( "qw@0x170 qw@0x168 FSUB" ));
+        MD_CHECK_CC_RET( metric->SetNormalizationEquation( "GpuDuration" ));
+        MD_CHECK_CC_RET( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
+        MD_CHECK_CC_RET( metric->SetMaxValueEquation( "100" ));
     }
 
     availabilityEquation = "$SubsliceMask 12 AND";
-    if( MD_IS_INTERNAL_BUILD || metricsDevice->IsAvailabilityEquationTrue( availabilityEquation ) )
+    metric = metricSet->AddMetric( "NonSamplerShader01AccessStalledOnL3", "Slice0 Subslice group 1 Non-sampler Shader Access Stalled On L3",
+        "Percentage of time when HDC has messages to L3, but it's stalled due to lack of credits (Slice0 Subslice group 1)",
+        "GPU/Data Port", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+        METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, nullptr, nullptr, 36 );
+    if( metric )
     {
-        metric = metricSet->AddMetric( "NonSamplerShader01AccessStalledOnL3", "Slice0 Subslice group 1 Non-sampler Shader Access Stalled On L3",
-            "Percentage of time when HDC has messages to L3, but it's stalled due to lack of credits (Slice0 Subslice group 1)",
-            "GPU/Data Port", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
-            METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, nullptr, nullptr, 36 );
-        if( metric )
-        {
-            MD_CHECK_CC_RET( metric->SetSnapshotReportReadEquation( "dw@0xe8 dw@0xe4 FSUB" ));
-            MD_CHECK_CC_RET( metric->SetDeltaReportReadEquation( "qw@0x180 qw@0x178 FSUB" ));
-            MD_CHECK_CC_RET( metric->SetNormalizationEquation( "GpuDuration" ));
-            MD_CHECK_CC_RET( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
-            MD_CHECK_CC_RET( metric->SetMaxValueEquation( "100" ));
-        }
+        MD_CHECK_CC_RET( metric->SetSnapshotReportReadEquation( "dw@0xe8 dw@0xe4 FSUB" ));
+        MD_CHECK_CC_RET( metric->SetDeltaReportReadEquation( "qw@0x180 qw@0x178 FSUB" ));
+        MD_CHECK_CC_RET( metric->SetNormalizationEquation( "GpuDuration" ));
+        MD_CHECK_CC_RET( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
+        MD_CHECK_CC_RET( metric->SetMaxValueEquation( "100" ));
     }
 
     availabilityEquation = "$SubsliceMask 48 AND";
-    if( MD_IS_INTERNAL_BUILD || metricsDevice->IsAvailabilityEquationTrue( availabilityEquation ) )
+    metric = metricSet->AddMetric( "NonSamplerShader02AccessStalledOnL3", "Slice0 Subslice group 2 Non-sampler Shader Access Stalled On L3",
+        "Percentage of time when HDC has messages to L3, but it's stalled due to lack of credits (Slice0 Subslice group 2)",
+        "GPU/Data Port", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+        METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, nullptr, nullptr, 37 );
+    if( metric )
     {
-        metric = metricSet->AddMetric( "NonSamplerShader02AccessStalledOnL3", "Slice0 Subslice group 2 Non-sampler Shader Access Stalled On L3",
-            "Percentage of time when HDC has messages to L3, but it's stalled due to lack of credits (Slice0 Subslice group 2)",
-            "GPU/Data Port", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
-            METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, nullptr, nullptr, 37 );
-        if( metric )
-        {
-            MD_CHECK_CC_RET( metric->SetSnapshotReportReadEquation( "dw@0xf0 dw@0xec FSUB" ));
-            MD_CHECK_CC_RET( metric->SetDeltaReportReadEquation( "qw@0x190 qw@0x188 FSUB" ));
-            MD_CHECK_CC_RET( metric->SetNormalizationEquation( "GpuDuration" ));
-            MD_CHECK_CC_RET( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
-            MD_CHECK_CC_RET( metric->SetMaxValueEquation( "100" ));
-        }
+        MD_CHECK_CC_RET( metric->SetSnapshotReportReadEquation( "dw@0xf0 dw@0xec FSUB" ));
+        MD_CHECK_CC_RET( metric->SetDeltaReportReadEquation( "qw@0x190 qw@0x188 FSUB" ));
+        MD_CHECK_CC_RET( metric->SetNormalizationEquation( "GpuDuration" ));
+        MD_CHECK_CC_RET( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
+        MD_CHECK_CC_RET( metric->SetMaxValueEquation( "100" ));
     }
 
     availabilityEquation = "$SubsliceMask 192 AND";
-    if( MD_IS_INTERNAL_BUILD || metricsDevice->IsAvailabilityEquationTrue( availabilityEquation ) )
+    metric = metricSet->AddMetric( "NonSamplerShader03AccessStalledOnL3", "Slice0 Subslice group 3 Non-sampler Shader Access Stalled On L3",
+        "Percentage of time when HDC has messages to L3, but it's stalled due to lack of credits (Slice0 Subslice group 3)",
+        "GPU/Data Port", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+        METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, nullptr, nullptr, 38 );
+    if( metric )
     {
-        metric = metricSet->AddMetric( "NonSamplerShader03AccessStalledOnL3", "Slice0 Subslice group 3 Non-sampler Shader Access Stalled On L3",
-            "Percentage of time when HDC has messages to L3, but it's stalled due to lack of credits (Slice0 Subslice group 3)",
-            "GPU/Data Port", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
-            METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, nullptr, nullptr, 38 );
-        if( metric )
-        {
-            MD_CHECK_CC_RET( metric->SetSnapshotReportReadEquation( "dw@0xf8 dw@0xf4 FSUB" ));
-            MD_CHECK_CC_RET( metric->SetDeltaReportReadEquation( "qw@0x1a0 qw@0x198 FSUB" ));
-            MD_CHECK_CC_RET( metric->SetNormalizationEquation( "GpuDuration" ));
-            MD_CHECK_CC_RET( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
-            MD_CHECK_CC_RET( metric->SetMaxValueEquation( "100" ));
-        }
+        MD_CHECK_CC_RET( metric->SetSnapshotReportReadEquation( "dw@0xf8 dw@0xf4 FSUB" ));
+        MD_CHECK_CC_RET( metric->SetDeltaReportReadEquation( "qw@0x1a0 qw@0x198 FSUB" ));
+        MD_CHECK_CC_RET( metric->SetNormalizationEquation( "GpuDuration" ));
+        MD_CHECK_CC_RET( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
+        MD_CHECK_CC_RET( metric->SetMaxValueEquation( "100" ));
     }
 
     availabilityEquation = nullptr;
@@ -4900,37 +4810,31 @@ static TCompletionCode CreateMetricSet_EHL_RasterizerAndPixelBackend( CMetricsDe
     }
 
     availabilityEquation = "$SliceMask 1 AND";
-    if( MD_IS_INTERNAL_BUILD || metricsDevice->IsAvailabilityEquationTrue( availabilityEquation ) )
+    metric = metricSet->AddMetric( "Rasterizer0InputAvailable", "Slice0 Rasterizer Input Available",
+        "The percentage of time in which slice0 rasterizer input is available",
+        "GPU/Rasterizer", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_WM * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+        METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SLICE, availabilityEquation, nullptr, nullptr, 35 );
+    if( metric )
     {
-        metric = metricSet->AddMetric( "Rasterizer0InputAvailable", "Slice0 Rasterizer Input Available",
-            "The percentage of time in which slice0 rasterizer input is available",
-            "GPU/Rasterizer", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_WM * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
-            METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SLICE, availabilityEquation, nullptr, nullptr, 35 );
-        if( metric )
-        {
-            MD_CHECK_CC_RET( metric->SetSnapshotReportReadEquation( "dw@0xc0" ));
-            MD_CHECK_CC_RET( metric->SetDeltaReportReadEquation( "qw@0x130" ));
-            MD_CHECK_CC_RET( metric->SetNormalizationEquation( "GpuDuration" ));
-            MD_CHECK_CC_RET( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
-            MD_CHECK_CC_RET( metric->SetMaxValueEquation( "100" ));
-        }
+        MD_CHECK_CC_RET( metric->SetSnapshotReportReadEquation( "dw@0xc0" ));
+        MD_CHECK_CC_RET( metric->SetDeltaReportReadEquation( "qw@0x130" ));
+        MD_CHECK_CC_RET( metric->SetNormalizationEquation( "GpuDuration" ));
+        MD_CHECK_CC_RET( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
+        MD_CHECK_CC_RET( metric->SetMaxValueEquation( "100" ));
     }
 
     availabilityEquation = "$SliceMask 1 AND";
-    if( MD_IS_INTERNAL_BUILD || metricsDevice->IsAvailabilityEquationTrue( availabilityEquation ) )
+    metric = metricSet->AddMetric( "Rasterizer0OutputReady", "Slice0 Rasterizer Output Ready",
+        "The percentage of time in which slice0 rasterizer output is ready",
+        "GPU/Rasterizer", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_WM * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+        METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SLICE, availabilityEquation, nullptr, nullptr, 36 );
+    if( metric )
     {
-        metric = metricSet->AddMetric( "Rasterizer0OutputReady", "Slice0 Rasterizer Output Ready",
-            "The percentage of time in which slice0 rasterizer output is ready",
-            "GPU/Rasterizer", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_WM * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
-            METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SLICE, availabilityEquation, nullptr, nullptr, 36 );
-        if( metric )
-        {
-            MD_CHECK_CC_RET( metric->SetSnapshotReportReadEquation( "dw@0xfc" ));
-            MD_CHECK_CC_RET( metric->SetDeltaReportReadEquation( "qw@0x1a8" ));
-            MD_CHECK_CC_RET( metric->SetNormalizationEquation( "GpuDuration" ));
-            MD_CHECK_CC_RET( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
-            MD_CHECK_CC_RET( metric->SetMaxValueEquation( "100" ));
-        }
+        MD_CHECK_CC_RET( metric->SetSnapshotReportReadEquation( "dw@0xfc" ));
+        MD_CHECK_CC_RET( metric->SetDeltaReportReadEquation( "qw@0x1a8" ));
+        MD_CHECK_CC_RET( metric->SetNormalizationEquation( "GpuDuration" ));
+        MD_CHECK_CC_RET( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
+        MD_CHECK_CC_RET( metric->SetMaxValueEquation( "100" ));
     }
 
     availabilityEquation = nullptr;
@@ -5605,139 +5509,115 @@ static TCompletionCode CreateMetricSet_EHL_L3_1( CMetricsDevice* metricsDevice, 
     }
 
     availabilityEquation = "$SliceMask 1 AND";
-    if( MD_IS_INTERNAL_BUILD || metricsDevice->IsAvailabilityEquationTrue( availabilityEquation ) )
+    metric = metricSet->AddMetric( "L30Bank0Active", "Slice0 L3 Bank0 Active",
+        "The percentage of time in which slice0 L3 bank0 is active",
+        "GTI/L3", (METRIC_GROUP_NAME_ID_GTI * 0x1000000) | (METRIC_GROUP_NAME_ID_L3 * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+        METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SLICE, availabilityEquation, nullptr, nullptr, 35 );
+    if( metric )
     {
-        metric = metricSet->AddMetric( "L30Bank0Active", "Slice0 L3 Bank0 Active",
-            "The percentage of time in which slice0 L3 bank0 is active",
-            "GTI/L3", (METRIC_GROUP_NAME_ID_GTI * 0x1000000) | (METRIC_GROUP_NAME_ID_L3 * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
-            METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SLICE, availabilityEquation, nullptr, nullptr, 35 );
-        if( metric )
-        {
-            MD_CHECK_CC_RET( metric->SetSnapshotReportReadEquation( "dw@0xe0" ));
-            MD_CHECK_CC_RET( metric->SetDeltaReportReadEquation( "qw@0x170" ));
-            MD_CHECK_CC_RET( metric->SetNormalizationEquation( "GpuDuration" ));
-            MD_CHECK_CC_RET( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
-            MD_CHECK_CC_RET( metric->SetMaxValueEquation( "100" ));
-        }
+        MD_CHECK_CC_RET( metric->SetSnapshotReportReadEquation( "dw@0xe0" ));
+        MD_CHECK_CC_RET( metric->SetDeltaReportReadEquation( "qw@0x170" ));
+        MD_CHECK_CC_RET( metric->SetNormalizationEquation( "GpuDuration" ));
+        MD_CHECK_CC_RET( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
+        MD_CHECK_CC_RET( metric->SetMaxValueEquation( "100" ));
     }
 
     availabilityEquation = "$SliceMask 1 AND";
-    if( MD_IS_INTERNAL_BUILD || metricsDevice->IsAvailabilityEquationTrue( availabilityEquation ) )
+    metric = metricSet->AddMetric( "L30Bank1Active", "Slice0 L3 Bank1 Active",
+        "The percentage of time in which slice0 L3 bank1 is active",
+        "GTI/L3", (METRIC_GROUP_NAME_ID_GTI * 0x1000000) | (METRIC_GROUP_NAME_ID_L3 * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+        METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SLICE, availabilityEquation, nullptr, nullptr, 36 );
+    if( metric )
     {
-        metric = metricSet->AddMetric( "L30Bank1Active", "Slice0 L3 Bank1 Active",
-            "The percentage of time in which slice0 L3 bank1 is active",
-            "GTI/L3", (METRIC_GROUP_NAME_ID_GTI * 0x1000000) | (METRIC_GROUP_NAME_ID_L3 * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
-            METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SLICE, availabilityEquation, nullptr, nullptr, 36 );
-        if( metric )
-        {
-            MD_CHECK_CC_RET( metric->SetSnapshotReportReadEquation( "dw@0xe4" ));
-            MD_CHECK_CC_RET( metric->SetDeltaReportReadEquation( "qw@0x178" ));
-            MD_CHECK_CC_RET( metric->SetNormalizationEquation( "GpuDuration" ));
-            MD_CHECK_CC_RET( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
-            MD_CHECK_CC_RET( metric->SetMaxValueEquation( "100" ));
-        }
+        MD_CHECK_CC_RET( metric->SetSnapshotReportReadEquation( "dw@0xe4" ));
+        MD_CHECK_CC_RET( metric->SetDeltaReportReadEquation( "qw@0x178" ));
+        MD_CHECK_CC_RET( metric->SetNormalizationEquation( "GpuDuration" ));
+        MD_CHECK_CC_RET( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
+        MD_CHECK_CC_RET( metric->SetMaxValueEquation( "100" ));
     }
 
     availabilityEquation = "$SliceMask 1 AND";
-    if( MD_IS_INTERNAL_BUILD || metricsDevice->IsAvailabilityEquationTrue( availabilityEquation ) )
+    metric = metricSet->AddMetric( "L30Bank2Active", "Slice0 L3 Bank2 Active",
+        "The percentage of time in which slice0 L3 bank2 is active",
+        "GTI/L3", (METRIC_GROUP_NAME_ID_GTI * 0x1000000) | (METRIC_GROUP_NAME_ID_L3 * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+        METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SLICE, availabilityEquation, nullptr, nullptr, 37 );
+    if( metric )
     {
-        metric = metricSet->AddMetric( "L30Bank2Active", "Slice0 L3 Bank2 Active",
-            "The percentage of time in which slice0 L3 bank2 is active",
-            "GTI/L3", (METRIC_GROUP_NAME_ID_GTI * 0x1000000) | (METRIC_GROUP_NAME_ID_L3 * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
-            METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SLICE, availabilityEquation, nullptr, nullptr, 37 );
-        if( metric )
-        {
-            MD_CHECK_CC_RET( metric->SetSnapshotReportReadEquation( "dw@0xe8" ));
-            MD_CHECK_CC_RET( metric->SetDeltaReportReadEquation( "qw@0x180" ));
-            MD_CHECK_CC_RET( metric->SetNormalizationEquation( "GpuDuration" ));
-            MD_CHECK_CC_RET( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
-            MD_CHECK_CC_RET( metric->SetMaxValueEquation( "100" ));
-        }
+        MD_CHECK_CC_RET( metric->SetSnapshotReportReadEquation( "dw@0xe8" ));
+        MD_CHECK_CC_RET( metric->SetDeltaReportReadEquation( "qw@0x180" ));
+        MD_CHECK_CC_RET( metric->SetNormalizationEquation( "GpuDuration" ));
+        MD_CHECK_CC_RET( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
+        MD_CHECK_CC_RET( metric->SetMaxValueEquation( "100" ));
     }
 
     availabilityEquation = "$SliceMask 1 AND";
-    if( MD_IS_INTERNAL_BUILD || metricsDevice->IsAvailabilityEquationTrue( availabilityEquation ) )
+    metric = metricSet->AddMetric( "L30Bank3Active", "Slice0 L3 Bank3 Active",
+        "The percentage of time in which slice0 L3 bank3 is active",
+        "GTI/L3", (METRIC_GROUP_NAME_ID_GTI * 0x1000000) | (METRIC_GROUP_NAME_ID_L3 * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+        METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SLICE, availabilityEquation, nullptr, nullptr, 38 );
+    if( metric )
     {
-        metric = metricSet->AddMetric( "L30Bank3Active", "Slice0 L3 Bank3 Active",
-            "The percentage of time in which slice0 L3 bank3 is active",
-            "GTI/L3", (METRIC_GROUP_NAME_ID_GTI * 0x1000000) | (METRIC_GROUP_NAME_ID_L3 * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
-            METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SLICE, availabilityEquation, nullptr, nullptr, 38 );
-        if( metric )
-        {
-            MD_CHECK_CC_RET( metric->SetSnapshotReportReadEquation( "dw@0xec" ));
-            MD_CHECK_CC_RET( metric->SetDeltaReportReadEquation( "qw@0x188" ));
-            MD_CHECK_CC_RET( metric->SetNormalizationEquation( "GpuDuration" ));
-            MD_CHECK_CC_RET( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
-            MD_CHECK_CC_RET( metric->SetMaxValueEquation( "100" ));
-        }
+        MD_CHECK_CC_RET( metric->SetSnapshotReportReadEquation( "dw@0xec" ));
+        MD_CHECK_CC_RET( metric->SetDeltaReportReadEquation( "qw@0x188" ));
+        MD_CHECK_CC_RET( metric->SetNormalizationEquation( "GpuDuration" ));
+        MD_CHECK_CC_RET( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
+        MD_CHECK_CC_RET( metric->SetMaxValueEquation( "100" ));
     }
 
     availabilityEquation = "$SliceMask 1 AND";
-    if( MD_IS_INTERNAL_BUILD || metricsDevice->IsAvailabilityEquationTrue( availabilityEquation ) )
+    metric = metricSet->AddMetric( "L30Bank4Active", "Slice0 L3 Bank4 Active",
+        "The percentage of time in which slice0 L3 bank4 is active",
+        "GTI/L3", (METRIC_GROUP_NAME_ID_GTI * 0x1000000) | (METRIC_GROUP_NAME_ID_L3 * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+        METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SLICE, availabilityEquation, nullptr, nullptr, 39 );
+    if( metric )
     {
-        metric = metricSet->AddMetric( "L30Bank4Active", "Slice0 L3 Bank4 Active",
-            "The percentage of time in which slice0 L3 bank4 is active",
-            "GTI/L3", (METRIC_GROUP_NAME_ID_GTI * 0x1000000) | (METRIC_GROUP_NAME_ID_L3 * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
-            METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SLICE, availabilityEquation, nullptr, nullptr, 39 );
-        if( metric )
-        {
-            MD_CHECK_CC_RET( metric->SetSnapshotReportReadEquation( "dw@0xf0" ));
-            MD_CHECK_CC_RET( metric->SetDeltaReportReadEquation( "qw@0x190" ));
-            MD_CHECK_CC_RET( metric->SetNormalizationEquation( "GpuDuration" ));
-            MD_CHECK_CC_RET( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
-            MD_CHECK_CC_RET( metric->SetMaxValueEquation( "100" ));
-        }
+        MD_CHECK_CC_RET( metric->SetSnapshotReportReadEquation( "dw@0xf0" ));
+        MD_CHECK_CC_RET( metric->SetDeltaReportReadEquation( "qw@0x190" ));
+        MD_CHECK_CC_RET( metric->SetNormalizationEquation( "GpuDuration" ));
+        MD_CHECK_CC_RET( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
+        MD_CHECK_CC_RET( metric->SetMaxValueEquation( "100" ));
     }
 
     availabilityEquation = "$SliceMask 1 AND";
-    if( MD_IS_INTERNAL_BUILD || metricsDevice->IsAvailabilityEquationTrue( availabilityEquation ) )
+    metric = metricSet->AddMetric( "L30Bank5Active", "Slice0 L3 Bank5 Active",
+        "The percentage of time in which slice0 L3 bank5 is active",
+        "GTI/L3", (METRIC_GROUP_NAME_ID_GTI * 0x1000000) | (METRIC_GROUP_NAME_ID_L3 * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+        METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SLICE, availabilityEquation, nullptr, nullptr, 40 );
+    if( metric )
     {
-        metric = metricSet->AddMetric( "L30Bank5Active", "Slice0 L3 Bank5 Active",
-            "The percentage of time in which slice0 L3 bank5 is active",
-            "GTI/L3", (METRIC_GROUP_NAME_ID_GTI * 0x1000000) | (METRIC_GROUP_NAME_ID_L3 * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
-            METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SLICE, availabilityEquation, nullptr, nullptr, 40 );
-        if( metric )
-        {
-            MD_CHECK_CC_RET( metric->SetSnapshotReportReadEquation( "dw@0xf4" ));
-            MD_CHECK_CC_RET( metric->SetDeltaReportReadEquation( "qw@0x198" ));
-            MD_CHECK_CC_RET( metric->SetNormalizationEquation( "GpuDuration" ));
-            MD_CHECK_CC_RET( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
-            MD_CHECK_CC_RET( metric->SetMaxValueEquation( "100" ));
-        }
+        MD_CHECK_CC_RET( metric->SetSnapshotReportReadEquation( "dw@0xf4" ));
+        MD_CHECK_CC_RET( metric->SetDeltaReportReadEquation( "qw@0x198" ));
+        MD_CHECK_CC_RET( metric->SetNormalizationEquation( "GpuDuration" ));
+        MD_CHECK_CC_RET( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
+        MD_CHECK_CC_RET( metric->SetMaxValueEquation( "100" ));
     }
 
     availabilityEquation = "$SliceMask 1 AND";
-    if( MD_IS_INTERNAL_BUILD || metricsDevice->IsAvailabilityEquationTrue( availabilityEquation ) )
+    metric = metricSet->AddMetric( "L30Bank6Active", "Slice0 L3 Bank6 Active",
+        "The percentage of time in which slice0 L3 bank6 is active",
+        "GTI/L3", (METRIC_GROUP_NAME_ID_GTI * 0x1000000) | (METRIC_GROUP_NAME_ID_L3 * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+        METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SLICE, availabilityEquation, nullptr, nullptr, 41 );
+    if( metric )
     {
-        metric = metricSet->AddMetric( "L30Bank6Active", "Slice0 L3 Bank6 Active",
-            "The percentage of time in which slice0 L3 bank6 is active",
-            "GTI/L3", (METRIC_GROUP_NAME_ID_GTI * 0x1000000) | (METRIC_GROUP_NAME_ID_L3 * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
-            METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SLICE, availabilityEquation, nullptr, nullptr, 41 );
-        if( metric )
-        {
-            MD_CHECK_CC_RET( metric->SetSnapshotReportReadEquation( "dw@0xf8" ));
-            MD_CHECK_CC_RET( metric->SetDeltaReportReadEquation( "qw@0x1a0" ));
-            MD_CHECK_CC_RET( metric->SetNormalizationEquation( "GpuDuration" ));
-            MD_CHECK_CC_RET( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
-            MD_CHECK_CC_RET( metric->SetMaxValueEquation( "100" ));
-        }
+        MD_CHECK_CC_RET( metric->SetSnapshotReportReadEquation( "dw@0xf8" ));
+        MD_CHECK_CC_RET( metric->SetDeltaReportReadEquation( "qw@0x1a0" ));
+        MD_CHECK_CC_RET( metric->SetNormalizationEquation( "GpuDuration" ));
+        MD_CHECK_CC_RET( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
+        MD_CHECK_CC_RET( metric->SetMaxValueEquation( "100" ));
     }
 
     availabilityEquation = "$SliceMask 1 AND";
-    if( MD_IS_INTERNAL_BUILD || metricsDevice->IsAvailabilityEquationTrue( availabilityEquation ) )
+    metric = metricSet->AddMetric( "L30Bank7Active", "Slice0 L3 Bank7 Active",
+        "The percentage of time in which slice0 L3 bank7 is active",
+        "GTI/L3", (METRIC_GROUP_NAME_ID_GTI * 0x1000000) | (METRIC_GROUP_NAME_ID_L3 * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+        METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SLICE, availabilityEquation, nullptr, nullptr, 42 );
+    if( metric )
     {
-        metric = metricSet->AddMetric( "L30Bank7Active", "Slice0 L3 Bank7 Active",
-            "The percentage of time in which slice0 L3 bank7 is active",
-            "GTI/L3", (METRIC_GROUP_NAME_ID_GTI * 0x1000000) | (METRIC_GROUP_NAME_ID_L3 * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
-            METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SLICE, availabilityEquation, nullptr, nullptr, 42 );
-        if( metric )
-        {
-            MD_CHECK_CC_RET( metric->SetSnapshotReportReadEquation( "dw@0xfc" ));
-            MD_CHECK_CC_RET( metric->SetDeltaReportReadEquation( "qw@0x1a8" ));
-            MD_CHECK_CC_RET( metric->SetNormalizationEquation( "GpuDuration" ));
-            MD_CHECK_CC_RET( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
-            MD_CHECK_CC_RET( metric->SetMaxValueEquation( "100" ));
-        }
+        MD_CHECK_CC_RET( metric->SetSnapshotReportReadEquation( "dw@0xfc" ));
+        MD_CHECK_CC_RET( metric->SetDeltaReportReadEquation( "qw@0x1a8" ));
+        MD_CHECK_CC_RET( metric->SetNormalizationEquation( "GpuDuration" ));
+        MD_CHECK_CC_RET( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
+        MD_CHECK_CC_RET( metric->SetMaxValueEquation( "100" ));
     }
 
     availabilityEquation = nullptr;
@@ -6221,20 +6101,17 @@ static TCompletionCode CreateMetricSet_EHL_L3_2( CMetricsDevice* metricsDevice, 
     }
 
     availabilityEquation = "$SliceMask 1 AND";
-    if( MD_IS_INTERNAL_BUILD || metricsDevice->IsAvailabilityEquationTrue( availabilityEquation ) )
+    metric = metricSet->AddMetric( "L30Bank0Stalled", "Slice0 L3 Bank0 Stalled",
+        "The percentage of time in which slice0 L3 bank0 is stalled",
+        "GTI/L3", (METRIC_GROUP_NAME_ID_GTI * 0x1000000) | (METRIC_GROUP_NAME_ID_L3 * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+        METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SLICE, availabilityEquation, nullptr, nullptr, 28 );
+    if( metric )
     {
-        metric = metricSet->AddMetric( "L30Bank0Stalled", "Slice0 L3 Bank0 Stalled",
-            "The percentage of time in which slice0 L3 bank0 is stalled",
-            "GTI/L3", (METRIC_GROUP_NAME_ID_GTI * 0x1000000) | (METRIC_GROUP_NAME_ID_L3 * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
-            METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SLICE, availabilityEquation, nullptr, nullptr, 28 );
-        if( metric )
-        {
-            MD_CHECK_CC_RET( metric->SetSnapshotReportReadEquation( "dw@0xc0 dw@0xc4 FADD dw@0xc8 FADD dw@0xcc FADD 4 FDIV" ));
-            MD_CHECK_CC_RET( metric->SetDeltaReportReadEquation( "qw@0x130 qw@0x138 FADD qw@0x140 FADD qw@0x148 FADD 4 FDIV" ));
-            MD_CHECK_CC_RET( metric->SetNormalizationEquation( "GpuDuration" ));
-            MD_CHECK_CC_RET( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
-            MD_CHECK_CC_RET( metric->SetMaxValueEquation( "100" ));
-        }
+        MD_CHECK_CC_RET( metric->SetSnapshotReportReadEquation( "dw@0xc0 dw@0xc4 FADD dw@0xc8 FADD dw@0xcc FADD 4 FDIV" ));
+        MD_CHECK_CC_RET( metric->SetDeltaReportReadEquation( "qw@0x130 qw@0x138 FADD qw@0x140 FADD qw@0x148 FADD 4 FDIV" ));
+        MD_CHECK_CC_RET( metric->SetNormalizationEquation( "GpuDuration" ));
+        MD_CHECK_CC_RET( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
+        MD_CHECK_CC_RET( metric->SetMaxValueEquation( "100" ));
     }
 
         MD_CHECK_CC_RET( metricSet->AddStartRegisterSet( 0, 0 ));
@@ -6671,20 +6548,17 @@ static TCompletionCode CreateMetricSet_EHL_L3_3( CMetricsDevice* metricsDevice, 
     }
 
     availabilityEquation = "$SliceMask 1 AND";
-    if( MD_IS_INTERNAL_BUILD || metricsDevice->IsAvailabilityEquationTrue( availabilityEquation ) )
+    metric = metricSet->AddMetric( "L30Bank1Stalled", "Slice0 L3 Bank1 Stalled",
+        "The percentage of time in which slice0 L3 bank1 is stalled",
+        "GTI/L3", (METRIC_GROUP_NAME_ID_GTI * 0x1000000) | (METRIC_GROUP_NAME_ID_L3 * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+        METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SLICE, availabilityEquation, nullptr, nullptr, 28 );
+    if( metric )
     {
-        metric = metricSet->AddMetric( "L30Bank1Stalled", "Slice0 L3 Bank1 Stalled",
-            "The percentage of time in which slice0 L3 bank1 is stalled",
-            "GTI/L3", (METRIC_GROUP_NAME_ID_GTI * 0x1000000) | (METRIC_GROUP_NAME_ID_L3 * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
-            METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SLICE, availabilityEquation, nullptr, nullptr, 28 );
-        if( metric )
-        {
-            MD_CHECK_CC_RET( metric->SetSnapshotReportReadEquation( "dw@0xc0 dw@0xc4 FADD dw@0xc8 FADD dw@0xcc FADD 4 FDIV" ));
-            MD_CHECK_CC_RET( metric->SetDeltaReportReadEquation( "qw@0x130 qw@0x138 FADD qw@0x140 FADD qw@0x148 FADD 4 FDIV" ));
-            MD_CHECK_CC_RET( metric->SetNormalizationEquation( "GpuDuration" ));
-            MD_CHECK_CC_RET( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
-            MD_CHECK_CC_RET( metric->SetMaxValueEquation( "100" ));
-        }
+        MD_CHECK_CC_RET( metric->SetSnapshotReportReadEquation( "dw@0xc0 dw@0xc4 FADD dw@0xc8 FADD dw@0xcc FADD 4 FDIV" ));
+        MD_CHECK_CC_RET( metric->SetDeltaReportReadEquation( "qw@0x130 qw@0x138 FADD qw@0x140 FADD qw@0x148 FADD 4 FDIV" ));
+        MD_CHECK_CC_RET( metric->SetNormalizationEquation( "GpuDuration" ));
+        MD_CHECK_CC_RET( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
+        MD_CHECK_CC_RET( metric->SetMaxValueEquation( "100" ));
     }
 
         MD_CHECK_CC_RET( metricSet->AddStartRegisterSet( 0, 0 ));
@@ -7121,20 +6995,17 @@ static TCompletionCode CreateMetricSet_EHL_L3_4( CMetricsDevice* metricsDevice, 
     }
 
     availabilityEquation = "$SliceMask 1 AND";
-    if( MD_IS_INTERNAL_BUILD || metricsDevice->IsAvailabilityEquationTrue( availabilityEquation ) )
+    metric = metricSet->AddMetric( "L30Bank4Stalled", "Slice0 L3 Bank4 Stalled",
+        "The percentage of time in which slice0 L3 bank4 is stalled",
+        "GTI/L3", (METRIC_GROUP_NAME_ID_GTI * 0x1000000) | (METRIC_GROUP_NAME_ID_L3 * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+        METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SLICE, availabilityEquation, nullptr, nullptr, 28 );
+    if( metric )
     {
-        metric = metricSet->AddMetric( "L30Bank4Stalled", "Slice0 L3 Bank4 Stalled",
-            "The percentage of time in which slice0 L3 bank4 is stalled",
-            "GTI/L3", (METRIC_GROUP_NAME_ID_GTI * 0x1000000) | (METRIC_GROUP_NAME_ID_L3 * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
-            METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SLICE, availabilityEquation, nullptr, nullptr, 28 );
-        if( metric )
-        {
-            MD_CHECK_CC_RET( metric->SetSnapshotReportReadEquation( "dw@0xc0 dw@0xc4 FADD dw@0xc8 FADD dw@0xcc FADD 4 FDIV" ));
-            MD_CHECK_CC_RET( metric->SetDeltaReportReadEquation( "qw@0x130 qw@0x138 FADD qw@0x140 FADD qw@0x148 FADD 4 FDIV" ));
-            MD_CHECK_CC_RET( metric->SetNormalizationEquation( "GpuDuration" ));
-            MD_CHECK_CC_RET( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
-            MD_CHECK_CC_RET( metric->SetMaxValueEquation( "100" ));
-        }
+        MD_CHECK_CC_RET( metric->SetSnapshotReportReadEquation( "dw@0xc0 dw@0xc4 FADD dw@0xc8 FADD dw@0xcc FADD 4 FDIV" ));
+        MD_CHECK_CC_RET( metric->SetDeltaReportReadEquation( "qw@0x130 qw@0x138 FADD qw@0x140 FADD qw@0x148 FADD 4 FDIV" ));
+        MD_CHECK_CC_RET( metric->SetNormalizationEquation( "GpuDuration" ));
+        MD_CHECK_CC_RET( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
+        MD_CHECK_CC_RET( metric->SetMaxValueEquation( "100" ));
     }
 
         MD_CHECK_CC_RET( metricSet->AddStartRegisterSet( 0, 0 ));
@@ -7600,20 +7471,17 @@ static TCompletionCode CreateMetricSet_EHL_L3_5( CMetricsDevice* metricsDevice, 
     }
 
     availabilityEquation = "$SliceMask 1 AND";
-    if( MD_IS_INTERNAL_BUILD || metricsDevice->IsAvailabilityEquationTrue( availabilityEquation ) )
+    metric = metricSet->AddMetric( "L30Bank5Stalled", "Slice0 L3 Bank5 Stalled",
+        "The percentage of time in which slice0 L3 bank5 is stalled",
+        "GTI/L3", (METRIC_GROUP_NAME_ID_GTI * 0x1000000) | (METRIC_GROUP_NAME_ID_L3 * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+        METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SLICE, availabilityEquation, nullptr, nullptr, 28 );
+    if( metric )
     {
-        metric = metricSet->AddMetric( "L30Bank5Stalled", "Slice0 L3 Bank5 Stalled",
-            "The percentage of time in which slice0 L3 bank5 is stalled",
-            "GTI/L3", (METRIC_GROUP_NAME_ID_GTI * 0x1000000) | (METRIC_GROUP_NAME_ID_L3 * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
-            METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SLICE, availabilityEquation, nullptr, nullptr, 28 );
-        if( metric )
-        {
-            MD_CHECK_CC_RET( metric->SetSnapshotReportReadEquation( "dw@0xc8 dw@0xcc FADD dw@0xc0 FADD dw@0xc4 FADD 4 FDIV" ));
-            MD_CHECK_CC_RET( metric->SetDeltaReportReadEquation( "qw@0x140 qw@0x148 FADD qw@0x130 FADD qw@0x138 FADD 4 FDIV" ));
-            MD_CHECK_CC_RET( metric->SetNormalizationEquation( "GpuDuration" ));
-            MD_CHECK_CC_RET( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
-            MD_CHECK_CC_RET( metric->SetMaxValueEquation( "100" ));
-        }
+        MD_CHECK_CC_RET( metric->SetSnapshotReportReadEquation( "dw@0xc8 dw@0xcc FADD dw@0xc0 FADD dw@0xc4 FADD 4 FDIV" ));
+        MD_CHECK_CC_RET( metric->SetDeltaReportReadEquation( "qw@0x140 qw@0x148 FADD qw@0x130 FADD qw@0x138 FADD 4 FDIV" ));
+        MD_CHECK_CC_RET( metric->SetNormalizationEquation( "GpuDuration" ));
+        MD_CHECK_CC_RET( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
+        MD_CHECK_CC_RET( metric->SetMaxValueEquation( "100" ));
     }
 
         MD_CHECK_CC_RET( metricSet->AddStartRegisterSet( 0, 0 ));
@@ -8168,139 +8036,115 @@ static TCompletionCode CreateMetricSet_EHL_Sampler_1( CMetricsDevice* metricsDev
     }
 
     availabilityEquation = "$SubsliceMask 1 AND";
-    if( MD_IS_INTERNAL_BUILD || metricsDevice->IsAvailabilityEquationTrue( availabilityEquation ) )
+    metric = metricSet->AddMetric( "Sampler00InputAvailable", "Slice0 Subslice0 Input Available",
+        "The percentage of time in which slice0 subslice0 sampler input is available",
+        "GPU/Sampler", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_SAMPLER * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+        METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, nullptr, nullptr, 35 );
+    if( metric )
     {
-        metric = metricSet->AddMetric( "Sampler00InputAvailable", "Slice0 Subslice0 Input Available",
-            "The percentage of time in which slice0 subslice0 sampler input is available",
-            "GPU/Sampler", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_SAMPLER * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
-            METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, nullptr, nullptr, 35 );
-        if( metric )
-        {
-            MD_CHECK_CC_RET( metric->SetSnapshotReportReadEquation( "dw@0xdc" ));
-            MD_CHECK_CC_RET( metric->SetDeltaReportReadEquation( "qw@0x168" ));
-            MD_CHECK_CC_RET( metric->SetNormalizationEquation( "GpuDuration" ));
-            MD_CHECK_CC_RET( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
-            MD_CHECK_CC_RET( metric->SetMaxValueEquation( "100" ));
-        }
+        MD_CHECK_CC_RET( metric->SetSnapshotReportReadEquation( "dw@0xdc" ));
+        MD_CHECK_CC_RET( metric->SetDeltaReportReadEquation( "qw@0x168" ));
+        MD_CHECK_CC_RET( metric->SetNormalizationEquation( "GpuDuration" ));
+        MD_CHECK_CC_RET( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
+        MD_CHECK_CC_RET( metric->SetMaxValueEquation( "100" ));
     }
 
     availabilityEquation = "$SubsliceMask 2 AND";
-    if( MD_IS_INTERNAL_BUILD || metricsDevice->IsAvailabilityEquationTrue( availabilityEquation ) )
+    metric = metricSet->AddMetric( "Sampler01InputAvailable", "Slice0 Subslice1 Input Available",
+        "The percentage of time in which slice0 subslice1 sampler input is available",
+        "GPU/Sampler", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_SAMPLER * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+        METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, nullptr, nullptr, 36 );
+    if( metric )
     {
-        metric = metricSet->AddMetric( "Sampler01InputAvailable", "Slice0 Subslice1 Input Available",
-            "The percentage of time in which slice0 subslice1 sampler input is available",
-            "GPU/Sampler", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_SAMPLER * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
-            METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, nullptr, nullptr, 36 );
-        if( metric )
-        {
-            MD_CHECK_CC_RET( metric->SetSnapshotReportReadEquation( "dw@0xd8" ));
-            MD_CHECK_CC_RET( metric->SetDeltaReportReadEquation( "qw@0x160" ));
-            MD_CHECK_CC_RET( metric->SetNormalizationEquation( "GpuDuration" ));
-            MD_CHECK_CC_RET( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
-            MD_CHECK_CC_RET( metric->SetMaxValueEquation( "100" ));
-        }
+        MD_CHECK_CC_RET( metric->SetSnapshotReportReadEquation( "dw@0xd8" ));
+        MD_CHECK_CC_RET( metric->SetDeltaReportReadEquation( "qw@0x160" ));
+        MD_CHECK_CC_RET( metric->SetNormalizationEquation( "GpuDuration" ));
+        MD_CHECK_CC_RET( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
+        MD_CHECK_CC_RET( metric->SetMaxValueEquation( "100" ));
     }
 
     availabilityEquation = "$SubsliceMask 4 AND";
-    if( MD_IS_INTERNAL_BUILD || metricsDevice->IsAvailabilityEquationTrue( availabilityEquation ) )
+    metric = metricSet->AddMetric( "Sampler02InputAvailable", "Slice0 Subslice2 Input Available",
+        "The percentage of time in which slice0 subslice2 sampler input is available",
+        "GPU/Sampler", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_SAMPLER * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+        METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, nullptr, nullptr, 37 );
+    if( metric )
     {
-        metric = metricSet->AddMetric( "Sampler02InputAvailable", "Slice0 Subslice2 Input Available",
-            "The percentage of time in which slice0 subslice2 sampler input is available",
-            "GPU/Sampler", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_SAMPLER * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
-            METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, nullptr, nullptr, 37 );
-        if( metric )
-        {
-            MD_CHECK_CC_RET( metric->SetSnapshotReportReadEquation( "dw@0xd4" ));
-            MD_CHECK_CC_RET( metric->SetDeltaReportReadEquation( "qw@0x158" ));
-            MD_CHECK_CC_RET( metric->SetNormalizationEquation( "GpuDuration" ));
-            MD_CHECK_CC_RET( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
-            MD_CHECK_CC_RET( metric->SetMaxValueEquation( "100" ));
-        }
+        MD_CHECK_CC_RET( metric->SetSnapshotReportReadEquation( "dw@0xd4" ));
+        MD_CHECK_CC_RET( metric->SetDeltaReportReadEquation( "qw@0x158" ));
+        MD_CHECK_CC_RET( metric->SetNormalizationEquation( "GpuDuration" ));
+        MD_CHECK_CC_RET( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
+        MD_CHECK_CC_RET( metric->SetMaxValueEquation( "100" ));
     }
 
     availabilityEquation = "$SubsliceMask 8 AND";
-    if( MD_IS_INTERNAL_BUILD || metricsDevice->IsAvailabilityEquationTrue( availabilityEquation ) )
+    metric = metricSet->AddMetric( "Sampler03InputAvailable", "Slice0 Subslice3 Input Available",
+        "The percentage of time in which slice0 subslice3 sampler input is available",
+        "GPU/Sampler", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_SAMPLER * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+        METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, nullptr, nullptr, 38 );
+    if( metric )
     {
-        metric = metricSet->AddMetric( "Sampler03InputAvailable", "Slice0 Subslice3 Input Available",
-            "The percentage of time in which slice0 subslice3 sampler input is available",
-            "GPU/Sampler", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_SAMPLER * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
-            METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, nullptr, nullptr, 38 );
-        if( metric )
-        {
-            MD_CHECK_CC_RET( metric->SetSnapshotReportReadEquation( "dw@0xd0" ));
-            MD_CHECK_CC_RET( metric->SetDeltaReportReadEquation( "qw@0x150" ));
-            MD_CHECK_CC_RET( metric->SetNormalizationEquation( "GpuDuration" ));
-            MD_CHECK_CC_RET( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
-            MD_CHECK_CC_RET( metric->SetMaxValueEquation( "100" ));
-        }
+        MD_CHECK_CC_RET( metric->SetSnapshotReportReadEquation( "dw@0xd0" ));
+        MD_CHECK_CC_RET( metric->SetDeltaReportReadEquation( "qw@0x150" ));
+        MD_CHECK_CC_RET( metric->SetNormalizationEquation( "GpuDuration" ));
+        MD_CHECK_CC_RET( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
+        MD_CHECK_CC_RET( metric->SetMaxValueEquation( "100" ));
     }
 
     availabilityEquation = "$SubsliceMask 16 AND";
-    if( MD_IS_INTERNAL_BUILD || metricsDevice->IsAvailabilityEquationTrue( availabilityEquation ) )
+    metric = metricSet->AddMetric( "Sampler04InputAvailable", "Slice0 Subslice4 Input Available",
+        "The percentage of time in which slice0 subslice4 sampler input is available",
+        "GPU/Sampler", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_SAMPLER * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+        METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, nullptr, nullptr, 39 );
+    if( metric )
     {
-        metric = metricSet->AddMetric( "Sampler04InputAvailable", "Slice0 Subslice4 Input Available",
-            "The percentage of time in which slice0 subslice4 sampler input is available",
-            "GPU/Sampler", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_SAMPLER * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
-            METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, nullptr, nullptr, 39 );
-        if( metric )
-        {
-            MD_CHECK_CC_RET( metric->SetSnapshotReportReadEquation( "dw@0xcc" ));
-            MD_CHECK_CC_RET( metric->SetDeltaReportReadEquation( "qw@0x148" ));
-            MD_CHECK_CC_RET( metric->SetNormalizationEquation( "GpuDuration" ));
-            MD_CHECK_CC_RET( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
-            MD_CHECK_CC_RET( metric->SetMaxValueEquation( "100" ));
-        }
+        MD_CHECK_CC_RET( metric->SetSnapshotReportReadEquation( "dw@0xcc" ));
+        MD_CHECK_CC_RET( metric->SetDeltaReportReadEquation( "qw@0x148" ));
+        MD_CHECK_CC_RET( metric->SetNormalizationEquation( "GpuDuration" ));
+        MD_CHECK_CC_RET( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
+        MD_CHECK_CC_RET( metric->SetMaxValueEquation( "100" ));
     }
 
     availabilityEquation = "$SubsliceMask 32 AND";
-    if( MD_IS_INTERNAL_BUILD || metricsDevice->IsAvailabilityEquationTrue( availabilityEquation ) )
+    metric = metricSet->AddMetric( "Sampler05InputAvailable", "Slice0 Subslice5 Input Available",
+        "The percentage of time in which slice0 subslice5 sampler input is available",
+        "GPU/Sampler", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_SAMPLER * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+        METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, nullptr, nullptr, 40 );
+    if( metric )
     {
-        metric = metricSet->AddMetric( "Sampler05InputAvailable", "Slice0 Subslice5 Input Available",
-            "The percentage of time in which slice0 subslice5 sampler input is available",
-            "GPU/Sampler", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_SAMPLER * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
-            METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, nullptr, nullptr, 40 );
-        if( metric )
-        {
-            MD_CHECK_CC_RET( metric->SetSnapshotReportReadEquation( "dw@0xc8" ));
-            MD_CHECK_CC_RET( metric->SetDeltaReportReadEquation( "qw@0x140" ));
-            MD_CHECK_CC_RET( metric->SetNormalizationEquation( "GpuDuration" ));
-            MD_CHECK_CC_RET( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
-            MD_CHECK_CC_RET( metric->SetMaxValueEquation( "100" ));
-        }
+        MD_CHECK_CC_RET( metric->SetSnapshotReportReadEquation( "dw@0xc8" ));
+        MD_CHECK_CC_RET( metric->SetDeltaReportReadEquation( "qw@0x140" ));
+        MD_CHECK_CC_RET( metric->SetNormalizationEquation( "GpuDuration" ));
+        MD_CHECK_CC_RET( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
+        MD_CHECK_CC_RET( metric->SetMaxValueEquation( "100" ));
     }
 
     availabilityEquation = "$SubsliceMask 64 AND";
-    if( MD_IS_INTERNAL_BUILD || metricsDevice->IsAvailabilityEquationTrue( availabilityEquation ) )
+    metric = metricSet->AddMetric( "Sampler06InputAvailable", "Slice0 Subslice6 Input Available",
+        "The percentage of time in which slice0 subslice6 sampler input is available",
+        "GPU/Sampler", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_SAMPLER * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+        METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, nullptr, nullptr, 41 );
+    if( metric )
     {
-        metric = metricSet->AddMetric( "Sampler06InputAvailable", "Slice0 Subslice6 Input Available",
-            "The percentage of time in which slice0 subslice6 sampler input is available",
-            "GPU/Sampler", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_SAMPLER * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
-            METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, nullptr, nullptr, 41 );
-        if( metric )
-        {
-            MD_CHECK_CC_RET( metric->SetSnapshotReportReadEquation( "dw@0xc4" ));
-            MD_CHECK_CC_RET( metric->SetDeltaReportReadEquation( "qw@0x138" ));
-            MD_CHECK_CC_RET( metric->SetNormalizationEquation( "GpuDuration" ));
-            MD_CHECK_CC_RET( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
-            MD_CHECK_CC_RET( metric->SetMaxValueEquation( "100" ));
-        }
+        MD_CHECK_CC_RET( metric->SetSnapshotReportReadEquation( "dw@0xc4" ));
+        MD_CHECK_CC_RET( metric->SetDeltaReportReadEquation( "qw@0x138" ));
+        MD_CHECK_CC_RET( metric->SetNormalizationEquation( "GpuDuration" ));
+        MD_CHECK_CC_RET( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
+        MD_CHECK_CC_RET( metric->SetMaxValueEquation( "100" ));
     }
 
     availabilityEquation = "$SubsliceMask 128 AND";
-    if( MD_IS_INTERNAL_BUILD || metricsDevice->IsAvailabilityEquationTrue( availabilityEquation ) )
+    metric = metricSet->AddMetric( "Sampler07InputAvailable", "Slice0 Subslice7 Input Available",
+        "The percentage of time in which slice0 subslice7 sampler input is available",
+        "GPU/Sampler", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_SAMPLER * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+        METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, nullptr, nullptr, 42 );
+    if( metric )
     {
-        metric = metricSet->AddMetric( "Sampler07InputAvailable", "Slice0 Subslice7 Input Available",
-            "The percentage of time in which slice0 subslice7 sampler input is available",
-            "GPU/Sampler", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_SAMPLER * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
-            METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, nullptr, nullptr, 42 );
-        if( metric )
-        {
-            MD_CHECK_CC_RET( metric->SetSnapshotReportReadEquation( "dw@0xc0" ));
-            MD_CHECK_CC_RET( metric->SetDeltaReportReadEquation( "qw@0x130" ));
-            MD_CHECK_CC_RET( metric->SetNormalizationEquation( "GpuDuration" ));
-            MD_CHECK_CC_RET( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
-            MD_CHECK_CC_RET( metric->SetMaxValueEquation( "100" ));
-        }
+        MD_CHECK_CC_RET( metric->SetSnapshotReportReadEquation( "dw@0xc0" ));
+        MD_CHECK_CC_RET( metric->SetDeltaReportReadEquation( "qw@0x130" ));
+        MD_CHECK_CC_RET( metric->SetNormalizationEquation( "GpuDuration" ));
+        MD_CHECK_CC_RET( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
+        MD_CHECK_CC_RET( metric->SetMaxValueEquation( "100" ));
     }
 
         MD_CHECK_CC_RET( metricSet->AddStartRegisterSet( 0, 0 ));
@@ -8966,139 +8810,115 @@ static TCompletionCode CreateMetricSet_EHL_Sampler_2( CMetricsDevice* metricsDev
     }
 
     availabilityEquation = "$SubsliceMask 1 AND";
-    if( MD_IS_INTERNAL_BUILD || metricsDevice->IsAvailabilityEquationTrue( availabilityEquation ) )
+    metric = metricSet->AddMetric( "Sampler00OutputReady", "Slice0 Subslice0 Sampler Output Ready",
+        "The percentage of time in which slice0 subslice0 sampler output is ready",
+        "GPU/Sampler", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_SAMPLER * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+        METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, nullptr, nullptr, 35 );
+    if( metric )
     {
-        metric = metricSet->AddMetric( "Sampler00OutputReady", "Slice0 Subslice0 Sampler Output Ready",
-            "The percentage of time in which slice0 subslice0 sampler output is ready",
-            "GPU/Sampler", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_SAMPLER * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
-            METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, nullptr, nullptr, 35 );
-        if( metric )
-        {
-            MD_CHECK_CC_RET( metric->SetSnapshotReportReadEquation( "dw@0xe0" ));
-            MD_CHECK_CC_RET( metric->SetDeltaReportReadEquation( "qw@0x170" ));
-            MD_CHECK_CC_RET( metric->SetNormalizationEquation( "GpuDuration" ));
-            MD_CHECK_CC_RET( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
-            MD_CHECK_CC_RET( metric->SetMaxValueEquation( "100" ));
-        }
+        MD_CHECK_CC_RET( metric->SetSnapshotReportReadEquation( "dw@0xe0" ));
+        MD_CHECK_CC_RET( metric->SetDeltaReportReadEquation( "qw@0x170" ));
+        MD_CHECK_CC_RET( metric->SetNormalizationEquation( "GpuDuration" ));
+        MD_CHECK_CC_RET( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
+        MD_CHECK_CC_RET( metric->SetMaxValueEquation( "100" ));
     }
 
     availabilityEquation = "$SubsliceMask 2 AND";
-    if( MD_IS_INTERNAL_BUILD || metricsDevice->IsAvailabilityEquationTrue( availabilityEquation ) )
+    metric = metricSet->AddMetric( "Sampler01OutputReady", "Slice0 Subslice1 Sampler Output Ready",
+        "The percentage of time in which slice0 subslice1 sampler output is ready",
+        "GPU/Sampler", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_SAMPLER * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+        METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, nullptr, nullptr, 36 );
+    if( metric )
     {
-        metric = metricSet->AddMetric( "Sampler01OutputReady", "Slice0 Subslice1 Sampler Output Ready",
-            "The percentage of time in which slice0 subslice1 sampler output is ready",
-            "GPU/Sampler", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_SAMPLER * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
-            METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, nullptr, nullptr, 36 );
-        if( metric )
-        {
-            MD_CHECK_CC_RET( metric->SetSnapshotReportReadEquation( "dw@0xe4" ));
-            MD_CHECK_CC_RET( metric->SetDeltaReportReadEquation( "qw@0x178" ));
-            MD_CHECK_CC_RET( metric->SetNormalizationEquation( "GpuDuration" ));
-            MD_CHECK_CC_RET( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
-            MD_CHECK_CC_RET( metric->SetMaxValueEquation( "100" ));
-        }
+        MD_CHECK_CC_RET( metric->SetSnapshotReportReadEquation( "dw@0xe4" ));
+        MD_CHECK_CC_RET( metric->SetDeltaReportReadEquation( "qw@0x178" ));
+        MD_CHECK_CC_RET( metric->SetNormalizationEquation( "GpuDuration" ));
+        MD_CHECK_CC_RET( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
+        MD_CHECK_CC_RET( metric->SetMaxValueEquation( "100" ));
     }
 
     availabilityEquation = "$SubsliceMask 4 AND";
-    if( MD_IS_INTERNAL_BUILD || metricsDevice->IsAvailabilityEquationTrue( availabilityEquation ) )
+    metric = metricSet->AddMetric( "Sampler02OutputReady", "Slice0 Subslice2 Sampler Output Ready",
+        "The percentage of time in which slice0 subslice2 sampler output is ready",
+        "GPU/Sampler", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_SAMPLER * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+        METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, nullptr, nullptr, 37 );
+    if( metric )
     {
-        metric = metricSet->AddMetric( "Sampler02OutputReady", "Slice0 Subslice2 Sampler Output Ready",
-            "The percentage of time in which slice0 subslice2 sampler output is ready",
-            "GPU/Sampler", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_SAMPLER * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
-            METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, nullptr, nullptr, 37 );
-        if( metric )
-        {
-            MD_CHECK_CC_RET( metric->SetSnapshotReportReadEquation( "dw@0xe8" ));
-            MD_CHECK_CC_RET( metric->SetDeltaReportReadEquation( "qw@0x180" ));
-            MD_CHECK_CC_RET( metric->SetNormalizationEquation( "GpuDuration" ));
-            MD_CHECK_CC_RET( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
-            MD_CHECK_CC_RET( metric->SetMaxValueEquation( "100" ));
-        }
+        MD_CHECK_CC_RET( metric->SetSnapshotReportReadEquation( "dw@0xe8" ));
+        MD_CHECK_CC_RET( metric->SetDeltaReportReadEquation( "qw@0x180" ));
+        MD_CHECK_CC_RET( metric->SetNormalizationEquation( "GpuDuration" ));
+        MD_CHECK_CC_RET( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
+        MD_CHECK_CC_RET( metric->SetMaxValueEquation( "100" ));
     }
 
     availabilityEquation = "$SubsliceMask 8 AND";
-    if( MD_IS_INTERNAL_BUILD || metricsDevice->IsAvailabilityEquationTrue( availabilityEquation ) )
+    metric = metricSet->AddMetric( "Sampler03OutputReady", "Slice0 Subslice3 Sampler Output Ready",
+        "The percentage of time in which slice0 subslice3 sampler output is ready",
+        "GPU/Sampler", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_SAMPLER * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+        METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, nullptr, nullptr, 38 );
+    if( metric )
     {
-        metric = metricSet->AddMetric( "Sampler03OutputReady", "Slice0 Subslice3 Sampler Output Ready",
-            "The percentage of time in which slice0 subslice3 sampler output is ready",
-            "GPU/Sampler", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_SAMPLER * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
-            METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, nullptr, nullptr, 38 );
-        if( metric )
-        {
-            MD_CHECK_CC_RET( metric->SetSnapshotReportReadEquation( "dw@0xec" ));
-            MD_CHECK_CC_RET( metric->SetDeltaReportReadEquation( "qw@0x188" ));
-            MD_CHECK_CC_RET( metric->SetNormalizationEquation( "GpuDuration" ));
-            MD_CHECK_CC_RET( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
-            MD_CHECK_CC_RET( metric->SetMaxValueEquation( "100" ));
-        }
+        MD_CHECK_CC_RET( metric->SetSnapshotReportReadEquation( "dw@0xec" ));
+        MD_CHECK_CC_RET( metric->SetDeltaReportReadEquation( "qw@0x188" ));
+        MD_CHECK_CC_RET( metric->SetNormalizationEquation( "GpuDuration" ));
+        MD_CHECK_CC_RET( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
+        MD_CHECK_CC_RET( metric->SetMaxValueEquation( "100" ));
     }
 
     availabilityEquation = "$SubsliceMask 16 AND";
-    if( MD_IS_INTERNAL_BUILD || metricsDevice->IsAvailabilityEquationTrue( availabilityEquation ) )
+    metric = metricSet->AddMetric( "Sampler04OutputReady", "Slice0 Subslice4 Sampler Output Ready",
+        "The percentage of time in which slice0 subslice4 sampler output is ready",
+        "GPU/Sampler", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_SAMPLER * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+        METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, nullptr, nullptr, 39 );
+    if( metric )
     {
-        metric = metricSet->AddMetric( "Sampler04OutputReady", "Slice0 Subslice4 Sampler Output Ready",
-            "The percentage of time in which slice0 subslice4 sampler output is ready",
-            "GPU/Sampler", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_SAMPLER * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
-            METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, nullptr, nullptr, 39 );
-        if( metric )
-        {
-            MD_CHECK_CC_RET( metric->SetSnapshotReportReadEquation( "dw@0xf0" ));
-            MD_CHECK_CC_RET( metric->SetDeltaReportReadEquation( "qw@0x190" ));
-            MD_CHECK_CC_RET( metric->SetNormalizationEquation( "GpuDuration" ));
-            MD_CHECK_CC_RET( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
-            MD_CHECK_CC_RET( metric->SetMaxValueEquation( "100" ));
-        }
+        MD_CHECK_CC_RET( metric->SetSnapshotReportReadEquation( "dw@0xf0" ));
+        MD_CHECK_CC_RET( metric->SetDeltaReportReadEquation( "qw@0x190" ));
+        MD_CHECK_CC_RET( metric->SetNormalizationEquation( "GpuDuration" ));
+        MD_CHECK_CC_RET( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
+        MD_CHECK_CC_RET( metric->SetMaxValueEquation( "100" ));
     }
 
     availabilityEquation = "$SubsliceMask 32 AND";
-    if( MD_IS_INTERNAL_BUILD || metricsDevice->IsAvailabilityEquationTrue( availabilityEquation ) )
+    metric = metricSet->AddMetric( "Sampler05OutputReady", "Slice0 Subslice5 Sampler Output Ready",
+        "The percentage of time in which slice0 subslice5 sampler output is ready",
+        "GPU/Sampler", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_SAMPLER * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+        METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, nullptr, nullptr, 40 );
+    if( metric )
     {
-        metric = metricSet->AddMetric( "Sampler05OutputReady", "Slice0 Subslice5 Sampler Output Ready",
-            "The percentage of time in which slice0 subslice5 sampler output is ready",
-            "GPU/Sampler", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_SAMPLER * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
-            METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, nullptr, nullptr, 40 );
-        if( metric )
-        {
-            MD_CHECK_CC_RET( metric->SetSnapshotReportReadEquation( "dw@0xf4" ));
-            MD_CHECK_CC_RET( metric->SetDeltaReportReadEquation( "qw@0x198" ));
-            MD_CHECK_CC_RET( metric->SetNormalizationEquation( "GpuDuration" ));
-            MD_CHECK_CC_RET( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
-            MD_CHECK_CC_RET( metric->SetMaxValueEquation( "100" ));
-        }
+        MD_CHECK_CC_RET( metric->SetSnapshotReportReadEquation( "dw@0xf4" ));
+        MD_CHECK_CC_RET( metric->SetDeltaReportReadEquation( "qw@0x198" ));
+        MD_CHECK_CC_RET( metric->SetNormalizationEquation( "GpuDuration" ));
+        MD_CHECK_CC_RET( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
+        MD_CHECK_CC_RET( metric->SetMaxValueEquation( "100" ));
     }
 
     availabilityEquation = "$SubsliceMask 64 AND";
-    if( MD_IS_INTERNAL_BUILD || metricsDevice->IsAvailabilityEquationTrue( availabilityEquation ) )
+    metric = metricSet->AddMetric( "Sampler06OutputReady", "Slice0 Subslice6 Sampler Output Ready",
+        "The percentage of time in which slice0 subslice6 sampler output is ready",
+        "GPU/Sampler", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_SAMPLER * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+        METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, nullptr, nullptr, 41 );
+    if( metric )
     {
-        metric = metricSet->AddMetric( "Sampler06OutputReady", "Slice0 Subslice6 Sampler Output Ready",
-            "The percentage of time in which slice0 subslice6 sampler output is ready",
-            "GPU/Sampler", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_SAMPLER * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
-            METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, nullptr, nullptr, 41 );
-        if( metric )
-        {
-            MD_CHECK_CC_RET( metric->SetSnapshotReportReadEquation( "dw@0xf8" ));
-            MD_CHECK_CC_RET( metric->SetDeltaReportReadEquation( "qw@0x1a0" ));
-            MD_CHECK_CC_RET( metric->SetNormalizationEquation( "GpuDuration" ));
-            MD_CHECK_CC_RET( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
-            MD_CHECK_CC_RET( metric->SetMaxValueEquation( "100" ));
-        }
+        MD_CHECK_CC_RET( metric->SetSnapshotReportReadEquation( "dw@0xf8" ));
+        MD_CHECK_CC_RET( metric->SetDeltaReportReadEquation( "qw@0x1a0" ));
+        MD_CHECK_CC_RET( metric->SetNormalizationEquation( "GpuDuration" ));
+        MD_CHECK_CC_RET( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
+        MD_CHECK_CC_RET( metric->SetMaxValueEquation( "100" ));
     }
 
     availabilityEquation = "$SubsliceMask 128 AND";
-    if( MD_IS_INTERNAL_BUILD || metricsDevice->IsAvailabilityEquationTrue( availabilityEquation ) )
+    metric = metricSet->AddMetric( "Sampler07OutputReady", "Slice0 Subslice7 Sampler Output Ready",
+        "The percentage of time in which slice0 subslice7 sampler output is ready",
+        "GPU/Sampler", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_SAMPLER * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+        METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, nullptr, nullptr, 42 );
+    if( metric )
     {
-        metric = metricSet->AddMetric( "Sampler07OutputReady", "Slice0 Subslice7 Sampler Output Ready",
-            "The percentage of time in which slice0 subslice7 sampler output is ready",
-            "GPU/Sampler", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_SAMPLER * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
-            METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, nullptr, nullptr, 42 );
-        if( metric )
-        {
-            MD_CHECK_CC_RET( metric->SetSnapshotReportReadEquation( "dw@0xfc" ));
-            MD_CHECK_CC_RET( metric->SetDeltaReportReadEquation( "qw@0x1a8" ));
-            MD_CHECK_CC_RET( metric->SetNormalizationEquation( "GpuDuration" ));
-            MD_CHECK_CC_RET( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
-            MD_CHECK_CC_RET( metric->SetMaxValueEquation( "100" ));
-        }
+        MD_CHECK_CC_RET( metric->SetSnapshotReportReadEquation( "dw@0xfc" ));
+        MD_CHECK_CC_RET( metric->SetDeltaReportReadEquation( "qw@0x1a8" ));
+        MD_CHECK_CC_RET( metric->SetNormalizationEquation( "GpuDuration" ));
+        MD_CHECK_CC_RET( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
+        MD_CHECK_CC_RET( metric->SetMaxValueEquation( "100" ));
     }
 
     availabilityEquation = nullptr;
@@ -9828,139 +9648,115 @@ static TCompletionCode CreateMetricSet_EHL_TDL_1( CMetricsDevice* metricsDevice,
     }
 
     availabilityEquation = "$SubsliceMask 1 AND";
-    if( MD_IS_INTERNAL_BUILD || metricsDevice->IsAvailabilityEquationTrue( availabilityEquation ) )
+    metric = metricSet->AddMetric( "PSThread00ReadyForDispatch", "PS Thread Ready For Dispatch on Slice0 Subslice0 Thread Dispatcher",
+        "The percentage of time in which PS thread is ready for dispatch on slice0 subslice0 thread dispatcher",
+        "GPU/Thread Dispatcher", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_TD * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+        METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, nullptr, nullptr, 43 );
+    if( metric )
     {
-        metric = metricSet->AddMetric( "PSThread00ReadyForDispatch", "PS Thread Ready For Dispatch on Slice0 Subslice0 Thread Dispatcher",
-            "The percentage of time in which PS thread is ready for dispatch on slice0 subslice0 thread dispatcher",
-            "GPU/Thread Dispatcher", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_TD * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
-            METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, nullptr, nullptr, 43 );
-        if( metric )
-        {
-            MD_CHECK_CC_RET( metric->SetSnapshotReportReadEquation( "dw@0xdc" ));
-            MD_CHECK_CC_RET( metric->SetDeltaReportReadEquation( "qw@0x168" ));
-            MD_CHECK_CC_RET( metric->SetNormalizationEquation( "GpuDuration" ));
-            MD_CHECK_CC_RET( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
-            MD_CHECK_CC_RET( metric->SetMaxValueEquation( "100" ));
-        }
+        MD_CHECK_CC_RET( metric->SetSnapshotReportReadEquation( "dw@0xdc" ));
+        MD_CHECK_CC_RET( metric->SetDeltaReportReadEquation( "qw@0x168" ));
+        MD_CHECK_CC_RET( metric->SetNormalizationEquation( "GpuDuration" ));
+        MD_CHECK_CC_RET( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
+        MD_CHECK_CC_RET( metric->SetMaxValueEquation( "100" ));
     }
 
     availabilityEquation = "$SubsliceMask 2 AND";
-    if( MD_IS_INTERNAL_BUILD || metricsDevice->IsAvailabilityEquationTrue( availabilityEquation ) )
+    metric = metricSet->AddMetric( "PSThread01ReadyForDispatch", "PS Thread Ready For Dispatch on Slice0 Subslice1 Thread Dispatcher",
+        "The percentage of time in which PS thread is ready for dispatch on slice0 subslice1 thread dispatcher",
+        "GPU/Thread Dispatcher", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_TD * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+        METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, nullptr, nullptr, 44 );
+    if( metric )
     {
-        metric = metricSet->AddMetric( "PSThread01ReadyForDispatch", "PS Thread Ready For Dispatch on Slice0 Subslice1 Thread Dispatcher",
-            "The percentage of time in which PS thread is ready for dispatch on slice0 subslice1 thread dispatcher",
-            "GPU/Thread Dispatcher", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_TD * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
-            METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, nullptr, nullptr, 44 );
-        if( metric )
-        {
-            MD_CHECK_CC_RET( metric->SetSnapshotReportReadEquation( "dw@0xd8" ));
-            MD_CHECK_CC_RET( metric->SetDeltaReportReadEquation( "qw@0x160" ));
-            MD_CHECK_CC_RET( metric->SetNormalizationEquation( "GpuDuration" ));
-            MD_CHECK_CC_RET( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
-            MD_CHECK_CC_RET( metric->SetMaxValueEquation( "100" ));
-        }
+        MD_CHECK_CC_RET( metric->SetSnapshotReportReadEquation( "dw@0xd8" ));
+        MD_CHECK_CC_RET( metric->SetDeltaReportReadEquation( "qw@0x160" ));
+        MD_CHECK_CC_RET( metric->SetNormalizationEquation( "GpuDuration" ));
+        MD_CHECK_CC_RET( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
+        MD_CHECK_CC_RET( metric->SetMaxValueEquation( "100" ));
     }
 
     availabilityEquation = "$SubsliceMask 4 AND";
-    if( MD_IS_INTERNAL_BUILD || metricsDevice->IsAvailabilityEquationTrue( availabilityEquation ) )
+    metric = metricSet->AddMetric( "PSThread02ReadyForDispatch", "PS Thread Ready For Dispatch on Slice0 Subslice2 Thread Dispatcher",
+        "The percentage of time in which PS thread is ready for dispatch on slice0 subslice2 thread dispatcher",
+        "GPU/Thread Dispatcher", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_TD * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+        METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, nullptr, nullptr, 45 );
+    if( metric )
     {
-        metric = metricSet->AddMetric( "PSThread02ReadyForDispatch", "PS Thread Ready For Dispatch on Slice0 Subslice2 Thread Dispatcher",
-            "The percentage of time in which PS thread is ready for dispatch on slice0 subslice2 thread dispatcher",
-            "GPU/Thread Dispatcher", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_TD * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
-            METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, nullptr, nullptr, 45 );
-        if( metric )
-        {
-            MD_CHECK_CC_RET( metric->SetSnapshotReportReadEquation( "dw@0xd4" ));
-            MD_CHECK_CC_RET( metric->SetDeltaReportReadEquation( "qw@0x158" ));
-            MD_CHECK_CC_RET( metric->SetNormalizationEquation( "GpuDuration" ));
-            MD_CHECK_CC_RET( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
-            MD_CHECK_CC_RET( metric->SetMaxValueEquation( "100" ));
-        }
+        MD_CHECK_CC_RET( metric->SetSnapshotReportReadEquation( "dw@0xd4" ));
+        MD_CHECK_CC_RET( metric->SetDeltaReportReadEquation( "qw@0x158" ));
+        MD_CHECK_CC_RET( metric->SetNormalizationEquation( "GpuDuration" ));
+        MD_CHECK_CC_RET( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
+        MD_CHECK_CC_RET( metric->SetMaxValueEquation( "100" ));
     }
 
     availabilityEquation = "$SubsliceMask 8 AND";
-    if( MD_IS_INTERNAL_BUILD || metricsDevice->IsAvailabilityEquationTrue( availabilityEquation ) )
+    metric = metricSet->AddMetric( "PSThread03ReadyForDispatch", "PS Thread Ready For Dispatch on Slice0 Subslice3 Thread Dispatcher",
+        "The percentage of time in which PS thread is ready for dispatch on slice0 subslice3 thread dispatcher",
+        "GPU/Thread Dispatcher", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_TD * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+        METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, nullptr, nullptr, 46 );
+    if( metric )
     {
-        metric = metricSet->AddMetric( "PSThread03ReadyForDispatch", "PS Thread Ready For Dispatch on Slice0 Subslice3 Thread Dispatcher",
-            "The percentage of time in which PS thread is ready for dispatch on slice0 subslice3 thread dispatcher",
-            "GPU/Thread Dispatcher", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_TD * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
-            METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, nullptr, nullptr, 46 );
-        if( metric )
-        {
-            MD_CHECK_CC_RET( metric->SetSnapshotReportReadEquation( "dw@0xd0" ));
-            MD_CHECK_CC_RET( metric->SetDeltaReportReadEquation( "qw@0x150" ));
-            MD_CHECK_CC_RET( metric->SetNormalizationEquation( "GpuDuration" ));
-            MD_CHECK_CC_RET( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
-            MD_CHECK_CC_RET( metric->SetMaxValueEquation( "100" ));
-        }
+        MD_CHECK_CC_RET( metric->SetSnapshotReportReadEquation( "dw@0xd0" ));
+        MD_CHECK_CC_RET( metric->SetDeltaReportReadEquation( "qw@0x150" ));
+        MD_CHECK_CC_RET( metric->SetNormalizationEquation( "GpuDuration" ));
+        MD_CHECK_CC_RET( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
+        MD_CHECK_CC_RET( metric->SetMaxValueEquation( "100" ));
     }
 
     availabilityEquation = "$SubsliceMask 16 AND";
-    if( MD_IS_INTERNAL_BUILD || metricsDevice->IsAvailabilityEquationTrue( availabilityEquation ) )
+    metric = metricSet->AddMetric( "PSThread04ReadyForDispatch", "PS Thread Ready For Dispatch on Slice0 Subslice4 Thread Dispatcher",
+        "The percentage of time in which PS thread is ready for dispatch on slice0 subslice4 thread dispatcher",
+        "GPU/Thread Dispatcher", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_TD * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+        METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, nullptr, nullptr, 47 );
+    if( metric )
     {
-        metric = metricSet->AddMetric( "PSThread04ReadyForDispatch", "PS Thread Ready For Dispatch on Slice0 Subslice4 Thread Dispatcher",
-            "The percentage of time in which PS thread is ready for dispatch on slice0 subslice4 thread dispatcher",
-            "GPU/Thread Dispatcher", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_TD * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
-            METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, nullptr, nullptr, 47 );
-        if( metric )
-        {
-            MD_CHECK_CC_RET( metric->SetSnapshotReportReadEquation( "dw@0xcc" ));
-            MD_CHECK_CC_RET( metric->SetDeltaReportReadEquation( "qw@0x148" ));
-            MD_CHECK_CC_RET( metric->SetNormalizationEquation( "GpuDuration" ));
-            MD_CHECK_CC_RET( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
-            MD_CHECK_CC_RET( metric->SetMaxValueEquation( "100" ));
-        }
+        MD_CHECK_CC_RET( metric->SetSnapshotReportReadEquation( "dw@0xcc" ));
+        MD_CHECK_CC_RET( metric->SetDeltaReportReadEquation( "qw@0x148" ));
+        MD_CHECK_CC_RET( metric->SetNormalizationEquation( "GpuDuration" ));
+        MD_CHECK_CC_RET( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
+        MD_CHECK_CC_RET( metric->SetMaxValueEquation( "100" ));
     }
 
     availabilityEquation = "$SubsliceMask 32 AND";
-    if( MD_IS_INTERNAL_BUILD || metricsDevice->IsAvailabilityEquationTrue( availabilityEquation ) )
+    metric = metricSet->AddMetric( "PSThread05ReadyForDispatch", "PS Thread Ready For Dispatch on Slice0 Subslice5 Thread Dispatcher",
+        "The percentage of time in which PS thread is ready for dispatch on slice0 subslice5 thread dispatcher",
+        "GPU/Thread Dispatcher", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_TD * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+        METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, nullptr, nullptr, 48 );
+    if( metric )
     {
-        metric = metricSet->AddMetric( "PSThread05ReadyForDispatch", "PS Thread Ready For Dispatch on Slice0 Subslice5 Thread Dispatcher",
-            "The percentage of time in which PS thread is ready for dispatch on slice0 subslice5 thread dispatcher",
-            "GPU/Thread Dispatcher", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_TD * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
-            METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, nullptr, nullptr, 48 );
-        if( metric )
-        {
-            MD_CHECK_CC_RET( metric->SetSnapshotReportReadEquation( "dw@0xc8" ));
-            MD_CHECK_CC_RET( metric->SetDeltaReportReadEquation( "qw@0x140" ));
-            MD_CHECK_CC_RET( metric->SetNormalizationEquation( "GpuDuration" ));
-            MD_CHECK_CC_RET( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
-            MD_CHECK_CC_RET( metric->SetMaxValueEquation( "100" ));
-        }
+        MD_CHECK_CC_RET( metric->SetSnapshotReportReadEquation( "dw@0xc8" ));
+        MD_CHECK_CC_RET( metric->SetDeltaReportReadEquation( "qw@0x140" ));
+        MD_CHECK_CC_RET( metric->SetNormalizationEquation( "GpuDuration" ));
+        MD_CHECK_CC_RET( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
+        MD_CHECK_CC_RET( metric->SetMaxValueEquation( "100" ));
     }
 
     availabilityEquation = "$SubsliceMask 64 AND";
-    if( MD_IS_INTERNAL_BUILD || metricsDevice->IsAvailabilityEquationTrue( availabilityEquation ) )
+    metric = metricSet->AddMetric( "PSThread06ReadyForDispatch", "PS Thread Ready For Dispatch on Slice0 Subslice6 Thread Dispatcher",
+        "The percentage of time in which PS thread is ready for dispatch on slice0 subslice6 thread dispatcher",
+        "GPU/Thread Dispatcher", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_TD * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+        METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, nullptr, nullptr, 49 );
+    if( metric )
     {
-        metric = metricSet->AddMetric( "PSThread06ReadyForDispatch", "PS Thread Ready For Dispatch on Slice0 Subslice6 Thread Dispatcher",
-            "The percentage of time in which PS thread is ready for dispatch on slice0 subslice6 thread dispatcher",
-            "GPU/Thread Dispatcher", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_TD * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
-            METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, nullptr, nullptr, 49 );
-        if( metric )
-        {
-            MD_CHECK_CC_RET( metric->SetSnapshotReportReadEquation( "dw@0xc4" ));
-            MD_CHECK_CC_RET( metric->SetDeltaReportReadEquation( "qw@0x138" ));
-            MD_CHECK_CC_RET( metric->SetNormalizationEquation( "GpuDuration" ));
-            MD_CHECK_CC_RET( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
-            MD_CHECK_CC_RET( metric->SetMaxValueEquation( "100" ));
-        }
+        MD_CHECK_CC_RET( metric->SetSnapshotReportReadEquation( "dw@0xc4" ));
+        MD_CHECK_CC_RET( metric->SetDeltaReportReadEquation( "qw@0x138" ));
+        MD_CHECK_CC_RET( metric->SetNormalizationEquation( "GpuDuration" ));
+        MD_CHECK_CC_RET( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
+        MD_CHECK_CC_RET( metric->SetMaxValueEquation( "100" ));
     }
 
     availabilityEquation = "$SubsliceMask 128 AND";
-    if( MD_IS_INTERNAL_BUILD || metricsDevice->IsAvailabilityEquationTrue( availabilityEquation ) )
+    metric = metricSet->AddMetric( "PSThread07ReadyForDispatch", "PS Thread Ready For Dispatch on Slice0 Subslice7 Thread Dispatcher",
+        "The percentage of time in which PS thread is ready for dispatch on slice0 subslice7 thread dispatcher",
+        "GPU/Thread Dispatcher", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_TD * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+        METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, nullptr, nullptr, 50 );
+    if( metric )
     {
-        metric = metricSet->AddMetric( "PSThread07ReadyForDispatch", "PS Thread Ready For Dispatch on Slice0 Subslice7 Thread Dispatcher",
-            "The percentage of time in which PS thread is ready for dispatch on slice0 subslice7 thread dispatcher",
-            "GPU/Thread Dispatcher", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_TD * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
-            METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, nullptr, nullptr, 50 );
-        if( metric )
-        {
-            MD_CHECK_CC_RET( metric->SetSnapshotReportReadEquation( "dw@0xc0" ));
-            MD_CHECK_CC_RET( metric->SetDeltaReportReadEquation( "qw@0x130" ));
-            MD_CHECK_CC_RET( metric->SetNormalizationEquation( "GpuDuration" ));
-            MD_CHECK_CC_RET( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
-            MD_CHECK_CC_RET( metric->SetMaxValueEquation( "100" ));
-        }
+        MD_CHECK_CC_RET( metric->SetSnapshotReportReadEquation( "dw@0xc0" ));
+        MD_CHECK_CC_RET( metric->SetDeltaReportReadEquation( "qw@0x130" ));
+        MD_CHECK_CC_RET( metric->SetNormalizationEquation( "GpuDuration" ));
+        MD_CHECK_CC_RET( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
+        MD_CHECK_CC_RET( metric->SetMaxValueEquation( "100" ));
     }
 
         MD_CHECK_CC_RET( metricSet->AddStartRegisterSet( 0, 0 ));
@@ -10631,139 +10427,115 @@ static TCompletionCode CreateMetricSet_EHL_TDL_2( CMetricsDevice* metricsDevice,
     }
 
     availabilityEquation = "$SubsliceMask 1 AND";
-    if( MD_IS_INTERNAL_BUILD || metricsDevice->IsAvailabilityEquationTrue( availabilityEquation ) )
+    metric = metricSet->AddMetric( "NonPSThread00ReadyForDispatch", "Non-PS Thread Ready For Dispatch on Slice0 Subslice0 Thread Dispatcher",
+        "The percentage of time in which non-PS thread is ready for dispatch on slice0 subslice0 thread dispatcher",
+        "GPU/Thread Dispatcher", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_TD * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+        METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, nullptr, nullptr, 35 );
+    if( metric )
     {
-        metric = metricSet->AddMetric( "NonPSThread00ReadyForDispatch", "Non-PS Thread Ready For Dispatch on Slice0 Subslice0 Thread Dispatcher",
-            "The percentage of time in which non-PS thread is ready for dispatch on slice0 subslice0 thread dispatcher",
-            "GPU/Thread Dispatcher", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_TD * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
-            METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, nullptr, nullptr, 35 );
-        if( metric )
-        {
-            MD_CHECK_CC_RET( metric->SetSnapshotReportReadEquation( "dw@0x0c dw@0xdc FSUB" ));
-            MD_CHECK_CC_RET( metric->SetDeltaReportReadEquation( "qw@0x08 qw@0x168 FSUB" ));
-            MD_CHECK_CC_RET( metric->SetNormalizationEquation( "GpuDuration" ));
-            MD_CHECK_CC_RET( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
-            MD_CHECK_CC_RET( metric->SetMaxValueEquation( "100" ));
-        }
+        MD_CHECK_CC_RET( metric->SetSnapshotReportReadEquation( "dw@0x0c dw@0xdc FSUB" ));
+        MD_CHECK_CC_RET( metric->SetDeltaReportReadEquation( "qw@0x08 qw@0x168 FSUB" ));
+        MD_CHECK_CC_RET( metric->SetNormalizationEquation( "GpuDuration" ));
+        MD_CHECK_CC_RET( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
+        MD_CHECK_CC_RET( metric->SetMaxValueEquation( "100" ));
     }
 
     availabilityEquation = "$SubsliceMask 2 AND";
-    if( MD_IS_INTERNAL_BUILD || metricsDevice->IsAvailabilityEquationTrue( availabilityEquation ) )
+    metric = metricSet->AddMetric( "NonPSThread01ReadyForDispatch", "Non-PS Thread Ready For Dispatch on Slice0 Subslice1 Thread Dispatcher",
+        "The percentage of time in which non-PS thread is ready for dispatch on slice0 subslice1 thread dispatcher",
+        "GPU/Thread Dispatcher", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_TD * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+        METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, nullptr, nullptr, 36 );
+    if( metric )
     {
-        metric = metricSet->AddMetric( "NonPSThread01ReadyForDispatch", "Non-PS Thread Ready For Dispatch on Slice0 Subslice1 Thread Dispatcher",
-            "The percentage of time in which non-PS thread is ready for dispatch on slice0 subslice1 thread dispatcher",
-            "GPU/Thread Dispatcher", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_TD * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
-            METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, nullptr, nullptr, 36 );
-        if( metric )
-        {
-            MD_CHECK_CC_RET( metric->SetSnapshotReportReadEquation( "dw@0x0c dw@0xe0 FSUB" ));
-            MD_CHECK_CC_RET( metric->SetDeltaReportReadEquation( "qw@0x08 qw@0x170 FSUB" ));
-            MD_CHECK_CC_RET( metric->SetNormalizationEquation( "GpuDuration" ));
-            MD_CHECK_CC_RET( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
-            MD_CHECK_CC_RET( metric->SetMaxValueEquation( "100" ));
-        }
+        MD_CHECK_CC_RET( metric->SetSnapshotReportReadEquation( "dw@0x0c dw@0xe0 FSUB" ));
+        MD_CHECK_CC_RET( metric->SetDeltaReportReadEquation( "qw@0x08 qw@0x170 FSUB" ));
+        MD_CHECK_CC_RET( metric->SetNormalizationEquation( "GpuDuration" ));
+        MD_CHECK_CC_RET( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
+        MD_CHECK_CC_RET( metric->SetMaxValueEquation( "100" ));
     }
 
     availabilityEquation = "$SubsliceMask 4 AND";
-    if( MD_IS_INTERNAL_BUILD || metricsDevice->IsAvailabilityEquationTrue( availabilityEquation ) )
+    metric = metricSet->AddMetric( "NonPSThread02ReadyForDispatch", "Non-PS Thread Ready For Dispatch on Slice0 Subslice2 Thread Dispatcher",
+        "The percentage of time in which non-PS thread is ready for dispatch on slice0 subslice2 thread dispatcher",
+        "GPU/Thread Dispatcher", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_TD * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+        METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, nullptr, nullptr, 37 );
+    if( metric )
     {
-        metric = metricSet->AddMetric( "NonPSThread02ReadyForDispatch", "Non-PS Thread Ready For Dispatch on Slice0 Subslice2 Thread Dispatcher",
-            "The percentage of time in which non-PS thread is ready for dispatch on slice0 subslice2 thread dispatcher",
-            "GPU/Thread Dispatcher", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_TD * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
-            METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, nullptr, nullptr, 37 );
-        if( metric )
-        {
-            MD_CHECK_CC_RET( metric->SetSnapshotReportReadEquation( "dw@0x0c dw@0xe4 FSUB" ));
-            MD_CHECK_CC_RET( metric->SetDeltaReportReadEquation( "qw@0x08 qw@0x178 FSUB" ));
-            MD_CHECK_CC_RET( metric->SetNormalizationEquation( "GpuDuration" ));
-            MD_CHECK_CC_RET( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
-            MD_CHECK_CC_RET( metric->SetMaxValueEquation( "100" ));
-        }
+        MD_CHECK_CC_RET( metric->SetSnapshotReportReadEquation( "dw@0x0c dw@0xe4 FSUB" ));
+        MD_CHECK_CC_RET( metric->SetDeltaReportReadEquation( "qw@0x08 qw@0x178 FSUB" ));
+        MD_CHECK_CC_RET( metric->SetNormalizationEquation( "GpuDuration" ));
+        MD_CHECK_CC_RET( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
+        MD_CHECK_CC_RET( metric->SetMaxValueEquation( "100" ));
     }
 
     availabilityEquation = "$SubsliceMask 8 AND";
-    if( MD_IS_INTERNAL_BUILD || metricsDevice->IsAvailabilityEquationTrue( availabilityEquation ) )
+    metric = metricSet->AddMetric( "NonPSThread03ReadyForDispatch", "Non-PS Thread Ready For Dispatch on Slice0 Subslice3 Thread Dispatcher",
+        "The percentage of time in which non-PS thread is ready for dispatch on slice0 subslice3 thread dispatcher",
+        "GPU/Thread Dispatcher", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_TD * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+        METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, nullptr, nullptr, 38 );
+    if( metric )
     {
-        metric = metricSet->AddMetric( "NonPSThread03ReadyForDispatch", "Non-PS Thread Ready For Dispatch on Slice0 Subslice3 Thread Dispatcher",
-            "The percentage of time in which non-PS thread is ready for dispatch on slice0 subslice3 thread dispatcher",
-            "GPU/Thread Dispatcher", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_TD * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
-            METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, nullptr, nullptr, 38 );
-        if( metric )
-        {
-            MD_CHECK_CC_RET( metric->SetSnapshotReportReadEquation( "dw@0x0c dw@0xe8 FSUB" ));
-            MD_CHECK_CC_RET( metric->SetDeltaReportReadEquation( "qw@0x08 qw@0x180 FSUB" ));
-            MD_CHECK_CC_RET( metric->SetNormalizationEquation( "GpuDuration" ));
-            MD_CHECK_CC_RET( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
-            MD_CHECK_CC_RET( metric->SetMaxValueEquation( "100" ));
-        }
+        MD_CHECK_CC_RET( metric->SetSnapshotReportReadEquation( "dw@0x0c dw@0xe8 FSUB" ));
+        MD_CHECK_CC_RET( metric->SetDeltaReportReadEquation( "qw@0x08 qw@0x180 FSUB" ));
+        MD_CHECK_CC_RET( metric->SetNormalizationEquation( "GpuDuration" ));
+        MD_CHECK_CC_RET( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
+        MD_CHECK_CC_RET( metric->SetMaxValueEquation( "100" ));
     }
 
     availabilityEquation = "$SubsliceMask 16 AND";
-    if( MD_IS_INTERNAL_BUILD || metricsDevice->IsAvailabilityEquationTrue( availabilityEquation ) )
+    metric = metricSet->AddMetric( "NonPSThread04ReadyForDispatch", "Non-PS Thread Ready For Dispatch on Slice0 Subslice4 Thread Dispatcher",
+        "The percentage of time in which non-PS thread is ready for dispatch on slice0 subslice4 thread dispatcher",
+        "GPU/Thread Dispatcher", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_TD * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+        METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, nullptr, nullptr, 39 );
+    if( metric )
     {
-        metric = metricSet->AddMetric( "NonPSThread04ReadyForDispatch", "Non-PS Thread Ready For Dispatch on Slice0 Subslice4 Thread Dispatcher",
-            "The percentage of time in which non-PS thread is ready for dispatch on slice0 subslice4 thread dispatcher",
-            "GPU/Thread Dispatcher", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_TD * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
-            METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, nullptr, nullptr, 39 );
-        if( metric )
-        {
-            MD_CHECK_CC_RET( metric->SetSnapshotReportReadEquation( "dw@0x0c dw@0xec FSUB" ));
-            MD_CHECK_CC_RET( metric->SetDeltaReportReadEquation( "qw@0x08 qw@0x188 FSUB" ));
-            MD_CHECK_CC_RET( metric->SetNormalizationEquation( "GpuDuration" ));
-            MD_CHECK_CC_RET( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
-            MD_CHECK_CC_RET( metric->SetMaxValueEquation( "100" ));
-        }
+        MD_CHECK_CC_RET( metric->SetSnapshotReportReadEquation( "dw@0x0c dw@0xec FSUB" ));
+        MD_CHECK_CC_RET( metric->SetDeltaReportReadEquation( "qw@0x08 qw@0x188 FSUB" ));
+        MD_CHECK_CC_RET( metric->SetNormalizationEquation( "GpuDuration" ));
+        MD_CHECK_CC_RET( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
+        MD_CHECK_CC_RET( metric->SetMaxValueEquation( "100" ));
     }
 
     availabilityEquation = "$SubsliceMask 32 AND";
-    if( MD_IS_INTERNAL_BUILD || metricsDevice->IsAvailabilityEquationTrue( availabilityEquation ) )
+    metric = metricSet->AddMetric( "NonPSThread05ReadyForDispatch", "Non-PS Thread Ready For Dispatch on Slice0 Subslice5 Thread Dispatcher",
+        "The percentage of time in which non-PS thread is ready for dispatch on slice0 subslice5 thread dispatcher",
+        "GPU/Thread Dispatcher", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_TD * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+        METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, nullptr, nullptr, 40 );
+    if( metric )
     {
-        metric = metricSet->AddMetric( "NonPSThread05ReadyForDispatch", "Non-PS Thread Ready For Dispatch on Slice0 Subslice5 Thread Dispatcher",
-            "The percentage of time in which non-PS thread is ready for dispatch on slice0 subslice5 thread dispatcher",
-            "GPU/Thread Dispatcher", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_TD * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
-            METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, nullptr, nullptr, 40 );
-        if( metric )
-        {
-            MD_CHECK_CC_RET( metric->SetSnapshotReportReadEquation( "dw@0x0c dw@0xf0 FSUB" ));
-            MD_CHECK_CC_RET( metric->SetDeltaReportReadEquation( "qw@0x08 qw@0x190 FSUB" ));
-            MD_CHECK_CC_RET( metric->SetNormalizationEquation( "GpuDuration" ));
-            MD_CHECK_CC_RET( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
-            MD_CHECK_CC_RET( metric->SetMaxValueEquation( "100" ));
-        }
+        MD_CHECK_CC_RET( metric->SetSnapshotReportReadEquation( "dw@0x0c dw@0xf0 FSUB" ));
+        MD_CHECK_CC_RET( metric->SetDeltaReportReadEquation( "qw@0x08 qw@0x190 FSUB" ));
+        MD_CHECK_CC_RET( metric->SetNormalizationEquation( "GpuDuration" ));
+        MD_CHECK_CC_RET( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
+        MD_CHECK_CC_RET( metric->SetMaxValueEquation( "100" ));
     }
 
     availabilityEquation = "$SubsliceMask 64 AND";
-    if( MD_IS_INTERNAL_BUILD || metricsDevice->IsAvailabilityEquationTrue( availabilityEquation ) )
+    metric = metricSet->AddMetric( "NonPSThread06ReadyForDispatch", "Non-PS Thread Ready For Dispatch on Slice0 Subslice6 Thread Dispatcher",
+        "The percentage of time in which non-PS thread is ready for dispatch on slice0 subslice6 thread dispatcher",
+        "GPU/Thread Dispatcher", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_TD * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+        METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, nullptr, nullptr, 41 );
+    if( metric )
     {
-        metric = metricSet->AddMetric( "NonPSThread06ReadyForDispatch", "Non-PS Thread Ready For Dispatch on Slice0 Subslice6 Thread Dispatcher",
-            "The percentage of time in which non-PS thread is ready for dispatch on slice0 subslice6 thread dispatcher",
-            "GPU/Thread Dispatcher", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_TD * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
-            METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, nullptr, nullptr, 41 );
-        if( metric )
-        {
-            MD_CHECK_CC_RET( metric->SetSnapshotReportReadEquation( "dw@0x0c dw@0xf4 FSUB" ));
-            MD_CHECK_CC_RET( metric->SetDeltaReportReadEquation( "qw@0x08 qw@0x198 FSUB" ));
-            MD_CHECK_CC_RET( metric->SetNormalizationEquation( "GpuDuration" ));
-            MD_CHECK_CC_RET( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
-            MD_CHECK_CC_RET( metric->SetMaxValueEquation( "100" ));
-        }
+        MD_CHECK_CC_RET( metric->SetSnapshotReportReadEquation( "dw@0x0c dw@0xf4 FSUB" ));
+        MD_CHECK_CC_RET( metric->SetDeltaReportReadEquation( "qw@0x08 qw@0x198 FSUB" ));
+        MD_CHECK_CC_RET( metric->SetNormalizationEquation( "GpuDuration" ));
+        MD_CHECK_CC_RET( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
+        MD_CHECK_CC_RET( metric->SetMaxValueEquation( "100" ));
     }
 
     availabilityEquation = "$SubsliceMask 128 AND";
-    if( MD_IS_INTERNAL_BUILD || metricsDevice->IsAvailabilityEquationTrue( availabilityEquation ) )
+    metric = metricSet->AddMetric( "NonPSThread07ReadyForDispatch", "Non-PS Thread Ready For Dispatch on Slice0 Subslice7 Thread Dispatcher",
+        "The percentage of time in which non-PS thread is ready for dispatch on slice0 subslice7 thread dispatcher",
+        "GPU/Thread Dispatcher", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_TD * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+        METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, nullptr, nullptr, 42 );
+    if( metric )
     {
-        metric = metricSet->AddMetric( "NonPSThread07ReadyForDispatch", "Non-PS Thread Ready For Dispatch on Slice0 Subslice7 Thread Dispatcher",
-            "The percentage of time in which non-PS thread is ready for dispatch on slice0 subslice7 thread dispatcher",
-            "GPU/Thread Dispatcher", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_TD * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
-            METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, nullptr, nullptr, 42 );
-        if( metric )
-        {
-            MD_CHECK_CC_RET( metric->SetSnapshotReportReadEquation( "dw@0x0c dw@0xf8 FSUB" ));
-            MD_CHECK_CC_RET( metric->SetDeltaReportReadEquation( "qw@0x08 qw@0x1a0 FSUB" ));
-            MD_CHECK_CC_RET( metric->SetNormalizationEquation( "GpuDuration" ));
-            MD_CHECK_CC_RET( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
-            MD_CHECK_CC_RET( metric->SetMaxValueEquation( "100" ));
-        }
+        MD_CHECK_CC_RET( metric->SetSnapshotReportReadEquation( "dw@0x0c dw@0xf8 FSUB" ));
+        MD_CHECK_CC_RET( metric->SetDeltaReportReadEquation( "qw@0x08 qw@0x1a0 FSUB" ));
+        MD_CHECK_CC_RET( metric->SetNormalizationEquation( "GpuDuration" ));
+        MD_CHECK_CC_RET( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
+        MD_CHECK_CC_RET( metric->SetMaxValueEquation( "100" ));
     }
 
     availabilityEquation = nullptr;
@@ -11382,275 +11154,227 @@ static TCompletionCode CreateMetricSet_EHL_TDL_3( CMetricsDevice* metricsDevice,
     }
 
     availabilityEquation = "$SubsliceMask 1 AND";
-    if( MD_IS_INTERNAL_BUILD || metricsDevice->IsAvailabilityEquationTrue( availabilityEquation ) )
+    metric = metricSet->AddMetric( "ThreadHeader00ReadyPort0", "Thread Header Ready on Slice0 Subslice0 Thread Dispatcher Port 0",
+        "The percentage of time in which thread header is ready on slice0 subslice0 thread dispatcher port 0",
+        "GPU/Thread Dispatcher", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_TD * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+        METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, nullptr, nullptr, 35 );
+    if( metric )
     {
-        metric = metricSet->AddMetric( "ThreadHeader00ReadyPort0", "Thread Header Ready on Slice0 Subslice0 Thread Dispatcher Port 0",
-            "The percentage of time in which thread header is ready on slice0 subslice0 thread dispatcher port 0",
-            "GPU/Thread Dispatcher", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_TD * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
-            METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, nullptr, nullptr, 35 );
-        if( metric )
-        {
-            MD_CHECK_CC_RET( metric->SetSnapshotReportReadEquation( "dw@0xc0" ));
-            MD_CHECK_CC_RET( metric->SetDeltaReportReadEquation( "qw@0x130" ));
-            MD_CHECK_CC_RET( metric->SetNormalizationEquation( "GpuDuration" ));
-            MD_CHECK_CC_RET( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
-            MD_CHECK_CC_RET( metric->SetMaxValueEquation( "100" ));
-        }
+        MD_CHECK_CC_RET( metric->SetSnapshotReportReadEquation( "dw@0xc0" ));
+        MD_CHECK_CC_RET( metric->SetDeltaReportReadEquation( "qw@0x130" ));
+        MD_CHECK_CC_RET( metric->SetNormalizationEquation( "GpuDuration" ));
+        MD_CHECK_CC_RET( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
+        MD_CHECK_CC_RET( metric->SetMaxValueEquation( "100" ));
     }
 
     availabilityEquation = "$SubsliceMask 1 AND";
-    if( MD_IS_INTERNAL_BUILD || metricsDevice->IsAvailabilityEquationTrue( availabilityEquation ) )
+    metric = metricSet->AddMetric( "ThreadHeader00ReadyPort1", "Thread Header Ready on Slice0 Subslice0 Thread Dispatcher Port 1",
+        "The percentage of time in which thread header is ready on slice0 subslice0 thread dispatcher port 1",
+        "GPU/Thread Dispatcher", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_TD * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+        METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, nullptr, nullptr, 36 );
+    if( metric )
     {
-        metric = metricSet->AddMetric( "ThreadHeader00ReadyPort1", "Thread Header Ready on Slice0 Subslice0 Thread Dispatcher Port 1",
-            "The percentage of time in which thread header is ready on slice0 subslice0 thread dispatcher port 1",
-            "GPU/Thread Dispatcher", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_TD * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
-            METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, nullptr, nullptr, 36 );
-        if( metric )
-        {
-            MD_CHECK_CC_RET( metric->SetSnapshotReportReadEquation( "dw@0xc4" ));
-            MD_CHECK_CC_RET( metric->SetDeltaReportReadEquation( "qw@0x138" ));
-            MD_CHECK_CC_RET( metric->SetNormalizationEquation( "GpuDuration" ));
-            MD_CHECK_CC_RET( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
-            MD_CHECK_CC_RET( metric->SetMaxValueEquation( "100" ));
-        }
+        MD_CHECK_CC_RET( metric->SetSnapshotReportReadEquation( "dw@0xc4" ));
+        MD_CHECK_CC_RET( metric->SetDeltaReportReadEquation( "qw@0x138" ));
+        MD_CHECK_CC_RET( metric->SetNormalizationEquation( "GpuDuration" ));
+        MD_CHECK_CC_RET( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
+        MD_CHECK_CC_RET( metric->SetMaxValueEquation( "100" ));
     }
 
     availabilityEquation = "$SubsliceMask 2 AND";
-    if( MD_IS_INTERNAL_BUILD || metricsDevice->IsAvailabilityEquationTrue( availabilityEquation ) )
+    metric = metricSet->AddMetric( "ThreadHeader01ReadyPort0", "Thread Header Ready on Slice0 Subslice1 Thread Dispatcher Port 0",
+        "The percentage of time in which thread header is ready on slice0 subslice1 thread dispatcher port 0",
+        "GPU/Thread Dispatcher", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_TD * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+        METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, nullptr, nullptr, 37 );
+    if( metric )
     {
-        metric = metricSet->AddMetric( "ThreadHeader01ReadyPort0", "Thread Header Ready on Slice0 Subslice1 Thread Dispatcher Port 0",
-            "The percentage of time in which thread header is ready on slice0 subslice1 thread dispatcher port 0",
-            "GPU/Thread Dispatcher", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_TD * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
-            METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, nullptr, nullptr, 37 );
-        if( metric )
-        {
-            MD_CHECK_CC_RET( metric->SetSnapshotReportReadEquation( "dw@0xc8" ));
-            MD_CHECK_CC_RET( metric->SetDeltaReportReadEquation( "qw@0x140" ));
-            MD_CHECK_CC_RET( metric->SetNormalizationEquation( "GpuDuration" ));
-            MD_CHECK_CC_RET( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
-            MD_CHECK_CC_RET( metric->SetMaxValueEquation( "100" ));
-        }
+        MD_CHECK_CC_RET( metric->SetSnapshotReportReadEquation( "dw@0xc8" ));
+        MD_CHECK_CC_RET( metric->SetDeltaReportReadEquation( "qw@0x140" ));
+        MD_CHECK_CC_RET( metric->SetNormalizationEquation( "GpuDuration" ));
+        MD_CHECK_CC_RET( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
+        MD_CHECK_CC_RET( metric->SetMaxValueEquation( "100" ));
     }
 
     availabilityEquation = "$SubsliceMask 2 AND";
-    if( MD_IS_INTERNAL_BUILD || metricsDevice->IsAvailabilityEquationTrue( availabilityEquation ) )
+    metric = metricSet->AddMetric( "ThreadHeader01ReadyPort1", "Thread Header Ready on Slice0 Subslice1 Thread Dispatcher Port 1",
+        "The percentage of time in which thread header is ready on slice0 subslice1 thread dispatcher port 1",
+        "GPU/Thread Dispatcher", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_TD * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+        METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, nullptr, nullptr, 38 );
+    if( metric )
     {
-        metric = metricSet->AddMetric( "ThreadHeader01ReadyPort1", "Thread Header Ready on Slice0 Subslice1 Thread Dispatcher Port 1",
-            "The percentage of time in which thread header is ready on slice0 subslice1 thread dispatcher port 1",
-            "GPU/Thread Dispatcher", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_TD * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
-            METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, nullptr, nullptr, 38 );
-        if( metric )
-        {
-            MD_CHECK_CC_RET( metric->SetSnapshotReportReadEquation( "dw@0xcc" ));
-            MD_CHECK_CC_RET( metric->SetDeltaReportReadEquation( "qw@0x148" ));
-            MD_CHECK_CC_RET( metric->SetNormalizationEquation( "GpuDuration" ));
-            MD_CHECK_CC_RET( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
-            MD_CHECK_CC_RET( metric->SetMaxValueEquation( "100" ));
-        }
+        MD_CHECK_CC_RET( metric->SetSnapshotReportReadEquation( "dw@0xcc" ));
+        MD_CHECK_CC_RET( metric->SetDeltaReportReadEquation( "qw@0x148" ));
+        MD_CHECK_CC_RET( metric->SetNormalizationEquation( "GpuDuration" ));
+        MD_CHECK_CC_RET( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
+        MD_CHECK_CC_RET( metric->SetMaxValueEquation( "100" ));
     }
 
     availabilityEquation = "$SubsliceMask 4 AND";
-    if( MD_IS_INTERNAL_BUILD || metricsDevice->IsAvailabilityEquationTrue( availabilityEquation ) )
+    metric = metricSet->AddMetric( "ThreadHeader02ReadyPort0", "Thread Header Ready on Slice0 Subslice2 Thread Dispatcher Port 0",
+        "The percentage of time in which thread header is ready on slice0 subslice2 thread dispatcher port 0",
+        "GPU/Thread Dispatcher", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_TD * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+        METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, nullptr, nullptr, 39 );
+    if( metric )
     {
-        metric = metricSet->AddMetric( "ThreadHeader02ReadyPort0", "Thread Header Ready on Slice0 Subslice2 Thread Dispatcher Port 0",
-            "The percentage of time in which thread header is ready on slice0 subslice2 thread dispatcher port 0",
-            "GPU/Thread Dispatcher", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_TD * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
-            METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, nullptr, nullptr, 39 );
-        if( metric )
-        {
-            MD_CHECK_CC_RET( metric->SetSnapshotReportReadEquation( "dw@0xd0" ));
-            MD_CHECK_CC_RET( metric->SetDeltaReportReadEquation( "qw@0x150" ));
-            MD_CHECK_CC_RET( metric->SetNormalizationEquation( "GpuDuration" ));
-            MD_CHECK_CC_RET( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
-            MD_CHECK_CC_RET( metric->SetMaxValueEquation( "100" ));
-        }
+        MD_CHECK_CC_RET( metric->SetSnapshotReportReadEquation( "dw@0xd0" ));
+        MD_CHECK_CC_RET( metric->SetDeltaReportReadEquation( "qw@0x150" ));
+        MD_CHECK_CC_RET( metric->SetNormalizationEquation( "GpuDuration" ));
+        MD_CHECK_CC_RET( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
+        MD_CHECK_CC_RET( metric->SetMaxValueEquation( "100" ));
     }
 
     availabilityEquation = "$SubsliceMask 4 AND";
-    if( MD_IS_INTERNAL_BUILD || metricsDevice->IsAvailabilityEquationTrue( availabilityEquation ) )
+    metric = metricSet->AddMetric( "ThreadHeader02ReadyPort1", "Thread Header Ready on Slice0 Subslice2 Thread Dispatcher Port 1",
+        "The percentage of time in which thread header is ready on slice0 subslice2 thread dispatcher port 1",
+        "GPU/Thread Dispatcher", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_TD * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+        METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, nullptr, nullptr, 40 );
+    if( metric )
     {
-        metric = metricSet->AddMetric( "ThreadHeader02ReadyPort1", "Thread Header Ready on Slice0 Subslice2 Thread Dispatcher Port 1",
-            "The percentage of time in which thread header is ready on slice0 subslice2 thread dispatcher port 1",
-            "GPU/Thread Dispatcher", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_TD * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
-            METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, nullptr, nullptr, 40 );
-        if( metric )
-        {
-            MD_CHECK_CC_RET( metric->SetSnapshotReportReadEquation( "dw@0xd4" ));
-            MD_CHECK_CC_RET( metric->SetDeltaReportReadEquation( "qw@0x158" ));
-            MD_CHECK_CC_RET( metric->SetNormalizationEquation( "GpuDuration" ));
-            MD_CHECK_CC_RET( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
-            MD_CHECK_CC_RET( metric->SetMaxValueEquation( "100" ));
-        }
+        MD_CHECK_CC_RET( metric->SetSnapshotReportReadEquation( "dw@0xd4" ));
+        MD_CHECK_CC_RET( metric->SetDeltaReportReadEquation( "qw@0x158" ));
+        MD_CHECK_CC_RET( metric->SetNormalizationEquation( "GpuDuration" ));
+        MD_CHECK_CC_RET( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
+        MD_CHECK_CC_RET( metric->SetMaxValueEquation( "100" ));
     }
 
     availabilityEquation = "$SubsliceMask 8 AND";
-    if( MD_IS_INTERNAL_BUILD || metricsDevice->IsAvailabilityEquationTrue( availabilityEquation ) )
+    metric = metricSet->AddMetric( "ThreadHeader03ReadyPort0", "Thread Header Ready on Slice0 Subslice3 Thread Dispatcher Port 0",
+        "The percentage of time in which thread header is ready on slice0 subslice3 thread dispatcher port 0",
+        "GPU/Thread Dispatcher", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_TD * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+        METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, nullptr, nullptr, 41 );
+    if( metric )
     {
-        metric = metricSet->AddMetric( "ThreadHeader03ReadyPort0", "Thread Header Ready on Slice0 Subslice3 Thread Dispatcher Port 0",
-            "The percentage of time in which thread header is ready on slice0 subslice3 thread dispatcher port 0",
-            "GPU/Thread Dispatcher", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_TD * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
-            METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, nullptr, nullptr, 41 );
-        if( metric )
-        {
-            MD_CHECK_CC_RET( metric->SetSnapshotReportReadEquation( "dw@0xd8" ));
-            MD_CHECK_CC_RET( metric->SetDeltaReportReadEquation( "qw@0x160" ));
-            MD_CHECK_CC_RET( metric->SetNormalizationEquation( "GpuDuration" ));
-            MD_CHECK_CC_RET( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
-            MD_CHECK_CC_RET( metric->SetMaxValueEquation( "100" ));
-        }
+        MD_CHECK_CC_RET( metric->SetSnapshotReportReadEquation( "dw@0xd8" ));
+        MD_CHECK_CC_RET( metric->SetDeltaReportReadEquation( "qw@0x160" ));
+        MD_CHECK_CC_RET( metric->SetNormalizationEquation( "GpuDuration" ));
+        MD_CHECK_CC_RET( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
+        MD_CHECK_CC_RET( metric->SetMaxValueEquation( "100" ));
     }
 
     availabilityEquation = "$SubsliceMask 8 AND";
-    if( MD_IS_INTERNAL_BUILD || metricsDevice->IsAvailabilityEquationTrue( availabilityEquation ) )
+    metric = metricSet->AddMetric( "ThreadHeader03ReadyPort1", "Thread Header Ready on Slice0 Subslice3 Thread Dispatcher Port 1",
+        "The percentage of time in which thread header is ready on slice0 subslice3 thread dispatcher port 1",
+        "GPU/Thread Dispatcher", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_TD * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+        METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, nullptr, nullptr, 42 );
+    if( metric )
     {
-        metric = metricSet->AddMetric( "ThreadHeader03ReadyPort1", "Thread Header Ready on Slice0 Subslice3 Thread Dispatcher Port 1",
-            "The percentage of time in which thread header is ready on slice0 subslice3 thread dispatcher port 1",
-            "GPU/Thread Dispatcher", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_TD * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
-            METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, nullptr, nullptr, 42 );
-        if( metric )
-        {
-            MD_CHECK_CC_RET( metric->SetSnapshotReportReadEquation( "dw@0xdc" ));
-            MD_CHECK_CC_RET( metric->SetDeltaReportReadEquation( "qw@0x168" ));
-            MD_CHECK_CC_RET( metric->SetNormalizationEquation( "GpuDuration" ));
-            MD_CHECK_CC_RET( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
-            MD_CHECK_CC_RET( metric->SetMaxValueEquation( "100" ));
-        }
+        MD_CHECK_CC_RET( metric->SetSnapshotReportReadEquation( "dw@0xdc" ));
+        MD_CHECK_CC_RET( metric->SetDeltaReportReadEquation( "qw@0x168" ));
+        MD_CHECK_CC_RET( metric->SetNormalizationEquation( "GpuDuration" ));
+        MD_CHECK_CC_RET( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
+        MD_CHECK_CC_RET( metric->SetMaxValueEquation( "100" ));
     }
 
     availabilityEquation = "$SubsliceMask 16 AND";
-    if( MD_IS_INTERNAL_BUILD || metricsDevice->IsAvailabilityEquationTrue( availabilityEquation ) )
+    metric = metricSet->AddMetric( "ThreadHeader04ReadyPort0", "Thread Header Ready on Slice0 Subslice4 Thread Dispatcher Port 0",
+        "The percentage of time in which thread header is ready on slice0 subslice4 thread dispatcher port 0",
+        "GPU/Thread Dispatcher", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_TD * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+        METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, nullptr, nullptr, 43 );
+    if( metric )
     {
-        metric = metricSet->AddMetric( "ThreadHeader04ReadyPort0", "Thread Header Ready on Slice0 Subslice4 Thread Dispatcher Port 0",
-            "The percentage of time in which thread header is ready on slice0 subslice4 thread dispatcher port 0",
-            "GPU/Thread Dispatcher", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_TD * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
-            METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, nullptr, nullptr, 43 );
-        if( metric )
-        {
-            MD_CHECK_CC_RET( metric->SetSnapshotReportReadEquation( "dw@0xe0" ));
-            MD_CHECK_CC_RET( metric->SetDeltaReportReadEquation( "qw@0x170" ));
-            MD_CHECK_CC_RET( metric->SetNormalizationEquation( "GpuDuration" ));
-            MD_CHECK_CC_RET( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
-            MD_CHECK_CC_RET( metric->SetMaxValueEquation( "100" ));
-        }
+        MD_CHECK_CC_RET( metric->SetSnapshotReportReadEquation( "dw@0xe0" ));
+        MD_CHECK_CC_RET( metric->SetDeltaReportReadEquation( "qw@0x170" ));
+        MD_CHECK_CC_RET( metric->SetNormalizationEquation( "GpuDuration" ));
+        MD_CHECK_CC_RET( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
+        MD_CHECK_CC_RET( metric->SetMaxValueEquation( "100" ));
     }
 
     availabilityEquation = "$SubsliceMask 16 AND";
-    if( MD_IS_INTERNAL_BUILD || metricsDevice->IsAvailabilityEquationTrue( availabilityEquation ) )
+    metric = metricSet->AddMetric( "ThreadHeader04ReadyPort1", "Thread Header Ready on Slice0 Subslice4 Thread Dispatcher Port 1",
+        "The percentage of time in which thread header is ready on slice0 subslice4 thread dispatcher port 1",
+        "GPU/Thread Dispatcher", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_TD * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+        METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, nullptr, nullptr, 44 );
+    if( metric )
     {
-        metric = metricSet->AddMetric( "ThreadHeader04ReadyPort1", "Thread Header Ready on Slice0 Subslice4 Thread Dispatcher Port 1",
-            "The percentage of time in which thread header is ready on slice0 subslice4 thread dispatcher port 1",
-            "GPU/Thread Dispatcher", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_TD * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
-            METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, nullptr, nullptr, 44 );
-        if( metric )
-        {
-            MD_CHECK_CC_RET( metric->SetSnapshotReportReadEquation( "dw@0xe4" ));
-            MD_CHECK_CC_RET( metric->SetDeltaReportReadEquation( "qw@0x178" ));
-            MD_CHECK_CC_RET( metric->SetNormalizationEquation( "GpuDuration" ));
-            MD_CHECK_CC_RET( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
-            MD_CHECK_CC_RET( metric->SetMaxValueEquation( "100" ));
-        }
+        MD_CHECK_CC_RET( metric->SetSnapshotReportReadEquation( "dw@0xe4" ));
+        MD_CHECK_CC_RET( metric->SetDeltaReportReadEquation( "qw@0x178" ));
+        MD_CHECK_CC_RET( metric->SetNormalizationEquation( "GpuDuration" ));
+        MD_CHECK_CC_RET( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
+        MD_CHECK_CC_RET( metric->SetMaxValueEquation( "100" ));
     }
 
     availabilityEquation = "$SubsliceMask 32 AND";
-    if( MD_IS_INTERNAL_BUILD || metricsDevice->IsAvailabilityEquationTrue( availabilityEquation ) )
+    metric = metricSet->AddMetric( "ThreadHeader05ReadyPort0", "Thread Header Ready on Slice0 Subslice5 Thread Dispatcher Port 0",
+        "The percentage of time in which thread header is ready on slice0 subslice5 thread dispatcher port 0",
+        "GPU/Thread Dispatcher", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_TD * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+        METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, nullptr, nullptr, 45 );
+    if( metric )
     {
-        metric = metricSet->AddMetric( "ThreadHeader05ReadyPort0", "Thread Header Ready on Slice0 Subslice5 Thread Dispatcher Port 0",
-            "The percentage of time in which thread header is ready on slice0 subslice5 thread dispatcher port 0",
-            "GPU/Thread Dispatcher", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_TD * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
-            METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, nullptr, nullptr, 45 );
-        if( metric )
-        {
-            MD_CHECK_CC_RET( metric->SetSnapshotReportReadEquation( "dw@0xe8" ));
-            MD_CHECK_CC_RET( metric->SetDeltaReportReadEquation( "qw@0x180" ));
-            MD_CHECK_CC_RET( metric->SetNormalizationEquation( "GpuDuration" ));
-            MD_CHECK_CC_RET( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
-            MD_CHECK_CC_RET( metric->SetMaxValueEquation( "100" ));
-        }
+        MD_CHECK_CC_RET( metric->SetSnapshotReportReadEquation( "dw@0xe8" ));
+        MD_CHECK_CC_RET( metric->SetDeltaReportReadEquation( "qw@0x180" ));
+        MD_CHECK_CC_RET( metric->SetNormalizationEquation( "GpuDuration" ));
+        MD_CHECK_CC_RET( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
+        MD_CHECK_CC_RET( metric->SetMaxValueEquation( "100" ));
     }
 
     availabilityEquation = "$SubsliceMask 32 AND";
-    if( MD_IS_INTERNAL_BUILD || metricsDevice->IsAvailabilityEquationTrue( availabilityEquation ) )
+    metric = metricSet->AddMetric( "ThreadHeader05ReadyPort1", "Thread Header Ready on Slice0 Subslice5 Thread Dispatcher Port 1",
+        "The percentage of time in which thread header is ready on slice0 subslice5 thread dispatcher port 1",
+        "GPU/Thread Dispatcher", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_TD * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+        METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, nullptr, nullptr, 46 );
+    if( metric )
     {
-        metric = metricSet->AddMetric( "ThreadHeader05ReadyPort1", "Thread Header Ready on Slice0 Subslice5 Thread Dispatcher Port 1",
-            "The percentage of time in which thread header is ready on slice0 subslice5 thread dispatcher port 1",
-            "GPU/Thread Dispatcher", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_TD * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
-            METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, nullptr, nullptr, 46 );
-        if( metric )
-        {
-            MD_CHECK_CC_RET( metric->SetSnapshotReportReadEquation( "dw@0xec" ));
-            MD_CHECK_CC_RET( metric->SetDeltaReportReadEquation( "qw@0x188" ));
-            MD_CHECK_CC_RET( metric->SetNormalizationEquation( "GpuDuration" ));
-            MD_CHECK_CC_RET( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
-            MD_CHECK_CC_RET( metric->SetMaxValueEquation( "100" ));
-        }
+        MD_CHECK_CC_RET( metric->SetSnapshotReportReadEquation( "dw@0xec" ));
+        MD_CHECK_CC_RET( metric->SetDeltaReportReadEquation( "qw@0x188" ));
+        MD_CHECK_CC_RET( metric->SetNormalizationEquation( "GpuDuration" ));
+        MD_CHECK_CC_RET( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
+        MD_CHECK_CC_RET( metric->SetMaxValueEquation( "100" ));
     }
 
     availabilityEquation = "$SubsliceMask 64 AND";
-    if( MD_IS_INTERNAL_BUILD || metricsDevice->IsAvailabilityEquationTrue( availabilityEquation ) )
+    metric = metricSet->AddMetric( "ThreadHeader06ReadyPort0", "Thread Header Ready on Slice0 Subslice6 Thread Dispatcher Port 0",
+        "The percentage of time in which thread header is ready on slice0 subslice6 thread dispatcher port 0",
+        "GPU/Thread Dispatcher", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_TD * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+        METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, nullptr, nullptr, 47 );
+    if( metric )
     {
-        metric = metricSet->AddMetric( "ThreadHeader06ReadyPort0", "Thread Header Ready on Slice0 Subslice6 Thread Dispatcher Port 0",
-            "The percentage of time in which thread header is ready on slice0 subslice6 thread dispatcher port 0",
-            "GPU/Thread Dispatcher", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_TD * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
-            METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, nullptr, nullptr, 47 );
-        if( metric )
-        {
-            MD_CHECK_CC_RET( metric->SetSnapshotReportReadEquation( "dw@0xf0" ));
-            MD_CHECK_CC_RET( metric->SetDeltaReportReadEquation( "qw@0x190" ));
-            MD_CHECK_CC_RET( metric->SetNormalizationEquation( "GpuDuration" ));
-            MD_CHECK_CC_RET( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
-            MD_CHECK_CC_RET( metric->SetMaxValueEquation( "100" ));
-        }
+        MD_CHECK_CC_RET( metric->SetSnapshotReportReadEquation( "dw@0xf0" ));
+        MD_CHECK_CC_RET( metric->SetDeltaReportReadEquation( "qw@0x190" ));
+        MD_CHECK_CC_RET( metric->SetNormalizationEquation( "GpuDuration" ));
+        MD_CHECK_CC_RET( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
+        MD_CHECK_CC_RET( metric->SetMaxValueEquation( "100" ));
     }
 
     availabilityEquation = "$SubsliceMask 64 AND";
-    if( MD_IS_INTERNAL_BUILD || metricsDevice->IsAvailabilityEquationTrue( availabilityEquation ) )
+    metric = metricSet->AddMetric( "ThreadHeader06ReadyPort1", "Thread Header Ready on Slice0 Subslice6 Thread Dispatcher Port 1",
+        "The percentage of time in which thread header is ready on slice0 subslice6 thread dispatcher port 1",
+        "GPU/Thread Dispatcher", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_TD * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+        METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, nullptr, nullptr, 48 );
+    if( metric )
     {
-        metric = metricSet->AddMetric( "ThreadHeader06ReadyPort1", "Thread Header Ready on Slice0 Subslice6 Thread Dispatcher Port 1",
-            "The percentage of time in which thread header is ready on slice0 subslice6 thread dispatcher port 1",
-            "GPU/Thread Dispatcher", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_TD * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
-            METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, nullptr, nullptr, 48 );
-        if( metric )
-        {
-            MD_CHECK_CC_RET( metric->SetSnapshotReportReadEquation( "dw@0xf4" ));
-            MD_CHECK_CC_RET( metric->SetDeltaReportReadEquation( "qw@0x198" ));
-            MD_CHECK_CC_RET( metric->SetNormalizationEquation( "GpuDuration" ));
-            MD_CHECK_CC_RET( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
-            MD_CHECK_CC_RET( metric->SetMaxValueEquation( "100" ));
-        }
+        MD_CHECK_CC_RET( metric->SetSnapshotReportReadEquation( "dw@0xf4" ));
+        MD_CHECK_CC_RET( metric->SetDeltaReportReadEquation( "qw@0x198" ));
+        MD_CHECK_CC_RET( metric->SetNormalizationEquation( "GpuDuration" ));
+        MD_CHECK_CC_RET( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
+        MD_CHECK_CC_RET( metric->SetMaxValueEquation( "100" ));
     }
 
     availabilityEquation = "$SubsliceMask 128 AND";
-    if( MD_IS_INTERNAL_BUILD || metricsDevice->IsAvailabilityEquationTrue( availabilityEquation ) )
+    metric = metricSet->AddMetric( "ThreadHeader07ReadyPort0", "Thread Header Ready on Slice0 Subslice7 Thread Dispatcher Port 0",
+        "The percentage of time in which thread header is ready on slice0 subslice7 thread dispatcher port 0",
+        "GPU/Thread Dispatcher", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_TD * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+        METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, nullptr, nullptr, 49 );
+    if( metric )
     {
-        metric = metricSet->AddMetric( "ThreadHeader07ReadyPort0", "Thread Header Ready on Slice0 Subslice7 Thread Dispatcher Port 0",
-            "The percentage of time in which thread header is ready on slice0 subslice7 thread dispatcher port 0",
-            "GPU/Thread Dispatcher", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_TD * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
-            METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, nullptr, nullptr, 49 );
-        if( metric )
-        {
-            MD_CHECK_CC_RET( metric->SetSnapshotReportReadEquation( "dw@0xf8" ));
-            MD_CHECK_CC_RET( metric->SetDeltaReportReadEquation( "qw@0x1a0" ));
-            MD_CHECK_CC_RET( metric->SetNormalizationEquation( "GpuDuration" ));
-            MD_CHECK_CC_RET( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
-            MD_CHECK_CC_RET( metric->SetMaxValueEquation( "100" ));
-        }
+        MD_CHECK_CC_RET( metric->SetSnapshotReportReadEquation( "dw@0xf8" ));
+        MD_CHECK_CC_RET( metric->SetDeltaReportReadEquation( "qw@0x1a0" ));
+        MD_CHECK_CC_RET( metric->SetNormalizationEquation( "GpuDuration" ));
+        MD_CHECK_CC_RET( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
+        MD_CHECK_CC_RET( metric->SetMaxValueEquation( "100" ));
     }
 
     availabilityEquation = "$SubsliceMask 128 AND";
-    if( MD_IS_INTERNAL_BUILD || metricsDevice->IsAvailabilityEquationTrue( availabilityEquation ) )
+    metric = metricSet->AddMetric( "ThreadHeader07ReadyPort1", "Thread Header Ready on Slice0 Subslice7 Thread Dispatcher Port 1",
+        "The percentage of time in which thread header is ready on slice0 subslice7 thread dispatcher port 1",
+        "GPU/Thread Dispatcher", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_TD * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+        METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, nullptr, nullptr, 50 );
+    if( metric )
     {
-        metric = metricSet->AddMetric( "ThreadHeader07ReadyPort1", "Thread Header Ready on Slice0 Subslice7 Thread Dispatcher Port 1",
-            "The percentage of time in which thread header is ready on slice0 subslice7 thread dispatcher port 1",
-            "GPU/Thread Dispatcher", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_TD * 0x10000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
-            METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, nullptr, nullptr, 50 );
-        if( metric )
-        {
-            MD_CHECK_CC_RET( metric->SetSnapshotReportReadEquation( "dw@0xfc" ));
-            MD_CHECK_CC_RET( metric->SetDeltaReportReadEquation( "qw@0x1a8" ));
-            MD_CHECK_CC_RET( metric->SetNormalizationEquation( "GpuDuration" ));
-            MD_CHECK_CC_RET( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
-            MD_CHECK_CC_RET( metric->SetMaxValueEquation( "100" ));
-        }
+        MD_CHECK_CC_RET( metric->SetSnapshotReportReadEquation( "dw@0xfc" ));
+        MD_CHECK_CC_RET( metric->SetDeltaReportReadEquation( "qw@0x1a8" ));
+        MD_CHECK_CC_RET( metric->SetNormalizationEquation( "GpuDuration" ));
+        MD_CHECK_CC_RET( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
+        MD_CHECK_CC_RET( metric->SetMaxValueEquation( "100" ));
     }
 
         MD_CHECK_CC_RET( metricSet->AddStartRegisterSet( 0, 0 ));
@@ -12209,10 +11933,12 @@ static TCompletionCode CreateMetricSet_EHL_TestOa( CMetricsDevice* metricsDevice
         MD_CHECK_CC_RET( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
     }
 
-        information = concurrentGroup->AddInformation( "StreamMarker", "Stream marker",
+        uint32_t informationCount = concurrentGroup->GetInformationCount();
+
+        information = metricSet->AddInformation( "StreamMarker", "Stream marker",
             "Stream marker value.",
             "Report Meta Data", API_TYPE_IOSTREAM,
-            INFORMATION_TYPE_VALUE, nullptr, nullptr, 0 );
+            INFORMATION_TYPE_VALUE, nullptr, nullptr, informationCount++ );
         if( information )
         {
             MD_CHECK_CC_RET( information->SetSnapshotReportReadEquation( "dw@0x5c dw@0x0 19 >> 0x4 AND 0x4 == UMUL" ));
@@ -12277,10 +12003,12 @@ TCompletionCode CreateMetricTreeEHL_OA( CMetricsDevice* metricsDevice, CConcurre
     if( metricsDevice->IsPlatformTypeOf( platformMask ) )
     {
 
+    uint32_t informationCount = 0;
+
         information = concurrentGroup->AddInformation( "QueryBeginTime", "Query Begin Time",
             "The measurement begin time.",
             "Report Meta Data", API_TYPE_VULKAN|API_TYPE_OGL4_X|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
-            INFORMATION_TYPE_TIMESTAMP, "ns", nullptr, 0 );
+            INFORMATION_TYPE_TIMESTAMP, "ns", nullptr, informationCount++ );
         if( information )
         {
             MD_CHECK_CC_RET( information->SetSnapshotReportReadEquation( "dw@0x04 1000000000 UMUL $GpuTimestampFrequency UDIV" ));
@@ -12291,7 +12019,7 @@ TCompletionCode CreateMetricTreeEHL_OA( CMetricsDevice* metricsDevice, CConcurre
         information = concurrentGroup->AddInformation( "CoreFrequencyMHz", "GPU Core Frequency",
             "The last GPU core (unslice) frequency in the measurement.",
             "Report Meta Data", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
-            INFORMATION_TYPE_VALUE, "MHz", nullptr, 1 );
+            INFORMATION_TYPE_VALUE, "MHz", nullptr, informationCount++ );
         if( information )
         {
             MD_CHECK_CC_RET( information->SetSnapshotReportReadEquation( "dw@0x0 0x1ff AND 16666 UMUL 1000 UDIV" ));
@@ -12301,7 +12029,7 @@ TCompletionCode CreateMetricTreeEHL_OA( CMetricsDevice* metricsDevice, CConcurre
         information = concurrentGroup->AddInformation( "EuSliceFrequencyMHz", "EU Slice Frequency",
             "The last GPU Execution Unit slice frequency in the measurement.",
             "Report Meta Data", API_TYPE_IOSTREAM,
-            INFORMATION_TYPE_VALUE, "MHz", nullptr, 2 );
+            INFORMATION_TYPE_VALUE, "MHz", nullptr, informationCount++ );
         if( information )
         {
             MD_CHECK_CC_RET( information->SetSnapshotReportReadEquation( "dw@0x0 25 >> dw@0x0 9 >> 0x3 AND OR 16666 UMUL 1000 UDIV" ));
@@ -12310,7 +12038,7 @@ TCompletionCode CreateMetricTreeEHL_OA( CMetricsDevice* metricsDevice, CConcurre
         information = concurrentGroup->AddInformation( "ReportReason", "Report Reason",
             "The reason of the report.",
             "Report Meta Data", API_TYPE_IOSTREAM,
-            INFORMATION_TYPE_REPORT_REASON, nullptr, nullptr, 3 );
+            INFORMATION_TYPE_REPORT_REASON, nullptr, nullptr, informationCount++ );
         if( information )
         {
             MD_CHECK_CC_RET( information->SetSnapshotReportReadEquation( "dw@0x0 19 >> 0x3f AND" ));
@@ -12319,7 +12047,7 @@ TCompletionCode CreateMetricTreeEHL_OA( CMetricsDevice* metricsDevice, CConcurre
         information = concurrentGroup->AddInformation( "ContextIdValid", "Context ID Valid",
             "When set indicates render context is valid",
             "Report Meta Data", API_TYPE_IOSTREAM,
-            INFORMATION_TYPE_FLAG, nullptr, nullptr, 4 );
+            INFORMATION_TYPE_FLAG, nullptr, nullptr, informationCount++ );
         if( information )
         {
             MD_CHECK_CC_RET( information->SetSnapshotReportReadEquation( "dw@0x0 16 >> 0x1 AND" ));
@@ -12328,7 +12056,7 @@ TCompletionCode CreateMetricTreeEHL_OA( CMetricsDevice* metricsDevice, CConcurre
         information = concurrentGroup->AddInformation( "ContextId", "Context ID",
             "The context tag in which report has been taken.",
             "Report Meta Data", API_TYPE_IOSTREAM,
-            INFORMATION_TYPE_CONTEXT_ID_TAG, nullptr, nullptr, 5 );
+            INFORMATION_TYPE_CONTEXT_ID_TAG, nullptr, nullptr, informationCount++ );
         if( information )
         {
             MD_CHECK_CC_RET( information->SetSnapshotReportReadEquation( "dw@0x08 0xffbfffff AND dw@0x0 16 >> 0x1 AND UMUL" ));
@@ -12337,7 +12065,7 @@ TCompletionCode CreateMetricTreeEHL_OA( CMetricsDevice* metricsDevice, CConcurre
         information = concurrentGroup->AddInformation( "CoreFrequencyChanged", "GPU Core Frequency Changed",
             "The flag indicating that GPU core frequency has changed.",
             "Exception", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
-            INFORMATION_TYPE_FLAG, nullptr, nullptr, 7 );
+            INFORMATION_TYPE_FLAG, nullptr, nullptr, informationCount++ );
         if( information )
         {
             MD_CHECK_CC_RET( information->SetDeltaReportReadEquation( "dw@0x204" ));
@@ -12346,7 +12074,7 @@ TCompletionCode CreateMetricTreeEHL_OA( CMetricsDevice* metricsDevice, CConcurre
         information = concurrentGroup->AddInformation( "QuerySplitOccurred", "Query Split Occurred",
             "The flag indicating that query has been split during execution on the GPU.",
             "Exception", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
-            INFORMATION_TYPE_FLAG, nullptr, nullptr, 8 );
+            INFORMATION_TYPE_FLAG, nullptr, nullptr, informationCount++ );
         if( information )
         {
             MD_CHECK_CC_RET( information->SetDeltaReportReadEquation( "dw@0x200" ));
@@ -12355,7 +12083,7 @@ TCompletionCode CreateMetricTreeEHL_OA( CMetricsDevice* metricsDevice, CConcurre
         information = concurrentGroup->AddInformation( "ReportId", "Query report id",
             "Query report identification number.",
             "Report Meta Data", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
-            INFORMATION_TYPE_VALUE, nullptr, nullptr, 9 );
+            INFORMATION_TYPE_VALUE, nullptr, nullptr, informationCount++ );
         if( information )
         {
             MD_CHECK_CC_RET( information->SetDeltaReportReadEquation( "dw@0x210" ));
@@ -12364,7 +12092,7 @@ TCompletionCode CreateMetricTreeEHL_OA( CMetricsDevice* metricsDevice, CConcurre
         information = concurrentGroup->AddInformation( "ReportsCount", "Query reports count",
             "The number of available query reports.",
             "Report Meta Data", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
-            INFORMATION_TYPE_VALUE, nullptr, nullptr, 10 );
+            INFORMATION_TYPE_VALUE, nullptr, nullptr, informationCount++ );
         if( information )
         {
             MD_CHECK_CC_RET( information->SetDeltaReportReadEquation( "dw@0x214" ));
@@ -12373,7 +12101,7 @@ TCompletionCode CreateMetricTreeEHL_OA( CMetricsDevice* metricsDevice, CConcurre
         information = concurrentGroup->AddInformation( "OverrunOccured", "Query Overrun Occurred",
             "The flag indicating that Oa buffer has been overran.",
             "Exception", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
-            INFORMATION_TYPE_FLAG, nullptr, nullptr, 11 );
+            INFORMATION_TYPE_FLAG, nullptr, nullptr, informationCount++ );
         if( information )
         {
             MD_CHECK_CC_RET( information->SetDeltaReportReadEquation( "dw@0x1cc" ));
@@ -12382,7 +12110,7 @@ TCompletionCode CreateMetricTreeEHL_OA( CMetricsDevice* metricsDevice, CConcurre
         information = concurrentGroup->AddInformation( "ReportError", "Query report error",
             "An error in the query execution, the received report should be ignored.",
             "Report Meta Data", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
-            INFORMATION_TYPE_FLAG, nullptr, nullptr, 21 );
+            INFORMATION_TYPE_FLAG, nullptr, nullptr, informationCount++ );
         if( information )
         {
             MD_CHECK_CC_RET( information->SetDeltaReportReadEquation( "dw@0x29c 0x12 AND" ));
@@ -12391,7 +12119,7 @@ TCompletionCode CreateMetricTreeEHL_OA( CMetricsDevice* metricsDevice, CConcurre
         information = concurrentGroup->AddInformation( "ReportInconsistent", "Query report inconsistent",
             "The contextId inconsistency in the Oa buffer within the query window.",
             "Report Meta Data", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
-            INFORMATION_TYPE_FLAG, nullptr, nullptr, 22 );
+            INFORMATION_TYPE_FLAG, nullptr, nullptr, informationCount++ );
         if( information )
         {
             MD_CHECK_CC_RET( information->SetDeltaReportReadEquation( "dw@0x29c 0x02 AND" ));
@@ -12400,7 +12128,7 @@ TCompletionCode CreateMetricTreeEHL_OA( CMetricsDevice* metricsDevice, CConcurre
         information = concurrentGroup->AddInformation( "ReportCtxSwitchLost", "Query report context switch lost",
             "Oa buffer has not been browsed to find context switch reports to filter out unfamiliar contexts from the query report.",
             "Report Meta Data", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
-            INFORMATION_TYPE_FLAG, nullptr, nullptr, 23 );
+            INFORMATION_TYPE_FLAG, nullptr, nullptr, informationCount++ );
         if( information )
         {
             MD_CHECK_CC_RET( information->SetDeltaReportReadEquation( "dw@0x29c 0x08 AND" ));
@@ -12409,7 +12137,7 @@ TCompletionCode CreateMetricTreeEHL_OA( CMetricsDevice* metricsDevice, CConcurre
         information = concurrentGroup->AddInformation( "ReportWithoutWorkload", "Query report missing workload",
             "Missing workload between query begin and query end.",
             "Report Meta Data", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
-            INFORMATION_TYPE_FLAG, nullptr, nullptr, 24 );
+            INFORMATION_TYPE_FLAG, nullptr, nullptr, informationCount++ );
         if( information )
         {
             MD_CHECK_CC_RET( information->SetDeltaReportReadEquation( "dw@0x29c 0x10 AND" ));

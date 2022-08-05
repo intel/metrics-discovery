@@ -24,6 +24,8 @@ SPDX-License-Identifier: MIT
 #include <vector>
 #include <list>
 
+#define MD_EMPTY
+
 #define MD_SAFE_DELETE( object ) \
     delete object;               \
     object = nullptr;
@@ -38,39 +40,47 @@ SPDX-License-Identifier: MIT
         goto exception;         \
     }
 
-#define MD_CHECK_PTR_RET( object, ret )                          \
-    if( ( object ) == nullptr )                                  \
+#define MD_CHECK_PTR_RET_A( adapterId, object, ret )                          \
+    if( ( object ) == nullptr )                                               \
+    {                                                                         \
+        MD_LOG_A( adapterId, LOG_DEBUG, "ERROR: null pointer: %s", #object ); \
+        MD_LOG_EXIT_A( adapterId );                                           \
+        return ret;                                                           \
+    }
+
+#define MD_CHECK_PTR_RET( object, ret ) MD_CHECK_PTR_RET_A( IU_ADAPTER_ID_UNKNOWN, object, ret )
+
+#define MD_CHECK_SIZE_RET_A( adapterId, size, type, ret )        \
+    if( ( size ) != sizeof( type ) )                             \
     {                                                            \
-        MD_LOG( LOG_DEBUG, "ERROR: null pointer: %s", #object ); \
-        MD_LOG_EXIT();                                           \
+        MD_LOG_A( adapterId, LOG_DEBUG, "ERROR: invalid size" ); \
+        MD_LOG_EXIT_A( adapterId );                              \
         return ret;                                              \
     }
 
-#define MD_CHECK_SIZE_RET( size, type, ret )        \
-    if( ( size ) != sizeof( type ) )                \
-    {                                               \
-        MD_LOG( LOG_DEBUG, "ERROR: invalid size" ); \
-        MD_LOG_EXIT();                              \
-        return ret;                                 \
-    }
+#define MD_CHECK_SIZE_RET( size, type, ret ) MD_CHECK_SIZE_RET_A( IU_ADAPTER_ID_UNKNOWN, size, type, ret )
 
 #define MD_CHECK_CC( object ) \
     if( ( object ) != CC_OK ) \
         goto exception;
 
-#define MD_CHECK_CC_RET( object )                             \
-    if( ( object ) != CC_OK )                                 \
-    {                                                         \
-        MD_LOG( LOG_ERROR, "Result not ok: %d", ( object ) ); \
-        MD_LOG_EXIT();                                        \
-        return ( object );                                    \
+#define MD_CHECK_CC_RET_A( adapterId, object )                             \
+    if( ( object ) != CC_OK )                                              \
+    {                                                                      \
+        MD_LOG_A( adapterId, LOG_ERROR, "Result not ok: %d", ( object ) ); \
+        MD_LOG_EXIT_A( adapterId );                                        \
+        return ( object );                                                 \
     }
 
-#define MD_CHECK_CC_MSG( object, FORMAT, ... )    \
-    if( ( object ) != CC_OK )                     \
-    {                                             \
-        MD_LOG( LOG_DEBUG, FORMAT, __VA_ARGS__ ); \
+#define MD_CHECK_CC_RET( object ) MD_CHECK_CC_RET_A( IU_ADAPTER_ID_UNKNOWN, object )
+
+#define MD_CHECK_CC_MSG_A( adapterId, object, FORMAT, ... )    \
+    if( ( object ) != CC_OK )                                  \
+    {                                                          \
+        MD_LOG_A( adapterId, LOG_DEBUG, FORMAT, __VA_ARGS__ ); \
     }
+
+#define MD_CHECK_CC_MSG( object, FORMAT, ... ) MD_CHECK_CC_MSG_A( IU_ADAPTER_ID_UNKNOWN, object, FORMAT, __VA_ARGS__ )
 
 #define MD_BIT( i )                          ( 1 << ( i ) )
 #define MD_BITMASK( n )                      ( ~( (uint64_t) ( -1 ) << ( n ) ) )
@@ -79,6 +89,8 @@ SPDX-License-Identifier: MIT
 
 #define MD_SECOND_IN_NS       1000000000ULL
 #define MD_GPU_TIMESTAMP_MASK MD_BITMASK( 32 )
+
+#define MD_BYTE_ARRAY_MAGIC_NUMBER 0xFFED8B17
 
 using namespace MetricsDiscovery;
 
@@ -90,27 +102,30 @@ namespace MetricsDiscoveryInternal
     class CEquation;
     class CMetricsDevice;
 
-    TCompletionCode WriteEquationToFile( CEquation* equation, FILE* metricFile );
-    TCompletionCode SetDeltaFunction( const char* equationString, TDeltaFunction_1_0* deltaFunction );
+    TCompletionCode WriteEquationToFile( CEquation* equation, FILE* metricFile, const uint32_t adapterId );
+    TCompletionCode SetDeltaFunction( const char* equationString, TDeltaFunction_1_0* deltaFunction, const uint32_t adapterId );
     TCompletionCode SetEquation( CMetricsDevice* device, CEquation** equation, const char* equationString );
 
-    TCompletionCode GetNamedSemaphore( const char* semaphoreName, void** semaphorePtr );
-    TCompletionCode ReleaseNamedSemaphore( void** semaphorePtr );
+    TCompletionCode GetNamedSemaphore( const char* semaphoreName, void** semaphorePtr, const uint32_t adapterId );
+    TCompletionCode ReleaseNamedSemaphore( void** semaphorePtr, const uint32_t adapterId );
 
-    int32_t         GetFileSize( FILE* pFile );
-    char*           GetCopiedCString( const char* cstring );
-    TByteArray_1_0* GetCopiedByteArray( const TByteArray_1_0* byteArray );
-    char*           GetCopiedCStringFromWcString( const wchar_t* wcstring );
-    TByteArray_1_0  GetByteArrayFromMask( const char* cstring );
+    int32_t GetFileSize( FILE* pFile, const uint32_t adapterId );
 
-    void WriteCStringToFile( const char* cstring, FILE* pFile );
-    void WriteTTypedValueToFile( TTypedValue_1_0* typedValue, FILE* pFile );
+    TByteArrayLatest* GetCopiedByteArray( const TByteArrayLatest* byteArray, const uint32_t adapterId );
+    TByteArrayLatest  GetByteArrayFromCStringMask( const char* cstring, const uint32_t adapterId );
+    char*             GetCopiedCString( const char* cstring, const uint32_t adapterId );
+    char*             GetCopiedCStringFromWcString( const wchar_t* wcstring, const uint32_t adapterId );
 
-    char*           ReadCStringFromFileBuffer( uint8_t** fileBuffer );
-    uint32_t        ReadUInt32FromFileBuffer( uint8_t** fileBuffer );
-    int64_t         ReadInt64FromFileBuffer( uint8_t** fileBuffer );
-    TTypedValue_1_0 ReadTTypedValueFromFileBuffer( uint8_t** fileBuffer );
-    char*           ReadEquationStringFromFile( uint8_t** fileBuffer );
+    void WriteByteArrayToFile( const TByteArrayLatest* byteArray, FILE* pFile, const uint32_t adapterId );
+    void WriteCStringToFile( const char* cstring, FILE* pFile, const uint32_t adapterId );
+    void WriteTTypedValueToFile( TTypedValue_1_0* typedValue, FILE* pFile, const uint32_t adapterId );
+
+    TByteArrayLatest* ReadByteArrayFromFileBuffer( uint8_t** fileBuffer, const uint32_t adapterId );
+    char*             ReadCStringFromFileBuffer( uint8_t** fileBuffer, const uint32_t adapterId );
+    uint32_t          ReadUInt32FromFileBuffer( uint8_t** fileBuffer, const uint32_t adapterId );
+    int64_t           ReadInt64FromFileBuffer( uint8_t** fileBuffer, const uint32_t adapterId );
+    TTypedValue_1_0   ReadTTypedValueFromFileBuffer( uint8_t** fileBuffer, const uint32_t adapterId );
+    char*             ReadEquationStringFromFile( uint8_t** fileBuffer, const uint32_t adapterId );
 
     template <typename T>
     void ClearVector( std::vector<T>& vector );

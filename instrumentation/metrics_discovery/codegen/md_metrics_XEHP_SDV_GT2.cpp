@@ -408,84 +408,69 @@ static TCompletionCode CreateMetricSet_XEHP_SDV_GT2_RenderBasic( CMetricsDevice*
     }
 
     availabilityEquation = "$GtSlice0DualSubslice0";
-    if( MD_IS_INTERNAL_BUILD || metricsDevice->IsAvailabilityEquationTrue( availabilityEquation ) )
+    metric = metricSet->AddMetric( "Sampler00OrL1CacheBusy", "Sampler or L1 Cache Slice0 Dualsubslice0 is busy",
+        "The percentage of time when sampler or L1 cache slice0 dualsubslice0 is busy",
+        "GPU/Sampler", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_SAMPLER * 0x10000), USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+        METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, nullptr, nullptr, 29 );
+    if( metric )
     {
-        metric = metricSet->AddMetric( "Sampler00OrL1CacheBusy", "Sampler or L1 Cache Slice0 Dualsubslice0 is busy",
-            "The percentage of time when sampler or L1 cache slice0 dualsubslice0 is busy",
-            "GPU/Sampler", (METRIC_GROUP_NAME_ID_GPU * 0x1000000) | (METRIC_GROUP_NAME_ID_SAMPLER * 0x10000), USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
-            METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SUBSLICE, availabilityEquation, nullptr, nullptr, 29 );
-        if( metric )
-        {
-            MD_CHECK_CC_RET( metric->SetSnapshotReportReadEquation( "dw@0xfc" ));
-            MD_CHECK_CC_RET( metric->SetDeltaReportReadEquation( "qw@0x1b8" ));
-            MD_CHECK_CC_RET( metric->SetNormalizationEquation( "GpuDuration" ));
-            MD_CHECK_CC_RET( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
-            MD_CHECK_CC_RET( metric->SetMaxValueEquation( "100" ));
-        }
+        MD_CHECK_CC_RET( metric->SetSnapshotReportReadEquation( "dw@0xfc" ));
+        MD_CHECK_CC_RET( metric->SetDeltaReportReadEquation( "qw@0x1b8" ));
+        MD_CHECK_CC_RET( metric->SetNormalizationEquation( "GpuDuration" ));
+        MD_CHECK_CC_RET( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
+        MD_CHECK_CC_RET( metric->SetMaxValueEquation( "100" ));
     }
 
     availabilityEquation = "$DualSubsliceMask 1 AND";
-    if( MD_IS_INTERNAL_BUILD || metricsDevice->IsAvailabilityEquationTrue( availabilityEquation ) )
+    metric = metricSet->AddMetric( "SamplersOrL1CacheBusy", "Samplers Or L1 Cache Busy",
+        "The percentage of time in which samplers or L1 caches are not idle.",
+        "Sampler", (METRIC_GROUP_NAME_ID_SAMPLER * 0x1000000), USAGE_FLAG_TIER_2|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+        METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SLICE, availabilityEquation, nullptr, nullptr, 30 );
+    if( metric )
     {
-        metric = metricSet->AddMetric( "SamplersOrL1CacheBusy", "Samplers Or L1 Cache Busy",
-            "The percentage of time in which samplers or L1 caches are not idle.",
-            "Sampler", (METRIC_GROUP_NAME_ID_SAMPLER * 0x1000000), USAGE_FLAG_TIER_2|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
-            METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SLICE, availabilityEquation, nullptr, nullptr, 30 );
-        if( metric )
-        {
-            
-            MD_CHECK_CC_RET( metric->SetNormalizationEquation( "$$Sampler00OrL1CacheBusy" ));
-            MD_CHECK_CC_RET( metric->SetMaxValueEquation( "100" ));
-        }
+        
+        MD_CHECK_CC_RET( metric->SetNormalizationEquation( "$$Sampler00OrL1CacheBusy" ));
+        MD_CHECK_CC_RET( metric->SetMaxValueEquation( "100" ));
     }
 
     availabilityEquation = "$GtSlice0DualSubslice0";
-    if( MD_IS_INTERNAL_BUILD || metricsDevice->IsAvailabilityEquationTrue( availabilityEquation ) )
+    metric = metricSet->AddMetric( "Sampler00Bottleneck", "Sampler00 Bottleneck",
+        "The percentage of time in which Slice0 Sampler0 has been slowing down the pipe when processing EU requests.",
+        "Sampler", (METRIC_GROUP_NAME_ID_SAMPLER * 0x1000000), USAGE_FLAG_TIER_3|USAGE_FLAG_INDICATE|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+        METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 5, 15, HW_UNIT_SUBSLICE, availabilityEquation, nullptr, nullptr, 31 );
+    if( metric )
     {
-        metric = metricSet->AddMetric( "Sampler00Bottleneck", "Sampler00 Bottleneck",
-            "The percentage of time in which Slice0 Sampler0 has been slowing down the pipe when processing EU requests.",
-            "Sampler", (METRIC_GROUP_NAME_ID_SAMPLER * 0x1000000), USAGE_FLAG_TIER_3|USAGE_FLAG_INDICATE|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
-            METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 5, 15, HW_UNIT_SUBSLICE, availabilityEquation, nullptr, nullptr, 31 );
-        if( metric )
-        {
-            MD_CHECK_CC_RET( metric->SetSnapshotReportReadEquation( "dw@0xf8" ));
-            MD_CHECK_CC_RET( metric->SetDeltaReportReadEquation( "qw@0x1b0" ));
-            MD_CHECK_CC_RET( metric->SetNormalizationEquation( "GpuDuration" ));
-            MD_CHECK_CC_RET( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
-            MD_CHECK_CC_RET( metric->SetMaxValueEquation( "100" ));
-        }
+        MD_CHECK_CC_RET( metric->SetSnapshotReportReadEquation( "dw@0xf8" ));
+        MD_CHECK_CC_RET( metric->SetDeltaReportReadEquation( "qw@0x1b0" ));
+        MD_CHECK_CC_RET( metric->SetNormalizationEquation( "GpuDuration" ));
+        MD_CHECK_CC_RET( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
+        MD_CHECK_CC_RET( metric->SetMaxValueEquation( "100" ));
     }
 
     availabilityEquation = "$DualSubsliceMask 1 AND";
-    if( MD_IS_INTERNAL_BUILD || metricsDevice->IsAvailabilityEquationTrue( availabilityEquation ) )
+    metric = metricSet->AddMetric( "SamplerBottleneck", "Samplers Bottleneck",
+        "The percentage of time in which samplers have been slowing down the pipe when processing EU requests.",
+        "Sampler", (METRIC_GROUP_NAME_ID_SAMPLER * 0x1000000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_INDICATE|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+        METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 5, 15, HW_UNIT_SLICE, availabilityEquation, nullptr, nullptr, 32 );
+    if( metric )
     {
-        metric = metricSet->AddMetric( "SamplerBottleneck", "Samplers Bottleneck",
-            "The percentage of time in which samplers have been slowing down the pipe when processing EU requests.",
-            "Sampler", (METRIC_GROUP_NAME_ID_SAMPLER * 0x1000000), USAGE_FLAG_TIER_3|USAGE_FLAG_OVERVIEW|USAGE_FLAG_INDICATE|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
-            METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 5, 15, HW_UNIT_SLICE, availabilityEquation, nullptr, nullptr, 32 );
-        if( metric )
-        {
-            
-            MD_CHECK_CC_RET( metric->SetNormalizationEquation( "$$Sampler00Bottleneck" ));
-            MD_CHECK_CC_RET( metric->SetMaxValueEquation( "100" ));
-        }
+        
+        MD_CHECK_CC_RET( metric->SetNormalizationEquation( "$$Sampler00Bottleneck" ));
+        MD_CHECK_CC_RET( metric->SetMaxValueEquation( "100" ));
     }
 
     availabilityEquation = "$GtSlice0DualSubslice0 $GtSlice2DualSubslice0 $GtSlice4DualSubslice0 $GtSlice6DualSubslice0 OR OR OR";
-    if( MD_IS_INTERNAL_BUILD || metricsDevice->IsAvailabilityEquationTrue( availabilityEquation ) )
+    metric = metricSet->AddMetric( "SamplersBusy", "Samplers Busy",
+        "The percentage of time in which samplers inputs or outputs are active",
+        "Sampler", (METRIC_GROUP_NAME_ID_SAMPLER * 0x1000000), USAGE_FLAG_TIER_2|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
+        METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SLICE, availabilityEquation, nullptr, nullptr, 33 );
+    if( metric )
     {
-        metric = metricSet->AddMetric( "SamplersBusy", "Samplers Busy",
-            "The percentage of time in which samplers inputs or outputs are active",
-            "Sampler", (METRIC_GROUP_NAME_ID_SAMPLER * 0x1000000), USAGE_FLAG_TIER_2|USAGE_FLAG_OVERVIEW|USAGE_FLAG_SYSTEM|USAGE_FLAG_FRAME|USAGE_FLAG_BATCH|USAGE_FLAG_DRAW, API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
-            METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_SLICE, availabilityEquation, nullptr, nullptr, 33 );
-        if( metric )
-        {
-            MD_CHECK_CC_RET( metric->SetSnapshotReportReadEquation( "dw@0xc0 dw@0xc4 FADD dw@0xc8 FADD dw@0xcc FADD $GtSlice0DualSubslice0 $GtSlice2DualSubslice0 FADD $GtSlice4DualSubslice0 FADD $GtSlice6DualSubslice0 FADD FDIV" ));
-            MD_CHECK_CC_RET( metric->SetDeltaReportReadEquation( "qw@0x140 qw@0x148 FADD qw@0x150 FADD qw@0x158 FADD $GtSlice0DualSubslice0 $GtSlice2DualSubslice0 FADD $GtSlice4DualSubslice0 FADD $GtSlice6DualSubslice0 FADD FDIV" ));
-            MD_CHECK_CC_RET( metric->SetNormalizationEquation( "GpuDuration" ));
-            MD_CHECK_CC_RET( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
-            MD_CHECK_CC_RET( metric->SetMaxValueEquation( "100" ));
-        }
+        MD_CHECK_CC_RET( metric->SetSnapshotReportReadEquation( "dw@0xc0 dw@0xc4 FADD dw@0xc8 FADD dw@0xcc FADD $GtSlice0DualSubslice0 $GtSlice2DualSubslice0 FADD $GtSlice4DualSubslice0 FADD $GtSlice6DualSubslice0 FADD FDIV" ));
+        MD_CHECK_CC_RET( metric->SetDeltaReportReadEquation( "qw@0x140 qw@0x148 FADD qw@0x150 FADD qw@0x158 FADD $GtSlice0DualSubslice0 $GtSlice2DualSubslice0 FADD $GtSlice4DualSubslice0 FADD $GtSlice6DualSubslice0 FADD FDIV" ));
+        MD_CHECK_CC_RET( metric->SetNormalizationEquation( "GpuDuration" ));
+        MD_CHECK_CC_RET( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ));
+        MD_CHECK_CC_RET( metric->SetMaxValueEquation( "100" ));
     }
 
         MD_CHECK_CC_RET( metricSet->AddStartRegisterSet( 0, 0 ));
@@ -3297,10 +3282,12 @@ TCompletionCode CreateMetricTreeXEHP_SDV_GT2_OA( CMetricsDevice* metricsDevice, 
     if( metricsDevice->IsPlatformTypeOf( platformMask, GT_TYPE_GT2 ) )
     {
 
+    uint32_t informationCount = 0;
+
         information = concurrentGroup->AddInformation( "QueryBeginTime", "Query Begin Time",
             "The measurement begin time.",
             "Report Meta Data", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
-            INFORMATION_TYPE_TIMESTAMP, "ns", nullptr, 0 );
+            INFORMATION_TYPE_TIMESTAMP, "ns", nullptr, informationCount++ );
         if( information )
         {
             MD_CHECK_CC_RET( information->SetSnapshotReportReadEquation( "dw@0x04 1000000000 UMUL $GpuTimestampFrequency UDIV" ));
@@ -3311,7 +3298,7 @@ TCompletionCode CreateMetricTreeXEHP_SDV_GT2_OA( CMetricsDevice* metricsDevice, 
         information = concurrentGroup->AddInformation( "CoreFrequencyMHz", "GPU Core Frequency",
             "The last GPU core (unslice) frequency in the measurement.",
             "Report Meta Data", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_IOSTREAM,
-            INFORMATION_TYPE_VALUE, "MHz", nullptr, 1 );
+            INFORMATION_TYPE_VALUE, "MHz", nullptr, informationCount++ );
         if( information )
         {
             MD_CHECK_CC_RET( information->SetSnapshotReportReadEquation( "dw@0x0 0x1ff AND 16666 UMUL 1000 UDIV" ));
@@ -3321,7 +3308,7 @@ TCompletionCode CreateMetricTreeXEHP_SDV_GT2_OA( CMetricsDevice* metricsDevice, 
         information = concurrentGroup->AddInformation( "EuSliceFrequencyMHz", "EU Slice Frequency",
             "The last GPU Execution Unit slice frequency in the measurement.",
             "Report Meta Data", API_TYPE_IOSTREAM,
-            INFORMATION_TYPE_VALUE, "MHz", nullptr, 2 );
+            INFORMATION_TYPE_VALUE, "MHz", nullptr, informationCount++ );
         if( information )
         {
             MD_CHECK_CC_RET( information->SetSnapshotReportReadEquation( "dw@0x0 25 >> dw@0x0 9 >> 0x3 AND OR 16666 UMUL 1000 UDIV" ));
@@ -3330,7 +3317,7 @@ TCompletionCode CreateMetricTreeXEHP_SDV_GT2_OA( CMetricsDevice* metricsDevice, 
         information = concurrentGroup->AddInformation( "ReportReason", "Report Reason",
             "The reason of the report.",
             "Report Meta Data", API_TYPE_IOSTREAM,
-            INFORMATION_TYPE_REPORT_REASON, nullptr, nullptr, 3 );
+            INFORMATION_TYPE_REPORT_REASON, nullptr, nullptr, informationCount++ );
         if( information )
         {
             MD_CHECK_CC_RET( information->SetSnapshotReportReadEquation( "0x40 dw@0x0 19 >> 0x3f AND 0x0 == UMUL dw@0x0 19 >> 0x3f AND OR" ));
@@ -3339,7 +3326,7 @@ TCompletionCode CreateMetricTreeXEHP_SDV_GT2_OA( CMetricsDevice* metricsDevice, 
         information = concurrentGroup->AddInformation( "ContextIdValid", "Context ID Valid",
             "When set indicates render context is valid",
             "Report Meta Data", API_TYPE_IOSTREAM,
-            INFORMATION_TYPE_FLAG, nullptr, nullptr, 4 );
+            INFORMATION_TYPE_FLAG, nullptr, nullptr, informationCount++ );
         if( information )
         {
             MD_CHECK_CC_RET( information->SetSnapshotReportReadEquation( "dw@0x0 16 >> 0x1 AND" ));
@@ -3348,7 +3335,7 @@ TCompletionCode CreateMetricTreeXEHP_SDV_GT2_OA( CMetricsDevice* metricsDevice, 
         information = concurrentGroup->AddInformation( "ContextId", "Context ID",
             "The context tag in which report has been taken.",
             "Report Meta Data", API_TYPE_IOSTREAM,
-            INFORMATION_TYPE_CONTEXT_ID_TAG, nullptr, nullptr, 5 );
+            INFORMATION_TYPE_CONTEXT_ID_TAG, nullptr, nullptr, informationCount++ );
         if( information )
         {
             MD_CHECK_CC_RET( information->SetSnapshotReportReadEquation( "dw@0x08 0xfc7fffbf AND dw@0x0 16 >> 0x1 AND UMUL" ));
@@ -3357,7 +3344,7 @@ TCompletionCode CreateMetricTreeXEHP_SDV_GT2_OA( CMetricsDevice* metricsDevice, 
         information = concurrentGroup->AddInformation( "CoreFrequencyChanged", "GPU Core Frequency Changed",
             "The flag indicating that GPU core frequency has changed.",
             "Exception", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
-            INFORMATION_TYPE_FLAG, nullptr, nullptr, 7 );
+            INFORMATION_TYPE_FLAG, nullptr, nullptr, informationCount++ );
         if( information )
         {
             MD_CHECK_CC_RET( information->SetDeltaReportReadEquation( "dw@0x214" ));
@@ -3366,7 +3353,7 @@ TCompletionCode CreateMetricTreeXEHP_SDV_GT2_OA( CMetricsDevice* metricsDevice, 
         information = concurrentGroup->AddInformation( "QuerySplitOccurred", "Query Split Occurred",
             "The flag indicating that query has been split during execution on the GPU.",
             "Exception", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
-            INFORMATION_TYPE_FLAG, nullptr, nullptr, 8 );
+            INFORMATION_TYPE_FLAG, nullptr, nullptr, informationCount++ );
         if( information )
         {
             MD_CHECK_CC_RET( information->SetDeltaReportReadEquation( "dw@0x210" ));
@@ -3375,7 +3362,7 @@ TCompletionCode CreateMetricTreeXEHP_SDV_GT2_OA( CMetricsDevice* metricsDevice, 
         information = concurrentGroup->AddInformation( "ReportId", "Query report id",
             "Query report identification number.",
             "Report Meta Data", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
-            INFORMATION_TYPE_VALUE, nullptr, nullptr, 9 );
+            INFORMATION_TYPE_VALUE, nullptr, nullptr, informationCount++ );
         if( information )
         {
             MD_CHECK_CC_RET( information->SetDeltaReportReadEquation( "dw@0x220" ));
@@ -3384,7 +3371,7 @@ TCompletionCode CreateMetricTreeXEHP_SDV_GT2_OA( CMetricsDevice* metricsDevice, 
         information = concurrentGroup->AddInformation( "ReportsCount", "Query reports count",
             "The number of available query reports.",
             "Report Meta Data", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
-            INFORMATION_TYPE_VALUE, nullptr, nullptr, 10 );
+            INFORMATION_TYPE_VALUE, nullptr, nullptr, informationCount++ );
         if( information )
         {
             MD_CHECK_CC_RET( information->SetDeltaReportReadEquation( "dw@0x224" ));
@@ -3393,7 +3380,7 @@ TCompletionCode CreateMetricTreeXEHP_SDV_GT2_OA( CMetricsDevice* metricsDevice, 
         information = concurrentGroup->AddInformation( "OverrunOccured", "Query Overrun Occurred",
             "The flag indicating that Oa buffer has been overran.",
             "Exception", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
-            INFORMATION_TYPE_FLAG, nullptr, nullptr, 11 );
+            INFORMATION_TYPE_FLAG, nullptr, nullptr, informationCount++ );
         if( information )
         {
             MD_CHECK_CC_RET( information->SetDeltaReportReadEquation( "dw@0x1dc" ));
@@ -3402,7 +3389,7 @@ TCompletionCode CreateMetricTreeXEHP_SDV_GT2_OA( CMetricsDevice* metricsDevice, 
         information = concurrentGroup->AddInformation( "StreamMarker", "Stream marker",
             "Stream marker value.",
             "Report Meta Data", API_TYPE_IOSTREAM,
-            INFORMATION_TYPE_VALUE, nullptr, nullptr, 21 );
+            INFORMATION_TYPE_VALUE, nullptr, nullptr, informationCount++ );
         if( information )
         {
             MD_CHECK_CC_RET( information->SetSnapshotReportReadEquation( "dw@0x08 dw@0x0 19 >> 0x8 AND 0x0 == UMUL" ));
@@ -3411,7 +3398,7 @@ TCompletionCode CreateMetricTreeXEHP_SDV_GT2_OA( CMetricsDevice* metricsDevice, 
         information = concurrentGroup->AddInformation( "ReportError", "Query report error",
             "An error in the query execution, the received report should be ignored.",
             "Report Meta Data", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
-            INFORMATION_TYPE_FLAG, nullptr, nullptr, 22 );
+            INFORMATION_TYPE_FLAG, nullptr, nullptr, informationCount++ );
         if( information )
         {
             MD_CHECK_CC_RET( information->SetDeltaReportReadEquation( "dw@0x2ac 0x13 AND" ));
@@ -3420,7 +3407,7 @@ TCompletionCode CreateMetricTreeXEHP_SDV_GT2_OA( CMetricsDevice* metricsDevice, 
         information = concurrentGroup->AddInformation( "ReportLost", "Query report lost",
             "Begin or end query report has not been triggered due to hw limitations.",
             "Report Meta Data", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
-            INFORMATION_TYPE_FLAG, nullptr, nullptr, 23 );
+            INFORMATION_TYPE_FLAG, nullptr, nullptr, informationCount++ );
         if( information )
         {
             MD_CHECK_CC_RET( information->SetDeltaReportReadEquation( "dw@0x2ac 0x01 AND" ));
@@ -3429,7 +3416,7 @@ TCompletionCode CreateMetricTreeXEHP_SDV_GT2_OA( CMetricsDevice* metricsDevice, 
         information = concurrentGroup->AddInformation( "ReportInconsistent", "Query report inconsistent",
             "The contextId inconsistency in the Oa buffer within the query window.",
             "Report Meta Data", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
-            INFORMATION_TYPE_FLAG, nullptr, nullptr, 24 );
+            INFORMATION_TYPE_FLAG, nullptr, nullptr, informationCount++ );
         if( information )
         {
             MD_CHECK_CC_RET( information->SetDeltaReportReadEquation( "dw@0x2ac 0x02 AND" ));
@@ -3438,7 +3425,7 @@ TCompletionCode CreateMetricTreeXEHP_SDV_GT2_OA( CMetricsDevice* metricsDevice, 
         information = concurrentGroup->AddInformation( "ReportCtxSwitchLost", "Query report context switch lost",
             "Oa buffer has not been browsed to find context switch reports to filter out unfamiliar contexts from the query report.",
             "Report Meta Data", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
-            INFORMATION_TYPE_FLAG, nullptr, nullptr, 25 );
+            INFORMATION_TYPE_FLAG, nullptr, nullptr, informationCount++ );
         if( information )
         {
             MD_CHECK_CC_RET( information->SetDeltaReportReadEquation( "dw@0x2ac 0x08 AND" ));
@@ -3447,7 +3434,7 @@ TCompletionCode CreateMetricTreeXEHP_SDV_GT2_OA( CMetricsDevice* metricsDevice, 
         information = concurrentGroup->AddInformation( "ReportWithoutWorkload", "Query report missing workload",
             "Missing workload between query begin and query end.",
             "Report Meta Data", API_TYPE_VULKAN|API_TYPE_OGL|API_TYPE_OGL4_X,
-            INFORMATION_TYPE_FLAG, nullptr, nullptr, 26 );
+            INFORMATION_TYPE_FLAG, nullptr, nullptr, informationCount++ );
         if( information )
         {
             MD_CHECK_CC_RET( information->SetDeltaReportReadEquation( "dw@0x2ac 0x10 AND" ));

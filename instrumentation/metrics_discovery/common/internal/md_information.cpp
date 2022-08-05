@@ -44,15 +44,17 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     CInformation::CInformation( CMetricsDevice* device, uint32_t id, const char* name, const char* shortName, const char* longName, const char* group, uint32_t apiMask, TInformationType informationType, const char* informationUnits )
     {
+        const uint32_t adapterId = OBTAIN_ADAPTER_ID( device );
+
         m_params_1_0.IdInSet    = id; // filtered, equal to original on creation
         m_id                    = id; // original, equal to filtered on creation
-        m_params_1_0.SymbolName = GetCopiedCString( name );
-        m_params_1_0.ShortName  = GetCopiedCString( shortName );
-        m_params_1_0.LongName   = GetCopiedCString( longName );
-        m_params_1_0.GroupName  = GetCopiedCString( group );
+        m_params_1_0.SymbolName = GetCopiedCString( name, adapterId );
+        m_params_1_0.ShortName  = GetCopiedCString( shortName, adapterId );
+        m_params_1_0.LongName   = GetCopiedCString( longName, adapterId );
+        m_params_1_0.GroupName  = GetCopiedCString( group, adapterId );
         m_params_1_0.ApiMask    = apiMask;
         m_params_1_0.InfoType   = informationType;
-        m_params_1_0.InfoUnits  = GetCopiedCString( informationUnits );
+        m_params_1_0.InfoUnits  = GetCopiedCString( informationUnits, adapterId );
 
         m_params_1_0.OverflowFunction.FunctionType = DELTA_FUNCTION_NULL;
 
@@ -81,15 +83,17 @@ namespace MetricsDiscoveryInternal
     CInformation::CInformation( const CInformation& other )
         : m_device( other.m_device )
     {
+        const uint32_t adapterId = OBTAIN_ADAPTER_ID( m_device );
+
         m_params_1_0.IdInSet    = other.m_params_1_0.IdInSet; // id after filterings
         m_id                    = other.m_id;                 // initial id before filterings
-        m_params_1_0.SymbolName = GetCopiedCString( other.m_params_1_0.SymbolName );
-        m_params_1_0.ShortName  = GetCopiedCString( other.m_params_1_0.ShortName );
-        m_params_1_0.GroupName  = GetCopiedCString( other.m_params_1_0.GroupName );
-        m_params_1_0.LongName   = GetCopiedCString( other.m_params_1_0.LongName );
+        m_params_1_0.SymbolName = GetCopiedCString( other.m_params_1_0.SymbolName, adapterId );
+        m_params_1_0.ShortName  = GetCopiedCString( other.m_params_1_0.ShortName, adapterId );
+        m_params_1_0.GroupName  = GetCopiedCString( other.m_params_1_0.GroupName, adapterId );
+        m_params_1_0.LongName   = GetCopiedCString( other.m_params_1_0.LongName, adapterId );
         m_params_1_0.ApiMask    = other.m_params_1_0.ApiMask;
         m_params_1_0.InfoType   = other.m_params_1_0.InfoType;
-        m_params_1_0.InfoUnits  = GetCopiedCString( other.m_params_1_0.InfoUnits );
+        m_params_1_0.InfoUnits  = GetCopiedCString( other.m_params_1_0.InfoUnits, adapterId );
 
         m_params_1_0.OverflowFunction = other.m_params_1_0.OverflowFunction;
 
@@ -226,6 +230,26 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     //
     // Class:
+    //     CInformation
+    //
+    // Method:
+    //     IsAvailabilityEquationTrue
+    //
+    // Description:
+    //     Solves the given information availability equation.
+    //
+    // Output:
+    //     bool - result of solving availability equation.
+    //
+    //////////////////////////////////////////////////////////////////////////////
+    bool CInformation::IsAvailabilityEquationTrue()
+    {
+        return !m_availabilityEquation || m_availabilityEquation->SolveBooleanEquation();
+    }
+
+    //////////////////////////////////////////////////////////////////////////////
+    //
+    // Class:
     //     CMetric
     //
     // Method:
@@ -244,7 +268,7 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     TCompletionCode CInformation::SetOverflowFunction( const char* equationString )
     {
-        return SetDeltaFunction( equationString, &m_params_1_0.OverflowFunction );
+        return SetDeltaFunction( equationString, &m_params_1_0.OverflowFunction, OBTAIN_ADAPTER_ID( m_device ) );
     }
 
     //////////////////////////////////////////////////////////////////////////////
@@ -293,31 +317,33 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     TCompletionCode CInformation::WriteCInformationToFile( FILE* metricFile )
     {
+        const uint32_t adapterId = OBTAIN_ADAPTER_ID( m_device );
+
         if( metricFile == nullptr )
         {
-            MD_ASSERT_A( m_device->GetAdapter().GetAdapterId(), metricFile != nullptr );
+            MD_ASSERT_A( adapterId, metricFile != nullptr );
             return CC_ERROR_INVALID_PARAMETER;
         }
 
         // m_params_1_0
-        WriteCStringToFile( m_params_1_0.SymbolName, metricFile );
-        WriteCStringToFile( m_params_1_0.ShortName, metricFile );
-        WriteCStringToFile( m_params_1_0.GroupName, metricFile );
-        WriteCStringToFile( m_params_1_0.LongName, metricFile );
+        WriteCStringToFile( m_params_1_0.SymbolName, metricFile, adapterId );
+        WriteCStringToFile( m_params_1_0.ShortName, metricFile, adapterId );
+        WriteCStringToFile( m_params_1_0.GroupName, metricFile, adapterId );
+        WriteCStringToFile( m_params_1_0.LongName, metricFile, adapterId );
         fwrite( &m_params_1_0.ApiMask, sizeof( m_params_1_0.ApiMask ), 1, metricFile );
         fwrite( &m_params_1_0.InfoType, sizeof( m_params_1_0.InfoType ), 1, metricFile );
-        WriteCStringToFile( m_params_1_0.InfoUnits, metricFile );
+        WriteCStringToFile( m_params_1_0.InfoUnits, metricFile, adapterId );
 
         // Availability equation
-        WriteEquationToFile( m_availabilityEquation, metricFile );
+        WriteEquationToFile( m_availabilityEquation, metricFile, adapterId );
 
         // OverflowFunction
         fwrite( &m_params_1_0.OverflowFunction.FunctionType, sizeof( m_params_1_0.OverflowFunction.FunctionType ), 1, metricFile );
         fwrite( &m_params_1_0.OverflowFunction.BitsCount, sizeof( m_params_1_0.OverflowFunction.BitsCount ), 1, metricFile );
 
         // Equations
-        WriteEquationToFile( m_ioReadEquation, metricFile );
-        WriteEquationToFile( m_queryReadEquation, metricFile );
+        WriteEquationToFile( m_ioReadEquation, metricFile, adapterId );
+        WriteEquationToFile( m_queryReadEquation, metricFile, adapterId );
 
         return CC_OK;
     }

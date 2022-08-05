@@ -291,10 +291,11 @@ namespace MetricsDiscoveryInternal
     template <>
     TCompletionCode COverride<OVERRIDE_TYPE_FREQUENCY>::SetOverride( TSetOverrideParams_1_2* params, uint32_t paramsSize )
     {
-        const uint32_t adapterId = m_device->GetAdapter().GetAdapterId();
+        const uint32_t adapterId = OBTAIN_ADAPTER_ID( m_device );
+
         MD_LOG_ENTER_A( adapterId );
-        MD_CHECK_PTR_RET( params, CC_ERROR_INVALID_PARAMETER );
-        MD_CHECK_SIZE_RET( paramsSize, TSetFrequencyOverrideParams_1_2, CC_ERROR_INVALID_PARAMETER );
+        MD_CHECK_PTR_RET_A( adapterId, params, CC_ERROR_INVALID_PARAMETER );
+        MD_CHECK_SIZE_RET_A( adapterId, paramsSize, TSetFrequencyOverrideParams_1_2, CC_ERROR_INVALID_PARAMETER );
 
         TCompletionCode                  ret                     = CC_OK;
         CDriverInterface&                driverInterface         = m_device->GetDriverInterface();
@@ -339,10 +340,11 @@ namespace MetricsDiscoveryInternal
     template <>
     TCompletionCode COverride<OVERRIDE_TYPE_EXTENDED_QUERY>::SetOverride( TSetOverrideParams_1_2* params, uint32_t paramsSize )
     {
-        const uint32_t adapterId = m_device->GetAdapter().GetAdapterId();
+        const uint32_t adapterId = OBTAIN_ADAPTER_ID( m_device );
+
         MD_LOG_ENTER_A( adapterId );
-        MD_CHECK_PTR_RET( params, CC_ERROR_INVALID_PARAMETER );
-        MD_CHECK_SIZE_RET( paramsSize, TSetQueryOverrideParams_1_2, CC_ERROR_INVALID_PARAMETER );
+        MD_CHECK_PTR_RET_A( adapterId, params, CC_ERROR_INVALID_PARAMETER );
+        MD_CHECK_SIZE_RET_A( adapterId, paramsSize, TSetQueryOverrideParams_1_2, CC_ERROR_INVALID_PARAMETER );
 
         CDriverInterface& driverInterface = m_device->GetDriverInterface();
 
@@ -387,10 +389,11 @@ namespace MetricsDiscoveryInternal
     template <>
     TCompletionCode COverride<OVERRIDE_TYPE_MULTISAMPLED_QUERY>::SetOverride( TSetOverrideParams_1_2* params, uint32_t paramsSize )
     {
-        const uint32_t adapterId = m_device->GetAdapter().GetAdapterId();
+        const uint32_t adapterId = OBTAIN_ADAPTER_ID( m_device );
+
         MD_LOG_ENTER_A( adapterId );
-        MD_CHECK_PTR_RET( params, CC_ERROR_INVALID_PARAMETER );
-        MD_CHECK_SIZE_RET( paramsSize, TSetQueryOverrideParams_1_2, CC_ERROR_INVALID_PARAMETER );
+        MD_CHECK_PTR_RET_A( adapterId, params, CC_ERROR_INVALID_PARAMETER );
+        MD_CHECK_SIZE_RET_A( adapterId, paramsSize, TSetQueryOverrideParams_1_2, CC_ERROR_INVALID_PARAMETER );
 
         CDriverInterface& driverInterface = m_device->GetDriverInterface();
 
@@ -435,10 +438,11 @@ namespace MetricsDiscoveryInternal
     template <>
     TCompletionCode COverride<OVERRIDE_TYPE_FREQUENCY_CHANGE_REPORTS>::SetOverride( TSetOverrideParams_1_2* params, uint32_t paramsSize )
     {
-        const uint32_t adapterId = m_device->GetAdapter().GetAdapterId();
+        const uint32_t adapterId = OBTAIN_ADAPTER_ID( m_device );
+
         MD_LOG_ENTER_A( adapterId );
-        MD_CHECK_PTR_RET( params, CC_ERROR_INVALID_PARAMETER );
-        MD_CHECK_SIZE_RET( paramsSize, TSetOverrideParams_1_2, CC_ERROR_INVALID_PARAMETER );
+        MD_CHECK_PTR_RET_A( adapterId, params, CC_ERROR_INVALID_PARAMETER );
+        MD_CHECK_SIZE_RET_A( adapterId, paramsSize, TSetOverrideParams_1_2, CC_ERROR_INVALID_PARAMETER );
 
         CDriverInterface& driverInterface = m_device->GetDriverInterface();
 
@@ -474,7 +478,7 @@ namespace MetricsDiscoveryInternal
     template <TOverrideType overrideType>
     TCompletionCode COverride<overrideType>::SetOverride( TSetOverrideParams_1_2* params, uint32_t paramsSize )
     {
-        MD_LOG_A( m_device->GetAdapter().GetAdapterId(), LOG_ERROR, "Override %u not supported in global mode", overrideType );
+        MD_LOG_A( OBTAIN_ADAPTER_ID( m_device ), LOG_ERROR, "Override %u not supported in global mode", overrideType );
         return CC_ERROR_NOT_SUPPORTED;
     }
 } // namespace MetricsDiscoveryInternal

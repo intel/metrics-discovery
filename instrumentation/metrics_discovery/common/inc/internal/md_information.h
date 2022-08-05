@@ -60,6 +60,7 @@ namespace MetricsDiscoveryInternal
         TCompletionCode SetSnapshotReportReadEquation( const char* equationString );
         TCompletionCode SetDeltaReportReadEquation( const char* equationString );
         TCompletionCode SetAvailabilityEquation( const char* equationString );
+        bool            IsAvailabilityEquationTrue();
 
         TCompletionCode SetOverflowFunction( const char* equationString );
         TCompletionCode SetOverflowFunction( TDeltaFunction_1_0 overflowFunction );

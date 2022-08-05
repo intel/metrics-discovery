@@ -326,7 +326,7 @@ namespace MetricsDiscoveryInternal
     //
     // Input:
     //     std::vector<TAdapterData>& adapters  - [out] available Intel adapters
-    //     uint32_t                   adapterId - adapter id for the purpose of logging
+    //     const uint32_t             adapterId - adapter id for the purpose of logging
     //
     // Output:
     //     TCompletionCode - result of operation (*CC_OK* is OK)
@@ -407,7 +407,7 @@ namespace MetricsDiscoveryInternal
             // Get platform info
             TGfxDeviceInfo gfxDeviceInfo = {};
 
-            TCompletionCode ret = CDriverInterfaceLinuxPerf::GetGfxDeviceInfo( device.deviceinfo.pci->device_id, &gfxDeviceInfo );
+            TCompletionCode ret = CDriverInterfaceLinuxPerf::GetGfxDeviceInfo( device.deviceinfo.pci->device_id, &gfxDeviceInfo, adapterId );
 
             if( ret != CC_OK || gfxDeviceInfo.PlatformIndex == GTDI_PLATFORM_MAX )
             {
@@ -451,7 +451,7 @@ namespace MetricsDiscoveryInternal
                 adapter.Params.SubVendorId = device.deviceinfo.pci->subvendor_id;
                 adapter.Params.DeviceId    = device.deviceinfo.pci->device_id;
 
-                adapter.Params.ShortName = GetCopiedCString( drmGetDeviceNameFromFd2( drmFd ) );
+                adapter.Params.ShortName = GetCopiedCString( drmGetDeviceNameFromFd2( drmFd ), adapterId );
             }
 
             adapter.Handle = new( std::nothrow ) CAdapterHandleLinux( drmFd ); // Important: adapterData.Handle has to be deleted later!
@@ -532,9 +532,7 @@ namespace MetricsDiscoveryInternal
         , m_CachedBoostFrequency( 0 )
         , m_CachedMinFrequency( 0 )
         , m_CachedMaxFrequency( 0 )
-        , m_CachedGfxDeviceInfo( { GTDI_PLATFORM_MAX,
-                                   GFX_GTTYPE_UNDEFINED,
-                                   0 } )
+        , m_CachedGfxDeviceInfo{ GTDI_PLATFORM_MAX, GFX_GTTYPE_UNDEFINED, 0 }
         , m_CachedDeviceId( -1 )
         , m_CachedPerfRevision( -1 )
     {
@@ -631,7 +629,7 @@ namespace MetricsDiscoveryInternal
     TCompletionCode CDriverInterfaceLinuxPerf::ForceSupportDisable()
     {
         // Intentionally - not supported
-        return MetricsDiscovery::CC_OK;
+        return CC_OK;
     }
 
     //////////////////////////////////////////////////////////////////////////////
@@ -680,21 +678,30 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     TCompletionCode CDriverInterfaceLinuxPerf::SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM param, GTDIDeviceInfoParamExtOut* out, CMetricsDevice* metricsDevice /* = nullptr */ )
     {
-        MD_CHECK_PTR_RET( out, CC_ERROR_INVALID_PARAMETER );
+        MD_CHECK_PTR_RET_A( m_adapterId, out, CC_ERROR_INVALID_PARAMETER );
 
-        TCompletionCode       ret             = CC_OK;
-        GTDI_PLATFORM_INDEX   instrPlatformId = GTDI_PLATFORM_MAX;
-        const TGfxDeviceInfo* gfxDeviceInfo   = nullptr;
+        TCompletionCode       ret           = CC_OK;
+        GTDI_PLATFORM_INDEX   platformId    = GTDI_PLATFORM_MAX;
+        const TGfxDeviceInfo* gfxDeviceInfo = nullptr;
 
         ret = GetGfxDeviceInfo( &gfxDeviceInfo );
-        MD_CHECK_CC_RET( ret );
-        instrPlatformId = gfxDeviceInfo->PlatformIndex;
+        MD_CHECK_CC_RET_A( m_adapterId, ret );
+        platformId = gfxDeviceInfo->PlatformIndex;
 
         switch( param )
         {
             case GTDI_DEVICE_PARAM_EU_CORES_TOTAL_COUNT:
             {
-                ret = GetEuCoresTotalCount( out, metricsDevice );
+                if( IsXePlus() )
+                {
+                    ret = GetEuCoresTotalCount( out, metricsDevice );
+                }
+                else
+                {
+                    ret = SendGetParamIoctl( m_DrmDeviceHandle, I915_PARAM_EU_TOTAL, out );
+                }
+
+                MD_CHECK_CC_RET_A( m_adapterId, ret );
                 break;
             }
 
@@ -704,40 +711,60 @@ namespace MetricsDiscoveryInternal
                 int32_t euCoresTotalCount   = 0;
                 int32_t subslicesTotalCount = 0;
 
-                ret = GetEuCoresTotalCount( out, metricsDevice );
+                MD_CHECK_CC_RET_A( m_adapterId, ret );
 
-                euCoresTotalCount = out->ValueUint32;
-                MD_CHECK_CC_RET( ret );
-
-                if( DualSubslicesSupported() )
+                if( IsXePlus() )
                 {
-                    int64_t dualSubsliceMask = 0;
-                    ret                      = GetDualSubsliceMask( &dualSubsliceMask, metricsDevice );
-                    MD_CHECK_CC_RET( ret );
-                    subslicesTotalCount = CalculateEnabledBits( dualSubsliceMask, 0xFFFFFFFFFFFFFFFF );
+                    ret = GetEuCoresTotalCount( out, metricsDevice );
+                    MD_CHECK_CC_RET_A( m_adapterId, ret );
+
+                    int64_t subsliceMask = 0;
+                    ret                  = GetSubsliceMask( &subsliceMask, metricsDevice );
+                    MD_CHECK_CC_RET_A( m_adapterId, ret );
+
+                    subslicesTotalCount = CalculateEnabledBits( subsliceMask );
+
+                    switch( platformId )
+                    {
+                        case GENERATION_TGL:
+                        case GENERATION_DG1:
+                        case GENERATION_ADLP:
+                        case GENERATION_ADLS:
+                        case GENERATION_ADLN:
+                        case GENERATION_XEHP_SDV:
+                            subslicesTotalCount *= MD_MAX_SUBSLICE_PER_DSS;
+                            break;
+                        default:
+                            break;
+                    }
                 }
                 else
                 {
+                    ret = SendGetParamIoctl( m_DrmDeviceHandle, I915_PARAM_EU_TOTAL, out );
+                    MD_CHECK_CC_RET_A( m_adapterId, ret );
+
                     ret = SendGetParamIoctl( m_DrmDeviceHandle, I915_PARAM_SUBSLICE_TOTAL, &subslicesTotalCount );
-                    MD_CHECK_CC_RET( ret );
+                    MD_CHECK_CC_RET_A( m_adapterId, ret );
                 }
 
+                euCoresTotalCount = out->ValueUint32;
+
                 out->ValueType   = GTDI_DEVICE_PARAM_VALUE_TYPE_UINT32;
-                out->ValueUint32 = euCoresTotalCount / subslicesTotalCount;
+                out->ValueUint32 = ( subslicesTotalCount > 0 ) ? euCoresTotalCount / subslicesTotalCount : 0;
                 break;
             }
 
             case GTDI_DEVICE_PARAM_DUALSUBSLICES_TOTAL_COUNT:
             {
-                if( DualSubslicesSupported() )
+                if( IsDualSubsliceSupported() )
                 {
                     int64_t dualSubsliceMask = 0;
 
-                    ret = GetDualSubsliceMask( &dualSubsliceMask, metricsDevice );
-                    MD_CHECK_CC_RET( ret );
+                    ret = GetSubsliceMask( &dualSubsliceMask, metricsDevice );
+                    MD_CHECK_CC_RET_A( m_adapterId, ret );
 
                     out->ValueType   = GTDI_DEVICE_PARAM_VALUE_TYPE_UINT32;
-                    out->ValueUint32 = CalculateEnabledBits( dualSubsliceMask, 0xFFFFFFFFFFFFFFFF );
+                    out->ValueUint32 = CalculateEnabledBits( dualSubsliceMask );
                 }
                 else
                 {
@@ -749,43 +776,46 @@ namespace MetricsDiscoveryInternal
             case GTDI_DEVICE_PARAM_SUBSLICES_TOTAL_COUNT:
             case GTDI_DEVICE_PARAM_SAMPLERS_COUNT:
             {
-                ret = SendGetParamIoctl( m_DrmDeviceHandle, I915_PARAM_SUBSLICE_TOTAL, out );
+                if( IsXePlus() )
+                {
+                    int64_t subsliceMask = 0;
+
+                    ret = GetSubsliceMask( &subsliceMask, metricsDevice );
+                    MD_CHECK_CC_RET_A( m_adapterId, ret );
+
+                    out->ValueType   = GTDI_DEVICE_PARAM_VALUE_TYPE_UINT32;
+                    out->ValueUint32 = CalculateEnabledBits( subsliceMask );
+
+                    if( IsDualSubsliceSupported() && param != GTDI_DEVICE_PARAM_SAMPLERS_COUNT )
+                    {
+                        out->ValueUint32 *= MD_MAX_SUBSLICE_PER_DSS;
+                    }
+                }
+                else
+                {
+                    ret = SendGetParamIoctl( m_DrmDeviceHandle, I915_PARAM_SUBSLICE_TOTAL, out );
+                }
                 break;
             }
 
             case GTDI_DEVICE_PARAM_SLICES_COUNT:
             {
-                if( DualSubslicesSupported() )
+                int32_t sliceMask = 0;
+
+                if( IsXePlus() )
                 {
-                    // Return value is a mask of enabled dual subslices
-                    int64_t dualSubsliceMask      = 0;
-                    out->ValueUint32              = 0;
-                    uint32_t dualSubslicePerSlice = GetGtMaxDualSubslicePerSlice();
-
-                    ret = GetDualSubsliceMask( &dualSubsliceMask, metricsDevice );
-                    MD_CHECK_CC_RET( ret );
-
-                    for( int32_t i = 0; i < MD_MAX_SLICE; ++i )
-                    {
-                        if( ( dualSubsliceMask >> dualSubslicePerSlice * i ) & MD_BITMASK( dualSubslicePerSlice ) )
-                        {
-                            out->ValueUint32++;
-                        }
-                    }
+                    ret = GetSliceMask( &sliceMask, metricsDevice );
+                    MD_CHECK_CC_RET_A( m_adapterId, ret );
                 }
                 else
                 {
-                    int32_t sliceMask = 0;
-
                     ret = SendGetParamIoctl( m_DrmDeviceHandle, I915_PARAM_SLICE_MASK, &sliceMask );
-                    MD_CHECK_CC_RET( ret );
-
-                    out->ValueType   = GTDI_DEVICE_PARAM_VALUE_TYPE_UINT32;
-                    out->ValueUint32 = CalculateEnabledBits( static_cast<uint64_t>( sliceMask ), static_cast<uint64_t>( 0xFFFFFFFF ) );
-
-                    MD_ASSERT_A( m_adapterId, out->ValueUint32 <= MD_MAX_SLICE );
+                    MD_CHECK_CC_RET_A( m_adapterId, ret );
                 }
 
+                out->ValueType   = GTDI_DEVICE_PARAM_VALUE_TYPE_UINT32;
+                out->ValueUint32 = CalculateEnabledBits( static_cast<uint64_t>( sliceMask ), static_cast<uint64_t>( 0xFFFFFFFF ) );
+                MD_ASSERT_A( m_adapterId, out->ValueUint32 <= MD_MAX_SLICE );
                 break;
             }
 
@@ -814,11 +844,19 @@ namespace MetricsDiscoveryInternal
             {
                 int32_t sliceMask = 0;
 
-                ret = SendGetParamIoctl( m_DrmDeviceHandle, I915_PARAM_SLICE_MASK, &sliceMask );
-                MD_CHECK_CC_RET( ret );
+                if( IsXePlus() )
+                {
+                    ret = GetSliceMask( &sliceMask, metricsDevice );
+                }
+                else
+                {
+                    ret = SendGetParamIoctl( m_DrmDeviceHandle, I915_PARAM_SLICE_MASK, &sliceMask );
+                }
+
+                MD_CHECK_CC_RET_A( m_adapterId, ret );
 
                 out->ValueType   = GTDI_DEVICE_PARAM_VALUE_TYPE_UINT32;
-                out->ValueUint32 = MD_NUM_PIXELS_OUT_PER_CLOCK * CalculateEnabledBits( static_cast<uint64_t>( sliceMask ), static_cast<uint64_t>( 0xFFFFFFFF ) ); // pixels_out_per_clock * sliceCount
+                out->ValueUint32 = MD_NUM_PIXELS_OUT_PER_CLOCK * CalculateEnabledBits( static_cast<uint64_t>( sliceMask ) ); // pixels_out_per_clock * sliceCount
                 break;
             }
 
@@ -841,17 +879,20 @@ namespace MetricsDiscoveryInternal
                 out->ValueType   = GTDI_DEVICE_PARAM_VALUE_TYPE_UINT64;
                 out->ValueUint64 = 0;
 
-                if( instrPlatformId == GENERATION_PVC )
+                if( IsXePlus() )
                 {
-                    // Return value is a mask of enabled subslices
-                    int64_t dualSubsliceMask = 0;
-                    ret                      = GetDualSubsliceMask( &dualSubsliceMask, metricsDevice );
-                    MD_CHECK_CC_RET( ret );
-                    out->ValueUint64 = static_cast<uint64_t>( dualSubsliceMask );
-                }
-                else if( DualSubslicesSupported() )
-                {
-                    ret = CC_ERROR_NOT_SUPPORTED;
+                    if( IsDualSubsliceSupported() )
+                    {
+                        ret = CC_ERROR_NOT_SUPPORTED;
+                    }
+                    else
+                    {
+                        int64_t subSliceMask = 0;
+                        ret                  = GetSubsliceMask( &subSliceMask, metricsDevice );
+                        MD_CHECK_CC_RET( ret );
+
+                        out->ValueUint64 = static_cast<uint64_t>( subSliceMask );
+                    }
                 }
                 else
                 {
@@ -861,9 +902,9 @@ namespace MetricsDiscoveryInternal
                     uint32_t maxSubslicePerSliceCount = GetGtMaxSubslicePerSlice();
 
                     ret = SendGetParamIoctl( m_DrmDeviceHandle, I915_PARAM_SUBSLICE_MASK, &singleSubsliceMask );
-                    MD_CHECK_CC_RET( ret );
+                    MD_CHECK_CC_RET_A( m_adapterId, ret );
                     ret = SendGetParamIoctl( m_DrmDeviceHandle, I915_PARAM_SLICE_MASK, &sliceMask );
-                    MD_CHECK_CC_RET( ret );
+                    MD_CHECK_CC_RET_A( m_adapterId, ret );
 
                     for( int32_t i = 0; i < MD_MAX_SLICE; ++i )
                     {
@@ -883,12 +924,13 @@ namespace MetricsDiscoveryInternal
                 out->ValueType   = GTDI_DEVICE_PARAM_VALUE_TYPE_UINT64;
                 out->ValueUint64 = 0;
 
-                if( DualSubslicesSupported() )
+                if( IsDualSubsliceSupported() )
                 {
                     // Return value is a mask of enabled dual subslices
                     int64_t dualSubsliceMask = 0;
-                    ret                      = GetDualSubsliceMask( &dualSubsliceMask, metricsDevice );
-                    MD_CHECK_CC_RET( ret );
+                    ret                      = GetSubsliceMask( &dualSubsliceMask, metricsDevice );
+                    MD_CHECK_CC_RET_A( m_adapterId, ret );
+
                     out->ValueUint64 = static_cast<uint64_t>( dualSubsliceMask );
                 }
                 else
@@ -900,29 +942,21 @@ namespace MetricsDiscoveryInternal
 
             case GTDI_DEVICE_PARAM_SLICES_MASK:
             {
-                if( DualSubslicesSupported() )
+                int32_t sliceMask = 0;
+
+                if( IsXePlus() )
                 {
-                    // Return value is a mask of enabled dual subslices
-                    int64_t  dualSubsliceMask     = 0;
-                    uint32_t dualSubslicePerSlice = GetGtMaxDualSubslicePerSlice();
-
-                    ret = GetDualSubsliceMask( &dualSubsliceMask, metricsDevice );
-                    MD_CHECK_CC_RET( ret );
-                    out->ValueUint32 = 0;
-
-                    for( int32_t i = 0; i < MD_MAX_SLICE; ++i )
-                    {
-                        if( ( dualSubsliceMask >> ( dualSubslicePerSlice * i ) ) & MD_BITMASK( dualSubslicePerSlice ) )
-                        {
-                            out->ValueUint32 |= MD_BIT( i );
-                        }
-                    }
+                    ret = GetSliceMask( &sliceMask, metricsDevice );
                 }
                 else
                 {
-                    ret = SendGetParamIoctl( m_DrmDeviceHandle, I915_PARAM_SLICE_MASK, out );
-                    MD_CHECK_CC_RET( ret );
+                    ret = SendGetParamIoctl( m_DrmDeviceHandle, I915_PARAM_SLICE_MASK, &sliceMask );
                 }
+
+                MD_CHECK_CC_RET_A( m_adapterId, ret );
+
+                out->ValueType   = GTDI_DEVICE_PARAM_VALUE_TYPE_UINT32;
+                out->ValueUint32 = sliceMask;
 
                 break;
             }
@@ -944,7 +978,7 @@ namespace MetricsDiscoveryInternal
                 uint64_t* actFrequency = ( param == GTDI_DEVICE_PARAM_GPU_CORE_FREQUENCY ) ? &out->ValueUint64 : nullptr;
 
                 ret = GetGpuFrequencyInfo( minFrequency, maxFrequency, actFrequency, nullptr );
-                MD_CHECK_CC_RET( ret );
+                MD_CHECK_CC_RET_A( m_adapterId, ret );
 
                 out->ValueType = GTDI_DEVICE_PARAM_VALUE_TYPE_UINT64;
                 break;
@@ -955,7 +989,7 @@ namespace MetricsDiscoveryInternal
                 int32_t deviceId = -1;
 
                 ret = GetDeviceId( &deviceId );
-                MD_CHECK_CC_RET( ret );
+                MD_CHECK_CC_RET_A( m_adapterId, ret );
 
                 out->ValueUint32 = (uint32_t) deviceId;
                 out->ValueType   = GTDI_DEVICE_PARAM_VALUE_TYPE_UINT32;
@@ -970,7 +1004,7 @@ namespace MetricsDiscoveryInternal
 
             case GTDI_DEVICE_PARAM_PLATFORM_INDEX:
             {
-                out->ValueUint32 = static_cast<uint32_t>( instrPlatformId );
+                out->ValueUint32 = static_cast<uint32_t>( platformId );
                 out->ValueType   = GTDI_DEVICE_PARAM_VALUE_TYPE_UINT32;
                 break;
             }
@@ -980,11 +1014,11 @@ namespace MetricsDiscoveryInternal
                 // Returning mapped GtType for compatibility reasons
                 out->ValueType = GTDI_DEVICE_PARAM_VALUE_TYPE_UINT32;
                 // GfxVer12 gt values is based of revId and slicesMask
-                if( gfxDeviceInfo->PlatformIndex == GENERATION_ACM
-                    || gfxDeviceInfo->PlatformIndex == GENERATION_XEHP_SDV
-                    || gfxDeviceInfo->PlatformIndex == GENERATION_PVC )
+                if( platformId == GENERATION_ACM
+                    || platformId == GENERATION_XEHP_SDV
+                    || platformId == GENERATION_PVC )
                 {
-                    out->ValueUint32 = (uint32_t) MapDeviceInfoToInstrGtTypeGfxVer12( gfxDeviceInfo );
+                    out->ValueUint32 = (uint32_t) MapDeviceInfoToInstrGtTypeGfxVer12( gfxDeviceInfo, metricsDevice );
                 }
                 else
                 {
@@ -1000,9 +1034,9 @@ namespace MetricsDiscoveryInternal
                 };
 
                 int32_t ioctlRet = SendIoctl( m_DrmDeviceHandle, DRM_IOCTL_I915_GEM_GET_APERTURE, &getApertureParams );
-                if( ioctlRet )
+                if( ioctlRet == -1 )
                 {
-                    MD_LOG_A( m_adapterId, LOG_WARNING, "ERROR: Failed to send DRM_I915_GEM_GET_APERTURE ioctl" );
+                    MD_LOG_A( m_adapterId, LOG_ERROR, "ERROR: Failed to send DRM_I915_GEM_GET_APERTURE ioctl" );
                     return CC_ERROR_GENERAL;
                 }
 
@@ -1023,13 +1057,12 @@ namespace MetricsDiscoveryInternal
                 out->ValueUint32 = MD_PERF_OA_BUFFER_SIZE;
                 break;
             }
-
             case GTDI_DEVICE_PARAM_GPU_TIMESTAMP_FREQUENCY:
             {
                 uint64_t gpuTimestampFrequency = 0;
 
                 ret = GetGpuTimestampFrequency( &gpuTimestampFrequency );
-                MD_CHECK_CC_RET( ret );
+                MD_CHECK_CC_RET_A( m_adapterId, ret );
 
                 out->ValueType   = GTDI_DEVICE_PARAM_VALUE_TYPE_UINT64;
                 out->ValueUint64 = gpuTimestampFrequency;
@@ -1054,7 +1087,7 @@ namespace MetricsDiscoveryInternal
                 uint64_t gpuTimestampNs = 0;
 
                 ret = GetGpuTimestampNs( &gpuTimestampNs );
-                MD_CHECK_CC_RET( ret );
+                MD_CHECK_CC_RET_A( m_adapterId, ret );
 
                 out->ValueType   = GTDI_DEVICE_PARAM_VALUE_TYPE_UINT64;
                 out->ValueUint64 = gpuTimestampNs;
@@ -1098,7 +1131,7 @@ namespace MetricsDiscoveryInternal
     TCompletionCode CDriverInterfaceLinuxPerf::SendPmRegsConfig( TRegister** regVector, uint32_t regCount, uint32_t apiMask )
     {
         MD_LOG_ENTER_A( m_adapterId );
-        MD_CHECK_PTR_RET( regVector, CC_ERROR_INVALID_PARAMETER );
+        MD_CHECK_PTR_RET_A( m_adapterId, regVector, CC_ERROR_INVALID_PARAMETER );
         if( apiMask & API_TYPE_IOSTREAM )
         {
             MD_LOG_A( m_adapterId, LOG_DEBUG, "SetApiFiltering wasn't used" );
@@ -1119,7 +1152,7 @@ namespace MetricsDiscoveryInternal
 
             // 2. ADD CONFIG
             ret = AddPerfConfig( regVector, regCount, MD_PERF_GUID_FOR_QUERY, &addedConfigId );
-            MD_CHECK_CC_RET( ret );
+            MD_CHECK_CC_RET_A( m_adapterId, ret );
 
             MD_ASSERT_A( m_adapterId, addedConfigId != -1 );
 
@@ -1250,10 +1283,10 @@ namespace MetricsDiscoveryInternal
     TCompletionCode CDriverInterfaceLinuxPerf::GetGpuCpuTimestamps( CMetricsDevice& device, uint64_t* gpuTimestamp, uint64_t* cpuTimestamp, uint32_t* cpuId, uint64_t* correlationIndicator )
     {
         MD_LOG_ENTER_A( m_adapterId );
-        MD_CHECK_PTR_RET( gpuTimestamp, CC_ERROR_INVALID_PARAMETER );
-        MD_CHECK_PTR_RET( cpuTimestamp, CC_ERROR_INVALID_PARAMETER );
-        MD_CHECK_PTR_RET( cpuId, CC_ERROR_INVALID_PARAMETER );
-        MD_CHECK_PTR_RET( correlationIndicator, CC_ERROR_INVALID_PARAMETER );
+        MD_CHECK_PTR_RET_A( m_adapterId, gpuTimestamp, CC_ERROR_INVALID_PARAMETER );
+        MD_CHECK_PTR_RET_A( m_adapterId, cpuTimestamp, CC_ERROR_INVALID_PARAMETER );
+        MD_CHECK_PTR_RET_A( m_adapterId, cpuId, CC_ERROR_INVALID_PARAMETER );
+        MD_CHECK_PTR_RET_A( m_adapterId, correlationIndicator, CC_ERROR_INVALID_PARAMETER );
 
         auto                  platform              = GTDI_PLATFORM_INDEX::GTDI_PLATFORM_MAX;
         uint64_t              gpuTimestampFrequency = 0;
@@ -1261,7 +1294,7 @@ namespace MetricsDiscoveryInternal
         uint64_t              cpuTimestampNs        = 0;
         const TGfxDeviceInfo* gfxDeviceInfo         = nullptr;
         TCompletionCode       result                = GetGfxDeviceInfo( &gfxDeviceInfo );
-        MD_CHECK_CC_RET( result );
+        MD_CHECK_CC_RET_A( m_adapterId, result );
         platform = gfxDeviceInfo->PlatformIndex;
 
         auto& subDevices       = device.GetAdapter().GetSubDevices();
@@ -1282,20 +1315,20 @@ namespace MetricsDiscoveryInternal
         if( useKernelVersion )
         {
             result = GetGpuTimestampFrequency( &gpuTimestampFrequency );
-            MD_CHECK_CC_RET( result );
+            MD_CHECK_CC_RET_A( m_adapterId, result );
 
             result = subDevices.GetGpuCpuTimestamps( device.GetSubDeviceIndex(), gpuTimestampFrequency, gpuTimestampNs, cpuTimestampNs );
-            MD_CHECK_CC_RET( result );
+            MD_CHECK_CC_RET_A( m_adapterId, result );
         }
         else
         {
             MD_ASSERT_A( m_adapterId, device.GetSubDeviceIndex() == 0 );
 
             result = GetGpuTimestampNs( &gpuTimestampNs );
-            MD_CHECK_CC_RET( result );
+            MD_CHECK_CC_RET_A( m_adapterId, result );
 
             result = GetCpuTimestampNs( &cpuTimestampNs );
-            MD_CHECK_CC_RET( result );
+            MD_CHECK_CC_RET_A( m_adapterId, result );
         }
 
         // Set GPU & CPU timestamps
@@ -1363,9 +1396,9 @@ namespace MetricsDiscoveryInternal
     //     Creates the unnamed semaphore, initial count and max count equal to 1.
     //
     // Input:
-    //     char*    name      - *NOT USED ON ANDROID/LINUX* name of a semaphore
-    //     void**   semaphore - (OUT) pointer to the memory where the semaphore handle will be stored
-    //     uint32_t adapterId - adapter id for the purpose of logging
+    //     char*          name      - *NOT USED ON ANDROID/LINUX* name of a semaphore
+    //     void**         semaphore - (OUT) pointer to the memory where the semaphore handle will be stored
+    //     const uint32_t adapterId - adapter id for the purpose of logging
     //
     // Output:
     //     TCompletionCode     - *CC_OK* means succeess
@@ -1382,7 +1415,7 @@ namespace MetricsDiscoveryInternal
         *semaphore = nullptr;
 
         CSemaphore* _sem = new( std::nothrow ) CSemaphore;
-        MD_CHECK_PTR_RET( _sem, CC_ERROR_NO_MEMORY );
+        MD_CHECK_PTR_RET_A( adapterId, _sem, CC_ERROR_NO_MEMORY );
 
         *semaphore = (void*) _sem;
 
@@ -1402,8 +1435,8 @@ namespace MetricsDiscoveryInternal
     //     Tries to enter the semaphore gate, waits *miliseconds* until timeout.
     //
     // Input:
-    //     uint32_t milliseconds - time to wait in milliseconds
-    //     uint32_t adapterId    - adapter id for the purpose of logging
+    //     uint32_t       milliseconds - time to wait in milliseconds
+    //     cosnt uint32_t adapterId    - adapter id for the purpose of logging
     //
     // Output:
     //     TSemaphoreWaitResult  - result of operation
@@ -1443,8 +1476,8 @@ namespace MetricsDiscoveryInternal
     //     Releases earlier created semaphore.
     //
     // Input:
-    //     void**   semaphore - pointer to the semaphore handle
-    //     uint32_t adapterId - adapter id for the purpose of logging
+    //     void**         semaphore - pointer to the semaphore handle
+    //     const uint32_t adapterId - adapter id for the purpose of logging
     //
     // Output:
     //     TCompletionCode - result of operation (*CC_OK* is OK)
@@ -1501,7 +1534,7 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     TCompletionCode CDriverInterfaceLinuxPerf::LockConcurrentGroup( const char* name, void** semaphore )
     {
-        MD_CHECK_PTR_RET( semaphore, CC_ERROR_INVALID_PARAMETER );
+        MD_CHECK_PTR_RET_A( m_adapterId, semaphore, CC_ERROR_INVALID_PARAMETER );
 
         TCompletionCode retVal = CC_OK;
 
@@ -1556,8 +1589,8 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     TCompletionCode CDriverInterfaceLinuxPerf::UnlockConcurrentGroup( const char* name, void** semaphore )
     {
-        MD_CHECK_PTR_RET( semaphore, CC_ERROR_INVALID_PARAMETER );
-        MD_CHECK_PTR_RET( *semaphore, CC_ERROR_INVALID_PARAMETER );
+        MD_CHECK_PTR_RET_A( m_adapterId, semaphore, CC_ERROR_INVALID_PARAMETER );
+        MD_CHECK_PTR_RET_A( m_adapterId, *semaphore, CC_ERROR_INVALID_PARAMETER );
 
         if( SemaphoreRelease( semaphore, m_adapterId ) != CC_OK )
         {
@@ -1600,14 +1633,14 @@ namespace MetricsDiscoveryInternal
             return CC_ERROR_NOT_SUPPORTED;
         }
 
-        MD_CHECK_PTR_RET( metricSet, CC_ERROR_INVALID_PARAMETER );
-        MD_CHECK_PTR_RET( concurrentGroupName, CC_ERROR_INVALID_PARAMETER );
-        MD_CHECK_PTR_RET( nsTimerPeriod, CC_ERROR_INVALID_PARAMETER );
-        MD_CHECK_PTR_RET( bufferSize, CC_ERROR_INVALID_PARAMETER );
+        MD_CHECK_PTR_RET_A( m_adapterId, metricSet, CC_ERROR_INVALID_PARAMETER );
+        MD_CHECK_PTR_RET_A( m_adapterId, concurrentGroupName, CC_ERROR_INVALID_PARAMETER );
+        MD_CHECK_PTR_RET_A( m_adapterId, nsTimerPeriod, CC_ERROR_INVALID_PARAMETER );
+        MD_CHECK_PTR_RET_A( m_adapterId, bufferSize, CC_ERROR_INVALID_PARAMETER );
 
         // 1. ACTIVATE
         TCompletionCode ret = metricSet->ActivateInternal( false, false );
-        MD_CHECK_CC_RET( ret );
+        MD_CHECK_CC_RET_A( m_adapterId, ret );
 
         MD_ASSERT_A( m_adapterId, metricDevice.GetStreamConfigId() == -1 ); // Should be -1, which means stream is closed
 
@@ -1687,9 +1720,9 @@ namespace MetricsDiscoveryInternal
             return CC_ERROR_NOT_SUPPORTED;
         }
 
-        MD_CHECK_PTR_RET( metricSet, CC_ERROR_INVALID_PARAMETER );
-        MD_CHECK_PTR_RET( reportData, CC_ERROR_INVALID_PARAMETER );
-        MD_CHECK_PTR_RET( reportsCount, CC_ERROR_INVALID_PARAMETER );
+        MD_CHECK_PTR_RET_A( m_adapterId, metricSet, CC_ERROR_INVALID_PARAMETER );
+        MD_CHECK_PTR_RET_A( m_adapterId, reportData, CC_ERROR_INVALID_PARAMETER );
+        MD_CHECK_PTR_RET_A( m_adapterId, reportsCount, CC_ERROR_INVALID_PARAMETER );
 
         uint32_t reportSize        = metricSet->GetParams()->RawReportSize;
         uint32_t bytesToRead       = ( *reportsCount ) * reportSize;
@@ -1752,7 +1785,7 @@ namespace MetricsDiscoveryInternal
         {
             return CC_ERROR_NOT_SUPPORTED;
         }
-        MD_CHECK_PTR_RET( metricSet, CC_ERROR_INVALID_PARAMETER );
+        MD_CHECK_PTR_RET_A( m_adapterId, metricSet, CC_ERROR_INVALID_PARAMETER );
 
         // 1. CLOSE STREAM
         ClosePerfStream( metricDevice );
@@ -1879,7 +1912,7 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     TCompletionCode CDriverInterfaceLinuxPerf::SetFrequencyOverride( const TSetFrequencyOverrideParams_1_2* params )
     {
-        MD_CHECK_PTR_RET( params, CC_ERROR_INVALID_PARAMETER );
+        MD_CHECK_PTR_RET_A( m_adapterId, params, CC_ERROR_INVALID_PARAMETER );
         if( params->Pid != 0 )
         {
             MD_LOG_A( m_adapterId, LOG_WARNING, "Pid ignored, frequency override supported only in global mode (Pid = 0)" );
@@ -1896,7 +1929,7 @@ namespace MetricsDiscoveryInternal
 
         // 1. Read Min/Max and optional Boost frequency
         TCompletionCode ret = GetGpuFrequencyInfo( &minFrequency, &maxFrequency, nullptr, boostFrequencyPtr );
-        MD_CHECK_CC_RET( ret );
+        MD_CHECK_CC_RET_A( m_adapterId, ret );
 
         MD_LOG_A( m_adapterId, LOG_DEBUG, "MinFreq: %llu, MaxFreq: %llu, BoostFreq: %llu MHz", minFrequency, maxFrequency, m_CachedBoostFrequency );
 
@@ -1935,16 +1968,16 @@ namespace MetricsDiscoveryInternal
         if( ret == CC_OK )
         {
             ret = WriteSysFsFile( MIN_FREQ_OV_FILE_NAME, minFrequencyToSet );
-            MD_CHECK_CC_RET( ret );
+            MD_CHECK_CC_RET_A( m_adapterId, ret );
 
             ret = WriteSysFsFile( MAX_FREQ_OV_FILE_NAME, maxFrequencyToSet );
-            MD_CHECK_CC_RET( ret );
+            MD_CHECK_CC_RET_A( m_adapterId, ret );
 
             // If boost frequency file available
             if( m_CachedBoostFrequency )
             {
                 ret = WriteSysFsFile( BOOST_FREQ_OV_FILE_NAME, boostFrequencyToSet );
-                MD_CHECK_CC_RET( ret );
+                MD_CHECK_CC_RET_A( m_adapterId, ret );
             }
         }
 
@@ -2041,7 +2074,7 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     TCompletionCode CDriverInterfaceLinuxPerf::SetQueryOverride( TOverrideType overrideType, TPlatformType platform, uint32_t oaBufferSize, const TSetQueryOverrideParams_1_2* params )
     {
-        MD_CHECK_PTR_RET( params, CC_ERROR_INVALID_PARAMETER );
+        MD_CHECK_PTR_RET_A( m_adapterId, params, CC_ERROR_INVALID_PARAMETER );
         return CC_ERROR_NOT_SUPPORTED;
     }
 
@@ -2439,7 +2472,7 @@ namespace MetricsDiscoveryInternal
     TCompletionCode CDriverInterfaceLinuxPerf::AddPerfConfig( TRegister** regVector, uint32_t regCount, const char* requestedGuid, int32_t* addedConfigId )
     {
         MD_LOG_ENTER_A( m_adapterId );
-        MD_CHECK_PTR_RET( regVector, CC_ERROR_INVALID_PARAMETER );
+        MD_CHECK_PTR_RET_A( m_adapterId, regVector, CC_ERROR_INVALID_PARAMETER );
         if( !regCount )
         {
             MD_LOG_A( m_adapterId, LOG_ERROR, "ERROR: Empty configuration" );
@@ -2487,7 +2520,7 @@ namespace MetricsDiscoveryInternal
 
         // 3. SET PARAMS
         struct drm_i915_perf_oa_config param = {
-            { 0 },      //clang suggest braces around initialization of subobject
+            { 0 }, // clang suggest braces around initialization of subobject
         };
 
         static_assert( sizeof( param.uuid ) == ( MD_PERF_GUID_LENGTH - 1 ), "GUID length mismatch with i915 Perf API" );
@@ -2660,7 +2693,7 @@ namespace MetricsDiscoveryInternal
         snprintf( filePath, sizeof( filePath ), "/sys/class/drm/card%d/metrics/%s/id", m_DrmCardNumber, guid );
 
         TCompletionCode ret = ReadUInt64FromFile( filePath, &metricSetId );
-        MD_CHECK_CC_RET( ret );
+        MD_CHECK_CC_RET_A( m_adapterId, ret );
         if( !metricSetId )
         {
             MD_LOG_A( m_adapterId, LOG_ERROR, "ERROR: Invalid perf config id read from %s", filePath );
@@ -2895,7 +2928,7 @@ namespace MetricsDiscoveryInternal
         snprintf( drmDirPath, sizeof( drmDirPath ), "/sys/dev/char/%d:%d/device/drm", majorNumber, minorNumber );
 
         DIR* drmDir = opendir( drmDirPath );
-        MD_CHECK_PTR_RET( drmDir, -1 );
+        MD_CHECK_PTR_RET_A( IU_ADAPTER_ID_UNKNOWN, drmDir, -1 );
 
         dirent* entry         = nullptr;
         int32_t retCardNumber = -1;
@@ -2963,7 +2996,7 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     TCompletionCode CDriverInterfaceLinuxPerf::ReadSysFsFile( const char* fileName, uint64_t* readValue )
     {
-        MD_CHECK_PTR_RET( fileName, CC_ERROR_INVALID_PARAMETER );
+        MD_CHECK_PTR_RET_A( m_adapterId, fileName, CC_ERROR_INVALID_PARAMETER );
         MD_ASSERT_A( m_adapterId, m_DrmCardNumber >= 0 );
 
         char filePath[MD_MAX_PATH_LENGTH] = {
@@ -2996,7 +3029,7 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     TCompletionCode CDriverInterfaceLinuxPerf::WriteSysFsFile( const char* fileName, uint64_t value )
     {
-        MD_CHECK_PTR_RET( fileName, CC_ERROR_INVALID_PARAMETER );
+        MD_CHECK_PTR_RET_A( m_adapterId, fileName, CC_ERROR_INVALID_PARAMETER );
         MD_ASSERT_A( m_adapterId, m_DrmCardNumber >= 0 );
 
         char filePath[MD_MAX_PATH_LENGTH] = {
@@ -3029,8 +3062,8 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     TCompletionCode CDriverInterfaceLinuxPerf::ReadUInt64FromFile( const char* filePath, uint64_t* readValue )
     {
-        MD_CHECK_PTR_RET( filePath, CC_ERROR_INVALID_PARAMETER );
-        MD_CHECK_PTR_RET( readValue, CC_ERROR_INVALID_PARAMETER );
+        MD_CHECK_PTR_RET_A( m_adapterId, filePath, CC_ERROR_INVALID_PARAMETER );
+        MD_CHECK_PTR_RET_A( m_adapterId, readValue, CC_ERROR_INVALID_PARAMETER );
 
         char buffer[32] = {
             0,
@@ -3080,7 +3113,7 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     TCompletionCode CDriverInterfaceLinuxPerf::WriteUInt64ToFile( const char* filePath, uint64_t value )
     {
-        MD_CHECK_PTR_RET( filePath, CC_ERROR_INVALID_PARAMETER );
+        MD_CHECK_PTR_RET_A( m_adapterId, filePath, CC_ERROR_INVALID_PARAMETER );
 
         char buffer[32] = {
             0,
@@ -3160,7 +3193,7 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     TCompletionCode CDriverInterfaceLinuxPerf::SendGetParamIoctl( int32_t drmFd, uint32_t paramId, GTDIDeviceInfoParamExtOut* outValue )
     {
-        MD_CHECK_PTR_RET( outValue, CC_ERROR_INVALID_PARAMETER );
+        MD_CHECK_PTR_RET_A( m_adapterId, outValue, CC_ERROR_INVALID_PARAMETER );
 
         // GET_PARAM IOCTLs always return integers
         int32_t paramValue = 0;
@@ -3197,7 +3230,7 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     TCompletionCode CDriverInterfaceLinuxPerf::SendGetParamIoctl( int32_t drmFd, uint32_t paramId, int32_t* outValue )
     {
-        MD_CHECK_PTR_RET( outValue, CC_ERROR_INVALID_PARAMETER );
+        MD_CHECK_PTR_RET_A( m_adapterId, outValue, CC_ERROR_INVALID_PARAMETER );
 
         drm_i915_getparam_t params = {
             0,
@@ -3235,9 +3268,9 @@ namespace MetricsDiscoveryInternal
     //     TCompletionCode                       - *CC_OK* means success
     //
     //////////////////////////////////////////////////////////////////////////////
-    TCompletionCode CDriverInterfaceLinuxPerf::GetGfxDeviceInfo( int32_t deviceId, TGfxDeviceInfo* gfxDeviceInfo )
+    TCompletionCode CDriverInterfaceLinuxPerf::GetGfxDeviceInfo( int32_t deviceId, TGfxDeviceInfo* gfxDeviceInfo, const uint32_t adapterId )
     {
-        MD_CHECK_PTR_RET( gfxDeviceInfo, CC_ERROR_INVALID_PARAMETER );
+        MD_CHECK_PTR_RET_A( adapterId, gfxDeviceInfo, CC_ERROR_INVALID_PARAMETER );
         TCompletionCode ret = CC_ERROR_NOT_SUPPORTED;
 
         if( platformIndexMap.find( deviceId ) != platformIndexMap.end() )
@@ -3399,7 +3432,7 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     TCompletionCode CDriverInterfaceLinuxPerf::GetQueryGeometrySlices( std::vector<uint8_t>& buffer, CMetricsDevice* metricsDevice )
     {
-        MD_CHECK_CC_RET( metricsDevice != nullptr ? CC_OK : CC_ERROR_GENERAL );
+        MD_CHECK_CC_RET_A( m_adapterId, metricsDevice != nullptr ? CC_OK : CC_ERROR_GENERAL );
 
         const uint32_t subDeviceIndex = metricsDevice->GetSubDeviceIndex();
         // For root device we don't need prelim function and can use GetQueryTopologyInfo
@@ -3412,7 +3445,7 @@ namespace MetricsDiscoveryInternal
         auto engine     = TEngineParams_1_9{};
 
         // Obtain sub device engines.
-        MD_CHECK_CC_RET( subDevices.GetTbsEngineParams( subDeviceIndex, engine ) );
+        MD_CHECK_CC_RET_A( m_adapterId, subDevices.GetTbsEngineParams( subDeviceIndex, engine ) );
 
         // Check sub device engines support.
         const bool enginesSupported = IsSubDeviceSupported();
@@ -3427,13 +3460,13 @@ namespace MetricsDiscoveryInternal
         // Use PRELIM_DRM_I915_QUERY_COMPUTE_SLICES instead.
         if( m_CachedGfxDeviceInfo.PlatformIndex == GENERATION_PVC )
         {
-            MD_CHECK_CC_RET( QueryDrm( PRELIM_DRM_I915_QUERY_COMPUTE_SLICES, buffer, flags ) );
+            MD_CHECK_CC_RET_A( m_adapterId, QueryDrm( PRELIM_DRM_I915_QUERY_COMPUTE_SLICES, buffer, flags ) );
         }
         else
         {
-            MD_CHECK_CC_RET( QueryDrm( PRELIM_DRM_I915_QUERY_GEOMETRY_SLICES, buffer, flags ) );
+            MD_CHECK_CC_RET_A( m_adapterId, QueryDrm( PRELIM_DRM_I915_QUERY_GEOMETRY_SLICES, buffer, flags ) );
         }
-        MD_CHECK_CC_RET( buffer.size() ? CC_OK : CC_ERROR_GENERAL );
+        MD_CHECK_CC_RET_A( m_adapterId, buffer.size() ? CC_OK : CC_ERROR_GENERAL );
 
         return CC_OK;
     }
@@ -3458,8 +3491,8 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     TCompletionCode CDriverInterfaceLinuxPerf::GetQueryTopologyInfo( std::vector<uint8_t>& buffer )
     {
-        MD_CHECK_CC_RET( QueryDrm( DRM_I915_QUERY_TOPOLOGY_INFO, buffer ) );
-        MD_CHECK_CC_RET( buffer.size() ? CC_OK : CC_ERROR_GENERAL );
+        MD_CHECK_CC_RET_A( m_adapterId, QueryDrm( DRM_I915_QUERY_TOPOLOGY_INFO, buffer ) );
+        MD_CHECK_CC_RET_A( m_adapterId, buffer.size() ? CC_OK : CC_ERROR_GENERAL );
 
         return CC_OK;
     }
@@ -3470,56 +3503,125 @@ namespace MetricsDiscoveryInternal
     //     CDriverInterfaceLinuxPerf
     //
     // Method:
-    //     GetDualSubsliceMask
+    //     GetSliceMask
     //
     // Description:
-    //     Allows to obtain DualSubsliceMask value per sub device.
+    //     Allows to obtain slice mask value.
+    //     Works only on Xe+ platforms.
     //
     // Input:
-    //     int64_t*        dualSubsliceMask - [out] data
+    //     int32_t*       sliceMask        - [out] data
     //     CMetricsDevice* metricsDevice    - pointer to device
     //
     // Output:
     //     TCompletionCode                  - *CC_OK* means success
     //
     //////////////////////////////////////////////////////////////////////////////
-    TCompletionCode CDriverInterfaceLinuxPerf::GetDualSubsliceMask( int64_t* dualSubsliceMask, CMetricsDevice* metricsDevice )
+    TCompletionCode CDriverInterfaceLinuxPerf::GetSliceMask( int32_t* sliceMask, CMetricsDevice* metricsDevice )
     {
-        TCompletionCode ret = CC_OK;
-        if( metricsDevice == nullptr || !IsSubDeviceSupported() )
+        MD_CHECK_PTR_RET_A( m_adapterId, sliceMask, CC_ERROR_INVALID_PARAMETER );
+        MD_CHECK_PTR_RET_A( m_adapterId, metricsDevice, CC_ERROR_INVALID_PARAMETER );
+
+        if( !IsXePlus() )
         {
-            int32_t dualSubsliceMask32 = 0;
-            ret                        = SendGetParamIoctl( m_DrmDeviceHandle, I915_PARAM_SUBSLICE_MASK, &dualSubsliceMask32 );
-            MD_CHECK_CC_RET( ret );
-            *dualSubsliceMask = static_cast<int64_t>( dualSubsliceMask32 );
+            return CC_ERROR_GENERAL;
+        }
+
+        *sliceMask = 0;
+
+        // Return value is a mask of enabled subslices or dual-subslices
+        uint32_t subslicePerSlice = 0;
+        int64_t  subsliceMask     = 0;
+
+        if( IsDualSubsliceSupported() )
+        {
+            subslicePerSlice = GetGtMaxDualSubslicePerSlice();
         }
         else
         {
-            // Get DualSubsliceMask per sub device.
-            auto buffer = std::vector<uint8_t>();
+            subslicePerSlice = GetGtMaxSubslicePerSlice();
+        }
 
-            ret = GetQueryGeometrySlices( buffer, metricsDevice );
-            MD_CHECK_CC_RET( ret );
+        auto ret = GetSubsliceMask( &subsliceMask, metricsDevice );
+        MD_CHECK_CC_RET_A( m_adapterId, ret );
 
-            auto topology = reinterpret_cast<drm_i915_query_topology_info*>( buffer.data() );
-
-            const uint16_t subsliceOffset = topology->subslice_offset;
-            const uint16_t subsliceStride = topology->subslice_stride;
-            uint32_t       dss_index      = 0;
-
-            for( uint32_t sliceIndex = 0; sliceIndex < topology->max_slices; sliceIndex++ )
+        for( uint32_t i = 0; i < MD_MAX_SLICE; ++i )
+        {
+            if( ( subsliceMask >> ( subslicePerSlice * i ) ) & MD_BITMASK( subslicePerSlice ) )
             {
-                for( uint32_t subSliceIndex = 0; subSliceIndex < topology->max_subslices; subSliceIndex++ )
-                {
-                    const uint32_t dataIndex = subsliceOffset + ( sliceIndex * subsliceStride ) + ( subSliceIndex / 8 );
-                    if( ( ( topology->data[dataIndex] ) >> ( subSliceIndex % 8 ) ) & 1 )
-                    {
-                        *dualSubsliceMask |= 1UL << dss_index;
-                    }
-                    dss_index++;
-                }
+                *sliceMask |= MD_BIT( i );
             }
         }
+
+        return CC_OK;
+    }
+
+    //////////////////////////////////////////////////////////////////////////////
+    //
+    // Class:
+    //     CDriverInterfaceLinuxPerf
+    //
+    // Method:
+    //     GetSubsliceMask
+    //
+    // Description:
+    //     Allows to obtain subslice mask or dual-subslice mask (depends on platform) value per sub device.
+    //     Works only on Xe+ platforms.
+    //     Starting with Gen12 term "subslice" is used to refer to what the hardware documentation describes as a "dual-subslices".
+    //
+    // Input:
+    //     int64_t*        subsliceMask     - [out] data
+    //     CMetricsDevice* metricsDevice    - pointer to device
+    //
+    // Output:
+    //     TCompletionCode                  - *CC_OK* means success
+    //
+    //////////////////////////////////////////////////////////////////////////////
+    TCompletionCode CDriverInterfaceLinuxPerf::GetSubsliceMask( int64_t* subsliceMask, CMetricsDevice* metricsDevice )
+    {
+        MD_CHECK_PTR_RET_A( m_adapterId, subsliceMask, CC_ERROR_INVALID_PARAMETER );
+        MD_CHECK_PTR_RET_A( m_adapterId, metricsDevice, CC_ERROR_INVALID_PARAMETER );
+
+        *subsliceMask = 0;
+
+        if( !IsXePlus() )
+        {
+            return CC_ERROR_GENERAL;
+        }
+
+        if( IsDualSubsliceSupported() )
+        {
+            MD_LOG_A( m_adapterId, LOG_INFO, "Obtaining dual subslice mask" );
+        }
+        else
+        {
+            MD_LOG_A( m_adapterId, LOG_INFO, "Obtaining subslice mask" );
+        }
+
+        // Get subslice or dual-subslice mask per sub device.
+        auto buffer = std::vector<uint8_t>();
+        auto ret    = GetQueryGeometrySlices( buffer, metricsDevice );
+        MD_CHECK_CC_RET_A( m_adapterId, ret );
+
+        auto topology = reinterpret_cast<drm_i915_query_topology_info*>( buffer.data() );
+
+        const uint16_t subsliceOffset = topology->subslice_offset;
+        const uint16_t subsliceStride = topology->subslice_stride;
+        uint32_t       ssIndex        = 0;
+
+        for( uint32_t sliceIndex = 0; sliceIndex < topology->max_slices; ++sliceIndex )
+        {
+            for( uint32_t subSliceIndex = 0; subSliceIndex < topology->max_subslices; ++subSliceIndex )
+            {
+                const uint32_t dataIndex = subsliceOffset + ( sliceIndex * subsliceStride ) + ( subSliceIndex / 8 );
+                if( ( ( topology->data[dataIndex] ) >> ( subSliceIndex % 8 ) ) & 1 )
+                {
+                    *subsliceMask |= 1UL << ssIndex;
+                }
+                ssIndex++;
+            }
+        }
+
         return ret;
     }
 
@@ -3544,40 +3646,35 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     TCompletionCode CDriverInterfaceLinuxPerf::GetEuCoresTotalCount( GTDIDeviceInfoParamExtOut* out, CMetricsDevice* metricsDevice )
     {
-        TCompletionCode ret = CC_OK;
-
-        if( metricsDevice == nullptr || !IsSubDeviceSupported() )
+        if( !IsXePlus() )
         {
-            ret = SendGetParamIoctl( m_DrmDeviceHandle, I915_PARAM_EU_TOTAL, out );
-            MD_CHECK_CC_RET( ret );
+            return CC_ERROR_GENERAL;
         }
-        else
+
+        // Get EuCoresTotalCount per sub device.
+        auto buffer = std::vector<uint8_t>();
+
+        auto ret = GetQueryGeometrySlices( buffer, metricsDevice );
+        MD_CHECK_CC_RET_A( m_adapterId, ret );
+
+        auto topology = reinterpret_cast<drm_i915_query_topology_info*>( buffer.data() );
+
+        out->ValueUint32 = 0;
+        out->ValueType   = GTDI_DEVICE_PARAM_VALUE_TYPE_UINT32;
+
+        const uint16_t euOffset = topology->eu_offset;
+        const uint16_t euStride = topology->eu_stride;
+
+        for( uint16_t sliceIndex = 0; sliceIndex < topology->max_slices; ++sliceIndex )
         {
-            // Get EuCoresTotalCount per sub device.
-            auto buffer = std::vector<uint8_t>();
-
-            ret = GetQueryGeometrySlices( buffer, metricsDevice );
-            MD_CHECK_CC_RET( ret );
-
-            auto topology = reinterpret_cast<drm_i915_query_topology_info*>( buffer.data() );
-
-            out->ValueUint32 = 0;
-            out->ValueType   = GTDI_DEVICE_PARAM_VALUE_TYPE_UINT32;
-
-            const uint16_t euOffset = topology->eu_offset;
-            const uint16_t euStride = topology->eu_stride;
-
-            for( uint16_t sliceIndex = 0; sliceIndex < topology->max_slices; ++sliceIndex )
+            for( uint16_t i = 0; i < topology->max_eus_per_subslice; ++i )
             {
-                for( uint16_t i = 0; i < topology->max_eus_per_subslice; ++i )
+                for( uint16_t subSliceIndex = 0; subSliceIndex < topology->max_subslices; ++subSliceIndex )
                 {
-                    for( uint16_t subSliceIndex = 0; subSliceIndex < topology->max_subslices; ++subSliceIndex )
-                    {
-                        const uint16_t eu        = topology->max_eus_per_subslice - 1 - i;
-                        const uint32_t dataIndex = euOffset + ( sliceIndex * topology->max_subslices + subSliceIndex ) * euStride + eu / 8;
+                    const uint16_t eu        = topology->max_eus_per_subslice - 1 - i;
+                    const uint32_t dataIndex = euOffset + ( sliceIndex * topology->max_subslices + subSliceIndex ) * euStride + eu / 8;
 
-                        out->ValueUint32 += ( topology->data[dataIndex] >> ( eu % 8 ) ) & 1;
-                    }
+                    out->ValueUint32 += ( topology->data[dataIndex] >> ( eu % 8 ) ) & 1;
                 }
             }
         }
@@ -3607,11 +3704,16 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     TAdapterType CDriverInterfaceLinuxPerf::GetAdapterType( const TGfxDeviceInfo* gfxDeviceInfo )
     {
-        return ( gfxDeviceInfo->PlatformIndex == GENERATION_DG1
-                 || gfxDeviceInfo->PlatformIndex == GENERATION_ACM
-                 || gfxDeviceInfo->PlatformIndex == GENERATION_XEHP_SDV )
-            ? ADAPTER_TYPE_DISCRETE
-            : ADAPTER_TYPE_INTEGRATED;
+        switch( gfxDeviceInfo->PlatformIndex )
+        {
+            case GENERATION_DG1:
+            case GENERATION_ACM:
+            case GENERATION_XEHP_SDV:
+            case GENERATION_PVC:
+                return ADAPTER_TYPE_DISCRETE;
+            default:
+                return ADAPTER_TYPE_INTEGRATED;
+        }
     }
 
     //////////////////////////////////////////////////////////////////////////////
@@ -3643,9 +3745,9 @@ namespace MetricsDiscoveryInternal
             int32_t         deviceId = 0;
             TCompletionCode ret      = GetDeviceId( &deviceId );
 
-            MD_CHECK_CC_RET( ret );
+            MD_CHECK_CC_RET_A( m_adapterId, ret );
 
-            if( GetGfxDeviceInfo( deviceId, &m_CachedGfxDeviceInfo ) != CC_OK )
+            if( GetGfxDeviceInfo( deviceId, &m_CachedGfxDeviceInfo, m_adapterId ) != CC_OK )
             {
                 return CC_ERROR_NOT_SUPPORTED;
             }
@@ -3676,7 +3778,7 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     TCompletionCode CDriverInterfaceLinuxPerf::GetDeviceId( int32_t* deviceId )
     {
-        MD_CHECK_PTR_RET( deviceId, CC_ERROR_INVALID_PARAMETER );
+        MD_CHECK_PTR_RET_A( m_adapterId, deviceId, CC_ERROR_INVALID_PARAMETER );
         TCompletionCode ret = CC_OK;
 
         if( m_CachedDeviceId == -1 )
@@ -3717,7 +3819,7 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     TCompletionCode CDriverInterfaceLinuxPerf::GetPerfRevision( int32_t* perfRevision )
     {
-        MD_CHECK_PTR_RET( perfRevision, CC_ERROR_INVALID_PARAMETER );
+        MD_CHECK_PTR_RET_A( m_adapterId, perfRevision, CC_ERROR_INVALID_PARAMETER );
 
         if( m_CachedPerfRevision == -1 )
         {
@@ -3781,7 +3883,7 @@ namespace MetricsDiscoveryInternal
             if( !m_CachedMinFrequency )
             {
                 ret = ReadSysFsFile( MIN_FREQ_FILE_NAME, &m_CachedMinFrequency );
-                MD_CHECK_CC_RET( ret );
+                MD_CHECK_CC_RET_A( m_adapterId, ret );
             }
 
             *minFrequency = m_CachedMinFrequency;
@@ -3794,7 +3896,7 @@ namespace MetricsDiscoveryInternal
             if( !m_CachedMaxFrequency )
             {
                 ret = ReadSysFsFile( MAX_FREQ_FILE_NAME, &m_CachedMaxFrequency );
-                MD_CHECK_CC_RET( ret );
+                MD_CHECK_CC_RET_A( m_adapterId, ret );
             }
 
             *maxFrequency = m_CachedMaxFrequency;
@@ -3809,7 +3911,7 @@ namespace MetricsDiscoveryInternal
             // Using act ('actual') frequency file, curr ('current') freq file may show
             // frequency requested by the driver not the actual GPU frequency.
             ret = ReadSysFsFile( ACT_FREQ_FILE_NAME, &actFrequencyMhz );
-            MD_CHECK_CC_RET( ret );
+            MD_CHECK_CC_RET_A( m_adapterId, ret );
 
             // Convert reading to Hz (for compatibility with the other MDAPI driver interfaces)
             *actFrequency = actFrequencyMhz * MD_MHERTZ;
@@ -3858,7 +3960,7 @@ namespace MetricsDiscoveryInternal
     {
         int32_t         freq   = 0;
         TCompletionCode result = SendGetParamIoctl( m_DrmDeviceHandle, PRELIM_I915_PARAM_OA_TIMESTAMP_FREQUENCY, &freq );
-        MD_CHECK_CC_RET( result );
+        MD_CHECK_CC_RET_A( m_adapterId, result );
         frequency = static_cast<uint64_t>( freq );
 
         return result;
@@ -3886,7 +3988,7 @@ namespace MetricsDiscoveryInternal
     {
         int32_t         freq   = 0;
         TCompletionCode result = SendGetParamIoctl( m_DrmDeviceHandle, I915_PARAM_CS_TIMESTAMP_FREQUENCY, &freq );
-        MD_CHECK_CC_RET( result );
+        MD_CHECK_CC_RET_A( m_adapterId, result );
         frequency = static_cast<uint64_t>( freq );
 
         return result;
@@ -3915,7 +4017,7 @@ namespace MetricsDiscoveryInternal
     {
         const TGfxDeviceInfo* gfxDeviceInfo = nullptr;
         TCompletionCode       ret           = GetGfxDeviceInfo( &gfxDeviceInfo );
-        MD_CHECK_CC_RET( ret );
+        MD_CHECK_CC_RET_A( m_adapterId, ret );
 
         uint64_t oaTimestampFrequency = 0;
         uint64_t csTimestampFrequency = 0;
@@ -3924,8 +4026,8 @@ namespace MetricsDiscoveryInternal
         {
             case GENERATION_ACM:
             case GENERATION_PVC:
-                MD_CHECK_CC_RET( GetOaTimestampFrequency( oaTimestampFrequency ) );
-                MD_CHECK_CC_RET( GetCsTimestampFrequency( csTimestampFrequency ) );
+                MD_CHECK_CC_RET_A( m_adapterId, GetOaTimestampFrequency( oaTimestampFrequency ) );
+                MD_CHECK_CC_RET_A( m_adapterId, GetCsTimestampFrequency( csTimestampFrequency ) );
                 oaTimestamp = csTimestamp * oaTimestampFrequency / csTimestampFrequency;
                 break;
 
@@ -3957,11 +4059,11 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     TCompletionCode CDriverInterfaceLinuxPerf::GetGpuTimestampFrequency( uint64_t* gpuTimestampFrequency )
     {
-        MD_CHECK_PTR_RET( gpuTimestampFrequency, CC_ERROR_INVALID_PARAMETER );
+        MD_CHECK_PTR_RET_A( m_adapterId, gpuTimestampFrequency, CC_ERROR_INVALID_PARAMETER );
 
         const TGfxDeviceInfo* gfxDeviceInfo = nullptr;
         auto                  result        = GetGfxDeviceInfo( &gfxDeviceInfo );
-        MD_CHECK_CC_RET( result );
+        MD_CHECK_CC_RET_A( m_adapterId, result );
 
         switch( gfxDeviceInfo->PlatformIndex )
         {
@@ -3975,7 +4077,7 @@ namespace MetricsDiscoveryInternal
                 break;
         }
 
-        MD_CHECK_CC_RET( result );
+        MD_CHECK_CC_RET_A( m_adapterId, result );
         return result;
     }
 
@@ -4000,12 +4102,12 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     TCompletionCode CDriverInterfaceLinuxPerf::GetGpuTimestampPeriodNs( uint64_t* gpuTimestampPeriodNs )
     {
-        MD_CHECK_PTR_RET( gpuTimestampPeriodNs, CC_ERROR_INVALID_PARAMETER );
+        MD_CHECK_PTR_RET_A( m_adapterId, gpuTimestampPeriodNs, CC_ERROR_INVALID_PARAMETER );
 
         // 1. Get GpuTimestamFrequency
         uint64_t        gpuTimestampFrequency = 0;
         TCompletionCode ret                   = GetGpuTimestampFrequency( &gpuTimestampFrequency );
-        MD_CHECK_CC_RET( ret );
+        MD_CHECK_CC_RET_A( m_adapterId, ret );
 
         MD_ASSERT_A( m_adapterId, gpuTimestampFrequency != 0 );
 
@@ -4038,19 +4140,19 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     TCompletionCode CDriverInterfaceLinuxPerf::GetGpuTimestampNs( uint64_t* gpuTimestampNs )
     {
-        MD_CHECK_PTR_RET( gpuTimestampNs, CC_ERROR_INVALID_PARAMETER );
+        MD_CHECK_PTR_RET_A( m_adapterId, gpuTimestampNs, CC_ERROR_INVALID_PARAMETER );
 
         // 1. Get GpuTimestamFrequency
         uint64_t        gpuTimestampFrequency = 0;
         TCompletionCode ret                   = GetGpuTimestampFrequency( &gpuTimestampFrequency );
-        MD_CHECK_CC_RET( ret );
+        MD_CHECK_CC_RET_A( m_adapterId, ret );
 
         MD_ASSERT_A( m_adapterId, gpuTimestampFrequency != 0 );
 
         // 2. Get GpuTimestampTicks
         uint64_t gpuTimestampTicks = 0;
         ret                        = GetGpuTimestampTicks( &gpuTimestampTicks );
-        MD_CHECK_CC_RET( ret );
+        MD_CHECK_CC_RET_A( m_adapterId, ret );
 
         // 3. Convert GpuTimestamp to ns
         //    ! Ticks masked to 32bit to get sync with report timestamps !
@@ -4080,7 +4182,7 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     TCompletionCode CDriverInterfaceLinuxPerf::GetGpuTimestampTicks( uint64_t* gpuTimestampTicks )
     {
-        MD_CHECK_PTR_RET( gpuTimestampTicks, CC_ERROR_INVALID_PARAMETER );
+        MD_CHECK_PTR_RET_A( m_adapterId, gpuTimestampTicks, CC_ERROR_INVALID_PARAMETER );
 
         struct drm_i915_reg_read regReadParams = {
             0,
@@ -4091,7 +4193,7 @@ namespace MetricsDiscoveryInternal
         int32_t ioctlRet = SendIoctl( m_DrmDeviceHandle, DRM_IOCTL_I915_REG_READ, &regReadParams );
         if( ioctlRet )
         {
-            MD_LOG_A( m_adapterId, LOG_WARNING, "ERROR: Failed to send DRM_IOCTL_I915_REG_READ ioctl" );
+            MD_LOG_A( m_adapterId, LOG_ERROR, "ERROR: Failed to send DRM_IOCTL_I915_REG_READ ioctl" );
             return CC_ERROR_GENERAL;
         }
 
@@ -4121,7 +4223,7 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     TCompletionCode CDriverInterfaceLinuxPerf::GetCpuTimestampNs( uint64_t* cpuTimestampNs )
     {
-        MD_CHECK_PTR_RET( cpuTimestampNs, CC_ERROR_INVALID_PARAMETER );
+        MD_CHECK_PTR_RET_A( m_adapterId, cpuTimestampNs, CC_ERROR_INVALID_PARAMETER );
 
         struct timespec time;
         if( clock_gettime( CLOCK_MONOTONIC, &time ) )
@@ -4158,6 +4260,7 @@ namespace MetricsDiscoveryInternal
         if( result != CC_OK )
         {
             MD_LOG_A( m_adapterId, LOG_ERROR, "WARNING: Failed to get platform ID" );
+            return MD_MAX_SUBSLICE_PER_SLICE;
         }
 
         switch( gfxDeviceInfo->PlatformIndex )
@@ -4178,6 +4281,8 @@ namespace MetricsDiscoveryInternal
             case GENERATION_DG1:
             case GENERATION_RKL:
             case GENERATION_ADLP:
+            case GENERATION_ADLS:
+            case GENERATION_ADLN:
             case GENERATION_XEHP_SDV:
             case GENERATION_ACM:
                 return MD_MAX_DUALSUBSLICE_PER_SLICE * MD_MAX_SUBSLICE_PER_DSS;
@@ -4212,13 +4317,13 @@ namespace MetricsDiscoveryInternal
             case GENERATION_TGL:
             case GENERATION_DG1:
             case GENERATION_ADLP:
+            case GENERATION_ADLS:
+            case GENERATION_ADLN:
             case GENERATION_RKL:
                 return MD_MAX_DUALSUBSLICE_PER_SLICE;
             case GENERATION_XEHP_SDV:
             case GENERATION_ACM:
                 return MD_DUALSUBSLICE_PER_SLICE;
-            case GENERATION_PVC:
-                return MD_MAX_SUBSLICE_PER_SLICE;
             default:
                 return MD_MAX_DUALSUBSLICE_PER_SLICE;
         }
@@ -4230,23 +4335,23 @@ namespace MetricsDiscoveryInternal
     //   CDriverInterfaceLinuxPerf
     //
     // Method:
-    //     DualSubslicesSupported
+    //     IsXePlus
     //
     // Description:
-    //     Returns information if platform uses dual sub slice terminology.
+    //     Returns information if current platform is Xe+.
     //
     // Output:
-    //     bool - True if platform have dual sub slices
+    //     bool - true if current platform is Xe+
     //
     //////////////////////////////////////////////////////////////////////////////
-    bool CDriverInterfaceLinuxPerf::DualSubslicesSupported()
+    bool CDriverInterfaceLinuxPerf::IsXePlus()
     {
-        GTDI_PLATFORM_INDEX   instrPlatformId = GTDI_PLATFORM_MAX;
-        const TGfxDeviceInfo* gfxDeviceInfo   = nullptr;
+        const TGfxDeviceInfo* gfxDeviceInfo = nullptr;
 
         TCompletionCode ret = GetGfxDeviceInfo( &gfxDeviceInfo );
         if( ret != CC_OK )
         {
+            MD_LOG_A( m_adapterId, LOG_WARNING, "WARNING: Cannot get gfx device info" );
             return false;
         }
 
@@ -4254,11 +4359,55 @@ namespace MetricsDiscoveryInternal
         {
             case GENERATION_TGL:
             case GENERATION_DG1:
-            case GENERATION_RKL:
             case GENERATION_XEHP_SDV:
-            case GENERATION_ADLP:
-            case GENERATION_ACM:
             case GENERATION_PVC:
+            case GENERATION_ACM:
+            case GENERATION_RKL:
+            case GENERATION_ADLP:
+            case GENERATION_ADLS:
+            case GENERATION_ADLN:
+                return true;
+            default:
+                return false;
+        }
+    }
+
+    //////////////////////////////////////////////////////////////////////////////
+    //
+    // Class:
+    //   CDriverInterfaceLinuxPerf
+    //
+    // Method:
+    //     IsDualSubsliceSupported
+    //
+    // Description:
+    //     Returns information if current platform supports dual sub slices
+    //
+    // Output:
+    //     bool - true if current platform supports dual sub slices
+    //
+    //////////////////////////////////////////////////////////////////////////////
+    bool CDriverInterfaceLinuxPerf::IsDualSubsliceSupported()
+    {
+        const TGfxDeviceInfo* gfxDeviceInfo = nullptr;
+
+        TCompletionCode ret = GetGfxDeviceInfo( &gfxDeviceInfo );
+        if( ret != CC_OK )
+        {
+            MD_LOG_A( m_adapterId, LOG_WARNING, "WARNING: Cannot get gfx device info" );
+            return false;
+        }
+
+        switch( gfxDeviceInfo->PlatformIndex )
+        {
+            case GENERATION_TGL:
+            case GENERATION_DG1:
+            case GENERATION_XEHP_SDV:
+            case GENERATION_ACM:
+            case GENERATION_RKL:
+            case GENERATION_ADLP:
+            case GENERATION_ADLS:
+            case GENERATION_ADLN:
                 return true;
             default:
                 return false;
@@ -4278,24 +4427,26 @@ namespace MetricsDiscoveryInternal
     //     device id and PCI revision id.
     //
     // Input:
-    //     const TGfxDeviceInfo* gfxDeviceInfo - Basic device information.
+    //     const TGfxDeviceInfo* gfxDeviceInfo - basic device information.
+    //     CMetricsDevice* metricsDevice       - metrics device.
     //
     // Output:
     //     TGfxGtType                          - graphics GT type, used by Intel driver
     //
     //////////////////////////////////////////////////////////////////////////////
-    TGfxGtType CDriverInterfaceLinuxPerf::MapDeviceInfoToInstrGtTypeGfxVer12( const TGfxDeviceInfo* gfxDeviceInfo )
+    TGfxGtType CDriverInterfaceLinuxPerf::MapDeviceInfoToInstrGtTypeGfxVer12( const TGfxDeviceInfo* gfxDeviceInfo, CMetricsDevice* metricsDevice )
     {
-        TGfxGtType gtType                 = GFX_GTTYPE_UNDEFINED;
-        bool       isAdderWorkaroundValid = false;
-        bool       isAdderWaNeeded        = false;
+        TGfxGtType      gtType                 = GFX_GTTYPE_UNDEFINED;
+        bool            isAdderWorkaroundValid = false;
+        bool            isAdderWaNeeded        = false;
+        TCompletionCode ret                    = CC_OK;
+        int64_t         sliceMask              = 0;
 
-        int32_t sliceMask = 0;
-
-        TCompletionCode ret = SendGetParamIoctl( m_DrmDeviceHandle, I915_PARAM_SLICE_MASK, &sliceMask );
+        MD_CHECK_PTR_RET_A( m_adapterId, metricsDevice, gtType );
+        ret = GetSubsliceMask( &sliceMask, metricsDevice );
         if( ret != CC_OK )
         {
-            MD_LOG_A( m_adapterId, LOG_ERROR, "Unable to obtain slice mask while defining GT type" );
+            MD_LOG_A( m_adapterId, LOG_ERROR, "Unable to obtain dual-subslice/subslice mask while defining GT type" );
             return gtType;
         }
 
@@ -4420,7 +4571,7 @@ namespace MetricsDiscoveryInternal
     //     uint32_t       - number of enabled bits
     //
     //////////////////////////////////////////////////////////////////////////////
-    uint32_t CDriverInterfaceLinuxPerf::CalculateEnabledBits( uint64_t value, uint64_t mask )
+    uint32_t CDriverInterfaceLinuxPerf::CalculateEnabledBits( uint64_t value, uint64_t mask /* = UINT64_MAX */ )
     {
         uint32_t count = 0;
 
@@ -4553,7 +4704,7 @@ namespace MetricsDiscoveryInternal
     //     Closes adapter handle.
     //
     // Input:
-    //     uint32_t adapterId - adapter id for the purpose of logging
+    //     const uint32_t adapterId - adapter id for the purpose of logging
     //
     // Output:
     //     TCompletionCode - CC_OK means success

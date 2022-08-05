@@ -121,7 +121,7 @@ namespace MetricsDiscoveryInternal
         : m_elementsVector( other.m_elementsVector )
         , m_device( other.m_device )
     {
-        m_equationString = GetCopiedCString( other.m_equationString );
+        m_equationString = GetCopiedCString( other.m_equationString, OBTAIN_ADAPTER_ID( m_device ) );
     }
 
     //////////////////////////////////////////////////////////////////////////////
@@ -209,7 +209,7 @@ namespace MetricsDiscoveryInternal
         std::list<uint64_t> equationStack;
         uint64_t            qwordValue;
         uint32_t            algorithmCheck = 0;
-        const uint32_t      adapterId      = m_device->GetAdapter().GetAdapterId();
+        const uint32_t      adapterId      = OBTAIN_ADAPTER_ID( m_device );
 
         for( uint32_t i = 0; i < m_elementsVector.size(); i++ )
         {
@@ -408,8 +408,10 @@ namespace MetricsDiscoveryInternal
 
         char *token = nullptr, *tokenNext = nullptr, *string = nullptr;
 
-        string = GetCopiedCString( equationString );
-        MD_CHECK_PTR_RET( string, false );
+        const uint32_t adapterId = OBTAIN_ADAPTER_ID( m_device );
+
+        string = GetCopiedCString( equationString, adapterId );
+        MD_CHECK_PTR_RET_A( adapterId, string, false );
 
         token = iu_strtok_s( string, " ", &tokenNext );
         while( token != nullptr )
@@ -422,7 +424,7 @@ namespace MetricsDiscoveryInternal
             token = iu_strtok_s( nullptr, " ", &tokenNext );
         }
 
-        m_equationString = GetCopiedCString( equationString );
+        m_equationString = GetCopiedCString( equationString, adapterId );
         delete[] string;
         return true;
     }
@@ -473,6 +475,8 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     bool CEquation::ParseEquationElement( const char* element )
     {
+        const uint32_t adapterId = OBTAIN_ADAPTER_ID( m_device );
+
         if( strcmp( element, "EuAggrDurationSlice" ) == 0 )
         {
             // Workaround for renamed EuCoresTotalCount
@@ -822,11 +826,12 @@ namespace MetricsDiscoveryInternal
         {
             CEquationElementInternal anElement;
             anElement.Element_1_0.Type = EQUATION_ELEM_MASK;
-            anElement.Element_1_0.Mask = GetByteArrayFromMask( element + sizeof( "mask$" ) );
+            anElement.Element_1_0.Mask = GetByteArrayFromCStringMask( element + sizeof( "mask$" ) - 1, adapterId );
+            MD_CHECK_PTR_RET_A( adapterId, anElement.Element_1_0.Mask.Data, false )
             return AddEquationElement( &anElement );
         }
 
-        MD_LOG_A( m_device->GetAdapter().GetAdapterId(), LOG_ERROR, "Unknown equation element: %s", element );
+        MD_LOG_A( adapterId, LOG_ERROR, "Unknown equation element: %s", element );
         return false;
     }
 
@@ -850,13 +855,15 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     TCompletionCode CEquation::WriteCEquationToFile( FILE* metricFile )
     {
+        const uint32_t adapterId = OBTAIN_ADAPTER_ID( m_device );
+
         if( metricFile == nullptr )
         {
-            MD_ASSERT_A( m_device->GetAdapter().GetAdapterId(), metricFile != nullptr );
+            MD_ASSERT_A( adapterId, metricFile != nullptr );
             return CC_ERROR_INVALID_PARAMETER;
         }
 
-        WriteCStringToFile( m_equationString, metricFile );
+        WriteCStringToFile( m_equationString, metricFile, adapterId );
 
         return CC_OK;
     }

@@ -319,7 +319,7 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     TCompletionCode CAdapterGroup::GetOpenCloseSemaphore()
     {
-        return GetNamedSemaphore( "AdOpenClose", &m_openCloseSemaphore );
+        return GetNamedSemaphore( "AdOpenClose", &m_openCloseSemaphore, IU_ADAPTER_ID_UNKNOWN );
     }
 
     //////////////////////////////////////////////////////////////////////////////
@@ -339,7 +339,7 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     TCompletionCode CAdapterGroup::ReleaseOpenCloseSemaphore()
     {
-        return ReleaseNamedSemaphore( &m_openCloseSemaphore );
+        return ReleaseNamedSemaphore( &m_openCloseSemaphore, IU_ADAPTER_ID_UNKNOWN );
     }
 
     //////////////////////////////////////////////////////////////////////////////

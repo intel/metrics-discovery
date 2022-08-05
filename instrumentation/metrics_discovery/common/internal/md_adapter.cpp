@@ -291,7 +291,7 @@ namespace MetricsDiscoveryInternal
     TCompletionCode CAdapter::OpenMetricsDeviceByIndex( CMetricsDevice** metricsDevice, const uint32_t subDeviceIndex )
     {
         MD_LOG_ENTER_A( m_adapterId );
-        MD_CHECK_PTR_RET( metricsDevice, CC_ERROR_INVALID_PARAMETER );
+        MD_CHECK_PTR_RET_A( m_adapterId, metricsDevice, CC_ERROR_INVALID_PARAMETER );
 
         // 1. Obtain semaphore
         TCompletionCode retVal = GetOpenCloseSemaphore();
@@ -426,8 +426,8 @@ namespace MetricsDiscoveryInternal
     TCompletionCode CAdapter::OpenMetricsDeviceFromFileByIndex( const char* fileName, void* openParams, CMetricsDevice** metricsDevice, const uint32_t subDeviceIndex )
     {
         MD_LOG_ENTER_A( m_adapterId );
-        MD_CHECK_PTR_RET( fileName, CC_ERROR_INVALID_PARAMETER );
-        MD_CHECK_PTR_RET( metricsDevice, CC_ERROR_INVALID_PARAMETER );
+        MD_CHECK_PTR_RET_A( m_adapterId, fileName, CC_ERROR_INVALID_PARAMETER );
+        MD_CHECK_PTR_RET_A( m_adapterId, metricsDevice, CC_ERROR_INVALID_PARAMETER );
 
         // 1. Obtain semaphore
         TCompletionCode retVal = GetOpenCloseSemaphore();
@@ -580,7 +580,7 @@ namespace MetricsDiscoveryInternal
     TCompletionCode CAdapter::OpenMetricsSubDevice( const uint32_t subDeviceIndex, CMetricsDevice** metricsDevice )
     {
         MD_LOG_ENTER_A( m_adapterId );
-        MD_CHECK_PTR_RET( metricsDevice, CC_ERROR_INVALID_PARAMETER );
+        MD_CHECK_PTR_RET_A( m_adapterId, metricsDevice, CC_ERROR_INVALID_PARAMETER );
 
         const bool      isFirstDevice        = subDeviceIndex == 0;
         const bool      isValidIndex         = isFirstDevice || ( subDeviceIndex < m_params.SubDevicesCount );
@@ -721,8 +721,8 @@ namespace MetricsDiscoveryInternal
     TCompletionCode CAdapter::OpenMetricsSubDeviceFromFile( const uint32_t subDeviceIndex, const char* fileName, void* openParams, CMetricsDevice** metricsDevice )
     {
         MD_LOG_ENTER_A( m_adapterId );
-        MD_CHECK_PTR_RET( fileName, CC_ERROR_INVALID_PARAMETER );
-        MD_CHECK_PTR_RET( metricsDevice, CC_ERROR_INVALID_PARAMETER );
+        MD_CHECK_PTR_RET_A( m_adapterId, fileName, CC_ERROR_INVALID_PARAMETER );
+        MD_CHECK_PTR_RET_A( m_adapterId, metricsDevice, CC_ERROR_INVALID_PARAMETER );
 
         const bool      isFirstDevice        = subDeviceIndex == 0;
         const bool      isValidIndex         = isFirstDevice || ( subDeviceIndex < m_params.SubDevicesCount );
@@ -871,7 +871,7 @@ namespace MetricsDiscoveryInternal
     TCompletionCode CAdapter::CloseMetricsDevice( CMetricsDevice* metricsDevice )
     {
         MD_LOG_ENTER_A( m_adapterId );
-        MD_CHECK_PTR_RET( metricsDevice, CC_ERROR_INVALID_PARAMETER );
+        MD_CHECK_PTR_RET_A( m_adapterId, metricsDevice, CC_ERROR_INVALID_PARAMETER );
 
         // 1. Obtain semaphore
         TCompletionCode retVal = GetOpenCloseSemaphore();
@@ -982,8 +982,8 @@ namespace MetricsDiscoveryInternal
     TCompletionCode CAdapter::SaveMetricsDeviceToFile( const char* fileName, void* saveParams, CMetricsDevice* metricsDevice, const uint32_t minMajorApiVersion, const uint32_t minMinorApiVersion )
     {
         MD_LOG_ENTER_A( m_adapterId );
-        MD_CHECK_PTR_RET( fileName, CC_ERROR_INVALID_PARAMETER );
-        MD_CHECK_PTR_RET( metricsDevice, CC_ERROR_INVALID_PARAMETER );
+        MD_CHECK_PTR_RET_A( m_adapterId, fileName, CC_ERROR_INVALID_PARAMETER );
+        MD_CHECK_PTR_RET_A( m_adapterId, metricsDevice, CC_ERROR_INVALID_PARAMETER );
 
         // 1. Obtain semaphore
         TCompletionCode retVal = GetOpenCloseSemaphore();
@@ -1112,7 +1112,7 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     TCompletionCode CAdapter::CreateDriverInterface()
     {
-        MD_CHECK_PTR_RET( m_adapterHandle, CC_ERROR_GENERAL );
+        MD_CHECK_PTR_RET_A( m_adapterId, m_adapterHandle, CC_ERROR_GENERAL );
 
         if( !m_driverInterface )
         {
@@ -1174,7 +1174,7 @@ namespace MetricsDiscoveryInternal
         char semaphoreName[sizeof( openClosePrefix ) + spaceFor3Uints];
         snprintf( semaphoreName, sizeof( semaphoreName ), "%s_%u_%u_%u", openClosePrefix, m_params.BusNumber, m_params.DeviceNumber, m_params.FunctionNumber );
 
-        return GetNamedSemaphore( semaphoreName, &m_openCloseSemaphore );
+        return GetNamedSemaphore( semaphoreName, &m_openCloseSemaphore, m_adapterId );
     }
 
     //////////////////////////////////////////////////////////////////////////////
@@ -1195,7 +1195,7 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     TCompletionCode CAdapter::ReleaseOpenCloseSemaphore()
     {
-        return ReleaseNamedSemaphore( &m_openCloseSemaphore );
+        return ReleaseNamedSemaphore( &m_openCloseSemaphore, m_adapterId );
     }
 
     //////////////////////////////////////////////////////////////////////////////
@@ -1313,7 +1313,7 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     TCompletionCode CAdapter::EnableDriverSupport( bool enable )
     {
-        MD_CHECK_PTR_RET( m_driverInterface, CC_ERROR_NOT_SUPPORTED );
+        MD_CHECK_PTR_RET_A( m_adapterId, m_driverInterface, CC_ERROR_NOT_SUPPORTED );
 
         TCompletionCode retVal      = CC_OK;
         auto            enablePrint = []( bool enable ) { return enable ? "enabling" : "disabling"; };

@@ -61,7 +61,6 @@ namespace MetricsDiscoveryInternal
         TRegisterSetParams   m_params;
         CEquation*           m_availabilityEquation;
         CMetricsDevice*      m_device;
-
-        bool m_isAvailable;
+        bool                 m_isAvailable;
     };
 } // namespace MetricsDiscoveryInternal
