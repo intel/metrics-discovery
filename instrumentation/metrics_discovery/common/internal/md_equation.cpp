@@ -479,12 +479,13 @@ namespace MetricsDiscoveryInternal
 
         if( strcmp( element, "EuAggrDurationSlice" ) == 0 )
         {
+            const uint32_t platformIndex = m_device->GetPlatformIndex();
+
             // Workaround for renamed EuCoresTotalCount
             bool platformXeHpPlus = false;
-            auto platformType     = m_device->GetPlatformType();
 
-            platformXeHpPlus |= ( ( platformType & PLATFORM_ACM ) != 0 );
-            platformXeHpPlus |= ( ( platformType & PLATFORM_PVC ) != 0 );
+            platformXeHpPlus |= platformIndex == GENERATION_ACM;
+            platformXeHpPlus |= platformIndex == GENERATION_PVC;
             return ParseEquationString( platformXeHpPlus ? "$Self $GpuSliceClocksCount $VectorEngineTotalCount UMUL FDIV 100 FMUL" : "$Self $GpuSliceClocksCount $EuCoresTotalCount UMUL FDIV 100 FMUL" );
         }
         else if( strcmp( element, "EuAggrDuration" ) == 0 )

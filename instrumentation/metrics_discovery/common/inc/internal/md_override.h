@@ -28,7 +28,8 @@ namespace MetricsDiscoveryInternal
     ///////////////////////////////////////////////////////////////////////////////
     typedef struct SOverrideInternalParams
     {
-        uint32_t QueryOverrideId;
+        uint32_t          QueryOverrideId;
+        TByteArrayLatest* PlatformMask;
     } TOverrideInternalParams;
 
     //////////////////////////////////////////////////////////////////////////////
@@ -45,10 +46,12 @@ namespace MetricsDiscoveryInternal
     public:
         // Non-API:
         const TOverrideInternalParams* GetParamsInternal( void );
+        const TByteArrayLatest*        GetPlatformMask( void );
 
     protected:
         // Constructor:
         COverrideCommon( void );
+        virtual ~COverrideCommon();
 
     protected:
         // Variables:
@@ -82,4 +85,5 @@ namespace MetricsDiscoveryInternal
         TOverrideParams_1_2 m_params;
         CMetricsDevice*     m_device;
     };
+
 } // namespace MetricsDiscoveryInternal

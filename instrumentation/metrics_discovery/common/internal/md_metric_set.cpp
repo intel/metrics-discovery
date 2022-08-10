@@ -46,17 +46,21 @@ namespace MetricsDiscoveryInternal
     //     Constructor.
     //
     // Input:
-    //     CMetricsDevice * device             -
-    //     CConcurrentGroup * concurrentGroup  -
-    //     const char * symbolicName           -
-    //     const char * shortName              -
-    //     uint32_t     apiMask                -
-    //     TMetricCategory category            -
-    //     uint32_t     snapshotReportSize     -
-    //     uint32_t     deltaReportSize        -
+    //     CMetricsDevice*     device               -
+    //     CConcurrentGroup*   concurrentGroup      -
+    //     const char*         symbolicName         -
+    //     const char*         shortName            -
+    //     uint32_t            apiMask              -
+    //     TMetricCategory     category             -
+    //     uint32_t            snapshotReportSize   -
+    //     uint32_t            deltaReportSize      -
+    //     TReportType         reportType           -
+    //     TByteArrayLatest*   platformMask         -
+    //     uint32_t            gtMask               -
+    //     bool                isCustom             -
     //
     //////////////////////////////////////////////////////////////////////////////
-    CMetricSet::CMetricSet( CMetricsDevice* device, CConcurrentGroup* concurrentGroup, const char* symbolicName, const char* shortName, uint32_t apiMask, uint32_t category, uint32_t snapshotReportSize, uint32_t deltaReportSize, TReportType reportType, uint32_t platformMask, uint32_t gtMask /*= GT_TYPE_ALL*/, bool isCustom /*= false*/ )
+    CMetricSet::CMetricSet( CMetricsDevice* device, CConcurrentGroup* concurrentGroup, const char* symbolicName, const char* shortName, uint32_t apiMask, uint32_t category, uint32_t snapshotReportSize, uint32_t deltaReportSize, TReportType reportType, TByteArrayLatest* platformMask, uint32_t gtMask /*= GT_TYPE_ALL*/, bool isCustom /*= false*/ )
         : m_concurrentGroup( concurrentGroup )
         , m_device( device )
         , m_reportType( reportType )
@@ -68,6 +72,7 @@ namespace MetricsDiscoveryInternal
         , m_startRegisterSetList()
         , m_otherMetricsVector()
         , m_otherInformationVector()
+        , m_platformMask( GetCopiedByteArray( platformMask, OBTAIN_ADAPTER_ID( m_device ) ) )
         , m_availabilityEquation( nullptr )
         , m_filteredMetricsVector()
         , m_filteredInformationVector()
@@ -81,7 +86,7 @@ namespace MetricsDiscoveryInternal
         m_params_1_0.ShortName       = GetCopiedCString( shortName, adapterId );
         m_params_1_0.ApiMask         = apiMask;
         m_params_1_0.CategoryMask    = category;
-        m_params_1_0.PlatformMask    = platformMask;
+        m_params_1_0.PlatformMask    = GetPlatformTypeFromByteArray( platformMask, adapterId );
         m_params_1_0.GtMask          = gtMask;
         m_params_1_0.RawReportSize   = snapshotReportSize; // as in HW
         m_params_1_0.QueryReportSize = deltaReportSize;    // as in Query API
@@ -114,6 +119,11 @@ namespace MetricsDiscoveryInternal
         m_filteredParams.ApiMask              = 0;
         m_filteredParams.GtMask               = 0;
         m_filteredParams.AvailabilityEquation = nullptr;
+
+        if( m_metricsCalculator == nullptr )
+        {
+            MD_LOG_A( adapterId, LOG_ERROR, "ERROR: Cannot allocate memory for CMetricsCalculator" );
+        }
     }
 
     //////////////////////////////////////////////////////////////////////////////
@@ -154,6 +164,8 @@ namespace MetricsDiscoveryInternal
         MD_SAFE_DELETE( m_metricsCalculator );
 
         MD_SAFE_DELETE( m_availabilityEquation );
+
+        DeleteByteArray( m_platformMask, OBTAIN_ADAPTER_ID( m_device ) );
     }
 
     //////////////////////////////////////////////////////////////////////////////
@@ -1245,7 +1257,7 @@ namespace MetricsDiscoveryInternal
             if( ( pmRegs.size() > 0 || readRegs.size() > 0 ) || m_startRegisterSetList.size() == 0 )
             {
                 // Send configurations
-                ret = driverInterface.SendPmRegsConfig( pmRegs.data(), pmRegs.size(), m_currentParams->ApiMask );
+                ret = driverInterface.SendPmRegsConfig( pmRegs.data(), pmRegs.size(), m_currentParams->ApiMask, m_device->GetSubDeviceIndex() );
                 if( ret == CC_OK && readRegs.size() )
                 {
                     ret = driverInterface.SendReadRegsConfig( readRegs.data(), readRegs.size(), m_currentParams->ApiMask );
@@ -1411,6 +1423,7 @@ namespace MetricsDiscoveryInternal
         fwrite( &m_params_1_0.GtMask, sizeof( m_params_1_0.GtMask ), 1, metricFile );
         WriteEquationToFile( m_availabilityEquation, metricFile, adapterId );
         fwrite( &m_reportType, sizeof( m_reportType ), 1, metricFile );
+        WriteByteArrayToFile( m_platformMask, metricFile, adapterId );
         // m_params_1_0.ApiSpecificId (placeholder is not saved!)
         fwrite( &m_params_1_0.ApiSpecificId.D3D9QueryId, sizeof( m_params_1_0.ApiSpecificId.D3D9QueryId ), 1, metricFile );
         fwrite( &m_params_1_0.ApiSpecificId.D3D9Fourcc, sizeof( m_params_1_0.ApiSpecificId.D3D9Fourcc ), 1, metricFile );
@@ -2525,6 +2538,26 @@ namespace MetricsDiscoveryInternal
     CMetricsDevice* CMetricSet::GetMetricsDevice()
     {
         return m_device;
+    }
+
+    //////////////////////////////////////////////////////////////////////////////
+    //
+    // Class:
+    //     CMetricSet
+    //
+    // Method:
+    //     GetPlatformMask
+    //
+    // Description:
+    //     Returns platform mask byte array member.
+    //
+    // Output:
+    //     TByteArrayLatest* -
+    //
+    //////////////////////////////////////////////////////////////////////////////
+    TByteArrayLatest* CMetricSet::GetPlatformMask()
+    {
+        return m_platformMask;
     }
 
     //////////////////////////////////////////////////////////////////////////////

@@ -13,9 +13,11 @@ SPDX-License-Identifier: MIT
 #pragma once
 
 #include "metrics_discovery_internal_api.h"
+#include "md_utils.h"
 
 // Defines
-#define MD_MAX_CONTEXT_TAGS 128 // Should match max count used by Intel driver
+#define MD_MAX_CONTEXT_TAGS              128 // Should match max count used by Intel driver
+#define MD_PLATFORM_MASK_BYTE_ARRAY_SIZE 8
 
 #define MD_BYTE            8
 #define MD_KBYTE           1024
@@ -23,6 +25,8 @@ SPDX-License-Identifier: MIT
 #define MD_MHERTZ          1000000
 #define MD_NSEC_PER_SEC    1000000000ULL
 #define MD_INTEL_VENDOR_ID 0x8086
+
+#define MD_ROOT_DEVICE_INDEX 0
 
 using namespace MetricsDiscovery;
 

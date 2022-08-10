@@ -20,8 +20,10 @@ SPDX-License-Identifier: MIT
 #include "md_metric_set.h"
 #include "md_register_set.h"
 
+#include <cmath>
 #include <cstring>
 #include <cstdlib>
+#include <sstream>
 
 namespace MetricsDiscoveryInternal
 {
@@ -431,6 +433,135 @@ namespace MetricsDiscoveryInternal
     //     Metrics Discovery Utils
     //
     // Function:
+    //     GetByteArrayFromPlatformType
+    //
+    // Description:
+    //     Converts uint32_t (TPlatformType) to byte array pointer.
+    //
+    // Input:
+    //     const uint32_t platformType       - platform type to be converted
+    //     const uint32_t byteArraySize      - byte array size
+    //     const uint32_t adapterId          - adapter id
+    //
+    // Output:
+    //     TByteArrayLatest*                 - created byteArray
+    //
+    //////////////////////////////////////////////////////////////////////////////
+    TByteArrayLatest* GetByteArrayFromPlatformType( const uint32_t platformType, const uint32_t byteArraySize, const uint32_t adapterId )
+    {
+        if( byteArraySize == 0 )
+        {
+            MD_LOG_A( adapterId, LOG_ERROR, "ERROR: Incorrect byte array size" );
+            return nullptr;
+        }
+
+        auto platformMaskByteArray = new( std::nothrow ) TByteArrayLatest();
+        MD_CHECK_PTR_RET_A( adapterId, platformMaskByteArray, nullptr );
+
+        platformMaskByteArray->Size = byteArraySize;
+        platformMaskByteArray->Data = new( std::nothrow ) uint8_t[platformMaskByteArray->Size]();
+
+        if( platformMaskByteArray->Data == nullptr )
+        {
+            delete platformMaskByteArray;
+            MD_CHECK_PTR_RET_A( adapterId, platformMaskByteArray->Data, nullptr );
+        }
+
+        iu_memcpy_s( platformMaskByteArray->Data, platformMaskByteArray->Size, &platformType, sizeof( uint32_t ) );
+
+        return platformMaskByteArray;
+    }
+
+    //////////////////////////////////////////////////////////////////////////////
+    //
+    // Group:
+    //     Metrics Discovery Utils
+    //
+    // Function:
+    //     GetPlatformTypeFromByteArray
+    //
+    // Description:
+    //     Converts platform mask byte array to uint32_t (TPlatformType).
+    //
+    // Input:
+    //     const TByteArrayLatest* platformMask - platform mask byte array
+    //     const uint32_t          adapterId    - adapter id
+    //
+    // Output:
+    //     TByteArrayLatest*                    - created byteArray
+    //
+    //////////////////////////////////////////////////////////////////////////////
+    uint32_t GetPlatformTypeFromByteArray( const TByteArrayLatest* platformMask, const uint32_t adapterId )
+    {
+        uint32_t platform = static_cast<uint32_t>( PLATFORM_UNKNOWN );
+        MD_CHECK_PTR_RET_A( adapterId, platformMask, platform );
+
+        if( platformMask->Size == 0 )
+        {
+            return platform;
+        }
+
+        for( uint32_t i = sizeof( uint32_t ); i < platformMask->Size; ++i )
+        {
+            if( platformMask->Data[i] != 0 )
+            {
+                return static_cast<uint32_t>( PLATFORM_FUTURE ); // Platform mask is bigger than uint32_t
+            }
+        }
+
+        iu_memcpy_s( &platform, sizeof( platform ), platformMask->Data, sizeof( platform ) );
+
+        return platform;
+    }
+
+    //////////////////////////////////////////////////////////////////////////////
+    //
+    // Group:
+    //     Metrics Discovery Utils
+    //
+    // Function:
+    //     GetStringFromByteArray
+    //
+    // Description:
+    //     Converts byte array into std::string
+    //
+    // Input:
+    //     const TByteArrayLatest* byteArray - byte array to be converted
+    //     const uint32_t adapterId          - adapter id for purpose of logging
+    //
+    // Output:
+    //     std::string                       - output string
+    //
+    //////////////////////////////////////////////////////////////////////////////
+    std::string GetStringFromByteArray( const TByteArrayLatest* byteArray, const uint32_t adapterId )
+    {
+        MD_CHECK_PTR_RET_A( adapterId, byteArray, "" );
+        MD_CHECK_PTR_RET_A( adapterId, byteArray->Data, "" );
+
+        if( byteArray->Size == 0 )
+        {
+            MD_LOG_A( adapterId, LOG_WARNING, "WARNING: Byte array has size 0" );
+            return "";
+        }
+
+        std::ostringstream stream;
+        stream << "0x";
+
+        for( uint32_t i = byteArray->Size; i > 0; --i )
+        {
+            // + is needed to print number instead of ASCII
+            stream << std::hex << +byteArray->Data[i - 1];
+        }
+
+        return stream.str();
+    }
+
+    //////////////////////////////////////////////////////////////////////////////
+    //
+    // Group:
+    //     Metrics Discovery Utils
+    //
+    // Function:
     //     GetCopiedCString
     //
     // Description:
@@ -646,7 +777,7 @@ namespace MetricsDiscoveryInternal
         auto magicNumber = *( (uint32_t*) *fileBuffer );
         if( magicNumber != MD_BYTE_ARRAY_MAGIC_NUMBER )
         {
-            MD_LOG_A( adapterId, LOG_WARNING, "WARNING: No ByteArray present in fileBuffer " );
+            MD_LOG_A( adapterId, LOG_WARNING, "WARNING: Incorrect magic number or ByteArray is not present in fileBuffer." );
             return nullptr;
         }
 
@@ -909,6 +1040,162 @@ namespace MetricsDiscoveryInternal
         return ret;
     }
 
+    //////////////////////////////////////////////////////////////////////////////
+    //
+    // Group:
+    //     Metrics Discovery Utils
+    //
+    // Function:
+    //     SetPlatformMask
+    //
+    // Description:
+    //     Sets chosen bit in platform mask byte array.
+    //
+    // Input:
+    //     TByteArrayLatest& platformMask - platform mask byte array to be set
+    //     const uint32_t    platformId   - platform id, indicates bit which will be set to 1
+    //
+    // Output:
+    //     TCompletionCode                - result
+    //
+    //////////////////////////////////////////////////////////////////////////////
+    TCompletionCode SetPlatformMask( TByteArrayLatest* platformMask, const uint32_t platformId, const uint32_t adapterId )
+    {
+        MD_CHECK_PTR_RET_A( adapterId, platformMask, CC_ERROR_INVALID_PARAMETER );
+
+        const uint32_t byteIndex      = platformId / 8;
+        const uint32_t bitInByteIndex = platformId % 8;
+        const uint8_t  mask           = MD_BIT( bitInByteIndex );
+
+        if( byteIndex > platformMask->Size - 1 )
+        {
+            return CC_ERROR_INVALID_PARAMETER;
+        }
+
+        iu_zeromem( platformMask->Data, platformMask->Size );
+        platformMask->Data[byteIndex] |= mask;
+
+        if( !( platformMask->Data[byteIndex] & mask ) )
+        {
+            return CC_ERROR_GENERAL;
+        }
+
+        return CC_OK;
+    }
+
+    //////////////////////////////////////////////////////////////////////////////
+    //
+    // Group:
+    //     Metrics Discovery Utils
+    //
+    // Function:
+    //     SetPlatformMask
+    //
+    // Description:
+    //     Set all bits to 1 in platform mask.
+    //     It means PLATFORM_ALL.
+    //
+    // Input:
+    //     TByteArrayLatest& platformMask - platform mask byte array to be set
+    //     const uint32_t    platformId   - platform id, indicates bit which will be set to 1
+    //
+    //////////////////////////////////////////////////////////////////////////////
+    void SetAllBitsPlatformMask( TByteArrayLatest* platformMask, const uint32_t adapterId )
+    {
+        MD_CHECK_PTR_RET_A( adapterId, platformMask, MD_EMPTY );
+
+        if( platformMask->Size == 0 )
+        {
+            return;
+        }
+
+        iu_memset( platformMask->Data, 0xFF, platformMask->Size );
+    }
+
+    //////////////////////////////////////////////////////////////////////////////
+    //
+    // Group:
+    //     Metrics Discovery Utils
+    //
+    // Function:
+    //     ComparePlatforms
+    //
+    // Description:
+    //     Compares two platforms if they are equal.
+    //
+    // Input:
+    //     const TByteArrayLatest* firstPlatformMask    -
+    //     const uint32_t          firstGtMask          -
+    //     const TByteArrayLatest* secondPlatformMask   -
+    //     const uint32_t          secondGtMask         -
+    //     const uint32_t          adapterId            -
+    // Output:
+    //     bool                                         - comparison result
+    //
+    //////////////////////////////////////////////////////////////////////////////
+    bool ComparePlatforms( const TByteArrayLatest* firstPlatformMask, const uint32_t firstGtMask, const TByteArrayLatest* secondPlatformMask, const uint32_t secondGtMask, const uint32_t adapterId )
+    {
+        MD_CHECK_PTR_RET_A( adapterId, firstPlatformMask, false );
+        MD_CHECK_PTR_RET_A( adapterId, secondPlatformMask, false );
+
+        bool gtMatch       = ( firstGtMask & secondGtMask ) != 0;
+        bool platformMatch = false;
+
+        if( firstPlatformMask->Size != secondPlatformMask->Size )
+        {
+            MD_LOG_A( adapterId, LOG_ERROR, "ByteArray sizes are not equal!" );
+            return false;
+        }
+
+        for( uint32_t i = 0; i < firstPlatformMask->Size; ++i )
+        {
+            platformMatch = ( ( firstPlatformMask->Data[i] ) & ( secondPlatformMask->Data[i] ) ) != 0;
+            if( platformMatch )
+            {
+                break;
+            }
+        }
+
+        return platformMatch && gtMatch;
+    }
+
+    //////////////////////////////////////////////////////////////////////////////
+    //
+    // Group:
+    //     Metrics Discovery Utils
+    //
+    // Function:
+    //     IsPlatformPresentInMask
+    //
+    // Description:
+    //     Checks if platform is presented in current platform mask.
+    //
+    // Input:
+    //     const TByteArrayLatest* platformMask   - platform mask
+    //     const uint32_t          platformIndex  - platform index
+    //
+    // Output:
+    //     bool                                   - result
+    //
+    //////////////////////////////////////////////////////////////////////////////
+    bool IsPlatformPresentInMask( const TByteArrayLatest* platformMask, const uint32_t platformIndex )
+    {
+        const uint32_t byteIndex      = platformIndex / 8;
+        const uint32_t bitInByteIndex = platformIndex % 8;
+        const uint8_t  mask           = MD_BIT( bitInByteIndex );
+
+        if( byteIndex > platformMask->Size - 1 )
+        {
+            return false;
+        }
+
+        if( ( platformMask->Data[byteIndex] ) & mask )
+        {
+            return true;
+        }
+
+        return false;
+    }
     //////////////////////////////////////////////////////////////////////////////
     //
     // Group:

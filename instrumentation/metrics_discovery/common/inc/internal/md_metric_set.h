@@ -191,7 +191,7 @@ namespace MetricsDiscoveryInternal
 
     public:
         // Constructor & Destructor:
-        CMetricSet( CMetricsDevice* device, CConcurrentGroup* concurrentGroup, const char* symbolicName, const char* shortName, uint32_t apiMask, uint32_t category, uint32_t snapshotReportSize, uint32_t deltaReportSize, TReportType reportType, uint32_t platformMask, uint32_t gtMask = GT_TYPE_ALL, bool isCustom = false );
+        CMetricSet( CMetricsDevice* device, CConcurrentGroup* concurrentGroup, const char* symbolicName, const char* shortName, uint32_t apiMask, uint32_t category, uint32_t snapshotReportSize, uint32_t deltaReportSize, TReportType reportType, TByteArrayLatest* platformMask, uint32_t gtMask = GT_TYPE_ALL, bool isCustom = false );
         virtual ~CMetricSet();
 
         // Non-API:
@@ -225,6 +225,7 @@ namespace MetricsDiscoveryInternal
         bool                IsCustom();
         CMetricsCalculator* GetMetricsCalculator();
         CMetricsDevice*     GetMetricsDevice();
+        TByteArrayLatest*   GetPlatformMask();
 
         TCompletionCode SetAvailabilityEquation( const char* equationString );
         bool            IsAvailabilityEquationTrue();
@@ -268,7 +269,8 @@ namespace MetricsDiscoveryInternal
         std::vector<CMetric*>      m_otherMetricsVector;
         std::vector<CInformation*> m_otherInformationVector;
 
-        CEquation* m_availabilityEquation;
+        TByteArrayLatest* m_platformMask;
+        CEquation*        m_availabilityEquation;
 
         // References to the currently used params/collections - filtered or not:
         TMetricSetParamsLatest*     m_currentParams;

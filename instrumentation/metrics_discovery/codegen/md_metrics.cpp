@@ -292,117 +292,118 @@ using namespace MetricsDiscoveryInternal;
 #endif
 
 
-TCompletionCode AddGlobalSymbols( CSymbolSet* globalSymbolSet )
+TCompletionCode AddGlobalSymbols( CSymbolSet& symbolSet, const uint32_t adapterId )
 {
-    MD_CHECK_PTR_RET( globalSymbolSet, CC_ERROR_INVALID_PARAMETER );
-    
-    globalSymbolSet->AddSymbolUINT32( "EuCoresTotalCount", 60, SYMBOL_TYPE_DETECT );
+    symbolSet.AddSymbolUINT32( "EuCoresTotalCount", 60, SYMBOL_TYPE_DETECT );
 
-    globalSymbolSet->AddSymbolUINT32( "EuCoresPerSubsliceCount", 10, SYMBOL_TYPE_DETECT );
+    symbolSet.AddSymbolUINT32( "EuCoresPerSubsliceCount", 10, SYMBOL_TYPE_DETECT );
 
-    globalSymbolSet->AddSymbolUINT32( "EuSubslicesTotalCount", 6, SYMBOL_TYPE_DETECT );
+    symbolSet.AddSymbolUINT32( "EuSubslicesTotalCount", 6, SYMBOL_TYPE_DETECT );
 
-    globalSymbolSet->AddSymbolUINT32( "EuDualSubslicesTotalCount", 0, SYMBOL_TYPE_DETECT );
+    symbolSet.AddSymbolUINT32( "EuDualSubslicesTotalCount", 0, SYMBOL_TYPE_DETECT );
 
-    globalSymbolSet->AddSymbolUINT32( "EuSlicesTotalCount", 2, SYMBOL_TYPE_DETECT );
+    symbolSet.AddSymbolUINT32( "EuSlicesTotalCount", 2, SYMBOL_TYPE_DETECT );
 
-    globalSymbolSet->AddSymbolUINT32( "EuThreadsCount", 8, SYMBOL_TYPE_DETECT );
+    symbolSet.AddSymbolUINT32( "EuThreadsCount", 8, SYMBOL_TYPE_DETECT );
 
-    globalSymbolSet->AddSymbolUINT32( "SliceMask", 0x7, SYMBOL_TYPE_DETECT );
+    symbolSet.AddSymbolUINT32( "SliceMask", 0x7, SYMBOL_TYPE_DETECT );
 
-    globalSymbolSet->AddSymbolUINT64( "SubsliceMask", 0x1FF, SYMBOL_TYPE_DETECT );
+    symbolSet.AddSymbolUINT64( "SubsliceMask", 0x1FF, SYMBOL_TYPE_DETECT );
 
-    globalSymbolSet->AddSymbolUINT64( "DualSubsliceMask", 0x0, SYMBOL_TYPE_DETECT );
+    symbolSet.AddSymbolUINT64( "DualSubsliceMask", 0x0, SYMBOL_TYPE_DETECT );
 
-    globalSymbolSet->AddSymbolBYTEARRAY( "GtSliceMask", nullptr, SYMBOL_TYPE_DETECT );
+    symbolSet.AddSymbolBYTEARRAY( "GtSliceMask", nullptr, SYMBOL_TYPE_DETECT );
 
-    globalSymbolSet->AddSymbolBYTEARRAY( "GtSubsliceMask", nullptr, SYMBOL_TYPE_DETECT );
+    symbolSet.AddSymbolBYTEARRAY( "GtSubsliceMask", nullptr, SYMBOL_TYPE_DETECT );
 
-    globalSymbolSet->AddSymbolBYTEARRAY( "GtDualSubsliceMask", nullptr, SYMBOL_TYPE_DETECT );
+    symbolSet.AddSymbolBYTEARRAY( "GtDualSubsliceMask", nullptr, SYMBOL_TYPE_DETECT );
 
-    globalSymbolSet->AddSymbolUINT32( "SamplersTotalCount", 6, SYMBOL_TYPE_DETECT );
+    symbolSet.AddSymbolUINT32( "SamplersTotalCount", 6, SYMBOL_TYPE_DETECT );
 
-    globalSymbolSet->AddSymbolUINT32( "MemoryPeakThroghputMB", 25600, SYMBOL_TYPE_DETECT );
+    symbolSet.AddSymbolUINT32( "MemoryPeakThroghputMB", 25600, SYMBOL_TYPE_DETECT );
 
-    globalSymbolSet->AddSymbolUINT32( "MemoryFrequencyMHz", 1600, SYMBOL_TYPE_DETECT );
+    symbolSet.AddSymbolUINT32( "MemoryFrequencyMHz", 1600, SYMBOL_TYPE_DETECT );
 
-    globalSymbolSet->AddSymbolUINT32( "GpuMinFrequencyMHz", 650, SYMBOL_TYPE_DETECT );
+    symbolSet.AddSymbolUINT32( "GpuMinFrequencyMHz", 650, SYMBOL_TYPE_DETECT );
 
-    globalSymbolSet->AddSymbolUINT32( "GpuMaxFrequencyMHz", 1250, SYMBOL_TYPE_DETECT );
+    symbolSet.AddSymbolUINT32( "GpuMaxFrequencyMHz", 1250, SYMBOL_TYPE_DETECT );
 
-    globalSymbolSet->AddSymbolUINT32( "GpuCurrentFrequencyMHz", 1250, SYMBOL_TYPE_DETECT );
+    symbolSet.AddSymbolUINT32( "GpuCurrentFrequencyMHz", 1250, SYMBOL_TYPE_DETECT );
 
-    globalSymbolSet->AddSymbolUINT32( "PciDeviceId", 0, SYMBOL_TYPE_DETECT );
+    symbolSet.AddSymbolUINT32( "PciDeviceId", 0, SYMBOL_TYPE_DETECT );
 
-    globalSymbolSet->AddSymbolUINT32( "SkuRevisionId", 0, SYMBOL_TYPE_DETECT );
+    symbolSet.AddSymbolUINT32( "SkuRevisionId", 0, SYMBOL_TYPE_DETECT );
 
-    globalSymbolSet->AddSymbolUINT32( "PlatformIndex", 0, SYMBOL_TYPE_DETECT );
+    symbolSet.AddSymbolUINT32( "PlatformIndex", 0, SYMBOL_TYPE_DETECT );
 
-    globalSymbolSet->AddSymbolUINT32( "ApertureSize", 0, SYMBOL_TYPE_DETECT );
+    symbolSet.AddSymbolUINT32( "ApertureSize", 0, SYMBOL_TYPE_DETECT );
 
-    globalSymbolSet->AddSymbolUINT32( "Capabilities", 0, SYMBOL_TYPE_DETECT );
+    symbolSet.AddSymbolUINT32( "Capabilities", 0, SYMBOL_TYPE_DETECT );
 
-    globalSymbolSet->AddSymbolBOOL( "PavpDisabled", false, SYMBOL_TYPE_DETECT );
+    symbolSet.AddSymbolBOOL( "PavpDisabled", false, SYMBOL_TYPE_DETECT );
 
-    globalSymbolSet->AddSymbolUINT32( "NumberOfRenderOutputUnits", 0, SYMBOL_TYPE_DETECT );
+    symbolSet.AddSymbolUINT32( "NumberOfRenderOutputUnits", 0, SYMBOL_TYPE_DETECT );
 
-    globalSymbolSet->AddSymbolUINT32( "NumberOfShadingUnits", 0, SYMBOL_TYPE_DETECT );
+    symbolSet.AddSymbolUINT32( "NumberOfShadingUnits", 0, SYMBOL_TYPE_DETECT );
 
-    globalSymbolSet->AddSymbolUINT32( "OABufferMinSize", 16384, SYMBOL_TYPE_DETECT );
+    symbolSet.AddSymbolUINT32( "OABufferMinSize", 16384, SYMBOL_TYPE_DETECT );
 
-    globalSymbolSet->AddSymbolUINT32( "OABufferMaxSize", 131072, SYMBOL_TYPE_DETECT );
+    symbolSet.AddSymbolUINT32( "OABufferMaxSize", 131072, SYMBOL_TYPE_DETECT );
 
-    globalSymbolSet->AddSymbolUINT32( "GpuTimestampFrequency", 12500000, SYMBOL_TYPE_DETECT );
+    symbolSet.AddSymbolUINT32( "GpuTimestampFrequency", 12500000, SYMBOL_TYPE_DETECT );
 
-    globalSymbolSet->AddSymbolUINT32( "EdramSize", 0, SYMBOL_TYPE_DETECT );
+    symbolSet.AddSymbolUINT32( "EdramSize", 0, SYMBOL_TYPE_DETECT );
 
-    globalSymbolSet->AddSymbolUINT32( "LLCSize", 0, SYMBOL_TYPE_DETECT );
+    symbolSet.AddSymbolUINT32( "LLCSize", 0, SYMBOL_TYPE_DETECT );
 
-    globalSymbolSet->AddSymbolUINT32( "L3Size", 0, SYMBOL_TYPE_DETECT );
+    symbolSet.AddSymbolUINT32( "L3Size", 0, SYMBOL_TYPE_DETECT );
 
-    globalSymbolSet->AddSymbolUINT64( "MaxTimestamp", 0, SYMBOL_TYPE_DETECT );
+    symbolSet.AddSymbolUINT64( "MaxTimestamp", 0, SYMBOL_TYPE_DETECT );
 
-    globalSymbolSet->AddSymbolUINT32( "VectorEngineTotalCount", 60, SYMBOL_TYPE_DETECT );
+    symbolSet.AddSymbolUINT32( "VectorEngineTotalCount", 60, SYMBOL_TYPE_DETECT );
 
-    globalSymbolSet->AddSymbolUINT32( "VectorEnginePerXeCoreCount", 10, SYMBOL_TYPE_DETECT );
+    symbolSet.AddSymbolUINT32( "VectorEnginePerXeCoreCount", 10, SYMBOL_TYPE_DETECT );
 
-    globalSymbolSet->AddSymbolUINT32( "XeCoreTotalCount", 0, SYMBOL_TYPE_DETECT );
+    symbolSet.AddSymbolUINT32( "XeCoreTotalCount", 0, SYMBOL_TYPE_DETECT );
 
-    globalSymbolSet->AddSymbolUINT32( "SliceTotalCount", 2, SYMBOL_TYPE_DETECT );
+    symbolSet.AddSymbolUINT32( "SliceTotalCount", 2, SYMBOL_TYPE_DETECT );
 
-    globalSymbolSet->AddSymbolUINT32( "VectorEngineThreadsCount", 8, SYMBOL_TYPE_DETECT );
+    symbolSet.AddSymbolUINT32( "VectorEngineThreadsCount", 8, SYMBOL_TYPE_DETECT );
 
-    globalSymbolSet->AddSymbolUINT64( "XeCoreMask", 0x0, SYMBOL_TYPE_DETECT );
+    symbolSet.AddSymbolUINT64( "XeCoreMask", 0x0, SYMBOL_TYPE_DETECT );
 
-    globalSymbolSet->AddSymbolBYTEARRAY( "GtXeCoreMask", nullptr, SYMBOL_TYPE_DETECT );
+    symbolSet.AddSymbolBYTEARRAY( "GtXeCoreMask", nullptr, SYMBOL_TYPE_DETECT );
 
     return CC_OK;
 }
 
 TCompletionCode CreateMetricTree( CMetricsDevice* metricsDevice )
 {
-    MD_LOG_ENTER();
-    MD_CHECK_PTR_RET( metricsDevice, CC_ERROR_INVALID_PARAMETER );
+    const uint32_t adapterId = OBTAIN_ADAPTER_ID( metricsDevice );
+
+    MD_LOG_ENTER_A( adapterId );
+    MD_CHECK_PTR_RET_A( adapterId, metricsDevice, CC_ERROR_INVALID_PARAMETER );
 
     CConcurrentGroup* concurrentGroup      = nullptr;
     CMetricSet*       metricSet            = nullptr;
     CMetric*          metric               = nullptr;
     const char*       availabilityEquation = nullptr;
-    uint32_t          platformMask         = PLATFORM_ALL;
+    TByteArrayLatest  platformMask         = { MD_PLATFORM_MASK_BYTE_ARRAY_SIZE, new uint8_t[MD_PLATFORM_MASK_BYTE_ARRAY_SIZE]() };
+    SetAllBitsPlatformMask( &platformMask, adapterId );
 
     CSymbolSet* symbolSet = metricsDevice->GetSymbolSet();
-    MD_CHECK_PTR( symbolSet );
-    AddGlobalSymbols( symbolSet );
+    MD_CHECK_PTR_RET_A( adapterId, symbolSet, CC_ERROR_INVALID_PARAMETER );
+    AddGlobalSymbols( *symbolSet, adapterId );
     metricsDevice->GetParams()->GlobalSymbolsCount = symbolSet->GetSymbolCount();
 
     concurrentGroup = metricsDevice->AddConcurrentGroup( "OcclusionQueryStats", "Occlusion Query Statistics", MEASUREMENT_TYPE_DELTA_QUERY );
     MD_CHECK_PTR( concurrentGroup );
     
     metricSet = concurrentGroup->AddMetricSet( "RenderedPixelsStats", "Rendered Pixels Statistics", API_TYPE_VULKAN|API_TYPE_OGL4_X,
-        GPU_RENDER, 0, 8, OA_REPORT_TYPE_256B_A45_NOA16, platformMask, nullptr );
-    MD_CHECK_PTR_RET( metricSet, CC_ERROR_GENERAL );
+        GPU_RENDER, 0, 8, OA_REPORT_TYPE_256B_A45_NOA16, &platformMask, nullptr );
+    MD_CHECK_PTR_RET_A( adapterId, metricSet, CC_ERROR_GENERAL );
 
-    MD_CHECK_CC_RET( metricSet->SetApiSpecificId(nullptr, 9, 0, 0, 0, 0,
+    MD_CHECK_CC_RET_A( adapterId, metricSet->SetApiSpecificId(nullptr, 9, 0, 0, 0, 0,
         "", 1, "", 0) );
   
     availabilityEquation = nullptr;
@@ -413,16 +414,16 @@ TCompletionCode CreateMetricTree( CMetricsDevice* metricsDevice )
     if( metric )
     {
         
-        MD_CHECK_CC_RET( metric->SetDeltaReportReadEquation( "qw@0x00" ));
+        MD_CHECK_CC_RET_A( adapterId, metric->SetDeltaReportReadEquation( "qw@0x00" ));
     }
 
-    MD_CHECK_CC_RET( metricSet->RefreshConfigRegisters() );
+    MD_CHECK_CC_RET_A( adapterId, metricSet->RefreshConfigRegisters() );
 
     metricSet = concurrentGroup->AddMetricSet( "RenderedFragmentsStats", "Rendered Fragments Statistics", API_TYPE_OGL|API_TYPE_OGL4_X,
-        GPU_RENDER, 0, 8, OA_REPORT_TYPE_256B_A45_NOA16, platformMask, nullptr );
-    MD_CHECK_PTR_RET( metricSet, CC_ERROR_GENERAL );
+        GPU_RENDER, 0, 8, OA_REPORT_TYPE_256B_A45_NOA16, &platformMask, nullptr );
+    MD_CHECK_PTR_RET_A( adapterId, metricSet, CC_ERROR_GENERAL );
 
-    MD_CHECK_CC_RET( metricSet->SetApiSpecificId(nullptr, 0, 0, 0, 0, 0,
+    MD_CHECK_CC_RET_A( adapterId, metricSet->SetApiSpecificId(nullptr, 0, 0, 0, 0, 0,
         "", 0, "", 0x8C2F) );
   
     availabilityEquation = nullptr;
@@ -433,19 +434,19 @@ TCompletionCode CreateMetricTree( CMetricsDevice* metricsDevice )
     if( metric )
     {
         
-        MD_CHECK_CC_RET( metric->SetDeltaReportReadEquation( "qw@0x00" ));
+        MD_CHECK_CC_RET_A( adapterId, metric->SetDeltaReportReadEquation( "qw@0x00" ));
     }
 
-    MD_CHECK_CC_RET( metricSet->RefreshConfigRegisters() );
+    MD_CHECK_CC_RET_A( adapterId, metricSet->RefreshConfigRegisters() );
 
     concurrentGroup = metricsDevice->AddConcurrentGroup( "TimestampQuery", "Timestamp Query", MEASUREMENT_TYPE_SNAPSHOT_QUERY );
     MD_CHECK_PTR( concurrentGroup );
     
     metricSet = concurrentGroup->AddMetricSet( "GPUTimestamp", "GPU Timestamp", API_TYPE_VULKAN|API_TYPE_OGL4_X,
-        GPU_GENERIC, 8, 0, OA_REPORT_TYPE_256B_A45_NOA16, platformMask, nullptr );
-    MD_CHECK_PTR_RET( metricSet, CC_ERROR_GENERAL );
+        GPU_GENERIC, 8, 0, OA_REPORT_TYPE_256B_A45_NOA16, &platformMask, nullptr );
+    MD_CHECK_PTR_RET_A( adapterId, metricSet, CC_ERROR_GENERAL );
 
-    MD_CHECK_CC_RET( metricSet->SetApiSpecificId(nullptr, 10, 0, 0, 0, 0,
+    MD_CHECK_CC_RET_A( adapterId, metricSet->SetApiSpecificId(nullptr, 10, 0, 0, 0, 0,
         "", 2, "", 0x88BF) );
   
     availabilityEquation = nullptr;
@@ -455,12 +456,12 @@ TCompletionCode CreateMetricTree( CMetricsDevice* metricsDevice )
         METRIC_TYPE_DURATION, RESULT_UINT64, "ns", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 0 );
     if( metric )
     {
-        MD_CHECK_CC_RET( metric->SetSnapshotReportReadEquation( "qw@0x00" ));
-        MD_CHECK_CC_RET( metric->SetNormalizationEquation( "$Self 1000000000 UMUL $GpuTimestampFrequency UDIV" ));
-        MD_CHECK_CC_RET( metric->SetSnapshotReportDeltaFunction( "DELTA 64" ));
+        MD_CHECK_CC_RET_A( adapterId, metric->SetSnapshotReportReadEquation( "qw@0x00" ));
+        MD_CHECK_CC_RET_A( adapterId, metric->SetNormalizationEquation( "$Self 1000000000 UMUL $GpuTimestampFrequency UDIV" ));
+        MD_CHECK_CC_RET_A( adapterId, metric->SetSnapshotReportDeltaFunction( "DELTA 64" ));
     }
 
-    MD_CHECK_CC_RET( metricSet->RefreshConfigRegisters() );
+    MD_CHECK_CC_RET_A( adapterId, metricSet->RefreshConfigRegisters() );
 
     concurrentGroup = metricsDevice->AddConcurrentGroup( "PipelineStatistics", "Pipeline Statistics", MEASUREMENT_TYPE_DELTA_QUERY );
     MD_CHECK_PTR( concurrentGroup );
@@ -686,14 +687,15 @@ TCompletionCode CreateMetricTree( CMetricsDevice* metricsDevice )
     MD_CHECK_CC( CreateMetricTreeADLN_OA(metricsDevice, concurrentGroup) );
 #endif
 
-
+    DeleteByteArray( platformMask, adapterId );
     MD_CHECK_CC( metricsDevice->AddOverrides() );
 
-    MD_LOG_EXIT();
+    MD_LOG_EXIT_A( adapterId );
     return CC_OK;
 
   exception:
-    MD_LOG( LOG_ERROR, "Creating metric tree failed" );
-    MD_LOG_EXIT();
+    DeleteByteArray( platformMask, adapterId );
+    MD_LOG_A( adapterId, LOG_ERROR, "Creating metric tree failed" );
+    MD_LOG_EXIT_A( adapterId );
     return CC_ERROR_NO_MEMORY;
 }

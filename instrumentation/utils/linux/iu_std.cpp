@@ -59,6 +59,31 @@ extern "C"
     // Group:
     //     Instrumentation Utils Standard OS Specific Functions
     //
+    // Function:
+    //     iu_memset
+    //
+    // Description:
+    //     Fills the first 'count' bytes of the memory 'dest' with 'value'
+    //
+    // Input:
+    //     void*   dest  - momory to fill
+    //     int32_t value - value to be written
+    //     size_t  count - number of bytes to be written
+    //
+    // Output:
+    //     bool - true if success
+    //
+    ///////////////////////////////////////////////////////////////////////////////
+    bool iu_memset( void* dest, int32_t value, size_t count )
+    {
+        return memset( dest, value, count ) != NULL;
+    }
+
+    ///////////////////////////////////////////////////////////////////////////////
+    //
+    // Group:
+    //     Instrumentation Utils Standard OS Specific Functions
+    //
     // Method:
     //     iu_memcpy_s
     //

@@ -8,7 +8,7 @@ SPDX-License-Identifier: MIT
 
 //     File Name:  md_driver_ifc_linux_perf.cpp
 
-//     Abstract:   C++ implementation for Linux/Android with Perf
+//     Abstract:   C++ implementation for Linux with Perf
 
 #include "md_driver_ifc_linux_perf.h"
 #include "md_adapter.h"
@@ -27,6 +27,9 @@ SPDX-License-Identifier: MIT
 #include <string>
 #include <functional> // for std::hash
 #include <algorithm>  // for std::find, std::remove
+#include <iomanip>
+#include <sstream>
+#include <regex>
 
 #include <sys/stat.h>
 #include <sys/sysmacros.h> // for major, minor
@@ -290,7 +293,7 @@ namespace MetricsDiscoveryInternal
     //     GetInstance()
     //
     // Description:
-    //     Returns instance of CDriverInterface for Linux/Android supporting Perf.
+    //     Returns instance of CDriverInterface for Linux supporting Perf.
     //
     // Output:
     //     CDriverInterface* - Pointer to new allocated object of CDriverInterfaceLinuxPerfPerf
@@ -417,7 +420,7 @@ namespace MetricsDiscoveryInternal
                 continue;
             }
 
-            adapter.Params.Platform = ( 1 << gfxDeviceInfo.PlatformIndex );
+            adapter.Params.Platform = gfxDeviceInfo.PlatformIndex;
             adapter.Params.Type     = CDriverInterfaceLinuxPerf::GetAdapterType( &gfxDeviceInfo );
 
             // Get system id (major/minor pair)
@@ -1117,18 +1120,18 @@ namespace MetricsDiscoveryInternal
     //
     //     Before adding the configuration to a i915 kernel, the previous one (if exists)
     //     is removed.
-    //     WARNING: Only one configuration may be used at a time!
     //
     // Input:
-    //     TRegister** regVector - array of pointers to registers to program
-    //     uint32_t    regCount  - register count
-    //     uint32_t    apiMask   - API mask
+    //     TRegister**      regVector      - array of pointers to registers to program
+    //     const uint32_t   regCount       - register count
+    //     const uint32_t   apiMask        - API mask
+    //     const uint32_t   subDeviceIndex - sub device index
     //
     // Output:
-    //     TCompletionCode       - *CC_OK* means success
+    //     TCompletionCode                 - *CC_OK* means success
     //
     //////////////////////////////////////////////////////////////////////////////
-    TCompletionCode CDriverInterfaceLinuxPerf::SendPmRegsConfig( TRegister** regVector, uint32_t regCount, uint32_t apiMask )
+    TCompletionCode CDriverInterfaceLinuxPerf::SendPmRegsConfig( TRegister** regVector, const uint32_t regCount, const uint32_t apiMask, const uint32_t subDeviceIndex )
     {
         MD_LOG_ENTER_A( m_adapterId );
         MD_CHECK_PTR_RET_A( m_adapterId, regVector, CC_ERROR_INVALID_PARAMETER );
@@ -1141,19 +1144,25 @@ namespace MetricsDiscoveryInternal
 
         if( regCount ) // It's ok if regCount is 0, e.g. for PipelineStats metric set, which has no configuration (only QueryId)
         {
-            int32_t addedConfigId = -1;
+            int32_t     addedConfigId = -1;
+            std::string guid          = GenerateQueryGuid( subDeviceIndex );
+
+            MD_LOG_A( m_adapterId, LOG_DEBUG, "Generated guid: %s", guid.c_str() );
 
             // Validate query config GUID
             static_assert( sizeof( MD_PERF_GUID_FOR_QUERY ) == MD_PERF_GUID_LENGTH, "MD_PERF_GUID_FOR_QUERY must be of size MD_PERF_GUID_LENGTH" );
+            if( guid.size() != MD_PERF_GUID_LENGTH - 1 )
+            {
+                MD_LOG_A( m_adapterId, LOG_ERROR, "ERROR: incorrect guid size. Expected: %d, actual: %d", MD_PERF_GUID_LENGTH - 1, guid.size() );
+                return CC_ERROR_GENERAL;
+            }
 
             // 1. REMOVE PREVIOUS QUERY CONFIG IF exists
             //    WARNING: Config from the latest Activate() call will always be used!
-            RemovePerfConfigQuery();
+            RemovePerfConfigQuery( guid.c_str() );
 
             // 2. ADD CONFIG
-            ret = AddPerfConfig( regVector, regCount, MD_PERF_GUID_FOR_QUERY, &addedConfigId );
-            MD_CHECK_CC_RET_A( m_adapterId, ret );
-
+            ret = AddPerfConfig( regVector, regCount, guid.c_str(), &addedConfigId );
             MD_ASSERT_A( m_adapterId, addedConfigId != -1 );
 
             // 3. REMEMBER ADDED CONFIG
@@ -1238,19 +1247,19 @@ namespace MetricsDiscoveryInternal
     //     ValidatePmRegsConfig
     //
     // Description:
-    //     !NOT SUPPORTED ON LINUX/ANDROID!
+    //     !NOT SUPPORTED ON LINUX!
     //     Validates PmRegs configuration.
     //
     // Input:
-    //     TRegister*    regVector - array of registers to check
-    //     uint32_t      regCount  - register count
-    //     TPlatformType platform  - platform for which validate the config
+    //     TRegister*    regVector   - array of registers to check
+    //     uint32_t      regCount    - register count
+    //     uint32_t      platformId  - platform id for which validate the config
     //
     // Output:
-    //     TCompletionCode         - *CC_OK* means succeess
+    //     TCompletionCode           - *CC_OK* means succeess
     //
     //////////////////////////////////////////////////////////////////////////////
-    TCompletionCode CDriverInterfaceLinuxPerf::ValidatePmRegsConfig( TRegister* regVector, uint32_t regCount, TPlatformType platform )
+    TCompletionCode CDriverInterfaceLinuxPerf::ValidatePmRegsConfig( TRegister* regVector, uint32_t regCount, uint32_t platformId )
     {
         // Not supported on Linux Perf - returning CC_OK on purpose
         return CC_ERROR_NOT_SUPPORTED;
@@ -1349,7 +1358,7 @@ namespace MetricsDiscoveryInternal
     //
     // Description:
     //     Sends GetCtxIdTags escape.
-    //     *NOT SUPPORTED ON ANDROID/LINUX*
+    //     *NOT SUPPORTED ON LINUX*
     //
     // Input:
     //     TGetCtxTagsIdParams* params - params
@@ -1396,7 +1405,7 @@ namespace MetricsDiscoveryInternal
     //     Creates the unnamed semaphore, initial count and max count equal to 1.
     //
     // Input:
-    //     char*          name      - *NOT USED ON ANDROID/LINUX* name of a semaphore
+    //     char*          name      - *NOT USED ON LINUX* name of a semaphore
     //     void**         semaphore - (OUT) pointer to the memory where the semaphore handle will be stored
     //     const uint32_t adapterId - adapter id for the purpose of logging
     //
@@ -1620,7 +1629,7 @@ namespace MetricsDiscoveryInternal
     //     uint32_t        processId           - PID of the measured app (0 is global context)
     //     uint32_t*       nsTimerPeriod       - (IN/OUT) requested/set sampling period time in nanoseconds
     //     uint32_t*       bufferSize          - (IN/OUT) requested/set OA Buffer size in bytes
-    //     void**          streamEventHandle   - *NOT USED ON ANDROID/LINUX*
+    //     void**          streamEventHandle   - *NOT USED ON LINUX*
     //
     // Output:
     //     TCompletionCode                     - *CC_OK* means succeess
@@ -1771,8 +1780,8 @@ namespace MetricsDiscoveryInternal
     // Input:
     //     TStreamType     streamType          - stream type
     //     CMetricsDevice& metricDevice        - metrics device
-    //     void**          streamEventHandle   - *NOT USED ON ANDROID/LINUX*
-    //     const char*     concurrentGroupName - *NOT USED ON ANDROID/LINUX* concurrent group symbol name
+    //     void**          streamEventHandle   - *NOT USED ON LINUX*
+    //     const char*     concurrentGroupName - *NOT USED ON LINUX* concurrent group symbol name
     //     CMetricSet*     metricSet           - metric set for which the stream was opened
     //
     // Output:
@@ -1851,7 +1860,7 @@ namespace MetricsDiscoveryInternal
     //     TStreamType     streamType        - stream type
     //     CMetricsDevice& metricDevice      - metrics device
     //     uint32_t        milliseconds      - max number of milliseconds to wait
-    //     void*           streamEventHandle - *NOT USED ON ANDROID/LINUX*
+    //     void*           streamEventHandle - *NOT USED ON LINUX*
     //
     // Output:
     //     TCompletionCode                   - *CC_OK* means succeess (reports available)
@@ -1900,8 +1909,7 @@ namespace MetricsDiscoveryInternal
     //     SetFrequencyOverride
     //
     // Description:
-    //     Enables / disables frequency override using CoreU function. Pid param is always
-    //     ignored on Android - only global mode's supported.
+    //     Enables / disables frequency override using CoreU function.
     //
     // Input:
     //     const TSetFrequencyOverrideParams_1_2* params - frequency override params
@@ -2063,16 +2071,15 @@ namespace MetricsDiscoveryInternal
     //     Enables/disables multisampled/extended query mode using escape code.
     //
     // Input:
-    //     TOverrideType overrideType                    - override type: extended/multisampled
-    //     TPlatformType platform                        - platform type
-    //     uint32_t      oaBufferSize                    - default Oa buffer size
-    //     const TSetQueryOverrideParams_1_2* params     - query override params
+    //     TOverrideType                        overrideType   - override type: extended/multisampled
+    //     uint32_t                             oaBufferSize   - default Oa buffer size
+    //     const TSetQueryOverrideParams_1_2*   params         - query override params
     //
     // Output:
-    //     TCompletionCode                               - *CC_OK* means success
+    //     TCompletionCode                                     - *CC_OK* means success
     //
     //////////////////////////////////////////////////////////////////////////////
-    TCompletionCode CDriverInterfaceLinuxPerf::SetQueryOverride( TOverrideType overrideType, TPlatformType platform, uint32_t oaBufferSize, const TSetQueryOverrideParams_1_2* params )
+    TCompletionCode CDriverInterfaceLinuxPerf::SetQueryOverride( TOverrideType overrideType, uint32_t oaBufferSize, const TSetQueryOverrideParams_1_2* params )
     {
         MD_CHECK_PTR_RET_A( m_adapterId, params, CC_ERROR_INVALID_PARAMETER );
         return CC_ERROR_NOT_SUPPORTED;
@@ -2450,6 +2457,49 @@ namespace MetricsDiscoveryInternal
     //     CDriverInterfaceLinuxPerf
     //
     // Method:
+    //     GenerateQueryGUID
+    //
+    // Description:
+    //     Generates query perf guid for given subDeviceIndex.
+    //
+    // Input:
+    //     const uint32_t subDeviceIndex - sub device index
+    //
+    // Output:
+    //     std::string                   - generated guid
+    //
+    //////////////////////////////////////////////////////////////////////////////
+    std::string CDriverInterfaceLinuxPerf::GenerateQueryGuid( const uint32_t subDeviceIndex )
+    {
+        const std::string valueToReplace    = "42a7";
+        const uint32_t    maxSubDeviceIndex = std::pow( 2, valueToReplace.size() * 4 ) - 1;
+
+        if( subDeviceIndex > maxSubDeviceIndex )
+        {
+            MD_LOG_A( m_adapterId, LOG_ERROR, "ERROR: Invalid sub device index" );
+            return "";
+        }
+
+        std::string defaultGuid( MD_PERF_GUID_FOR_QUERY );
+
+        if( subDeviceIndex == 0 || subDeviceIndex == MD_ROOT_DEVICE_INDEX )
+        {
+            return defaultGuid;
+        }
+
+        std::stringstream stream;
+        stream << std::setfill( '0' ) << std::setw( valueToReplace.size() ) << std::hex << subDeviceIndex;
+        std::string subDeviceIndexHexString( stream.str() );
+
+        return std::regex_replace( defaultGuid, std::regex( valueToReplace ), subDeviceIndexHexString.c_str() );
+    }
+
+    //////////////////////////////////////////////////////////////////////////////
+    //
+    // Class:
+    //     CDriverInterfaceLinuxPerf
+    //
+    // Method:
     //     AddPerfConfig
     //
     // Description:
@@ -2627,13 +2677,16 @@ namespace MetricsDiscoveryInternal
     //     Removes OA config previously added under MD_PERF_GUID_FOR_QUERY from i915 Perf (if exists).
     //     Query Perf config has to be removed e.g. in case when measuring different sets or previous execution crash.
     //
+    // Input:
+    //     const char* guid - configuration guid
+    //
     // Output:
     //     TCompletionCode - *CC_OK* means success
     //
     //////////////////////////////////////////////////////////////////////////////
-    TCompletionCode CDriverInterfaceLinuxPerf::RemovePerfConfigQuery()
+    TCompletionCode CDriverInterfaceLinuxPerf::RemovePerfConfigQuery( const char* guid )
     {
-        if( !PerfMetricSetExists( MD_PERF_GUID_FOR_QUERY ) )
+        if( !PerfMetricSetExists( guid ) )
         {
             MD_LOG_A( m_adapterId, LOG_DEBUG, "Perf configuration with query guid doesn't exist" );
             return CC_OK;
@@ -2641,10 +2694,10 @@ namespace MetricsDiscoveryInternal
 
         int32_t existingConfigId = -1;
 
-        TCompletionCode ret = GetPerfMetricSetId( MD_PERF_GUID_FOR_QUERY, (uint32_t*) &existingConfigId );
+        TCompletionCode ret = GetPerfMetricSetId( guid, (uint32_t*) &existingConfigId );
         if( ret == CC_OK )
         {
-            MD_LOG_A( m_adapterId, LOG_DEBUG, "Removing perf config with query guid: %s, id: %d", MD_PERF_GUID_FOR_QUERY, existingConfigId );
+            MD_LOG_A( m_adapterId, LOG_DEBUG, "Removing perf config with query guid: %s, id: %d", guid, existingConfigId );
 
             ret = RemovePerfConfig( existingConfigId );
             if( ret == CC_OK )

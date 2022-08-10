@@ -8,7 +8,7 @@ SPDX-License-Identifier: MIT
 
 //     File Name:  md_driver_ifc_linux_perf.h
 //
-//     Abstract:   C++ implementation for Linux/Android with Perf
+//     Abstract:   C++ implementation for Linux with Perf
 
 #pragma once
 
@@ -198,10 +198,10 @@ namespace MetricsDiscoveryInternal
         virtual TCompletionCode ForceSupportDisable();
         virtual TCompletionCode SendSupportEnableEscape( bool enable );
         virtual TCompletionCode SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM param, GTDIDeviceInfoParamExtOut* out, CMetricsDevice* metricsDevice = nullptr );
-        virtual TCompletionCode SendPmRegsConfig( TRegister** regVector, uint32_t regCount, uint32_t apiMask );
+        virtual TCompletionCode SendPmRegsConfig( TRegister** regVector, const uint32_t regCount, const uint32_t apiMask, const uint32_t subDeviceIndex );
         virtual TCompletionCode SendReadRegsConfig( TRegister** regVector, uint32_t regCount, uint32_t apiMask );
         virtual TCompletionCode GetPmRegsConfigHandles( uint32_t configId, uint32_t* oaConfigHandle, uint32_t* gpConfigHandle, uint32_t* rrConfigHandle );
-        virtual TCompletionCode ValidatePmRegsConfig( TRegister* regVector, uint32_t regCount, TPlatformType platform );
+        virtual TCompletionCode ValidatePmRegsConfig( TRegister* regVector, uint32_t regCount, uint32_t platformId );
         virtual TCompletionCode GetGpuCpuTimestamps( CMetricsDevice& device, uint64_t* gpuTimestamp, uint64_t* cpuTimestamp, uint32_t* cpuId, uint64_t* correlationIndicator );
         virtual TCompletionCode SendGetCtxIdTagsEscape( TGetCtxTagsIdParams* params );
         virtual uint32_t        GetAdapterId();
@@ -221,7 +221,7 @@ namespace MetricsDiscoveryInternal
 
         // Overrides
         virtual TCompletionCode SetFrequencyOverride( const TSetFrequencyOverrideParams_1_2* params );
-        virtual TCompletionCode SetQueryOverride( TOverrideType overrideType, TPlatformType platorm, uint32_t oaBufferSize, const TSetQueryOverrideParams_1_2* params );
+        virtual TCompletionCode SetQueryOverride( TOverrideType overrideType, uint32_t oaBufferSize, const TSetQueryOverrideParams_1_2* params );
         virtual TCompletionCode SetFreqChangeReportsOverride( bool enable );
         virtual bool            IsOverrideAvailable( TOverrideType overrideType );
         virtual bool            IsSubDeviceSupported();
@@ -240,15 +240,15 @@ namespace MetricsDiscoveryInternal
         TCompletionCode ClosePerfStream( CMetricsDevice& metricDevice );
         TCompletionCode FlushPerfStream( CMetricsDevice& metricDevice );
         TCompletionCode WaitForPerfStreamReports( CMetricsDevice& metricsDevice, uint32_t timeoutMs );
+        std::string     GenerateQueryGuid( const uint32_t subDeviceIndex );
         TCompletionCode AddPerfConfig( TRegister** regVector, uint32_t regCount, const char* requestedGuid, int32_t* addedConfigId );
         TCompletionCode RemovePerfConfig( int32_t perfConfigId );
-        TCompletionCode RemovePerfConfigQuery();
+        TCompletionCode RemovePerfConfigQuery( const char* guid );
         TCompletionCode GetPerfMetricSetId( const char* guid, uint32_t* perfMetricSetId );
         bool            PerfMetricSetExists( const char* guid );
         uint32_t        GetPerfReportType( TReportType reportType );
         TCompletionCode GetOaTimestampFrequency( uint64_t& frequency );
         TCompletionCode GetCsTimestampFrequency( uint64_t& frequency );
-
         // DRM
         bool            InitializeIntelDrm();
         void            DeinitializeIntelDrm();

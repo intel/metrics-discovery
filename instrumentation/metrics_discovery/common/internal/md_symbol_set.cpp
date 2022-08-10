@@ -266,9 +266,10 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     TCompletionCode CSymbolSet::DetectSymbolValue( const char* name, TTypedValue_1_0* typedValue )
     {
-        const uint32_t            adapterId = m_metricsDevice.GetAdapter().GetAdapterId();
-        TCompletionCode           ret       = CC_OK;
-        GTDIDeviceInfoParamExtOut out       = {};
+        const uint32_t            adapterId     = m_metricsDevice.GetAdapter().GetAdapterId();
+        const uint32_t            platformIndex = m_metricsDevice.GetPlatformIndex();
+        TCompletionCode           ret           = CC_OK;
+        GTDIDeviceInfoParamExtOut out           = {};
 
         if( !IsSymbolNameSupported( name ) )
         {
@@ -276,9 +277,8 @@ namespace MetricsDiscoveryInternal
         }
 
         bool useDualSubslice = false;
-        auto platformType    = m_metricsDevice.GetPlatformType();
 
-        useDualSubslice |= ( ( platformType & PLATFORM_ACM ) != 0 );
+        useDualSubslice |= platformIndex == GENERATION_ACM;
 
         if( ( strcmp( name, "EuCoresTotalCount" ) == 0 ) || ( strcmp( name, "VectorEngineTotalCount" ) == 0 ) )
         {
@@ -288,6 +288,10 @@ namespace MetricsDiscoveryInternal
         }
         else if( ( strcmp( name, "EuCoresPerSubsliceCount" ) == 0 ) || ( strcmp( name, "VectorEnginePerXeCoreCount" ) == 0 ) )
         {
+            // ret = m_driverInterface.SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_EU_CORES_PER_SUBSLICE_COUNT, &out, &m_metricsDevice );
+            // MD_CHECK_CC_RET_A( adapterId, ret );
+            // TODO: windows driver interface refactoring is needed.
+
             ret = m_driverInterface.SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_EU_CORES_TOTAL_COUNT, &out, &m_metricsDevice );
             MD_CHECK_CC_RET_A( adapterId, ret );
 
@@ -301,12 +305,12 @@ namespace MetricsDiscoveryInternal
             else
             {
                 bool isSubsliceAvailable = false;
-                isSubsliceAvailable |= ( ( platformType & PLATFORM_TGL ) != 0 );
-                isSubsliceAvailable |= ( ( platformType & PLATFORM_DG1 ) != 0 );
-                isSubsliceAvailable |= ( ( platformType & PLATFORM_ADLP ) != 0 );
-                isSubsliceAvailable |= ( ( platformType & PLATFORM_ADLS ) != 0 );
-                isSubsliceAvailable |= ( ( platformType & PLATFORM_ADLN ) != 0 );
-                isSubsliceAvailable |= ( ( platformType & PLATFORM_XEHP_SDV ) != 0 );
+                isSubsliceAvailable |= platformIndex == GENERATION_TGL;
+                isSubsliceAvailable |= platformIndex == GENERATION_DG1;
+                isSubsliceAvailable |= platformIndex == GENERATION_ADLP;
+                isSubsliceAvailable |= platformIndex == GENERATION_ADLS;
+                isSubsliceAvailable |= platformIndex == GENERATION_ADLN;
+                isSubsliceAvailable |= platformIndex == GENERATION_XEHP_SDV;
 
                 if( isSubsliceAvailable )
                 {
@@ -582,13 +586,13 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     bool CSymbolSet::IsSymbolNameSupported( const char* name )
     {
-        bool platformXeHpPlus = false;
-        bool useDualSubslice  = false;
-        auto platformType     = m_metricsDevice.GetPlatformType();
+        const uint32_t platformIndex    = m_metricsDevice.GetPlatformIndex();
+        bool           platformXeHpPlus = false;
+        bool           useDualSubslice  = false;
 
-        platformXeHpPlus |= ( ( platformType & PLATFORM_ACM ) != 0 );
-        useDualSubslice |= ( ( platformType & PLATFORM_ACM ) != 0 );
-        platformXeHpPlus |= ( ( platformType & PLATFORM_PVC ) != 0 );
+        platformXeHpPlus |= platformIndex == GENERATION_ACM;
+        useDualSubslice |= platformIndex == GENERATION_ACM;
+        platformXeHpPlus |= platformIndex == GENERATION_PVC;
         std::map<std::string, std::string> globalSymbolMap{
             { "EuCoresTotalCount", "VectorEngineTotalCount" },
             { "EuCoresPerSubsliceCount", "VectorEnginePerXeCoreCount" },
@@ -976,13 +980,13 @@ namespace MetricsDiscoveryInternal
     ///////////////////////////////////////////////////////////////////////////////
     TCompletionCode CSymbolSet::UnpackMask( const TGlobalSymbol* symbol )
     {
+        const uint32_t  platformIndex   = m_metricsDevice.GetPlatformIndex();
         const char*     name            = symbol->symbol_1_0.SymbolName;
         uint8_t*        mask            = symbol->symbol_1_0.SymbolTypedValue.ValueByteArray->Data;
         TTypedValue_1_0 boolValue       = { VALUE_TYPE_BOOL, { true } }; // clang suggest braces around initialization of subobject
         bool            useDualSubslice = false;
-        auto            platformType    = m_metricsDevice.GetPlatformType();
 
-        useDualSubslice |= ( ( platformType & PLATFORM_ACM ) != 0 );
+        useDualSubslice |= platformIndex == GENERATION_ACM;
 
         // Unpack mask
         if( strcmp( name, "GtSliceMask" ) == 0 )
@@ -1051,7 +1055,7 @@ namespace MetricsDiscoveryInternal
                 }
             }
 
-            if( platformType == PLATFORM_XEHP_SDV )
+            if( platformIndex == GENERATION_XEHP_SDV )
             {
                 AddSymbol( "EuDualSubslicesSlice0123Count", activeDualSubsliceForFirst4Slices, SYMBOL_TYPE_IMMEDIATE );
             }

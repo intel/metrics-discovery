@@ -113,6 +113,9 @@ namespace MetricsDiscoveryInternal
 
     TByteArrayLatest* GetCopiedByteArray( const TByteArrayLatest* byteArray, const uint32_t adapterId );
     TByteArrayLatest  GetByteArrayFromCStringMask( const char* cstring, const uint32_t adapterId );
+    TByteArrayLatest* GetByteArrayFromPlatformType( const uint32_t platformType, const uint32_t byteArraySize, const uint32_t adapterId );
+    uint32_t          GetPlatformTypeFromByteArray( const TByteArrayLatest* byteArray, const uint32_t adapterId );
+    std::string       GetStringFromByteArray( const TByteArrayLatest* byteArray, const uint32_t adapterId );
     char*             GetCopiedCString( const char* cstring, const uint32_t adapterId );
     char*             GetCopiedCStringFromWcString( const wchar_t* wcstring, const uint32_t adapterId );
 
@@ -126,6 +129,72 @@ namespace MetricsDiscoveryInternal
     int64_t           ReadInt64FromFileBuffer( uint8_t** fileBuffer, const uint32_t adapterId );
     TTypedValue_1_0   ReadTTypedValueFromFileBuffer( uint8_t** fileBuffer, const uint32_t adapterId );
     char*             ReadEquationStringFromFile( uint8_t** fileBuffer, const uint32_t adapterId );
+
+    TCompletionCode SetPlatformMask( TByteArrayLatest* platformMask, const uint32_t platformId, const uint32_t adapterId );
+    void            SetAllBitsPlatformMask( TByteArrayLatest* platformMask, const uint32_t adapterId );
+    bool            ComparePlatforms( const TByteArrayLatest* firstPlatformMask, const uint32_t firstGtMask, const TByteArrayLatest* secondPlatformMask, const uint32_t secondGtMask, const uint32_t adapterId );
+    bool            IsPlatformPresentInMask( const TByteArrayLatest* platformMask, const uint32_t platformIndex );
+
+    //////////////////////////////////////////////////////////////////////////////
+    //
+    // Group:
+    //     Metrics Discovery Utils
+    //
+    // Function:
+    //     DeleteByteArray
+    //
+    // Description:
+    //     Reset byte array size and delete dynamic array.
+    //
+    // Input:
+    //     TByteArrayLatest&  byteArray - given byte array
+    //     const uint32_t     adapterId - adapter id
+    //
+    //////////////////////////////////////////////////////////////////////////////
+    inline void DeleteByteArray( TByteArrayLatest& byteArray, const uint32_t adapterId )
+    {
+        if( byteArray.Data )
+        {
+            MD_SAFE_DELETE_ARRAY( byteArray.Data );
+            byteArray.Size = 0;
+        }
+        else
+        {
+            MD_LOG_A( adapterId, LOG_WARNING, "WARNING: byteArray.Data is already nullptr" );
+        }
+    }
+
+    //////////////////////////////////////////////////////////////////////////////
+    //
+    // Group:
+    //     Metrics Discovery Utils
+    //
+    // Function:
+    //     DeleteByteArray
+    //
+    // Description:
+    //     Delete byte array.
+    //
+    // Input:
+    //     TByteArrayLatest*& byteArray - given byte array
+    //     const uint32_t     adapterId - adapter id
+    //
+    //////////////////////////////////////////////////////////////////////////////
+    inline void DeleteByteArray( TByteArrayLatest*& byteArray, const uint32_t adapterId )
+    {
+        MD_CHECK_PTR_RET_A( adapterId, byteArray, MD_EMPTY );
+
+        if( byteArray->Data )
+        {
+            MD_SAFE_DELETE_ARRAY( byteArray->Data );
+        }
+        else
+        {
+            MD_LOG_A( adapterId, LOG_WARNING, "WARNING: byteArray->Data is already nullptr" );
+        }
+
+        MD_SAFE_DELETE( byteArray );
+    }
 
     template <typename T>
     void ClearVector( std::vector<T>& vector );

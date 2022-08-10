@@ -18,6 +18,7 @@ SPDX-License-Identifier: MIT
 
 #define MD_METRICS_FILE_KEY     "CUSTOM_METRICS_FILE\n"
 #define MD_METRICS_FILE_KEY_2_0 "CUSTOM_METRICS_FILE_2_0\n"
+#define MD_METRICS_FILE_KEY_3_0 "CUSTOM_METRICS_FILE_3_0\n"
 
 #define OBTAIN_ADAPTER_ID( device ) device ? device->GetAdapter().GetAdapterId() : IU_ADAPTER_ID_UNKNOWN
 
@@ -33,8 +34,6 @@ namespace MetricsDiscoveryInternal
     class CDriverInterface;
     class CMetricSet;
 
-    struct TUnSupportedHWMask;
-
     ///////////////////////////////////////////////////////////////////////////////
     // Custom metric file version:                                               //
     ///////////////////////////////////////////////////////////////////////////////
@@ -43,8 +42,9 @@ namespace MetricsDiscoveryInternal
         CUSTOM_METRICS_FILE_VERSION_0 = 0,
         CUSTOM_METRICS_FILE_VERSION_1 = 1,
         CUSTOM_METRICS_FILE_VERSION_2 = 2,
+        CUSTOM_METRICS_FILE_VERSION_3 = 3,
 
-        CUSTOM_METRICS_FILE_CURRENT = CUSTOM_METRICS_FILE_VERSION_2,
+        CUSTOM_METRICS_FILE_CURRENT = CUSTOM_METRICS_FILE_VERSION_3,
     } TCustomMetricsFileVersion;
 
     //////////////////////////////////////////////////////////////////////////////
@@ -83,7 +83,7 @@ namespace MetricsDiscoveryInternal
         // Non-API:
         CConcurrentGroup* AddConcurrentGroup( const char* symbolicName, const char* shortName, uint32_t measurementTypeMask );
         TCompletionCode   AddOverrides();
-        bool              IsPlatformTypeOf( uint32_t hwMask, uint32_t gtMask = GT_TYPE_ALL );
+        bool              IsPlatformTypeOf( TByteArrayLatest* platformMask, uint32_t gtMask = GT_TYPE_ALL );
         bool              IsPavpDisabled( uint32_t capabilities );
 
         TCompletionCode SaveToFile( const char* fileName, const uint32_t minMajorApiVersion = 0, const uint32_t minMinorApiVersion = 0 );
@@ -93,7 +93,7 @@ namespace MetricsDiscoveryInternal
         CDriverInterface& GetDriverInterface();
         CAdapter&         GetAdapter();
         CSymbolSet*       GetSymbolSet();
-        TPlatformType     GetPlatformType();
+        uint32_t          GetPlatformIndex();
         bool              IsOpenedFromFile();
 
         // Reference counter.
@@ -112,8 +112,8 @@ namespace MetricsDiscoveryInternal
     private:
         // Methods to read from file must be used in correct order
         TCompletionCode ReadGlobalSymbolsFromFileBuffer( uint8_t** bufferPtr );
-        TCompletionCode ReadConcurrentGroupsFromFileBuffer( uint8_t** bufferPtr, bool isInternalBuild, TApiVersion_1_0* apiVersion );
-        TCompletionCode ReadMetricSetsFromFileBuffer( uint8_t** bufferPtr, CConcurrentGroup* group, bool isInternalBuild, TApiVersion_1_0* apiVersion );
+        TCompletionCode ReadConcurrentGroupsFromFileBuffer( uint8_t** bufferPtr, bool isInternalBuild, TApiVersion_1_0* apiVersion, uint32_t fileVersion );
+        TCompletionCode ReadMetricSetsFromFileBuffer( uint8_t** bufferPtr, CConcurrentGroup* group, bool isInternalBuild, TApiVersion_1_0* apiVersion, uint32_t fileVersion );
         TCompletionCode ReadMetricsFromFileBuffer( uint8_t** bufferPtr, CMetricSet* set, bool isSetNew );
         TCompletionCode ReadInformationFromFileBuffer( uint8_t** bufferPtr, CMetricSet* set );
         TCompletionCode ReadRegistersFromFileBuffer( uint8_t** bufferPtr, CMetricSet* set );
@@ -138,10 +138,10 @@ namespace MetricsDiscoveryInternal
         // Sub device:
         uint32_t m_subDeviceIndex;
 
-        TPlatformType m_platform;
-        TGTType       m_gtType;
-        bool          m_isOpenedFromFile;
-        uint32_t      m_referenceCounter;
+        uint32_t m_platformIndex;
+        TGTType  m_gtType;
+        bool     m_isOpenedFromFile;
+        uint32_t m_referenceCounter;
 
     private:
         // Static variables:

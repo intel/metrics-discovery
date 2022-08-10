@@ -112,10 +112,10 @@ namespace MetricsDiscoveryInternal
         virtual TCompletionCode ForceSupportDisable()                                                                                                                          = 0;
         virtual TCompletionCode SendSupportEnableEscape( bool enable )                                                                                                         = 0;
         virtual TCompletionCode SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM param, GTDIDeviceInfoParamExtOut* out, CMetricsDevice* metricsDevice = nullptr )                  = 0;
-        virtual TCompletionCode SendPmRegsConfig( TRegister** regVector, uint32_t regCount, uint32_t apiMask )                                                                 = 0;
+        virtual TCompletionCode SendPmRegsConfig( TRegister** regVector, const uint32_t regCount, const uint32_t apiMask, const uint32_t subDeviceIndex )                      = 0;
         virtual TCompletionCode SendReadRegsConfig( TRegister** regVector, uint32_t regCount, uint32_t apiMask )                                                               = 0;
         virtual TCompletionCode GetPmRegsConfigHandles( uint32_t configId, uint32_t* oaConfigHandle, uint32_t* gpConfigHandle, uint32_t* rrConfigHandle )                      = 0;
-        virtual TCompletionCode ValidatePmRegsConfig( TRegister* regVector, uint32_t regCount, TPlatformType platform )                                                        = 0;
+        virtual TCompletionCode ValidatePmRegsConfig( TRegister* regVector, uint32_t regCount, uint32_t platform )                                                             = 0;
         virtual TCompletionCode GetGpuCpuTimestamps( CMetricsDevice& device, uint64_t* gpuTimestamp, uint64_t* cpuTimestamp, uint32_t* cpuId, uint64_t* correlationIndicator ) = 0;
         virtual TCompletionCode SendGetCtxIdTagsEscape( TGetCtxTagsIdParams* params )                                                                                          = 0;
         virtual uint32_t        GetAdapterId()                                                                                                                                 = 0;
@@ -133,11 +133,11 @@ namespace MetricsDiscoveryInternal
         virtual bool            IsIoMeasurementInfoAvailable( TIoMeasurementInfoType ioMeasurementInfoType )                                                                                                                                                = 0;
 
         // Overrides:
-        virtual TCompletionCode SetFrequencyOverride( const TSetFrequencyOverrideParams_1_2* params )                                                                    = 0;
-        virtual TCompletionCode SetQueryOverride( TOverrideType overrideType, TPlatformType platform, uint32_t oaBufferSize, const TSetQueryOverrideParams_1_2* params ) = 0;
-        virtual TCompletionCode SetFreqChangeReportsOverride( bool enable )                                                                                              = 0;
-        virtual bool            IsOverrideAvailable( TOverrideType overrideType )                                                                                        = 0;
-        virtual bool            IsSubDeviceSupported()                                                                                                                   = 0;
+        virtual TCompletionCode SetFrequencyOverride( const TSetFrequencyOverrideParams_1_2* params )                                            = 0;
+        virtual TCompletionCode SetQueryOverride( TOverrideType overrideType, uint32_t oaBufferSize, const TSetQueryOverrideParams_1_2* params ) = 0;
+        virtual TCompletionCode SetFreqChangeReportsOverride( bool enable )                                                                      = 0;
+        virtual bool            IsOverrideAvailable( TOverrideType overrideType )                                                                = 0;
+        virtual bool            IsSubDeviceSupported()                                                                                           = 0;
 
     protected:
         virtual bool CreateContext() = 0;

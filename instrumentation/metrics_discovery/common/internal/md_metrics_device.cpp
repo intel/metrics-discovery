@@ -22,6 +22,7 @@ SPDX-License-Identifier: MIT
 #include "md_driver_ifc.h"
 
 #include <cstring>
+#include <cmath>
 
 namespace MetricsDiscoveryInternal
 {
@@ -48,12 +49,13 @@ namespace MetricsDiscoveryInternal
         , m_streamId( -1 )
         , m_streamConfigId( -1 )
         , m_subDeviceIndex( subDeviceIndex )
-        , m_platform( PLATFORM_UNKNOWN )
+        , m_platformIndex( 0 )
         , m_gtType( GT_TYPE_UNKNOWN )
         , m_isOpenedFromFile( false )
         , m_referenceCounter( 0 )
     {
-        const uint32_t adapterId           = m_adapter.GetAdapterId();
+        const uint32_t adapterId = m_adapter.GetAdapterId();
+
         m_params.DeltaFunctionsCount       = DELTA_FUNCTION_LAST_1_0;
         m_params.EquationOperationsCount   = EQUATION_OPER_LAST_1_0;
         m_params.EquationElementTypesCount = EQUATION_ELEM_LAST_1_0;
@@ -66,7 +68,7 @@ namespace MetricsDiscoveryInternal
         m_params.ConcurrentGroupsCount = 0;
         m_params.OverrideCount         = 0;
 
-        m_params.DeviceName = GetCopiedCString( m_adapter.GetParams()->ShortName, m_adapter.GetAdapterId() );
+        m_params.DeviceName = GetCopiedCString( m_adapter.GetParams()->ShortName, adapterId );
 
         m_groupsVector.reserve( GROUPS_VECTOR_INCREASE );
         m_overridesVector.reserve( OVERRIDES_VECTOR_INCREASE );
@@ -75,8 +77,8 @@ namespace MetricsDiscoveryInternal
 
         if( m_driverInterface.SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_PLATFORM_INDEX, &out ) == CC_OK )
         {
-            m_platform = (TPlatformType) ( 1 << out.ValueUint32 );
-            MD_LOG_A( adapterId, LOG_INFO, "PLATFORM_INDEX is %u", m_platform );
+            m_platformIndex = out.ValueUint32;
+            MD_LOG_A( adapterId, LOG_INFO, "Metrics device platform index: %u", m_platformIndex );
         }
         if( m_driverInterface.SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_GT_TYPE, &out, this ) == CC_OK )
         {
@@ -100,6 +102,7 @@ namespace MetricsDiscoveryInternal
     CMetricsDevice::~CMetricsDevice()
     {
         MD_SAFE_DELETE_ARRAY( m_params.DeviceName );
+
         ClearVector( m_groupsVector );
         ClearVector( m_overridesVector );
     }
@@ -457,7 +460,7 @@ namespace MetricsDiscoveryInternal
 
         // 3. CHECK AVAILABILITY ON CURRENT PLATFORM
         MD_CHECK_PTR_RET_A( adapterId, override, nullptr );
-        if( IsPlatformTypeOf( override->GetParams()->PlatformMask ) )
+        if( IsPlatformTypeOf( static_cast<COverrideCommon*>( override )->GetParamsInternal()->PlatformMask ) )
         {
             // Add override and update count
             m_overridesVector.push_back( override );
@@ -519,19 +522,16 @@ namespace MetricsDiscoveryInternal
     //     Checks if current platform is given type.
     //
     // Input:
-    //     uint32_t hwMask - hardware mask in TPlatformType notation
-    //     uint32_t gtMask - gt type mask in TGTType notation
+    //     const TByteArrayLatest* platformMask - platform mask byte array
+    //     uint32_t                gtMask - gt type mask in TGTType notation
     //
     // Output:
-    //     bool                - result
+    //     bool                           - result
     //
     //////////////////////////////////////////////////////////////////////////////
-    bool CMetricsDevice::IsPlatformTypeOf( uint32_t hwMask, uint32_t gtMask /*= GT_TYPE_ALL*/ )
+    bool CMetricsDevice::IsPlatformTypeOf( TByteArrayLatest* platformMask, uint32_t gtMask /*= GT_TYPE_ALL*/ )
     {
-        bool platformMatch = ( hwMask & m_platform ) != 0;
-        bool gtMatch       = ( gtMask & m_gtType ) != 0;
-
-        return platformMatch && gtMatch;
+        return ( m_gtType & gtMask ) && IsPlatformPresentInMask( platformMask, m_platformIndex );
     }
 
     //////////////////////////////////////////////////////////////////////////////
@@ -578,19 +578,20 @@ namespace MetricsDiscoveryInternal
     {
         TCompletionCode retVal     = CC_OK;
         FILE*           metricFile = nullptr;
+        const uint32_t  adapterId  = m_adapter.GetAdapterId();
 
         iu_fopen_s( &metricFile, fileName, "wb" );
-        MD_CHECK_PTR_RET_A( m_adapter.GetAdapterId(), metricFile, CC_ERROR_FILE_NOT_FOUND );
+        MD_CHECK_PTR_RET_A( adapterId, metricFile, CC_ERROR_FILE_NOT_FOUND );
 
         // Specific key indicating plain text MDAPI file
-        fwrite( MD_METRICS_FILE_KEY_2_0, sizeof( char ), sizeof( MD_METRICS_FILE_KEY_2_0 ), metricFile );
+        fwrite( MD_METRICS_FILE_KEY_3_0, sizeof( char ), sizeof( MD_METRICS_FILE_KEY_3_0 ), metricFile );
 
         // Minimal api vesrion
         fwrite( &minMajorApiVersion, sizeof( uint32_t ), 1, metricFile );
         fwrite( &minMinorApiVersion, sizeof( uint32_t ), 1, metricFile );
 
-        // m_platform
-        fwrite( &m_platform, sizeof( m_platform ), 1, metricFile );
+        // m_platformIndex
+        fwrite( &m_platformIndex, sizeof( m_platformIndex ), 1, metricFile );
 
         // m_params
         fwrite( &m_params.Version, sizeof( m_params.Version ), 1, metricFile );
@@ -701,12 +702,12 @@ namespace MetricsDiscoveryInternal
     //     uint8_t**        bufferPtr       - file buffer
     //     bool             isInternalBuild - true if current build is internal
     //     TApiVersion_1_0* apiVersion      - API version
-    //
+    //     uint32_t         fileVersion     - custom metric file version
     // Output:
     //     TCompletionCode - result of the operation
     //
     //////////////////////////////////////////////////////////////////////////////
-    TCompletionCode CMetricsDevice::ReadConcurrentGroupsFromFileBuffer( uint8_t** bufferPtr, bool isInternalBuild, TApiVersion_1_0* apiVersion )
+    TCompletionCode CMetricsDevice::ReadConcurrentGroupsFromFileBuffer( uint8_t** bufferPtr, bool isInternalBuild, TApiVersion_1_0* apiVersion, uint32_t fileVersion )
     {
         const uint32_t adapterId = m_adapter.GetAdapterId();
 
@@ -735,7 +736,7 @@ namespace MetricsDiscoveryInternal
             }
 
             // MetricSets
-            ret = ReadMetricSetsFromFileBuffer( bufferPtr, aGroup, isInternalBuild, apiVersion );
+            ret = ReadMetricSetsFromFileBuffer( bufferPtr, aGroup, isInternalBuild, apiVersion, fileVersion );
             MD_CHECK_CC_RET_A( adapterId, ret );
         }
 
@@ -758,12 +759,13 @@ namespace MetricsDiscoveryInternal
     //     CConcurrentGroup* group           - parent concurrent group
     //     bool              isInternalBuild - true if current build is internal
     //     TApiVersion_1_0*  apiVersion      - API version
+    //     uint32_t          fileVersion     - custom metric file version
     //
     // Output:
     //     TCompletionCode - result of the operation
     //
     //////////////////////////////////////////////////////////////////////////////
-    TCompletionCode CMetricsDevice::ReadMetricSetsFromFileBuffer( uint8_t** bufferPtr, CConcurrentGroup* group, bool isInternalBuild, TApiVersion_1_0* apiVersion )
+    TCompletionCode CMetricsDevice::ReadMetricSetsFromFileBuffer( uint8_t** bufferPtr, CConcurrentGroup* group, bool isInternalBuild, TApiVersion_1_0* apiVersion, uint32_t fileVersion )
     {
         const uint32_t adapterId = m_adapter.GetAdapterId();
 
@@ -813,36 +815,40 @@ namespace MetricsDiscoveryInternal
 
             reportType = (TReportType) ReadUInt32FromFileBuffer( bufferPtr, adapterId );
 
-            // For release builds add sets from current platform only, for internal builds add all
-            if( IsPlatformTypeOf( metricSetParams.PlatformMask, metricSetParams.GtMask ) || isInternalBuild )
+            bool              addMetricSet = false;
+            TByteArrayLatest* platformMask = nullptr;
+
+            if( fileVersion >= CUSTOM_METRICS_FILE_VERSION_3 )
             {
-                // Add new MetricSet if there isn't a set with matching SymbolName, platform and gt masks
-                existingSet = group->GetMatchingMetricSet( metricSetParams.SymbolName, metricSetParams.PlatformMask, metricSetParams.GtMask );
-                if( !existingSet )
-                {
-                    set = group->AddMetricSet(
-                        metricSetParams.SymbolName,
-                        metricSetParams.ShortName,
-                        metricSetParams.ApiMask,
-                        metricSetParams.CategoryMask,
-                        metricSetParams.RawReportSize,
-                        metricSetParams.QueryReportSize,
-                        reportType,
-                        metricSetParams.PlatformMask,
-                        availabilityEquation,
-                        metricSetParams.GtMask,
-                        true );
-                    MD_CHECK_PTR_RET_A( adapterId, set, CC_ERROR_NO_MEMORY );
-                    MD_LOG_A( adapterId, LOG_DEBUG, "adding set: %s", metricSetParams.ShortName );
-                }
-                else
-                {
-                    MD_LOG_A( adapterId, LOG_DEBUG, "set not added, using existing one: %s", metricSetParams.ShortName );
-                }
+                platformMask = ReadByteArrayFromFileBuffer( bufferPtr, adapterId );
             }
             else
             {
-                MD_LOG_A( adapterId, LOG_DEBUG, "skipping set: %s", metricSetParams.ShortName );
+                platformMask = GetByteArrayFromPlatformType( metricSetParams.PlatformMask, MD_PLATFORM_MASK_BYTE_ARRAY_SIZE, adapterId );
+            }
+            MD_CHECK_PTR_RET_A( adapterId, platformMask, CC_ERROR_GENERAL );
+
+            existingSet = group->GetMatchingMetricSet( metricSetParams.SymbolName, platformMask, metricSetParams.GtMask );
+            if( !existingSet )
+            {
+                set = group->AddMetricSet(
+                    metricSetParams.SymbolName,
+                    metricSetParams.ShortName,
+                    metricSetParams.ApiMask,
+                    metricSetParams.CategoryMask,
+                    metricSetParams.RawReportSize,
+                    metricSetParams.QueryReportSize,
+                    reportType,
+                    platformMask,
+                    availabilityEquation,
+                    metricSetParams.GtMask,
+                    true );
+                MD_CHECK_PTR_RET_A( adapterId, set, CC_ERROR_NO_MEMORY );
+                MD_LOG_A( adapterId, LOG_DEBUG, "adding set: %s", metricSetParams.ShortName );
+            }
+            else
+            {
+                MD_LOG_A( adapterId, LOG_DEBUG, "set not added, using existing one: %s", metricSetParams.ShortName );
             }
 
             // ApiSpecificId
@@ -1206,13 +1212,14 @@ namespace MetricsDiscoveryInternal
     // Description:
     //     Opens, checks for MDAPI plain text format and loads file with saved
     //     metrics device if the format is valid.
+
     //
     // Input:
     //     const char*    fileName        - file name
     //     bool           isInternalBuild - if true, then this is internal build
     //
     // Output:
-    //     TCompletionCode             - result
+    //     TCompletionCode                - result
     //
     //////////////////////////////////////////////////////////////////////////////
     TCompletionCode CMetricsDevice::OpenFromFile( const char* fileName, bool isInternalBuild )
@@ -1257,6 +1264,10 @@ namespace MetricsDiscoveryInternal
             {
                 bufferPtr += sizeof( MD_METRICS_FILE_KEY_2_0 );
             }
+            else if( fileVersion == CUSTOM_METRICS_FILE_VERSION_3 )
+            {
+                bufferPtr += sizeof( MD_METRICS_FILE_KEY_3_0 );
+            }
         }
         else
         {
@@ -1281,8 +1292,35 @@ namespace MetricsDiscoveryInternal
                 }
             }
 
-            MD_LOG_A( adapterId, LOG_DEBUG, "Metrics device file saved on platform: %d, current: %d", *( (TPlatformType*) bufferPtr ), m_platform );
-            bufferPtr += sizeof( TPlatformType );
+            if( fileVersion >= CUSTOM_METRICS_FILE_VERSION_3 )
+            {
+                MD_LOG_A( adapterId, LOG_DEBUG, "Metrics device file saved on platform index: %u, current: %u", *( (uint32_t*) bufferPtr ), m_platformIndex );
+                bufferPtr += sizeof( uint32_t );
+            }
+            else
+            {
+                uint32_t       platFormIndex = UINT32_MAX;
+                const uint32_t platformMask  = *( (TPlatformType*) bufferPtr );
+                for( uint32_t i = 0; i < sizeof( platformMask ) * MD_BYTE; ++i )
+                {
+                    if( platformMask & ( 1 << i ) )
+                    {
+                        platFormIndex = i;
+                        break;
+                    }
+                }
+
+                if( platFormIndex == UINT32_MAX )
+                {
+                    MD_LOG_A( adapterId, LOG_DEBUG, "WARNING: read platform mask of metrics device is empty." );
+                }
+                else
+                {
+                    MD_LOG_A( adapterId, LOG_DEBUG, "Metrics device file saved on platform: %u, current: %u", platFormIndex, m_platformIndex );
+                }
+
+                bufferPtr += sizeof( TPlatformType );
+            }
 
             // MetricsDeviceParams
             TApiVersion_1_0 apiVersion = {};
@@ -1297,7 +1335,7 @@ namespace MetricsDiscoveryInternal
             // ConcurrentGroup tree
             if( retVal == CC_OK )
             {
-                retVal = ReadConcurrentGroupsFromFileBuffer( &bufferPtr, isInternalBuild, &apiVersion );
+                retVal = ReadConcurrentGroupsFromFileBuffer( &bufferPtr, isInternalBuild, &apiVersion, fileVersion );
             }
         }
         m_isOpenedFromFile = ( retVal == CC_OK );
@@ -1322,15 +1360,13 @@ namespace MetricsDiscoveryInternal
     //     uint32_t& fileVersion - custom file version [out]
     //
     // Output:
-    //     bool             - true if file in MDAPI plain text format, false otherwise
+    //     bool                  - true if file in MDAPI plain text format, false otherwise
     //
     //////////////////////////////////////////////////////////////////////////////
     bool CMetricsDevice::IsMetricsFileInPlainTextFormat( FILE* metricFile, uint32_t& fileVersion )
     {
-        const uint32_t metricFileKeySize              = sizeof( MD_METRICS_FILE_KEY_2_0 );
-        uint8_t        readFileKey[metricFileKeySize] = {
-                   0,
-        };
+        const uint32_t metricFileKeySize              = sizeof( MD_METRICS_FILE_KEY_3_0 );
+        uint8_t        readFileKey[metricFileKeySize] = { 0 };
 
         // Load fragment of the file as plain text
         iu_fread_s( readFileKey, metricFileKeySize, 1, metricFileKeySize, metricFile );
@@ -1344,6 +1380,10 @@ namespace MetricsDiscoveryInternal
         else if( strcmp( MD_METRICS_FILE_KEY_2_0, (const char*) &readFileKey ) == 0 )
         {
             fileVersion = CUSTOM_METRICS_FILE_VERSION_2;
+        }
+        else if( strcmp( MD_METRICS_FILE_KEY_3_0, (const char*) &readFileKey ) == 0 )
+        {
+            fileVersion = CUSTOM_METRICS_FILE_VERSION_3;
         }
         else
         {
@@ -1420,18 +1460,18 @@ namespace MetricsDiscoveryInternal
     //     CMetricsDevice
     //
     // Method:
-    //     GetPlatformType
+    //     GetPlatformByteArray
     //
     // Description:
-    //     Returns platform type.
+    //     Returns platform index.
     //
     // Output:
-    //     TPlatformType - platform type.
+    //     uint32_t - platform index.
     //
     //////////////////////////////////////////////////////////////////////////////
-    TPlatformType CMetricsDevice::GetPlatformType()
+    uint32_t CMetricsDevice::GetPlatformIndex()
     {
-        return m_platform;
+        return m_platformIndex;
     }
 
     //////////////////////////////////////////////////////////////////////////////
