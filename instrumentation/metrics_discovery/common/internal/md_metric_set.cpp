@@ -92,7 +92,7 @@ namespace MetricsDiscoveryInternal
         m_params_1_0.QueryReportSize = deltaReportSize;    // as in Query API
 
         m_params_1_0.MetricsCount           = 0;
-        m_params_1_0.InformationCount       = 0;
+        m_params_1_0.InformationCount       = concurrentGroup->GetInformationCount();
         m_params_1_0.ComplementarySetsCount = 0;
 
         m_params_1_0.AvailabilityEquation = "";
