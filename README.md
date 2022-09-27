@@ -15,6 +15,8 @@ https://opensource.org/licenses/MIT
 
 ## Supported Platforms
 
+- Intel(R) Processors with Arc graphics devices (formerly Alchemist)
+- Intel(R) Processors with Gen12 graphics devices (formerly Tiger Lake, Arctic Sound, DG1, Rocket Lake, Ponte Vecchio, Alder Lake)
 - Intel(R) Processors with Gen11 graphics devices (formerly Ice Lake, Elkhart Lake),
 - Intel(R) Processors with Gen9 graphics devices (formerly Skylake, Kaby Lake, Apollo Lake/Broxton, Gemini Lake, Coffee Lake),
 - Intel(R) Processors with Gen8 graphics devices (formerly Broadwell),
@@ -29,6 +31,10 @@ Event based measurements require minimum Mesa version 18.2.
 
 | Platform | Code Name | Minimum Linux Kernel Version | Minimum Mesa Version |
 |--|--|--|--|
+| Arc | Alchemist | 5.20 | 22.1.5 |
+| Gen12 | Rocket Lake | 5.17 | 22.1.5 |
+| Gen12 | DG1 | 5.13 | 22.1.5 |
+| Gen12 | Tiger Lake | 5.9 | 21.0 |
 | Gen11 | Elkhart Lake | 5.3 | 19.1 |
 | Gen11 | Ice Lake | 4.18 | 19.1 |
 | Gen9, Gen8 | * | 4.14 | 18.2 |
