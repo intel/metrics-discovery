@@ -111,6 +111,72 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     //
     // Class:
+    //     CSubDeviceEngines
+    //
+    // Method:
+    //     UpdateTbsEngineParams
+    //
+    // Input:
+    //     std::vector<uint64_t>& properties - open perf stream properties to be updated
+    //
+    // Output:
+    //     std::vector<uint64_t>& properties - updated properties
+    //     TCompletionCode                   - operation status
+    //
+    // Description:
+    //     Returns properties vector with incremented compute instance.
+    //
+    //////////////////////////////////////////////////////////////////////////////
+    TCompletionCode CSubDeviceEngines::UpdateTbsEngineParams( std::vector<uint64_t>& properties )
+    {
+        auto findProperty = [&]( const uint64_t key )
+        {
+            auto propertyIterator = std::find( properties.begin(), properties.end(), key );
+            if( propertyIterator != properties.end() )
+            {
+                propertyIterator++;
+                return *propertyIterator;
+            }
+            return 0ul;
+        };
+
+        auto incrementProperty = [&]( const uint64_t key )
+        {
+            auto propertyIterator = std::find( properties.begin(), properties.end(), key );
+            if( propertyIterator != properties.end() )
+            {
+                propertyIterator++;
+                ( *propertyIterator )++;
+                return ( *propertyIterator );
+            }
+            return 0ul;
+        };
+
+        auto engineClass = findProperty( PRELIM_DRM_I915_PERF_PROP_OA_ENGINE_CLASS );
+        if( engineClass != I915_ENGINE_CLASS_COMPUTE )
+        {
+            return CC_ERROR_GENERAL;
+        }
+
+        auto updatedInstance = incrementProperty( PRELIM_DRM_I915_PERF_PROP_OA_ENGINE_INSTANCE );
+
+        auto engineIterator = std::find_if( m_engines.begin(), m_engines.end(),
+            [&]( const TEngineParams_1_9& params )
+            {
+                return ( params.EngineId.ClassInstance.Class == engineClass ) && ( params.EngineId.ClassInstance.Instance == updatedInstance );
+            } );
+
+        if( engineIterator == m_engines.end() )
+        {
+            return CC_ERROR_GENERAL;
+        }
+
+        return CC_OK;
+    }
+
+    //////////////////////////////////////////////////////////////////////////////
+    //
+    // Class:
     //     CSubDevice
     //
     // Method:
@@ -276,6 +342,38 @@ namespace MetricsDiscoveryInternal
         MD_CHECK_CC_RET_A( m_adapter.GetAdapterId(), subDeviceIndex < m_subDeviceEngines.size() ? CC_OK : CC_ERROR_INVALID_PARAMETER );
 
         return m_subDeviceEngines[subDeviceIndex].GetTbsEngineParams( params );
+    }
+
+    //////////////////////////////////////////////////////////////////////////////
+    //
+    // Class:
+    //     CSubDevices
+    //
+    // Method:
+    //     UpdateTbsEngineParams
+    //
+    // Description:
+    //     Updates tbs engine params.
+    //
+    // Input:
+    //     const uint32_t         subDeviceIndex - sub device index
+    //     std::vector<uint64_t>& properties     - open perf stream properties to be updated
+    //
+    // Output:
+    //     std::vector<uint64_t>& properties     - updated properties
+    //     TCompletionCode                       - CC_OK means success
+    //
+    // Description:
+    //     Returns properties vector with incremented compute instance.
+    //
+    //////////////////////////////////////////////////////////////////////////////
+    TCompletionCode CSubDevices::UpdateTbsEngineParams(
+        const uint32_t         subDeviceIndex,
+        std::vector<uint64_t>& properties )
+    {
+        MD_CHECK_CC_RET_A( m_adapter.GetAdapterId(), subDeviceIndex < m_subDeviceEngines.size() ? CC_OK : CC_ERROR_INVALID_PARAMETER );
+
+        return m_subDeviceEngines[subDeviceIndex].UpdateTbsEngineParams( properties );
     }
 
     //////////////////////////////////////////////////////////////////////////////

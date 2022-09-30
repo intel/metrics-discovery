@@ -2203,7 +2203,7 @@ namespace MetricsDiscoveryInternal
         addProperty( DRM_I915_PERF_PROP_OA_EXPONENT, timerPeriodExponent );
 
         // Sub device support.
-        if( subDeviceIndex > 0 )
+        if( subDevices.GetDeviceCount() > 0 )
         {
             TCompletionCode result           = subDevices.GetTbsEngineParams( subDeviceIndex, engine );
             const bool      enginesSupported = IsSubDeviceSupported();
@@ -2229,9 +2229,16 @@ namespace MetricsDiscoveryInternal
         param.properties_ptr = reinterpret_cast<uint64_t>( properties.data() );
         param.num_properties = properties.size() / 2;
 
-        MD_LOG_A( m_adapterId, LOG_DEBUG, "Opening i915 perf stream with params: perfMetricSetId: %u, perfReportType: %u, timerPeriodExponent: %u", perfMetricSetId, perfReportType, timerPeriodExponent );
+        do
+        {
+            MD_LOG_A( m_adapterId, LOG_DEBUG, "Using engine %d:%d ", engine.EngineId.ClassInstance.Class, engine.EngineId.ClassInstance.Instance );
 
-        perfEventFd = SendIoctl( m_DrmDeviceHandle, DRM_IOCTL_I915_PERF_OPEN, &param );
+            MD_LOG_A( m_adapterId, LOG_DEBUG, "Opening i915 perf stream with params: perfMetricSetId: %u, perfReportType: %u, timerPeriodExponent: %u", perfMetricSetId, perfReportType, timerPeriodExponent );
+
+            perfEventFd = SendIoctl( m_DrmDeviceHandle, DRM_IOCTL_I915_PERF_OPEN, &param );
+        }
+        while( perfEventFd == -1 && subDevices.UpdateTbsEngineParams( subDeviceIndex, properties ) == CC_OK );
+
         if( perfEventFd == -1 )
         {
             MD_LOG_A( m_adapterId, LOG_ERROR, "ERROR: opening i915 perf stream failed, fd: %d, errno: %d (%s)", perfEventFd, errno, strerror( errno ) );

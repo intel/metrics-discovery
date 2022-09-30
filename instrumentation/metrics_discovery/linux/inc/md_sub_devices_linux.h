@@ -47,6 +47,7 @@ namespace MetricsDiscoveryInternal
         TCompletionCode   AddEngine( const uint32_t engineClass, const uint32_t engineInstance );
         TEngineParams_1_9 GetEngineParams( const uint32_t engineIndex );
         TCompletionCode   GetTbsEngineParams( TEngineParams_1_9& engineParams );
+        TCompletionCode   UpdateTbsEngineParams( std::vector<uint64_t>& properties );
         uint32_t          GetEnginesCount();
 
     private:
@@ -74,6 +75,7 @@ namespace MetricsDiscoveryInternal
         TCompletionCode GetSubDeviceParams( const uint32_t subDeviceIndex, TSubDeviceParams_1_9& params );
         TCompletionCode GetEngineParams( const uint32_t subDeviceIndex, const uint32_t engineIndex, TEngineParams_1_9& params );
         TCompletionCode GetTbsEngineParams( const uint32_t subDeviceIndex, TEngineParams_1_9& params );
+        TCompletionCode UpdateTbsEngineParams( const uint32_t subDeviceIndex, std::vector<uint64_t>& properties );
         TCompletionCode GetGpuCpuTimestamps( const uint32_t subDeviceIndex, const uint64_t gpuTimestampFrequency, uint64_t& gpuTimestampNs, uint64_t& cpuTimestampNs );
 
         uint32_t        GetDeviceCount();
