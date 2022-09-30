@@ -44,7 +44,7 @@ namespace MetricsDiscoveryInternal
     //     const uint32_t adapterId  - adapter id for purpose of logging
     //
     // Output:
-    //     TCompletionCode        - result
+    //     TCompletionCode           - result
     //
     //////////////////////////////////////////////////////////////////////////////
     TCompletionCode WriteEquationToFile( CEquation* equation, FILE* metricFile, const uint32_t adapterId )
@@ -337,6 +337,7 @@ namespace MetricsDiscoveryInternal
     TByteArrayLatest* GetCopiedByteArray( const TByteArrayLatest* byteArray, const uint32_t adapterId )
     {
         MD_CHECK_PTR_RET_A( adapterId, byteArray, nullptr );
+        MD_CHECK_PTR_RET_A( adapterId, byteArray->Data, nullptr );
 
         TByteArrayLatest* copiedByteArray = new( std::nothrow ) TByteArrayLatest();
         MD_CHECK_PTR_RET_A( adapterId, copiedByteArray, nullptr );
@@ -377,7 +378,7 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     TByteArrayLatest GetByteArrayFromCStringMask( const char* cstring, const uint32_t adapterId )
     {
-        TByteArrayLatest byteArray = {};
+        auto byteArray = TByteArrayLatest{ 0, nullptr };
 
         MD_CHECK_PTR_RET_A( adapterId, cstring, byteArray );
 
@@ -463,8 +464,11 @@ namespace MetricsDiscoveryInternal
 
         if( platformMaskByteArray->Data == nullptr )
         {
-            delete platformMaskByteArray;
-            MD_CHECK_PTR_RET_A( adapterId, platformMaskByteArray->Data, nullptr );
+            MD_SAFE_DELETE( platformMaskByteArray );
+
+            MD_LOG_A( adapterId, LOG_DEBUG, "ERROR: null pointer: platformMaskByteArray->Data" );
+            MD_LOG_EXIT_A( adapterId );
+            return nullptr;
         }
 
         iu_memcpy_s( platformMaskByteArray->Data, platformMaskByteArray->Size, &platformType, sizeof( uint32_t ) );
@@ -648,8 +652,8 @@ namespace MetricsDiscoveryInternal
     void WriteByteArrayToFile( const TByteArrayLatest* byteArray, FILE* pFile, const uint32_t adapterId )
     {
         MD_CHECK_PTR_RET_A( adapterId, byteArray, MD_EMPTY );
-        MD_CHECK_PTR_RET_A( adapterId, pFile, MD_EMPTY );
         MD_CHECK_PTR_RET_A( adapterId, byteArray->Data, MD_EMPTY );
+        MD_CHECK_PTR_RET_A( adapterId, pFile, MD_EMPTY );
 
         const uint32_t magicNumber = MD_BYTE_ARRAY_MAGIC_NUMBER;
 
@@ -1136,7 +1140,9 @@ namespace MetricsDiscoveryInternal
     bool ComparePlatforms( const TByteArrayLatest* firstPlatformMask, const uint32_t firstGtMask, const TByteArrayLatest* secondPlatformMask, const uint32_t secondGtMask, const uint32_t adapterId )
     {
         MD_CHECK_PTR_RET_A( adapterId, firstPlatformMask, false );
+        MD_CHECK_PTR_RET_A( adapterId, firstPlatformMask->Data, false );
         MD_CHECK_PTR_RET_A( adapterId, secondPlatformMask, false );
+        MD_CHECK_PTR_RET_A( adapterId, secondPlatformMask->Data, false );
 
         bool gtMatch       = ( firstGtMask & secondGtMask ) != 0;
         bool platformMatch = false;
