@@ -428,8 +428,13 @@ namespace MetricsDiscoveryInternal
     void CMetricsCalculator::Reset( uint32_t rawReportSize /* = 0*/ )
     {
         TTypedValue_1_0* euCoresTotalCount = GetGlobalSymbolValue( "EuCoresTotalCount" );
-        m_euCoresCount                     = euCoresTotalCount ? euCoresTotalCount->ValueUInt32 : 0;
-        m_gpuCoreClocks                    = 0;
+        // Workaround for renamed EuCoresTotalCount
+        if( euCoresTotalCount == nullptr )
+        {
+            euCoresTotalCount = GetGlobalSymbolValue( "VectorEngineTotalCount" );
+        }
+        m_euCoresCount  = euCoresTotalCount ? euCoresTotalCount->ValueUInt32 : 0;
+        m_gpuCoreClocks = 0;
 
         if( m_savedReportSize != rawReportSize && rawReportSize > 0 )
         {
@@ -1585,9 +1590,11 @@ namespace MetricsDiscoveryInternal
                 case EQUATION_ELEM_STD_NORM_EU_AGGR_DURATION:
                     // equation stack should be empty
                     MD_ASSERT_A( adapterId, algorithmCheck == 0 );
+                    // m_euCoresCount is needed here
+                    MD_ASSERT_A( adapterId, m_euCoresCount != 0 );
 
                     // compute $Self $gpuCoreClocks $EUsCount UMUL FDIV 100 FMUL
-                    if( m_gpuCoreClocks != 0 )
+                    if( m_gpuCoreClocks != 0 && m_euCoresCount != 0 )
                     {
                         float self          = CastToFloat( deltaValues[currentMetricIdx] );
                         float gpuCoreClocks = (float) ( m_gpuCoreClocks * m_euCoresCount );
@@ -1598,7 +1605,7 @@ namespace MetricsDiscoveryInternal
                     }
                     else
                     {
-                        // Warning: GpuCoreClocks is 0
+                        // Warning: GpuCoreClocks or euCoresCount is 0
                         typedValue.ValueFloat = 0.0f;
                         typedValue.ValueType  = VALUE_TYPE_FLOAT;
                         return typedValue;
