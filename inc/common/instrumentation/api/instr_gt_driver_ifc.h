@@ -513,6 +513,23 @@ typedef enum GTDI_GPU_FORCE_WAKE_ENUM
 } GTDI_GTDI_GPU_FORCE_WAKE;
 
 /******************************************************************************/
+/* GTDI_OA_BUFFER_TYPE_ENUM:                                                  */
+/******************************************************************************/
+typedef enum GTDI_OA_BUFFER_TYPE_ENUM
+{
+    GTDI_OA_BUFFER_TYPE_DEFAULT     = 0,
+    GTDI_OA_BUFFER_TYPE_OA          = GTDI_OA_BUFFER_TYPE_DEFAULT, // preGen12
+    GTDI_OA_BUFFER_TYPE_OAG         = GTDI_OA_BUFFER_TYPE_DEFAULT, // Gen12+
+    GTDI_OA_BUFFER_TYPE_OAM_SLICE_0 = 1,
+    GTDI_OA_BUFFER_TYPE_OAM_SLICE_1 = 2,
+    GTDI_OA_BUFFER_TYPE_OAM_SLICE_2 = 3,
+    GTDI_OA_BUFFER_TYPE_OAM_SLICE_3 = 4,
+    GTDI_OA_BUFFER_TYPE_OAM_SLICE_4 = 5,
+    GTDI_OA_BUFFER_TYPE_OAM_SLICE_5 = 6,
+    GTDI_OA_BUFFER_TYPE_COUNT
+} GTDI_OA_BUFFER_TYPE;
+
+/******************************************************************************/
 /* GTDIDeviceInfoParamIn:                                                     */
 /******************************************************************************/
 typedef struct GTDIDeviceInfoParamInStruct
@@ -882,34 +899,32 @@ typedef enum GTDI_SAMPLING_TYPE_ENUM
 /******************************************************************************/
 typedef enum GTDI_REPORT_TYPE_ENUM
 {
-    // PerfCounters report types
-    GTDI_REPORT_TYPE_128B_A13_NOA16 = 0, // report format is
-                                         //    GTDI_IVB_REPORT_128B_A13_NOA16 or
-                                         //    GTDI_HSW_REPORT_128B_A13_NOA16
-    GTDI_REPORT_TYPE_192B_A29_NOA16,     // OBSOLETE report format is
-                                         //    GTDI_IVB_REPORT_192B_A29_NOA16 or
-                                         //    GTDI_HSW_REPORT_192B_A29_NOA16
-    GTDI_REPORT_TYPE_256B_A45_NOA16,     // report format is
-                                         //    GTDI_IVB_REPORT_256B_A45_NOA16 or
-                                         //    GTDI_HSW_REPORT_256B_A45_NOA16
-    GTDI_REPORT_TYPE_64B_A13,            // report format is
-                                         //     GTDI_HSW_REPORT_64B_A13
-    GTDI_REPORT_TYPE_128B_A29,           // report format is
-                                         //     GTDI_HSW_REPORT_128B_A29
-    GTDI_REPORT_TYPE_64B_NOA12,          // report format is
-                                         //     GTDI_HSW_REPORT_64B_NOA12
-    GTDI_REPORT_TYPE_128B_A16_NOA12,     // report format is
-                                         //     GTDI_HSW_REPORT_128B_A16_NOA12
-    GTDI_REPORT_TYPE_64B_NOA12_2,        // report format is
-                                         //     GTDI_HSW_REPORT_64B_NOA12_2
-                                         // Extended report types (used in DMA sampling)
-    GTDI_REPORT_TYPE_FULL = 100,         // combo format (timestamp & oa256 & perfmons & mc * user)
-    GTDI_REPORT_TYPE_TIMESTAMP,          // timestamp
-    GTDI_REPORT_TYPE_PERFMONS,           // 2 QWORD perfmon counters
-    GTDI_REPORT_TYPE_MC,                 // memory counters
-    GTDI_REPORT_TYPE_USER,               // 8 user defined uint32_t counters
+    GTDI_REPORT_TYPE_OA_SHIFT  = 0,          // 2 ^ 0 - render & dma related report types start from this value
+    GTDI_REPORT_TYPE_OAM_SHIFT = 8,          // 2 ^ 8 - media related report types start from this value
+    GTDI_REPORT_TYPE_OAC_SHIFT = 12,         // 2 ^ 12 - compute related report types start from this value
+    GTDI_REPORT_TYPE_OA_MASK   = 0x000000FF, // render & dma related report types range
+    GTDI_REPORT_TYPE_OAM_MASK  = 0x00000F00, // media related report types range
+    GTDI_REPORT_TYPE_OAC_MASK  = 0x0000F000, // compute related report types range
 
-    GTDI_REPORT_TYPE_MAX = 0xFFFFFFFF
+    // 3D (OA/OAG) report types
+    GTDI_REPORT_TYPE_128B_A13_NOA16     = 0 << GTDI_REPORT_TYPE_OA_SHIFT,  //
+    GTDI_REPORT_TYPE_192B_A29_NOA16     = 1 << GTDI_REPORT_TYPE_OA_SHIFT,  //
+    GTDI_REPORT_TYPE_256B_A45_NOA16     = 2 << GTDI_REPORT_TYPE_OA_SHIFT,  // the only format currently used in Gen8+
+    GTDI_REPORT_TYPE_64B_A13            = 3 << GTDI_REPORT_TYPE_OA_SHIFT,  //
+    GTDI_REPORT_TYPE_128B_A29           = 4 << GTDI_REPORT_TYPE_OA_SHIFT,  //
+    GTDI_REPORT_TYPE_64B_NOA12          = 5 << GTDI_REPORT_TYPE_OA_SHIFT,  //
+    GTDI_REPORT_TYPE_128B_A16_NOA12     = 6 << GTDI_REPORT_TYPE_OA_SHIFT,  //
+    GTDI_REPORT_TYPE_64B_NOA12_2        = 7 << GTDI_REPORT_TYPE_OA_SHIFT,  //
+    // DMA sampling only
+    GTDI_REPORT_TYPE_FULL      = 100 << GTDI_REPORT_TYPE_OA_SHIFT, // all counters
+    GTDI_REPORT_TYPE_TIMESTAMP = 101 << GTDI_REPORT_TYPE_OA_SHIFT, // timestamp only
+    GTDI_REPORT_TYPE_PERFMONS  = 102 << GTDI_REPORT_TYPE_OA_SHIFT, // 2 QWORD perfmon counters only
+    GTDI_REPORT_TYPE_MC        = 103 << GTDI_REPORT_TYPE_OA_SHIFT, // memory counters only
+    GTDI_REPORT_TYPE_USER      = 104 << GTDI_REPORT_TYPE_OA_SHIFT, // 16 user defined uint32_t counters only
+    // media (OAM) report types
+    GTDI_REPORT_TYPE_128B_OAM  = 1 << GTDI_REPORT_TYPE_OAM_SHIFT, //
+
+    GTDI_REPORT_TYPE_MAX = 0xFFFFFFFF,
 } GTDI_REPORT_TYPE;
 
 /******************************************************************************/

@@ -276,9 +276,9 @@ namespace MetricsDiscoveryInternal
             return CC_ERROR_NOT_SUPPORTED;
         }
 
-        bool useDualSubslice = false;
-
-        useDualSubslice |= platformIndex == GENERATION_ACM;
+        const bool useDualSubslice = IsPlatformMatch(
+            platformIndex,
+            GENERATION_ACM );
 
         if( ( strcmp( name, "EuCoresTotalCount" ) == 0 ) || ( strcmp( name, "VectorEngineTotalCount" ) == 0 ) )
         {
@@ -304,14 +304,7 @@ namespace MetricsDiscoveryInternal
             }
             else
             {
-                bool isSubsliceAvailable = false;
-                isSubsliceAvailable |= platformIndex == GENERATION_TGL;
-                isSubsliceAvailable |= platformIndex == GENERATION_DG1;
-                isSubsliceAvailable |= platformIndex == GENERATION_ADLP;
-                isSubsliceAvailable |= platformIndex == GENERATION_ADLS;
-                isSubsliceAvailable |= platformIndex == GENERATION_ADLN;
-                isSubsliceAvailable |= platformIndex == GENERATION_XEHP_SDV;
-
+                const bool isSubsliceAvailable = IsPlatformMatch( platformIndex, GENERATION_TGL, GENERATION_DG1, GENERATION_ADLP, GENERATION_ADLS, GENERATION_ADLN, GENERATION_XEHP_SDV );
                 if( isSubsliceAvailable )
                 {
                     out.ValueUint32 *= 2;
@@ -586,13 +579,25 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     bool CSymbolSet::IsSymbolNameSupported( const char* name )
     {
-        const uint32_t platformIndex    = m_metricsDevice.GetPlatformIndex();
-        bool           platformXeHpPlus = false;
-        bool           useDualSubslice  = false;
+        const uint32_t adapterId     = m_metricsDevice.GetAdapter().GetAdapterId();
+        const uint32_t platformIndex = m_metricsDevice.GetPlatformIndex();
 
-        platformXeHpPlus |= platformIndex == GENERATION_ACM;
-        useDualSubslice |= platformIndex == GENERATION_ACM;
-        platformXeHpPlus |= platformIndex == GENERATION_PVC;
+        const bool platformXeHpPlus = IsPlatformMatch(
+            platformIndex,
+            GENERATION_ACM,
+            GENERATION_PVC );
+
+        const bool useDualSubslice = IsPlatformMatch(
+            platformIndex,
+            GENERATION_TGL,
+            GENERATION_DG1,
+            GENERATION_XEHP_SDV,
+            GENERATION_ACM,
+            GENERATION_RKL,
+            GENERATION_ADLP,
+            GENERATION_ADLS,
+            GENERATION_ADLN );
+
         std::map<std::string, std::string> globalSymbolMap{
             { "EuCoresTotalCount", "VectorEngineTotalCount" },
             { "EuCoresPerSubsliceCount", "VectorEnginePerXeCoreCount" },
@@ -628,23 +633,31 @@ namespace MetricsDiscoveryInternal
         {
             if( globalSymbolMap.find( name ) != globalSymbolMap.end() )
             {
-                MD_LOG_A( m_metricsDevice.GetAdapter().GetAdapterId(), LOG_DEBUG, "Not supported symbol names or old ones %s", name );
+                MD_LOG_A( adapterId, LOG_DEBUG, "Not supported symbol names or old ones: %s", name );
                 return false;
             }
         }
         else
         {
-            for( auto it = globalSymbolMap.begin(); it != globalSymbolMap.end(); ++it )
+            for( auto iterator = globalSymbolMap.begin(); iterator != globalSymbolMap.end(); ++iterator )
             {
                 // Xe symbol but platform is not Xe
-                if( strcmp( name, it->second.c_str() ) == 0 )
+                if( strcmp( name, iterator->second.c_str() ) == 0 )
                 {
-                    MD_LOG_A( m_metricsDevice.GetAdapter().GetAdapterId(), LOG_DEBUG, "Xe symbol but platform is not Xe %s", name );
+                    MD_LOG_A( adapterId, LOG_DEBUG, "Xe symbol but platform is not Xe: %s", name );
+                    return false;
+                }
+
+                // Dual subslice/subslice support
+                if( strcmp( name, iterator->first.c_str() ) == 0 && strcmp( "", iterator->second.c_str() ) == 0 )
+                {
+                    MD_LOG_A( adapterId, LOG_DEBUG, "%s symbol is not supported because platform %s dual subslices", name, useDualSubslice ? "supports" : "does not support" );
                     return false;
                 }
             }
         }
-        MD_LOG_A( m_metricsDevice.GetAdapter().GetAdapterId(), LOG_DEBUG, "Symbol supported %s", name );
+
+        MD_LOG_A( adapterId, LOG_DEBUG, "Symbol name supported %s", name ); // but it doesn't mean that global symbol will be added, for example some symbols are not supported on Linux.
         return true;
     }
 
@@ -907,7 +920,7 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     bool CSymbolSet::IsSymbolAlreadyAdded( const char* symbolName )
     {
-        return ( GetSymbolValueByName( symbolName ) != nullptr );
+        return GetSymbolValueByName( symbolName ) != nullptr;
     }
 
     //////////////////////////////////////////////////////////////////////////////
@@ -980,13 +993,14 @@ namespace MetricsDiscoveryInternal
     ///////////////////////////////////////////////////////////////////////////////
     TCompletionCode CSymbolSet::UnpackMask( const TGlobalSymbol* symbol )
     {
-        const uint32_t  platformIndex   = m_metricsDevice.GetPlatformIndex();
-        const char*     name            = symbol->symbol_1_0.SymbolName;
-        uint8_t*        mask            = symbol->symbol_1_0.SymbolTypedValue.ValueByteArray->Data;
-        TTypedValue_1_0 boolValue       = { VALUE_TYPE_BOOL, { true } }; // clang suggest braces around initialization of subobject
-        bool            useDualSubslice = false;
+        const uint32_t  platformIndex = m_metricsDevice.GetPlatformIndex();
+        const char*     name          = symbol->symbol_1_0.SymbolName;
+        uint8_t*        mask          = symbol->symbol_1_0.SymbolTypedValue.ValueByteArray->Data;
+        TTypedValue_1_0 boolValue     = { VALUE_TYPE_BOOL, { true } }; // clang suggest braces around initialization of subobject
 
-        useDualSubslice |= platformIndex == GENERATION_ACM;
+        const bool useDualSubslice = IsPlatformMatch(
+            platformIndex,
+            GENERATION_ACM );
 
         // Unpack mask
         if( strcmp( name, "GtSliceMask" ) == 0 )
@@ -1025,7 +1039,6 @@ namespace MetricsDiscoveryInternal
             }
         }
         else if( ( strcmp( name, "GtDualSubsliceMask" ) == 0 ) || ( useDualSubslice && ( strcmp( name, "GtXeCoreMask" ) == 0 ) ) )
-
         {
             const uint32_t  first4Slices                      = 4;
             TTypedValue_1_0 activeDualSubsliceForFirst4Slices = { VALUE_TYPE_UINT32, { 0 } }; // clang suggest braces around initialization of subobject
@@ -1055,7 +1068,7 @@ namespace MetricsDiscoveryInternal
                 }
             }
 
-            if( platformIndex == GENERATION_XEHP_SDV )
+            if( IsPlatformMatch( platformIndex, GENERATION_XEHP_SDV ) )
             {
                 AddSymbol( "EuDualSubslicesSlice0123Count", activeDualSubsliceForFirst4Slices, SYMBOL_TYPE_IMMEDIATE );
             }

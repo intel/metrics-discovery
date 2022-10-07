@@ -187,9 +187,9 @@ TCompletionCode CreateMetricTreeCFL_GT2_MMIO_Regs( CMetricsDevice* metricsDevice
     CMetric*          metric               = nullptr;
     CInformation*     information          = nullptr;
     const char*       availabilityEquation = nullptr;
-    TByteArrayLatest  platformMask         = { MD_PLATFORM_MASK_BYTE_ARRAY_SIZE, new uint8_t[MD_PLATFORM_MASK_BYTE_ARRAY_SIZE]() };
+    TByteArrayLatest  platformMask         = { MD_PLATFORM_MASK_BYTE_ARRAY_SIZE, new( std::nothrow ) uint8_t[MD_PLATFORM_MASK_BYTE_ARRAY_SIZE]() };
 
-    SetPlatformMask( &platformMask, GENERATION_CFL, adapterId );
+    MD_CHECK_CC( SetPlatformMask( adapterId, &platformMask, nullptr, GENERATION_CFL ) );
     
     if( metricsDevice->IsPlatformTypeOf( &platformMask, GT_TYPE_GT2 ) )
     {
@@ -202,9 +202,9 @@ TCompletionCode CreateMetricTreeCFL_GT2_MMIO_Regs( CMetricsDevice* metricsDevice
             INFORMATION_TYPE_TIMESTAMP, "ns", nullptr, informationCount++ );
         if( information )
         {
-            MD_CHECK_CC_RET_A( adapterId, information->SetSnapshotReportReadEquation( "dw@0x04 1000000000 UMUL $GpuTimestampFrequency UDIV" ));
-            MD_CHECK_CC_RET_A( adapterId, information->SetDeltaReportReadEquation( "qw@0x1b0" ));
-            MD_CHECK_CC_RET_A( adapterId, information->SetOverflowFunction( "NS_TIME" ));
+            MD_CHECK_CC( information->SetSnapshotReportReadEquation( "dw@0x04 1000000000 UMUL $GpuTimestampFrequency UDIV" ));
+            MD_CHECK_CC( information->SetDeltaReportReadEquation( "qw@0x1b0" ));
+            MD_CHECK_CC( information->SetOverflowFunction( "NS_TIME" ));
         }
 
         information = concurrentGroup->AddInformation( "CoreFrequencyMHz", "GPU Core Frequency",
@@ -213,7 +213,7 @@ TCompletionCode CreateMetricTreeCFL_GT2_MMIO_Regs( CMetricsDevice* metricsDevice
             INFORMATION_TYPE_VALUE, "MHz", nullptr, informationCount++ );
         if( information )
         {
-            MD_CHECK_CC_RET_A( adapterId, information->SetDeltaReportReadEquation( "qw@0x208 1000000 UDIV" ));
+            MD_CHECK_CC( information->SetDeltaReportReadEquation( "qw@0x208 1000000 UDIV" ));
         }
 
         information = concurrentGroup->AddInformation( "CoreFrequencyChanged", "Core Frequency Changed",
@@ -222,7 +222,7 @@ TCompletionCode CreateMetricTreeCFL_GT2_MMIO_Regs( CMetricsDevice* metricsDevice
             INFORMATION_TYPE_FLAG, nullptr, nullptr, informationCount++ );
         if( information )
         {
-            MD_CHECK_CC_RET_A( adapterId, information->SetDeltaReportReadEquation( "dw@0x204" ));
+            MD_CHECK_CC( information->SetDeltaReportReadEquation( "dw@0x204" ));
         }
 
         information = concurrentGroup->AddInformation( "QuerySplitOccurred", "Query Split Occurred",
@@ -231,7 +231,7 @@ TCompletionCode CreateMetricTreeCFL_GT2_MMIO_Regs( CMetricsDevice* metricsDevice
             INFORMATION_TYPE_FLAG, nullptr, nullptr, informationCount++ );
         if( information )
         {
-            MD_CHECK_CC_RET_A( adapterId, information->SetDeltaReportReadEquation( "dw@0x200" ));
+            MD_CHECK_CC( information->SetDeltaReportReadEquation( "dw@0x200" ));
         }
 
         information = concurrentGroup->AddInformation( "ReportId", "Query report id",
@@ -240,7 +240,7 @@ TCompletionCode CreateMetricTreeCFL_GT2_MMIO_Regs( CMetricsDevice* metricsDevice
             INFORMATION_TYPE_VALUE, nullptr, nullptr, informationCount++ );
         if( information )
         {
-            MD_CHECK_CC_RET_A( adapterId, information->SetDeltaReportReadEquation( "dw@0x210" ));
+            MD_CHECK_CC( information->SetDeltaReportReadEquation( "dw@0x210" ));
         }
 
         information = concurrentGroup->AddInformation( "ReportsCount", "Query reports count",
@@ -249,7 +249,7 @@ TCompletionCode CreateMetricTreeCFL_GT2_MMIO_Regs( CMetricsDevice* metricsDevice
             INFORMATION_TYPE_VALUE, nullptr, nullptr, informationCount++ );
         if( information )
         {
-            MD_CHECK_CC_RET_A( adapterId, information->SetDeltaReportReadEquation( "dw@0x214" ));
+            MD_CHECK_CC( information->SetDeltaReportReadEquation( "dw@0x214" ));
         }
 
         information = concurrentGroup->AddInformation( "OverrunOccured", "Query Overrun Occurred",
@@ -258,7 +258,7 @@ TCompletionCode CreateMetricTreeCFL_GT2_MMIO_Regs( CMetricsDevice* metricsDevice
             INFORMATION_TYPE_FLAG, nullptr, nullptr, informationCount++ );
         if( information )
         {
-            MD_CHECK_CC_RET_A( adapterId, information->SetDeltaReportReadEquation( "dw@0x1cc" ));
+            MD_CHECK_CC( information->SetDeltaReportReadEquation( "dw@0x1cc" ));
         }
 
         MD_CHECK_CC( CreateMetricSet_CFL_GT2_McRequests( metricsDevice, concurrentGroup, &platformMask ) );
@@ -436,9 +436,9 @@ TCompletionCode CreateMetricTreeCFL_GT2_PipelineStatistics( CMetricsDevice* metr
     CMetric*          metric               = nullptr;
     CInformation*     information          = nullptr;
     const char*       availabilityEquation = nullptr;
-    TByteArrayLatest  platformMask         = { MD_PLATFORM_MASK_BYTE_ARRAY_SIZE, new uint8_t[MD_PLATFORM_MASK_BYTE_ARRAY_SIZE]() };
+    TByteArrayLatest  platformMask         = { MD_PLATFORM_MASK_BYTE_ARRAY_SIZE, new( std::nothrow ) uint8_t[MD_PLATFORM_MASK_BYTE_ARRAY_SIZE]() };
 
-    SetPlatformMask( &platformMask, GENERATION_CFL, adapterId );
+    MD_CHECK_CC( SetPlatformMask( adapterId, &platformMask, nullptr, GENERATION_CFL ) );
     
     if( metricsDevice->IsPlatformTypeOf( &platformMask, GT_TYPE_GT2 ) )
     {
@@ -11328,9 +11328,9 @@ TCompletionCode CreateMetricTreeCFL_GT2_OA( CMetricsDevice* metricsDevice, CConc
     CMetric*          metric               = nullptr;
     CInformation*     information          = nullptr;
     const char*       availabilityEquation = nullptr;
-    TByteArrayLatest  platformMask         = { MD_PLATFORM_MASK_BYTE_ARRAY_SIZE, new uint8_t[MD_PLATFORM_MASK_BYTE_ARRAY_SIZE]() };
+    TByteArrayLatest  platformMask         = { MD_PLATFORM_MASK_BYTE_ARRAY_SIZE, new( std::nothrow ) uint8_t[MD_PLATFORM_MASK_BYTE_ARRAY_SIZE]() };
 
-    SetPlatformMask( &platformMask, GENERATION_CFL, adapterId );
+    MD_CHECK_CC( SetPlatformMask( adapterId, &platformMask, nullptr, GENERATION_CFL ) );
     
     if( metricsDevice->IsPlatformTypeOf( &platformMask, GT_TYPE_GT2 ) )
     {
@@ -11343,9 +11343,9 @@ TCompletionCode CreateMetricTreeCFL_GT2_OA( CMetricsDevice* metricsDevice, CConc
             INFORMATION_TYPE_TIMESTAMP, "ns", nullptr, informationCount++ );
         if( information )
         {
-            MD_CHECK_CC_RET_A( adapterId, information->SetSnapshotReportReadEquation( "dw@0x04 1000000000 UMUL $GpuTimestampFrequency UDIV" ));
-            MD_CHECK_CC_RET_A( adapterId, information->SetDeltaReportReadEquation( "qw@0x1b0" ));
-            MD_CHECK_CC_RET_A( adapterId, information->SetOverflowFunction( "NS_TIME" ));
+            MD_CHECK_CC( information->SetSnapshotReportReadEquation( "dw@0x04 1000000000 UMUL $GpuTimestampFrequency UDIV" ));
+            MD_CHECK_CC( information->SetDeltaReportReadEquation( "qw@0x1b0" ));
+            MD_CHECK_CC( information->SetOverflowFunction( "NS_TIME" ));
         }
 
         information = concurrentGroup->AddInformation( "CoreFrequencyMHz", "GPU Core Frequency",
@@ -11354,8 +11354,8 @@ TCompletionCode CreateMetricTreeCFL_GT2_OA( CMetricsDevice* metricsDevice, CConc
             INFORMATION_TYPE_VALUE, "MHz", nullptr, informationCount++ );
         if( information )
         {
-            MD_CHECK_CC_RET_A( adapterId, information->SetSnapshotReportReadEquation( "dw@0x0 0x1ff AND 16666 UMUL 1000 UDIV" ));
-            MD_CHECK_CC_RET_A( adapterId, information->SetDeltaReportReadEquation( "qw@0x208 1000000 UDIV" ));
+            MD_CHECK_CC( information->SetSnapshotReportReadEquation( "dw@0x0 0x1ff AND 16666 UMUL 1000 UDIV" ));
+            MD_CHECK_CC( information->SetDeltaReportReadEquation( "qw@0x208 1000000 UDIV" ));
         }
 
         information = concurrentGroup->AddInformation( "EuSliceFrequencyMHz", "EU Slice Frequency",
@@ -11364,7 +11364,7 @@ TCompletionCode CreateMetricTreeCFL_GT2_OA( CMetricsDevice* metricsDevice, CConc
             INFORMATION_TYPE_VALUE, "MHz", nullptr, informationCount++ );
         if( information )
         {
-            MD_CHECK_CC_RET_A( adapterId, information->SetSnapshotReportReadEquation( "dw@0x0 25 >> dw@0x0 9 >> 0x3 AND OR 16666 UMUL 1000 UDIV" ));
+            MD_CHECK_CC( information->SetSnapshotReportReadEquation( "dw@0x0 25 >> dw@0x0 9 >> 0x3 AND OR 16666 UMUL 1000 UDIV" ));
         }
 
         information = concurrentGroup->AddInformation( "ReportReason", "Report Reason",
@@ -11373,7 +11373,7 @@ TCompletionCode CreateMetricTreeCFL_GT2_OA( CMetricsDevice* metricsDevice, CConc
             INFORMATION_TYPE_REPORT_REASON, nullptr, nullptr, informationCount++ );
         if( information )
         {
-            MD_CHECK_CC_RET_A( adapterId, information->SetSnapshotReportReadEquation( "dw@0x0 19 >> 0x3f AND" ));
+            MD_CHECK_CC( information->SetSnapshotReportReadEquation( "dw@0x0 19 >> 0x3f AND" ));
         }
 
         information = concurrentGroup->AddInformation( "ContextId", "Context ID",
@@ -11382,7 +11382,7 @@ TCompletionCode CreateMetricTreeCFL_GT2_OA( CMetricsDevice* metricsDevice, CConc
             INFORMATION_TYPE_CONTEXT_ID_TAG, nullptr, nullptr, informationCount++ );
         if( information )
         {
-            MD_CHECK_CC_RET_A( adapterId, information->SetSnapshotReportReadEquation( "dw@0x08 0xfffff AND" ));
+            MD_CHECK_CC( information->SetSnapshotReportReadEquation( "dw@0x08 0xfffff AND" ));
         }
 
         information = concurrentGroup->AddInformation( "CoreFrequencyChanged", "GPU Core Frequency Changed",
@@ -11391,7 +11391,7 @@ TCompletionCode CreateMetricTreeCFL_GT2_OA( CMetricsDevice* metricsDevice, CConc
             INFORMATION_TYPE_FLAG, nullptr, nullptr, informationCount++ );
         if( information )
         {
-            MD_CHECK_CC_RET_A( adapterId, information->SetDeltaReportReadEquation( "dw@0x204" ));
+            MD_CHECK_CC( information->SetDeltaReportReadEquation( "dw@0x204" ));
         }
 
         information = concurrentGroup->AddInformation( "QuerySplitOccurred", "Query Split Occurred",
@@ -11400,7 +11400,7 @@ TCompletionCode CreateMetricTreeCFL_GT2_OA( CMetricsDevice* metricsDevice, CConc
             INFORMATION_TYPE_FLAG, nullptr, nullptr, informationCount++ );
         if( information )
         {
-            MD_CHECK_CC_RET_A( adapterId, information->SetDeltaReportReadEquation( "dw@0x200" ));
+            MD_CHECK_CC( information->SetDeltaReportReadEquation( "dw@0x200" ));
         }
 
         information = concurrentGroup->AddInformation( "ReportId", "Query report id",
@@ -11409,7 +11409,7 @@ TCompletionCode CreateMetricTreeCFL_GT2_OA( CMetricsDevice* metricsDevice, CConc
             INFORMATION_TYPE_VALUE, nullptr, nullptr, informationCount++ );
         if( information )
         {
-            MD_CHECK_CC_RET_A( adapterId, information->SetDeltaReportReadEquation( "dw@0x210" ));
+            MD_CHECK_CC( information->SetDeltaReportReadEquation( "dw@0x210" ));
         }
 
         information = concurrentGroup->AddInformation( "ReportsCount", "Query reports count",
@@ -11418,7 +11418,7 @@ TCompletionCode CreateMetricTreeCFL_GT2_OA( CMetricsDevice* metricsDevice, CConc
             INFORMATION_TYPE_VALUE, nullptr, nullptr, informationCount++ );
         if( information )
         {
-            MD_CHECK_CC_RET_A( adapterId, information->SetDeltaReportReadEquation( "dw@0x214" ));
+            MD_CHECK_CC( information->SetDeltaReportReadEquation( "dw@0x214" ));
         }
 
         information = concurrentGroup->AddInformation( "OverrunOccured", "Query Overrun Occurred",
@@ -11427,7 +11427,7 @@ TCompletionCode CreateMetricTreeCFL_GT2_OA( CMetricsDevice* metricsDevice, CConc
             INFORMATION_TYPE_FLAG, nullptr, nullptr, informationCount++ );
         if( information )
         {
-            MD_CHECK_CC_RET_A( adapterId, information->SetDeltaReportReadEquation( "dw@0x1cc" ));
+            MD_CHECK_CC( information->SetDeltaReportReadEquation( "dw@0x1cc" ));
         }
 
         information = concurrentGroup->AddInformation( "ReportError", "Query report error",
@@ -11436,7 +11436,7 @@ TCompletionCode CreateMetricTreeCFL_GT2_OA( CMetricsDevice* metricsDevice, CConc
             INFORMATION_TYPE_FLAG, nullptr, nullptr, informationCount++ );
         if( information )
         {
-            MD_CHECK_CC_RET_A( adapterId, information->SetDeltaReportReadEquation( "dw@0x29c 0x12 AND" ));
+            MD_CHECK_CC( information->SetDeltaReportReadEquation( "dw@0x29c 0x12 AND" ));
         }
 
         information = concurrentGroup->AddInformation( "ReportInconsistent", "Query report inconsistent",
@@ -11445,7 +11445,7 @@ TCompletionCode CreateMetricTreeCFL_GT2_OA( CMetricsDevice* metricsDevice, CConc
             INFORMATION_TYPE_FLAG, nullptr, nullptr, informationCount++ );
         if( information )
         {
-            MD_CHECK_CC_RET_A( adapterId, information->SetDeltaReportReadEquation( "dw@0x29c 0x02 AND" ));
+            MD_CHECK_CC( information->SetDeltaReportReadEquation( "dw@0x29c 0x02 AND" ));
         }
 
         information = concurrentGroup->AddInformation( "ReportCtxSwitchLost", "Query report context switch lost",
@@ -11454,7 +11454,7 @@ TCompletionCode CreateMetricTreeCFL_GT2_OA( CMetricsDevice* metricsDevice, CConc
             INFORMATION_TYPE_FLAG, nullptr, nullptr, informationCount++ );
         if( information )
         {
-            MD_CHECK_CC_RET_A( adapterId, information->SetDeltaReportReadEquation( "dw@0x29c 0x08 AND" ));
+            MD_CHECK_CC( information->SetDeltaReportReadEquation( "dw@0x29c 0x08 AND" ));
         }
 
         information = concurrentGroup->AddInformation( "ReportWithoutWorkload", "Query report missing workload",
@@ -11463,7 +11463,7 @@ TCompletionCode CreateMetricTreeCFL_GT2_OA( CMetricsDevice* metricsDevice, CConc
             INFORMATION_TYPE_FLAG, nullptr, nullptr, informationCount++ );
         if( information )
         {
-            MD_CHECK_CC_RET_A( adapterId, information->SetDeltaReportReadEquation( "dw@0x29c 0x10 AND" ));
+            MD_CHECK_CC( information->SetDeltaReportReadEquation( "dw@0x29c 0x10 AND" ));
         }
 
         MD_CHECK_CC( CreateMetricSet_CFL_GT2_RenderBasic( metricsDevice, concurrentGroup, &platformMask ) );

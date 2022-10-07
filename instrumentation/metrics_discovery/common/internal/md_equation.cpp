@@ -223,9 +223,9 @@ namespace MetricsDiscoveryInternal
 
                 case EQUATION_ELEM_LOCAL_COUNTER_SYMBOL:
                     // Push 0 to stack for unavailable unpacked mask symbol.
-                    if( element->SymbolName != nullptr
-                        && strstr( element->SymbolName, "GtSlice" ) != nullptr
-                        && strstr( element->SymbolName, "Mask" ) == nullptr )
+                    if( element->SymbolName != nullptr &&
+                        strstr( element->SymbolName, "GtSlice" ) != nullptr &&
+                        strstr( element->SymbolName, "Mask" ) == nullptr )
                     {
                         qwordValue = 0;
                         equationStack.push_back( qwordValue );
@@ -482,10 +482,11 @@ namespace MetricsDiscoveryInternal
             const uint32_t platformIndex = m_device->GetPlatformIndex();
 
             // Workaround for renamed EuCoresTotalCount
-            bool platformXeHpPlus = false;
+            bool platformXeHpPlus = IsPlatformMatch(
+                platformIndex,
+                GENERATION_ACM,
+                GENERATION_PVC );
 
-            platformXeHpPlus |= platformIndex == GENERATION_ACM;
-            platformXeHpPlus |= platformIndex == GENERATION_PVC;
             return ParseEquationString( platformXeHpPlus ? "$Self $GpuSliceClocksCount $VectorEngineTotalCount UMUL FDIV 100 FMUL" : "$Self $GpuSliceClocksCount $EuCoresTotalCount UMUL FDIV 100 FMUL" );
         }
         else if( strcmp( element, "EuAggrDuration" ) == 0 )

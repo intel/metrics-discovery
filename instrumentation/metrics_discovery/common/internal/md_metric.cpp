@@ -264,7 +264,7 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     TCompletionCode CMetric::SetSnapshotReportReadEquation( const char* equationString )
     {
-        TCompletionCode ret         = SetEquation( m_device, &m_ioReadEquation, equationString );
+        TCompletionCode ret         = SetEquation( m_device, m_ioReadEquation, equationString );
         m_params_1_0.IoReadEquation = (IEquation_1_0*) m_ioReadEquation;
         return ret;
     }
@@ -289,7 +289,7 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     TCompletionCode CMetric::SetDeltaReportReadEquation( const char* equationString )
     {
-        TCompletionCode ret = SetEquation( m_device, &m_queryReadEquation, equationString );
+        TCompletionCode ret = SetEquation( m_device, m_queryReadEquation, equationString );
 
         m_params_1_0.QueryReadEquation = (IEquation_1_0*) m_queryReadEquation;
         return ret;
@@ -315,7 +315,7 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     TCompletionCode CMetric::SetNormalizationEquation( const char* equationString )
     {
-        TCompletionCode ret = SetEquation( m_device, &m_normEquation, equationString );
+        TCompletionCode ret = SetEquation( m_device, m_normEquation, equationString );
 
         m_params_1_0.NormEquation = (IEquation_1_0*) m_normEquation;
         return ret;
@@ -341,7 +341,7 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     TCompletionCode CMetric::SetMaxValueEquation( const char* equationString )
     {
-        TCompletionCode ret = SetEquation( m_device, &m_maxValueEquation, equationString );
+        TCompletionCode ret = SetEquation( m_device, m_maxValueEquation, equationString );
 
         m_params_1_0.MaxValueEquation = (IEquation_1_0*) m_maxValueEquation;
         return ret;
@@ -441,9 +441,7 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     TCompletionCode CMetric::SetAvailabilityEquation( const char* equationString )
     {
-        TCompletionCode ret = SetEquation( m_device, &m_availabilityEquation, equationString );
-
-        return ret;
+        return SetEquation( m_device, m_availabilityEquation, equationString );
     }
 
     //////////////////////////////////////////////////////////////////////////////

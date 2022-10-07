@@ -3290,9 +3290,9 @@ TCompletionCode CreateMetricTreeXEHP_SDV_GT2_OA( CMetricsDevice* metricsDevice, 
     CMetric*          metric               = nullptr;
     CInformation*     information          = nullptr;
     const char*       availabilityEquation = nullptr;
-    TByteArrayLatest  platformMask         = { MD_PLATFORM_MASK_BYTE_ARRAY_SIZE, new uint8_t[MD_PLATFORM_MASK_BYTE_ARRAY_SIZE]() };
+    TByteArrayLatest  platformMask         = { MD_PLATFORM_MASK_BYTE_ARRAY_SIZE, new( std::nothrow ) uint8_t[MD_PLATFORM_MASK_BYTE_ARRAY_SIZE]() };
 
-    SetPlatformMask( &platformMask, GENERATION_XEHP_SDV, adapterId );
+    MD_CHECK_CC( SetPlatformMask( adapterId, &platformMask, nullptr, GENERATION_XEHP_SDV ) );
     
     if( metricsDevice->IsPlatformTypeOf( &platformMask, GT_TYPE_GT2 ) )
     {
@@ -3305,9 +3305,9 @@ TCompletionCode CreateMetricTreeXEHP_SDV_GT2_OA( CMetricsDevice* metricsDevice, 
             INFORMATION_TYPE_TIMESTAMP, "ns", nullptr, informationCount++ );
         if( information )
         {
-            MD_CHECK_CC_RET_A( adapterId, information->SetSnapshotReportReadEquation( "dw@0x04 1000000000 UMUL $GpuTimestampFrequency UDIV" ));
-            MD_CHECK_CC_RET_A( adapterId, information->SetDeltaReportReadEquation( "qw@0x1c0" ));
-            MD_CHECK_CC_RET_A( adapterId, information->SetOverflowFunction( "NS_TIME" ));
+            MD_CHECK_CC( information->SetSnapshotReportReadEquation( "dw@0x04 1000000000 UMUL $GpuTimestampFrequency UDIV" ));
+            MD_CHECK_CC( information->SetDeltaReportReadEquation( "qw@0x1c0" ));
+            MD_CHECK_CC( information->SetOverflowFunction( "NS_TIME" ));
         }
 
         information = concurrentGroup->AddInformation( "CoreFrequencyMHz", "GPU Core Frequency",
@@ -3316,8 +3316,8 @@ TCompletionCode CreateMetricTreeXEHP_SDV_GT2_OA( CMetricsDevice* metricsDevice, 
             INFORMATION_TYPE_VALUE, "MHz", nullptr, informationCount++ );
         if( information )
         {
-            MD_CHECK_CC_RET_A( adapterId, information->SetSnapshotReportReadEquation( "dw@0x0 0x1ff AND 16666 UMUL 1000 UDIV" ));
-            MD_CHECK_CC_RET_A( adapterId, information->SetDeltaReportReadEquation( "qw@0x218 1000000 UDIV" ));
+            MD_CHECK_CC( information->SetSnapshotReportReadEquation( "dw@0x0 0x1ff AND 16666 UMUL 1000 UDIV" ));
+            MD_CHECK_CC( information->SetDeltaReportReadEquation( "qw@0x218 1000000 UDIV" ));
         }
 
         information = concurrentGroup->AddInformation( "EuSliceFrequencyMHz", "EU Slice Frequency",
@@ -3326,7 +3326,7 @@ TCompletionCode CreateMetricTreeXEHP_SDV_GT2_OA( CMetricsDevice* metricsDevice, 
             INFORMATION_TYPE_VALUE, "MHz", nullptr, informationCount++ );
         if( information )
         {
-            MD_CHECK_CC_RET_A( adapterId, information->SetSnapshotReportReadEquation( "dw@0x0 25 >> dw@0x0 9 >> 0x3 AND OR 16666 UMUL 1000 UDIV" ));
+            MD_CHECK_CC( information->SetSnapshotReportReadEquation( "dw@0x0 25 >> dw@0x0 9 >> 0x3 AND OR 16666 UMUL 1000 UDIV" ));
         }
 
         information = concurrentGroup->AddInformation( "ReportReason", "Report Reason",
@@ -3335,7 +3335,7 @@ TCompletionCode CreateMetricTreeXEHP_SDV_GT2_OA( CMetricsDevice* metricsDevice, 
             INFORMATION_TYPE_REPORT_REASON, nullptr, nullptr, informationCount++ );
         if( information )
         {
-            MD_CHECK_CC_RET_A( adapterId, information->SetSnapshotReportReadEquation( "0x40 dw@0x0 19 >> 0x3f AND 0x0 == UMUL dw@0x0 19 >> 0x3f AND OR" ));
+            MD_CHECK_CC( information->SetSnapshotReportReadEquation( "0x40 dw@0x0 19 >> 0x3f AND 0x0 == UMUL dw@0x0 19 >> 0x3f AND OR" ));
         }
 
         information = concurrentGroup->AddInformation( "ContextIdValid", "Context ID Valid",
@@ -3344,7 +3344,7 @@ TCompletionCode CreateMetricTreeXEHP_SDV_GT2_OA( CMetricsDevice* metricsDevice, 
             INFORMATION_TYPE_FLAG, nullptr, nullptr, informationCount++ );
         if( information )
         {
-            MD_CHECK_CC_RET_A( adapterId, information->SetSnapshotReportReadEquation( "dw@0x0 16 >> 0x1 AND" ));
+            MD_CHECK_CC( information->SetSnapshotReportReadEquation( "dw@0x0 16 >> 0x1 AND" ));
         }
 
         information = concurrentGroup->AddInformation( "ContextId", "Context ID",
@@ -3353,7 +3353,7 @@ TCompletionCode CreateMetricTreeXEHP_SDV_GT2_OA( CMetricsDevice* metricsDevice, 
             INFORMATION_TYPE_CONTEXT_ID_TAG, nullptr, nullptr, informationCount++ );
         if( information )
         {
-            MD_CHECK_CC_RET_A( adapterId, information->SetSnapshotReportReadEquation( "dw@0x08 0xfc7fffbf AND dw@0x0 16 >> 0x1 AND UMUL" ));
+            MD_CHECK_CC( information->SetSnapshotReportReadEquation( "dw@0x08 0xfc7fffbf AND dw@0x0 16 >> 0x1 AND UMUL" ));
         }
 
         information = concurrentGroup->AddInformation( "CoreFrequencyChanged", "GPU Core Frequency Changed",
@@ -3362,7 +3362,7 @@ TCompletionCode CreateMetricTreeXEHP_SDV_GT2_OA( CMetricsDevice* metricsDevice, 
             INFORMATION_TYPE_FLAG, nullptr, nullptr, informationCount++ );
         if( information )
         {
-            MD_CHECK_CC_RET_A( adapterId, information->SetDeltaReportReadEquation( "dw@0x214" ));
+            MD_CHECK_CC( information->SetDeltaReportReadEquation( "dw@0x214" ));
         }
 
         information = concurrentGroup->AddInformation( "QuerySplitOccurred", "Query Split Occurred",
@@ -3371,7 +3371,7 @@ TCompletionCode CreateMetricTreeXEHP_SDV_GT2_OA( CMetricsDevice* metricsDevice, 
             INFORMATION_TYPE_FLAG, nullptr, nullptr, informationCount++ );
         if( information )
         {
-            MD_CHECK_CC_RET_A( adapterId, information->SetDeltaReportReadEquation( "dw@0x210" ));
+            MD_CHECK_CC( information->SetDeltaReportReadEquation( "dw@0x210" ));
         }
 
         information = concurrentGroup->AddInformation( "ReportId", "Query report id",
@@ -3380,7 +3380,7 @@ TCompletionCode CreateMetricTreeXEHP_SDV_GT2_OA( CMetricsDevice* metricsDevice, 
             INFORMATION_TYPE_VALUE, nullptr, nullptr, informationCount++ );
         if( information )
         {
-            MD_CHECK_CC_RET_A( adapterId, information->SetDeltaReportReadEquation( "dw@0x220" ));
+            MD_CHECK_CC( information->SetDeltaReportReadEquation( "dw@0x220" ));
         }
 
         information = concurrentGroup->AddInformation( "ReportsCount", "Query reports count",
@@ -3389,7 +3389,7 @@ TCompletionCode CreateMetricTreeXEHP_SDV_GT2_OA( CMetricsDevice* metricsDevice, 
             INFORMATION_TYPE_VALUE, nullptr, nullptr, informationCount++ );
         if( information )
         {
-            MD_CHECK_CC_RET_A( adapterId, information->SetDeltaReportReadEquation( "dw@0x224" ));
+            MD_CHECK_CC( information->SetDeltaReportReadEquation( "dw@0x224" ));
         }
 
         information = concurrentGroup->AddInformation( "OverrunOccured", "Query Overrun Occurred",
@@ -3398,7 +3398,7 @@ TCompletionCode CreateMetricTreeXEHP_SDV_GT2_OA( CMetricsDevice* metricsDevice, 
             INFORMATION_TYPE_FLAG, nullptr, nullptr, informationCount++ );
         if( information )
         {
-            MD_CHECK_CC_RET_A( adapterId, information->SetDeltaReportReadEquation( "dw@0x1dc" ));
+            MD_CHECK_CC( information->SetDeltaReportReadEquation( "dw@0x1dc" ));
         }
 
         information = concurrentGroup->AddInformation( "StreamMarker", "Stream marker",
@@ -3407,7 +3407,7 @@ TCompletionCode CreateMetricTreeXEHP_SDV_GT2_OA( CMetricsDevice* metricsDevice, 
             INFORMATION_TYPE_VALUE, nullptr, nullptr, informationCount++ );
         if( information )
         {
-            MD_CHECK_CC_RET_A( adapterId, information->SetSnapshotReportReadEquation( "dw@0x08 dw@0x0 19 >> 0x8 AND 0x0 == UMUL" ));
+            MD_CHECK_CC( information->SetSnapshotReportReadEquation( "dw@0x08 dw@0x0 19 >> 0x8 AND 0x0 == UMUL" ));
         }
 
         information = concurrentGroup->AddInformation( "ReportError", "Query report error",
@@ -3416,7 +3416,7 @@ TCompletionCode CreateMetricTreeXEHP_SDV_GT2_OA( CMetricsDevice* metricsDevice, 
             INFORMATION_TYPE_FLAG, nullptr, nullptr, informationCount++ );
         if( information )
         {
-            MD_CHECK_CC_RET_A( adapterId, information->SetDeltaReportReadEquation( "dw@0x2ac 0x13 AND" ));
+            MD_CHECK_CC( information->SetDeltaReportReadEquation( "dw@0x2ac 0x13 AND" ));
         }
 
         information = concurrentGroup->AddInformation( "ReportLost", "Query report lost",
@@ -3425,7 +3425,7 @@ TCompletionCode CreateMetricTreeXEHP_SDV_GT2_OA( CMetricsDevice* metricsDevice, 
             INFORMATION_TYPE_FLAG, nullptr, nullptr, informationCount++ );
         if( information )
         {
-            MD_CHECK_CC_RET_A( adapterId, information->SetDeltaReportReadEquation( "dw@0x2ac 0x01 AND" ));
+            MD_CHECK_CC( information->SetDeltaReportReadEquation( "dw@0x2ac 0x01 AND" ));
         }
 
         information = concurrentGroup->AddInformation( "ReportInconsistent", "Query report inconsistent",
@@ -3434,7 +3434,7 @@ TCompletionCode CreateMetricTreeXEHP_SDV_GT2_OA( CMetricsDevice* metricsDevice, 
             INFORMATION_TYPE_FLAG, nullptr, nullptr, informationCount++ );
         if( information )
         {
-            MD_CHECK_CC_RET_A( adapterId, information->SetDeltaReportReadEquation( "dw@0x2ac 0x02 AND" ));
+            MD_CHECK_CC( information->SetDeltaReportReadEquation( "dw@0x2ac 0x02 AND" ));
         }
 
         information = concurrentGroup->AddInformation( "ReportCtxSwitchLost", "Query report context switch lost",
@@ -3443,7 +3443,7 @@ TCompletionCode CreateMetricTreeXEHP_SDV_GT2_OA( CMetricsDevice* metricsDevice, 
             INFORMATION_TYPE_FLAG, nullptr, nullptr, informationCount++ );
         if( information )
         {
-            MD_CHECK_CC_RET_A( adapterId, information->SetDeltaReportReadEquation( "dw@0x2ac 0x08 AND" ));
+            MD_CHECK_CC( information->SetDeltaReportReadEquation( "dw@0x2ac 0x08 AND" ));
         }
 
         information = concurrentGroup->AddInformation( "ReportWithoutWorkload", "Query report missing workload",
@@ -3452,7 +3452,7 @@ TCompletionCode CreateMetricTreeXEHP_SDV_GT2_OA( CMetricsDevice* metricsDevice, 
             INFORMATION_TYPE_FLAG, nullptr, nullptr, informationCount++ );
         if( information )
         {
-            MD_CHECK_CC_RET_A( adapterId, information->SetDeltaReportReadEquation( "dw@0x2ac 0x10 AND" ));
+            MD_CHECK_CC( information->SetDeltaReportReadEquation( "dw@0x2ac 0x10 AND" ));
         }
 
         MD_CHECK_CC( CreateMetricSet_XEHP_SDV_GT2_RenderBasic( metricsDevice, concurrentGroup, &platformMask ) );

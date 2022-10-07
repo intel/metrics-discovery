@@ -870,8 +870,8 @@ namespace MetricsDiscoveryInternal
     //     Calculates IoMeasurementInformation obtained on every ReadIoStream.
     //
     // Input:
-    //     IConcurrentGroup_1_1& concurrentGroup - ConcurrentGroup which was used during ReadIoStream
-    //     TTypedValue_1_0&      outValues       - (OUT) calculated values
+    //     IConcurrentGroup_1_1& concurrentGroup - concurrentGroup which was used during ReadIoStream
+    //     TTypedValue_1_0*      outValues       - (OUT) calculated values
     //
     //////////////////////////////////////////////////////////////////////////////
     void CMetricsCalculator::ReadIoMeasurementInformation( IConcurrentGroup_1_1& concurrentGroup, TTypedValue_1_0* outValues )
@@ -881,23 +881,19 @@ namespace MetricsDiscoveryInternal
         if( !outValues )
         {
             MD_ASSERT_A( adapterId, outValues != nullptr );
-            MD_LOG_A( adapterId, LOG_ERROR, "error: nullptr params" );
+            MD_LOG_A( adapterId, LOG_ERROR, "ERROR: outValues is nullptr" );
             return;
         }
 
-        uint32_t measurementInfoCount = concurrentGroup.GetParams()->IoMeasurementInformationCount;
-
-        for( uint32_t i = 0; i < measurementInfoCount; i++ )
+        for( uint32_t i = 0; i < concurrentGroup.GetParams()->IoMeasurementInformationCount; ++i )
         {
-            IInformation_1_0* measurementInfo = concurrentGroup.GetIoMeasurementInformation( i );
+            auto measurementInfo = concurrentGroup.GetIoMeasurementInformation( i );
             MD_ASSERT_A( adapterId, measurementInfo != nullptr );
 
-            IEquation_1_0* equation = measurementInfo->GetParams()->IoReadEquation;
-
+            auto equation = measurementInfo->GetParams()->IoReadEquation;
             if( equation )
             {
-                CEquation& equationInternal = static_cast<CEquation&>( *equation );
-                outValues[i]                = CalculateReadEquation( equationInternal, nullptr );
+                outValues[i] = CalculateReadEquation( static_cast<CEquation&>( *equation ), nullptr );
             }
             else
             {

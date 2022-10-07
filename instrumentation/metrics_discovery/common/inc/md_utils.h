@@ -12,7 +12,7 @@ SPDX-License-Identifier: MIT
 
 #pragma once
 
-#include "metrics_discovery_api.h"
+#include "metrics_discovery_internal_api.h"
 #include "md_per_platform_preamble.h"
 #include "md_debug.h"
 #include "iu_std.h"
@@ -62,7 +62,9 @@ SPDX-License-Identifier: MIT
 
 #define MD_CHECK_CC( object ) \
     if( ( object ) != CC_OK ) \
-        goto exception;
+    {                         \
+        goto exception;       \
+    }
 
 #define MD_CHECK_CC_RET_A( adapterId, object )                             \
     if( ( object ) != CC_OK )                                              \
@@ -104,7 +106,7 @@ namespace MetricsDiscoveryInternal
 
     TCompletionCode WriteEquationToFile( CEquation* equation, FILE* metricFile, const uint32_t adapterId );
     TCompletionCode SetDeltaFunction( const char* equationString, TDeltaFunction_1_0* deltaFunction, const uint32_t adapterId );
-    TCompletionCode SetEquation( CMetricsDevice* device, CEquation** equation, const char* equationString );
+    TCompletionCode SetEquation( CMetricsDevice* device, CEquation*& equation, const char* equationString );
 
     TCompletionCode GetNamedSemaphore( const char* semaphoreName, void** semaphorePtr, const uint32_t adapterId );
     TCompletionCode ReleaseNamedSemaphore( void** semaphorePtr, const uint32_t adapterId );
@@ -130,10 +132,93 @@ namespace MetricsDiscoveryInternal
     TTypedValue_1_0   ReadTTypedValueFromFileBuffer( uint8_t** fileBuffer, const uint32_t adapterId );
     char*             ReadEquationStringFromFile( uint8_t** fileBuffer, const uint32_t adapterId );
 
-    TCompletionCode SetPlatformMask( TByteArrayLatest* platformMask, const uint32_t platformId, const uint32_t adapterId );
-    void            SetAllBitsPlatformMask( TByteArrayLatest* platformMask, const uint32_t adapterId );
+    TCompletionCode SetBitInByteArray( TByteArrayLatest* byteArray, const uint32_t bitIndex, const uint32_t adapterId );
+
+    TCompletionCode SetAllBitsPlatformMask( const uint32_t adapterId, TByteArrayLatest* platformMask, uint32_t* platformMaskLegacy = nullptr );
     bool            ComparePlatforms( const TByteArrayLatest* firstPlatformMask, const uint32_t firstGtMask, const TByteArrayLatest* secondPlatformMask, const uint32_t secondGtMask, const uint32_t adapterId );
-    bool            IsPlatformPresentInMask( const TByteArrayLatest* platformMask, const uint32_t platformIndex );
+    bool            IsPlatformPresentInMask( const TByteArrayLatest* platformMask, const uint32_t platformIndex, const uint32_t adapterId );
+
+    //////////////////////////////////////////////////////////////////////////////
+    //
+    // Group:
+    //     Metrics Discovery Utils
+    //
+    // Function:
+    //     SetPlatformMask
+    //
+    // Description:
+    //     Sets platform mask byte array or/and legacy platform mask with given platform indices.
+    //
+    // Input:
+    //     const uint32_t     adapterId          - adapter id
+    //     TByteArrayLatest*  platformMask       - (optional) byte array platform mask
+    //     uint32_t           platformMaskLegacy - (optional) legacy uint32_t platform mask
+    //     PlatformIndices... platformIndices    - platform indices
+    //
+    // Output:
+    //     TCompletionCode                       - result
+    //
+    //////////////////////////////////////////////////////////////////////////////
+    template <typename... PlatformIndices>
+    TCompletionCode SetPlatformMask( const uint32_t adapterId, TByteArrayLatest* platformMask, uint32_t* platformMaskLegacy, PlatformIndices... platformIndices )
+    {
+        TCompletionCode ret = CC_ERROR_INVALID_PARAMETER;
+
+        auto setPlatformMaskByteArray = [&]( TCompletionCode ret, const uint32_t platformIndex, const uint32_t adapterId )
+        {
+            MD_CHECK_CC_RET_A( adapterId, ret );
+            return SetBitInByteArray( platformMask, platformIndex, adapterId );
+        };
+        auto setPlatformMaskLegacy = [&]( const uint32_t platformIndex )
+        {
+            *platformMaskLegacy |= ( platformIndex > GENERATION_ADLN )
+                ? PLATFORM_FUTURE
+                : MD_BIT( platformIndex );
+        };
+
+        if( platformMask )
+        {
+            ret = iu_zeromem( platformMask->Data, platformMask->Size ) ? CC_OK : CC_ERROR_GENERAL;
+            MD_CHECK_CC_RET_A( adapterId, ret );
+
+            ( ( ret = setPlatformMaskByteArray( ret, platformIndices, adapterId ) ), ... );
+            MD_CHECK_CC_RET_A( adapterId, ret );
+        }
+
+        if( platformMaskLegacy )
+        {
+            ret = CC_OK;
+            ( setPlatformMaskLegacy( platformIndices ), ... );
+        }
+
+        return ret;
+    }
+
+    //////////////////////////////////////////////////////////////////////////////
+    //
+    // Group:
+    //     Metrics Discovery Utils
+    //
+    // Function:
+    //     IsPlatformMatch
+    //
+    // Description:
+    //     Checks if platform index matches with given platform indices.
+    //
+    // Input:
+    //     const uint32_t     platformIndex      - platform index
+    //     PlatformIndices... platformIndices    - platform indices
+    //
+    // Output:
+    //     bool                                  - true if match
+    //
+    //////////////////////////////////////////////////////////////////////////////
+    template <typename... PlatformIndices>
+    bool IsPlatformMatch( const uint32_t platformIndex, PlatformIndices... platformIndices )
+    {
+        bool match = false;
+        return ( ( match |= ( platformIndex == platformIndices ) ), ... );
+    }
 
     //////////////////////////////////////////////////////////////////////////////
     //

@@ -2581,7 +2581,7 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     TCompletionCode CMetricSet::SetAvailabilityEquation( const char* equationString )
     {
-        TCompletionCode ret       = SetEquation( m_device, &m_availabilityEquation, equationString );
+        TCompletionCode ret       = SetEquation( m_device, m_availabilityEquation, equationString );
         const uint32_t  adapterId = OBTAIN_ADAPTER_ID( m_device );
 
         if( ret == CC_OK )

@@ -46,8 +46,9 @@ namespace MetricsDiscoveryInternal
     public:
         TCompletionCode   AddEngine( const uint32_t engineClass, const uint32_t engineInstance );
         TEngineParams_1_9 GetEngineParams( const uint32_t engineIndex );
-        TCompletionCode   GetTbsEngineParams( TEngineParams_1_9& engineParams );
+        TCompletionCode   GetTbsEngineParams( TEngineParams_1_9& engineParams, const uint32_t requestedInstance = -1, const bool isOam = false );
         TCompletionCode   UpdateTbsEngineParams( std::vector<uint64_t>& properties );
+        bool              IsTbsEngineValid( const TEngineParams_1_9& engineParams, const uint32_t requestedInstance = -1, const bool isOam = false ) const;
         uint32_t          GetEnginesCount();
 
     private:
@@ -71,11 +72,13 @@ namespace MetricsDiscoveryInternal
 
         bool            IsSupported();
         TCompletionCode Enumerate();
+
         TCompletionCode GetAdapterParams( TAdapterParams_1_9& params );
         TCompletionCode GetSubDeviceParams( const uint32_t subDeviceIndex, TSubDeviceParams_1_9& params );
         TCompletionCode GetEngineParams( const uint32_t subDeviceIndex, const uint32_t engineIndex, TEngineParams_1_9& params );
-        TCompletionCode GetTbsEngineParams( const uint32_t subDeviceIndex, TEngineParams_1_9& params );
+        TCompletionCode GetTbsEngineParams( const uint32_t subDeviceIndex, TEngineParams_1_9& params, const uint32_t requestedEngineInstance = -1, const bool isOam = false );
         TCompletionCode UpdateTbsEngineParams( const uint32_t subDeviceIndex, std::vector<uint64_t>& properties );
+        uint32_t        GetClassInstancesCount( const uint32_t subDeviceIndex, const uint32_t requestedEngineClass );
         TCompletionCode GetGpuCpuTimestamps( const uint32_t subDeviceIndex, const uint64_t gpuTimestampFrequency, uint64_t& gpuTimestampNs, uint64_t& cpuTimestampNs );
 
         uint32_t        GetDeviceCount();
@@ -93,9 +96,9 @@ namespace MetricsDiscoveryInternal
         bool                           m_subDevicesSupported;
 
     private:
-        TCompletionCode GetEngines( CDriverInterfaceLinuxPerf& driver, std::vector<prelim_drm_i915_engine_info>& engines );
-        TCompletionCode GetMemoryRegions( CDriverInterfaceLinuxPerf& driver, std::vector<prelim_drm_i915_memory_region_info>& regions );
-        TCompletionCode GetEngineDistances( CDriverInterfaceLinuxPerf& driver, const std::vector<prelim_drm_i915_engine_info>& engines, const std::vector<prelim_drm_i915_memory_region_info>& regions, std::vector<prelim_drm_i915_query_distance_info>& distances );
+        TCompletionCode GetEngines( CDriverInterfaceLinuxPerf& driver, std::vector<drm_i915_engine_info>& engines );
+        TCompletionCode GetMemoryRegions( CDriverInterfaceLinuxPerf& driver, std::vector<drm_i915_memory_region_info>& regions );
+        TCompletionCode GetEngineDistances( CDriverInterfaceLinuxPerf& driver, const std::vector<drm_i915_engine_info>& engines, const std::vector<drm_i915_memory_region_info>& regions, std::vector<prelim_drm_i915_query_distance_info>& distances );
         TCompletionCode GetSubDeviceEngines( const std::vector<prelim_drm_i915_query_distance_info>& distances );
     };
 }; // namespace MetricsDiscoveryInternal

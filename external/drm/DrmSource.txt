@@ -1,11 +1,43 @@
 https://github.com/intel-gpu/drm-uapi-helper/tree/master/drm-uapi
 
 Base commit:
-commit aea73597c31f5c318fff6ccfeacf95a020f64617
-Author: Ashutosh Dixit <ashutosh.dixit@intel.com>
-Date:   23 Apr 2022 03:55:41 +02:00
+https://github.com/intel-gpu/drm-uapi-helper/commit/014dbfd6f934a16b6665957692ccfc5d862aa6fe
 
-	Identical to previous commit (499d67e06436) except minor change to revert a
-	manual change made to i915_drm.h.
+Author: Ashutosh Dixit <ashutosh.dixit@intel.com>
+Date:   21 Jul 2022 22:02:21 +02:00
+
+Description:
+
+	prelim v2.0-rc14
+	* No compatibility breakage in PRELIM uapi
+	* A round of backports from upstram uapi
+	* Also a few benign changes shown below
+
+	drm_fourcc.h:
+	* No compatibility breakage in PRELIM uapi but might compile fix
+	  because of removal of some duplicated "MOD_F" #define's below
+	* Discontinued PRELIM_I915_FORMAT_MOD_F_TILED_DG2_RC_CCS, use
+	  PRELIM_I915_FORMAT_MOD_4_TILED_DG2_RC_CCS
+	* Discontinued PRELIM_I915_FORMAT_MOD_F_TILED_DG2_MC_CCS, use
+	  PRELIM_I915_FORMAT_MOD_4_TILED_DG2_MC_CCS
+	* Discontinued PRELIM_I915_FORMAT_MOD_F_TILED_DG2_RC_CCS_CC, use
+	  PRELIM_I915_FORMAT_MOD_4_TILED_DG2_RC_CCS_CC
+
+	i915_drm.h:
+	* Upstream DRM_I915_QUERY_HWCONFIG_BLOB and
+	  DRM_I915_QUERY_GEOMETRY_SUBSLICES are now available in DII as a
+	  result of backports from upstream
+	* Other doc style comment changes
+
+	i915_drm_prelim.h:
+	* No compatibility breakage in PRELIM uapi but some ununsed things
+	  have been removed as shown below.
+	* Discontinued unused prelim_drm_i915_gem_context_create_ext_clone
+	* Discontinued unused PRELIM_DRM_I915_QUERY_L3_BANK_COUNT
+	* Discontinued unused PRELIM_I915_RENDER_CLASS_CAPABILITY_3D
+	* Discontinued PRELIM_DRM_I915_QUERY_GEOMETRY_SLICES, use
+	  PRELIM_DRM_I915_QUERY_GEOMETRY_SUBSLICES
+	* Discontinued PRELIM_DRM_I915_QUERY_COMPUTE_SLICES, use
+	  PRELIM_DRM_I915_QUERY_COMPUTE_SUBSLICES
 
 	Signed-off-by: Ashutosh Dixit <ashutosh.dixit@intel.com>

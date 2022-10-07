@@ -50,6 +50,12 @@ project (${PROJECT_NAME})
 set (LIB igdmd)
 set (LIB_NAME libigdmd)
 
+#################################################################################
+# CONFIGURE C++ STANDARD
+#################################################################################
+set (CMAKE_CXX_STANDARD 17)
+set (CMAKE_CXX_STANDARD_REQUIRED ON)
+
 # instrumentation common settings & macros
 if (CMAKE_SYSTEM_NAME STREQUAL "Linux")
     include (md_cmake_adapter.cmake NO_POLICY_SCOPE)
@@ -106,7 +112,9 @@ set (_SOURCES ${_SOURCES}
     ${BS_DIR_INSTRUMENTATION}/metrics_discovery/common/internal/md_common.cpp
     ${BS_DIR_INSTRUMENTATION}/metrics_discovery/common/internal/md_adapter.cpp
     ${BS_DIR_INSTRUMENTATION}/metrics_discovery/common/internal/md_adapter_group.cpp
-    ${BS_DIR_INSTRUMENTATION}/metrics_discovery/common/internal/md_concurrent_group.cpp
+    ${BS_DIR_INSTRUMENTATION}/metrics_discovery/common/internal/concurrent_groups/md_concurrent_group.cpp
+    ${BS_DIR_INSTRUMENTATION}/metrics_discovery/common/internal/concurrent_groups/md_oa_concurrent_group.cpp
+    ${BS_DIR_INSTRUMENTATION}/metrics_discovery/common/internal/concurrent_groups/md_oam_concurrent_group.cpp
     ${BS_DIR_INSTRUMENTATION}/metrics_discovery/common/internal/md_equation.cpp
     ${BS_DIR_INSTRUMENTATION}/metrics_discovery/common/internal/md_information.cpp
     ${BS_DIR_INSTRUMENTATION}/metrics_discovery/common/internal/md_metric.cpp
@@ -138,8 +146,6 @@ if ("${PLATFORM}" STREQUAL Windows) # windows
     # linux files in solution explorer
     set (_LINUX_SOURCES_ON_WINDOWS
          # mdapi core
-        ${BS_DIR_INSTRUMENTATION}/metrics_discovery/linux/md_driver_ifc_android.cpp
-        ${BS_DIR_INSTRUMENTATION}/metrics_discovery/linux/md_driver_ifc_linux.cpp
         ${BS_DIR_INSTRUMENTATION}/metrics_discovery/linux/md_driver_ifc_linux_perf.cpp
         ${BS_DIR_INSTRUMENTATION}/metrics_discovery/linux/md_sub_devices_linux.cpp
         # instr utils
@@ -306,6 +312,7 @@ endif ()
 set (COMMON_TARGET_INCLUDE_DIRECTORIES
     ${BS_DIR_INSTRUMENTATION}/metrics_discovery/common/inc
     ${BS_DIR_INSTRUMENTATION}/metrics_discovery/common/inc/internal
+    ${BS_DIR_INSTRUMENTATION}/metrics_discovery/common/inc/internal/concurrent_groups
     )
 
 if ("${PLATFORM}" STREQUAL Windows) # windows
@@ -412,8 +419,6 @@ elseif ("${PLATFORM}" STREQUAL "linux") # linux
     endif ()
     # C++ specific
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-reorder")
-    # support for cpp11
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 
     # common
     add_definitions(-DMD_USE_PERF)

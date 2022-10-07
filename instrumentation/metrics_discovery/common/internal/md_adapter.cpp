@@ -1316,7 +1316,10 @@ namespace MetricsDiscoveryInternal
         MD_CHECK_PTR_RET_A( m_adapterId, m_driverInterface, CC_ERROR_NOT_SUPPORTED );
 
         TCompletionCode retVal      = CC_OK;
-        auto            enablePrint = []( bool enable ) { return enable ? "enabling" : "disabling"; };
+        auto            enablePrint = []( bool enable )
+        {
+            return enable ? "enabling" : "disabling";
+        };
 
         if( m_driverInterface->IsSupportEnableRequired() )
         {

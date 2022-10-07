@@ -32,8 +32,13 @@ namespace MetricsDiscoveryInternal
     //
     //////////////////////////////////////////////////////////////////////////////
     COverrideCommon::COverrideCommon( void )
+        : m_internalParams{
+            OVERRIDE_ID_NOT_AVAILABLE,
+            new( std::nothrow ) TByteArrayLatest{ MD_PLATFORM_MASK_BYTE_ARRAY_SIZE, new( std::nothrow ) uint8_t[MD_PLATFORM_MASK_BYTE_ARRAY_SIZE]() }
+        }
     {
-        m_internalParams.QueryOverrideId = OVERRIDE_ID_NOT_AVAILABLE;
+        MD_CHECK_PTR_RET( m_internalParams.PlatformMask, MD_EMPTY );
+        MD_CHECK_PTR_RET( m_internalParams.PlatformMask->Data, MD_EMPTY );
     }
 
     //////////////////////////////////////////////////////////////////////////////
@@ -102,24 +107,29 @@ namespace MetricsDiscoveryInternal
     //     Frequency override constructor.
     //
     // Input:
-    //     CMetricsDevice* device - parent metrics devcice
+    //     CMetricsDevice* device - parent metrics device
     //
     //////////////////////////////////////////////////////////////////////////////
     template <>
     COverride<OVERRIDE_TYPE_FREQUENCY>::COverride( CMetricsDevice* device )
     {
         MD_CHECK_PTR_RET( device, MD_EMPTY );
+        const uint32_t adapterId = OBTAIN_ADAPTER_ID( device );
 
         m_device = device;
 
         m_params.SymbolName       = "FrequencyOverride";
         m_params.Description      = "Overrides device GPU frequency with a static value.";
         m_params.ApiMask          = (uint32_t) API_TYPE_ALL;
-        m_params.PlatformMask     = (uint32_t) PLATFORM_ALL;
         m_params.OverrideModeMask = OVERRIDE_MODE_GLOBAL;
 
         m_internalParams.QueryOverrideId = OVERRIDE_ID_NOT_AVAILABLE;
-        m_internalParams.PlatformMask    = GetByteArrayFromPlatformType( m_params.PlatformMask, MD_PLATFORM_MASK_BYTE_ARRAY_SIZE, OBTAIN_ADAPTER_ID( device ) );
+
+        auto ret = SetAllBitsPlatformMask( adapterId, m_internalParams.PlatformMask, &m_params.PlatformMask );
+        if( ret != CC_OK )
+        {
+            MD_LOG_A( adapterId, LOG_ERROR, "ERROR: Cannot set platform mask!" );
+        }
     }
 
     //////////////////////////////////////////////////////////////////////////////
@@ -134,24 +144,29 @@ namespace MetricsDiscoveryInternal
     //     Null Hardware override constructor.
     //
     // Input:
-    //     CMetricsDevice* device - parent metrics devcice
+    //     CMetricsDevice* device - parent metrics device
     //
     //////////////////////////////////////////////////////////////////////////////
     template <>
     COverride<OVERRIDE_TYPE_NULL_HARDWARE>::COverride( CMetricsDevice* device )
     {
         MD_CHECK_PTR_RET( device, MD_EMPTY );
+        const uint32_t adapterId = OBTAIN_ADAPTER_ID( device );
 
         m_device = device;
 
         m_params.SymbolName       = "Null Hardware";
         m_params.Description      = "Do not send primitives to the hardware rasterizer.";
         m_params.ApiMask          = API_TYPE_DX12 | API_TYPE_VULKAN;
-        m_params.PlatformMask     = (uint32_t) PLATFORM_ALL;
         m_params.OverrideModeMask = OVERRIDE_MODE_LOCAL;
 
         m_internalParams.QueryOverrideId = OVERRIDE_ID_NULL_HARDWARE;
-        m_internalParams.PlatformMask    = GetByteArrayFromPlatformType( m_params.PlatformMask, MD_PLATFORM_MASK_BYTE_ARRAY_SIZE, OBTAIN_ADAPTER_ID( device ) );
+
+        auto ret = SetAllBitsPlatformMask( adapterId, m_internalParams.PlatformMask, &m_params.PlatformMask );
+        if( ret != CC_OK )
+        {
+            MD_LOG_A( adapterId, LOG_ERROR, "ERROR: Cannot set platform mask!" );
+        }
     }
 
     //////////////////////////////////////////////////////////////////////////////
@@ -166,24 +181,29 @@ namespace MetricsDiscoveryInternal
     //     Flush GPU caches override constructor.
     //
     // Input:
-    //     CMetricsDevice* device - parent metrics devcice
+    //     CMetricsDevice* device - parent metrics device
     //
     //////////////////////////////////////////////////////////////////////////////
     template <>
     COverride<OVERRIDE_TYPE_FLUSH_GPU_CACHES>::COverride( CMetricsDevice* device )
     {
         MD_CHECK_PTR_RET( device, MD_EMPTY );
+        const uint32_t adapterId = OBTAIN_ADAPTER_ID( device );
 
         m_device = device;
 
         m_params.SymbolName       = "Flush GPU caches";
         m_params.Description      = "Flushes all GPU caches.";
         m_params.ApiMask          = API_TYPE_DX12 | API_TYPE_VULKAN;
-        m_params.PlatformMask     = (uint32_t) PLATFORM_ALL;
         m_params.OverrideModeMask = OVERRIDE_MODE_LOCAL;
 
         m_internalParams.QueryOverrideId = OVERRIDE_ID_FLUSH_GPU_CACHES;
-        m_internalParams.PlatformMask    = GetByteArrayFromPlatformType( m_params.PlatformMask, MD_PLATFORM_MASK_BYTE_ARRAY_SIZE, OBTAIN_ADAPTER_ID( device ) );
+
+        auto ret = SetAllBitsPlatformMask( adapterId, m_internalParams.PlatformMask, &m_params.PlatformMask );
+        if( ret != CC_OK )
+        {
+            MD_LOG_A( adapterId, LOG_ERROR, "ERROR: Cannot set platform mask!" );
+        }
     }
 
     //////////////////////////////////////////////////////////////////////////////
@@ -198,24 +218,29 @@ namespace MetricsDiscoveryInternal
     //     Extended query override constructor.
     //
     // Input:
-    //     CMetricsDevice* device - parent metrics devcice
+    //     CMetricsDevice* device - parent metrics device
     //
     //////////////////////////////////////////////////////////////////////////////
     template <>
     COverride<OVERRIDE_TYPE_EXTENDED_QUERY>::COverride( CMetricsDevice* device )
     {
         MD_CHECK_PTR_RET( device, MD_EMPTY );
+        const uint32_t adapterId = OBTAIN_ADAPTER_ID( device );
 
         m_device = device;
 
         m_params.SymbolName       = "Extended query";
         m_params.Description      = "Enables extended query mode.";
         m_params.ApiMask          = API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_OGL | API_TYPE_DX12 | API_TYPE_VULKAN;
-        m_params.PlatformMask     = (uint32_t) PLATFORM_ALL;
         m_params.OverrideModeMask = OVERRIDE_MODE_GLOBAL;
 
         m_internalParams.QueryOverrideId = OVERRIDE_ID_NOT_AVAILABLE;
-        m_internalParams.PlatformMask    = GetByteArrayFromPlatformType( m_params.PlatformMask, MD_PLATFORM_MASK_BYTE_ARRAY_SIZE, OBTAIN_ADAPTER_ID( device ) );
+
+        auto ret = SetAllBitsPlatformMask( adapterId, m_internalParams.PlatformMask, &m_params.PlatformMask );
+        if( ret != CC_OK )
+        {
+            MD_LOG_A( adapterId, LOG_ERROR, "ERROR: Cannot set platform mask!" );
+        }
     }
 
     //////////////////////////////////////////////////////////////////////////////
@@ -230,24 +255,29 @@ namespace MetricsDiscoveryInternal
     //     Multisampled query override constructor.
     //
     // Input:
-    //     CMetricsDevice* device - parent metrics devcice
+    //     CMetricsDevice* device - parent metrics device
     //
     //////////////////////////////////////////////////////////////////////////////
     template <>
     COverride<OVERRIDE_TYPE_MULTISAMPLED_QUERY>::COverride( CMetricsDevice* device )
     {
         MD_CHECK_PTR_RET( device, MD_EMPTY );
+        const uint32_t adapterId = OBTAIN_ADAPTER_ID( device );
 
         m_device = device;
 
         m_params.SymbolName       = "Multisampled query";
         m_params.Description      = "Enables multisampled query mode.";
         m_params.ApiMask          = API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_OGL | API_TYPE_DX12 | API_TYPE_VULKAN;
-        m_params.PlatformMask     = (uint32_t) PLATFORM_ALL;
         m_params.OverrideModeMask = OVERRIDE_MODE_GLOBAL;
 
         m_internalParams.QueryOverrideId = OVERRIDE_ID_NOT_AVAILABLE;
-        m_internalParams.PlatformMask    = GetByteArrayFromPlatformType( m_params.PlatformMask, MD_PLATFORM_MASK_BYTE_ARRAY_SIZE, OBTAIN_ADAPTER_ID( device ) );
+
+        auto ret = SetAllBitsPlatformMask( adapterId, m_internalParams.PlatformMask, &m_params.PlatformMask );
+        if( ret != CC_OK )
+        {
+            MD_LOG_A( adapterId, LOG_ERROR, "ERROR: Cannot set platform mask!" );
+        }
     }
 
     //////////////////////////////////////////////////////////////////////////////
@@ -262,24 +292,29 @@ namespace MetricsDiscoveryInternal
     //     Frequency change reports override constructor.
     //
     // Input:
-    //     CMetricsDevice* device - parent metrics devcice
+    //     CMetricsDevice* device - parent metrics device
     //
     //////////////////////////////////////////////////////////////////////////////
     template <>
     COverride<OVERRIDE_TYPE_FREQUENCY_CHANGE_REPORTS>::COverride( CMetricsDevice* device )
     {
         MD_CHECK_PTR_RET( device, MD_EMPTY );
+        const uint32_t adapterId = OBTAIN_ADAPTER_ID( device );
 
         m_device = device;
 
         m_params.SymbolName       = "FrequencyChangeReports";
         m_params.Description      = "Allows to toggle frequency change reports.";
         m_params.ApiMask          = (uint32_t) API_TYPE_IOSTREAM;
-        m_params.PlatformMask     = (uint32_t) PLATFORM_ALL;
         m_params.OverrideModeMask = OVERRIDE_MODE_GLOBAL;
 
         m_internalParams.QueryOverrideId = OVERRIDE_ID_NOT_AVAILABLE;
-        m_internalParams.PlatformMask    = GetByteArrayFromPlatformType( m_params.PlatformMask, MD_PLATFORM_MASK_BYTE_ARRAY_SIZE, OBTAIN_ADAPTER_ID( device ) );
+
+        auto ret = SetAllBitsPlatformMask( adapterId, m_internalParams.PlatformMask, &m_params.PlatformMask );
+        if( ret != CC_OK )
+        {
+            MD_LOG_A( adapterId, LOG_ERROR, "ERROR: Cannot set platform mask!" );
+        }
     }
 
     //////////////////////////////////////////////////////////////////////////////

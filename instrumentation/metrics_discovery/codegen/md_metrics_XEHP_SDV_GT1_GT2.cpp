@@ -187,9 +187,9 @@ TCompletionCode CreateMetricTreeXEHP_SDV_GT1_GT2_PipelineStatistics( CMetricsDev
     CMetric*          metric               = nullptr;
     CInformation*     information          = nullptr;
     const char*       availabilityEquation = nullptr;
-    TByteArrayLatest  platformMask         = { MD_PLATFORM_MASK_BYTE_ARRAY_SIZE, new uint8_t[MD_PLATFORM_MASK_BYTE_ARRAY_SIZE]() };
+    TByteArrayLatest  platformMask         = { MD_PLATFORM_MASK_BYTE_ARRAY_SIZE, new( std::nothrow ) uint8_t[MD_PLATFORM_MASK_BYTE_ARRAY_SIZE]() };
 
-    SetPlatformMask( &platformMask, GENERATION_XEHP_SDV, adapterId );
+    MD_CHECK_CC( SetPlatformMask( adapterId, &platformMask, nullptr, GENERATION_XEHP_SDV ) );
     
     if( metricsDevice->IsPlatformTypeOf( &platformMask, GT_TYPE_GT1|GT_TYPE_GT2 ) )
     {
@@ -18870,9 +18870,9 @@ TCompletionCode CreateMetricTreeXEHP_SDV_GT1_GT2_OA( CMetricsDevice* metricsDevi
     CMetric*          metric               = nullptr;
     CInformation*     information          = nullptr;
     const char*       availabilityEquation = nullptr;
-    TByteArrayLatest  platformMask         = { MD_PLATFORM_MASK_BYTE_ARRAY_SIZE, new uint8_t[MD_PLATFORM_MASK_BYTE_ARRAY_SIZE]() };
+    TByteArrayLatest  platformMask         = { MD_PLATFORM_MASK_BYTE_ARRAY_SIZE, new( std::nothrow ) uint8_t[MD_PLATFORM_MASK_BYTE_ARRAY_SIZE]() };
 
-    SetPlatformMask( &platformMask, GENERATION_XEHP_SDV, adapterId );
+    MD_CHECK_CC( SetPlatformMask( adapterId, &platformMask, nullptr, GENERATION_XEHP_SDV ) );
     
     if( metricsDevice->IsPlatformTypeOf( &platformMask, GT_TYPE_GT1|GT_TYPE_GT2 ) )
     {

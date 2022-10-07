@@ -45,20 +45,11 @@ struct prelim_i915_user_extension {
 #define PRELIM_I915_CONTEXT_ENGINES_EXT_PARALLEL2_SUBMIT (PRELIM_I915_USER_EXT | 3)
 };
 
-struct prelim_drm_i915_gem_context_create_ext_clone {
+/* This API has been removed.  On the off chance someone somewhere has
+ * attempted to use it, never re-use this extension number.
+ */
+
 #define PRELIM_I915_CONTEXT_CREATE_EXT_CLONE	(PRELIM_I915_USER_EXT | 1)
-	struct i915_user_extension base;
-	__u32 clone_id;
-	__u32 flags;
-#define PRELIM_I915_CONTEXT_CLONE_ENGINES	(1u << 0)
-#define PRELIM_I915_CONTEXT_CLONE_FLAGS		(1u << 1)
-#define PRELIM_I915_CONTEXT_CLONE_SCHEDATTR	(1u << 2)
-#define PRELIM_I915_CONTEXT_CLONE_SSEU		(1u << 3)
-#define PRELIM_I915_CONTEXT_CLONE_TIMELINE	(1u << 4)
-#define PRELIM_I915_CONTEXT_CLONE_VM		(1u << 5)
-#define PRELIM_I915_CONTEXT_CLONE_UNKNOWN	-(PRELIM_I915_CONTEXT_CLONE_VM << 1)
-	__u64 rsvd;
-};
 
 /*
  * PRELIM UAPI VERSION - /sys/<...>/drm/card<n>/prelim_uapi_version
@@ -416,15 +407,10 @@ struct prelim_drm_i915_gem_memory_class_instance {
 struct prelim_drm_i915_query_item {
 #define PRELIM_DRM_I915_QUERY			(1 << 16)
 #define PRELIM_DRM_I915_QUERY_MASK(x)		(x & 0xffff)
-/* Keep lower 16 bits same as previous values */
 #define PRELIM_DRM_I915_QUERY_MEMORY_REGIONS	(PRELIM_DRM_I915_QUERY | 4)
 #define PRELIM_DRM_I915_QUERY_DISTANCE_INFO	(PRELIM_DRM_I915_QUERY | 5)
-	/**
-	 * Query HWConfig Table: Copies a device information table to the
-	 * query's item.data_ptr directly if the allocated length is big enough
-	 * For details about table format and content see intel_hwconfig_types.h
-	 */
-#define PRELIM_DRM_I915_QUERY_HWCONFIG_TABLE		(PRELIM_DRM_I915_QUERY | 6)
+/* Deprecated: HWConfig is now upstream, do not use the prelim version anymore */
+#define PRELIM_DRM_I915_QUERY_HWCONFIG_TABLE	(PRELIM_DRM_I915_QUERY | 6)
 	/**
 	 * Query Geometry Subslices: returns the items found in query_topology info
 	 * with a mask for geometry_subslice_mask applied
@@ -435,7 +421,6 @@ struct prelim_drm_i915_query_item {
 	 * instance.
 	 */
 #define PRELIM_DRM_I915_QUERY_GEOMETRY_SUBSLICES	(PRELIM_DRM_I915_QUERY | 7)
-#define PRELIM_DRM_I915_QUERY_GEOMETRY_SLICES		PRELIM_DRM_I915_QUERY_GEOMETRY_SUBSLICES
 	/**
 	 * Query Compute Subslices: returns the items found in query_topology info
 	 * with a mask for compute_subslice_mask applied
@@ -446,14 +431,12 @@ struct prelim_drm_i915_query_item {
 	 * instance.
 	 */
 #define PRELIM_DRM_I915_QUERY_COMPUTE_SUBSLICES		(PRELIM_DRM_I915_QUERY | 8)
-#define PRELIM_DRM_I915_QUERY_COMPUTE_SLICES		PRELIM_DRM_I915_QUERY_COMPUTE_SUBSLICES
 	/**
 	 * Query Command Streamer timestamp register.
 	 */
 #define PRELIM_DRM_I915_QUERY_CS_CYCLES			(PRELIM_DRM_I915_QUERY | 9)
 #define PRELIM_DRM_I915_QUERY_FABRIC_INFO		(PRELIM_DRM_I915_QUERY | 11)
 #define PRELIM_DRM_I915_QUERY_ENGINE_INFO		(PRELIM_DRM_I915_QUERY | 13)
-#define PRELIM_DRM_I915_QUERY_L3_BANK_COUNT		(PRELIM_DRM_I915_QUERY | 14)
 };
 
 /*
@@ -1033,7 +1016,6 @@ struct prelim_drm_i915_engine_info {
 
 	/** Capabilities of this engine. */
 	__u64 capabilities;
-#define PRELIM_I915_RENDER_CLASS_CAPABILITY_3D		(1ull << 63)
 #define I915_VIDEO_CLASS_CAPABILITY_HEVC		(1 << 0)
 #define I915_VIDEO_AND_ENHANCE_CLASS_CAPABILITY_SFC	(1 << 1)
 #define PRELIM_I915_VIDEO_CLASS_CAPABILITY_VDENC	(1ull << 63)

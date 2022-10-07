@@ -176,9 +176,9 @@ TCompletionCode CreateMetricTreeHSW_PipelineStatistics( CMetricsDevice* metricsD
     CMetric*          metric               = nullptr;
     CInformation*     information          = nullptr;
     const char*       availabilityEquation = nullptr;
-    TByteArrayLatest  platformMask         = { MD_PLATFORM_MASK_BYTE_ARRAY_SIZE, new uint8_t[MD_PLATFORM_MASK_BYTE_ARRAY_SIZE]() };
+    TByteArrayLatest  platformMask         = { MD_PLATFORM_MASK_BYTE_ARRAY_SIZE, new( std::nothrow ) uint8_t[MD_PLATFORM_MASK_BYTE_ARRAY_SIZE]() };
 
-    SetPlatformMask( &platformMask, GENERATION_HSW, adapterId );
+    MD_CHECK_CC( SetPlatformMask( adapterId, &platformMask, nullptr, GENERATION_HSW ) );
     
     if( metricsDevice->IsPlatformTypeOf( &platformMask ) )
     {
@@ -5907,9 +5907,9 @@ TCompletionCode CreateMetricTreeHSW_OA( CMetricsDevice* metricsDevice, CConcurre
     CMetric*          metric               = nullptr;
     CInformation*     information          = nullptr;
     const char*       availabilityEquation = nullptr;
-    TByteArrayLatest  platformMask         = { MD_PLATFORM_MASK_BYTE_ARRAY_SIZE, new uint8_t[MD_PLATFORM_MASK_BYTE_ARRAY_SIZE]() };
+    TByteArrayLatest  platformMask         = { MD_PLATFORM_MASK_BYTE_ARRAY_SIZE, new( std::nothrow ) uint8_t[MD_PLATFORM_MASK_BYTE_ARRAY_SIZE]() };
 
-    SetPlatformMask( &platformMask, GENERATION_HSW, adapterId );
+    MD_CHECK_CC( SetPlatformMask( adapterId, &platformMask, nullptr, GENERATION_HSW ) );
     
     if( metricsDevice->IsPlatformTypeOf( &platformMask ) )
     {

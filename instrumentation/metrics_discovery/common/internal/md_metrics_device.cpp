@@ -13,6 +13,8 @@ SPDX-License-Identifier: MIT
 #include "md_metrics_device.h"
 #include "md_adapter.h"
 #include "md_concurrent_group.h"
+#include "md_oa_concurrent_group.h"
+#include "md_oam_concurrent_group.h"
 #include "md_equation.h"
 #include "md_information.h"
 #include "md_metric.h"
@@ -384,18 +386,21 @@ namespace MetricsDiscoveryInternal
     CConcurrentGroup* CMetricsDevice::AddConcurrentGroup( const char* symbolicName, const char* shortName, uint32_t measurementTypeMask )
     {
         CConcurrentGroup* group = nullptr;
-        if( strstr( symbolicName, "OA" ) != nullptr )
+
+        if( strstr( symbolicName, "OAM" ) != nullptr )
+        {
+            group = new( std::nothrow ) COAMConcurrentGroup( this, symbolicName, shortName, measurementTypeMask );
+        }
+        else if( strstr( symbolicName, "OA" ) != nullptr )
         {
             group = new( std::nothrow ) COAConcurrentGroup( this, symbolicName, shortName, measurementTypeMask );
-        }
-        else if( strstr( symbolicName, "PerfMon" ) != nullptr )
-        {
-            group = new( std::nothrow ) CPerfMonConcurrentGroup( this, symbolicName, shortName, measurementTypeMask );
         }
         else
         {
             group = new( std::nothrow ) CConcurrentGroup( this, symbolicName, shortName, measurementTypeMask );
         }
+
+        MD_CHECK_PTR_RET_A( m_adapter.GetAdapterId(), group, nullptr );
 
         m_groupsVector.push_back( group );
         m_params.ConcurrentGroupsCount = m_groupsVector.size();
@@ -531,7 +536,7 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     bool CMetricsDevice::IsPlatformTypeOf( TByteArrayLatest* platformMask, uint32_t gtMask /*= GT_TYPE_ALL*/ )
     {
-        return ( m_gtType & gtMask ) && IsPlatformPresentInMask( platformMask, m_platformIndex );
+        return ( m_gtType & gtMask ) && IsPlatformPresentInMask( platformMask, m_platformIndex, m_adapter.GetAdapterId() );
     }
 
     //////////////////////////////////////////////////////////////////////////////
@@ -843,7 +848,12 @@ namespace MetricsDiscoveryInternal
                     availabilityEquation,
                     metricSetParams.GtMask,
                     true );
-                MD_CHECK_PTR_RET_A( adapterId, set, CC_ERROR_NO_MEMORY );
+
+                if( !set )
+                {
+                    DeleteByteArray( platformMask, adapterId );
+                    MD_CHECK_PTR_RET_A( adapterId, set, CC_ERROR_NO_MEMORY );
+                }
                 MD_LOG_A( adapterId, LOG_DEBUG, "adding set: %s", metricSetParams.ShortName );
             }
             else

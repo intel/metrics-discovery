@@ -62,7 +62,7 @@ namespace MetricsDiscoveryInternal
         uint32_t    LevelMask;
     } TMetricGroupNameIdPair;
 
-    const TMetricGroupNameIdPair GroupNamePairs[] = {
+    constexpr TMetricGroupNameIdPair GroupNamePairs[] = {
         { "GPU", METRIC_GROUP_NAME_ID_GPU, METRIC_GROUP_LEVEL_0 },
         { "GTI", METRIC_GROUP_NAME_ID_GTI, METRIC_GROUP_LEVEL_0 },
         { "LLC", METRIC_GROUP_NAME_ID_LLC, METRIC_GROUP_LEVEL_0 },

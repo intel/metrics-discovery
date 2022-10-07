@@ -12,13 +12,6 @@ SPDX-License-Identifier: MIT
 
 #pragma once
 
-#define MD_CLEAR_UNSOPPORTED_HW_MASK_VECTOR( vector ) \
-    for( auto& element : vector )                     \
-    {                                                 \
-        element.Clear();                              \
-    }                                                 \
-    vector.clear();
-
 #include "metrics_discovery_api.h"
 
 using namespace MetricsDiscovery;

@@ -152,32 +152,34 @@ namespace MetricsDiscoveryInternal
     //
     // Input:
     //     CMetricsDevice* device         - metric device
-    //     CEquation**     equation       - pointer to the equation to be set
+    //     CEquation*&     equation       - pointer to the equation to be set
     //     const char*     equationString - euqation string, could be empty or null
     //
     // Output:
     //     TCompletionCode            - result of the operation
     //
     //////////////////////////////////////////////////////////////////////////////
-    TCompletionCode SetEquation( CMetricsDevice* device, CEquation** equation, const char* equationString )
+    TCompletionCode SetEquation( CMetricsDevice* device, CEquation*& equation, const char* equationString )
     {
-        const uint32_t adapterId = OBTAIN_ADAPTER_ID( device );
+        const uint32_t  adapterId = OBTAIN_ADAPTER_ID( device );
+        TCompletionCode ret       = CC_OK;
 
         MD_CHECK_PTR_RET_A( adapterId, device, CC_ERROR_INVALID_PARAMETER );
-        MD_CHECK_PTR_RET_A( adapterId, equation, CC_ERROR_INVALID_PARAMETER );
-
-        TCompletionCode ret = CC_OK;
 
         // Delete previous equation if any
-        MD_SAFE_DELETE( *equation );
+        MD_SAFE_DELETE( equation );
 
         // nullptr is fine condition for "" equations
         if( equationString != nullptr && strcmp( equationString, "" ) != 0 )
         {
-            *equation = new( std::nothrow ) CEquation( device );
-            if( *equation == nullptr || !( *equation )->ParseEquationString( equationString ) )
+            equation = new( std::nothrow ) CEquation( device );
+            if( equation == nullptr )
             {
-                MD_SAFE_DELETE( *equation );
+                ret = CC_ERROR_NO_MEMORY;
+            }
+            else if( !equation->ParseEquationString( equationString ) )
+            {
+                MD_SAFE_DELETE( equation );
                 ret = CC_ERROR_GENERAL;
             }
         }
@@ -1050,36 +1052,37 @@ namespace MetricsDiscoveryInternal
     //     Metrics Discovery Utils
     //
     // Function:
-    //     SetPlatformMask
+    //     SetBitInByteArray
     //
     // Description:
-    //     Sets chosen bit in platform mask byte array.
+    //     Sets chosen bit in given byte array.
     //
     // Input:
-    //     TByteArrayLatest& platformMask - platform mask byte array to be set
-    //     const uint32_t    platformId   - platform id, indicates bit which will be set to 1
+    //     TByteArrayLatest& byteArray - byte array where set bit
+    //     const uint32_t    bitIndex  - indicates bit which will be set to 1
+    //     const uint32_t    adapterId - adapter id for purpose of logging
     //
     // Output:
-    //     TCompletionCode                - result
+    //     TCompletionCode             - result
     //
     //////////////////////////////////////////////////////////////////////////////
-    TCompletionCode SetPlatformMask( TByteArrayLatest* platformMask, const uint32_t platformId, const uint32_t adapterId )
+    TCompletionCode SetBitInByteArray( TByteArrayLatest* byteArray, const uint32_t bitIndex, const uint32_t adapterId )
     {
-        MD_CHECK_PTR_RET_A( adapterId, platformMask, CC_ERROR_INVALID_PARAMETER );
+        MD_CHECK_PTR_RET_A( adapterId, byteArray, CC_ERROR_INVALID_PARAMETER );
+        MD_CHECK_PTR_RET_A( adapterId, byteArray->Data, CC_ERROR_INVALID_PARAMETER );
 
-        const uint32_t byteIndex      = platformId / 8;
-        const uint32_t bitInByteIndex = platformId % 8;
+        const uint32_t byteIndex      = bitIndex / 8;
+        const uint32_t bitInByteIndex = bitIndex % 8;
         const uint8_t  mask           = MD_BIT( bitInByteIndex );
 
-        if( byteIndex > platformMask->Size - 1 )
+        if( byteIndex > byteArray->Size - 1 )
         {
             return CC_ERROR_INVALID_PARAMETER;
         }
 
-        iu_zeromem( platformMask->Data, platformMask->Size );
-        platformMask->Data[byteIndex] |= mask;
+        byteArray->Data[byteIndex] |= mask;
 
-        if( !( platformMask->Data[byteIndex] & mask ) )
+        if( !( byteArray->Data[byteIndex] & mask ) )
         {
             return CC_ERROR_GENERAL;
         }
@@ -1093,27 +1096,40 @@ namespace MetricsDiscoveryInternal
     //     Metrics Discovery Utils
     //
     // Function:
-    //     SetPlatformMask
+    //     SetAllBitsPlatformMask
     //
     // Description:
     //     Set all bits to 1 in platform mask.
     //     It means PLATFORM_ALL.
     //
     // Input:
-    //     TByteArrayLatest& platformMask - platform mask byte array to be set
-    //     const uint32_t    platformId   - platform id, indicates bit which will be set to 1
+    //     const uint32_t    adapterId          - adapter id for purpose of logging
+    //     TByteArrayLatest& platformMask       - platform mask byte array to be set
+    //     uint32_t          platformMaskLegacy - (optional) platform mask legacy to be set
+    //
+    // Output:
+    //     TCompletionCode                       - result
     //
     //////////////////////////////////////////////////////////////////////////////
-    void SetAllBitsPlatformMask( TByteArrayLatest* platformMask, const uint32_t adapterId )
+    TCompletionCode SetAllBitsPlatformMask( const uint32_t adapterId, TByteArrayLatest* platformMask, uint32_t* platformMaskLegacy /*= nullptr*/ )
     {
-        MD_CHECK_PTR_RET_A( adapterId, platformMask, MD_EMPTY );
+        MD_CHECK_PTR_RET_A( adapterId, platformMask, CC_ERROR_INVALID_PARAMETER );
+        MD_CHECK_PTR_RET_A( adapterId, platformMask->Data, CC_ERROR_INVALID_PARAMETER );
 
         if( platformMask->Size == 0 )
         {
-            return;
+            MD_LOG_A( adapterId, LOG_WARNING, "WARNING: byte array size is 0. Cannot set platform mask." );
+            return CC_ERROR_GENERAL;
         }
 
-        iu_memset( platformMask->Data, 0xFF, platformMask->Size );
+        auto ret = iu_memset( platformMask->Data, 0xFF, platformMask->Size ) ? CC_OK : CC_ERROR_GENERAL;
+
+        if( platformMaskLegacy )
+        {
+            *platformMaskLegacy = PLATFORM_ALL;
+        }
+
+        return ret;
     }
 
     //////////////////////////////////////////////////////////////////////////////
@@ -1179,13 +1195,16 @@ namespace MetricsDiscoveryInternal
     // Input:
     //     const TByteArrayLatest* platformMask   - platform mask
     //     const uint32_t          platformIndex  - platform index
-    //
+    //     const uint32_t          adapterId      - adapter id for purpose of logging
     // Output:
     //     bool                                   - result
     //
     //////////////////////////////////////////////////////////////////////////////
-    bool IsPlatformPresentInMask( const TByteArrayLatest* platformMask, const uint32_t platformIndex )
+    bool IsPlatformPresentInMask( const TByteArrayLatest* platformMask, const uint32_t platformIndex, const uint32_t adapterId )
     {
+        MD_CHECK_PTR_RET_A( adapterId, platformMask, false );
+        MD_CHECK_PTR_RET_A( adapterId, platformMask->Data, false );
+
         const uint32_t byteIndex      = platformIndex / 8;
         const uint32_t bitInByteIndex = platformIndex % 8;
         const uint8_t  mask           = MD_BIT( bitInByteIndex );

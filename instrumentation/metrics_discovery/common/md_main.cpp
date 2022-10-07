@@ -234,7 +234,7 @@ extern "C"
             adapterGroup->Close();
         }
 
-        MD_LOG_EXIT_A( defaultAdapter->GetAdapterId() );
+        MD_LOG_EXIT();
         return retVal;
     }
 

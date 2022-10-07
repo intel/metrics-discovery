@@ -1,26 +1,29 @@
-# Clang-format settings - for version Clang 9.0.0
-#
+# Clang-format settings.
 # '// clang-format off' is used for disabling auto-formatting in some places.
 # '// clang-format on' enables auto-formating after disabling it by above comment.
 # Clang-format cannot auto-format lambdas, directives, bit fields in structs properly.
 
 AccessModifierOffset: -4
-AlignAfterOpenBracket: AlwaysBreak
-AlignConsecutiveAssignments: true
-AlignConsecutiveDeclarations: true
-AlignConsecutiveMacros: true
+
+AlignAfterOpenBracket: DontAlign
+#AlignArrayOfStructures: Left
+AlignConsecutiveAssignments: Consecutive
+AlignConsecutiveBitFields: AcrossEmptyLinesAndComments
+AlignConsecutiveDeclarations: Consecutive
+AlignConsecutiveMacros: Consecutive
 AlignEscapedNewlinesLeft: Right
-AlignOperands: false
+AlignOperands: DontAlign
 AlignTrailingComments: true
 
-#AllowAllArgumentsOnNextLine: false
-#AllowAllConstructorInitializersOnNextLine: false
+AllowAllArgumentsOnNextLine: true
+AllowAllConstructorInitializersOnNextLine: true
 AllowAllParametersOfDeclarationOnNextLine: false
 AllowShortBlocksOnASingleLine: false
 AllowShortCaseLabelsOnASingleLine: false
+AllowShortEnumsOnASingleLine: false
 AllowShortFunctionsOnASingleLine: false
 AllowShortIfStatementsOnASingleLine: false
-#AllowShortLambdasOnASingleLine: None
+AllowShortLambdasOnASingleLine: None
 AllowShortLoopsOnASingleLine: false
 
 AlwaysBreakAfterDefinitionReturnType: None
@@ -28,8 +31,12 @@ AlwaysBreakAfterReturnType: None
 AlwaysBreakBeforeMultilineStrings: false
 AlwaysBreakTemplateDeclarations: Yes
 
-BinPackArguments: false
-BinPackParameters: false
+#AttributeMacros: ['']
+
+BinPackArguments: true
+BinPackParameters: true
+
+#BitFieldColonSpacing: Both
 
 BraceWrapping:
     AfterCaseLabel: true
@@ -43,13 +50,16 @@ BraceWrapping:
     AfterExternBlock: true
     BeforeCatch: true
     BeforeElse: true
+    BeforeLambdaBody: true
+    BeforeWhile: true
     IndentBraces: false
     SplitEmptyFunction: true
     SplitEmptyRecord: true
     SplitEmptyNamespace: true
-BreakBeforeBraces: Custom
 
-BreakBeforeBinaryOperators: NonAssignment
+BreakBeforeBinaryOperators: None
+BreakBeforeBraces: Custom
+#BreakBeforeConceptDeclarations: true
 BreakBeforeInheritanceComma: false
 BreakBeforeTernaryOperators: true
 BreakConstructorInitializers: BeforeComma
@@ -67,14 +77,29 @@ ContinuationIndentWidth: 4
 
 Cpp11BracedListStyle: false
 
+DeriveLineEnding: false
+DerivePointerAlignment: false
+
+#EmptyLineAfterAccessModifier: Never
+#EmptyLineBeforeAccessModifier: LogicalBlock
+
 FixNamespaceComments: true
 
+#IndentAccessModifiers: false
+IndentCaseBlocks: false
 IndentCaseLabels: true
+IndentExternBlock: true
+IndentGotoLabels: true
 IndentPPDirectives: BeforeHash
+#IndentRequires: true
 IndentWidth: 4
 IndentWrappedFunctionNames: true
 
+#InsertTrailingCommas: None
+
 KeepEmptyLinesAtTheStartOfBlocks: false
+
+#LambdaBodyIndentation: Signature
 
 Language: Cpp
 
@@ -82,34 +107,50 @@ MaxEmptyLinesToKeep: 1
 
 NamespaceIndentation: All
 
+#PPIndentWidth: -1
+
 PointerAlignment: Left
 
+#QualifierAlignment: Custom
+#QualifierOrder: ['volatile', 'inline', 'static', 'const', 'constexpr', 'type']
+
+#ReferenceAlignment: Left
+
 ReflowComments: true
+
+#ShortNamespaceLines: 0
 
 SortIncludes: false
 SortUsingDeclarations: false
 
 SpaceAfterCStyleCast: true
-#SpaceAfterLogicalNot: false
+SpaceAfterLogicalNot: false
 SpaceAfterTemplateKeyword: true
+#SpaceAroundPointerQualifiers: Default
 SpaceBeforeAssignmentOperators: true
+SpaceBeforeCaseColon: false
 SpaceBeforeCpp11BracedList: false
 SpaceBeforeCtorInitializerColon: true
 SpaceBeforeInheritanceColon: true
 SpaceBeforeParens: Never
 SpaceBeforeRangeBasedForLoopColon: true
-#SpaceInEmptyBlock: false
+SpaceBeforeSquareBrackets: false
+SpaceInEmptyBlock: false
 SpaceInEmptyParentheses: false
 
 SpacesBeforeTrailingComments: 1
 SpacesInAngles: false
 SpacesInCStyleCastParentheses: false
+SpacesInConditionalStatement: true
 SpacesInContainerLiterals: false
 SpacesInParentheses: true
 SpacesInSquareBrackets: false
 
-Standard: Cpp11
+Standard: Latest
 
 TabWidth: 4
 
+UseCRLF: true
 UseTab: Never
+
+#WhitespaceSensitiveMacros: ['']

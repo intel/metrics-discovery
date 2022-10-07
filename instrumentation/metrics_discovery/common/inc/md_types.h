@@ -50,6 +50,7 @@ namespace MetricsDiscoveryInternal
         OA_REPORT_TYPE_64B_NOA12,
         OA_REPORT_TYPE_128B_A16_NOA12,
         OA_REPORT_TYPE_64B_NOA12_2,
+        OA_REPORT_TYPE_128B_OAM = 1 << GTDI_REPORT_TYPE_OAM_SHIFT,
         // ...
         OA_REPORT_TYPE_LAST,
     } TReportType;
@@ -62,6 +63,7 @@ namespace MetricsDiscoveryInternal
         STREAM_TYPE_OA = 0,
         STREAM_TYPE_SYS,
         STREAM_TYPE_BB,
+        STREAM_TYPE_OAM,
         // ...
     } TStreamType;
 
