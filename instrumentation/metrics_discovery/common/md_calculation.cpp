@@ -1116,6 +1116,13 @@ namespace MetricsDiscoveryInternal
                     break;
                 }
 
+                case EQUATION_ELEM_LOCAL_COUNTER_SYMBOL:
+                    typedValue.ValueUInt64 = 0LL;
+                    typedValue.ValueType   = VALUE_TYPE_UINT64;
+                    isValid                = EquationStackPush( equationStack, typedValue, algorithmCheck );
+                    // Asserts, because this is not a valid condition
+                    [[fallthrough]];
+
                 default:
                     MD_ASSERT_A( adapterId, false );
                     break;

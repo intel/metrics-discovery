@@ -860,6 +860,8 @@ namespace MetricsDiscoveryInternal
             {
                 MD_LOG_A( adapterId, LOG_DEBUG, "set not added, using existing one: %s", metricSetParams.ShortName );
             }
+            // platformMask is stored in metric set. iu_memcpy_s used.
+            DeleteByteArray( platformMask, adapterId );
 
             // ApiSpecificId
             apiSpecificId.D3D9QueryId           = ReadUInt32FromFileBuffer( bufferPtr, adapterId );
