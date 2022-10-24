@@ -310,6 +310,7 @@ namespace MetricsDiscoveryInternal
         { 0x0207, SPlatformIndexGt( GENERATION_XEHP_SDV, GFX_GTTYPE_UNDEFINED ) },
         { 0x0208, SPlatformIndexGt( GENERATION_XEHP_SDV, GFX_GTTYPE_UNDEFINED ) },
         { 0x0209, SPlatformIndexGt( GENERATION_XEHP_SDV, GFX_GTTYPE_UNDEFINED ) },
+        { 0x020A, SPlatformIndexGt( GENERATION_XEHP_SDV, GFX_GTTYPE_UNDEFINED ) },
         { 0x020B, SPlatformIndexGt( GENERATION_XEHP_SDV, GFX_GTTYPE_UNDEFINED ) },
         { 0x020C, SPlatformIndexGt( GENERATION_XEHP_SDV, GFX_GTTYPE_UNDEFINED ) },
         { 0x020D, SPlatformIndexGt( GENERATION_XEHP_SDV, GFX_GTTYPE_UNDEFINED ) },
