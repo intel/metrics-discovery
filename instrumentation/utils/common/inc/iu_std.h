@@ -58,7 +58,7 @@ extern "C"
 
     // Debug printing
     void iu_log( const char* msg );
-    void iu_printf( const char* msg, const bool addEOL );
+    void iu_printf( const char* msg, const bool addEOL, const bool flush );
 
     // Files
     bool   iu_fopen_s( FILE** pFile, const char* filename, const char* mode );

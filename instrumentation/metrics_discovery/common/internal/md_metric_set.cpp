@@ -13,6 +13,7 @@ SPDX-License-Identifier: MIT
 #include "md_metric_set.h"
 #include "md_adapter.h"
 #include "md_concurrent_group.h"
+#include "md_oam_concurrent_group.h"
 #include "md_equation.h"
 #include "md_information.h"
 #include "md_metric.h"
@@ -51,7 +52,7 @@ namespace MetricsDiscoveryInternal
     //     const char*         symbolicName         -
     //     const char*         shortName            -
     //     uint32_t            apiMask              -
-    //     TMetricCategory     category             -
+    //     uint32_t            categoryMask         -
     //     uint32_t            snapshotReportSize   -
     //     uint32_t            deltaReportSize      -
     //     TReportType         reportType           -
@@ -60,8 +61,9 @@ namespace MetricsDiscoveryInternal
     //     bool                isCustom             -
     //
     //////////////////////////////////////////////////////////////////////////////
-    CMetricSet::CMetricSet( CMetricsDevice* device, CConcurrentGroup* concurrentGroup, const char* symbolicName, const char* shortName, uint32_t apiMask, uint32_t category, uint32_t snapshotReportSize, uint32_t deltaReportSize, TReportType reportType, TByteArrayLatest* platformMask, uint32_t gtMask /*= GT_TYPE_ALL*/, bool isCustom /*= false*/ )
+    CMetricSet::CMetricSet( CMetricsDevice* device, CConcurrentGroup* concurrentGroup, const char* symbolicName, const char* shortName, uint32_t apiMask, uint32_t categoryMask, uint32_t snapshotReportSize, uint32_t deltaReportSize, TReportType reportType, TByteArrayLatest* platformMask, uint32_t gtMask /*= GT_TYPE_ALL*/, bool isCustom /*= false*/ )
         : m_concurrentGroup( concurrentGroup )
+        , m_params_1_0{}
         , m_device( device )
         , m_reportType( reportType )
         , m_metricsVector()
@@ -82,35 +84,34 @@ namespace MetricsDiscoveryInternal
     {
         const uint32_t adapterId = OBTAIN_ADAPTER_ID( m_device );
 
-        m_params_1_0.SymbolName      = GetCopiedCString( symbolicName, adapterId );
-        m_params_1_0.ShortName       = GetCopiedCString( shortName, adapterId );
-        m_params_1_0.ApiMask         = apiMask;
-        m_params_1_0.CategoryMask    = category;
-        m_params_1_0.PlatformMask    = GetPlatformTypeFromByteArray( platformMask, adapterId );
-        m_params_1_0.GtMask          = gtMask;
-        m_params_1_0.RawReportSize   = snapshotReportSize; // as in HW
-        m_params_1_0.QueryReportSize = deltaReportSize;    // as in Query API
-
+        m_params_1_0.SymbolName             = GetCopiedCString( symbolicName, adapterId );
+        m_params_1_0.ShortName              = GetCopiedCString( shortName, adapterId );
+        m_params_1_0.ApiMask                = apiMask;
+        m_params_1_0.CategoryMask           = categoryMask;
+        m_params_1_0.RawReportSize          = snapshotReportSize; // as in HW
+        m_params_1_0.QueryReportSize        = deltaReportSize;    // as in Query API
         m_params_1_0.MetricsCount           = 0;
         m_params_1_0.InformationCount       = concurrentGroup->GetInformationCount();
         m_params_1_0.ComplementarySetsCount = 0;
+        m_params_1_0.ApiSpecificId          = {};
+        m_params_1_0.PlatformMask           = GetPlatformTypeFromByteArray( platformMask, adapterId );
+        m_params_1_0.GtMask                 = gtMask;
+        m_params_1_0.AvailabilityEquation   = "";
 
-        m_params_1_0.AvailabilityEquation = "";
-
-        memset( &m_params_1_0.ApiSpecificId, 0, sizeof( m_params_1_0.ApiSpecificId ) );
-
+        m_pmRegsConfigInfo.IsQueryConfig  = false;
         m_pmRegsConfigInfo.OaConfigHandle = 0;
         m_pmRegsConfigInfo.GpConfigHandle = 0;
         m_pmRegsConfigInfo.RrConfigHandle = 0;
-        m_pmRegsConfigInfo.IsQueryConfig  = 0;
 
         m_metricsVector.reserve( METRICS_VECTOR_INCREASE );
         m_informationVector.reserve( INFORMATION_VECTOR_INCREASE );
         m_complementarySetsVector.reserve( COMPLEMENTARY_SETS_VECTOR_INCREASE );
         m_startRegsVector.reserve( START_REGS_VECTOR_INCREASE );
         m_startRegsQueryVector.reserve( START_REGS_QUERY_VECTOR_INCREASE );
+
         m_otherMetricsVector.reserve( METRICS_VECTOR_INCREASE );
         m_otherInformationVector.reserve( INFORMATION_VECTOR_INCREASE );
+
         m_filteredMetricsVector.reserve( METRICS_VECTOR_INCREASE );
         m_filteredInformationVector.reserve( INFORMATION_VECTOR_INCREASE );
 
@@ -147,15 +148,13 @@ namespace MetricsDiscoveryInternal
         MD_SAFE_DELETE_ARRAY( m_params_1_0.AvailabilityEquation );
 
         ClearCachedMetricsAndInformation();
-        ClearVector( m_filteredMetricsVector );
-        ClearVector( m_filteredInformationVector );
 
         ClearVector( m_metricsVector );
         ClearVector( m_informationVector );
         ClearVector( m_complementarySetsVector );
 
         // Clearing m_startRegsVector and m_startRegsQueryVector is
-        // not neccesary as they share pointers with m_startRegisterSetList
+        // not necessary as they share pointers with m_startRegisterSetList
 
         ClearList( m_startRegisterSetList );
 
@@ -1235,8 +1234,9 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     TCompletionCode CMetricSet::SendStartConfiguration( bool sendQueryConfigFlag )
     {
-        TCompletionCode   ret             = CC_OK;
-        CDriverInterface& driverInterface = m_device->GetDriverInterface();
+        TCompletionCode     ret               = CC_OK;
+        CDriverInterface&   driverInterface   = m_device->GetDriverInterface();
+        COAConcurrentGroup& oaConcurrentGroup = static_cast<COAConcurrentGroup&>( *m_concurrentGroup );
 
         if( CheckSendConfigRequired( sendQueryConfigFlag ) )
         {
@@ -1257,7 +1257,7 @@ namespace MetricsDiscoveryInternal
             if( ( pmRegs.size() > 0 || readRegs.size() > 0 ) || m_startRegisterSetList.size() == 0 )
             {
                 // Send configurations
-                ret = driverInterface.SendPmRegsConfig( pmRegs.data(), pmRegs.size(), m_currentParams->ApiMask, m_device->GetSubDeviceIndex() );
+                ret = driverInterface.SendPmRegsConfig( pmRegs.data(), pmRegs.size(), m_currentParams->ApiMask, m_device->GetSubDeviceIndex(), oaConcurrentGroup.GetOaBufferType() );
                 if( ret == CC_OK && readRegs.size() )
                 {
                     ret = driverInterface.SendReadRegsConfig( readRegs.data(), readRegs.size(), m_currentParams->ApiMask );
@@ -1593,9 +1593,9 @@ namespace MetricsDiscoveryInternal
             }
         }
 
-        // Copy all the information
+        // Copy information from metric set. Not from concurrent group
         count = referenceMetricSet->GetParams()->InformationCount;
-        for( uint32_t i = 0; i < count; i++ )
+        for( uint32_t i = m_concurrentGroup->GetInformationCount(); i < count; i++ )
         {
             referenceInformation = static_cast<CInformation*>( referenceMetricSet->GetInformation( i ) );
             if( referenceInformation == nullptr )
@@ -1674,6 +1674,26 @@ namespace MetricsDiscoveryInternal
     bool CMetricSet::IsCustom()
     {
         return m_isCustom;
+    }
+
+    //////////////////////////////////////////////////////////////////////////////
+    //
+    // Class:
+    //     CMetricSet
+    //
+    // Method:
+    //     GetConcurrentGroup
+    //
+    // Description:
+    //     Returns concurrent group related to the metric set.
+    //
+    // Output:
+    //     CConcurrentGroup* - concurrent group
+    //
+    //////////////////////////////////////////////////////////////////////////////
+    CConcurrentGroup* CMetricSet::GetConcurrentGroup()
+    {
+        return m_concurrentGroup;
     }
 
     //////////////////////////////////////////////////////////////////////////////

@@ -86,6 +86,6 @@ namespace MetricsDiscoveryInternal
 
     private:
         // Static variables:
-        static const uint32_t EQUATION_VECTOR_INCREASE = 32;
+        static constexpr uint32_t EQUATION_VECTOR_INCREASE = 32;
     };
 } // namespace MetricsDiscoveryInternal

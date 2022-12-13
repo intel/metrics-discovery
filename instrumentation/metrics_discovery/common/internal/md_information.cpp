@@ -32,14 +32,15 @@ namespace MetricsDiscoveryInternal
     //     Constructor.
     //
     // Input:
-    //     CMetricsDevice * device          -
-    //     uint32_t         id              -
-    //     const char*      name            -
-    //     const char*      shortName       -
-    //     const char*      longName        -
-    //     const char*      group           -
-    //     uint32_t         apiMask         -
-    //     TInformationType informationType -
+    //     CMetricsDevice*  device           -
+    //     uint32_t         id               -
+    //     const char*      name             -
+    //     const char*      shortName        -
+    //     const char*      longName         -
+    //     const char*      group            -
+    //     uint32_t         apiMask          -
+    //     TInformationType informationType  -
+    //     const char       informationUnits -
     //
     //////////////////////////////////////////////////////////////////////////////
     CInformation::CInformation( CMetricsDevice* device, uint32_t id, const char* name, const char* shortName, const char* longName, const char* group, uint32_t apiMask, TInformationType informationType, const char* informationUnits )

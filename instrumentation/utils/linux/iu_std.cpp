@@ -21,9 +21,7 @@ SPDX-License-Identifier: MIT
 #include <string.h>
 #include <wchar.h>
 
-#if defined( ANDROID )
-    #include <cutils/log.h>
-#elif defined( __linux__ )
+#if defined( __linux__ )
     #include <memory.h>
     #include <syslog.h>
 #endif
@@ -626,9 +624,7 @@ extern "C"
     ///////////////////////////////////////////////////////////////////////////////
     void iu_log( const char* msg )
     {
-#if defined( ANDROID )
-        ALOGE( "%s", msg );
-#elif defined( __linux__ )
+#if defined( __linux__ )
         syslog( LOG_USER | LOG_ERR, "%s", msg );
 #endif
     }
@@ -647,9 +643,10 @@ extern "C"
     // Input:
     //     const char* msg    - message to print
     //     const bool  addEOL - add a new line sign at the end of the message
+    //     const bool  flush  - flush buffer
     //
     ///////////////////////////////////////////////////////////////////////////////
-    void iu_printf( const char* msg, const bool addEOL )
+    void iu_printf( const char* msg, const bool addEOL, const bool flush )
     {
         if( addEOL )
         {
@@ -658,6 +655,10 @@ extern "C"
         else
         {
             printf( "%s", msg );
+        }
+        if( flush )
+        {
+            fflush( stdout );
         }
     }
 

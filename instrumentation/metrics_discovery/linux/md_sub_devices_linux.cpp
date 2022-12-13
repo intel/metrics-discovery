@@ -1,6 +1,6 @@
 /*========================== begin_copyright_notice ============================
 
-Copyright (C) 2021 Intel Corporation
+Copyright (C) 2021-2022 Intel Corporation
 
 SPDX-License-Identifier: MIT
 
@@ -13,6 +13,7 @@ SPDX-License-Identifier: MIT
 #include "md_sub_devices_linux.h"
 #include "md_driver_ifc_linux_perf.h"
 #include "md_adapter.h"
+#include "md_metrics_device.h"
 #include "md_utils.h"
 
 #include <cmath>
@@ -159,6 +160,7 @@ namespace MetricsDiscoveryInternal
         };
 
         auto engineClass = findProperty( PRELIM_DRM_I915_PERF_PROP_OA_ENGINE_CLASS );
+
         if( engineClass != I915_ENGINE_CLASS_COMPUTE )
         {
             return CC_ERROR_GENERAL;
@@ -511,7 +513,7 @@ namespace MetricsDiscoveryInternal
     //     const CMetricsDevice* metricsDevice  - sub device
     //
     // Output:
-    //     bool                                 - sub device pointer
+    //     bool                                 - true if sub device found
     //
     //////////////////////////////////////////////////////////////////////////////
     bool CSubDevices::FindDevice( const CMetricsDevice* metricsDevice )
@@ -534,7 +536,7 @@ namespace MetricsDiscoveryInternal
     //     const uint32_t index - sub device index
     //
     // Output:
-    //     CMetricDevice*       - opened metrics sub device
+    //     CMetricsDevice*      - opened metrics sub device
     //
     //////////////////////////////////////////////////////////////////////////////
     CMetricsDevice* CSubDevices::GetDevice( const uint32_t index )
@@ -561,7 +563,7 @@ namespace MetricsDiscoveryInternal
     //     const uint32_t index - sub device index
     //
     // Output:
-    //     CMetricDevice*       - opened metrics sub device
+    //     CMetricsDevice*      - opened metrics sub device
     //
     //////////////////////////////////////////////////////////////////////////////
     CMetricsDevice* CSubDevices::OpenDevice( const uint32_t index )
@@ -576,7 +578,7 @@ namespace MetricsDiscoveryInternal
         // Open metrics device and set sub device index
         TCompletionCode result = m_adapter.OpenMetricsDeviceByIndex( &metricsDevice, index );
 
-        if( metricsDevice )
+        if( metricsDevice && m_subDevices[index] == nullptr )
         {
             m_subDevices[index] = metricsDevice;
         }
@@ -601,7 +603,7 @@ namespace MetricsDiscoveryInternal
     //     void*          parameters - open parameters
     //
     // Output:
-    //     CMetricDevice*            - opened metrics sub device
+    //     CMetricsDevice*           - opened metrics sub device
     //
     //////////////////////////////////////////////////////////////////////////////
     CMetricsDevice* CSubDevices::OpenDeviceFromFile(
@@ -614,17 +616,40 @@ namespace MetricsDiscoveryInternal
         MD_ASSERT_A( adapterId, index < m_subDevices.size() );
         MD_ASSERT_A( adapterId, m_subDevices[index] == nullptr );
 
-        CMetricsDevice* metricDevice = nullptr;
+        CMetricsDevice* metricsDevice = nullptr;
 
         // Open metrics device from file and set sub device index
-        TCompletionCode result = m_adapter.OpenMetricsDeviceFromFileByIndex( filename, parameters, &metricDevice, index );
+        TCompletionCode result = m_adapter.OpenMetricsDeviceFromFileByIndex( filename, parameters, &metricsDevice, index );
 
-        if( metricDevice )
+        if( metricsDevice )
         {
-            m_subDevices[index] = metricDevice;
+            m_subDevices[index] = metricsDevice;
         }
 
         return m_subDevices[index];
+    }
+
+    //////////////////////////////////////////////////////////////////////////////
+    //
+    // Class:
+    //     CSubDevices
+    //
+    // Method:
+    //     SetRootDevice
+    //
+    // Description:
+    //     Sets metrics root device.
+    //
+    // Input:
+    //     CMetricsDevice* metricsDevice - metrics root device
+    //
+    //////////////////////////////////////////////////////////////////////////////
+    void CSubDevices::SetRootDevice( CMetricsDevice* metricsDevice )
+    {
+        if( IsSupported() && m_subDevices[MD_ROOT_DEVICE_INDEX] == nullptr )
+        {
+            m_subDevices[MD_ROOT_DEVICE_INDEX] = metricsDevice;
+        }
     }
 
     //////////////////////////////////////////////////////////////////////////////
@@ -692,13 +717,11 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     TCompletionCode CSubDevices::Enumerate()
     {
-        const uint32_t adapterId     = m_adapter.GetAdapterId();
-        auto           driver        = reinterpret_cast<CDriverInterfaceLinuxPerf*>( m_adapter.GetDriverInterface() );
-        auto           engines       = std::vector<drm_i915_engine_info>();
-        auto           regions       = std::vector<drm_i915_memory_region_info>();
-        auto           distances     = std::vector<prelim_drm_i915_query_distance_info>();
-        auto           escape        = GTDIDeviceInfoParamExtOut{};
-        auto           validPlatform = false;
+        const uint32_t adapterId = m_adapter.GetAdapterId();
+        auto           driver    = reinterpret_cast<CDriverInterfaceLinuxPerf*>( m_adapter.GetDriverInterface() );
+        auto           engines   = std::vector<drm_i915_engine_info>();
+        auto           regions   = std::vector<drm_i915_memory_region_info>();
+        auto           distances = std::vector<prelim_drm_i915_query_distance_info>();
 
         // Check driver interface support.
         MD_CHECK_PTR_RET_A( adapterId, driver, TCompletionCode::CC_ERROR_NO_MEMORY );
@@ -706,19 +729,13 @@ namespace MetricsDiscoveryInternal
         // Check sub device support.
         m_subDevicesSupported = driver->IsSubDeviceSupported();
 
-        // Obtain platform information.
-        MD_CHECK_CC_RET_A( adapterId, driver->SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_PLATFORM_INDEX, &escape ) );
+        m_subDevicesSupported &= IsPlatformMatch(
+            m_adapter.GetParams()->Platform,
+            GENERATION_XEHP_SDV,
+            GENERATION_ACM,
+            GENERATION_PVC );
 
-        switch( escape.ValueUint32 )
-        {
-            case GENERATION_XEHP_SDV:
-            case GENERATION_ACM:
-            case GENERATION_PVC:
-                validPlatform = true;
-                break;
-        }
-
-        if( validPlatform && m_subDevicesSupported )
+        if( m_subDevicesSupported )
         {
             // Enumerate engines.
             MD_CHECK_CC_RET_A( adapterId, GetEngines( *driver, engines ) );
@@ -732,7 +749,7 @@ namespace MetricsDiscoveryInternal
             // Enumerate sub device engines.
             MD_CHECK_CC_RET_A( adapterId, GetSubDeviceEngines( distances ) );
 
-            // Make space for CMetricDevices.
+            // Make space for CmetricsDevices.
             m_subDevices.resize( m_subDeviceEngines.size(), nullptr );
 
             MD_LOG_A( adapterId, LOG_DEBUG, "Sub devices count %u", m_subDeviceEngines.size() );
@@ -1000,6 +1017,7 @@ namespace MetricsDiscoveryInternal
         uint64_t&      cpuTimestampNs )
     {
         auto           driver               = reinterpret_cast<CDriverInterfaceLinuxPerf*>( m_adapter.GetDriverInterface() );
+        auto           device               = GetDevice( subDeviceIndex );
         auto           query                = drm_i915_query{};
         auto           queryItem            = drm_i915_query_item{};
         auto           queryTimestamp       = prelim_drm_i915_query_cs_cycles{};
@@ -1009,7 +1027,8 @@ namespace MetricsDiscoveryInternal
         uint64_t       oaGpuTimestampCycles = 0;
         const uint32_t adapterId            = m_adapter.GetAdapterId();
 
-        MD_CHECK_PTR_RET_A( adapterId, driver, TCompletionCode::CC_ERROR_NO_MEMORY );
+        MD_CHECK_PTR_RET_A( adapterId, driver, CC_ERROR_NO_MEMORY );
+        MD_CHECK_PTR_RET_A( adapterId, device, CC_ERROR_NO_MEMORY );
         MD_CHECK_CC_RET_A( adapterId, result );
 
         // Query timestamp data.
@@ -1031,7 +1050,8 @@ namespace MetricsDiscoveryInternal
 
         // Return cpu and gpu timestamp information.
         MD_CHECK_CC_RET_A( adapterId, result = driver->GetOaTimestamp( queryTimestamp.cs_cycles, oaGpuTimestampCycles ) );
-        oaGpuTimestampNs = ( oaGpuTimestampCycles & MD_GPU_TIMESTAMP_MASK ) * MD_SECOND_IN_NS / gpuTimestampFrequency;
+
+        oaGpuTimestampNs = device->ConvertGpuTimestampToNs( oaGpuTimestampCycles, gpuTimestampFrequency );
         gpuTimestampNs   = oaGpuTimestampNs;
         cpuTimestampNs   = queryTimestamp.cpu_timestamp;
 

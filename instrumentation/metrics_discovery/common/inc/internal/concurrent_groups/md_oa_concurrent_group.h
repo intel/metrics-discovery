@@ -52,12 +52,21 @@ namespace MetricsDiscoveryInternal
 
     public:
         // Constructor & Destructor:
-        COAConcurrentGroup( CMetricsDevice* device, const char* name, const char* longName, uint32_t measurementTypeMask );
+        COAConcurrentGroup( CMetricsDevice* device, const char* name, const char* longName, const uint32_t measurementTypeMask );
         virtual ~COAConcurrentGroup();
+
+        CMetricSet*               GetIoMetricSet();
+        const TStreamType         GetStreamType() const;
+        const GTDI_OA_BUFFER_TYPE GetOaBufferType() const;
+
+        void* GetStreamEventHandle();
+        void  SetStreamEventHandle( void* streamEventHandle );
 
     protected:
         // Constructor:
-        COAConcurrentGroup( CMetricsDevice* device, const char* name, const char* description, uint32_t measurementTypeMask, TStreamType streamType, GTDI_OA_BUFFER_TYPE oaBufferType );
+        COAConcurrentGroup( CMetricsDevice* device, const char* name, const char* description, const uint32_t measurementTypeMask, const TStreamType streamType, const GTDI_OA_BUFFER_TYPE oaBufferType );
+
+        TCompletionCode SetIoMetricSet( IMetricSet_1_0* metricSet );
 
         CInformation*           AddIoMeasurementInformation( const char* name, const char* shortName, const char* longName, const char* group, TInformationType informationType, const char* informationUnits );
         void                    AddIoMeasurementInfoPredefined( void );
@@ -78,8 +87,8 @@ namespace MetricsDiscoveryInternal
 
     protected:
         // Static variables:
-        static const uint32_t EXCEPTIONS_VECTOR_INCREASE   = 16;
-        static const uint32_t GPU_CONTEXTS_VECTOR_INCREASE = 16;
+        static constexpr uint32_t EXCEPTIONS_VECTOR_INCREASE   = 16;
+        static constexpr uint32_t GPU_CONTEXTS_VECTOR_INCREASE = 16;
     };
 
 } // namespace MetricsDiscoveryInternal

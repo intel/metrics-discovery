@@ -640,6 +640,29 @@ namespace MetricsDiscoveryInternal
     //     Metrics Discovery Utils
     //
     // Function:
+    //     GetCStringFromStringView
+    //
+    // Description:
+    //     Safety converts string_view to const char*.
+    //
+    // Input:
+    //     std::string_view stringView - string view to be converted
+    //
+    // Output:
+    //     const char*                 - converted string view
+    //
+    //////////////////////////////////////////////////////////////////////////////
+    const char* GetCStringFromStringView( std::string_view stringView )
+    {
+        return ( "%.*s", stringView.length(), stringView.data() );
+    }
+
+    //////////////////////////////////////////////////////////////////////////////
+    //
+    // Group:
+    //     Metrics Discovery Utils
+    //
+    // Function:
     //     WriteByteArrayToFile
     //
     // Description:
@@ -1262,6 +1285,34 @@ namespace MetricsDiscoveryInternal
     //     Metrics Discovery Utils
     //
     // Function:
+    //     ClearUnorderedMap
+    //
+    // Description:
+    //     Clears given std::unordered_map
+    //     If unordered_map contains pointers to objects these objects are deleted and the
+    //     memory is freed.
+    //
+    // Input:
+    //     std::unordered_map<Key, Value*>& - reference to unordered_map
+    //
+    //////////////////////////////////////////////////////////////////////////////
+    template <typename Key, typename Value>
+    void ClearUnorderedMap( std::unordered_map<Key, Value*>& unorderedMap )
+    {
+        for( auto& ptr : unorderedMap )
+        {
+            MD_SAFE_DELETE( ptr.second );
+        }
+
+        unorderedMap.clear();
+    }
+
+    //////////////////////////////////////////////////////////////////////////////
+    //
+    // Group:
+    //     Metrics Discovery Utils
+    //
+    // Function:
     //     ClearList
     //
     // Description:
@@ -1307,5 +1358,6 @@ namespace MetricsDiscoveryInternal
     template void ClearList( std::list<CRegisterSet*>& );
     template void ClearList( std::list<CMetricSet*>& );
     template void ClearList( std::list<SRegister>& );
+    template void ClearUnorderedMap( std::unordered_map<std::string_view, TGlobalSymbol*>& unorderedMap );
 
 } // namespace MetricsDiscoveryInternal

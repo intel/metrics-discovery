@@ -261,7 +261,7 @@ namespace MetricsDiscovery
                 const char*        ShortName;  // For example "DX11 Tessellation Metrics Set"
                 uint32_t           ApiMask;
                 uint32_t           CategoryMask;
-                TByteArrayLatest*  PlatformMask;
+                TByteArray_1_0*    PlatformMask;
                 uint32_t           RawReportSize;         // As in HW
                 uint32_t           QueryReportSize;       // As in Query API
                 const char*        ComplementarySetsList; // Comma separated list of complementary sets

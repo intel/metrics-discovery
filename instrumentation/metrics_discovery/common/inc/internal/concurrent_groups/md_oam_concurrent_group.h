@@ -37,11 +37,17 @@ namespace MetricsDiscoveryInternal
     {
     public:
         // Constructor:
-        COAMConcurrentGroup( CMetricsDevice* device, const char* name, const char* description, uint32_t measurementTypeMask );
+        COAMConcurrentGroup( CMetricsDevice* device, const char* name, const char* description, const uint32_t measurementTypeMask );
 
     protected:
         virtual TCompletionCode GetStreamTypeFromSamplingType( const TSamplingType samplingType, TStreamType& streamType ) const override;
-        GTDI_OA_BUFFER_TYPE     GetOaBufferTypeFromName( const char* symbolicName, const uint32_t adapterId ) const;
+
+        // Static methods:
+    public:
+        static bool IsSupported( const char* symbolicName, CMetricsDevice& metricsDevice );
+
+    protected:
+        static GTDI_OA_BUFFER_TYPE GetOaBufferTypeFromName( const char* symbolicName, const uint32_t adapterId );
     };
 
 } // namespace MetricsDiscoveryInternal

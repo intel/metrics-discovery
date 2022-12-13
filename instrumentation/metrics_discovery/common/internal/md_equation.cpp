@@ -94,7 +94,7 @@ namespace MetricsDiscoveryInternal
     //     Constructor.
     //
     // Input:
-    //     CMetricsDevice * device - parent metric device
+    //     CMetricsDevice* device - parent metric device
     //
     //////////////////////////////////////////////////////////////////////////////
     CEquation::CEquation( CMetricsDevice* device )

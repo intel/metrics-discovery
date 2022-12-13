@@ -376,19 +376,28 @@ namespace MetricsDiscoveryInternal
     //     Adds concurrent group to the metrics device.
     //
     // Input:
-    //     const char *symbolicName - concurrent group name
-    //     const char *shortName    - concurrent group short name
+    //     const char*       symbolicName        - concurrent group name
+    //     const char*       shortName           - concurrent group short name
+    //     const uint32_t    measurementTypeMask - measurement type mask
     //
     // Output:
-    //     CConcurrentGroup*        - pointer to newly created concurrent group
+    //     bool&             isSupported         - true if concurrent group is supported on given platform
+    //     CConcurrentGroup*                     - pointer to newly created concurrent group
     //
     //////////////////////////////////////////////////////////////////////////////
-    CConcurrentGroup* CMetricsDevice::AddConcurrentGroup( const char* symbolicName, const char* shortName, uint32_t measurementTypeMask )
+    CConcurrentGroup* CMetricsDevice::AddConcurrentGroup( const char* symbolicName, const char* shortName, const uint32_t measurementTypeMask, bool& isSupported )
     {
         CConcurrentGroup* group = nullptr;
+        isSupported             = true;
 
         if( strstr( symbolicName, "OAM" ) != nullptr )
         {
+            if( !COAMConcurrentGroup::IsSupported( symbolicName, *this ) )
+            {
+                isSupported = false;
+                return nullptr;
+            }
+
             group = new( std::nothrow ) COAMConcurrentGroup( this, symbolicName, shortName, measurementTypeMask );
         }
         else if( strstr( symbolicName, "OA" ) != nullptr )
@@ -724,6 +733,7 @@ namespace MetricsDiscoveryInternal
         char*             symbolicName        = nullptr;
         char*             shortName           = nullptr;
         uint32_t          measurementTypeMask = 0;
+        bool              isSupported         = false;
 
         uint32_t groupsCount = ReadUInt32FromFileBuffer( bufferPtr, adapterId );
         for( uint32_t i = 0; i < groupsCount; i++ )
@@ -736,7 +746,13 @@ namespace MetricsDiscoveryInternal
             aGroup = GetConcurrentGroupByName( symbolicName );
             if( !aGroup )
             {
-                aGroup = AddConcurrentGroup( symbolicName, shortName, measurementTypeMask );
+                aGroup = AddConcurrentGroup( symbolicName, shortName, measurementTypeMask, isSupported );
+                if( !isSupported )
+                {
+                    MD_LOG_A( adapterId, LOG_WARNING, "%s concurrent group is not supported!", symbolicName );
+                    return CC_ERROR_NOT_SUPPORTED;
+                }
+
                 MD_CHECK_PTR_RET_A( adapterId, aGroup, CC_ERROR_NO_MEMORY );
             }
 
@@ -1504,6 +1520,31 @@ namespace MetricsDiscoveryInternal
     bool CMetricsDevice::IsOpenedFromFile()
     {
         return m_isOpenedFromFile;
+    }
+
+    //////////////////////////////////////////////////////////////////////////////
+    //
+    // Class:
+    //     CMetricsDevice
+    //
+    // Method:
+    //     ConvertGpuTimestampToNs
+    //
+    // Description:
+    //     Converts gpu timestamp to ns and provides a sync with report timestamps.
+    //
+    // Input:
+    //     const uint64_t gpuTimestampTicks     - gpu timestamp in ticks.
+    //     const uint64_t gpuTimestampFrequency - gpu timestamp frequency.
+    //
+    // Output:
+    //     uint64_t                             - gpu timestamp in ns.
+    //
+    //////////////////////////////////////////////////////////////////////////////
+    uint64_t CMetricsDevice::ConvertGpuTimestampToNs( const uint64_t gpuTimestampTicks, const uint64_t gpuTimestampFrequency )
+    {
+        // Ticks masked to 32bit to get sync with report timestamps.
+        return ( gpuTimestampTicks & MD_GPU_TIMESTAMP_MASK_32 ) * MD_SECOND_IN_NS / gpuTimestampFrequency;
     }
 
     //////////////////////////////////////////////////////////////////////////////

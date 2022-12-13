@@ -30,7 +30,7 @@ namespace MetricsDiscoveryInternal
     //     SetIoStreamSamplingType
     //
     // Description:
-    //     Sets stream sampling type. OA and BB (batch buffer) supported.
+    //     Sets stream sampling type.
     //
     // Input:
     //     TSamplingType type - requested IO Stream Sampling Type
@@ -96,22 +96,18 @@ namespace MetricsDiscoveryInternal
     {
         const uint32_t adapterId = OBTAIN_ADAPTER_ID( m_device );
         MD_LOG_ENTER_A( adapterId );
-        MD_CHECK_PTR_RET_A( adapterId, metricSet, CC_ERROR_INVALID_PARAMETER );
         MD_CHECK_PTR_RET_A( adapterId, nsTimerPeriod, CC_ERROR_INVALID_PARAMETER );
         MD_CHECK_PTR_RET_A( adapterId, oaBufferSize, CC_ERROR_INVALID_PARAMETER );
 
-        TCompletionCode   ret             = CC_OK;
-        CDriverInterface& driverInterface = m_device->GetDriverInterface();
+        TCompletionCode ret = SetIoMetricSet( metricSet );
+        MD_CHECK_CC_RET_A( adapterId, ret );
 
-        ret = driverInterface.OpenIoStream( m_streamType, m_oaBufferType, *m_device, static_cast<CMetricSet*>( metricSet ), m_params_1_0.SymbolName, processId, nsTimerPeriod, oaBufferSize, &m_streamEventHandle );
-        if( ret != CC_OK )
-        {
-            MD_LOG_EXIT_A( adapterId );
-            return ret;
-        }
+        CDriverInterface& driverInterface = m_device->GetDriverInterface();
+        ret                               = driverInterface.OpenIoStream( *this, processId, *nsTimerPeriod, *oaBufferSize );
+        MD_CHECK_CC_RET_A( adapterId, ret );
+
         MD_LOG_A( adapterId, LOG_DEBUG, "Stream opened using type: %u", m_streamType );
 
-        m_ioMetricSet          = static_cast<CMetricSet*>( metricSet );
         m_processId            = processId;
         m_contextTagsEnabled   = m_ioMetricSet->HasInformation( "ContextId" );
         CMetricsCalculator* mc = m_ioMetricSet->GetMetricsCalculator();
@@ -173,10 +169,10 @@ namespace MetricsDiscoveryInternal
         uint32_t                        frequency       = 0;
         GTDIReadCounterStreamExceptions exceptions      = {};
 
-        ret = driverInterface.ReadIoStream( m_streamType, m_oaBufferType, *m_device, m_ioMetricSet, reportData, reportCount, readFlags, &frequency, &exceptions );
+        ret = driverInterface.ReadIoStream( *this, readFlags, reportData, *reportCount, frequency, exceptions );
         if( ret == CC_OK || ret == CC_READ_PENDING )
         {
-            driverInterface.HandleIoStreamExceptions( m_params_1_0.SymbolName, m_ioMetricSet, m_processId, reportCount, &exceptions, m_oaBufferType );
+            driverInterface.HandleIoStreamExceptions( *this, m_processId, *reportCount, exceptions );
 
             // Order (indices) should be in sync with AddIoMeasurementInfoPredefined()
             uint32_t index = 0;
@@ -216,17 +212,12 @@ namespace MetricsDiscoveryInternal
     {
         const uint32_t adapterId = OBTAIN_ADAPTER_ID( m_device );
         MD_LOG_ENTER_A( adapterId );
-        if( m_ioMetricSet == nullptr )
-        {
-            MD_LOG_A( adapterId, LOG_ERROR, "stream not opened" );
-            MD_LOG_EXIT_A( adapterId );
-            return CC_ERROR_GENERAL;
-        }
+        MD_CHECK_PTR_RET_A( adapterId, m_ioMetricSet, CC_ERROR_GENERAL );
 
         TCompletionCode   ret             = CC_OK;
         CDriverInterface& driverInterface = m_device->GetDriverInterface();
 
-        ret = driverInterface.CloseIoStream( m_streamType, m_oaBufferType, *m_device, &m_streamEventHandle, m_params_1_0.SymbolName, m_ioMetricSet );
+        ret = driverInterface.CloseIoStream( *this );
         if( ret != CC_OK )
         {
             MD_LOG_EXIT_A( adapterId );
@@ -261,12 +252,9 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     TCompletionCode COAConcurrentGroup::WaitForReports( uint32_t milliseconds )
     {
-        TCompletionCode   retVal          = CC_OK;
-        CDriverInterface& driverInterface = m_device->GetDriverInterface();
+        auto& driverInterface = m_device->GetDriverInterface();
 
-        retVal = driverInterface.WaitForIoStreamReports( m_streamType, *m_device, milliseconds, m_streamEventHandle );
-
-        return retVal;
+        return driverInterface.WaitForIoStreamReports( *this, milliseconds );
     }
 
     //////////////////////////////////////////////////////////////////////////////
@@ -486,12 +474,47 @@ namespace MetricsDiscoveryInternal
     //     CMetricsDevice* device                 - parent metrics device
     //     const char*     name                   - concurrent group name
     //     const char*     description            - concurrent group description
-    //     uint32_t        measurementTypeMask    - measurement type mask
+    //     const uint32_t  measurementTypeMask    - measurement type mask
     //
     //////////////////////////////////////////////////////////////////////////////
-    COAConcurrentGroup::COAConcurrentGroup( CMetricsDevice* device, const char* name, const char* description, uint32_t measurementTypeMask )
+    COAConcurrentGroup::COAConcurrentGroup( CMetricsDevice* device, const char* name, const char* description, const uint32_t measurementTypeMask )
         : COAConcurrentGroup( device, name, description, measurementTypeMask, STREAM_TYPE_OA, GTDI_OA_BUFFER_TYPE_DEFAULT )
     {
+    }
+
+    //////////////////////////////////////////////////////////////////////////////
+    //
+    // Class:
+    //     COAConcurrentGroup
+    //
+    // Method:
+    //     SetIoMetricSet
+    //
+    // Description:
+    //     Sets input/ouput metric set.
+    //
+    // Input:
+    //     IMetricSet_1_0* metricSet - metric set
+    //
+    // Output:
+    //     TCompletionCode           - result of the operation
+    //
+    //////////////////////////////////////////////////////////////////////////////
+    TCompletionCode COAConcurrentGroup::SetIoMetricSet( IMetricSet_1_0* metricSet )
+    {
+        const uint32_t adapterId = OBTAIN_ADAPTER_ID( m_device );
+        MD_CHECK_PTR_RET_A( adapterId, metricSet, CC_ERROR_INVALID_PARAMETER );
+
+        auto metricSetInternal = static_cast<CMetricSet*>( metricSet );
+        if( metricSetInternal->GetConcurrentGroup() != this )
+        {
+            MD_LOG_A( adapterId, LOG_ERROR, "Error: Given metric set belongs to another concurrent group." );
+            return CC_ERROR_INVALID_PARAMETER;
+        }
+
+        m_ioMetricSet = metricSetInternal;
+
+        return CC_OK;
     }
 
     //////////////////////////////////////////////////////////////////////////////
@@ -523,21 +546,118 @@ namespace MetricsDiscoveryInternal
     //     COAConcurrentGroup
     //
     // Method:
+    //     GetIoMetricSet
+    //
+    // Description:
+    //     Returns input/output metric set.
+    //
+    // Output:
+    //     CMetricSet* - metric set
+    //
+    //////////////////////////////////////////////////////////////////////////////
+    CMetricSet* COAConcurrentGroup::GetIoMetricSet()
+    {
+        return m_ioMetricSet;
+    }
+
+    //////////////////////////////////////////////////////////////////////////////
+    //
+    // Class:
+    //     COAConcurrentGroup
+    //
+    // Method:
+    //     GetStreamType
+    //
+    // Description:
+    //     Returns stream type.
+    //
+    // Output:
+    //     const TStreamType - stream type
+    //
+    //////////////////////////////////////////////////////////////////////////////
+    const TStreamType COAConcurrentGroup::GetStreamType() const
+    {
+        return m_streamType;
+    }
+
+    //////////////////////////////////////////////////////////////////////////////
+    //
+    // Class:
+    //     COAConcurrentGroup
+    //
+    // Method:
+    //     GetOaBufferType
+    //
+    // Description:
+    //     Returns oa buffer type.
+    //
+    // Output:
+    //     const GTDI_OA_BUFFER_TYPE - oa buffer type
+    //
+    //////////////////////////////////////////////////////////////////////////////
+    const GTDI_OA_BUFFER_TYPE COAConcurrentGroup::GetOaBufferType() const
+    {
+        return m_oaBufferType;
+    }
+
+    //////////////////////////////////////////////////////////////////////////////
+    //
+    // Class:
+    //     COAConcurrentGroup
+    //
+    // Method:
+    //     GetStreamEventHandle
+    //
+    // Description:
+    //     Returns stream event handle.
+    //
+    // Output:
+    //     void* -
+    //
+    //////////////////////////////////////////////////////////////////////////////
+    void* COAConcurrentGroup::GetStreamEventHandle()
+    {
+        return m_streamEventHandle;
+    }
+
+    //////////////////////////////////////////////////////////////////////////////
+    //
+    // Class:
+    //     COAConcurrentGroup
+    //
+    // Method:
+    //     SetStreamEventHandle
+    //
+    // Description:
+    //     Sets stream event handle.
+    //
+    //////////////////////////////////////////////////////////////////////////////
+    void COAConcurrentGroup::SetStreamEventHandle( void* streamEventHandle )
+    {
+        m_streamEventHandle = streamEventHandle;
+    }
+
+    //////////////////////////////////////////////////////////////////////////////
+    //
+    // Class:
+    //     COAConcurrentGroup
+    //
+    // Method:
     //     COAConcurrentGroup constructor
     //
     // Description:
     //     Constructor.
     //
     // Input:
-    //     CMetricsDevice*       device                 - parent metrics device
-    //     const char*           name                   - concurrent group name
-    //     const char*           description            - concurrent group description
-    //     uint32_t              measurementTypeMask    - measurement type mask
-    //     TStreamType           streamType             - stream type
-    //     GTDI_OA_BUFFER_TYPE   oaBufferType           - oa buffer type
+    //     CMetricsDevice*           device                 - parent metrics device
+    //     const char*               name                   - concurrent group name
+    //     const char*               description            - concurrent group description
+    //     const uint32_t            measurementTypeMask    - measurement type mask
+    //     const TStreamType         streamType             - stream type
+    //     const GTDI_OA_BUFFER_TYPE oaBufferType           - oa buffer type
     //
     //////////////////////////////////////////////////////////////////////////////
-    COAConcurrentGroup::COAConcurrentGroup( CMetricsDevice* device, const char* name, const char* description, uint32_t measurementTypeMask, TStreamType streamType, GTDI_OA_BUFFER_TYPE oaBufferType )
+    COAConcurrentGroup::COAConcurrentGroup( CMetricsDevice* device, const char* name, const char* description, const uint32_t measurementTypeMask, const TStreamType streamType, const GTDI_OA_BUFFER_TYPE oaBufferType )
         : CConcurrentGroup( device, name, description, measurementTypeMask )
         , m_streamType( streamType )
         , m_oaBufferType( oaBufferType )
@@ -741,19 +861,13 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     TCompletionCode COAConcurrentGroup::GetStreamTypeFromSamplingType( const TSamplingType samplingType, TStreamType& streamType ) const
     {
-        switch( samplingType )
+        if( samplingType == SAMPLING_TYPE_OA_TIMER )
         {
-            case SAMPLING_TYPE_OA_TIMER:
-                streamType = STREAM_TYPE_OA;
-                break;
-            case SAMPLING_TYPE_DMA_BUFFER:
-                streamType = STREAM_TYPE_BB;
-                break;
-            default:
-                return CC_ERROR_NOT_SUPPORTED;
+            streamType = STREAM_TYPE_OA;
+            return CC_OK;
         }
 
-        return CC_OK;
+        return CC_ERROR_NOT_SUPPORTED;
     }
 
 } // namespace MetricsDiscoveryInternal

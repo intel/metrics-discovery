@@ -1,6 +1,6 @@
 /*========================== begin_copyright_notice ============================
 
-Copyright (C) 2019-2021 Intel Corporation
+Copyright (C) 2019-2022 Intel Corporation
 
 SPDX-License-Identifier: MIT
 
@@ -18,7 +18,6 @@ SPDX-License-Identifier: MIT
 #include "md_metric_set.h"
 #include "md_metrics_device.h"
 #include "md_types.h"
-
 #include <algorithm>
 #include <cstring>
 
@@ -1171,7 +1170,7 @@ namespace MetricsDiscoveryInternal
     {
         TTypedValue_1_0    typedValue, typedValuePrev, typedValueLast;
         TDeltaFunction_1_0 readDeltaFunction;
-        // As we calculate delta when reading operands DELTA_NS_TIME works as a normal DELTA_32
+        // As we calculate delta when reading operands DELTA_NS_TIME works as a normal DELTA_32 or DELTA_56
         if( deltaFunction.FunctionType == DELTA_NS_TIME )
         {
             readDeltaFunction.FunctionType = DELTA_N_BITS;
@@ -1328,6 +1327,13 @@ namespace MetricsDiscoveryInternal
                     break;
                 }
 
+                case EQUATION_ELEM_LOCAL_COUNTER_SYMBOL:
+                    typedValue.ValueUInt64 = 0LL;
+                    typedValue.ValueType   = VALUE_TYPE_UINT64;
+                    isValid                = EquationStackPush( equationStack, typedValue, algorithmCheck );
+                    // Asserts, because this is not a valid condition
+                    [[fallthrough]];
+
                 default:
                     MD_ASSERT_A( adapterId, false );
                     break;
@@ -1393,7 +1399,7 @@ namespace MetricsDiscoveryInternal
                 return previousValue;
 
             case DELTA_NS_TIME:
-                // No 'break' intentional - NS_TIME should be used only for overflow functions, here use as DELTA 32
+                // No 'break' intentional - NS_TIME should be used only for overflow functions, here use as DELTA 32 or DELTA 56
                 deltaFunction.BitsCount = 32;
 
             case DELTA_N_BITS:
@@ -2128,15 +2134,7 @@ namespace MetricsDiscoveryInternal
         MD_CHECK_PTR_RET_A( adapterId, m_device, nullptr );
         MD_CHECK_PTR_RET_A( adapterId, symbolName, nullptr );
 
-        for( uint32_t i = 0; i < m_device->GetParams()->GlobalSymbolsCount; i++ )
-        {
-            TGlobalSymbol_1_0* symbol = m_device->GetGlobalSymbol( i );
-            if( symbol && strcmp( symbol->SymbolName, symbolName ) == 0 )
-            {
-                return &( symbol->SymbolTypedValue );
-            }
-        }
-        return nullptr;
+        return m_device->GetGlobalSymbolValueByName( symbolName );
     }
 
 } // namespace MetricsDiscoveryInternal

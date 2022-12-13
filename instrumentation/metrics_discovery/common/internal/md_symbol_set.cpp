@@ -8,7 +8,7 @@ SPDX-License-Identifier: MIT
 
 //     File Name:  md_symbol_set.h
 
-//     Abstract:   C++ Metrics Discovery internal symbol set implemetation
+//     Abstract:   C++ Metrics Discovery internal symbol set implementation
 
 #include "md_symbol_set.h"
 #include "md_adapter.h"
@@ -18,6 +18,7 @@ SPDX-License-Identifier: MIT
 #include "md_utils.h"
 
 #include <cstring>
+#include <limits>
 #include <map>
 
 namespace MetricsDiscoveryInternal
@@ -36,14 +37,14 @@ namespace MetricsDiscoveryInternal
     //
     //////////////////////////////////////////////////////////////////////////////
     CSymbolSet::CSymbolSet( CMetricsDevice& metricsDevice, CDriverInterface& driverInterface )
-        : m_symbolVector()
+        : m_symbolMap()
         , m_metricsDevice( metricsDevice )
         , m_driverInterface( driverInterface )
         , m_maxSlice( 0 )
         , m_maxSubslicePerSlice( 0 )
         , m_maxDualSubslicePerSlice( 0 )
     {
-        m_symbolVector.reserve( SYMBOLS_VECTOR_INCREASE );
+        m_symbolMap.reserve( SYMBOLS_MAP_INCREASE );
 
         if( DetectMaxSlicesInfo() != CC_OK )
         {
@@ -65,21 +66,21 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     CSymbolSet::~CSymbolSet()
     {
-        for( auto& symbol : m_symbolVector )
+        for( auto& symbol : m_symbolMap )
         {
-            MD_SAFE_DELETE_ARRAY( symbol->symbol_1_0.SymbolName );
-            if( symbol->symbol_1_0.SymbolTypedValue.ValueType == VALUE_TYPE_CSTRING )
+            MD_SAFE_DELETE_ARRAY( symbol.second->symbol_1_0.SymbolName );
+            if( symbol.second->symbol_1_0.SymbolTypedValue.ValueType == VALUE_TYPE_CSTRING )
             {
-                MD_SAFE_DELETE_ARRAY( symbol->symbol_1_0.SymbolTypedValue.ValueCString );
+                MD_SAFE_DELETE_ARRAY( symbol.second->symbol_1_0.SymbolTypedValue.ValueCString );
             }
-            else if( symbol->symbol_1_0.SymbolTypedValue.ValueType == VALUE_TYPE_BYTEARRAY )
+            else if( symbol.second->symbol_1_0.SymbolTypedValue.ValueType == VALUE_TYPE_BYTEARRAY )
             {
-                MD_SAFE_DELETE_ARRAY( symbol->symbol_1_0.SymbolTypedValue.ValueByteArray->Data );
-                MD_SAFE_DELETE( symbol->symbol_1_0.SymbolTypedValue.ValueByteArray );
+                MD_SAFE_DELETE_ARRAY( symbol.second->symbol_1_0.SymbolTypedValue.ValueByteArray->Data );
+                MD_SAFE_DELETE( symbol.second->symbol_1_0.SymbolTypedValue.ValueByteArray );
             }
         }
 
-        ClearVector( m_symbolVector );
+        ClearUnorderedMap( m_symbolMap );
     }
 
     //////////////////////////////////////////////////////////////////////////////
@@ -99,7 +100,7 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     uint32_t CSymbolSet::GetSymbolCount()
     {
-        return m_symbolVector.size();
+        return m_symbolMap.size();
     }
 
     //////////////////////////////////////////////////////////////////////////////
@@ -122,9 +123,11 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     TGlobalSymbol_1_0* CSymbolSet::GetSymbol( uint32_t index )
     {
-        if( index < m_symbolVector.size() && m_symbolVector[index] )
+        if( index < m_symbolMap.size() )
         {
-            return &( m_symbolVector[index]->symbol_1_0 );
+            auto iterator = m_symbolMap.begin();
+            std::advance( iterator, index );
+            return &( iterator->second->symbol_1_0 );
         }
 
         return nullptr;
@@ -142,10 +145,10 @@ namespace MetricsDiscoveryInternal
     //     Returns chosen symbol by name or nullptr if not exists.
     //
     // Input:
-    //     const char * name   - name of symbol
+    //     const char* name   - name of symbol
     //
     // Output:
-    //     TTypedValue_1_0*    - pointer to symbol
+    //     TTypedValue_1_0*   - pointer to symbol
     //
     //////////////////////////////////////////////////////////////////////////////
     TTypedValue_1_0* CSymbolSet::GetSymbolValueByName( const char* name )
@@ -154,15 +157,11 @@ namespace MetricsDiscoveryInternal
 
         MD_CHECK_PTR_RET_A( adapterId, name, nullptr );
 
-        for( auto& symbol : m_symbolVector )
-        {
-            if( symbol && ( strcmp( name, symbol->symbol_1_0.SymbolName ) == 0 ) )
-            {
-                return &( symbol->symbol_1_0.SymbolTypedValue );
-            }
-        }
+        auto symbol = m_symbolMap.find( name );
 
-        return nullptr;
+        return ( symbol != m_symbolMap.end() )
+            ? ( &( symbol->second->symbol_1_0.SymbolTypedValue ) )
+            : nullptr;
     }
 
     //////////////////////////////////////////////////////////////////////////////
@@ -177,21 +176,27 @@ namespace MetricsDiscoveryInternal
     //     Adds symbol to symbol set.
     //
     // Input:
-    //     const char * name           - symbol name
-    //     TTypedValue_1_0 typedValue  - symbol value
-    //     TSymbolType symbolType      - symbol type
+    //     const char*       name       - symbol name
+    //     TTypedValueLatest typedValue - symbol value
+    //     TSymbolType       symbolType - symbol type
     //
     // Output:
-    //     TCompletionCode  - result of the operation
+    //     TCompletionCode              - result of the operation
     //
     //////////////////////////////////////////////////////////////////////////////
-    TCompletionCode CSymbolSet::AddSymbol( const char* name, TTypedValue_1_0 typedValue, TSymbolType symbolType )
+    TCompletionCode CSymbolSet::AddSymbol( const char* name, TTypedValueLatest typedValue, TSymbolType symbolType )
     {
         TCompletionCode ret       = CC_OK;
         const uint32_t  adapterId = m_metricsDevice.GetAdapter().GetAdapterId();
 
         MD_CHECK_PTR_RET_A( adapterId, name, CC_ERROR_GENERAL );
         MD_LOG_A( adapterId, LOG_DEBUG, "%s - adding...", name );
+
+        if( IsSymbolAlreadyAdded( name ) )
+        {
+            MD_LOG_A( adapterId, LOG_INFO, "The symbol has already been added." );
+            return CC_OK;
+        }
 
         if( symbolType == SYMBOL_TYPE_DETECT )
         {
@@ -208,7 +213,7 @@ namespace MetricsDiscoveryInternal
             MD_CHECK_CC_RET_A( adapterId, ret );
         }
 
-        TGlobalSymbol* symbol = (TGlobalSymbol*) new( std::nothrow ) TGlobalSymbol;
+        TGlobalSymbol* symbol = new( std::nothrow ) TGlobalSymbol;
         MD_CHECK_PTR_RET_A( adapterId, symbol, CC_ERROR_NO_MEMORY );
 
         symbol->version               = API_VERSION_1_0;
@@ -232,7 +237,7 @@ namespace MetricsDiscoveryInternal
         {
             symbol->symbol_1_0.SymbolTypedValue = typedValue;
         }
-        m_symbolVector.push_back( symbol );
+        m_symbolMap.emplace( symbol->symbol_1_0.SymbolName, symbol );
 
         if( typedValue.ValueType == VALUE_TYPE_BYTEARRAY )
         {
@@ -257,14 +262,14 @@ namespace MetricsDiscoveryInternal
     //     Gets certain symbol's values sending escapes to KMD.
     //
     // Input:
-    //     const char * name               - symbol name
-    //     TTypedValue_1_0 * typedValue    - output value
+    //     std::string_view        name          - symbol name
+    //     TTypedValueLatest*      typedValue    - output value
     //
     // Output:
-    //     TCompletionCode                 - result of the operation
+    //     TCompletionCode                       - result of the operation
     //
     //////////////////////////////////////////////////////////////////////////////
-    TCompletionCode CSymbolSet::DetectSymbolValue( const char* name, TTypedValue_1_0* typedValue )
+    TCompletionCode CSymbolSet::DetectSymbolValue( std::string_view name, TTypedValueLatest* typedValue )
     {
         const uint32_t            adapterId     = m_metricsDevice.GetAdapter().GetAdapterId();
         const uint32_t            platformIndex = m_metricsDevice.GetPlatformIndex();
@@ -280,13 +285,13 @@ namespace MetricsDiscoveryInternal
             platformIndex,
             GENERATION_ACM );
 
-        if( ( strcmp( name, "EuCoresTotalCount" ) == 0 ) || ( strcmp( name, "VectorEngineTotalCount" ) == 0 ) )
+        if( name == "EuCoresTotalCount" || name == "VectorEngineTotalCount" )
         {
             ret = m_driverInterface.SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_EU_CORES_TOTAL_COUNT, &out, &m_metricsDevice );
             MD_CHECK_CC_RET_A( adapterId, ret );
             typedValue->ValueUInt32 = out.ValueUint32;
         }
-        else if( ( strcmp( name, "EuCoresPerSubsliceCount" ) == 0 ) || ( strcmp( name, "VectorEnginePerXeCoreCount" ) == 0 ) )
+        else if( name == "EuCoresPerSubsliceCount" || name == "VectorEnginePerXeCoreCount" )
         {
             // ret = m_driverInterface.SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_EU_CORES_PER_SUBSLICE_COUNT, &out, &m_metricsDevice );
             // MD_CHECK_CC_RET_A( adapterId, ret );
@@ -316,36 +321,36 @@ namespace MetricsDiscoveryInternal
 
             typedValue->ValueUInt32 = ( subslicesTotalCount > 0 ) ? euCoresTotalCount / subslicesTotalCount : 0;
         }
-        else if( ( strcmp( name, "EuSubslicesTotalCount" ) == 0 ) || ( !useDualSubslice && ( strcmp( name, "XeCoreTotalCount" ) == 0 ) ) )
+        else if( name == "EuSubslicesTotalCount" || ( !useDualSubslice && ( name == "XeCoreTotalCount" ) ) )
         {
             ret = m_driverInterface.SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_SUBSLICES_TOTAL_COUNT, &out, &m_metricsDevice );
             MD_CHECK_CC_RET_A( adapterId, ret );
             typedValue->ValueUInt32 = out.ValueUint32;
         }
         // not supported for XeHP_SDV, removed all platforms for consistency
-        else if( strcmp( name, "EuSubslicesPerSliceCount" ) == 0 )
+        else if( name == "EuSubslicesPerSliceCount" )
         {
             return CC_ERROR_NOT_SUPPORTED;
         }
-        else if( ( strcmp( name, "EuDualSubslicesTotalCount" ) == 0 ) || ( useDualSubslice && ( strcmp( name, "XeCoreTotalCount" ) == 0 ) ) )
+        else if( name == "EuDualSubslicesTotalCount" || ( useDualSubslice && ( name == "XeCoreTotalCount" ) ) )
         {
             ret = m_driverInterface.SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_DUALSUBSLICES_TOTAL_COUNT, &out, &m_metricsDevice );
             MD_CHECK_CC_RET_A( adapterId, ret );
             typedValue->ValueUInt32 = out.ValueUint32;
         }
-        else if( ( strcmp( name, "EuSlicesTotalCount" ) == 0 ) || ( strcmp( name, "SliceTotalCount" ) == 0 ) )
+        else if( name == "EuSlicesTotalCount" || name == "SliceTotalCount" )
         {
             ret = m_driverInterface.SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_SLICES_COUNT, &out, &m_metricsDevice );
             MD_CHECK_CC_RET_A( adapterId, ret );
             typedValue->ValueUInt32 = out.ValueUint32;
         }
-        else if( ( strcmp( name, "EuThreadsCount" ) == 0 ) || ( strcmp( name, "VectorEngineThreadsCount" ) == 0 ) )
+        else if( name == "EuThreadsCount" || name == "VectorEngineThreadsCount" )
         {
             ret = m_driverInterface.SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_EU_THREADS_COUNT, &out );
             MD_CHECK_CC_RET_A( adapterId, ret );
             typedValue->ValueUInt32 = out.ValueUint32;
         }
-        else if( ( strcmp( name, "SliceMask" ) == 0 ) || ( strcmp( name, "GtSliceMask" ) == 0 ) )
+        else if( name == "SliceMask" || name == "GtSliceMask" )
         {
             ret = m_driverInterface.SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_SLICES_MASK, &out, &m_metricsDevice );
             MD_CHECK_CC_RET_A( adapterId, ret );
@@ -359,7 +364,7 @@ namespace MetricsDiscoveryInternal
                 typedValue->ValueUInt32 = out.ValueUint32;
             }
         }
-        else if( ( strcmp( name, "SubsliceMask" ) == 0 ) || ( strcmp( name, "GtSubsliceMask" ) == 0 ) || ( !useDualSubslice && ( ( strcmp( name, "XeCoreMask" ) == 0 ) || ( strcmp( name, "GtXeCoreMask" ) == 0 ) ) ) )
+        else if( ( name == "SubsliceMask" ) || ( name == "GtSubsliceMask" ) || ( !useDualSubslice && ( ( name == "XeCoreMask" ) || ( name == "GtXeCoreMask" ) ) ) )
         {
             ret = m_driverInterface.SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_SUBSLICES_MASK, &out, &m_metricsDevice );
             MD_CHECK_CC_RET_A( adapterId, ret );
@@ -373,7 +378,7 @@ namespace MetricsDiscoveryInternal
                 typedValue->ValueUInt64 = out.ValueUint64;
             }
         }
-        else if( ( strcmp( name, "DualSubsliceMask" ) == 0 ) || ( strcmp( name, "GtDualSubsliceMask" ) == 0 ) || ( useDualSubslice && ( ( strcmp( name, "XeCoreMask" ) == 0 ) || ( strcmp( name, "GtXeCoreMask" ) == 0 ) ) ) )
+        else if( ( name == "DualSubsliceMask" ) || ( name == "GtDualSubsliceMask" ) || ( useDualSubslice && ( ( name == "XeCoreMask" ) || ( name == "GtXeCoreMask" ) ) ) )
         {
             ret = m_driverInterface.SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_DUALSUBSLICES_MASK, &out, &m_metricsDevice );
             MD_CHECK_CC_RET_A( adapterId, ret );
@@ -387,18 +392,18 @@ namespace MetricsDiscoveryInternal
                 typedValue->ValueUInt64 = out.ValueUint64;
             }
         }
-        else if( strcmp( name, "SamplersTotalCount" ) == 0 )
+        else if( name == "SamplersTotalCount" )
         {
             ret = m_driverInterface.SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_SAMPLERS_COUNT, &out, &m_metricsDevice );
             MD_CHECK_CC_RET_A( adapterId, ret );
             typedValue->ValueUInt32 = out.ValueUint32;
         }
-        else if( strcmp( name, "SamplersPerSubliceCount" ) == 0 )
+        else if( name == "SamplersPerSubliceCount" )
         {
             // obsolete
             return CC_ERROR_NOT_SUPPORTED;
         }
-        else if( strcmp( name, "MemoryPeakThroghputMB" ) == 0 )
+        else if( name == "MemoryPeakThroghputMB" )
         {
             if( m_metricsDevice.GetAdapter().GetParams()->Type == ADAPTER_TYPE_INTEGRATED )
             {
@@ -412,20 +417,14 @@ namespace MetricsDiscoveryInternal
                 return CC_ERROR_NOT_SUPPORTED;
             }
         }
-        else if( strcmp( name, "MemoryFrequencyMHz" ) == 0 )
-        {
-            ret = m_driverInterface.SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_DRAM_FREQUENCY, &out );
-            MD_CHECK_CC_RET_A( adapterId, ret );
-            typedValue->ValueUInt32 = out.ValueUint32 / MD_MHERTZ;
-        }
-        else if( strcmp( name, "GpuMinFrequencyMHz" ) == 0 )
+        else if( name == "GpuMinFrequencyMHz" )
         {
             ret = m_driverInterface.SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_GPU_CORE_MIN_FREQUENCY, &out );
 
             if( ret != CC_OK )
             {
                 // Possibly caused by disabled Turbo
-                MD_LOG_A( adapterId, LOG_WARNING, "%s not available, GpuCurrentFrequencyMHz used instead", name );
+                MD_LOG_A( adapterId, LOG_WARNING, "%s not available, GpuCurrentFrequencyMHz used instead", GetCStringFromStringView( name ) );
                 ret = DetectSymbolValue( "GpuCurrentFrequencyMHz", typedValue );
                 MD_CHECK_CC_RET_A( adapterId, ret );
             }
@@ -434,14 +433,14 @@ namespace MetricsDiscoveryInternal
                 typedValue->ValueUInt32 = out.ValueUint32;
             }
         }
-        else if( strcmp( name, "GpuMaxFrequencyMHz" ) == 0 )
+        else if( name == "GpuMaxFrequencyMHz" )
         {
             ret = m_driverInterface.SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_GPU_CORE_MAX_FREQUENCY, &out );
 
             if( ret != CC_OK )
             {
                 // Possibly caused by disabled Turbo
-                MD_LOG_A( adapterId, LOG_WARNING, "%s not available, GpuCurrentFrequencyMHz used instead", name );
+                MD_LOG_A( adapterId, LOG_WARNING, "%s not available, GpuCurrentFrequencyMHz used instead", GetCStringFromStringView( name ) );
                 ret = DetectSymbolValue( "GpuCurrentFrequencyMHz", typedValue );
                 MD_CHECK_CC_RET_A( adapterId, ret );
             }
@@ -450,109 +449,129 @@ namespace MetricsDiscoveryInternal
                 typedValue->ValueUInt32 = out.ValueUint32;
             }
         }
-        else if( strcmp( name, "GpuCurrentFrequencyMHz" ) == 0 )
+        else if( name == "GpuCurrentFrequencyMHz" )
         {
             ret = m_driverInterface.SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_GPU_CORE_FREQUENCY, &out );
             MD_CHECK_CC_RET_A( adapterId, ret );
             typedValue->ValueUInt32 = out.ValueUint32 / MD_MHERTZ;
         }
 
-        else if( strcmp( name, "PciDeviceId" ) == 0 )
+        else if( name == "PciDeviceId" )
         {
             ret = m_driverInterface.SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_PCI_DEVICE_ID, &out );
             MD_CHECK_CC_RET_A( adapterId, ret );
             typedValue->ValueUInt32 = out.ValueUint32;
         }
-        else if( strcmp( name, "SkuRevisionId" ) == 0 )
+        else if( name == "SkuRevisionId" )
         {
             ret = m_driverInterface.SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_REVISION_ID, &out );
             MD_CHECK_CC_RET_A( adapterId, ret );
             typedValue->ValueUInt32 = out.ValueUint32;
             MD_LOG_A( adapterId, LOG_INFO, "SkuRevisionId is %u", typedValue->ValueUInt32 );
         }
-        else if( strcmp( name, "PlatformIndex" ) == 0 )
+        else if( name == "PlatformIndex" )
         {
             ret = m_driverInterface.SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_PLATFORM_INDEX, &out );
             MD_CHECK_CC_RET_A( adapterId, ret );
             typedValue->ValueUInt32 = out.ValueUint32;
             MD_LOG_A( adapterId, LOG_INFO, "PlatformIndex is %u", typedValue->ValueUInt32 );
         }
-        else if( strcmp( name, "ApertureSize" ) == 0 )
+        else if( name == "ApertureSize" )
         {
             ret = m_driverInterface.SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_APERTURE_SIZE, &out );
             MD_CHECK_CC_RET_A( adapterId, ret );
             typedValue->ValueUInt32 = out.ValueUint32;
         }
-        else if( strcmp( name, "Capabilities" ) == 0 )
+        else if( name == "Capabilities" )
         {
             ret = m_driverInterface.SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_CAPABILITIES, &out );
             MD_CHECK_CC_RET_A( adapterId, ret );
             typedValue->ValueUInt32 = out.ValueUint32;
         }
-        else if( strcmp( name, "PavpDisabled" ) == 0 )
+        else if( name == "PavpDisabled" )
         {
             ret = m_driverInterface.SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_CAPABILITIES, &out );
             MD_CHECK_CC_RET_A( adapterId, ret );
             typedValue->ValueBool = IsPavpDisabled( out.ValueUint32 );
         }
 
-        else if( strcmp( name, "NumberOfRenderOutputUnits" ) == 0 )
+        else if( name == "NumberOfRenderOutputUnits" )
         {
             ret = m_driverInterface.SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_NUMBER_OF_RENDER_OUTPUT_UNITS, &out, &m_metricsDevice );
             MD_CHECK_CC_RET_A( adapterId, ret );
             typedValue->ValueUInt32 = out.ValueUint32;
         }
-        else if( strcmp( name, "NumberOfShadingUnits" ) == 0 )
+        else if( name == "NumberOfShadingUnits" )
         {
             ret = m_driverInterface.SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_NUMBER_OF_SHADING_UNITS, &out );
             MD_CHECK_CC_RET_A( adapterId, ret );
             typedValue->ValueUInt32 = out.ValueUint32;
         }
-        else if( strcmp( name, "OABufferMinSize" ) == 0 )
+        else if( name == "OABufferMinSize" )
         {
-            ret = m_driverInterface.SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_OA_BUFFER_SIZE_MIN, &out );
+            ret = m_driverInterface.GetMaxMinOaBufferSize( GTDI_OA_BUFFER_TYPE_DEFAULT, GTDI_DEVICE_PARAM_OA_BUFFER_SIZE_MIN, out );
             MD_CHECK_CC_RET_A( adapterId, ret );
             typedValue->ValueUInt32 = out.ValueUint32;
         }
-        else if( strcmp( name, "OABufferMaxSize" ) == 0 )
+        else if( name == "OABufferMaxSize" )
         {
-            ret = m_driverInterface.SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_OA_BUFFER_SIZE_MAX, &out );
+            ret = m_driverInterface.GetMaxMinOaBufferSize( GTDI_OA_BUFFER_TYPE_DEFAULT, GTDI_DEVICE_PARAM_OA_BUFFER_SIZE_MAX, out );
             MD_CHECK_CC_RET_A( adapterId, ret );
             typedValue->ValueUInt32 = out.ValueUint32;
         }
-        else if( strcmp( name, "GpuTimestampFrequency" ) == 0 )
+        else if( name == "MediaOABufferMinSize" )
+        {
+            ret = m_driverInterface.GetMaxMinOaBufferSize( GTDI_OA_BUFFER_TYPE_OAM_SLICE_0, GTDI_DEVICE_PARAM_OA_BUFFER_SIZE_MIN, out );
+            if( ret == CC_ERROR_NOT_SUPPORTED )
+            {
+                return ret;
+            }
+            MD_CHECK_CC_RET_A( adapterId, ret );
+            typedValue->ValueUInt32 = out.ValueUint32;
+        }
+        else if( name == "MediaOABufferMaxSize" )
+        {
+            ret = m_driverInterface.GetMaxMinOaBufferSize( GTDI_OA_BUFFER_TYPE_OAM_SLICE_0, GTDI_DEVICE_PARAM_OA_BUFFER_SIZE_MAX, out );
+            if( ret == CC_ERROR_NOT_SUPPORTED )
+            {
+                return ret;
+            }
+            MD_CHECK_CC_RET_A( adapterId, ret );
+            typedValue->ValueUInt32 = out.ValueUint32;
+        }
+        else if( name == "GpuTimestampFrequency" )
         {
             ret = m_driverInterface.SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_GPU_TIMESTAMP_FREQUENCY, &out );
             MD_CHECK_CC_RET_A( adapterId, ret );
             typedValue->ValueUInt32 = (uint32_t) out.ValueUint64;
         }
-        else if( strcmp( name, "EdramSize" ) == 0 )
+        else if( name == "EdramSize" )
         {
             ret = m_driverInterface.SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_EDRAM_SIZE, &out );
             MD_CHECK_CC_RET_A( adapterId, ret );
             typedValue->ValueUInt32 = (uint32_t) out.ValueUint64;
         }
-        else if( strcmp( name, "LLCSize" ) == 0 )
+        else if( name == "LLCSize" )
         {
             ret = m_driverInterface.SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_LLC_SIZE, &out );
             MD_CHECK_CC_RET_A( adapterId, ret );
             typedValue->ValueUInt32 = (uint32_t) out.ValueUint64;
         }
-        else if( strcmp( name, "L3Size" ) == 0 )
+        else if( name == "L3Size" )
         {
             ret = m_driverInterface.SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_L3_SIZE, &out );
             MD_CHECK_CC_RET_A( adapterId, ret );
             typedValue->ValueUInt32 = (uint32_t) out.ValueUint64;
         }
-        else if( strcmp( name, "MaxTimestamp" ) == 0 )
+        else if( name == "MaxTimestamp" )
         {
             ret = m_driverInterface.SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_GPU_TIMESTAMP_FREQUENCY, &out );
             MD_CHECK_CC_RET_A( adapterId, ret );
-            typedValue->ValueUInt64 = MD_GPU_TIMESTAMP_MASK * MD_SECOND_IN_NS / out.ValueUint64;
+            typedValue->ValueUInt64 = m_metricsDevice.ConvertGpuTimestampToNs( ( std::numeric_limits<uint64_t>::max )(), out.ValueUint64 );
         }
         else
         {
-            MD_LOG_A( adapterId, LOG_ERROR, "Unknown global symbol name: %s", name );
+            MD_LOG_A( adapterId, LOG_ERROR, "Unknown global symbol name: %s", GetCStringFromStringView( name ) );
             return CC_ERROR_INVALID_PARAMETER;
         }
 
@@ -571,16 +590,17 @@ namespace MetricsDiscoveryInternal
     //     Check if symbol name is valid for current platform.
     //
     // Input:
-    //     char * name - base symbol name
+    //     std::string_view name - base symbol name
     //
     // Output:
-    //     bool - True if supported on this platform.
+    //     bool                  - true if supported on this platform.
     //
     //////////////////////////////////////////////////////////////////////////////
-    bool CSymbolSet::IsSymbolNameSupported( const char* name )
+    bool CSymbolSet::IsSymbolNameSupported( std::string_view name )
     {
-        const uint32_t adapterId     = m_metricsDevice.GetAdapter().GetAdapterId();
-        const uint32_t platformIndex = m_metricsDevice.GetPlatformIndex();
+        const uint32_t adapterId        = m_metricsDevice.GetAdapter().GetAdapterId();
+        const uint32_t platformIndex    = m_metricsDevice.GetPlatformIndex();
+        const char*    globalSymbolName = GetCStringFromStringView( name );
 
         const bool platformXeHpPlus = IsPlatformMatch(
             platformIndex,
@@ -598,7 +618,19 @@ namespace MetricsDiscoveryInternal
             GENERATION_ADLS,
             GENERATION_ADLN );
 
-        std::map<std::string, std::string> globalSymbolMap{
+        // Media related global symbols
+        if( name == "MediaOABufferMinSize" || name == "MediaOABufferMaxSize" )
+        {
+            const bool oamSupported = IsPlatformMatch(
+                platformIndex,
+                GENERATION_ACM );
+
+            MD_LOG_A( adapterId, LOG_DEBUG, "Media symbol name is%s supported: %s", oamSupported ? "" : " not", globalSymbolName );
+
+            return oamSupported;
+        }
+
+        std::map<std::string_view, std::string_view> globalSymbolMap{
             { "EuCoresTotalCount", "VectorEngineTotalCount" },
             { "EuCoresPerSubsliceCount", "VectorEnginePerXeCoreCount" },
             { "EuSlicesTotalCount", "SliceTotalCount" },
@@ -633,7 +665,7 @@ namespace MetricsDiscoveryInternal
         {
             if( globalSymbolMap.find( name ) != globalSymbolMap.end() )
             {
-                MD_LOG_A( adapterId, LOG_DEBUG, "Not supported symbol names or old ones: %s", name );
+                MD_LOG_A( adapterId, LOG_DEBUG, "Not supported symbol names or old ones: %s", globalSymbolName );
                 return false;
             }
         }
@@ -642,22 +674,22 @@ namespace MetricsDiscoveryInternal
             for( auto iterator = globalSymbolMap.begin(); iterator != globalSymbolMap.end(); ++iterator )
             {
                 // Xe symbol but platform is not Xe
-                if( strcmp( name, iterator->second.c_str() ) == 0 )
+                if( iterator->second == name )
                 {
-                    MD_LOG_A( adapterId, LOG_DEBUG, "Xe symbol but platform is not Xe: %s", name );
+                    MD_LOG_A( adapterId, LOG_DEBUG, "Xe symbol but platform is not Xe: %s", globalSymbolName );
                     return false;
                 }
 
                 // Dual subslice/subslice support
-                if( strcmp( name, iterator->first.c_str() ) == 0 && strcmp( "", iterator->second.c_str() ) == 0 )
+                if( ( iterator->first == name ) && ( iterator->second == "" ) )
                 {
-                    MD_LOG_A( adapterId, LOG_DEBUG, "%s symbol is not supported because platform %s dual subslices", name, useDualSubslice ? "supports" : "does not support" );
+                    MD_LOG_A( adapterId, LOG_DEBUG, "%s symbol is not supported because platform %s dual subslices", globalSymbolName, useDualSubslice ? "supports" : "does not support" );
                     return false;
                 }
             }
         }
 
-        MD_LOG_A( adapterId, LOG_DEBUG, "Symbol name supported %s", name ); // but it doesn't mean that global symbol will be added, for example some symbols are not supported on Linux.
+        MD_LOG_A( adapterId, LOG_DEBUG, "Symbol name supported: %s", globalSymbolName ); // but it doesn't mean that global symbol will be added, for example some symbols are not supported on Linux.
         return true;
     }
 
@@ -673,9 +705,9 @@ namespace MetricsDiscoveryInternal
     //     Adds 32-bit uint32_t symbol to the symbol set.
     //
     // Input:
-    //     const char * name       - symbol name
+    //     const char*  name       - symbol name
     //     uint32_t     value      - symbol value
-    //     TSymbolType symbolType  - symbol type
+    //     TSymbolType  symbolType - symbol type
     //
     // Output:
     //     TCompletionCode         - result of the operation
@@ -739,9 +771,9 @@ namespace MetricsDiscoveryInternal
     //     Adds boolean symbol to the symbol set.
     //
     // Input:
-    //     const char * name       - symbol name
-    //     bool value              - symbol value
-    //     TSymbolType symbolType  - symbol type
+    //     const char*  name       - symbol name
+    //     bool         value      - symbol value
+    //     TSymbolType  symbolType - symbol type
     //
     // Output:
     //     TCompletionCode         - result of the operation
@@ -772,12 +804,12 @@ namespace MetricsDiscoveryInternal
     //     Adds float symbol to the symbol set.
     //
     // Input:
-    //     const char * name       - symbol name
-    //     float value             - symbol value
-    //     TSymbolType symbolType  - symbol type
+    //     const char* name       - symbol name
+    //     float       value      - symbol value
+    //     TSymbolType symbolType - symbol type
     //
     // Output:
-    //     TCompletionCode         - result of the operation
+    //     TCompletionCode        - result of the operation
     //
     //////////////////////////////////////////////////////////////////////////////
     TCompletionCode CSymbolSet::AddSymbolFLOAT( const char* name, float value, TSymbolType symbolType )
@@ -805,12 +837,12 @@ namespace MetricsDiscoveryInternal
     //     Adds cstring symbol to the symbol set.
     //
     // Input:
-    //     const char * name       - symbol name
-    //     const char * value      - symbol value
-    //     TSymbolType symbolType  - symbol type
+    //     const char* name       - symbol name
+    //     const char* value      - symbol value
+    //     TSymbolType symbolType - symbol type
     //
     // Output:
-    //     TCompletionCode         - result of the operation
+    //     TCompletionCode        - result of the operation
     //
     //////////////////////////////////////////////////////////////////////////////
     TCompletionCode CSymbolSet::AddSymbolCSTRING( const char* name, char* value, TSymbolType symbolType )
@@ -838,15 +870,15 @@ namespace MetricsDiscoveryInternal
     //     Adds byte array symbol to the symbol set.
     //
     // Input:
-    //     const char * name       - symbol name
-    //     TByteArray_1_0 * value  - symbol value
-    //     TSymbolType symbolType  - symbol type
+    //     const char*       name       - symbol name
+    //     TByteArrayLatest* value      - symbol value
+    //     TSymbolType       symbolType - symbol type
     //
     // Output:
-    //     TCompletionCode         - result of the operation
+    //     TCompletionCode              - result of the operation
     //
     //////////////////////////////////////////////////////////////////////////////
-    TCompletionCode CSymbolSet::AddSymbolBYTEARRAY( const char* name, TByteArray_1_0* value, TSymbolType symbolType )
+    TCompletionCode CSymbolSet::AddSymbolBYTEARRAY( const char* name, TByteArrayLatest* value, TSymbolType symbolType )
     {
         TCompletionCode ret        = CC_OK;
         TTypedValue_1_0 typedValue = {};
@@ -887,14 +919,14 @@ namespace MetricsDiscoveryInternal
             return CC_ERROR_INVALID_PARAMETER;
         }
 
-        uint32_t symbolCount = m_symbolVector.size();
+        uint32_t symbolCount = m_symbolMap.size();
         fwrite( &symbolCount, sizeof( symbolCount ), 1, metricFile );
-        for( auto& symbol : m_symbolVector )
+        for( auto& symbol : m_symbolMap )
         {
             // symbol_1_0
-            WriteCStringToFile( symbol->symbol_1_0.SymbolName, metricFile, adapterId );
-            WriteTTypedValueToFile( &symbol->symbol_1_0.SymbolTypedValue, metricFile, adapterId );
-            fwrite( &symbol->symbolType, sizeof( symbol->symbolType ), 1, metricFile );
+            WriteCStringToFile( symbol.second->symbol_1_0.SymbolName, metricFile, adapterId );
+            WriteTTypedValueToFile( &symbol.second->symbol_1_0.SymbolTypedValue, metricFile, adapterId );
+            fwrite( &symbol.second->symbolType, sizeof( symbol.second->symbolType ), 1, metricFile );
         }
 
         return CC_OK;
@@ -912,15 +944,15 @@ namespace MetricsDiscoveryInternal
     //     Checks if the symbol of the given name is already added to the symbol set.
     //
     // Input:
-    //     const char* symbolName  - symbolic name of a symbol to check
+    //     std::string_view symbolName  - symbolic name of a symbol to check
     //
     // Output:
-    //     bool                    - true when already added
+    //     bool                         - true when already added
     //
     //////////////////////////////////////////////////////////////////////////////
-    bool CSymbolSet::IsSymbolAlreadyAdded( const char* symbolName )
+    bool CSymbolSet::IsSymbolAlreadyAdded( std::string_view symbolName )
     {
-        return GetSymbolValueByName( symbolName ) != nullptr;
+        return m_symbolMap.find( symbolName ) != m_symbolMap.end();
     }
 
     //////////////////////////////////////////////////////////////////////////////
@@ -935,10 +967,10 @@ namespace MetricsDiscoveryInternal
     //     Redetects (updates) the symbol value.
     //
     // Input:
-    //     const char * name - name of a symbol to redetect
+    //     const char* name - name of a symbol to redetect
     //
     // Output:
-    //     TCompletionCode - result, *CC_OK* means success
+    //     TCompletionCode  - result, *CC_OK* means success
     //
     //////////////////////////////////////////////////////////////////////////////
     TCompletionCode CSymbolSet::RedetectSymbol( const char* symbolName )
@@ -996,7 +1028,7 @@ namespace MetricsDiscoveryInternal
         const uint32_t  platformIndex = m_metricsDevice.GetPlatformIndex();
         const char*     name          = symbol->symbol_1_0.SymbolName;
         uint8_t*        mask          = symbol->symbol_1_0.SymbolTypedValue.ValueByteArray->Data;
-        TTypedValue_1_0 boolValue     = { VALUE_TYPE_BOOL, { true } }; // clang suggest braces around initialization of subobject
+        TTypedValue_1_0 boolValue     = { VALUE_TYPE_BOOL, { true } }; // clang suggest braces around initialization of sub object
 
         const bool useDualSubslice = IsPlatformMatch(
             platformIndex,
@@ -1005,7 +1037,7 @@ namespace MetricsDiscoveryInternal
         // Unpack mask
         if( strcmp( name, "GtSliceMask" ) == 0 )
         {
-            for( uint32_t i = 0; i < m_maxSlice; i++ )
+            for( uint32_t i = 0; i < m_maxSlice; ++i )
             {
                 uint32_t currentByte = i / MD_BITS_PER_BYTE;
                 uint32_t currentBit  = i % MD_BITS_PER_BYTE;

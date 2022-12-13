@@ -315,10 +315,15 @@ namespace MetricsDiscoveryInternal
             if( retVal == CC_OK )
             {
                 ++m_metricsDevice->GetReferenceCounter();
+
+                if( subDeviceIndex == MD_ROOT_DEVICE_INDEX )
+                {
+                    m_subDevices.SetRootDevice( *metricsDevice );
+                }
             }
         }
 
-        // 5. Release semaphore
+        // 3. Release semaphore
         ReleaseOpenCloseSemaphore();
 
         MD_LOG_EXIT_A( m_adapterId );

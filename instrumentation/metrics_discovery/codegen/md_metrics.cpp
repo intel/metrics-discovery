@@ -342,9 +342,6 @@ inline TCompletionCode AddGlobalSymbols( CMetricsDevice* metricsDevice )
     ret = symbolSet->AddSymbolUINT32( "MemoryPeakThroghputMB", 25600, SYMBOL_TYPE_DETECT );
     MD_CHECK_CC_RET_A( adapterId, ret );
 
-    ret = symbolSet->AddSymbolUINT32( "MemoryFrequencyMHz", 1600, SYMBOL_TYPE_DETECT );
-    MD_CHECK_CC_RET_A( adapterId, ret );
-
     ret = symbolSet->AddSymbolUINT32( "GpuMinFrequencyMHz", 650, SYMBOL_TYPE_DETECT );
     MD_CHECK_CC_RET_A( adapterId, ret );
 
@@ -382,6 +379,12 @@ inline TCompletionCode AddGlobalSymbols( CMetricsDevice* metricsDevice )
     MD_CHECK_CC_RET_A( adapterId, ret );
 
     ret = symbolSet->AddSymbolUINT32( "OABufferMaxSize", 131072, SYMBOL_TYPE_DETECT );
+    MD_CHECK_CC_RET_A( adapterId, ret );
+
+    ret = symbolSet->AddSymbolUINT32( "MediaOABufferMinSize", 16384, SYMBOL_TYPE_DETECT );
+    MD_CHECK_CC_RET_A( adapterId, ret );
+
+    ret = symbolSet->AddSymbolUINT32( "MediaOABufferMaxSize", 16384, SYMBOL_TYPE_DETECT );
     MD_CHECK_CC_RET_A( adapterId, ret );
 
     ret = symbolSet->AddSymbolUINT32( "GpuTimestampFrequency", 12500000, SYMBOL_TYPE_DETECT );
@@ -433,6 +436,7 @@ TCompletionCode CreateMetricTree( CMetricsDevice* metricsDevice )
     MD_CHECK_PTR_RET_A( adapterId, metricsDevice, CC_ERROR_INVALID_PARAMETER );
 
     CConcurrentGroup* concurrentGroup      = nullptr;
+    bool              isSupported          = false;
     CMetricSet*       metricSet            = nullptr;
     CMetric*          metric               = nullptr;
     const char*       availabilityEquation = nullptr;
@@ -441,7 +445,9 @@ TCompletionCode CreateMetricTree( CMetricsDevice* metricsDevice )
     MD_CHECK_CC( SetAllBitsPlatformMask( adapterId, &platformMask ) );
     MD_CHECK_CC( AddGlobalSymbols( metricsDevice ) );
 
-    concurrentGroup = metricsDevice->AddConcurrentGroup( "OcclusionQueryStats", "Occlusion Query Statistics", MEASUREMENT_TYPE_DELTA_QUERY );
+    concurrentGroup = metricsDevice->AddConcurrentGroup( "OcclusionQueryStats", "Occlusion Query Statistics", MEASUREMENT_TYPE_DELTA_QUERY, isSupported );
+    if( isSupported )
+    {
     MD_CHECK_PTR( concurrentGroup );
     
     metricSet = concurrentGroup->AddMetricSet( "RenderedPixelsStats", "Rendered Pixels Statistics", API_TYPE_VULKAN|API_TYPE_OGL4_X,
@@ -484,7 +490,15 @@ TCompletionCode CreateMetricTree( CMetricsDevice* metricsDevice )
 
     MD_CHECK_CC_RET_A( adapterId, metricSet->RefreshConfigRegisters() );
 
-    concurrentGroup = metricsDevice->AddConcurrentGroup( "TimestampQuery", "Timestamp Query", MEASUREMENT_TYPE_SNAPSHOT_QUERY );
+    }
+    else
+    {
+        MD_LOG_A( adapterId, LOG_INFO, "OcclusionQueryStats concurrent group is not supported!" );
+    }
+  
+    concurrentGroup = metricsDevice->AddConcurrentGroup( "TimestampQuery", "Timestamp Query", MEASUREMENT_TYPE_SNAPSHOT_QUERY, isSupported );
+    if( isSupported )
+    {
     MD_CHECK_PTR( concurrentGroup );
     
     metricSet = concurrentGroup->AddMetricSet( "GPUTimestamp", "GPU Timestamp", API_TYPE_VULKAN|API_TYPE_OGL4_X,
@@ -508,7 +522,15 @@ TCompletionCode CreateMetricTree( CMetricsDevice* metricsDevice )
 
     MD_CHECK_CC_RET_A( adapterId, metricSet->RefreshConfigRegisters() );
 
-    concurrentGroup = metricsDevice->AddConcurrentGroup( "PipelineStatistics", "Pipeline Statistics", MEASUREMENT_TYPE_DELTA_QUERY );
+    }
+    else
+    {
+        MD_LOG_A( adapterId, LOG_INFO, "TimestampQuery concurrent group is not supported!" );
+    }
+  
+    concurrentGroup = metricsDevice->AddConcurrentGroup( "PipelineStatistics", "Pipeline Statistics", MEASUREMENT_TYPE_DELTA_QUERY, isSupported );
+    if( isSupported )
+    {
     MD_CHECK_PTR( concurrentGroup );
     
     // Add platform specific metric sets
@@ -616,7 +638,15 @@ TCompletionCode CreateMetricTree( CMetricsDevice* metricsDevice )
     MD_CHECK_CC( CreateMetricTreeADLN_PipelineStatistics(metricsDevice, concurrentGroup) );
 #endif
 
-    concurrentGroup = metricsDevice->AddConcurrentGroup( "OA", "OA Unit Metrics", MEASUREMENT_TYPE_DELTA_QUERY|MEASUREMENT_TYPE_SNAPSHOT_IO );
+    }
+    else
+    {
+        MD_LOG_A( adapterId, LOG_INFO, "PipelineStatistics concurrent group is not supported!" );
+    }
+  
+    concurrentGroup = metricsDevice->AddConcurrentGroup( "OA", "OA Unit Metrics", MEASUREMENT_TYPE_DELTA_QUERY|MEASUREMENT_TYPE_SNAPSHOT_IO, isSupported );
+    if( isSupported )
+    {
     MD_CHECK_PTR( concurrentGroup );
     
     // Add platform specific metric sets
@@ -732,6 +762,12 @@ TCompletionCode CreateMetricTree( CMetricsDevice* metricsDevice )
     MD_CHECK_CC( CreateMetricTreeADLN_OA(metricsDevice, concurrentGroup) );
 #endif
 
+    }
+    else
+    {
+        MD_LOG_A( adapterId, LOG_INFO, "OA concurrent group is not supported!" );
+    }
+  
     DeleteByteArray( platformMask, adapterId );
     MD_CHECK_CC( metricsDevice->AddOverrides() );
 

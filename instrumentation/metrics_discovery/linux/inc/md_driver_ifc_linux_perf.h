@@ -157,7 +157,7 @@ namespace MetricsDiscoveryInternal
         operator int() const;
 
     private:
-        static int32_t InvalidValue;
+        static constexpr int32_t InvalidValue = -1;
 
         int32_t m_handle;
     };
@@ -198,13 +198,15 @@ namespace MetricsDiscoveryInternal
         virtual TCompletionCode ForceSupportDisable();
         virtual TCompletionCode SendSupportEnableEscape( bool enable );
         virtual TCompletionCode SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM param, GTDIDeviceInfoParamExtOut* out, CMetricsDevice* metricsDevice = nullptr );
-        virtual TCompletionCode SendPmRegsConfig( TRegister** regVector, const uint32_t regCount, const uint32_t apiMask, const uint32_t subDeviceIndex );
+        virtual TCompletionCode GetMaxMinOaBufferSize( const GTDI_OA_BUFFER_TYPE oaBufferType, const GTDI_DEVICE_PARAM param, GTDIDeviceInfoParamExtOut& out );
+        virtual TCompletionCode SendPmRegsConfig( TRegister** regVector, const uint32_t regCount, const uint32_t apiMask, const uint32_t subDeviceIndex, const GTDI_OA_BUFFER_TYPE oaBufferType );
         virtual TCompletionCode SendReadRegsConfig( TRegister** regVector, uint32_t regCount, uint32_t apiMask );
         virtual TCompletionCode GetPmRegsConfigHandles( uint32_t configId, uint32_t* oaConfigHandle, uint32_t* gpConfigHandle, uint32_t* rrConfigHandle );
         virtual TCompletionCode ValidatePmRegsConfig( TRegister* regVector, uint32_t regCount, uint32_t platformId );
         virtual TCompletionCode GetGpuCpuTimestamps( CMetricsDevice& device, uint64_t* gpuTimestamp, uint64_t* cpuTimestamp, uint32_t* cpuId, uint64_t* correlationIndicator );
         virtual TCompletionCode SendGetCtxIdTagsEscape( TGetCtxTagsIdParams* params );
         virtual uint32_t        GetAdapterId();
+        virtual bool            IsOaBufferSupported( const GTDI_OA_BUFFER_TYPE oaBufferType, CMetricsDevice* metricsDevice = nullptr );
         TCompletionCode         GetOaTimestamp( const uint64_t csTimestamp, uint64_t& oaTimestamp );
 
         // Synchronization
@@ -212,11 +214,11 @@ namespace MetricsDiscoveryInternal
         virtual TCompletionCode UnlockConcurrentGroup( const char* name, void** semaphore );
 
         // Stream
-        virtual TCompletionCode OpenIoStream( const TStreamType streamType, const GTDI_OA_BUFFER_TYPE oaBufferType, CMetricsDevice& metricsDevice, CMetricSet* metricSet, const char* concurrentGroupName, uint32_t processId, uint32_t* nsTimerPeriod, uint32_t* bufferSize, void** streamEventHandle );
-        virtual TCompletionCode ReadIoStream( const TStreamType streamType, const GTDI_OA_BUFFER_TYPE oaBufferType, CMetricsDevice& metricDevice, CMetricSet* metricSet, char* reportData, uint32_t* reportsCount, uint32_t readFlags, uint32_t* frequency, GTDIReadCounterStreamExceptions* exceptions );
-        virtual TCompletionCode CloseIoStream( const TStreamType streamType, const GTDI_OA_BUFFER_TYPE oaBufferType, CMetricsDevice& metricDevice, void** openStreamEventHandle, const char* concurrentGroupName, CMetricSet* metricSet );
-        virtual TCompletionCode HandleIoStreamExceptions( const char* concurrentGroupName, CMetricSet* metricSet, uint32_t processId, uint32_t* reportCount, GTDIReadCounterStreamExceptions* exceptions, const GTDI_OA_BUFFER_TYPE oaBufferType );
-        virtual TCompletionCode WaitForIoStreamReports( const TStreamType streamType, CMetricsDevice& metricDevice, uint32_t milliseconds, void* streamEventHandle );
+        virtual TCompletionCode OpenIoStream( COAConcurrentGroup& oaConcurrentGroup, const uint32_t processId, uint32_t& nsTimerPeriod, uint32_t& bufferSize );
+        virtual TCompletionCode ReadIoStream( COAConcurrentGroup& oaConcurrentGroup, const uint32_t readFlags, char* reportData, uint32_t& reportsCount, uint32_t& frequency, GTDIReadCounterStreamExceptions& exceptions );
+        virtual TCompletionCode CloseIoStream( COAConcurrentGroup& oaConcurrentGroup );
+        virtual TCompletionCode HandleIoStreamExceptions( COAConcurrentGroup& oaConcurrentGroup, const uint32_t processId, uint32_t& reportCount, const GTDIReadCounterStreamExceptions exceptions );
+        virtual TCompletionCode WaitForIoStreamReports( COAConcurrentGroup& oaConcurrentGroup, const uint32_t milliseconds );
         virtual bool            IsIoMeasurementInfoAvailable( const TIoMeasurementInfoType ioMeasurementInfoType );
         virtual bool            IsStreamTypeSupported( const TStreamType streamType );
 
@@ -236,10 +238,10 @@ namespace MetricsDiscoveryInternal
         void            ReadPerfCapabilities();
         void            ResetPerfCapabilities();
         void            PrintPerfCapabilities();
-        TCompletionCode OpenPerfStream( CMetricsDevice& metricDevice, uint32_t perfMetricSetId, uint32_t perfReportType, uint32_t timerPeriodExponent, uint32_t bufferSize, const GTDI_OA_BUFFER_TYPE oaBufferType );
-        TCompletionCode ReadPerfStream( CMetricsDevice& metricDevice, uint32_t oaReportSize, uint32_t reportsToRead, char* reportData, uint32_t* readBytes, bool* reportLostOccured );
-        TCompletionCode ClosePerfStream( CMetricsDevice& metricDevice );
-        TCompletionCode FlushPerfStream( CMetricsDevice& metricDevice );
+        TCompletionCode OpenPerfStream( CMetricsDevice& metricsDevice, uint32_t perfMetricSetId, uint32_t perfReportType, uint32_t timerPeriodExponent, uint32_t bufferSize, const GTDI_OA_BUFFER_TYPE oaBufferType );
+        TCompletionCode ReadPerfStream( CMetricsDevice& metricsDevice, uint32_t oaReportSize, uint32_t reportsToRead, char* reportData, uint32_t* readBytes, bool* reportLostOccured );
+        TCompletionCode ClosePerfStream( CMetricsDevice& metricsDevice );
+        TCompletionCode FlushPerfStream( CMetricsDevice& metricsDevice );
         TCompletionCode WaitForPerfStreamReports( CMetricsDevice& metricsDevice, uint32_t timeoutMs );
         std::string     GenerateQueryGuid( const uint32_t subDeviceIndex );
         TCompletionCode AddPerfConfig( TRegister** regVector, uint32_t regCount, const char* requestedGuid, int32_t* addedConfigId );
@@ -250,6 +252,7 @@ namespace MetricsDiscoveryInternal
         uint32_t        GetPerfReportType( const TReportType reportType );
         TCompletionCode GetOaTimestampFrequency( uint64_t& frequency );
         TCompletionCode GetCsTimestampFrequency( uint64_t& frequency );
+        bool            IsOamSupported();
         bool            IsOamRequested( const uint32_t reportType );
 
         // DRM
@@ -278,9 +281,10 @@ namespace MetricsDiscoveryInternal
         TCompletionCode GetGpuFrequencyInfo( uint64_t* minFrequency, uint64_t* maxFrequency, uint64_t* actFrequency, uint64_t* boostFrequency );
         TCompletionCode GetGpuTimestampFrequency( uint64_t* gpuTimestampFrequency );
         TCompletionCode GetGpuTimestampPeriodNs( uint64_t* gpuTimestampPeriodNs );
-        TCompletionCode GetGpuTimestampNs( uint64_t* gpuTimestampNs );
+        TCompletionCode GetGpuTimestampNs( CMetricsDevice& metricsDevice, uint64_t* gpuTimestampNs );
         TCompletionCode GetGpuTimestampTicks( uint64_t* gpuTimestampTicks );
         TCompletionCode GetCpuTimestampNs( uint64_t* cpuTimestampNs );
+        TCompletionCode GetOaBufferCount( CMetricsDevice& metricsDevice, uint32_t& oaBufferCount );
 
         // Device info utils
         uint32_t   GetGtMaxSubslicePerSlice();

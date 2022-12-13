@@ -220,14 +220,14 @@ namespace MetricsDiscoveryInternal
     //     Constructor.
     //
     // Input:
-    //     CMetricsDevice * device     - parent metrics device
-    //     const char * name           - concurrent group name
-    //     const char * description    - concurrent group description
-    //     uint32_t measurementTypeMask - measurement type mask
+    //     CMetricsDevice* device              - parent metrics device
+    //     const char*     name                - concurrent group name
+    //     const char*     description         - concurrent group description
+    //     const uint32_t  measurementTypeMask - measurement type mask
     //
     //////////////////////////////////////////////////////////////////////////////
-    CConcurrentGroup::CConcurrentGroup( CMetricsDevice* device, const char* name, const char* description, uint32_t measurementTypeMask )
-        : m_isAvailabile( true )
+    CConcurrentGroup::CConcurrentGroup( CMetricsDevice* device, const char* name, const char* description, const uint32_t measurementTypeMask )
+        : m_params_1_0{}
         , m_semaphore( nullptr )
         , m_setsVector()
         , m_otherSetsList()
@@ -236,7 +236,7 @@ namespace MetricsDiscoveryInternal
         , m_informationCount( 0 )
         , m_device( device )
     {
-        const uint32_t adapterId = OBTAIN_ADAPTER_ID( m_device );
+        const uint32_t adapterId = OBTAIN_ADAPTER_ID( device );
 
         m_params_1_0.SymbolName                    = GetCopiedCString( name, adapterId );
         m_params_1_0.Description                   = GetCopiedCString( description, adapterId );
@@ -266,10 +266,12 @@ namespace MetricsDiscoveryInternal
     {
         MD_SAFE_DELETE_ARRAY( m_params_1_0.SymbolName );
         MD_SAFE_DELETE_ARRAY( m_params_1_0.Description );
-        ClearVector( m_informationVector );
-        ClearVector( m_otherInformationVector );
+
         ClearVector( m_setsVector );
         ClearList( m_otherSetsList );
+
+        ClearVector( m_informationVector );
+        ClearVector( m_otherInformationVector );
     }
 
     //////////////////////////////////////////////////////////////////////////////
@@ -287,12 +289,12 @@ namespace MetricsDiscoveryInternal
     //     const char *      symbolicName          -
     //     const char *      shortName             -
     //     uint32_t          apiMask               -
-    //     TMetricCategory   category              - metric set category
+    //     uint32_t          categoryMask          -
     //     uint32_t          snapshotReportSize    -
     //     uint32_t          deltaReportSize       -
     //     TReportType       reportType            -
-    //     const char *      availabilityEquation  -
     //     TByteArrayLatest* platformMask          -
+    //     const char*       availabilityEquation  -
     //     uint32_t          gtMask                -
     //     bool              isCustom              -
     //
@@ -428,14 +430,15 @@ namespace MetricsDiscoveryInternal
     //     Adds a new information to the metric set. Null if failed.
     //
     // Input:
-    //     const char * symbolicName           -
-    //     const char * shortName              -
-    //     const char * longName               -
-    //     const char * groupName              -
-    //     uint32_t     apiMask                -
-    //     TInformationType informationType    -
-    //     const char*  availabilityEquation   -
-    //     uint32_t informationXmlId           -
+    //     const char*      symbolicName           -
+    //     const char*      shortName              -
+    //     const char*      longName               -
+    //     const char*      groupName              -
+    //     uint32_t         apiMask                -
+    //     TInformationType informationType        -
+    //     const char*      informationUnits       -
+    //     const char*      availabilityEquation   -
+    //     uint32_t         informationXmlId       -
     //
     // Output:
     //     CInformation*   - pointer to the newly created information
@@ -505,7 +508,7 @@ namespace MetricsDiscoveryInternal
     //     Returns the chosen information or nullptr if index doesn't exist.
     //
     // Input:
-    //     uint32_t     index  - index of an information
+    //     uint32_t index      - index of an information
     //
     // Output:
     //     IInformation_1_0*   - chosen information or nullptr
@@ -643,10 +646,10 @@ namespace MetricsDiscoveryInternal
     //     Writes concurrent group to file.
     //
     // Input:
-    //     FILE* metricFile    - handle to metric file file
+    //     FILE* metricFile - handle to metric file file
     //
     // Output:
-    //     TCompletionCode - result of operation
+    //     TCompletionCode  - result of operation
     //
     //////////////////////////////////////////////////////////////////////////////
     TCompletionCode CConcurrentGroup::WriteCConcurrentGroupToFile( FILE* metricFile )
@@ -708,7 +711,6 @@ namespace MetricsDiscoveryInternal
     //     uint32_t           gtMask                 -
     //     uint32_t           rawReportSize          -
     //     uint32_t           queryReportSize        -
-    //     uint32_t           complementarySetsCount -
     //     const char*        complementarySetsList  - comma separated copmlementary sets list
     //     TApiSpecificId_1_0 apiSpecificId          -
     //     TRegisterSet*      startRegSets           -
@@ -718,7 +720,7 @@ namespace MetricsDiscoveryInternal
     //     bool               copyInformationOnly    -
     //
     // Output:
-    //     IMetricSetLatest* - added metric set
+    //     IMetricSetLatest*                         - added metric set
     //
     //////////////////////////////////////////////////////////////////////////////
     IMetricSetLatest* CConcurrentGroup::AddCustomMetricSet( CMetricSet* referenceMetricSet, const char* signalName, const char* symbolName, const char* shortName, uint32_t apiMask, uint32_t categoryMask, TByteArrayLatest* platformMask, uint32_t gtMask, uint32_t rawReportSize, uint32_t queryReportSize, const char* complementarySetsList, TApiSpecificId_1_0 apiSpecificId, TRegisterSet* startRegSets, uint32_t startRegSetsCount, const char* availabilityEquation, TReportType reportType, bool copyInformationOnly /*= false*/ )
@@ -854,7 +856,7 @@ namespace MetricsDiscoveryInternal
     //     uint32_t            startRegSetsCount -
     //
     // Output:
-    //     bool                - true if valid
+    //     bool - true if valid
     //
     //////////////////////////////////////////////////////////////////////////////
     bool CConcurrentGroup::AreMetricSetParamsValid( const char* symbolName, const char* shortName, TByteArrayLatest* platformMask, uint32_t gtMask, TRegisterSet* startRegSets, uint32_t startRegSetsCount )
@@ -970,8 +972,8 @@ namespace MetricsDiscoveryInternal
     //     won't block each other.
     //
     // Input:
-    //     char*  name - buffer for the name
-    //     size_t size - size of the name buffer
+    //     char*  name     - buffer for the name
+    //     size_t size     - size of the name buffer
     //
     // Output:
     //     TCompletionCode - CC_OK means success

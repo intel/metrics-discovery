@@ -58,7 +58,7 @@ namespace MetricsDiscoveryInternal
 
     public:
         // Constructor & Destructor:
-        CConcurrentGroup( CMetricsDevice* device, const char* name, const char* longName, uint32_t measurementTypeMask );
+        CConcurrentGroup( CMetricsDevice* device, const char* name, const char* longName, const uint32_t measurementTypeMask );
         virtual ~CConcurrentGroup();
 
         // Non-API:
@@ -85,9 +85,6 @@ namespace MetricsDiscoveryInternal
 
         CMetricSet* FindSameMetricSetForPlatform( CMetricSet* metricSet, const TByteArrayLatest* platformMask, const uint32_t gtMask );
 
-    public:
-        bool m_isAvailabile;
-
     protected:
         // Variables:
         TConcurrentGroupParamsLatest m_params_1_0;
@@ -104,9 +101,9 @@ namespace MetricsDiscoveryInternal
 
     protected:
         // Static variables:
-        static const uint32_t    SETS_VECTOR_INCREASE           = 16;
-        static const uint32_t    INFORMATION_VECTOR_INCREASE    = 16;
-        static const TReportType DEFAULT_METRIC_SET_REPORT_TYPE = OA_REPORT_TYPE_256B_A45_NOA16;
+        static constexpr uint32_t    SETS_VECTOR_INCREASE           = 16;
+        static constexpr uint32_t    INFORMATION_VECTOR_INCREASE    = 16;
+        static constexpr TReportType DEFAULT_METRIC_SET_REPORT_TYPE = OA_REPORT_TYPE_256B_A45_NOA16;
     };
 
 } // namespace MetricsDiscoveryInternal

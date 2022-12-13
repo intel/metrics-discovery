@@ -15,7 +15,7 @@ SPDX-License-Identifier: MIT
 #include "md_types.h"
 
 #include <cstdio>
-#include <vector>
+#include <unordered_map>
 
 using namespace MetricsDiscovery;
 
@@ -48,7 +48,7 @@ namespace MetricsDiscoveryInternal
         TGlobalSymbolLatest* GetSymbol( uint32_t index );
         TTypedValueLatest*   GetSymbolValueByName( const char* name );
         TCompletionCode      AddSymbol( const char* name, TTypedValueLatest typedValue, TSymbolType symbolType );
-        TCompletionCode      DetectSymbolValue( const char* name, TTypedValueLatest* typedValue );
+        TCompletionCode      DetectSymbolValue( std::string_view name, TTypedValueLatest* typedValue );
         TCompletionCode      AddSymbolUINT32( const char* name, uint32_t value, TSymbolType symbolType );
         TCompletionCode      AddSymbolUINT64( const char* name, uint64_t value, TSymbolType symbolType );
         TCompletionCode      AddSymbolBOOL( const char* name, bool value, TSymbolType symbolType );
@@ -56,26 +56,26 @@ namespace MetricsDiscoveryInternal
         TCompletionCode      AddSymbolCSTRING( const char* name, char* value, TSymbolType symbolType );
         TCompletionCode      AddSymbolBYTEARRAY( const char* name, TByteArrayLatest* value, TSymbolType symbolType );
         TCompletionCode      WriteSymbolSetToFile( FILE* metricFile );
-        bool                 IsSymbolAlreadyAdded( const char* symbolName );
+        bool                 IsSymbolAlreadyAdded( std::string_view symbolName );
         TCompletionCode      RedetectSymbol( const char* name );
 
     private:
         bool            IsPavpDisabled( uint32_t capabilities );
         TCompletionCode UnpackMask( const TGlobalSymbol* symbol );
         TCompletionCode DetectMaxSlicesInfo();
-        bool            IsSymbolNameSupported( const char* name );
+        bool            IsSymbolNameSupported( std::string_view name );
 
     private:
         // Variables:
-        std::vector<TGlobalSymbol*> m_symbolVector;
-        CMetricsDevice&             m_metricsDevice;
-        CDriverInterface&           m_driverInterface;
-        uint32_t                    m_maxSlice;
-        uint32_t                    m_maxSubslicePerSlice;
-        uint32_t                    m_maxDualSubslicePerSlice;
+        std::unordered_map<std::string_view, TGlobalSymbol*> m_symbolMap;
+        CMetricsDevice&                                      m_metricsDevice;
+        CDriverInterface&                                    m_driverInterface;
+        uint32_t                                             m_maxSlice;
+        uint32_t                                             m_maxSubslicePerSlice;
+        uint32_t                                             m_maxDualSubslicePerSlice;
 
     private:
         // Static variables:
-        static const uint32_t SYMBOLS_VECTOR_INCREASE = 32;
+        static constexpr uint32_t SYMBOLS_MAP_INCREASE = 32;
     };
 } // namespace MetricsDiscoveryInternal

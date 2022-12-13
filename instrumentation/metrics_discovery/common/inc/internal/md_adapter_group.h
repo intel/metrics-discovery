@@ -82,10 +82,10 @@ namespace MetricsDiscoveryInternal
 
     private:
         // Static Variables:
-        static void*          m_openCloseSemaphore;
-        static uint32_t       m_agRefCounter;
-        static CAdapterGroup* m_adapterGroup;
+        inline static void*          m_openCloseSemaphore = nullptr;
+        inline static uint32_t       m_agRefCounter       = 0;
+        inline static CAdapterGroup* m_adapterGroup       = nullptr;
 
-        static const uint32_t ADAPTER_VECTOR_INCREASE = 8;
+        static constexpr uint32_t ADAPTER_VECTOR_INCREASE = 8;
     };
 } // namespace MetricsDiscoveryInternal

@@ -191,7 +191,19 @@ namespace MetricsDiscoveryInternal
 
     public:
         // Constructor & Destructor:
-        CMetricSet( CMetricsDevice* device, CConcurrentGroup* concurrentGroup, const char* symbolicName, const char* shortName, uint32_t apiMask, uint32_t category, uint32_t snapshotReportSize, uint32_t deltaReportSize, TReportType reportType, TByteArrayLatest* platformMask, uint32_t gtMask = GT_TYPE_ALL, bool isCustom = false );
+        CMetricSet(
+            CMetricsDevice*   device,
+            CConcurrentGroup* concurrentGroup,
+            const char*       symbolicName,
+            const char*       shortName,
+            uint32_t          apiMask,
+            uint32_t          categoryMask,
+            uint32_t          snapshotReportSize,
+            uint32_t          deltaReportSize,
+            TReportType       reportType,
+            TByteArrayLatest* platformMask,
+            uint32_t          gtMask   = GT_TYPE_ALL,
+            bool              isCustom = false );
         virtual ~CMetricSet();
 
         // Non-API:
@@ -218,11 +230,13 @@ namespace MetricsDiscoveryInternal
 
         TCompletionCode ActivateInternal( bool sendConfigFlag, bool sendQueryConfigFlag );
 
-        TReportType         GetReportType();
-        TCompletionCode     InheritFromMetricSet( CMetricSet* referenceMetricSet, const char* signalName, bool copyInformationOnly );
-        TCompletionCode     WriteCMetricSetToFile( FILE* metricFile );
-        bool                IsMetricAlreadyAdded( const char* symbolName );
-        bool                IsCustom();
+        TReportType     GetReportType();
+        TCompletionCode InheritFromMetricSet( CMetricSet* referenceMetricSet, const char* signalName, bool copyInformationOnly );
+        TCompletionCode WriteCMetricSetToFile( FILE* metricFile );
+        bool            IsMetricAlreadyAdded( const char* symbolName );
+        bool            IsCustom();
+
+        CConcurrentGroup*   GetConcurrentGroup();
         CMetricsCalculator* GetMetricsCalculator();
         CMetricsDevice*     GetMetricsDevice();
         TByteArrayLatest*   GetPlatformMask();
@@ -291,11 +305,11 @@ namespace MetricsDiscoveryInternal
 
     private:
         // Static variables:
-        static const uint32_t METRICS_VECTOR_INCREASE            = 64;
-        static const uint32_t INFORMATION_VECTOR_INCREASE        = 16;
-        static const uint32_t COMPLEMENTARY_SETS_VECTOR_INCREASE = 16;
-        static const uint32_t START_REGS_VECTOR_INCREASE         = 128;
-        static const uint32_t START_REGS_QUERY_VECTOR_INCREASE   = 16;
-        static const uint32_t STOP_REGS_VECTOR_INCREASE          = 32;
+        static constexpr uint32_t METRICS_VECTOR_INCREASE            = 64;
+        static constexpr uint32_t INFORMATION_VECTOR_INCREASE        = 16;
+        static constexpr uint32_t COMPLEMENTARY_SETS_VECTOR_INCREASE = 16;
+        static constexpr uint32_t START_REGS_VECTOR_INCREASE         = 128;
+        static constexpr uint32_t START_REGS_QUERY_VECTOR_INCREASE   = 16;
+        static constexpr uint32_t STOP_REGS_VECTOR_INCREASE          = 32;
     };
 } // namespace MetricsDiscoveryInternal

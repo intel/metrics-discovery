@@ -23,6 +23,7 @@ SPDX-License-Identifier: MIT
 #include <new>
 #include <vector>
 #include <list>
+#include <unordered_map>
 
 #define MD_EMPTY
 
@@ -89,8 +90,8 @@ SPDX-License-Identifier: MIT
 #define MD_BITMASK_RANGE( startbit, endbit ) ( MD_BITMASK( ( endbit ) + 1 ) & ~MD_BITMASK( startbit ) )
 #define MD_BITS_PER_BYTE                     ( 8 )
 
-#define MD_SECOND_IN_NS       1000000000ULL
-#define MD_GPU_TIMESTAMP_MASK MD_BITMASK( 32 )
+#define MD_SECOND_IN_NS          1000000000ULL
+#define MD_GPU_TIMESTAMP_MASK_32 MD_BITMASK( 32 )
 
 #define MD_BYTE_ARRAY_MAGIC_NUMBER 0xFFED8B17
 
@@ -120,6 +121,7 @@ namespace MetricsDiscoveryInternal
     std::string       GetStringFromByteArray( const TByteArrayLatest* byteArray, const uint32_t adapterId );
     char*             GetCopiedCString( const char* cstring, const uint32_t adapterId );
     char*             GetCopiedCStringFromWcString( const wchar_t* wcstring, const uint32_t adapterId );
+    const char*       GetCStringFromStringView( std::string_view stringView );
 
     void WriteByteArrayToFile( const TByteArrayLatest* byteArray, FILE* pFile, const uint32_t adapterId );
     void WriteCStringToFile( const char* cstring, FILE* pFile, const uint32_t adapterId );
@@ -289,6 +291,8 @@ namespace MetricsDiscoveryInternal
     void ClearList( std::list<T>& list );
     template <typename T>
     void ClearList( std::list<T*>& list );
+    template <typename Key, typename Value>
+    void ClearUnorderedMap( std::unordered_map<Key, Value*>& unordered_map );
 
     ///////////////////////////////////////////////////////////////////////////////
     // List node template:                                                        //

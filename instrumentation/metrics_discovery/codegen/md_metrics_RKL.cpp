@@ -8581,7 +8581,7 @@ static TCompletionCode CreateMetricSet_RKL_TestOa( CMetricsDevice* metricsDevice
     return CC_OK;
 }
 
-static TCompletionCode CreateMetricSet_RKL_CoarseAsyncCompute( CMetricsDevice* metricsDevice, CConcurrentGroup* concurrentGroup, TByteArrayLatest* platformMask )
+static TCompletionCode CreateMetricSet_RKL_AsyncCompute( CMetricsDevice* metricsDevice, CConcurrentGroup* concurrentGroup, TByteArrayLatest* platformMask )
 {
     const uint32_t adapterId            = OBTAIN_ADAPTER_ID( metricsDevice );
     CMetricSet*    metricSet            = nullptr;
@@ -8589,7 +8589,7 @@ static TCompletionCode CreateMetricSet_RKL_CoarseAsyncCompute( CMetricsDevice* m
     CInformation*  information          = nullptr;
     const char*    availabilityEquation = nullptr;
 
-    metricSet = concurrentGroup->AddMetricSet( "CoarseAsyncCompute", "CoarseAsyncCompute", API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_OGL4_X|API_TYPE_VULKAN|API_TYPE_IOSTREAM,
+    metricSet = concurrentGroup->AddMetricSet( "AsyncCompute", "AsyncCompute", API_TYPE_OGL|API_TYPE_OGL4_X|API_TYPE_OGL4_X|API_TYPE_VULKAN|API_TYPE_IOSTREAM,
         GPU_RENDER|GPU_COMPUTE|GPU_MEDIA|GPU_GENERIC, 256, 672, OA_REPORT_TYPE_256B_A45_NOA16, platformMask, nullptr );
     MD_CHECK_PTR_RET_A( adapterId, metricSet, CC_ERROR_GENERAL );
 
@@ -8724,8 +8724,8 @@ static TCompletionCode CreateMetricSet_RKL_CoarseAsyncCompute( CMetricsDevice* m
         METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 10 );
     if( metric )
     {
-        MD_CHECK_CC_RET_A( adapterId, metric->SetSnapshotReportReadEquation( "4 rd40@0x34:0xa9 UMUL" ));
-        MD_CHECK_CC_RET_A( adapterId, metric->SetDeltaReportReadEquation( "4 qw@0x58 UMUL" ));
+        MD_CHECK_CC_RET_A( adapterId, metric->SetSnapshotReportReadEquation( "rd40@0x2c:0xa7" ));
+        MD_CHECK_CC_RET_A( adapterId, metric->SetDeltaReportReadEquation( "qw@0x48" ));
         MD_CHECK_CC_RET_A( adapterId, metric->SetNormalizationEquation( "EuAggrDuration" ));
         MD_CHECK_CC_RET_A( adapterId, metric->SetSnapshotReportDeltaFunction( "DELTA 40" ));
         MD_CHECK_CC_RET_A( adapterId, metric->SetMaxValueEquation( "100" ));
@@ -8738,8 +8738,8 @@ static TCompletionCode CreateMetricSet_RKL_CoarseAsyncCompute( CMetricsDevice* m
         METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 11 );
     if( metric )
     {
-        MD_CHECK_CC_RET_A( adapterId, metric->SetSnapshotReportReadEquation( "4 rd40@0x44:0xad UMUL" ));
-        MD_CHECK_CC_RET_A( adapterId, metric->SetDeltaReportReadEquation( "4 qw@0x78 UMUL" ));
+        MD_CHECK_CC_RET_A( adapterId, metric->SetSnapshotReportReadEquation( "rd40@0x30:0xa8" ));
+        MD_CHECK_CC_RET_A( adapterId, metric->SetDeltaReportReadEquation( "qw@0x50" ));
         MD_CHECK_CC_RET_A( adapterId, metric->SetNormalizationEquation( "EuAggrDuration" ));
         MD_CHECK_CC_RET_A( adapterId, metric->SetSnapshotReportDeltaFunction( "DELTA 40" ));
         MD_CHECK_CC_RET_A( adapterId, metric->SetMaxValueEquation( "100" ));
@@ -8752,8 +8752,8 @@ static TCompletionCode CreateMetricSet_RKL_CoarseAsyncCompute( CMetricsDevice* m
         METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 12 );
     if( metric )
     {
-        MD_CHECK_CC_RET_A( adapterId, metric->SetSnapshotReportReadEquation( "4 rd40@0x3c:0xab UMUL" ));
-        MD_CHECK_CC_RET_A( adapterId, metric->SetDeltaReportReadEquation( "4 qw@0x68 UMUL" ));
+        MD_CHECK_CC_RET_A( adapterId, metric->SetSnapshotReportReadEquation( "rd40@0x34:0xa9" ));
+        MD_CHECK_CC_RET_A( adapterId, metric->SetDeltaReportReadEquation( "qw@0x58" ));
         MD_CHECK_CC_RET_A( adapterId, metric->SetNormalizationEquation( "EuAggrDuration" ));
         MD_CHECK_CC_RET_A( adapterId, metric->SetSnapshotReportDeltaFunction( "DELTA 40" ));
         MD_CHECK_CC_RET_A( adapterId, metric->SetMaxValueEquation( "100" ));
@@ -8766,8 +8766,8 @@ static TCompletionCode CreateMetricSet_RKL_CoarseAsyncCompute( CMetricsDevice* m
         METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 13 );
     if( metric )
     {
-        MD_CHECK_CC_RET_A( adapterId, metric->SetSnapshotReportReadEquation( "4 rd40@0x4c:0xaf UMUL" ));
-        MD_CHECK_CC_RET_A( adapterId, metric->SetDeltaReportReadEquation( "4 qw@0x88 UMUL" ));
+        MD_CHECK_CC_RET_A( adapterId, metric->SetSnapshotReportReadEquation( "rd40@0x38:0xaa" ));
+        MD_CHECK_CC_RET_A( adapterId, metric->SetDeltaReportReadEquation( "qw@0x60" ));
         MD_CHECK_CC_RET_A( adapterId, metric->SetNormalizationEquation( "EuAggrDuration" ));
         MD_CHECK_CC_RET_A( adapterId, metric->SetSnapshotReportDeltaFunction( "DELTA 40" ));
         MD_CHECK_CC_RET_A( adapterId, metric->SetMaxValueEquation( "100" ));
@@ -8780,8 +8780,8 @@ static TCompletionCode CreateMetricSet_RKL_CoarseAsyncCompute( CMetricsDevice* m
         METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 14 );
     if( metric )
     {
-        MD_CHECK_CC_RET_A( adapterId, metric->SetSnapshotReportReadEquation( "4 rd40@0x38:0xaa UMUL" ));
-        MD_CHECK_CC_RET_A( adapterId, metric->SetDeltaReportReadEquation( "4 qw@0x60 UMUL" ));
+        MD_CHECK_CC_RET_A( adapterId, metric->SetSnapshotReportReadEquation( "rd40@0x3c:0xab" ));
+        MD_CHECK_CC_RET_A( adapterId, metric->SetDeltaReportReadEquation( "qw@0x68" ));
         MD_CHECK_CC_RET_A( adapterId, metric->SetNormalizationEquation( "EuAggrDuration" ));
         MD_CHECK_CC_RET_A( adapterId, metric->SetSnapshotReportDeltaFunction( "DELTA 40" ));
         MD_CHECK_CC_RET_A( adapterId, metric->SetMaxValueEquation( "100" ));
@@ -8794,8 +8794,8 @@ static TCompletionCode CreateMetricSet_RKL_CoarseAsyncCompute( CMetricsDevice* m
         METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 15 );
     if( metric )
     {
-        MD_CHECK_CC_RET_A( adapterId, metric->SetSnapshotReportReadEquation( "4 rd40@0x48:0xae UMUL" ));
-        MD_CHECK_CC_RET_A( adapterId, metric->SetDeltaReportReadEquation( "4 qw@0x80 UMUL" ));
+        MD_CHECK_CC_RET_A( adapterId, metric->SetSnapshotReportReadEquation( "rd40@0x40:0xac" ));
+        MD_CHECK_CC_RET_A( adapterId, metric->SetDeltaReportReadEquation( "qw@0x70" ));
         MD_CHECK_CC_RET_A( adapterId, metric->SetNormalizationEquation( "EuAggrDuration" ));
         MD_CHECK_CC_RET_A( adapterId, metric->SetSnapshotReportDeltaFunction( "DELTA 40" ));
         MD_CHECK_CC_RET_A( adapterId, metric->SetMaxValueEquation( "100" ));
@@ -8808,8 +8808,8 @@ static TCompletionCode CreateMetricSet_RKL_CoarseAsyncCompute( CMetricsDevice* m
         METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 16 );
     if( metric )
     {
-        MD_CHECK_CC_RET_A( adapterId, metric->SetSnapshotReportReadEquation( "4 rd40@0x40:0xac UMUL" ));
-        MD_CHECK_CC_RET_A( adapterId, metric->SetDeltaReportReadEquation( "4 qw@0x70 UMUL" ));
+        MD_CHECK_CC_RET_A( adapterId, metric->SetSnapshotReportReadEquation( "rd40@0x44:0xad" ));
+        MD_CHECK_CC_RET_A( adapterId, metric->SetDeltaReportReadEquation( "qw@0x78" ));
         MD_CHECK_CC_RET_A( adapterId, metric->SetNormalizationEquation( "EuAggrDuration" ));
         MD_CHECK_CC_RET_A( adapterId, metric->SetSnapshotReportDeltaFunction( "DELTA 40" ));
         MD_CHECK_CC_RET_A( adapterId, metric->SetMaxValueEquation( "100" ));
@@ -8822,8 +8822,8 @@ static TCompletionCode CreateMetricSet_RKL_CoarseAsyncCompute( CMetricsDevice* m
         METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 17 );
     if( metric )
     {
-        MD_CHECK_CC_RET_A( adapterId, metric->SetSnapshotReportReadEquation( "4 rd40@0x50:0xb0 UMUL" ));
-        MD_CHECK_CC_RET_A( adapterId, metric->SetDeltaReportReadEquation( "4 qw@0x90 UMUL" ));
+        MD_CHECK_CC_RET_A( adapterId, metric->SetSnapshotReportReadEquation( "rd40@0x48:0xae" ));
+        MD_CHECK_CC_RET_A( adapterId, metric->SetDeltaReportReadEquation( "qw@0x80" ));
         MD_CHECK_CC_RET_A( adapterId, metric->SetNormalizationEquation( "EuAggrDuration" ));
         MD_CHECK_CC_RET_A( adapterId, metric->SetSnapshotReportDeltaFunction( "DELTA 40" ));
         MD_CHECK_CC_RET_A( adapterId, metric->SetMaxValueEquation( "100" ));
@@ -8836,8 +8836,8 @@ static TCompletionCode CreateMetricSet_RKL_CoarseAsyncCompute( CMetricsDevice* m
         METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 18 );
     if( metric )
     {
-        MD_CHECK_CC_RET_A( adapterId, metric->SetSnapshotReportReadEquation( "32 rd40@0x54:0xb1 FMUL $EuThreadsCount FDIV" ));
-        MD_CHECK_CC_RET_A( adapterId, metric->SetDeltaReportReadEquation( "32 qw@0x98 FMUL $EuThreadsCount FDIV" ));
+        MD_CHECK_CC_RET_A( adapterId, metric->SetSnapshotReportReadEquation( "8 rd40@0x4c:0xaf FMUL $EuThreadsCount FDIV" ));
+        MD_CHECK_CC_RET_A( adapterId, metric->SetDeltaReportReadEquation( "8 qw@0x88 FMUL $EuThreadsCount FDIV" ));
         MD_CHECK_CC_RET_A( adapterId, metric->SetNormalizationEquation( "EuAggrDuration" ));
         MD_CHECK_CC_RET_A( adapterId, metric->SetSnapshotReportDeltaFunction( "DELTA 40" ));
         MD_CHECK_CC_RET_A( adapterId, metric->SetMaxValueEquation( "100" ));
@@ -8850,8 +8850,8 @@ static TCompletionCode CreateMetricSet_RKL_CoarseAsyncCompute( CMetricsDevice* m
         METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 19 );
     if( metric )
     {
-        MD_CHECK_CC_RET_A( adapterId, metric->SetSnapshotReportReadEquation( "4 rd40@0x2c:0xa7 UMUL" ));
-        MD_CHECK_CC_RET_A( adapterId, metric->SetDeltaReportReadEquation( "4 qw@0x48 UMUL" ));
+        MD_CHECK_CC_RET_A( adapterId, metric->SetSnapshotReportReadEquation( "rd40@0x50:0xb0" ));
+        MD_CHECK_CC_RET_A( adapterId, metric->SetDeltaReportReadEquation( "qw@0x90" ));
         MD_CHECK_CC_RET_A( adapterId, metric->SetNormalizationEquation( "EuAggrDuration" ));
         MD_CHECK_CC_RET_A( adapterId, metric->SetSnapshotReportDeltaFunction( "DELTA 40" ));
         MD_CHECK_CC_RET_A( adapterId, metric->SetMaxValueEquation( "100" ));
@@ -8864,8 +8864,8 @@ static TCompletionCode CreateMetricSet_RKL_CoarseAsyncCompute( CMetricsDevice* m
         METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 20 );
     if( metric )
     {
-        MD_CHECK_CC_RET_A( adapterId, metric->SetSnapshotReportReadEquation( "4 rd40@0x30:0xa8 UMUL" ));
-        MD_CHECK_CC_RET_A( adapterId, metric->SetDeltaReportReadEquation( "4 qw@0x50 UMUL" ));
+        MD_CHECK_CC_RET_A( adapterId, metric->SetSnapshotReportReadEquation( "rd40@0x54:0xb1" ));
+        MD_CHECK_CC_RET_A( adapterId, metric->SetDeltaReportReadEquation( "qw@0x98" ));
         MD_CHECK_CC_RET_A( adapterId, metric->SetNormalizationEquation( "EuAggrDuration" ));
         MD_CHECK_CC_RET_A( adapterId, metric->SetSnapshotReportDeltaFunction( "DELTA 40" ));
         MD_CHECK_CC_RET_A( adapterId, metric->SetMaxValueEquation( "100" ));
@@ -8878,12 +8878,12 @@ static TCompletionCode CreateMetricSet_RKL_CoarseAsyncCompute( CMetricsDevice* m
         MD_CHECK_CC_RET_A( adapterId, metricSet->AddStartConfigRegister( 0xd914, 0x00800000, REGISTER_TYPE_OA ));
         MD_CHECK_CC_RET_A( adapterId, metricSet->AddStartConfigRegister( 0xd920, 0x00000000, REGISTER_TYPE_OA ));
         MD_CHECK_CC_RET_A( adapterId, metricSet->AddStartConfigRegister( 0xdc40, 0x00000000, REGISTER_TYPE_OA ));
-        MD_CHECK_CC_RET_A( adapterId, metricSet->AddStartConfigRegister( 0xe458, 0x00705704, REGISTER_TYPE_FLEX ));
-        MD_CHECK_CC_RET_A( adapterId, metricSet->AddStartConfigRegister( 0xe558, 0x00701700, REGISTER_TYPE_FLEX ));
-        MD_CHECK_CC_RET_A( adapterId, metricSet->AddStartConfigRegister( 0xe658, 0x00751750, REGISTER_TYPE_FLEX ));
-        MD_CHECK_CC_RET_A( adapterId, metricSet->AddStartConfigRegister( 0xe758, 0x00711710, REGISTER_TYPE_FLEX ));
-        MD_CHECK_CC_RET_A( adapterId, metricSet->AddStartConfigRegister( 0xe45c, 0x00761760, REGISTER_TYPE_FLEX ));
-        MD_CHECK_CC_RET_A( adapterId, metricSet->AddStartConfigRegister( 0xe55c, 0x00000708, REGISTER_TYPE_FLEX ));
+        MD_CHECK_CC_RET_A( adapterId, metricSet->AddStartConfigRegister( 0xe458, 0x00010000, REGISTER_TYPE_FLEX ));
+        MD_CHECK_CC_RET_A( adapterId, metricSet->AddStartConfigRegister( 0xe558, 0x00060050, REGISTER_TYPE_FLEX ));
+        MD_CHECK_CC_RET_A( adapterId, metricSet->AddStartConfigRegister( 0xe658, 0x00011001, REGISTER_TYPE_FLEX ));
+        MD_CHECK_CC_RET_A( adapterId, metricSet->AddStartConfigRegister( 0xe758, 0x00061051, REGISTER_TYPE_FLEX ));
+        MD_CHECK_CC_RET_A( adapterId, metricSet->AddStartConfigRegister( 0xe45c, 0x00004008, REGISTER_TYPE_FLEX ));
+        MD_CHECK_CC_RET_A( adapterId, metricSet->AddStartConfigRegister( 0xe55c, 0x00000005, REGISTER_TYPE_FLEX ));
   
     MD_CHECK_CC_RET_A( adapterId, metricSet->RefreshConfigRegisters() );
 
@@ -9104,7 +9104,7 @@ TCompletionCode CreateMetricTreeRKL_OA( CMetricsDevice* metricsDevice, CConcurre
 
         MD_CHECK_CC( CreateMetricSet_RKL_TestOa( metricsDevice, concurrentGroup, &platformMask ) );
 
-        MD_CHECK_CC( CreateMetricSet_RKL_CoarseAsyncCompute( metricsDevice, concurrentGroup, &platformMask ) );
+        MD_CHECK_CC( CreateMetricSet_RKL_AsyncCompute( metricsDevice, concurrentGroup, &platformMask ) );
 
     }
 

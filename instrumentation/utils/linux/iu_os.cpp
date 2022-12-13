@@ -19,9 +19,7 @@ SPDX-License-Identifier: MIT
 #include <stdlib.h>
 #include <string.h>
 
-#if defined( ANDROID )
-    #include <time.h> // for clock_gettime
-#elif defined( __linux )
+#if defined( __linux )
     #include <sys/time.h> // for gettimeofday
 #endif
 
@@ -50,12 +48,7 @@ extern "C"
         uint64_t frequency = 0;
         uint64_t counter   = 0;
 
-#if defined( ANDROID )
-        timespec currentTime;
-        clock_gettime( CLOCK_MONOTONIC, &currentTime );
-        counter   = (uint64_t) currentTime.tv_sec * IU_SECOND_IN_NS + currentTime.tv_nsec; // convert to ns
-        frequency = IU_SECOND_IN_NS;                                                       // unit is nanosecond
-#elif defined( __linux__ )
+#if defined( __linux__ )
         timeval currentTime;
         gettimeofday( &currentTime, 0 );
         counter   = (uint64_t) currentTime.tv_sec * IU_SECOND_IN_US + currentTime.tv_usec; // convert to us

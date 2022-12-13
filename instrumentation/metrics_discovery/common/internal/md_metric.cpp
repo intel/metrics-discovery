@@ -34,25 +34,24 @@ namespace MetricsDiscoveryInternal
     //     Constructor.
     //
     // Input:
-    //     CMetricsDevice * device      -
-    //     uint32_t     id              -
-    //     const char * name            -
-    //     const char * shortName       -
-    //     const char * longName        -
-    //     const char * group           -
-    //     uint32_t groupId             -
-    //     uint32_t usageFlagsMask      -
-    //     uint32_t     apiMask         -
-    //     TMetricType metricType       -
-    //     TMetricResultType resultType -
-    //     const char * units           -
-    //     int64_t loWatermark          -
-    //     int64_t hiWatermark          -
-    //     const char * maxValue        -
-    //     THwUnitType hwType           -
-    //     const char* alias            -
-    //     const char* signalName       -
-    //     bool isCustom                - flag shows that metric was created from function AddCustomMetric
+    //     CMetricsDevice*   device          -
+    //     uint32_t          id              -
+    //     const char*       name            -
+    //     const char*       shortName       -
+    //     const char*       longName        -
+    //     const char*       group           -
+    //     uint32_t          groupId         -
+    //     uint32_t          usageFlagsMask  -
+    //     uint32_t          apiMask         -
+    //     TMetricType       metricType      -
+    //     TMetricResultType resultType      -
+    //     const char*       units           -
+    //     int64_t           loWatermark     -
+    //     int64_t           hiWatermark     -
+    //     THwUnitType       hwType          -
+    //     const char*       alias           -
+    //     const char*       signalName      -
+    //     bool              isCustom        - flag shows that metric was created from AddCustomMetric method
     //
     //////////////////////////////////////////////////////////////////////////////
     CMetric::CMetric( CMetricsDevice* device, uint32_t id, const char* name, const char* shortName, const char* longName, const char* group, uint32_t groupId, uint32_t usageFlagsMask, uint32_t apiMask, TMetricType metricType, TMetricResultType resultType, const char* units, int64_t loWatermark, int64_t hiWatermark, THwUnitType hwType, const char* alias, const char* signalName, bool isCustom )

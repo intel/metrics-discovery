@@ -87,6 +87,7 @@ namespace MetricsDiscoveryInternal
 
         CMetricsDevice* OpenDevice( const uint32_t index );
         CMetricsDevice* OpenDeviceFromFile( const uint32_t index, const char* filename, void* parameters );
+        void            SetRootDevice( CMetricsDevice* metricsDevice );
         void            RemoveDevice( const CMetricsDevice* metricsDevice );
 
     private:

@@ -241,7 +241,7 @@ void __IuLogPrint(
 
     if( ( g_IuLogsControl.LogLevel & IU_DBG_CONSOLE_DUMP ) || ( level & IU_DBG_CONSOLE_DUMP ) )
     {
-        iu_printf( buf, !( g_IuLogsControl.LogLevel & IU_DBG_EOL ) );
+        iu_printf( buf, !( g_IuLogsControl.LogLevel & IU_DBG_EOL ), g_IuLogsControl.LogLevel & IU_DBG_CONSOLE_FLUSH );
     }
 }
 

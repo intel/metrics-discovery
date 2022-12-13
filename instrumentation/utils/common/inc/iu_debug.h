@@ -142,6 +142,9 @@ extern "C"
 // if following flag is set, a new line sign will be inserted at the end of each log
 #define IU_DBG_EOL 0x40000000
 
+// if following flag is set, each debug log will be flushed
+#define IU_DBG_CONSOLE_FLUSH 0x20000000
+
 // layers
 #define IU_DBG_LAYER_INSTR 0x00000001
 #define IU_DBG_LAYER_MD    0x00000002
@@ -197,8 +200,8 @@ extern "C"
 #endif
 
 // generic
-#define _IU_LOG( F, adapter, level, layer, ... )                         F( adapter, level, layer, __VA_ARGS__ )
-#define IU_DBG_PRINT_TAGGED( adapter, level, layer, tag, function, ... ) _IU_LOG( F_##level, adapter, level, layer, tag, function, __VA_ARGS__, "" )
+#define _IU_LOG( F, adapter, level, layer, tag, function, ... )          F( adapter, level, layer, tag, function, __VA_ARGS__ )
+#define IU_DBG_PRINT_TAGGED( adapter, level, layer, tag, function, ... ) _IU_LOG( F_##level, adapter, level, layer, tag, function, __VA_ARGS__ )
 
 ///////////////////////////////////////////////////////////////////////////////
 // compiler-dependent definitions for debug macros

@@ -81,7 +81,7 @@ namespace MetricsDiscoveryInternal
         virtual ~CMetricsDevice();
 
         // Non-API:
-        CConcurrentGroup* AddConcurrentGroup( const char* symbolicName, const char* shortName, uint32_t measurementTypeMask );
+        CConcurrentGroup* AddConcurrentGroup( const char* symbolicName, const char* shortName, const uint32_t measurementTypeMask, bool& isSupported );
         TCompletionCode   AddOverrides();
         bool              IsPlatformTypeOf( TByteArrayLatest* platformMask, uint32_t gtMask = GT_TYPE_ALL );
         bool              IsPavpDisabled( uint32_t capabilities );
@@ -95,6 +95,7 @@ namespace MetricsDiscoveryInternal
         CSymbolSet*       GetSymbolSet();
         uint32_t          GetPlatformIndex();
         bool              IsOpenedFromFile();
+        uint64_t          ConvertGpuTimestampToNs( const uint64_t gpuTimestampTicks, const uint64_t gpuTimestampFrequency );
 
         // Reference counter.
         uint32_t& GetReferenceCounter();
@@ -145,7 +146,7 @@ namespace MetricsDiscoveryInternal
 
     private:
         // Static variables:
-        static const uint32_t GROUPS_VECTOR_INCREASE    = 16;
-        static const uint32_t OVERRIDES_VECTOR_INCREASE = 8;
+        static constexpr uint32_t GROUPS_VECTOR_INCREASE    = 16;
+        static constexpr uint32_t OVERRIDES_VECTOR_INCREASE = 8;
     };
 } // namespace MetricsDiscoveryInternal

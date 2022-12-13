@@ -134,13 +134,13 @@ namespace MetricsDiscoveryInternal
     //     static frequency requires writing to all of these 3 files.
     //
     //////////////////////////////////////////////////////////////////////////////
-    static const char ACT_FREQ_FILE_NAME[] = "gt_act_freq_mhz";
-    static const char MAX_FREQ_FILE_NAME[] = "gt_RP0_freq_mhz";
-    static const char MIN_FREQ_FILE_NAME[] = "gt_RPn_freq_mhz";
+    static constexpr char ACT_FREQ_FILE_NAME[] = "gt_act_freq_mhz";
+    static constexpr char MAX_FREQ_FILE_NAME[] = "gt_RP0_freq_mhz";
+    static constexpr char MIN_FREQ_FILE_NAME[] = "gt_RPn_freq_mhz";
 
-    static const char MAX_FREQ_OV_FILE_NAME[]   = "gt_max_freq_mhz";
-    static const char MIN_FREQ_OV_FILE_NAME[]   = "gt_min_freq_mhz";
-    static const char BOOST_FREQ_OV_FILE_NAME[] = "gt_boost_freq_mhz";
+    static constexpr char MAX_FREQ_OV_FILE_NAME[]   = "gt_max_freq_mhz";
+    static constexpr char MIN_FREQ_OV_FILE_NAME[]   = "gt_min_freq_mhz";
+    static constexpr char BOOST_FREQ_OV_FILE_NAME[] = "gt_boost_freq_mhz";
 
     //////////////////////////////////////////////////////////////////////////////
     //
@@ -1092,14 +1092,19 @@ namespace MetricsDiscoveryInternal
                 break;
 
             case GTDI_DEVICE_PARAM_GPU_TIMESTAMP:
-            {
-                uint64_t gpuTimestampNs = 0;
+                ret = CC_ERROR_NOT_SUPPORTED;
+                break;
 
-                ret = GetGpuTimestampNs( &gpuTimestampNs );
+            case GTDI_DEVICE_PARAM_OA_BUFFERS_COUNT:
+            {
+                MD_CHECK_PTR_RET_A( m_adapterId, metricsDevice, CC_ERROR_INVALID_PARAMETER );
+                uint32_t oaBufferCount = 0;
+
+                ret = GetOaBufferCount( *metricsDevice, oaBufferCount );
                 MD_CHECK_CC_RET_A( m_adapterId, ret );
 
-                out->ValueType   = GTDI_DEVICE_PARAM_VALUE_TYPE_UINT64;
-                out->ValueUint64 = gpuTimestampNs;
+                out->ValueType   = GTDI_DEVICE_PARAM_VALUE_TYPE_UINT32;
+                out->ValueUint32 = oaBufferCount;
                 break;
             }
 
@@ -1108,6 +1113,41 @@ namespace MetricsDiscoveryInternal
         }
 
         return ret;
+    }
+
+    //////////////////////////////////////////////////////////////////////////////
+    //
+    // Class:
+    //     CDriverInterfaceLinuxPerf
+    //
+    // Method:
+    //     GetMaxMinOaBufferSize
+    //
+    // Description:
+    //     Return minimum or maximum oa buffer size.
+    //
+    // Input:
+    //     const GTDI_OA_BUFFER_TYPE  oaBufferType - oa buffer type
+    //     const GTDI_DEVICE_PARAM    param        - chosen param
+    //     GTDIDeviceInfoParamExtOut& out          - (out) escape result
+    //
+    // Output:
+    //     TCompletionCode                         - *CC_OK* means succeess
+    //
+    //////////////////////////////////////////////////////////////////////////////
+    TCompletionCode CDriverInterfaceLinuxPerf::GetMaxMinOaBufferSize( const GTDI_OA_BUFFER_TYPE oaBufferType, const GTDI_DEVICE_PARAM param, GTDIDeviceInfoParamExtOut& out )
+    {
+        switch( param )
+        {
+            case GTDI_DEVICE_PARAM_OA_BUFFER_SIZE_MAX:
+            case GTDI_DEVICE_PARAM_OA_BUFFER_SIZE_MIN:
+                break;
+            default:
+                MD_LOG_A( m_adapterId, LOG_ERROR, "Error: Invalid device param: %u", param );
+                return CC_ERROR_INVALID_PARAMETER;
+        }
+
+        return SendDeviceInfoParamEscape( param, &out );
     }
 
     //////////////////////////////////////////////////////////////////////////////
@@ -1128,16 +1168,17 @@ namespace MetricsDiscoveryInternal
     //     is removed.
     //
     // Input:
-    //     TRegister**      regVector      - array of pointers to registers to program
-    //     const uint32_t   regCount       - register count
-    //     const uint32_t   apiMask        - API mask
-    //     const uint32_t   subDeviceIndex - sub device index
+    //     TRegister**                 regVector      - array of pointers to registers to program
+    //     const uint32_t              regCount       - register count
+    //     const uint32_t              apiMask        - API mask
+    //     const uint32_t              subDeviceIndex - sub device index
+    //     const GTDI_OA_BUFFER_TYPE   oaBufferType   - oa buffer type
     //
     // Output:
-    //     TCompletionCode                 - *CC_OK* means success
+    //     TCompletionCode                            - *CC_OK* means success
     //
     //////////////////////////////////////////////////////////////////////////////
-    TCompletionCode CDriverInterfaceLinuxPerf::SendPmRegsConfig( TRegister** regVector, const uint32_t regCount, const uint32_t apiMask, const uint32_t subDeviceIndex )
+    TCompletionCode CDriverInterfaceLinuxPerf::SendPmRegsConfig( TRegister** regVector, const uint32_t regCount, const uint32_t apiMask, const uint32_t subDeviceIndex, const GTDI_OA_BUFFER_TYPE oaBufferType )
     {
         MD_LOG_ENTER_A( m_adapterId );
         MD_CHECK_PTR_RET_A( m_adapterId, regVector, CC_ERROR_INVALID_PARAMETER );
@@ -1339,7 +1380,7 @@ namespace MetricsDiscoveryInternal
         {
             MD_ASSERT_A( m_adapterId, device.GetSubDeviceIndex() == 0 );
 
-            result = GetGpuTimestampNs( &gpuTimestampNs );
+            result = GetGpuTimestampNs( device, &gpuTimestampNs );
             MD_CHECK_CC_RET_A( m_adapterId, result );
 
             result = GetCpuTimestampNs( &cpuTimestampNs );
@@ -1377,6 +1418,39 @@ namespace MetricsDiscoveryInternal
     {
         // Not supported on Linux Perf - returning CC_OK on purpose
         return CC_ERROR_NOT_SUPPORTED;
+    }
+
+    //////////////////////////////////////////////////////////////////////////////
+    //
+    // Class:
+    //     CDriverInterfaceLinux
+    //
+    // Method:
+    //     IsOaBufferSupported
+    //
+    // Description:
+    //     Returns information is given oa buffer type is supported.
+    //
+    // Input:
+    //     const GTDI_OA_BUFFER_TYPE oaBufferType  - oa buffer type
+    //     CMetricsDevice*           metricsDevice - metrics device
+    //
+    // Output:
+    //     bool                                   - true if supported
+    //
+    //////////////////////////////////////////////////////////////////////////////
+    bool CDriverInterfaceLinuxPerf::IsOaBufferSupported( const GTDI_OA_BUFFER_TYPE oaBufferType, CMetricsDevice* metricsDevice /* = nullptr */ )
+    {
+        GTDIDeviceInfoParamExtOut out = {};
+        auto                      ret = SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_OA_BUFFERS_COUNT, &out, metricsDevice );
+        if( ret != CC_OK )
+        {
+            MD_LOG_A( m_adapterId, LOG_ERROR, "Error: Cannot send GTDI_DEVICE_PARAM_OA_BUFFERS_COUNT escape" );
+            return false;
+        }
+
+        MD_LOG_A( m_adapterId, LOG_INFO, "Oa buffer count: %u", out.ValueUint32 );
+        return static_cast<uint32_t>( oaBufferType ) < out.ValueUint32;
     }
 
     //////////////////////////////////////////////////////////////////////////////
@@ -1628,40 +1702,38 @@ namespace MetricsDiscoveryInternal
     //     Enables Timer Mode and opens OA or Sys Counter Stream (IO Stream) .
     //
     // Input:
-    //     const TStreamType         streamType          - stream type
-    //     const GTDI_OA_BUFFER_TYPE oaBufferType        - oa buffer type
-    //     CMetricsDevice&           metricDevice        - metrics device
-    //     CMetricSet*               metricSet           - metric set
-    //     const char*               concurrentGroupName - concurrent group symbol name
-    //     uint32_t                  processId           - PID of the measured app (0 is global context)
-    //     uint32_t*                 nsTimerPeriod       - (IN/OUT) requested/set sampling period time in nanoseconds
-    //     uint32_t*                 bufferSize          - (IN/OUT) requested/set OA Buffer size in bytes
-    //     void**                    streamEventHandle   - *NOT USED ON LINUX*
+    //     COAConcurrentGroup& oaConcurrentGroup - oa concurrent group
+    //     uint32_t            processId         - PID of the measured app (0 is global context)
+    //     uint32_t&           nsTimerPeriod     - (in/out) requested/set sampling period time in nanoseconds
+    //     uint32_t&           bufferSize        - (in/out) requested/set OA Buffer/buffer size in bytes
     //
     // Output:
-    //     TCompletionCode                               - *CC_OK* means succeess
+    //     TCompletionCode                       - *CC_OK* means succeess
     //
     //////////////////////////////////////////////////////////////////////////////
-    TCompletionCode CDriverInterfaceLinuxPerf::OpenIoStream( const TStreamType streamType, const GTDI_OA_BUFFER_TYPE oaBufferType, CMetricsDevice& metricDevice, CMetricSet* metricSet, const char* concurrentGroupName, uint32_t processId, uint32_t* nsTimerPeriod, uint32_t* bufferSize, void** streamEventHandle )
+    TCompletionCode CDriverInterfaceLinuxPerf::OpenIoStream( COAConcurrentGroup& oaConcurrentGroup, const uint32_t processId, uint32_t& nsTimerPeriod, uint32_t& bufferSize )
     {
-        if( !IsStreamTypeSupported( streamType ) )
+        const char* concurrentGroupName = oaConcurrentGroup.GetParams()->SymbolName;
+        auto        metricSet           = oaConcurrentGroup.GetIoMetricSet();
+        auto        metricsDevice       = oaConcurrentGroup.GetMetricsDevice();
+
+        MD_CHECK_PTR_RET_A( m_adapterId, concurrentGroupName, CC_ERROR_INVALID_PARAMETER );
+        MD_CHECK_PTR_RET_A( m_adapterId, metricSet, CC_ERROR_INVALID_PARAMETER );
+        MD_CHECK_PTR_RET_A( m_adapterId, metricsDevice, CC_ERROR_INVALID_PARAMETER );
+
+        if( !IsStreamTypeSupported( oaConcurrentGroup.GetStreamType() ) )
         {
             return CC_ERROR_NOT_SUPPORTED;
         }
-
-        MD_CHECK_PTR_RET_A( m_adapterId, metricSet, CC_ERROR_INVALID_PARAMETER );
-        MD_CHECK_PTR_RET_A( m_adapterId, concurrentGroupName, CC_ERROR_INVALID_PARAMETER );
-        MD_CHECK_PTR_RET_A( m_adapterId, nsTimerPeriod, CC_ERROR_INVALID_PARAMETER );
-        MD_CHECK_PTR_RET_A( m_adapterId, bufferSize, CC_ERROR_INVALID_PARAMETER );
 
         // 1. ACTIVATE
         TCompletionCode ret = metricSet->ActivateInternal( false, false );
         MD_CHECK_CC_RET_A( m_adapterId, ret );
 
-        MD_ASSERT_A( m_adapterId, metricDevice.GetStreamConfigId() == -1 ); // Should be -1, which means stream is closed
+        MD_ASSERT_A( m_adapterId, metricsDevice->GetStreamConfigId() == -1 ); // Should be -1, which means stream is closed
 
         // 2. SET PARAMS
-        const uint32_t timerPeriodExponent = GetTimerPeriodExponent( *nsTimerPeriod );
+        const uint32_t timerPeriodExponent = GetTimerPeriodExponent( nsTimerPeriod );
         const uint32_t perfReportType      = GetPerfReportType( metricSet->GetReportType() );
         int32_t        perfMetricSetId     = -1;
         uint32_t       regCount            = 0;
@@ -1682,19 +1754,19 @@ namespace MetricsDiscoveryInternal
         MD_ASSERT_A( m_adapterId, perfMetricSetId != -1 );
 
         // 4. OPEN PERF STREAM
-        ret = OpenPerfStream( metricDevice, perfMetricSetId, perfReportType, timerPeriodExponent, *bufferSize, oaBufferType );
+        ret = OpenPerfStream( *metricsDevice, perfMetricSetId, perfReportType, timerPeriodExponent, bufferSize, oaConcurrentGroup.GetOaBufferType() );
         if( ret != CC_OK )
         {
             goto remove_config;
         }
 
         // 5. RETURN PARAMETERS
-        *nsTimerPeriod = GetNsTimerPeriod( timerPeriodExponent );
-        *bufferSize    = MD_OA_BUFFER_SIZE_MAX;
+        nsTimerPeriod = GetNsTimerPeriod( timerPeriodExponent );
+        bufferSize    = MD_OA_BUFFER_SIZE_MAX;
 
-        metricDevice.SetStreamConfigId( perfMetricSetId ); // Remember Perf config id so it could be removed from the kernel on CloseIoStream
+        metricsDevice->SetStreamConfigId( perfMetricSetId ); // Remember Perf config id so it could be removed from the kernel on CloseIoStream
 
-        MD_LOG_A( m_adapterId, LOG_DEBUG, "Perf stream opened with metricSetId: %d, periodNs: %u, exponent: %u, bufferSize: %u", perfMetricSetId, *nsTimerPeriod, timerPeriodExponent, *bufferSize );
+        MD_LOG_A( m_adapterId, LOG_DEBUG, "Perf stream opened with metricSetId: %d, periodNs: %u, exponent: %u, bufferSize: %u", perfMetricSetId, nsTimerPeriod, timerPeriodExponent, bufferSize );
         return CC_OK;
 
     remove_config:
@@ -1716,59 +1788,56 @@ namespace MetricsDiscoveryInternal
     //     Reads data from previously opened OA/Sys IO Stream.
     //
     // Input:
-    //     const TStreamType                streamType   - stream type
-    //     const GTDI_OA_BUFFER_TYPE        oaBufferType - oa buffer type
-    //     CMetricsDevice&                  metricDevice - metrics device
-    //     CMetricSet*                      metricSet    - metricSet for which stream was opened
-    //     char*                            reportData   - (OUT) pointer to the read data
-    //     uint32_t*                        reportsCount - (IN/OUT) reports read/to read from the stream
-    //     uint32_t                         readFlags    - read flags
-    //     uint32_t*                        frequency    - (OUT) frquency from GTDIReadCounterStreamExtOut
-    //     GTDIReadCounterStreamExceptions* exceptions   - (OUT) exceptions from GTDIReadCounterStreamExtOut
+    //     COAConcurrentGroup&              oaConcurrentGroup - oa concurrent group
+    //     uint32_t                         readFlags         - read flags
+    //     char*                            reportData        - (out) pointer to the read data
+    //     uint32_t&                        reportsCount      - (in/out) reports read/to read from the stream
+    //     uint32_t&                        frequency         - (out) frequency from GTDIReadCounterStreamExtOut
+    //     GTDIReadCounterStreamExceptions& exceptions        - (out) exceptions from GTDIReadCounterStreamExtOut
     //
     // Output:
-    //     TCompletionCode                               - result of operation
+    //     TCompletionCode                                    - *CC_OK* means succeess
     //
     //////////////////////////////////////////////////////////////////////////////
-    TCompletionCode CDriverInterfaceLinuxPerf::ReadIoStream( const TStreamType streamType, const GTDI_OA_BUFFER_TYPE oaBufferType, CMetricsDevice& metricDevice, CMetricSet* metricSet, char* reportData, uint32_t* reportsCount, uint32_t readFlags, uint32_t* frequency, GTDIReadCounterStreamExceptions* exceptions )
+    TCompletionCode CDriverInterfaceLinuxPerf::ReadIoStream( COAConcurrentGroup& oaConcurrentGroup, const uint32_t readFlags, char* reportData, uint32_t& reportsCount, uint32_t& frequency, GTDIReadCounterStreamExceptions& exceptions )
     {
-        if( !IsStreamTypeSupported( streamType ) )
+        if( !IsStreamTypeSupported( oaConcurrentGroup.GetStreamType() ) )
         {
             return CC_ERROR_NOT_SUPPORTED;
         }
 
+        auto metricSet     = oaConcurrentGroup.GetIoMetricSet();
+        auto metricsDevice = oaConcurrentGroup.GetMetricsDevice();
+
         MD_CHECK_PTR_RET_A( m_adapterId, metricSet, CC_ERROR_INVALID_PARAMETER );
+        MD_CHECK_PTR_RET_A( m_adapterId, metricsDevice, CC_ERROR_INVALID_PARAMETER );
         MD_CHECK_PTR_RET_A( m_adapterId, reportData, CC_ERROR_INVALID_PARAMETER );
-        MD_CHECK_PTR_RET_A( m_adapterId, reportsCount, CC_ERROR_INVALID_PARAMETER );
 
         uint32_t reportSize        = metricSet->GetParams()->RawReportSize;
-        uint32_t bytesToRead       = ( *reportsCount ) * reportSize;
+        uint32_t bytesToRead       = reportsCount * reportSize;
         uint32_t readBytes         = 0;
         bool     reportLostOccured = false;
 
         // Read flags are ignored for Perf
-        TCompletionCode ret = ReadPerfStream( metricDevice, reportSize, *reportsCount, reportData, &readBytes, &reportLostOccured );
+        TCompletionCode ret = ReadPerfStream( *metricsDevice, reportSize, reportsCount, reportData, &readBytes, &reportLostOccured );
         if( ret == CC_OK )
         {
             MD_ASSERT_A( m_adapterId, ( readBytes % reportSize ) == 0 );
-            *reportsCount = readBytes / reportSize;
+            reportsCount = readBytes / reportSize;
 
             if( readBytes < bytesToRead )
             {
                 ret = CC_READ_PENDING;
             }
 
-            // For MDAPI with Perf only ReportLost and Frequency during read are available
-            if( exceptions )
+            // Only ReportLost and Frequency during read are available
+            uint64_t currentFrequency = 0;
+            if( GetGpuFrequencyInfo( nullptr, nullptr, &currentFrequency, nullptr ) == CC_OK )
             {
-                uint64_t currentFrequency = 0;
-                if( frequency && GetGpuFrequencyInfo( nullptr, nullptr, &currentFrequency, nullptr ) == CC_OK )
-                {
-                    *frequency = (uint32_t) currentFrequency / MD_MHERTZ;
-                }
-
-                exceptions->ReportLost = (uint32_t) reportLostOccured;
+                frequency = static_cast<uint32_t>( currentFrequency / MD_MHERTZ );
             }
+
+            exceptions.ReportLost = static_cast<uint32_t>( reportLostOccured );
         }
 
         return ret;
@@ -1786,32 +1855,32 @@ namespace MetricsDiscoveryInternal
     //     Closes OA/Sys Counter Stream (IO Stream) and disables Timer Mode.
     //
     // Input:
-    //     TStreamType     streamType          - stream type
-    //     CMetricsDevice& metricDevice        - metrics device
-    //     void**          streamEventHandle   - *NOT USED ON LINUX*
-    //     const char*     concurrentGroupName - *NOT USED ON LINUX* concurrent group symbol name
-    //     CMetricSet*     metricSet           - metric set for which the stream was opened
+    //     COAConcurrentGroup& oaConcurrentGroup - oa concurrent group
     //
     // Output:
-    //     TCompletionCode                     - *CC_OK* means succeess
+    //     TCompletionCode                       - *CC_OK* means succeess
     //
     //////////////////////////////////////////////////////////////////////////////
-    TCompletionCode CDriverInterfaceLinuxPerf::CloseIoStream( const TStreamType streamType, const GTDI_OA_BUFFER_TYPE oaBufferType, CMetricsDevice& metricDevice, void** streamEventHandle, const char* concurrentGroupName, CMetricSet* metricSet )
+    TCompletionCode CDriverInterfaceLinuxPerf::CloseIoStream( COAConcurrentGroup& oaConcurrentGroup )
     {
-        if( !IsStreamTypeSupported( streamType ) )
+        if( !IsStreamTypeSupported( oaConcurrentGroup.GetStreamType() ) )
         {
             return CC_ERROR_NOT_SUPPORTED;
         }
 
+        auto metricSet     = oaConcurrentGroup.GetIoMetricSet();
+        auto metricsDevice = oaConcurrentGroup.GetMetricsDevice();
+
         MD_CHECK_PTR_RET_A( m_adapterId, metricSet, CC_ERROR_INVALID_PARAMETER );
+        MD_CHECK_PTR_RET_A( m_adapterId, metricsDevice, CC_ERROR_INVALID_PARAMETER );
 
         // 1. CLOSE STREAM
-        ClosePerfStream( metricDevice );
+        ClosePerfStream( *metricsDevice );
 
         // 2. REMOVE HW CONFIG
-        if( RemovePerfConfig( metricDevice.GetStreamConfigId() ) == CC_OK )
+        if( RemovePerfConfig( metricsDevice->GetStreamConfigId() ) == CC_OK )
         {
-            metricDevice.SetStreamConfigId( -1 );
+            metricsDevice->SetStreamConfigId( -1 );
         }
 
         // 3. DEACTIVATE
@@ -1837,18 +1906,16 @@ namespace MetricsDiscoveryInternal
     //     Handles buffer overflow and overrun exceptions.
     //
     // Input:
-    //     const char*                      concurrentGroupName - concurrent group symbol name
-    //     CMetricSet*                      metricSet           - metricSet for which stream was opened
-    //     uint32_t                         processId           - PID of the measured app (0 is global context)
-    //     uint32_t*                        reportsCount        - (IN/OUT) reports read/to read from the stream
-    //     GTDIReadCounterStreamExceptions* exceptions          - (OUT) exceptions from GTDIReadCounterStreamExtOut
-    //     const GTDI_OA_BUFFER_TYPE        oaBufferType        - oa buffer type
+    //     COAConcurrentGroup&                   oaConcurrentGroup - oa concurrent group
+    //     uint32_t                              processId         - PID of the measured app (0 is global context)
+    //     uint32_t&                             reportsCount      - (in/out) reports read/to read from the stream
+    //     const GTDIReadCounterStreamExceptions exceptions        - (out) exceptions from GTDIReadCounterStreamExtOut
     //
     // Output:
-    //     TCompletionCode                                      - *CC_OK* means success
+    //     TCompletionCode                                         - *CC_OK* means success
     //
     //////////////////////////////////////////////////////////////////////////////
-    TCompletionCode CDriverInterfaceLinuxPerf::HandleIoStreamExceptions( const char* concurrentGroupName, CMetricSet* metricSet, uint32_t processId, uint32_t* reportCount, GTDIReadCounterStreamExceptions* exceptions, const GTDI_OA_BUFFER_TYPE oaBufferType )
+    TCompletionCode CDriverInterfaceLinuxPerf::HandleIoStreamExceptions( COAConcurrentGroup& oaConcurrentGroup, const uint32_t processId, uint32_t& reportCount, const GTDIReadCounterStreamExceptions exceptions )
     {
         // Not needed on Linux Perf - returning CC_OK on purpose
         return CC_OK;
@@ -1867,23 +1934,24 @@ namespace MetricsDiscoveryInternal
     //     Returns *CC_OK* if wait was successful (data waiting in the buffer was signaled).
     //
     // Input:
-    //     TStreamType     streamType        - stream type
-    //     CMetricsDevice& metricDevice      - metrics device
-    //     uint32_t        milliseconds      - max number of milliseconds to wait
-    //     void*           streamEventHandle - *NOT USED ON LINUX*
+    //     COAConcurrentGroup& oaConcurrentGroup - oa concurrent group
+    //     uint32_t            milliseconds      - number of milliseconds to wait
     //
     // Output:
-    //     TCompletionCode                   - *CC_OK* means succeess (reports available)
+    //     TCompletionCode                       - *CC_OK* means succeess (reports available)
     //
     //////////////////////////////////////////////////////////////////////////////
-    TCompletionCode CDriverInterfaceLinuxPerf::WaitForIoStreamReports( TStreamType streamType, CMetricsDevice& metricDevice, uint32_t milliseconds, void* streamEventHandle )
+    TCompletionCode CDriverInterfaceLinuxPerf::WaitForIoStreamReports( COAConcurrentGroup& oaConcurrentGroup, const uint32_t milliseconds )
     {
-        if( !IsStreamTypeSupported( streamType ) )
+        if( !IsStreamTypeSupported( oaConcurrentGroup.GetStreamType() ) )
         {
             return CC_ERROR_NOT_SUPPORTED;
         }
 
-        return WaitForPerfStreamReports( metricDevice, milliseconds );
+        auto metricsDevice = oaConcurrentGroup.GetMetricsDevice();
+        MD_CHECK_PTR_RET_A( m_adapterId, metricsDevice, CC_ERROR_INVALID_PARAMETER );
+
+        return WaitForPerfStreamReports( *metricsDevice, milliseconds );
     }
 
     //////////////////////////////////////////////////////////////////////////////
@@ -2232,7 +2300,7 @@ namespace MetricsDiscoveryInternal
         int32_t               perfRevision           = -1;
         int32_t               perfEventFd            = -1;
         uint32_t              requiredEngineInstance = -1;
-        const bool            isOam                  = IsOamRequested( perfReportType );
+        const bool            isOamRequested         = IsOamRequested( perfReportType );
         const uint32_t        subDeviceIndex         = metricsDevice.GetSubDeviceIndex();
         auto                  subDevices             = metricsDevice.GetAdapter().GetSubDevices();
         auto                  engine                 = TEngineParams_1_9{};
@@ -2248,6 +2316,13 @@ namespace MetricsDiscoveryInternal
             properties.push_back( key );
             properties.push_back( value );
         };
+
+        if( isOamRequested && !IsOamSupported() )
+        {
+            MD_LOG_A( m_adapterId, LOG_ERROR, "ERROR: OAM requested but it is not supported on current platform" );
+            return CC_ERROR_GENERAL;
+        }
+
         param.flags = 0;
         param.flags |= I915_PERF_FLAG_FD_CLOEXEC;
         param.flags |= I915_PERF_FLAG_FD_NONBLOCK; // We want a non-blocking read
@@ -2258,32 +2333,26 @@ namespace MetricsDiscoveryInternal
         addProperty( DRM_I915_PERF_PROP_OA_FORMAT, perfReportType );
         addProperty( DRM_I915_PERF_PROP_OA_EXPONENT, timerPeriodExponent );
 
-        if( subDevices.GetDeviceCount() > 0 )
+        if( subDevices.IsSupported() )
         {
-            if( !IsSubDeviceSupported() )
-            {
-                MD_LOG_A( m_adapterId, LOG_ERROR, "Sub devices are not supported by i915 kernel" );
-                return TCompletionCode::CC_ERROR_NOT_SUPPORTED;
-            }
-
-            if( isOam )
+            if( isOamRequested )
             {
                 const uint32_t oamBufferSlice = static_cast<uint32_t>( oaBufferType ) - 1;
                 if( !isValidValue( oamBufferSlice ) )
                 {
                     MD_LOG_A( m_adapterId, LOG_ERROR, "ERROR: Incorrect oa buffer type for OAM. oaBufferType: %d, oamBufferSlice: %d", static_cast<uint32_t>( oaBufferType ), oamBufferSlice );
-                    return TCompletionCode::CC_ERROR_INVALID_PARAMETER;
+                    return CC_ERROR_INVALID_PARAMETER;
                 }
 
                 uint32_t baseEngineInstance = 0;
                 for( uint32_t i = 0; i < subDeviceIndex; ++i )
                 {
-                    const uint32_t videoEngineCount  = subDevices.GetClassInstancesCount( i, I915_ENGINE_CLASS_VIDEO );
-                    const uint32_t videoEnhanceCount = subDevices.GetClassInstancesCount( i, I915_ENGINE_CLASS_VIDEO_ENHANCE );
+                    const uint32_t videoEngineCount        = subDevices.GetClassInstancesCount( i, I915_ENGINE_CLASS_VIDEO );
+                    const uint32_t videoEnhanceEngineCount = subDevices.GetClassInstancesCount( i, I915_ENGINE_CLASS_VIDEO_ENHANCE );
 
-                    ret = ( !isValidValue( videoEngineCount ) || !isValidValue( videoEnhanceCount ) || videoEngineCount != videoEnhanceCount )
-                        ? TCompletionCode::CC_ERROR_GENERAL
-                        : TCompletionCode::CC_OK;
+                    ret = ( !isValidValue( videoEngineCount ) || !isValidValue( videoEnhanceEngineCount ) || videoEngineCount != videoEnhanceEngineCount )
+                        ? CC_ERROR_GENERAL
+                        : CC_OK;
                     MD_CHECK_CC_RET_A( m_adapterId, ret );
 
                     baseEngineInstance += videoEngineCount;
@@ -2292,15 +2361,19 @@ namespace MetricsDiscoveryInternal
                 requiredEngineInstance = baseEngineInstance + oamBufferSlice;
             }
 
-            ret = subDevices.GetTbsEngineParams( subDeviceIndex, engine, requiredEngineInstance, isOam );
+            ret = subDevices.GetTbsEngineParams( subDeviceIndex, engine, requiredEngineInstance, isOamRequested );
             if( ret != CC_OK )
             {
-                MD_LOG_A( m_adapterId, LOG_ERROR, "Error: No requested engine found, unable to open tbs on sub device. subDeviceIndex: %d, requiredEngineInstance: %d, isOam: %d", subDeviceIndex, requiredEngineInstance, isOam );
-                return TCompletionCode::CC_ERROR_NOT_SUPPORTED;
+                MD_LOG_A( m_adapterId, LOG_ERROR, "Error: No requested engine found, unable to open tbs on sub device. subDeviceIndex: %d, requiredEngineInstance: %d, isOam: %d", subDeviceIndex, requiredEngineInstance, isOamRequested );
+                return CC_ERROR_NOT_SUPPORTED;
             }
 
             addProperty( PRELIM_DRM_I915_PERF_PROP_OA_ENGINE_CLASS, engine.EngineId.ClassInstance.Class );
             addProperty( PRELIM_DRM_I915_PERF_PROP_OA_ENGINE_INSTANCE, engine.EngineId.ClassInstance.Instance );
+        }
+        else
+        {
+            MD_LOG_A( m_adapterId, LOG_DEBUG, "Sub devices are not supported on current platform" );
         }
 
         param.properties_ptr = reinterpret_cast<uint64_t>( properties.data() );
@@ -2314,7 +2387,7 @@ namespace MetricsDiscoveryInternal
 
             perfEventFd = SendIoctl( m_DrmDeviceHandle, DRM_IOCTL_I915_PERF_OPEN, &param );
         }
-        while( !isOam && requiredEngineInstance == static_cast<uint32_t>( -1 ) && perfEventFd == -1 && subDevices.UpdateTbsEngineParams( subDeviceIndex, properties ) == CC_OK );
+        while( perfEventFd == -1 && subDevices.UpdateTbsEngineParams( subDeviceIndex, properties ) == CC_OK );
 
         if( perfEventFd == -1 )
         {
@@ -2342,7 +2415,7 @@ namespace MetricsDiscoveryInternal
     //     is set.
     //
     // Input:
-    //     CMetricsDevice& metricDevice      - metrics device
+    //     CMetricsDevice& metricsDevice      - metrics device
     //     uint32_t        oaReportSize      - size of a single OA report, currently always 256 bytes
     //     uint32_t        reportsToRead     - number of reports to read
     //     char*           reportData        - (OUT) buffer for reports
@@ -2354,9 +2427,9 @@ namespace MetricsDiscoveryInternal
     //                                         (check readBytes for that).
     //
     //////////////////////////////////////////////////////////////////////////////
-    TCompletionCode CDriverInterfaceLinuxPerf::ReadPerfStream( CMetricsDevice& metricDevice, uint32_t oaReportSize, uint32_t reportsToRead, char* reportData, uint32_t* readBytes, bool* reportLostOccured )
+    TCompletionCode CDriverInterfaceLinuxPerf::ReadPerfStream( CMetricsDevice& metricsDevice, uint32_t oaReportSize, uint32_t reportsToRead, char* reportData, uint32_t* readBytes, bool* reportLostOccured )
     {
-        const int32_t streamId = metricDevice.GetStreamId();
+        const int32_t streamId = metricsDevice.GetStreamId();
 
         if( streamId < 0 )
         {
@@ -2371,14 +2444,14 @@ namespace MetricsDiscoveryInternal
                                                                                         // requests 1 report, but first report from Perf is REPORT_LOST flag.
 
         // Resize Perf report buffer if needed
-        metricDevice.GetStreamBuffer().resize( perfBytesToRead );
+        metricsDevice.GetStreamBuffer().resize( perfBytesToRead );
 
         MD_LOG_A( m_adapterId, LOG_DEBUG, "Trying to read %u reports from i915 perf stream, fd: %d", reportsToRead, streamId );
 
         // #Note May read 1 sample less than requested if ReportLost is returned from kernel
 
         // 1. READ DATA
-        int32_t perfReadBytes = read( streamId, metricDevice.GetStreamBuffer().data(), perfBytesToRead );
+        int32_t perfReadBytes = read( streamId, metricsDevice.GetStreamBuffer().data(), perfBytesToRead );
         if( perfReadBytes < 0 )
         {
             *readBytes = 0;
@@ -2397,7 +2470,7 @@ namespace MetricsDiscoveryInternal
         size_t perfDataOffset = 0;
         while( perfDataOffset < (size_t) perfReadBytes )
         {
-            const iu_i915_perf_record* perfOaRecord = (const iu_i915_perf_record*) ( metricDevice.GetStreamBuffer().data() + perfDataOffset );
+            const iu_i915_perf_record* perfOaRecord = (const iu_i915_perf_record*) ( metricsDevice.GetStreamBuffer().data() + perfDataOffset );
             if( !perfOaRecord->header.size )
             {
                 MD_LOG_A( m_adapterId, LOG_ERROR, "ERROR: 0 header size" );
@@ -2456,21 +2529,21 @@ namespace MetricsDiscoveryInternal
     //     Closes previously opened Perf stream.
     //
     // Input:
-    //     CMetricsDevice& metricDevice - metrics device
+    //     CMetricsDevice& metricsDevice - metrics device
     //
     // Output:
     //     TCompletionCode              - *CC_OK* means success
     //
     //////////////////////////////////////////////////////////////////////////////
-    TCompletionCode CDriverInterfaceLinuxPerf::ClosePerfStream( CMetricsDevice& metricDevice )
+    TCompletionCode CDriverInterfaceLinuxPerf::ClosePerfStream( CMetricsDevice& metricsDevice )
     {
-        int32_t id = metricDevice.GetStreamId();
+        int32_t id = metricsDevice.GetStreamId();
 
         if( id >= 0 )
         {
             MD_LOG_A( m_adapterId, LOG_DEBUG, "Closing i915 perf stream, fd: %d", id );
             close( id );
-            metricDevice.SetStreamId( -1 );
+            metricsDevice.SetStreamId( -1 );
         }
         return CC_OK;
     }
@@ -4172,6 +4245,39 @@ namespace MetricsDiscoveryInternal
     //     CDriverInterfaceLinuxPerf
     //
     // Method:
+    //     IsOamSupported
+    //
+    // Description:
+    //     Returns information if oam supported for given platform.
+    //
+    // Output:
+    //     bool - true if supported
+    //
+    //////////////////////////////////////////////////////////////////////////////
+    bool CDriverInterfaceLinuxPerf::IsOamSupported()
+    {
+        const TGfxDeviceInfo* gfxDeviceInfo = nullptr;
+        auto                  ret           = GetGfxDeviceInfo( &gfxDeviceInfo );
+        if( ret != CC_OK )
+        {
+            return false;
+        }
+
+        switch( gfxDeviceInfo->PlatformIndex )
+        {
+            case GENERATION_ACM:
+                return true;
+            default:
+                return false;
+        }
+    }
+
+    //////////////////////////////////////////////////////////////////////////////
+    //
+    // Class:
+    //     CDriverInterfaceLinuxPerf
+    //
+    // Method:
     //     IsOamRequested
     //
     // Description:
@@ -4329,17 +4435,15 @@ namespace MetricsDiscoveryInternal
     //     Reads GPU timestamp in nanoseconds. It uses GPU timestamp in ticks and
     //     GPU timestamp frequency to get the timestamp in ns.
     //
-    //     !! Timestamp in nanoseconds is masked to (currently) 32-bits to match
-    //        OA report timestamps !!
-    //
     // Input:
-    //     uint64_t* gpuTimestampNs - (OUT) GPU timestamp in nanoseconds
+    //     CMetricsDevice& device         - metrics device
+    //     uint64_t*       gpuTimestampNs - (OUT) GPU timestamp in nanoseconds
     //
     // Output:
-    //     TCompletionCode          - *CC_OK* means success
+    //     TCompletionCode                - *CC_OK* means success
     //
     //////////////////////////////////////////////////////////////////////////////
-    TCompletionCode CDriverInterfaceLinuxPerf::GetGpuTimestampNs( uint64_t* gpuTimestampNs )
+    TCompletionCode CDriverInterfaceLinuxPerf::GetGpuTimestampNs( CMetricsDevice& metricsDevice, uint64_t* gpuTimestampNs )
     {
         MD_CHECK_PTR_RET_A( m_adapterId, gpuTimestampNs, CC_ERROR_INVALID_PARAMETER );
 
@@ -4356,8 +4460,7 @@ namespace MetricsDiscoveryInternal
         MD_CHECK_CC_RET_A( m_adapterId, ret );
 
         // 3. Convert GpuTimestamp to ns
-        //    ! Ticks masked to 32bit to get sync with report timestamps !
-        *gpuTimestampNs = ( gpuTimestampTicks & MD_GPU_TIMESTAMP_MASK ) * MD_SECOND_IN_NS / gpuTimestampFrequency;
+        *gpuTimestampNs = metricsDevice.ConvertGpuTimestampToNs( gpuTimestampTicks, gpuTimestampFrequency );
 
         return CC_OK;
     }
@@ -4432,6 +4535,50 @@ namespace MetricsDiscoveryInternal
             return CC_ERROR_GENERAL;
         }
         *cpuTimestampNs = (uint64_t) time.tv_nsec + (uint64_t) time.tv_sec * (uint64_t) MD_NSEC_PER_SEC;
+
+        return CC_OK;
+    }
+
+    //////////////////////////////////////////////////////////////////////////////
+    //
+    // Class:
+    //     CDriverInterfaceLinuxPerf
+    //
+    // Method:
+    //     GetOaBufferCount
+    //
+    // Description:
+    //     Returns oa buffer count for current platform.
+    //
+    // Input:
+    //     CMetricsDevice& metricsDevice - (IN) metrics device
+    //     uint32_t&       oaBufferCount - (OUT) oa buffer count
+    //
+    // Output:
+    //     TCompletionCode               - *CC_OK* means success
+    //
+    //////////////////////////////////////////////////////////////////////////////
+    TCompletionCode CDriverInterfaceLinuxPerf::GetOaBufferCount( CMetricsDevice& metricsDevice, uint32_t& oaBufferCount )
+    {
+        const uint32_t adapterId = metricsDevice.GetAdapter().GetAdapterId();
+
+        oaBufferCount = 1; // OAG/OA buffer
+
+        auto subDevices = metricsDevice.GetAdapter().GetSubDevices();
+        if( IsOamSupported() && subDevices.IsSupported() )
+        {
+            const uint32_t subDeviceIndex          = metricsDevice.GetSubDeviceIndex();
+            const uint32_t videoEngineCount        = subDevices.GetClassInstancesCount( subDeviceIndex, I915_ENGINE_CLASS_VIDEO );
+            const uint32_t videoEnhanceEngineCount = subDevices.GetClassInstancesCount( subDeviceIndex, I915_ENGINE_CLASS_VIDEO_ENHANCE );
+
+            if( videoEngineCount != videoEnhanceEngineCount )
+            {
+                MD_LOG_A( adapterId, LOG_ERROR, "Video engine count (%u) and video enhance engine count (%u) mismatch.", videoEngineCount, videoEnhanceEngineCount );
+                return CC_ERROR_GENERAL;
+            }
+
+            oaBufferCount += videoEngineCount;
+        }
 
         return CC_OK;
     }
@@ -4549,7 +4696,7 @@ namespace MetricsDiscoveryInternal
     {
         const TGfxDeviceInfo* gfxDeviceInfo = nullptr;
 
-        TCompletionCode ret = GetGfxDeviceInfo( &gfxDeviceInfo );
+        auto ret = GetGfxDeviceInfo( &gfxDeviceInfo );
         if( ret != CC_OK )
         {
             MD_LOG_A( m_adapterId, LOG_WARNING, "WARNING: Cannot get gfx device info" );
@@ -4910,8 +5057,6 @@ namespace MetricsDiscoveryInternal
 
         return std::pow( 2, std::floor( log2( requestedBufferSize ) ) );
     }
-
-    int32_t CAdapterHandleLinux::InvalidValue = -1;
 
     //////////////////////////////////////////////////////////////////////////////
     //
