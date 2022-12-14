@@ -2992,7 +2992,7 @@ namespace MetricsDiscoveryInternal
                 switch( reportType )
                 {
                     case OA_REPORT_TYPE_256B_A45_NOA16:
-                        return PRELIM_I915_OA_FORMAT_A24u40_A14u32_B8_C8;
+                        return I915_OA_FORMAT_A24u40_A14u32_B8_C8;
                     default:
                         return -1;
                 }
@@ -3004,7 +3004,7 @@ namespace MetricsDiscoveryInternal
                     case OA_REPORT_TYPE_128B_OAM:
                         return PRELIM_I915_OAM_FORMAT_A2u64_B8_C8;
                     case OA_REPORT_TYPE_256B_A45_NOA16:
-                        return PRELIM_I915_OA_FORMAT_A24u40_A14u32_B8_C8;
+                        return I915_OA_FORMAT_A24u40_A14u32_B8_C8;
                     default:
                         return -1;
                 }
@@ -4204,7 +4204,7 @@ namespace MetricsDiscoveryInternal
     TCompletionCode CDriverInterfaceLinuxPerf::GetOaTimestampFrequency( uint64_t& frequency )
     {
         int32_t         freq   = 0;
-        TCompletionCode result = SendGetParamIoctl( m_DrmDeviceHandle, PRELIM_I915_PARAM_OA_TIMESTAMP_FREQUENCY, &freq );
+        TCompletionCode result = SendGetParamIoctl( m_DrmDeviceHandle, I915_PARAM_OA_TIMESTAMP_FREQUENCY, &freq );
         MD_CHECK_CC_RET_A( m_adapterId, result );
         frequency = static_cast<uint64_t>( freq );
 
