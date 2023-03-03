@@ -1,6 +1,6 @@
 ﻿/*========================== begin_copyright_notice ============================
 
-Copyright (C) 2019-2022 Intel Corporation
+Copyright (C) 2019-2023 Intel Corporation
 
 SPDX-License-Identifier: MIT
 
@@ -421,6 +421,9 @@ inline TCompletionCode AddGlobalSymbols( CMetricsDevice* metricsDevice )
     MD_CHECK_CC_RET_A( adapterId, ret );
 
     ret = symbolSet->AddSymbolBYTEARRAY( "GtXeCoreMask", nullptr, SYMBOL_TYPE_DETECT );
+    MD_CHECK_CC_RET_A( adapterId, ret );
+
+    ret = symbolSet->AddSymbolUINT32( "PlatformVersion", 0, SYMBOL_TYPE_DETECT );
     MD_CHECK_CC_RET_A( adapterId, ret );
 
     metricsDevice->GetParams()->GlobalSymbolsCount = symbolSet->GetSymbolCount();

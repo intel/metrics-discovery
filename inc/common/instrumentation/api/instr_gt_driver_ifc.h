@@ -197,9 +197,28 @@ typedef enum
     GTDI_IFC_VERSION_3_34 = GTDI_MAKE_IFC_VER( GTDI_IFC_VERSION_3, 34 ), // Mid query events info
     GTDI_IFC_VERSION_3_35 = GTDI_MAKE_IFC_VER( GTDI_IFC_VERSION_3, 35 ), // Byte array added to GTDI_DEVICE_PARAM_VALUE_TYPE
     GTDI_IFC_VERSION_3_36 = GTDI_MAKE_IFC_VER( GTDI_IFC_VERSION_3, 36 ), // New exception flags added to GTDI_FNC_READ_COUNTER_STREAM
+    GTDI_IFC_VERSION_3_37 = GTDI_MAKE_IFC_VER( GTDI_IFC_VERSION_3, 37 ), // GTDISetPmRegsCfgExtIn added with bigger register capacity
+    GTDI_IFC_VERSION_3_38 = GTDI_MAKE_IFC_VER( GTDI_IFC_VERSION_3, 38 ), // GTDI_FNC_GET_OVERRIDES_INFO has been added, the shared files API withdrawing
+    GTDI_IFC_VERSION_3_39 = GTDI_MAKE_IFC_VER( GTDI_IFC_VERSION_3, 39 ), // Improved overrides protection
+    GTDI_IFC_VERSION_3_40 = GTDI_MAKE_IFC_VER( GTDI_IFC_VERSION_3, 40 ), // GTDI_DEVICE_PARAM_OA_BUFFER_ACTIVE
+    GTDI_IFC_VERSION_3_41 = GTDI_MAKE_IFC_VER( GTDI_IFC_VERSION_3, 41 ), // Stream-related API improvement
+    GTDI_IFC_VERSION_3_42 = GTDI_MAKE_IFC_VER( GTDI_IFC_VERSION_3, 42 ), // Maximums which bound all supported GT
+    GTDI_IFC_VERSION_3_43 = GTDI_MAKE_IFC_VER( GTDI_IFC_VERSION_3, 43 ), // Separate clocks for OA and CS timestamps
+    GTDI_IFC_VERSION_3_44 = GTDI_MAKE_IFC_VER( GTDI_IFC_VERSION_3, 44 ), // Total system and video memory
+    GTDI_IFC_VERSION_3_45 = GTDI_MAKE_IFC_VER( GTDI_IFC_VERSION_3, 45 ), // New error code has been introduced
+    GTDI_IFC_VERSION_3_46 = GTDI_MAKE_IFC_VER( GTDI_IFC_VERSION_3, 46 ), // GTDIGetGpuCpuTimestampsExtOut added with timestamp correlation indicator
+    GTDI_IFC_VERSION_3_47 = GTDI_MAKE_IFC_VER( GTDI_IFC_VERSION_3, 47 ),
+    GTDI_IFC_VERSION_3_48 = GTDI_MAKE_IFC_VER( GTDI_IFC_VERSION_3, 48 ),
+    GTDI_IFC_VERSION_3_49 = GTDI_MAKE_IFC_VER( GTDI_IFC_VERSION_3, 49 ), // Samedia support
+    GTDI_IFC_VERSION_3_50 = GTDI_MAKE_IFC_VER( GTDI_IFC_VERSION_3, 50 ), // New device parameters related to OA buffer
+    GTDI_IFC_VERSION_3_51 = GTDI_MAKE_IFC_VER( GTDI_IFC_VERSION_3, 51 ), // Removal of support of some IOstream read exceptions
+    GTDI_IFC_VERSION_3_52 = GTDI_MAKE_IFC_VER( GTDI_IFC_VERSION_3, 52 ), // New escapes: GTDI_FNC_SET_PM_REGS_CFG_BY_TYPE & GTDI_FNC_TIMER_MODE_ENABLE_BY_TYPE
+    GTDI_IFC_VERSION_3_53 = GTDI_MAKE_IFC_VER( GTDI_IFC_VERSION_3, 53 ), // New device params: L3 Bank, L3 Node and Sqidi count
+    GTDI_IFC_VERSION_3_54 = GTDI_MAKE_IFC_VER( GTDI_IFC_VERSION_3, 54 ), // Deprecated DMA sampling
+    GTDI_IFC_VERSION_3_55 = GTDI_MAKE_IFC_VER( GTDI_IFC_VERSION_3, 55 ), // New device param: Platform Version
 
     // ...
-    GTDI_IFC_VERSION_CURRENT = GTDI_IFC_VERSION_3_36,
+    GTDI_IFC_VERSION_CURRENT = GTDI_IFC_VERSION_3_55,
     // ...
     GTDI_IFC_VERSION_MAX = 0xFFFFFFFF
 } GTDI_IFC_VERSION;
@@ -496,6 +515,10 @@ typedef enum GTDI_DEVICE_PARAM_ENUM
     GTDI_DEVICE_PARAM_OA_BUFFER_SIZE,
     GTDI_DEVICE_PARAM_OA_BUFFER_TIMER_PERIOD,
     GTDI_DEVICE_PARAM_OA_BUFFERS_COUNT,
+    GTDI_DEVICE_PARAM_L3_BANK_TOTAL_COUNT,
+    GTDI_DEVICE_PARAM_L3_NODE_TOTAL_COUNT,
+    GTDI_DEVICE_PARAM_SQIDI_TOTAL_COUNT,
+    GTDI_DEVICE_PARAM_PLATFORM_VERSION,
 
     // Maximums which bound all supported GT. The values will change as needed with new GT.
     // These params are intended for internal use only.

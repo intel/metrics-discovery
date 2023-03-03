@@ -1108,6 +1108,13 @@ namespace MetricsDiscoveryInternal
                 break;
             }
 
+            case GTDI_DEVICE_PARAM_PLATFORM_VERSION:
+            {
+                out->ValueType   = GTDI_DEVICE_PARAM_VALUE_TYPE_UINT32;
+                out->ValueUint32 = 0;
+                break;
+            }
+
             default:
                 ret = CC_ERROR_INVALID_PARAMETER;
         }

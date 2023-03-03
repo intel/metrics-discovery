@@ -569,6 +569,12 @@ namespace MetricsDiscoveryInternal
             MD_CHECK_CC_RET_A( adapterId, ret );
             typedValue->ValueUInt64 = m_metricsDevice.ConvertGpuTimestampToNs( ( std::numeric_limits<uint64_t>::max )(), out.ValueUint64 );
         }
+        else if( name == "PlatformVersion" )
+        {
+            ret                     = m_driverInterface.SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_PLATFORM_VERSION, &out );
+            typedValue->ValueUInt32 = out.ValueUint32;
+            MD_LOG_A( adapterId, LOG_INFO, "PlatformVersion is %u", typedValue.ValueUInt32 );
+        }
         else
         {
             MD_LOG_A( adapterId, LOG_ERROR, "Unknown global symbol name: %s", GetCStringFromStringView( name ) );
@@ -601,6 +607,11 @@ namespace MetricsDiscoveryInternal
         const uint32_t adapterId        = m_metricsDevice.GetAdapter().GetAdapterId();
         const uint32_t platformIndex    = m_metricsDevice.GetPlatformIndex();
         const char*    globalSymbolName = GetCStringFromStringView( name );
+
+        if( name == "PlatformVersion" )
+        {
+            return platformIndex == GENERATION_ACM;
+        }
 
         const bool platformXeHpPlus = IsPlatformMatch(
             platformIndex,
