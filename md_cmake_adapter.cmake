@@ -44,15 +44,13 @@ endfunction(set_metrics_discovery_version)
 #################################################################################
 # clearInputVariables
 #   Clears cached MDAPI input cmake variables. Needed for e.g. the below command scenario:
-#   1. cmake -DMD_PLATFORM=linux -DMD_BUILD_TYPE=release -DMD_ARCH=32 -> MD_ARCH specified to 32
-#   2. cmake -DMD_PLATFORM=linux -DMD_BUILD_TYPE=release              -> default MD_ARCH value should be used,
+#   1. cmake -DCMAKE_SYSTEM_NAME=linux -DCMAKE_BUILD_TYPE=release -DMD_ARCH=32 -> MD_ARCH specified to 32
+#   2. cmake -DCMAKE_SYSTEM_NAME=linux -DCMAKE_BUILD_TYPE=release              -> default MD_ARCH value should be used,
 #                                                                        but without clearing, it will be still MD_ARCH=32
 #################################################################################
 function(clearInputVariables)
     unset(CMAKE_SYSTEM_NAME CACHE)
-    unset(MD_PLATFORM CACHE)
     unset(CMAKE_BUILD_TYPE CACHE)
-    unset(MD_BUILD_TYPE CACHE)
     unset(MD_ARCH CACHE)
     unset(MD_LIBDRM_SRC CACHE)
     unset(MD_LINUX_DISTRO CACHE)
@@ -73,9 +71,7 @@ endfunction()
 
 if (${CMAKE_VERBOSE_MAKEFILE} STREQUAL ON)
     message("INFO: Input CMAKE_SYSTEM_NAME = ${CMAKE_SYSTEM_NAME}")
-    message("INFO: Input MD_PLATFORM       = ${MD_PLATFORM}")
     message("INFO: Input CMAKE_BUILD_TYPE  = ${CMAKE_BUILD_TYPE}")
-    message("INFO: Input MD_BUILD_TYPE     = ${MD_BUILD_TYPE}")
     message("INFO: Input MD_ARCH           = ${MD_ARCH}")
     message("INFO: Input MD_LIBDRM_SRC     = ${MD_LIBDRM_SRC}")
     message("INFO: Input MD_LINUX_DISTRO   = ${MD_LINUX_DISTRO}")
@@ -83,12 +79,8 @@ endif()
 
 # PLATFORM
 if (CMAKE_SYSTEM_NAME STREQUAL "Linux")
-    if ((NOT (MD_PLATFORM)) OR (MD_PLATFORM STREQUAL "linux") OR (MD_PLATFORM STREQUAL "Linux"))
-        set(PLATFORM "linux")
-        message("-- using PLATFORM = ${PLATFORM}")
-    else ()
-        errorExit("ERROR: Current platform ${CMAKE_SYSTEM_NAME} contradicts to requested ${MD_PLATFORM}")
-    endif()
+    set(PLATFORM "linux")
+    message("-- using PLATFORM = ${PLATFORM}")
 else()
     errorExit("ERROR: Project isn't targeted for ${CMAKE_SYSTEM_NAME}. Please run CMake on Linux.")
 endif()
@@ -98,26 +90,16 @@ if (CMAKE_BUILD_TYPE)
     string (TOLOWER ${CMAKE_BUILD_TYPE} CMAKE_BUILD_TYPE)
 endif ()
 
-if(NOT (MD_BUILD_TYPE))
-    if (NOT (CMAKE_BUILD_TYPE))
-        set(BUILD_TYPE "release")
-    else()
-        set(BUILD_TYPE ${CMAKE_BUILD_TYPE})
-    endif()
+if (NOT (CMAKE_BUILD_TYPE))
+    set(BUILD_TYPE "release")
 else()
-    if (NOT (CMAKE_BUILD_TYPE))
-        set(BUILD_TYPE ${MD_BUILD_TYPE})
-    elseif (${MD_BUILD_TYPE} STREQUAL ${CMAKE_BUILD_TYPE})
-        set(BUILD_TYPE ${MD_BUILD_TYPE})
-    else()
-        errorExit("ERROR: -DMD_BUILD_TYPE contradicts to -DCMAKE_BUILD_TYPE.")
-    endif()
+    set(BUILD_TYPE ${CMAKE_BUILD_TYPE})
 endif()
 
 if (NOT (BUILD_TYPE STREQUAL "release" OR
          BUILD_TYPE STREQUAL "release-internal" OR
          BUILD_TYPE STREQUAL "debug"))
-    errorExit("ERROR: Specify correct BUILD_TYPE 'release|release-internal|debug' through -DCMAKE_BUILD_TYPE or -DMD_BUILD_TYPE")
+    errorExit("ERROR: Specify correct BUILD_TYPE 'release|release-internal|debug' through -DCMAKE_BUILD_TYPE")
 else()
     message("-- using BUILD_TYPE = ${BUILD_TYPE}")
 endif()

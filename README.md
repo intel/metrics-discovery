@@ -44,32 +44,38 @@ Event based measurements require minimum Mesa version 18.2.
 
 1\. Download sources.
 
-2\. Run CMake generation:
+2\. Install libdrm-dev.
+
+```shell
+sudo apt install libdrm-dev
+```
+
+3\. Run CMake generation:
 
 ```shell
 mkdir build && cd build
 cmake ..
 ```
 
-3\. Build:
+4\. Build:
 
 ```shell
 make -j$(nproc)
 ```
 
-4\. Built library will be here (for 64-bit Linux):
+5\. Built library will be here (for 64-bit Linux):
 
 ```shell
 (project_root)/dump/linux64/release/metrics_discovery/libigdmd.so
 ```
 
-5\. Install:
+6\. Install:
 
 ```shell
 sudo make install
 ```
 
-6\. Packaging:
+7\. Packaging:
 
 ```shell
 make package

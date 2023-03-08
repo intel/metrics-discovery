@@ -10,11 +10,11 @@ SPDX-License-Identifier: MIT
 
 //     Abstract:   Instrumentation Utils common debug routines and structures.
 
+#include <stdarg.h>
+
 #include "iu_debug.h"
 #include "iu_std.h"
 #include "iu_os.h"
-
-#include <stdarg.h>
 
 ///////////////////////////////////////////////////////////////////////////////
 // GLOBAL VAR: g_IuLogsControl - default debug logs settings

@@ -13,13 +13,13 @@ SPDX-License-Identifier: MIT
 //  Note:          Some functions from the header may be unimplemented - they weren't
 //                 needed in Linux version at the moment.
 
-#include "iu_std.h"
-#include "iu_debug.h"
-
 #include <stdlib.h>
 #include <stdarg.h>
 #include <string.h>
 #include <wchar.h>
+
+#include "iu_std.h"
+#include "iu_debug.h"
 
 #if defined( __linux__ )
     #include <memory.h>
