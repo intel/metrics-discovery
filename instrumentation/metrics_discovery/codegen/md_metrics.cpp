@@ -423,7 +423,22 @@ inline TCompletionCode AddGlobalSymbols( CMetricsDevice* metricsDevice )
     ret = symbolSet->AddSymbolBYTEARRAY( "GtXeCoreMask", nullptr, SYMBOL_TYPE_DETECT );
     MD_CHECK_CC_RET_A( adapterId, ret );
 
+    ret = symbolSet->AddSymbolUINT32( "L3BankTotalCount", 0, SYMBOL_TYPE_DETECT );
+    MD_CHECK_CC_RET_A( adapterId, ret );
+
+    ret = symbolSet->AddSymbolUINT32( "L3NodeTotalCount", 0, SYMBOL_TYPE_DETECT );
+    MD_CHECK_CC_RET_A( adapterId, ret );
+
+    ret = symbolSet->AddSymbolUINT32( "SqidiTotalCount", 0, SYMBOL_TYPE_DETECT );
+    MD_CHECK_CC_RET_A( adapterId, ret );
+
     ret = symbolSet->AddSymbolUINT32( "PlatformVersion", 0, SYMBOL_TYPE_DETECT );
+    MD_CHECK_CC_RET_A( adapterId, ret );
+
+    ret = symbolSet->AddSymbolUINT32( "ComputeEngineTotalCount", 0, SYMBOL_TYPE_DETECT );
+    MD_CHECK_CC_RET_A( adapterId, ret );
+
+    ret = symbolSet->AddSymbolUINT32( "CopyEngineTotalCount", 0, SYMBOL_TYPE_DETECT );
     MD_CHECK_CC_RET_A( adapterId, ret );
 
     metricsDevice->GetParams()->GlobalSymbolsCount = symbolSet->GetSymbolCount();

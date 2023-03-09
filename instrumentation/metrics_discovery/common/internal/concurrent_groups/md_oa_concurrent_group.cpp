@@ -105,7 +105,6 @@ namespace MetricsDiscoveryInternal
         CDriverInterface& driverInterface = m_device->GetDriverInterface();
         ret                               = driverInterface.OpenIoStream( *this, processId, *nsTimerPeriod, *oaBufferSize );
         MD_CHECK_CC_RET_A( adapterId, ret );
-
         MD_LOG_A( adapterId, LOG_DEBUG, "Stream opened using type: %u", m_streamType );
 
         m_processId            = processId;
@@ -113,7 +112,7 @@ namespace MetricsDiscoveryInternal
         CMetricsCalculator* mc = m_ioMetricSet->GetMetricsCalculator();
         // In case of stream reopen
         ClearVector( m_ioGpuContextInfoVector );
-        m_params_1_0.IoGpuContextInformationCount = 0;
+        m_params.IoGpuContextInformationCount = 0;
         if( mc != nullptr )
         {
             mc->DiscardSavedReport();
@@ -186,7 +185,7 @@ namespace MetricsDiscoveryInternal
             SetIoMeasurementInfoPredefined( IO_MEASUREMENT_INFO_BUFFER_OVERRUN, exceptions.BufferOverrun, &index );
             SetIoMeasurementInfoPredefined( IO_MEASUREMENT_INFO_COUNTERS_OVERFLOW, exceptions.CountersOverflow, &index );
 
-            m_params_1_0.IoMeasurementInformationCount = m_ioMeasurementInfoVector.size();
+            m_params.IoMeasurementInformationCount = m_ioMeasurementInfoVector.size();
         }
 
         return ret;
@@ -278,7 +277,7 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     IInformation_1_0* COAConcurrentGroup::GetIoMeasurementInformation( uint32_t index )
     {
-        if( m_params_1_0.IoMeasurementInformationCount != 0 && index < m_ioMeasurementInfoVector.size() )
+        if( m_params.IoMeasurementInformationCount != 0 && index < m_ioMeasurementInfoVector.size() )
         {
             return static_cast<IInformation_1_0*>( m_ioMeasurementInfoVector[index] );
         }
@@ -309,7 +308,7 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     IInformation_1_0* COAConcurrentGroup::GetIoGpuContextInformation( uint32_t index )
     {
-        if( m_params_1_0.IoGpuContextInformationCount != 0 && index < m_ioGpuContextInfoVector.size() )
+        if( m_params.IoGpuContextInformationCount != 0 && index < m_ioGpuContextInfoVector.size() )
         {
             return static_cast<IInformation_1_0*>( m_ioGpuContextInfoVector[index] );
         }

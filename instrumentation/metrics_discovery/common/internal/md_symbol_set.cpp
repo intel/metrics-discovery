@@ -201,12 +201,17 @@ namespace MetricsDiscoveryInternal
         if( symbolType == SYMBOL_TYPE_DETECT )
         {
             // if it is a CString or a ByteArray, a memory is allocated here
-            ret = DetectSymbolValue( name, &typedValue );
+            ret = DetectSymbolValue( name, typedValue );
 
             if( ret == CC_ERROR_NOT_SUPPORTED )
             {
                 MD_LOG_A( adapterId, LOG_INFO, "Symbol is not supported." );
-                // do nothing if a symbol is not supported and return success
+
+                if( typedValue.ValueType == VALUE_TYPE_BYTEARRAY && typedValue.ValueByteArray != nullptr )
+                {
+                    DeleteByteArray( typedValue.ValueByteArray, adapterId );
+                }
+
                 return CC_OK;
             }
 
@@ -263,13 +268,13 @@ namespace MetricsDiscoveryInternal
     //
     // Input:
     //     std::string_view        name          - symbol name
-    //     TTypedValueLatest*      typedValue    - output value
+    //     TTypedValueLatest&      typedValue    - output value
     //
     // Output:
     //     TCompletionCode                       - result of the operation
     //
     //////////////////////////////////////////////////////////////////////////////
-    TCompletionCode CSymbolSet::DetectSymbolValue( std::string_view name, TTypedValueLatest* typedValue )
+    TCompletionCode CSymbolSet::DetectSymbolValue( std::string_view name, TTypedValueLatest& typedValue )
     {
         const uint32_t            adapterId     = m_metricsDevice.GetAdapter().GetAdapterId();
         const uint32_t            platformIndex = m_metricsDevice.GetPlatformIndex();
@@ -287,45 +292,42 @@ namespace MetricsDiscoveryInternal
 
         if( name == "EuCoresTotalCount" || name == "VectorEngineTotalCount" )
         {
-            ret = m_driverInterface.SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_EU_CORES_TOTAL_COUNT, &out, &m_metricsDevice );
-            MD_CHECK_CC_RET_A( adapterId, ret );
-            typedValue->ValueUInt32 = out.ValueUint32;
+            ret                    = m_driverInterface.SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_EU_CORES_TOTAL_COUNT, &out, &m_metricsDevice );
+            typedValue.ValueUInt32 = out.ValueUint32;
         }
         else if( name == "EuCoresPerSubsliceCount" || name == "VectorEnginePerXeCoreCount" )
         {
             // ret = m_driverInterface.SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_EU_CORES_PER_SUBSLICE_COUNT, &out, &m_metricsDevice );
-            // MD_CHECK_CC_RET_A( adapterId, ret );
             // TODO: windows driver interface refactoring is needed.
 
             ret = m_driverInterface.SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_EU_CORES_TOTAL_COUNT, &out, &m_metricsDevice );
-            MD_CHECK_CC_RET_A( adapterId, ret );
-
-            uint32_t euCoresTotalCount = out.ValueUint32;
-
-            ret = m_driverInterface.SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_DUALSUBSLICES_TOTAL_COUNT, &out, &m_metricsDevice );
-            if( ret != CC_OK )
+            if( ret == CC_OK )
             {
-                ret = m_driverInterface.SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_SUBSLICES_TOTAL_COUNT, &out, &m_metricsDevice );
-            }
-            else
-            {
-                const bool isSubsliceAvailable = IsPlatformMatch( platformIndex, GENERATION_TGL, GENERATION_DG1, GENERATION_ADLP, GENERATION_ADLS, GENERATION_ADLN, GENERATION_XEHP_SDV );
-                if( isSubsliceAvailable )
+                uint32_t euCoresTotalCount = out.ValueUint32;
+
+                ret = m_driverInterface.SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_DUALSUBSLICES_TOTAL_COUNT, &out, &m_metricsDevice );
+                if( ret != CC_OK )
                 {
-                    out.ValueUint32 *= 2;
+                    ret = m_driverInterface.SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_SUBSLICES_TOTAL_COUNT, &out, &m_metricsDevice );
                 }
+                else
+                {
+                    const bool isSubsliceAvailable = IsPlatformMatch( platformIndex, GENERATION_TGL, GENERATION_DG1, GENERATION_ADLP, GENERATION_ADLS, GENERATION_ADLN, GENERATION_XEHP_SDV );
+                    if( isSubsliceAvailable )
+                    {
+                        out.ValueUint32 *= 2;
+                    }
+                }
+
+                uint32_t subslicesTotalCount = out.ValueUint32;
+
+                typedValue.ValueUInt32 = ( subslicesTotalCount > 0 ) ? euCoresTotalCount / subslicesTotalCount : 0;
             }
-            MD_CHECK_CC_RET_A( adapterId, ret );
-
-            uint32_t subslicesTotalCount = out.ValueUint32;
-
-            typedValue->ValueUInt32 = ( subslicesTotalCount > 0 ) ? euCoresTotalCount / subslicesTotalCount : 0;
         }
         else if( name == "EuSubslicesTotalCount" || ( !useDualSubslice && ( name == "XeCoreTotalCount" ) ) )
         {
-            ret = m_driverInterface.SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_SUBSLICES_TOTAL_COUNT, &out, &m_metricsDevice );
-            MD_CHECK_CC_RET_A( adapterId, ret );
-            typedValue->ValueUInt32 = out.ValueUint32;
+            ret                    = m_driverInterface.SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_SUBSLICES_TOTAL_COUNT, &out, &m_metricsDevice );
+            typedValue.ValueUInt32 = out.ValueUint32;
         }
         // not supported for XeHP_SDV, removed all platforms for consistency
         else if( name == "EuSubslicesPerSliceCount" )
@@ -334,69 +336,74 @@ namespace MetricsDiscoveryInternal
         }
         else if( name == "EuDualSubslicesTotalCount" || ( useDualSubslice && ( name == "XeCoreTotalCount" ) ) )
         {
-            ret = m_driverInterface.SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_DUALSUBSLICES_TOTAL_COUNT, &out, &m_metricsDevice );
-            MD_CHECK_CC_RET_A( adapterId, ret );
-            typedValue->ValueUInt32 = out.ValueUint32;
+            ret                    = m_driverInterface.SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_DUALSUBSLICES_TOTAL_COUNT, &out, &m_metricsDevice );
+            typedValue.ValueUInt32 = out.ValueUint32;
         }
         else if( name == "EuSlicesTotalCount" || name == "SliceTotalCount" )
         {
-            ret = m_driverInterface.SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_SLICES_COUNT, &out, &m_metricsDevice );
-            MD_CHECK_CC_RET_A( adapterId, ret );
-            typedValue->ValueUInt32 = out.ValueUint32;
+            ret                    = m_driverInterface.SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_SLICES_COUNT, &out, &m_metricsDevice );
+            typedValue.ValueUInt32 = out.ValueUint32;
         }
         else if( name == "EuThreadsCount" || name == "VectorEngineThreadsCount" )
         {
-            ret = m_driverInterface.SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_EU_THREADS_COUNT, &out );
-            MD_CHECK_CC_RET_A( adapterId, ret );
-            typedValue->ValueUInt32 = out.ValueUint32;
+            ret                    = m_driverInterface.SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_EU_THREADS_COUNT, &out );
+            typedValue.ValueUInt32 = out.ValueUint32;
         }
         else if( name == "SliceMask" || name == "GtSliceMask" )
         {
             ret = m_driverInterface.SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_SLICES_MASK, &out, &m_metricsDevice );
-            MD_CHECK_CC_RET_A( adapterId, ret );
-            if( typedValue->ValueType == VALUE_TYPE_BYTEARRAY )
+            if( ret == CC_OK && typedValue.ValueType == VALUE_TYPE_BYTEARRAY )
             {
-                TByteArray_1_0 byteArray   = { sizeof( out.ValueByteArray ), out.ValueByteArray };
-                typedValue->ValueByteArray = GetCopiedByteArray( &byteArray, adapterId );
+                if( typedValue.ValueByteArray != nullptr )
+                {
+                    DeleteByteArray( typedValue.ValueByteArray, adapterId );
+                }
+                TByteArray_1_0 byteArray  = { sizeof( out.ValueByteArray ), out.ValueByteArray };
+                typedValue.ValueByteArray = GetCopiedByteArray( &byteArray, adapterId );
             }
             else
             {
-                typedValue->ValueUInt32 = out.ValueUint32;
+                typedValue.ValueUInt32 = out.ValueUint32;
             }
         }
         else if( ( name == "SubsliceMask" ) || ( name == "GtSubsliceMask" ) || ( !useDualSubslice && ( ( name == "XeCoreMask" ) || ( name == "GtXeCoreMask" ) ) ) )
         {
             ret = m_driverInterface.SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_SUBSLICES_MASK, &out, &m_metricsDevice );
-            MD_CHECK_CC_RET_A( adapterId, ret );
-            if( typedValue->ValueType == VALUE_TYPE_BYTEARRAY )
+            if( ret == CC_OK && typedValue.ValueType == VALUE_TYPE_BYTEARRAY )
             {
-                TByteArray_1_0 byteArray   = { sizeof( out.ValueByteArray ), out.ValueByteArray };
-                typedValue->ValueByteArray = GetCopiedByteArray( &byteArray, adapterId );
+                if( typedValue.ValueByteArray != nullptr )
+                {
+                    DeleteByteArray( typedValue.ValueByteArray, adapterId );
+                }
+                TByteArray_1_0 byteArray  = { sizeof( out.ValueByteArray ), out.ValueByteArray };
+                typedValue.ValueByteArray = GetCopiedByteArray( &byteArray, adapterId );
             }
             else
             {
-                typedValue->ValueUInt64 = out.ValueUint64;
+                typedValue.ValueUInt64 = out.ValueUint64;
             }
         }
         else if( ( name == "DualSubsliceMask" ) || ( name == "GtDualSubsliceMask" ) || ( useDualSubslice && ( ( name == "XeCoreMask" ) || ( name == "GtXeCoreMask" ) ) ) )
         {
             ret = m_driverInterface.SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_DUALSUBSLICES_MASK, &out, &m_metricsDevice );
-            MD_CHECK_CC_RET_A( adapterId, ret );
-            if( typedValue->ValueType == VALUE_TYPE_BYTEARRAY )
+            if( ret == CC_OK && typedValue.ValueType == VALUE_TYPE_BYTEARRAY )
             {
-                TByteArray_1_0 byteArray   = { sizeof( out.ValueByteArray ), out.ValueByteArray };
-                typedValue->ValueByteArray = GetCopiedByteArray( &byteArray, adapterId );
+                if( typedValue.ValueByteArray != nullptr )
+                {
+                    DeleteByteArray( typedValue.ValueByteArray, adapterId );
+                }
+                TByteArray_1_0 byteArray  = { sizeof( out.ValueByteArray ), out.ValueByteArray };
+                typedValue.ValueByteArray = GetCopiedByteArray( &byteArray, adapterId );
             }
             else
             {
-                typedValue->ValueUInt64 = out.ValueUint64;
+                typedValue.ValueUInt64 = out.ValueUint64;
             }
         }
         else if( name == "SamplersTotalCount" )
         {
-            ret = m_driverInterface.SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_SAMPLERS_COUNT, &out, &m_metricsDevice );
-            MD_CHECK_CC_RET_A( adapterId, ret );
-            typedValue->ValueUInt32 = out.ValueUint32;
+            ret                    = m_driverInterface.SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_SAMPLERS_COUNT, &out, &m_metricsDevice );
+            typedValue.ValueUInt32 = out.ValueUint32;
         }
         else if( name == "SamplersPerSubliceCount" )
         {
@@ -407,10 +414,8 @@ namespace MetricsDiscoveryInternal
         {
             if( m_metricsDevice.GetAdapter().GetParams()->Type == ADAPTER_TYPE_INTEGRATED )
             {
-                ret = m_driverInterface.SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_DRAM_PEAK_THROUGHTPUT, &out );
-
-                MD_CHECK_CC_RET_A( adapterId, ret );
-                typedValue->ValueUInt32 = static_cast<uint32_t>( out.ValueUint64 / static_cast<uint64_t>( MD_MBYTE ) );
+                ret                    = m_driverInterface.SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_DRAM_PEAK_THROUGHTPUT, &out );
+                typedValue.ValueUInt32 = static_cast<uint32_t>( out.ValueUint64 / static_cast<uint64_t>( MD_MBYTE ) );
             }
             else
             {
@@ -425,12 +430,12 @@ namespace MetricsDiscoveryInternal
             {
                 // Possibly caused by disabled Turbo
                 MD_LOG_A( adapterId, LOG_WARNING, "%s not available, GpuCurrentFrequencyMHz used instead", GetCStringFromStringView( name ) );
-                ret = DetectSymbolValue( "GpuCurrentFrequencyMHz", typedValue );
-                MD_CHECK_CC_RET_A( adapterId, ret );
+                ret                    = m_driverInterface.SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_GPU_CORE_FREQUENCY, &out );
+                typedValue.ValueUInt32 = out.ValueUint32 / MD_MHERTZ;
             }
             else
             {
-                typedValue->ValueUInt32 = out.ValueUint32;
+                typedValue.ValueUInt32 = out.ValueUint32;
             }
         }
         else if( name == "GpuMaxFrequencyMHz" )
@@ -441,145 +446,149 @@ namespace MetricsDiscoveryInternal
             {
                 // Possibly caused by disabled Turbo
                 MD_LOG_A( adapterId, LOG_WARNING, "%s not available, GpuCurrentFrequencyMHz used instead", GetCStringFromStringView( name ) );
-                ret = DetectSymbolValue( "GpuCurrentFrequencyMHz", typedValue );
-                MD_CHECK_CC_RET_A( adapterId, ret );
+                ret                    = m_driverInterface.SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_GPU_CORE_FREQUENCY, &out );
+                typedValue.ValueUInt32 = out.ValueUint32 / MD_MHERTZ;
             }
             else
             {
-                typedValue->ValueUInt32 = out.ValueUint32;
+                typedValue.ValueUInt32 = out.ValueUint32;
             }
         }
         else if( name == "GpuCurrentFrequencyMHz" )
         {
-            ret = m_driverInterface.SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_GPU_CORE_FREQUENCY, &out );
-            MD_CHECK_CC_RET_A( adapterId, ret );
-            typedValue->ValueUInt32 = out.ValueUint32 / MD_MHERTZ;
+            ret                    = m_driverInterface.SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_GPU_CORE_FREQUENCY, &out );
+            typedValue.ValueUInt32 = out.ValueUint32 / MD_MHERTZ;
         }
 
         else if( name == "PciDeviceId" )
         {
-            ret = m_driverInterface.SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_PCI_DEVICE_ID, &out );
-            MD_CHECK_CC_RET_A( adapterId, ret );
-            typedValue->ValueUInt32 = out.ValueUint32;
+            ret                    = m_driverInterface.SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_PCI_DEVICE_ID, &out );
+            typedValue.ValueUInt32 = out.ValueUint32;
         }
         else if( name == "SkuRevisionId" )
         {
-            ret = m_driverInterface.SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_REVISION_ID, &out );
-            MD_CHECK_CC_RET_A( adapterId, ret );
-            typedValue->ValueUInt32 = out.ValueUint32;
-            MD_LOG_A( adapterId, LOG_INFO, "SkuRevisionId is %u", typedValue->ValueUInt32 );
+            ret                    = m_driverInterface.SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_REVISION_ID, &out );
+            typedValue.ValueUInt32 = out.ValueUint32;
+            MD_LOG_A( adapterId, LOG_INFO, "SkuRevisionId is %u", typedValue.ValueUInt32 );
         }
         else if( name == "PlatformIndex" )
         {
-            ret = m_driverInterface.SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_PLATFORM_INDEX, &out );
-            MD_CHECK_CC_RET_A( adapterId, ret );
-            typedValue->ValueUInt32 = out.ValueUint32;
-            MD_LOG_A( adapterId, LOG_INFO, "PlatformIndex is %u", typedValue->ValueUInt32 );
+            ret                    = m_driverInterface.SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_PLATFORM_INDEX, &out );
+            typedValue.ValueUInt32 = out.ValueUint32;
+            MD_LOG_A( adapterId, LOG_INFO, "PlatformIndex is %u", typedValue.ValueUInt32 );
         }
         else if( name == "ApertureSize" )
         {
-            ret = m_driverInterface.SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_APERTURE_SIZE, &out );
-            MD_CHECK_CC_RET_A( adapterId, ret );
-            typedValue->ValueUInt32 = out.ValueUint32;
+            ret                    = m_driverInterface.SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_APERTURE_SIZE, &out );
+            typedValue.ValueUInt32 = out.ValueUint32;
         }
         else if( name == "Capabilities" )
         {
-            ret = m_driverInterface.SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_CAPABILITIES, &out );
-            MD_CHECK_CC_RET_A( adapterId, ret );
-            typedValue->ValueUInt32 = out.ValueUint32;
+            ret                    = m_driverInterface.SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_CAPABILITIES, &out );
+            typedValue.ValueUInt32 = out.ValueUint32;
         }
         else if( name == "PavpDisabled" )
         {
-            ret = m_driverInterface.SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_CAPABILITIES, &out );
-            MD_CHECK_CC_RET_A( adapterId, ret );
-            typedValue->ValueBool = IsPavpDisabled( out.ValueUint32 );
+            ret                  = m_driverInterface.SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_CAPABILITIES, &out );
+            typedValue.ValueBool = IsPavpDisabled( out.ValueUint32 );
         }
-
         else if( name == "NumberOfRenderOutputUnits" )
         {
-            ret = m_driverInterface.SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_NUMBER_OF_RENDER_OUTPUT_UNITS, &out, &m_metricsDevice );
-            MD_CHECK_CC_RET_A( adapterId, ret );
-            typedValue->ValueUInt32 = out.ValueUint32;
+            ret                    = m_driverInterface.SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_NUMBER_OF_RENDER_OUTPUT_UNITS, &out, &m_metricsDevice );
+            typedValue.ValueUInt32 = out.ValueUint32;
         }
         else if( name == "NumberOfShadingUnits" )
         {
-            ret = m_driverInterface.SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_NUMBER_OF_SHADING_UNITS, &out );
-            MD_CHECK_CC_RET_A( adapterId, ret );
-            typedValue->ValueUInt32 = out.ValueUint32;
+            ret                    = m_driverInterface.SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_NUMBER_OF_SHADING_UNITS, &out );
+            typedValue.ValueUInt32 = out.ValueUint32;
         }
         else if( name == "OABufferMinSize" )
         {
-            ret = m_driverInterface.GetMaxMinOaBufferSize( GTDI_OA_BUFFER_TYPE_DEFAULT, GTDI_DEVICE_PARAM_OA_BUFFER_SIZE_MIN, out );
-            MD_CHECK_CC_RET_A( adapterId, ret );
-            typedValue->ValueUInt32 = out.ValueUint32;
+            ret                    = m_driverInterface.GetMaxMinOaBufferSize( GTDI_OA_BUFFER_TYPE_DEFAULT, GTDI_DEVICE_PARAM_OA_BUFFER_SIZE_MIN, out );
+            typedValue.ValueUInt32 = out.ValueUint32;
         }
         else if( name == "OABufferMaxSize" )
         {
-            ret = m_driverInterface.GetMaxMinOaBufferSize( GTDI_OA_BUFFER_TYPE_DEFAULT, GTDI_DEVICE_PARAM_OA_BUFFER_SIZE_MAX, out );
-            MD_CHECK_CC_RET_A( adapterId, ret );
-            typedValue->ValueUInt32 = out.ValueUint32;
+            ret                    = m_driverInterface.GetMaxMinOaBufferSize( GTDI_OA_BUFFER_TYPE_DEFAULT, GTDI_DEVICE_PARAM_OA_BUFFER_SIZE_MAX, out );
+            typedValue.ValueUInt32 = out.ValueUint32;
         }
         else if( name == "MediaOABufferMinSize" )
         {
-            ret = m_driverInterface.GetMaxMinOaBufferSize( GTDI_OA_BUFFER_TYPE_OAM_SLICE_0, GTDI_DEVICE_PARAM_OA_BUFFER_SIZE_MIN, out );
-            if( ret == CC_ERROR_NOT_SUPPORTED )
-            {
-                return ret;
-            }
-            MD_CHECK_CC_RET_A( adapterId, ret );
-            typedValue->ValueUInt32 = out.ValueUint32;
+            ret                    = m_driverInterface.GetMaxMinOaBufferSize( GTDI_OA_BUFFER_TYPE_OAM_SLICE_0, GTDI_DEVICE_PARAM_OA_BUFFER_SIZE_MIN, out );
+            typedValue.ValueUInt32 = out.ValueUint32;
         }
         else if( name == "MediaOABufferMaxSize" )
         {
-            ret = m_driverInterface.GetMaxMinOaBufferSize( GTDI_OA_BUFFER_TYPE_OAM_SLICE_0, GTDI_DEVICE_PARAM_OA_BUFFER_SIZE_MAX, out );
-            if( ret == CC_ERROR_NOT_SUPPORTED )
-            {
-                return ret;
-            }
-            MD_CHECK_CC_RET_A( adapterId, ret );
-            typedValue->ValueUInt32 = out.ValueUint32;
+            ret                    = m_driverInterface.GetMaxMinOaBufferSize( GTDI_OA_BUFFER_TYPE_OAM_SLICE_0, GTDI_DEVICE_PARAM_OA_BUFFER_SIZE_MAX, out );
+            typedValue.ValueUInt32 = out.ValueUint32;
         }
         else if( name == "GpuTimestampFrequency" )
         {
-            ret = m_driverInterface.SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_GPU_TIMESTAMP_FREQUENCY, &out );
-            MD_CHECK_CC_RET_A( adapterId, ret );
-            typedValue->ValueUInt32 = (uint32_t) out.ValueUint64;
+            ret                    = m_driverInterface.SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_GPU_TIMESTAMP_FREQUENCY, &out );
+            typedValue.ValueUInt32 = static_cast<uint32_t>( out.ValueUint64 );
         }
         else if( name == "EdramSize" )
         {
-            ret = m_driverInterface.SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_EDRAM_SIZE, &out );
-            MD_CHECK_CC_RET_A( adapterId, ret );
-            typedValue->ValueUInt32 = (uint32_t) out.ValueUint64;
+            ret                    = m_driverInterface.SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_EDRAM_SIZE, &out );
+            typedValue.ValueUInt32 = static_cast<uint32_t>( out.ValueUint64 );
         }
         else if( name == "LLCSize" )
         {
-            ret = m_driverInterface.SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_LLC_SIZE, &out );
-            MD_CHECK_CC_RET_A( adapterId, ret );
-            typedValue->ValueUInt32 = (uint32_t) out.ValueUint64;
+            ret                    = m_driverInterface.SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_LLC_SIZE, &out );
+            typedValue.ValueUInt32 = static_cast<uint32_t>( out.ValueUint64 );
         }
         else if( name == "L3Size" )
         {
-            ret = m_driverInterface.SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_L3_SIZE, &out );
-            MD_CHECK_CC_RET_A( adapterId, ret );
-            typedValue->ValueUInt32 = (uint32_t) out.ValueUint64;
+            ret                    = m_driverInterface.SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_L3_SIZE, &out );
+            typedValue.ValueUInt32 = static_cast<uint32_t>( out.ValueUint64 );
         }
         else if( name == "MaxTimestamp" )
         {
-            ret = m_driverInterface.SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_GPU_TIMESTAMP_FREQUENCY, &out );
-            MD_CHECK_CC_RET_A( adapterId, ret );
-            typedValue->ValueUInt64 = m_metricsDevice.ConvertGpuTimestampToNs( ( std::numeric_limits<uint64_t>::max )(), out.ValueUint64 );
+            ret                    = m_driverInterface.SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_GPU_TIMESTAMP_FREQUENCY, &out );
+            typedValue.ValueUInt64 = m_metricsDevice.ConvertGpuTimestampToNs( ( std::numeric_limits<uint64_t>::max )(), out.ValueUint64 );
+        }
+        else if( name == "L3BankTotalCount" )
+        {
+            ret                    = m_driverInterface.SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_L3_BANK_TOTAL_COUNT, &out );
+            typedValue.ValueUInt32 = out.ValueUint32;
+        }
+        else if( name == "L3NodeTotalCount" )
+        {
+            ret                    = m_driverInterface.SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_L3_NODE_TOTAL_COUNT, &out );
+            typedValue.ValueUInt32 = out.ValueUint32;
+        }
+        else if( name == "SqidiTotalCount" )
+        {
+            ret                    = m_driverInterface.SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_SQIDI_TOTAL_COUNT, &out );
+            typedValue.ValueUInt32 = out.ValueUint32;
         }
         else if( name == "PlatformVersion" )
         {
-            ret                     = m_driverInterface.SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_PLATFORM_VERSION, &out );
-            typedValue->ValueUInt32 = out.ValueUint32;
+            ret                    = m_driverInterface.SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_PLATFORM_VERSION, &out );
+            typedValue.ValueUInt32 = out.ValueUint32;
             MD_LOG_A( adapterId, LOG_INFO, "PlatformVersion is %u", typedValue.ValueUInt32 );
+        }
+        else if( name == "ComputeEngineTotalCount" )
+        {
+            ret                    = m_driverInterface.SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_COMPUTE_ENGINE_TOTAL_COUNT, &out );
+            typedValue.ValueUInt32 = out.ValueUint32;
+        }
+        else if( name == "CopyEngineTotalCount" )
+        {
+            ret                    = m_driverInterface.SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_COPY_ENGINE_TOTAL_COUNT, &out );
+            typedValue.ValueUInt32 = out.ValueUint32;
         }
         else
         {
             MD_LOG_A( adapterId, LOG_ERROR, "Unknown global symbol name: %s", GetCStringFromStringView( name ) );
             return CC_ERROR_INVALID_PARAMETER;
         }
+
+        if( ret == CC_ERROR_NOT_SUPPORTED )
+        {
+            return ret;
+        }
+        MD_CHECK_CC_RET_A( adapterId, ret );
 
         return CC_OK;
     }
@@ -613,7 +622,7 @@ namespace MetricsDiscoveryInternal
             return platformIndex == GENERATION_ACM;
         }
 
-        const bool platformXeHpPlus = IsPlatformMatch(
+        const bool isXeHpgPlus = IsPlatformMatch(
             platformIndex,
             GENERATION_ACM,
             GENERATION_PVC );
@@ -672,7 +681,7 @@ namespace MetricsDiscoveryInternal
         }
 
         // Not supported symbol names or old ones
-        if( platformXeHpPlus )
+        if( isXeHpgPlus )
         {
             if( globalSymbolMap.find( name ) != globalSymbolMap.end() )
             {
@@ -993,7 +1002,7 @@ namespace MetricsDiscoveryInternal
             return CC_ERROR_INVALID_PARAMETER;
         }
 
-        return DetectSymbolValue( symbolName, symbolValue );
+        return DetectSymbolValue( symbolName, *symbolValue );
     }
 
     //////////////////////////////////////////////////////////////////////////////
@@ -1039,7 +1048,9 @@ namespace MetricsDiscoveryInternal
         const uint32_t  platformIndex = m_metricsDevice.GetPlatformIndex();
         const char*     name          = symbol->symbol_1_0.SymbolName;
         uint8_t*        mask          = symbol->symbol_1_0.SymbolTypedValue.ValueByteArray->Data;
-        TTypedValue_1_0 boolValue     = { VALUE_TYPE_BOOL, { true } }; // clang suggest braces around initialization of sub object
+        TTypedValue_1_0 boolValue     = {};
+        boolValue.ValueType           = VALUE_TYPE_BOOL;
+        boolValue.ValueBool           = true;
 
         const bool useDualSubslice = IsPlatformMatch(
             platformIndex,
@@ -1060,7 +1071,8 @@ namespace MetricsDiscoveryInternal
                 }
             }
         }
-        else if( ( strcmp( name, "GtSubsliceMask" ) == 0 ) || ( !useDualSubslice && ( strcmp( name, "GtXeCoreMask" ) == 0 ) ) )
+        else if( const bool isXeCoreSymbol = strcmp( name, "GtXeCoreMask" ) == 0;
+                 ( strcmp( name, "GtSubsliceMask" ) == 0 ) || ( !useDualSubslice && isXeCoreSymbol ) )
         {
             for( uint32_t i = 0; i < m_maxSlice; i++ )
             {
@@ -1071,20 +1083,19 @@ namespace MetricsDiscoveryInternal
 
                     if( mask[currentByte] & MD_BIT( currentBit ) )
                     {
-                        std::string dynamicSymbolName = "GtSlice" + std::to_string( i ) + "Subslice" + std::to_string( j );
-                        if( strcmp( name, "GtXeCoreMask" ) == 0 )
-                        {
-                            dynamicSymbolName = "GtSlice" + std::to_string( i ) + "XeCore" + std::to_string( j );
-                        }
+                        std::string dynamicSymbolName = "GtSlice" + std::to_string( i ) + ( ( isXeCoreSymbol ) ? "XeCore" : "Subslice" ) + std::to_string( j );
                         AddSymbol( dynamicSymbolName.c_str(), boolValue, SYMBOL_TYPE_IMMEDIATE );
                     }
                 }
             }
         }
-        else if( ( strcmp( name, "GtDualSubsliceMask" ) == 0 ) || ( useDualSubslice && ( strcmp( name, "GtXeCoreMask" ) == 0 ) ) )
+        else if( const bool isXeCoreSymbol = strcmp( name, "GtXeCoreMask" ) == 0;
+                 ( strcmp( name, "GtDualSubsliceMask" ) == 0 ) || ( useDualSubslice && isXeCoreSymbol ) )
         {
-            const uint32_t  first4Slices                      = 4;
-            TTypedValue_1_0 activeDualSubsliceForFirst4Slices = { VALUE_TYPE_UINT32, { 0 } }; // clang suggest braces around initialization of subobject
+            constexpr uint32_t first4Slices                      = 4;
+            TTypedValue_1_0    activeDualSubsliceForFirst4Slices = {};
+            activeDualSubsliceForFirst4Slices.ValueType          = VALUE_TYPE_UINT32;
+            activeDualSubsliceForFirst4Slices.ValueUInt32        = 0;
 
             for( uint32_t i = 0; i < m_maxSlice; i++ )
             {
@@ -1095,11 +1106,7 @@ namespace MetricsDiscoveryInternal
 
                     if( mask[currentByte] & MD_BIT( currentBit ) )
                     {
-                        std::string dynamicSymbolName = "GtSlice" + std::to_string( i ) + "DualSubslice" + std::to_string( j );
-                        if( strcmp( name, "GtXeCoreMask" ) == 0 )
-                        {
-                            dynamicSymbolName = "GtSlice" + std::to_string( i ) + "XeCore" + std::to_string( j );
-                        }
+                        std::string dynamicSymbolName = "GtSlice" + std::to_string( i ) + ( ( isXeCoreSymbol ) ? "XeCore" : "DualSubslice" ) + std::to_string( j );
                         AddSymbol( dynamicSymbolName.c_str(), boolValue, SYMBOL_TYPE_IMMEDIATE );
 
                         // Count active dual subslices for first four slices

@@ -31,12 +31,12 @@ namespace MetricsDiscoveryInternal
     //     Returns concurrent group params.
     //
     // Output:
-    //     TConcurrentGroupParams_1_0*  - concurrent group params
+    //     TConcurrentGroupParamsLatest*  - concurrent group params
     //
     //////////////////////////////////////////////////////////////////////////////
-    TConcurrentGroupParams_1_0* CConcurrentGroup::GetParams( void )
+    TConcurrentGroupParamsLatest* CConcurrentGroup::GetParams( void )
     {
-        return &m_params_1_0;
+        return &m_params;
     }
 
     //////////////////////////////////////////////////////////////////////////////
@@ -227,7 +227,7 @@ namespace MetricsDiscoveryInternal
     //
     //////////////////////////////////////////////////////////////////////////////
     CConcurrentGroup::CConcurrentGroup( CMetricsDevice* device, const char* name, const char* description, const uint32_t measurementTypeMask )
-        : m_params_1_0{}
+        : m_params{}
         , m_semaphore( nullptr )
         , m_setsVector()
         , m_otherSetsList()
@@ -238,13 +238,12 @@ namespace MetricsDiscoveryInternal
     {
         const uint32_t adapterId = OBTAIN_ADAPTER_ID( device );
 
-        m_params_1_0.SymbolName                    = GetCopiedCString( name, adapterId );
-        m_params_1_0.Description                   = GetCopiedCString( description, adapterId );
-        m_params_1_0.MeasurementTypeMask           = measurementTypeMask;
-        m_params_1_0.MetricSetsCount               = 0;
-        m_params_1_0.IoMeasurementInformationCount = 0;
-        m_params_1_0.IoGpuContextInformationCount  = 0;
-
+        m_params.SymbolName                    = GetCopiedCString( name, adapterId );
+        m_params.Description                   = GetCopiedCString( description, adapterId );
+        m_params.MeasurementTypeMask           = measurementTypeMask;
+        m_params.MetricSetsCount               = 0;
+        m_params.IoMeasurementInformationCount = 0;
+        m_params.IoGpuContextInformationCount  = 0;
         m_setsVector.reserve( SETS_VECTOR_INCREASE );
         m_informationVector.reserve( INFORMATION_VECTOR_INCREASE );
         m_otherInformationVector.reserve( INFORMATION_VECTOR_INCREASE );
@@ -264,9 +263,8 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     CConcurrentGroup::~CConcurrentGroup()
     {
-        MD_SAFE_DELETE_ARRAY( m_params_1_0.SymbolName );
-        MD_SAFE_DELETE_ARRAY( m_params_1_0.Description );
-
+        MD_SAFE_DELETE_ARRAY( m_params.SymbolName );
+        MD_SAFE_DELETE_ARRAY( m_params.Description );
         ClearVector( m_setsVector );
         ClearList( m_otherSetsList );
 
@@ -331,7 +329,7 @@ namespace MetricsDiscoveryInternal
                     MD_LOG_A( adapterId, LOG_WARNING, "Attempt to add metric set [%s] with the same name and true availability equation.", alreadyAddedSet->GetParams()->SymbolName );
 
                     m_setsVector.erase( iterator );
-                    m_params_1_0.MetricSetsCount = m_setsVector.size();
+                    m_params.MetricSetsCount = m_setsVector.size();
 
                     m_otherSetsList.push_back( alreadyAddedSet );
                 }
@@ -341,7 +339,7 @@ namespace MetricsDiscoveryInternal
         if( isSuitablePlatform && alreadyAddedSet == nullptr )
         {
             m_setsVector.push_back( set );
-            m_params_1_0.MetricSetsCount = m_setsVector.size();
+            m_params.MetricSetsCount = m_setsVector.size();
             MD_LOG_A( adapterId, LOG_INFO, "%s - added", set->GetParams()->SymbolName );
         }
         else
@@ -661,10 +659,10 @@ namespace MetricsDiscoveryInternal
             return CC_ERROR_INVALID_PARAMETER;
         }
 
-        // m_params_1_0
-        WriteCStringToFile( m_params_1_0.SymbolName, metricFile, adapterId );
-        WriteCStringToFile( m_params_1_0.Description, metricFile, adapterId );
-        fwrite( &m_params_1_0.MeasurementTypeMask, sizeof( m_params_1_0.MeasurementTypeMask ), 1, metricFile );
+        // m_params
+        WriteCStringToFile( m_params.SymbolName, metricFile, adapterId );
+        WriteCStringToFile( m_params.Description, metricFile, adapterId );
+        fwrite( &m_params.MeasurementTypeMask, sizeof( m_params.MeasurementTypeMask ), 1, metricFile );
 
         // m_setsVector & m_otherSetsList
         uint32_t count = GetCustomSetCount();
@@ -796,7 +794,7 @@ namespace MetricsDiscoveryInternal
         if( m_device->IsPlatformTypeOf( platformMask, gtMask ) && set->IsAvailabilityEquationTrue() )
         {
             m_setsVector.push_back( set );
-            m_params_1_0.MetricSetsCount = m_setsVector.size();
+            m_params.MetricSetsCount = m_setsVector.size();
         }
         else
         {
@@ -988,7 +986,7 @@ namespace MetricsDiscoveryInternal
         const TAdapterParams_1_9* adapterParams = m_device->GetAdapter().GetParams();
         MD_CHECK_PTR_RET_A( adapterId, adapterParams, CC_ERROR_GENERAL );
 
-        int32_t neededSize = snprintf( name, size, "%s_%u_%u_%u", m_params_1_0.SymbolName, adapterParams->BusNumber, adapterParams->DeviceNumber, adapterParams->FunctionNumber );
+        int32_t neededSize = snprintf( name, size, "%s_%u_%u_%u", m_params.SymbolName, adapterParams->BusNumber, adapterParams->DeviceNumber, adapterParams->FunctionNumber );
 
         // If snprintf failed or buffer size was too small
         if( neededSize < 0 || neededSize >= (int32_t) size )

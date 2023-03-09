@@ -244,6 +244,17 @@ namespace MetricsDiscoveryInternal
         TCompletionCode SetAvailabilityEquation( const char* equationString );
         bool            IsAvailabilityEquationTrue();
 
+        // Inline function.
+        inline CMetric* GetMetricExplicit( const uint32_t index )
+        {
+            if( m_currentMetricsVector != nullptr && index < m_currentMetricsVector->size() )
+            {
+                return ( *m_currentMetricsVector )[index];
+            }
+
+            return nullptr;
+        }
+
     protected:
         CConcurrentGroup*      m_concurrentGroup;
         TMetricSetParamsLatest m_params_1_0;

@@ -81,9 +81,9 @@ namespace MetricsDiscoveryInternal
             , GtType( GFX_GTTYPE_UNDEFINED )
         {
         }
-        SPlatformIndexGt( GTDI_PLATFORM_INDEX newPlatformIndex, TGfxGtType newGtType )
-            : PlatformIndex( newPlatformIndex )
-            , GtType( newGtType )
+        SPlatformIndexGt( const GTDI_PLATFORM_INDEX platformIndex, const TGfxGtType gtType )
+            : PlatformIndex( platformIndex )
+            , GtType( gtType )
         {
         }
 
@@ -244,10 +244,10 @@ namespace MetricsDiscoveryInternal
         TCompletionCode FlushPerfStream( CMetricsDevice& metricsDevice );
         TCompletionCode WaitForPerfStreamReports( CMetricsDevice& metricsDevice, uint32_t timeoutMs );
         std::string     GenerateQueryGuid( const uint32_t subDeviceIndex );
-        TCompletionCode AddPerfConfig( TRegister** regVector, uint32_t regCount, const char* requestedGuid, int32_t* addedConfigId );
+        TCompletionCode AddPerfConfig( TRegister** regVector, const uint32_t regCount, const uint32_t subDeviceIndex, const char* requestedGuid, int32_t& addedConfigId );
         TCompletionCode RemovePerfConfig( int32_t perfConfigId );
         TCompletionCode RemovePerfConfigQuery( const char* guid );
-        TCompletionCode GetPerfMetricSetId( const char* guid, uint32_t* perfMetricSetId );
+        TCompletionCode GetPerfMetricSetId( const char* guid, int32_t& perfMetricSetId );
         bool            PerfMetricSetExists( const char* guid );
         uint32_t        GetPerfReportType( const TReportType reportType );
         TCompletionCode GetOaTimestampFrequency( uint64_t& frequency );

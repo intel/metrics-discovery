@@ -1108,6 +1108,26 @@ namespace MetricsDiscoveryInternal
                 break;
             }
 
+            case GTDI_DEVICE_PARAM_L3_BANK_TOTAL_COUNT:
+                ret = CC_ERROR_NOT_SUPPORTED;
+                break;
+
+            case GTDI_DEVICE_PARAM_L3_NODE_TOTAL_COUNT:
+                ret = CC_ERROR_NOT_SUPPORTED;
+                break;
+
+            case GTDI_DEVICE_PARAM_SQIDI_TOTAL_COUNT:
+                ret = CC_ERROR_NOT_SUPPORTED;
+                break;
+
+            case GTDI_DEVICE_PARAM_COMPUTE_ENGINE_TOTAL_COUNT:
+                ret = CC_ERROR_NOT_SUPPORTED;
+                break;
+
+            case GTDI_DEVICE_PARAM_COPY_ENGINE_TOTAL_COUNT:
+                ret = CC_ERROR_NOT_SUPPORTED;
+                break;
+
             case GTDI_DEVICE_PARAM_PLATFORM_VERSION:
             {
                 out->ValueType   = GTDI_DEVICE_PARAM_VALUE_TYPE_UINT32;
@@ -1216,7 +1236,7 @@ namespace MetricsDiscoveryInternal
             RemovePerfConfigQuery( guid.c_str() );
 
             // 2. ADD CONFIG
-            ret = AddPerfConfig( regVector, regCount, guid.c_str(), &addedConfigId );
+            ret = AddPerfConfig( regVector, regCount, subDeviceIndex, guid.c_str(), addedConfigId );
             MD_ASSERT_A( m_adapterId, addedConfigId != -1 );
 
             // 3. REMEMBER ADDED CONFIG
@@ -1443,7 +1463,7 @@ namespace MetricsDiscoveryInternal
     //     CMetricsDevice*           metricsDevice - metrics device
     //
     // Output:
-    //     bool                                   - true if supported
+    //     bool                                    - true if supported
     //
     //////////////////////////////////////////////////////////////////////////////
     bool CDriverInterfaceLinuxPerf::IsOaBufferSupported( const GTDI_OA_BUFFER_TYPE oaBufferType, CMetricsDevice* metricsDevice /* = nullptr */ )
@@ -1753,7 +1773,7 @@ namespace MetricsDiscoveryInternal
         }
 
         // 3. ADD HW CONFIG
-        ret = AddPerfConfig( regVector, regCount, nullptr, &perfMetricSetId );
+        ret = AddPerfConfig( regVector, regCount, metricsDevice->GetSubDeviceIndex(), nullptr, perfMetricSetId );
         if( ret != CC_OK )
         {
             goto deactivate;
@@ -2674,16 +2694,17 @@ namespace MetricsDiscoveryInternal
     //     send for the second time).
     //
     // Input:
-    //     TRegister** regVector     - array of pointers to registers to send (add)
-    //     uint32_t    regCount      - register count
-    //     const char* requestedGuid - [optional] GUID under which configuration will be added, if nullptr GUID will be generated
-    //     int32_t*    addedConfigId - (OUT) added Perf configuration ID, -1 if error
+    //     TRegister**    regVector      - array of pointers to registers to send (add)
+    //     const uint32_t regCount       - register count
+    //     const uint32_t subDeviceIndex - sub device index
+    //     const char*    requestedGuid  - [optional] GUID under which configuration will be added, if nullptr GUID will be generated
+    //     int32_t&       addedConfigId  - (OUT) added perf configuration ID, -1 if error
     //
     // Output:
-    //     TCompletionCode            - *CC_OK* means success
+    //     TCompletionCode               - *CC_OK* means success
     //
     //////////////////////////////////////////////////////////////////////////////
-    TCompletionCode CDriverInterfaceLinuxPerf::AddPerfConfig( TRegister** regVector, uint32_t regCount, const char* requestedGuid, int32_t* addedConfigId )
+    TCompletionCode CDriverInterfaceLinuxPerf::AddPerfConfig( TRegister** regVector, const uint32_t regCount, const uint32_t subDeviceIndex, const char* requestedGuid, int32_t& addedConfigId )
     {
         MD_LOG_ENTER_A( m_adapterId );
         MD_CHECK_PTR_RET_A( m_adapterId, regVector, CC_ERROR_INVALID_PARAMETER );
@@ -2726,7 +2747,7 @@ namespace MetricsDiscoveryInternal
             std::hash<std::string> stringHash;
 
             // Use std::hash for GUID generation
-            snprintf( generatedGuid, sizeof( generatedGuid ), "%08x-%04x-%04x-%04x-%012x", 0, 0, 0, 0, (uint32_t) stringHash( regsString ) );
+            snprintf( generatedGuid, sizeof( generatedGuid ), "%08x-%04x-%04x-%04x-%012x", 0, 0, subDeviceIndex, 0, static_cast<uint32_t>( stringHash( regsString ) ) );
             guid = generatedGuid;
         }
 
@@ -2740,17 +2761,17 @@ namespace MetricsDiscoveryInternal
         static_assert( sizeof( param.uuid ) == ( MD_PERF_GUID_LENGTH - 1 ), "GUID length mismatch with i915 Perf API" );
         iu_memcpy_s( param.uuid, sizeof( param.uuid ), guid, MD_PERF_GUID_LENGTH - 1 ); // Copy without ending '\0' (size 36)
 
-        param.boolean_regs_ptr = (uint64_t) oaRegisters.data();
-        param.mux_regs_ptr     = (uint64_t) noaRegisters.data();
-        param.flex_regs_ptr    = (uint64_t) flexRegisters.data();
+        param.boolean_regs_ptr = reinterpret_cast<uint64_t>( oaRegisters.data() );
+        param.mux_regs_ptr     = reinterpret_cast<uint64_t>( noaRegisters.data() );
+        param.flex_regs_ptr    = reinterpret_cast<uint64_t>( flexRegisters.data() );
 
-        param.n_boolean_regs = (uint32_t) oaRegisters.size();
-        param.n_mux_regs     = (uint32_t) noaRegisters.size();
-        param.n_flex_regs    = (uint32_t) flexRegisters.size();
+        param.n_boolean_regs = static_cast<uint32_t>( oaRegisters.size() );
+        param.n_mux_regs     = static_cast<uint32_t>( noaRegisters.size() );
+        param.n_flex_regs    = static_cast<uint32_t>( flexRegisters.size() );
 
         // 4. ADD CONFIG TO PERF
-        *addedConfigId = SendIoctl( m_DrmDeviceHandle, DRM_IOCTL_I915_PERF_ADD_CONFIG, &param );
-        if( *addedConfigId == -1 )
+        addedConfigId = SendIoctl( m_DrmDeviceHandle, DRM_IOCTL_I915_PERF_ADD_CONFIG, &param );
+        if( addedConfigId == -1 )
         {
             if( errno != EADDRINUSE ) // errno == 98 (EADDRINUSE) means set with the given GUID is already added
             {
@@ -2760,13 +2781,13 @@ namespace MetricsDiscoveryInternal
             else
             {
                 MD_LOG_A( m_adapterId, LOG_DEBUG, "Configuration with the given GUID already added, reusing" );
-                ret = GetPerfMetricSetId( guid, (uint32_t*) addedConfigId );
+                ret = GetPerfMetricSetId( guid, addedConfigId );
             }
         }
 
         if( ret == CC_OK )
         {
-            MD_LOG_A( m_adapterId, LOG_DEBUG, "i915 perf configuration added/reused, id: %d", *addedConfigId );
+            MD_LOG_A( m_adapterId, LOG_DEBUG, "i915 perf configuration added/reused, id: %d", addedConfigId );
         }
 
         MD_LOG_EXIT_A( m_adapterId );
@@ -2805,8 +2826,8 @@ namespace MetricsDiscoveryInternal
         {
             MD_LOG_A( m_adapterId, LOG_DEBUG, "Removing perf configuration with id: %d", perfConfigId );
 
-            uint64_t perfConfigId64 = (uint64_t) perfConfigId;
-            int32_t  ioctlResult    = SendIoctl( m_DrmDeviceHandle, DRM_IOCTL_I915_PERF_REMOVE_CONFIG, &perfConfigId64 );
+            uint64_t      perfConfigId64 = static_cast<uint64_t>( perfConfigId );
+            const int32_t ioctlResult    = SendIoctl( m_DrmDeviceHandle, DRM_IOCTL_I915_PERF_REMOVE_CONFIG, &perfConfigId64 );
             if( ioctlResult )
             {
                 if( errno != ENOENT ) // errno == 2 (ENOENT) means set with the given ID doesn't exist
@@ -2856,9 +2877,8 @@ namespace MetricsDiscoveryInternal
             return CC_OK;
         }
 
-        int32_t existingConfigId = -1;
-
-        TCompletionCode ret = GetPerfMetricSetId( guid, (uint32_t*) &existingConfigId );
+        int32_t         existingConfigId = -1;
+        TCompletionCode ret              = GetPerfMetricSetId( guid, existingConfigId );
         if( ret == CC_OK )
         {
             MD_LOG_A( m_adapterId, LOG_DEBUG, "Removing perf config with query guid: %s, id: %d", guid, existingConfigId );
@@ -2893,13 +2913,13 @@ namespace MetricsDiscoveryInternal
     //
     // Input:
     //     const char* guid            - GUID for which to read configuration ID
-    //     uint32_t*   perfMetricSetId - (OUT) Perf configuration ID, not changed if error
+    //     int32_t&    perfMetricSetId - (OUT) Perf configuration ID, not changed if error
     //
     // Output:
-    //     TCompletionCode               - *CC_OK* means success
+    //     TCompletionCode             - *CC_OK* means success
     //
     //////////////////////////////////////////////////////////////////////////////
-    TCompletionCode CDriverInterfaceLinuxPerf::GetPerfMetricSetId( const char* guid, uint32_t* perfMetricSetId )
+    TCompletionCode CDriverInterfaceLinuxPerf::GetPerfMetricSetId( const char* guid, int32_t& perfMetricSetId )
     {
         MD_ASSERT_A( m_adapterId, m_DrmCardNumber >= 0 );
 
@@ -2917,7 +2937,7 @@ namespace MetricsDiscoveryInternal
             return CC_ERROR_GENERAL;
         }
 
-        *perfMetricSetId = (uint32_t) metricSetId;
+        perfMetricSetId = static_cast<int32_t>( metricSetId );
         return CC_OK;
     }
 
@@ -2975,7 +2995,7 @@ namespace MetricsDiscoveryInternal
         // Get platform ID
         const TGfxDeviceInfo* gfxDeviceInfo = nullptr;
         auto                  ret           = GetGfxDeviceInfo( &gfxDeviceInfo );
-        if( ret != TCompletionCode::CC_OK )
+        if( ret != CC_OK )
         {
             MD_LOG_A( m_adapterId, LOG_ERROR, "ERROR: Cannot obtain device info" );
             return -1;
@@ -3410,7 +3430,7 @@ namespace MetricsDiscoveryInternal
     //     void*    argument - IOCTL params
     //
     // Output:
-    //     int32_t                - interpretation depends on IOCTL, -1 if error and errno set appropriately
+    //     int32_t           - interpretation depends on IOCTL, -1 if error and errno set appropriately
     //
     //////////////////////////////////////////////////////////////////////////////
     int32_t CDriverInterfaceLinuxPerf::SendIoctl( int32_t drmFd, uint32_t request, void* argument )
@@ -3617,17 +3637,17 @@ namespace MetricsDiscoveryInternal
         if( item.length == 0 )
         {
             MD_LOG_A( m_adapterId, LOG_ERROR, "ERROR: invalid drm query data length" );
-            return TCompletionCode::CC_ERROR_GENERAL;
+            return CC_ERROR_GENERAL;
         }
 
         // Send io control.
         if( SendIoctl( m_DrmDeviceHandle, DRM_IOCTL_I915_QUERY, &query ) )
         {
             MD_LOG_A( m_adapterId, LOG_ERROR, "ERROR: invalid drm query result" );
-            return TCompletionCode::CC_ERROR_GENERAL;
+            return CC_ERROR_GENERAL;
         }
 
-        return TCompletionCode::CC_OK;
+        return CC_OK;
     }
 
     //////////////////////////////////////////////////////////////////////////////
@@ -3653,10 +3673,10 @@ namespace MetricsDiscoveryInternal
         if( SendIoctl( m_DrmDeviceHandle, DRM_IOCTL_I915_QUERY, &query ) )
         {
             MD_LOG_A( m_adapterId, LOG_ERROR, "ERROR: invalid drm query result" );
-            return TCompletionCode::CC_ERROR_GENERAL;
+            return CC_ERROR_GENERAL;
         }
 
-        return TCompletionCode::CC_OK;
+        return CC_OK;
     }
 
     //////////////////////////////////////////////////////////////////////////////

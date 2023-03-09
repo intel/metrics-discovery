@@ -149,7 +149,7 @@ namespace MetricsDiscoveryInternal
         reg.value  = value;
         reg.type   = ( type > REGISTER_TYPE_UNKNOWN && type < REGISTER_TYPE_LAST ) ? type : REGISTER_TYPE_UNKNOWN;
 
-        m_regList.push_back( reg );
+        m_regList.push_back( std::move( reg ) );
 
         return &m_regList.back();
     }

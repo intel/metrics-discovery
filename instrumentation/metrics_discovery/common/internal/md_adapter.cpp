@@ -597,7 +597,7 @@ namespace MetricsDiscoveryInternal
         {
             MD_LOG_A( m_adapterId, LOG_ERROR, "Sub devices are not supported" );
             MD_LOG_EXIT_A( m_adapterId );
-            return TCompletionCode::CC_ERROR_NOT_SUPPORTED;
+            return CC_ERROR_NOT_SUPPORTED;
         }
 
         // Check sub device index.
@@ -605,7 +605,7 @@ namespace MetricsDiscoveryInternal
         {
             MD_LOG_A( m_adapterId, LOG_ERROR, "Invalid sub device index" );
             MD_LOG_EXIT_A( m_adapterId );
-            return TCompletionCode::CC_ERROR_INVALID_PARAMETER;
+            return CC_ERROR_INVALID_PARAMETER;
         }
 
         // Check if device is already created.
@@ -739,7 +739,7 @@ namespace MetricsDiscoveryInternal
         {
             MD_LOG_A( m_adapterId, LOG_ERROR, "Sub devices are not supported" );
             MD_LOG_EXIT_A( m_adapterId );
-            return TCompletionCode::CC_ERROR_NOT_SUPPORTED;
+            return CC_ERROR_NOT_SUPPORTED;
         }
 
         // Check sub device index.
@@ -747,7 +747,7 @@ namespace MetricsDiscoveryInternal
         {
             MD_LOG_A( m_adapterId, LOG_ERROR, "Invalid sub device index" );
             MD_LOG_EXIT_A( m_adapterId );
-            return TCompletionCode::CC_ERROR_INVALID_PARAMETER;
+            return CC_ERROR_INVALID_PARAMETER;
         }
 
         // Check if device is already created.

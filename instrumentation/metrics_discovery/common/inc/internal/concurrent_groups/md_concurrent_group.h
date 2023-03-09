@@ -50,8 +50,8 @@ namespace MetricsDiscoveryInternal
     {
     public:
         // API 1.0:
-        virtual TConcurrentGroupParams_1_0* GetParams( void );
-        virtual IMetricSetLatest*           GetMetricSet( uint32_t index );
+        virtual TConcurrentGroupParamsLatest* GetParams( void );
+        virtual IMetricSetLatest*             GetMetricSet( uint32_t index );
 
         // Internal API (IInternalConcurrentGroup):
         virtual IMetricSetLatest* AddCustomMetricSet( TAddCustomMetricSetParams* params, IMetricSetLatest* referenceMetricSet, bool copyInformationOnly );
@@ -69,8 +69,7 @@ namespace MetricsDiscoveryInternal
         CInformation*       AddInformation( CInformation* information );
         IInformationLatest* GetInformation( uint32_t index );
         uint32_t            GetInformationCount();
-
-        CMetricsDevice* GetMetricsDevice();
+        CMetricsDevice*     GetMetricsDevice();
 
         TCompletionCode Lock();
         TCompletionCode Unlock();
@@ -87,7 +86,7 @@ namespace MetricsDiscoveryInternal
 
     protected:
         // Variables:
-        TConcurrentGroupParamsLatest m_params_1_0;
+        TConcurrentGroupParamsLatest m_params;
         void*                        m_semaphore;
 
         std::vector<CMetricSet*> m_setsVector;

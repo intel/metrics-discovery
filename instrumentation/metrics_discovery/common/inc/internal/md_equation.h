@@ -78,6 +78,12 @@ namespace MetricsDiscoveryInternal
 
         TCompletionCode WriteCEquationToFile( FILE* metricFile );
 
+        // Inline function.
+        inline std::vector<CEquationElementInternal>& GetElementsVector()
+        {
+            return m_elementsVector;
+        }
+
     private:
         // Variables:
         std::vector<CEquationElementInternal> m_elementsVector;

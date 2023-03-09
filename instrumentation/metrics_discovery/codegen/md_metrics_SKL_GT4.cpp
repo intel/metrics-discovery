@@ -1,6 +1,6 @@
 ﻿/*========================== begin_copyright_notice ============================
 
-Copyright (C) 2019-2022 Intel Corporation
+Copyright (C) 2019-2023 Intel Corporation
 
 SPDX-License-Identifier: MIT
 
@@ -183,13 +183,12 @@ TCompletionCode CreateMetricTreeSKL_GT4_MMIO_Regs( CMetricsDevice* metricsDevice
     MD_CHECK_PTR_RET_A( adapterId, metricsDevice, CC_ERROR_INVALID_PARAMETER );
     MD_CHECK_PTR_RET_A( adapterId, concurrentGroup, CC_ERROR_INVALID_PARAMETER );
 
-    CMetricSet*       metricSet            = nullptr;
-    CMetric*          metric               = nullptr;
-    CInformation*     information          = nullptr;
-    const char*       availabilityEquation = nullptr;
-    TByteArrayLatest  platformMask         = { MD_PLATFORM_MASK_BYTE_ARRAY_SIZE, new( std::nothrow ) uint8_t[MD_PLATFORM_MASK_BYTE_ARRAY_SIZE]() };
+    CMetricSet*       metricSet                                               = nullptr;
+    CInformation*     information                                             = nullptr;
+    uint8_t           platformMaskByteArray[MD_PLATFORM_MASK_BYTE_ARRAY_SIZE] = {};
+    TByteArrayLatest  platformMask                                            = { MD_PLATFORM_MASK_BYTE_ARRAY_SIZE, platformMaskByteArray };
 
-    MD_CHECK_CC( SetPlatformMask( adapterId, &platformMask, nullptr, GENERATION_SKL ) );
+    MD_CHECK_CC( SetPlatformMask( adapterId, &platformMask, nullptr, false, GENERATION_SKL ) );
     
     if( metricsDevice->IsPlatformTypeOf( &platformMask, GT_TYPE_GT4 ) )
     {
@@ -267,13 +266,11 @@ TCompletionCode CreateMetricTreeSKL_GT4_MMIO_Regs( CMetricsDevice* metricsDevice
 
     }
 
-    DeleteByteArray( platformMask, adapterId );
     MD_LOG_EXIT_A( adapterId );
     return CC_OK;
 
   exception:
-    DeleteByteArray( platformMask, adapterId );
-    MD_LOG_EXIT_A(adapterId );
+    MD_LOG_EXIT_A( adapterId );
     return CC_ERROR_NO_MEMORY;
 }
 #endif
@@ -432,13 +429,12 @@ TCompletionCode CreateMetricTreeSKL_GT4_PipelineStatistics( CMetricsDevice* metr
     MD_CHECK_PTR_RET_A( adapterId, metricsDevice, CC_ERROR_INVALID_PARAMETER );
     MD_CHECK_PTR_RET_A( adapterId, concurrentGroup, CC_ERROR_INVALID_PARAMETER );
 
-    CMetricSet*       metricSet            = nullptr;
-    CMetric*          metric               = nullptr;
-    CInformation*     information          = nullptr;
-    const char*       availabilityEquation = nullptr;
-    TByteArrayLatest  platformMask         = { MD_PLATFORM_MASK_BYTE_ARRAY_SIZE, new( std::nothrow ) uint8_t[MD_PLATFORM_MASK_BYTE_ARRAY_SIZE]() };
+    CMetricSet*       metricSet                                               = nullptr;
+    CInformation*     information                                             = nullptr;
+    uint8_t           platformMaskByteArray[MD_PLATFORM_MASK_BYTE_ARRAY_SIZE] = {};
+    TByteArrayLatest  platformMask                                            = { MD_PLATFORM_MASK_BYTE_ARRAY_SIZE, platformMaskByteArray };
 
-    MD_CHECK_CC( SetPlatformMask( adapterId, &platformMask, nullptr, GENERATION_SKL ) );
+    MD_CHECK_CC( SetPlatformMask( adapterId, &platformMask, nullptr, false, GENERATION_SKL ) );
     
     if( metricsDevice->IsPlatformTypeOf( &platformMask, GT_TYPE_GT4 ) )
     {
@@ -447,13 +443,11 @@ TCompletionCode CreateMetricTreeSKL_GT4_PipelineStatistics( CMetricsDevice* metr
 
     }
 
-    DeleteByteArray( platformMask, adapterId );
     MD_LOG_EXIT_A( adapterId );
     return CC_OK;
 
   exception:
-    DeleteByteArray( platformMask, adapterId );
-    MD_LOG_EXIT_A(adapterId );
+    MD_LOG_EXIT_A( adapterId );
     return CC_ERROR_NO_MEMORY;
 }
 #endif
@@ -17455,13 +17449,12 @@ TCompletionCode CreateMetricTreeSKL_GT4_OA( CMetricsDevice* metricsDevice, CConc
     MD_CHECK_PTR_RET_A( adapterId, metricsDevice, CC_ERROR_INVALID_PARAMETER );
     MD_CHECK_PTR_RET_A( adapterId, concurrentGroup, CC_ERROR_INVALID_PARAMETER );
 
-    CMetricSet*       metricSet            = nullptr;
-    CMetric*          metric               = nullptr;
-    CInformation*     information          = nullptr;
-    const char*       availabilityEquation = nullptr;
-    TByteArrayLatest  platformMask         = { MD_PLATFORM_MASK_BYTE_ARRAY_SIZE, new( std::nothrow ) uint8_t[MD_PLATFORM_MASK_BYTE_ARRAY_SIZE]() };
+    CMetricSet*       metricSet                                               = nullptr;
+    CInformation*     information                                             = nullptr;
+    uint8_t           platformMaskByteArray[MD_PLATFORM_MASK_BYTE_ARRAY_SIZE] = {};
+    TByteArrayLatest  platformMask                                            = { MD_PLATFORM_MASK_BYTE_ARRAY_SIZE, platformMaskByteArray };
 
-    MD_CHECK_CC( SetPlatformMask( adapterId, &platformMask, nullptr, GENERATION_SKL ) );
+    MD_CHECK_CC( SetPlatformMask( adapterId, &platformMask, nullptr, false, GENERATION_SKL ) );
     
     if( metricsDevice->IsPlatformTypeOf( &platformMask, GT_TYPE_GT4 ) )
     {
@@ -17657,13 +17650,11 @@ TCompletionCode CreateMetricTreeSKL_GT4_OA( CMetricsDevice* metricsDevice, CConc
 
     }
 
-    DeleteByteArray( platformMask, adapterId );
     MD_LOG_EXIT_A( adapterId );
     return CC_OK;
 
   exception:
-    DeleteByteArray( platformMask, adapterId );
-    MD_LOG_EXIT_A(adapterId );
+    MD_LOG_EXIT_A( adapterId );
     return CC_ERROR_NO_MEMORY;
 }
 #endif

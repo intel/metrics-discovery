@@ -1573,7 +1573,7 @@ namespace MetricsDiscoveryInternal
             count = referenceMetricSet->GetParams()->MetricsCount;
             for( uint32_t i = 0; i < count; i++ )
             {
-                referenceMetric = static_cast<CMetric*>( referenceMetricSet->GetMetric( i ) );
+                referenceMetric = referenceMetricSet->GetMetricExplicit( i );
                 if( referenceMetric == nullptr )
                 {
                     MD_ASSERT_A( m_device->GetAdapter().GetAdapterId(), false );
@@ -1852,7 +1852,7 @@ namespace MetricsDiscoveryInternal
         // Update metric indices
         for( uint32_t i = 0; i < GetParams()->MetricsCount; i++ )
         {
-            IMetric_1_0* metric = GetMetric( i );
+            CMetric* metric = GetMetricExplicit( i );
 
             if( metric )
             {
@@ -1959,10 +1959,10 @@ namespace MetricsDiscoveryInternal
         // Cache metrics
         for( uint32_t i = 0, j = 0; i < m_params_1_0.MetricsCount; i++ )
         {
-            IMetric_1_0* metric = GetMetric( i );
+            CMetric* metric = GetMetricExplicit( i );
             if( metric && ( metric->GetParams()->ApiMask & m_filteredParams.ApiMask ) > 0 )
             {
-                CMetric* filteredMetric = static_cast<CMetric*>( metric );
+                CMetric* filteredMetric = metric;
                 filteredMetric->SetIdInSetParam( j++ );
 
                 m_filteredMetricsVector.push_back( filteredMetric );

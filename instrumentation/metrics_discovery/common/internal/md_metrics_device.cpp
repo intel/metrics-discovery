@@ -655,44 +655,36 @@ namespace MetricsDiscoveryInternal
         MD_CHECK_PTR_RET_A( adapterId, bufferPtr, CC_ERROR_INVALID_PARAMETER );
         MD_CHECK_PTR_RET_A( adapterId, *bufferPtr, CC_ERROR_INVALID_PARAMETER );
 
-        TGlobalSymbol globalSymbol;
+        auto isValidByteArray = []( const TGlobalSymbolLatest& globalSymbol )
+        {
+            return globalSymbol.SymbolTypedValue.ValueType == VALUE_TYPE_BYTEARRAY && globalSymbol.SymbolTypedValue.ValueByteArray != nullptr;
+        };
+
+        TGlobalSymbol globalSymbol = {};
 
         uint32_t symbolsCount = ReadUInt32FromFileBuffer( bufferPtr, adapterId );
         for( uint32_t i = 0; i < symbolsCount; i++ )
         {
             globalSymbol.symbol_1_0.SymbolName       = ReadCStringFromFileBuffer( bufferPtr, adapterId );
             globalSymbol.symbol_1_0.SymbolTypedValue = ReadTTypedValueFromFileBuffer( bufferPtr, adapterId );
-            globalSymbol.symbolType                  = (TSymbolType) ReadUInt32FromFileBuffer( bufferPtr, adapterId );
+            globalSymbol.symbolType                  = static_cast<TSymbolType>( ReadUInt32FromFileBuffer( bufferPtr, adapterId ) );
             if( m_symbolSet.IsSymbolAlreadyAdded( globalSymbol.symbol_1_0.SymbolName ) )
             {
-                if( globalSymbol.symbol_1_0.SymbolTypedValue.ValueType == VALUE_TYPE_BYTEARRAY )
+                if( isValidByteArray( globalSymbol.symbol_1_0 ) )
                 {
-                    MD_SAFE_DELETE( globalSymbol.symbol_1_0.SymbolTypedValue.ValueByteArray );
+                    DeleteByteArray( globalSymbol.symbol_1_0.SymbolTypedValue.ValueByteArray, adapterId );
                 }
                 continue;
             }
 
-            TCompletionCode ret = CC_OK;
+            auto ret = m_symbolSet.AddSymbol(
+                globalSymbol.symbol_1_0.SymbolName,
+                globalSymbol.symbol_1_0.SymbolTypedValue,
+                globalSymbol.symbolType );
 
-            if( globalSymbol.symbolType == SYMBOL_TYPE_DETECT )
+            if( ret != CC_OK && isValidByteArray( globalSymbol.symbol_1_0 ) )
             {
-                ret = m_symbolSet.DetectSymbolValue( globalSymbol.symbol_1_0.SymbolName, &globalSymbol.symbol_1_0.SymbolTypedValue );
-            }
-
-            if( ret == CC_OK )
-            {
-                m_symbolSet.AddSymbol(
-                    globalSymbol.symbol_1_0.SymbolName,
-                    globalSymbol.symbol_1_0.SymbolTypedValue,
-                    globalSymbol.symbolType );
-            }
-
-            if( globalSymbol.symbol_1_0.SymbolTypedValue.ValueType == VALUE_TYPE_BYTEARRAY )
-            {
-                if( ( globalSymbol.symbolType != SYMBOL_TYPE_DETECT ) || ( ret != CC_OK ) ) // When SYMBOL_TYPE_DETECT the pointer is passed in AddSymbol
-                {
-                    MD_SAFE_DELETE( globalSymbol.symbol_1_0.SymbolTypedValue.ValueByteArray );
-                }
+                DeleteByteArray( globalSymbol.symbol_1_0.SymbolTypedValue.ValueByteArray, adapterId );
             }
         }
 

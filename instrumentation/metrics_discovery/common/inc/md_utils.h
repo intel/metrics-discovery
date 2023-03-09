@@ -155,6 +155,7 @@ namespace MetricsDiscoveryInternal
     //     const uint32_t     adapterId          - adapter id
     //     TByteArrayLatest*  platformMask       - (optional) byte array platform mask
     //     uint32_t           platformMaskLegacy - (optional) legacy uint32_t platform mask
+    //     const bool         appendToMask       - if true, platformMask will not be cleared
     //     PlatformIndices... platformIndices    - platform indices
     //
     // Output:
@@ -162,11 +163,10 @@ namespace MetricsDiscoveryInternal
     //
     //////////////////////////////////////////////////////////////////////////////
     template <typename... PlatformIndices>
-    TCompletionCode SetPlatformMask( const uint32_t adapterId, TByteArrayLatest* platformMask, uint32_t* platformMaskLegacy, PlatformIndices... platformIndices )
+    inline TCompletionCode SetPlatformMask( const uint32_t adapterId, TByteArrayLatest* platformMask, uint32_t* platformMaskLegacy, const bool appendToMask, PlatformIndices... platformIndices )
     {
-        TCompletionCode ret = CC_ERROR_INVALID_PARAMETER;
-
-        auto setPlatformMaskByteArray = [&]( TCompletionCode ret, const uint32_t platformIndex, const uint32_t adapterId )
+        TCompletionCode ret                      = CC_ERROR_INVALID_PARAMETER;
+        auto            setPlatformMaskByteArray = [&]( TCompletionCode ret, const uint32_t platformIndex, const uint32_t adapterId )
         {
             MD_CHECK_CC_RET_A( adapterId, ret );
             return SetBitInByteArray( platformMask, platformIndex, adapterId );
@@ -180,8 +180,11 @@ namespace MetricsDiscoveryInternal
 
         if( platformMask )
         {
-            ret = iu_zeromem( platformMask->Data, platformMask->Size ) ? CC_OK : CC_ERROR_GENERAL;
-            MD_CHECK_CC_RET_A( adapterId, ret );
+            ret = CC_OK;
+            if( !appendToMask )
+            {
+                ret = iu_zeromem( platformMask->Data, platformMask->Size ) ? CC_OK : CC_ERROR_GENERAL;
+            }
 
             ( ( ret = setPlatformMaskByteArray( ret, platformIndices, adapterId ) ), ... );
             MD_CHECK_CC_RET_A( adapterId, ret );
@@ -216,7 +219,7 @@ namespace MetricsDiscoveryInternal
     //
     //////////////////////////////////////////////////////////////////////////////
     template <typename... PlatformIndices>
-    bool IsPlatformMatch( const uint32_t platformIndex, PlatformIndices... platformIndices )
+    inline bool IsPlatformMatch( const uint32_t platformIndex, PlatformIndices... platformIndices )
     {
         bool match = false;
         return ( ( match |= ( platformIndex == platformIndices ) ), ... );

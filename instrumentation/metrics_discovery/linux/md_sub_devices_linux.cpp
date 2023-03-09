@@ -48,9 +48,9 @@ namespace MetricsDiscoveryInternal
         engine.EngineId.ClassInstance.Class    = engineClass;
         engine.EngineId.ClassInstance.Instance = engineInstance;
 
-        m_engines.push_back( engine );
+        m_engines.push_back( std::move( engine ) );
 
-        return TCompletionCode::CC_OK;
+        return CC_OK;
     }
 
     //////////////////////////////////////////////////////////////////////////////
@@ -325,7 +325,7 @@ namespace MetricsDiscoveryInternal
 
         params.EnginesCount = m_subDeviceEngines[index].GetEnginesCount();
 
-        return TCompletionCode::CC_OK;
+        return CC_OK;
     }
 
     //////////////////////////////////////////////////////////////////////////////
@@ -360,7 +360,7 @@ namespace MetricsDiscoveryInternal
 
         params = m_subDeviceEngines[subDeviceIndex].GetEngineParams( engineIndex );
 
-        return TCompletionCode::CC_OK;
+        return CC_OK;
     }
 
     //////////////////////////////////////////////////////////////////////////////
@@ -724,7 +724,7 @@ namespace MetricsDiscoveryInternal
         auto           distances = std::vector<prelim_drm_i915_query_distance_info>();
 
         // Check driver interface support.
-        MD_CHECK_PTR_RET_A( adapterId, driver, TCompletionCode::CC_ERROR_NO_MEMORY );
+        MD_CHECK_PTR_RET_A( adapterId, driver, CC_ERROR_NO_MEMORY );
 
         // Check sub device support.
         m_subDevicesSupported = driver->IsSubDeviceSupported();
@@ -759,7 +759,7 @@ namespace MetricsDiscoveryInternal
             MD_LOG_A( adapterId, LOG_DEBUG, "Platform without sub devices" );
         }
 
-        return TCompletionCode::CC_OK;
+        return CC_OK;
     }
 
     //////////////////////////////////////////////////////////////////////////////
@@ -796,14 +796,14 @@ namespace MetricsDiscoveryInternal
 
         for( uint32_t i = 0; i < enginesData->num_engines; ++i )
         {
-            engines.push_back( enginesData->engines[i] );
+            engines.push_back( std::move( enginesData->engines[i] ) );
         }
 
         MD_ASSERT_A( adapterId, engines.size() );
 
         return engines.size()
-            ? TCompletionCode::CC_OK
-            : TCompletionCode::CC_ERROR_GENERAL;
+            ? CC_OK
+            : CC_ERROR_GENERAL;
     }
 
     //////////////////////////////////////////////////////////////////////////////
@@ -841,14 +841,14 @@ namespace MetricsDiscoveryInternal
 
         for( uint32_t i = 0; i < regionsData->num_regions; ++i )
         {
-            regions.push_back( regionsData->regions[i] );
+            regions.push_back( std::move( regionsData->regions[i] ) );
         }
 
         MD_ASSERT_A( adapterId, regions.size() );
 
         return regions.size()
-            ? TCompletionCode::CC_OK
-            : TCompletionCode::CC_ERROR_GENERAL;
+            ? CC_OK
+            : CC_ERROR_GENERAL;
     }
 
     //////////////////////////////////////////////////////////////////////////////
@@ -903,7 +903,7 @@ namespace MetricsDiscoveryInternal
                         case I915_ENGINE_CLASS_VIDEO:
                         case I915_ENGINE_CLASS_VIDEO_ENHANCE:
                             distance.engine = engine.engine;
-                            distances.push_back( distance );
+                            distances.push_back( std::move( distance ) );
                         default:
                             break;
                     }
@@ -985,8 +985,8 @@ namespace MetricsDiscoveryInternal
         MD_ASSERT_A( adapterId, m_subDeviceEngines.size() );
 
         return m_subDeviceEngines.size()
-            ? TCompletionCode::CC_OK
-            : TCompletionCode::CC_ERROR_GENERAL;
+            ? CC_OK
+            : CC_ERROR_GENERAL;
     }
 
     //////////////////////////////////////////////////////////////////////////////

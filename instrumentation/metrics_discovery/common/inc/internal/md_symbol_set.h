@@ -48,7 +48,7 @@ namespace MetricsDiscoveryInternal
         TGlobalSymbolLatest* GetSymbol( uint32_t index );
         TTypedValueLatest*   GetSymbolValueByName( const char* name );
         TCompletionCode      AddSymbol( const char* name, TTypedValueLatest typedValue, TSymbolType symbolType );
-        TCompletionCode      DetectSymbolValue( std::string_view name, TTypedValueLatest* typedValue );
+        TCompletionCode      DetectSymbolValue( std::string_view name, TTypedValueLatest& typedValue );
         TCompletionCode      AddSymbolUINT32( const char* name, uint32_t value, TSymbolType symbolType );
         TCompletionCode      AddSymbolUINT64( const char* name, uint64_t value, TSymbolType symbolType );
         TCompletionCode      AddSymbolBOOL( const char* name, bool value, TSymbolType symbolType );
