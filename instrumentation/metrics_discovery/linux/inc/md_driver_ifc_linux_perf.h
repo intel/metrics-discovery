@@ -239,7 +239,7 @@ namespace MetricsDiscoveryInternal
         void            ResetPerfCapabilities();
         void            PrintPerfCapabilities();
         TCompletionCode OpenPerfStream( CMetricsDevice& metricsDevice, uint32_t perfMetricSetId, uint32_t perfReportType, uint32_t timerPeriodExponent, uint32_t bufferSize, const GTDI_OA_BUFFER_TYPE oaBufferType );
-        TCompletionCode ReadPerfStream( CMetricsDevice& metricsDevice, uint32_t oaReportSize, uint32_t reportsToRead, char* reportData, uint32_t* readBytes, bool* reportLostOccured );
+        TCompletionCode ReadPerfStream( CMetricsDevice& metricsDevice, uint32_t oaReportSize, uint32_t reportsToRead, char* reportData, uint32_t& readBytes, GTDIReadCounterStreamExceptions& exceptions );
         TCompletionCode ClosePerfStream( CMetricsDevice& metricsDevice );
         TCompletionCode FlushPerfStream( CMetricsDevice& metricsDevice );
         TCompletionCode WaitForPerfStreamReports( CMetricsDevice& metricsDevice, uint32_t timeoutMs );

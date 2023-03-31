@@ -221,7 +221,7 @@ typedef enum
     GTDI_IFC_VERSION_3_44    = GTDI_MAKE_IFC_VER( GTDI_IFC_VERSION_3, 44 ), // Total system and video memory
     GTDI_IFC_VERSION_3_45    = GTDI_MAKE_IFC_VER( GTDI_IFC_VERSION_3, 45 ), // New error code has been introduced
     GTDI_IFC_VERSION_3_46    = GTDI_MAKE_IFC_VER( GTDI_IFC_VERSION_3, 46 ), // GTDIGetGpuCpuTimestampsExtOut added with timestamp correlation indicator
-    GTDI_IFC_VERSION_3_47    = GTDI_MAKE_IFC_VER( GTDI_IFC_VERSION_3, 47 ),
+    GTDI_IFC_VERSION_3_47    = GTDI_MAKE_IFC_VER( GTDI_IFC_VERSION_3, 47 ), // MTL base support
     GTDI_IFC_VERSION_3_48    = GTDI_MAKE_IFC_VER( GTDI_IFC_VERSION_3, 48 ),
     GTDI_IFC_VERSION_3_49    = GTDI_MAKE_IFC_VER( GTDI_IFC_VERSION_3, 49 ), // Samedia support
     GTDI_IFC_VERSION_3_50    = GTDI_MAKE_IFC_VER( GTDI_IFC_VERSION_3, 50 ), // New device parameters related to OA buffer
@@ -511,7 +511,8 @@ typedef enum
     GENERATION_ACM      = 24,
     GENERATION_PVC      = 25,
     GENERATION_ADLP     = 26,
-    // 27-28 reserved
+    GENERATION_MTL      = 27,
+    // 28 reserved
     GENERATION_ADLS     = 29,
     GENERATION_ADLN     = 30,
     // ...

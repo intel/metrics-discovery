@@ -1388,6 +1388,7 @@ namespace MetricsDiscoveryInternal
             case GENERATION_XEHP_SDV:
             case GENERATION_ACM:
             case GENERATION_PVC:
+            case GENERATION_MTL:
                 useKernelVersion = m_PerfCapabilities.IsGpuCpuTimestampSupported;
                 break;
 
@@ -1840,13 +1841,12 @@ namespace MetricsDiscoveryInternal
         MD_CHECK_PTR_RET_A( m_adapterId, metricsDevice, CC_ERROR_INVALID_PARAMETER );
         MD_CHECK_PTR_RET_A( m_adapterId, reportData, CC_ERROR_INVALID_PARAMETER );
 
-        uint32_t reportSize        = metricSet->GetParams()->RawReportSize;
-        uint32_t bytesToRead       = reportsCount * reportSize;
-        uint32_t readBytes         = 0;
-        bool     reportLostOccured = false;
+        const uint32_t reportSize  = metricSet->GetParams()->RawReportSize;
+        const uint32_t bytesToRead = reportsCount * reportSize;
+        uint32_t       readBytes   = 0;
 
         // Read flags are ignored for Perf
-        TCompletionCode ret = ReadPerfStream( *metricsDevice, reportSize, reportsCount, reportData, &readBytes, &reportLostOccured );
+        TCompletionCode ret = ReadPerfStream( *metricsDevice, reportSize, reportsCount, reportData, readBytes, exceptions );
         if( ret == CC_OK )
         {
             MD_ASSERT_A( m_adapterId, ( readBytes % reportSize ) == 0 );
@@ -1857,14 +1857,12 @@ namespace MetricsDiscoveryInternal
                 ret = CC_READ_PENDING;
             }
 
-            // Only ReportLost and Frequency during read are available
+            // Read gpu frequency
             uint64_t currentFrequency = 0;
             if( GetGpuFrequencyInfo( nullptr, nullptr, &currentFrequency, nullptr ) == CC_OK )
             {
                 frequency = static_cast<uint32_t>( currentFrequency / MD_MHERTZ );
             }
-
-            exceptions.ReportLost = static_cast<uint32_t>( reportLostOccured );
         }
 
         return ret;
@@ -2001,8 +1999,10 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     bool CDriverInterfaceLinuxPerf::IsIoMeasurementInfoAvailable( const TIoMeasurementInfoType ioMeasurementInfoType )
     {
-        // Only ReportLost and Frequency during read available with Perf
-        return ioMeasurementInfoType == IO_MEASUREMENT_INFO_REPORT_LOST || ioMeasurementInfoType == IO_MEASUREMENT_INFO_CORE_FREQUENCY_MHZ;
+        // Only ReportLost, BufferOverflow and Frequency during read available with Perf
+        return ioMeasurementInfoType == IO_MEASUREMENT_INFO_REPORT_LOST ||
+            ioMeasurementInfoType == IO_MEASUREMENT_INFO_BUFFER_OVERFLOW ||
+            ioMeasurementInfoType == IO_MEASUREMENT_INFO_CORE_FREQUENCY_MHZ;
     }
 
     //////////////////////////////////////////////////////////////////////////////
@@ -2438,23 +2438,23 @@ namespace MetricsDiscoveryInternal
     //
     // Description:
     //     Reads data from the previously opened Perf stream and copies only OA reports
-    //     to the output buffer. If report lost header is obtained, reportLostOccured flag
-    //     is set.
+    //     to the output buffer. If report lost header is obtained or oa buffer overflows,
+    //     exception flags are set.
     //
     // Input:
-    //     CMetricsDevice& metricsDevice      - metrics device
-    //     uint32_t        oaReportSize      - size of a single OA report, currently always 256 bytes
-    //     uint32_t        reportsToRead     - number of reports to read
-    //     char*           reportData        - (OUT) buffer for reports
-    //     uint32_t*       readBytes         - (OUT) number of bytes read and copied to the output buffer
-    //     bool*           reportLostOccured - (OUT) true if report lost was reported by Perf
+    //     CMetricsDevice&                  metricsDevice - metrics device
+    //     uint32_t                         oaReportSize  - size of a single OA report, currently always 256 bytes
+    //     uint32_t                         reportsToRead - number of reports to read
+    //     char*                            reportData    - (OUT) buffer for reports
+    //     uint32_t&                        readBytes     - (OUT) number of bytes read and copied to the output buffer
+    //     GTDIReadCounterStreamExceptions& exceptions    - (OUT) exception flags reported by Perf
     //
     // Output:
     //     TCompletionCode                   - *CC_OK* means success, BUT IT DOESN'T MEAN ALL REQUESTED DATA WAS READ !!
     //                                         (check readBytes for that).
     //
     //////////////////////////////////////////////////////////////////////////////
-    TCompletionCode CDriverInterfaceLinuxPerf::ReadPerfStream( CMetricsDevice& metricsDevice, uint32_t oaReportSize, uint32_t reportsToRead, char* reportData, uint32_t* readBytes, bool* reportLostOccured )
+    TCompletionCode CDriverInterfaceLinuxPerf::ReadPerfStream( CMetricsDevice& metricsDevice, uint32_t oaReportSize, uint32_t reportsToRead, char* reportData, uint32_t& readBytes, GTDIReadCounterStreamExceptions& exceptions )
     {
         const int32_t streamId = metricsDevice.GetStreamId();
 
@@ -2464,24 +2464,29 @@ namespace MetricsDiscoveryInternal
             return CC_ERROR_FILE_NOT_FOUND;
         }
 
-        const size_t outBufferSize   = oaReportSize * reportsToRead;
-        const size_t perfHeaderSize  = sizeof( drm_i915_perf_record_header );
-        const size_t perfReportSize  = perfHeaderSize + oaReportSize;                   // Perf report size is bigger (additional header)
-        const size_t perfBytesToRead = reportsToRead * perfReportSize + perfHeaderSize; // Adding header for flag only reports, e.g. for situations where user
-                                                                                        // requests 1 report, but first report from Perf is REPORT_LOST flag.
+        constexpr size_t perfHeaderSize  = sizeof( drm_i915_perf_record_header );
+        const size_t     outBufferSize   = oaReportSize * reportsToRead;
+        const size_t     perfReportSize  = perfHeaderSize + oaReportSize;                   // Perf report size is bigger (additional header)
+        const size_t     perfBytesToRead = reportsToRead * perfReportSize + perfHeaderSize; // Adding header for flag only reports, e.g. for situations where user
+                                                                                            // requests 1 report, but first report from Perf is REPORT_LOST flag.
+
+        auto& streamBuffer = metricsDevice.GetStreamBuffer();
 
         // Resize Perf report buffer if needed
-        metricsDevice.GetStreamBuffer().resize( perfBytesToRead );
+        if( streamBuffer.size() < perfBytesToRead )
+        {
+            streamBuffer.resize( perfBytesToRead );
+        }
 
         MD_LOG_A( m_adapterId, LOG_DEBUG, "Trying to read %u reports from i915 perf stream, fd: %d", reportsToRead, streamId );
 
         // #Note May read 1 sample less than requested if ReportLost is returned from kernel
 
         // 1. READ DATA
-        int32_t perfReadBytes = read( streamId, metricsDevice.GetStreamBuffer().data(), perfBytesToRead );
+        int32_t perfReadBytes = read( streamId, streamBuffer.data(), perfBytesToRead );
         if( perfReadBytes < 0 )
         {
-            *readBytes = 0;
+            readBytes = 0;
             if( errno == EAGAIN )
             {
                 MD_LOG_A( m_adapterId, LOG_DEBUG, "i915 perf stream data not available yet" );
@@ -2495,9 +2500,9 @@ namespace MetricsDiscoveryInternal
         // 2. PROCESS AND COPY DATA
         size_t bytesCopied    = 0;
         size_t perfDataOffset = 0;
-        while( perfDataOffset < (size_t) perfReadBytes )
+        while( perfDataOffset < static_cast<size_t>( perfReadBytes ) )
         {
-            const iu_i915_perf_record* perfOaRecord = (const iu_i915_perf_record*) ( metricsDevice.GetStreamBuffer().data() + perfDataOffset );
+            const iu_i915_perf_record* perfOaRecord = reinterpret_cast<const iu_i915_perf_record*>( streamBuffer.data() + perfDataOffset );
             if( !perfOaRecord->header.size )
             {
                 MD_LOG_A( m_adapterId, LOG_ERROR, "ERROR: 0 header size" );
@@ -2522,17 +2527,13 @@ namespace MetricsDiscoveryInternal
                 }
 
                 case DRM_I915_PERF_RECORD_OA_REPORT_LOST:
-                {
                     MD_LOG_A( m_adapterId, LOG_DEBUG, "OA report lost" );
-                    if( reportLostOccured )
-                    {
-                        *reportLostOccured = true;
-                    }
+                    exceptions.ReportLost = true;
                     break;
-                }
 
                 case DRM_I915_PERF_RECORD_OA_BUFFER_LOST:
                     MD_LOG_A( m_adapterId, LOG_DEBUG, "OA buffer lost" );
+                    exceptions.BufferOverflow = true;
                     break;
 
                 default:
@@ -2540,7 +2541,7 @@ namespace MetricsDiscoveryInternal
             }
         }
 
-        *readBytes = bytesCopied;
+        readBytes = bytesCopied;
         return CC_OK;
     }
 
@@ -3030,6 +3031,20 @@ namespace MetricsDiscoveryInternal
                 {
                     case OA_REPORT_TYPE_128B_OAM:
                         return PRELIM_I915_OAM_FORMAT_A2u64_B8_C8;
+                    case OA_REPORT_TYPE_256B_A45_NOA16:
+                        return I915_OA_FORMAT_A24u40_A14u32_B8_C8;
+                    default:
+                        return -1;
+                }
+            }
+            case GENERATION_MTL:
+            {
+                switch( reportType )
+                {
+                    case OA_REPORT_TYPE_128B_MPEC8_NOA16:
+                        return PRELIM_I915_OAM_FORMAT_MPEC8u32_B8_C8;
+                    case OA_REPORT_TYPE_192B_MPEC8LL_NOA16:
+                        return PRELIM_I915_OAM_FORMAT_MPEC8u64_B8_C8;
                     case OA_REPORT_TYPE_256B_A45_NOA16:
                         return I915_OA_FORMAT_A24u40_A14u32_B8_C8;
                     default:
@@ -3717,7 +3732,8 @@ namespace MetricsDiscoveryInternal
         auto engine     = TEngineParams_1_9{};
 
         // Obtain sub device engines.
-        MD_CHECK_CC_RET_A( m_adapterId, subDevices.GetTbsEngineParams( subDeviceIndex, engine ) );
+        ret = subDevices.GetTbsEngineParams( subDeviceIndex, engine );
+        MD_CHECK_CC_RET_A( m_adapterId, ret );
 
         // Check sub device engines support.
         const bool enginesSupported = IsSubDeviceSupported();
@@ -3732,11 +3748,13 @@ namespace MetricsDiscoveryInternal
         // Use PRELIM_DRM_I915_QUERY_COMPUTE_SLICES instead.
         if( IsPlatformMatch( gfxDeviceInfo->PlatformIndex, GENERATION_PVC ) )
         {
-            MD_CHECK_CC_RET_A( m_adapterId, QueryDrm( PRELIM_DRM_I915_QUERY_COMPUTE_SUBSLICES, buffer, flags ) );
+            ret = QueryDrm( PRELIM_DRM_I915_QUERY_COMPUTE_SUBSLICES, buffer, flags );
+            MD_CHECK_CC_RET_A( m_adapterId, ret );
         }
         else
         {
-            MD_CHECK_CC_RET_A( m_adapterId, QueryDrm( DRM_I915_QUERY_GEOMETRY_SUBSLICES, buffer, flags ) );
+            ret = QueryDrm( DRM_I915_QUERY_GEOMETRY_SUBSLICES, buffer, flags );
+            MD_CHECK_CC_RET_A( m_adapterId, ret );
         }
         MD_CHECK_CC_RET_A( m_adapterId, buffer.size() ? CC_OK : CC_ERROR_GENERAL );
 
@@ -3763,7 +3781,9 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     TCompletionCode CDriverInterfaceLinuxPerf::GetQueryTopologyInfo( std::vector<uint8_t>& buffer )
     {
-        MD_CHECK_CC_RET_A( m_adapterId, QueryDrm( DRM_I915_QUERY_TOPOLOGY_INFO, buffer ) );
+        TCompletionCode ret = CC_OK;
+        ret                 = QueryDrm( DRM_I915_QUERY_TOPOLOGY_INFO, buffer );
+        MD_CHECK_CC_RET_A( m_adapterId, ret );
         MD_CHECK_CC_RET_A( m_adapterId, buffer.size() ? CC_OK : CC_ERROR_GENERAL );
 
         return CC_OK;
@@ -3791,6 +3811,8 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     TCompletionCode CDriverInterfaceLinuxPerf::GetSliceMask( int32_t* sliceMask, CMetricsDevice* metricsDevice )
     {
+        TCompletionCode ret = CC_OK;
+
         MD_CHECK_PTR_RET_A( m_adapterId, sliceMask, CC_ERROR_INVALID_PARAMETER );
         MD_CHECK_PTR_RET_A( m_adapterId, metricsDevice, CC_ERROR_INVALID_PARAMETER );
 
@@ -3814,7 +3836,7 @@ namespace MetricsDiscoveryInternal
             subslicePerSlice = GetGtMaxSubslicePerSlice();
         }
 
-        auto ret = GetSubsliceMask( &subsliceMask, metricsDevice );
+        ret = GetSubsliceMask( &subsliceMask, metricsDevice );
         MD_CHECK_CC_RET_A( m_adapterId, ret );
 
         for( uint32_t i = 0; i < MD_MAX_SLICE; ++i )
@@ -3851,6 +3873,8 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     TCompletionCode CDriverInterfaceLinuxPerf::GetSubsliceMask( int64_t* subsliceMask, CMetricsDevice* metricsDevice )
     {
+        TCompletionCode ret = CC_OK;
+
         MD_CHECK_PTR_RET_A( m_adapterId, subsliceMask, CC_ERROR_INVALID_PARAMETER );
         MD_CHECK_PTR_RET_A( m_adapterId, metricsDevice, CC_ERROR_INVALID_PARAMETER );
 
@@ -3872,7 +3896,7 @@ namespace MetricsDiscoveryInternal
 
         // Get subslice or dual-subslice mask per sub device.
         auto buffer = std::vector<uint8_t>();
-        auto ret    = GetQueryGeometrySlices( buffer, metricsDevice );
+        ret         = GetQueryGeometrySlices( buffer, metricsDevice );
         MD_CHECK_CC_RET_A( m_adapterId, ret );
 
         auto topology = reinterpret_cast<drm_i915_query_topology_info*>( buffer.data() );
@@ -3918,6 +3942,8 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     TCompletionCode CDriverInterfaceLinuxPerf::GetEuCoresTotalCount( GTDIDeviceInfoParamExtOut* out, CMetricsDevice* metricsDevice )
     {
+        TCompletionCode ret = CC_OK;
+
         if( !IsXePlus() )
         {
             return CC_ERROR_GENERAL;
@@ -3926,7 +3952,7 @@ namespace MetricsDiscoveryInternal
         // Get EuCoresTotalCount per sub device.
         auto buffer = std::vector<uint8_t>();
 
-        auto ret = GetQueryGeometrySlices( buffer, metricsDevice );
+        ret = GetQueryGeometrySlices( buffer, metricsDevice );
         MD_CHECK_CC_RET_A( m_adapterId, ret );
 
         auto topology = reinterpret_cast<drm_i915_query_topology_info*>( buffer.data() );
@@ -4293,6 +4319,7 @@ namespace MetricsDiscoveryInternal
         switch( gfxDeviceInfo->PlatformIndex )
         {
             case GENERATION_ACM:
+            case GENERATION_MTL:
                 return true;
             default:
                 return false;
@@ -4360,8 +4387,11 @@ namespace MetricsDiscoveryInternal
         {
             case GENERATION_ACM:
             case GENERATION_PVC:
-                MD_CHECK_CC_RET_A( m_adapterId, GetOaTimestampFrequency( oaTimestampFrequency ) );
-                MD_CHECK_CC_RET_A( m_adapterId, GetCsTimestampFrequency( csTimestampFrequency ) );
+            case GENERATION_MTL:
+                ret = GetOaTimestampFrequency( oaTimestampFrequency );
+                MD_CHECK_CC_RET_A( m_adapterId, ret );
+                ret = GetCsTimestampFrequency( csTimestampFrequency );
+                MD_CHECK_CC_RET_A( m_adapterId, ret );
                 oaTimestamp = csTimestamp * oaTimestampFrequency / csTimestampFrequency;
                 break;
 
@@ -4403,6 +4433,7 @@ namespace MetricsDiscoveryInternal
         {
             case GENERATION_ACM:
             case GENERATION_PVC:
+            case GENERATION_MTL:
                 result = GetOaTimestampFrequency( *gpuTimestampFrequency );
                 break;
 
@@ -4660,6 +4691,7 @@ namespace MetricsDiscoveryInternal
             case GENERATION_ADLN:
             case GENERATION_XEHP_SDV:
             case GENERATION_ACM:
+            case GENERATION_MTL:
                 return MD_MAX_DUALSUBSLICE_PER_SLICE * MD_MAX_SUBSLICE_PER_DSS;
             default:
                 MD_LOG_A( m_adapterId, LOG_WARNING, "WARNING: Unsupported platform, default MaxSubslicePerSlice used" );
@@ -4687,6 +4719,12 @@ namespace MetricsDiscoveryInternal
         const TGfxDeviceInfo* gfxDeviceInfo = nullptr;
         auto                  result        = GetGfxDeviceInfo( &gfxDeviceInfo );
 
+        if( result != CC_OK )
+        {
+            MD_LOG_A( m_adapterId, LOG_ERROR, "WARNING: Failed to get platform ID" );
+            return MD_MAX_DUALSUBSLICE_PER_SLICE;
+        }
+
         switch( gfxDeviceInfo->PlatformIndex )
         {
             case GENERATION_TGL:
@@ -4698,6 +4736,7 @@ namespace MetricsDiscoveryInternal
                 return MD_MAX_DUALSUBSLICE_PER_SLICE;
             case GENERATION_XEHP_SDV:
             case GENERATION_ACM:
+            case GENERATION_MTL:
                 return MD_DUALSUBSLICE_PER_SLICE;
             default:
                 return MD_MAX_DUALSUBSLICE_PER_SLICE;
@@ -4741,6 +4780,7 @@ namespace MetricsDiscoveryInternal
             case GENERATION_ADLP:
             case GENERATION_ADLS:
             case GENERATION_ADLN:
+            case GENERATION_MTL:
                 return true;
             default:
                 return false;
@@ -4783,6 +4823,7 @@ namespace MetricsDiscoveryInternal
             case GENERATION_ADLP:
             case GENERATION_ADLS:
             case GENERATION_ADLN:
+            case GENERATION_MTL:
                 return true;
             default:
                 return false;

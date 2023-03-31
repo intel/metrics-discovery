@@ -1,6 +1,6 @@
 /*========================== begin_copyright_notice ============================
 
-Copyright (C) 2019-2022 Intel Corporation
+Copyright (C) 2019-2023 Intel Corporation
 
 SPDX-License-Identifier: MIT
 
@@ -13,13 +13,13 @@ SPDX-License-Identifier: MIT
 //  Note:          Some functions from the header may be unimplemented - they weren't
 //                 needed in Linux version at the moment.
 
+#include "iu_std.h"
+#include "iu_debug.h"
+
 #include <stdlib.h>
 #include <stdarg.h>
 #include <string.h>
 #include <wchar.h>
-
-#include "iu_std.h"
-#include "iu_debug.h"
 
 #if defined( __linux__ )
     #include <memory.h>
@@ -516,6 +516,49 @@ extern "C"
     // Group:
     //     Instrumentation Utils Standard OS Specific Functions
     //
+    // Function:
+    //     iu_mbstowstr_s
+    //
+    // Description:
+    //     Converts standard cstring 'srcStr' to wide-char cstring 'destWstr'.
+    //
+    // Input:
+    //     wchar_t*       destWstr - destination cstring
+    //     size_t         destSize - 'destStr' buffer size
+    //     const char*    srcStr   - wide-char cstring to convert
+    //     size_t         count    - in characters
+    //
+    // Output:
+    //     size_t - number of converted chars
+    //
+    ///////////////////////////////////////////////////////////////////////////////
+    size_t iu_mbstowstr_s( wchar_t* destWstr, size_t destSize, const char* srcStr, size_t count )
+    {
+        if( destWstr == NULL || destSize == 0 || srcStr == NULL )
+        {
+            IU_ASSERT( false );
+            return 0;
+        }
+        if( destSize <= count )
+        {
+            // Buffer too small
+            IU_ASSERT( false );
+            return 0;
+        }
+
+        size_t convertedChars = mbstowcs( destWstr, srcStr, count );
+        if( convertedChars && convertedChars < destSize )
+        {
+            destWstr[convertedChars - 1] = L'\0'; // Add null-character at the end
+        }
+        return convertedChars;
+    }
+
+    ///////////////////////////////////////////////////////////////////////////////
+    //
+    // Group:
+    //     Instrumentation Utils Standard OS Specific Functions
+    //
     // Method:
     //     iu_sprintf_s
     //
@@ -730,6 +773,35 @@ extern "C"
         }
 
         return fread( buff, elemSize, count, stream );
+    }
+
+    ///////////////////////////////////////////////////////////////////////////////
+    //
+    // Group:
+    //     Instrumentation Utils Standard OS Specific Functions
+    //
+    // Function:
+    //     iu_dupenv_s
+    //
+    // Description:
+    //     Duplicates env variable
+    //
+    // Input:
+    //     const char* varName - environment variable name
+    //
+    // Output:
+    //     Pointer to allocated env variable duplicate, or nullptr if not found
+    //
+    ///////////////////////////////////////////////////////////////////////////////
+    const char* iu_dupenv_s( const char* varName )
+    {
+        const char* var = getenv( varName );
+        if( var == nullptr )
+        {
+            return nullptr;
+        }
+
+        return strdup( var );
     }
 
 } // extern "C"

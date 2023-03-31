@@ -11,7 +11,6 @@ SPDX-License-Identifier: MIT
 //     Abstract:   C++ Metrics Discovery oam concurrent group implementation
 
 #include "md_oam_concurrent_group.h"
-
 #include "md_calculation.h"
 #include "md_driver_ifc.h"
 

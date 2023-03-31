@@ -12,7 +12,6 @@ SPDX-License-Identifier: MIT
 
 #include "md_concurrent_group.h"
 #include "md_information.h"
-
 #include "md_driver_ifc.h"
 
 #include <cstring>
@@ -1035,9 +1034,6 @@ namespace MetricsDiscoveryInternal
 
         for( auto& otherSet : m_otherSetsList )
         {
-            const auto otherSetPlatformMask = otherSet->GetParams()->PlatformMask;
-            const auto otherSetGtMask       = otherSet->GetParams()->GtMask;
-
             if( otherSet && ( strcmp( otherSet->GetParams()->SymbolName, metricSet->GetParams()->SymbolName ) == 0 ) && ComparePlatforms( otherSet->GetPlatformMask(), otherSet->GetParams()->GtMask, platformMask, gtMask, adapterId ) )
             {
                 return otherSet;

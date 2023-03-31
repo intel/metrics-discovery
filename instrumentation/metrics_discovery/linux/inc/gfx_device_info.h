@@ -357,6 +357,14 @@ namespace MetricsDiscoveryInternal
         { 0x56b3, TPlatformIndexGt( GENERATION_ACM, GFX_GTTYPE_UNDEFINED ) },
         { 0x56c0, TPlatformIndexGt( GENERATION_ACM, GFX_GTTYPE_UNDEFINED ) },
         { 0x56c1, TPlatformIndexGt( GENERATION_ACM, GFX_GTTYPE_UNDEFINED ) },
+
+        { 0x7D40, TPlatformIndexGt( GENERATION_MTL, GFX_GTTYPE_GT2 ) },
+        { 0x7D45, TPlatformIndexGt( GENERATION_MTL, GFX_GTTYPE_GT2 ) },
+        { 0x7D55, TPlatformIndexGt( GENERATION_MTL, GFX_GTTYPE_GT3 ) },
+        { 0x7D57, TPlatformIndexGt( GENERATION_MTL, GFX_GTTYPE_GT3 ) },
+        { 0x7D60, TPlatformIndexGt( GENERATION_MTL, GFX_GTTYPE_GT2 ) },
+        { 0x7DD5, TPlatformIndexGt( GENERATION_MTL, GFX_GTTYPE_GT3 ) },
+        { 0x7DD7, TPlatformIndexGt( GENERATION_MTL, GFX_GTTYPE_GT3 ) },
     };
 
     std::map<GTDI_PLATFORM_INDEX, uint32_t> threadsPerEuMap{
@@ -378,6 +386,7 @@ namespace MetricsDiscoveryInternal
         { GENERATION_XEHP_SDV, 8 },
         { GENERATION_ACM, 8 },
         { GENERATION_PVC, 8 },
+        { GENERATION_MTL, 8 },
     };
 
 } // namespace MetricsDiscoveryInternal

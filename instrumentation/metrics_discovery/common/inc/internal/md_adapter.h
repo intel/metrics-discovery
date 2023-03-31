@@ -15,6 +15,8 @@ SPDX-License-Identifier: MIT
 #include "metrics_discovery_internal_api.h"
 #include "md_sub_devices_linux.h"
 
+#define MD_METRIC_EXTENSION "MD_METRIC_EXTENSION"
+
 using namespace MetricsDiscovery;
 
 namespace MetricsDiscoveryInternal

@@ -113,6 +113,41 @@ set (_SOURCES ${_SOURCES}
     ${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen/md_metrics_ADLN.cpp
     ${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen/md_metrics_PVC_GT1.cpp
     ${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen/md_metrics_PVC_GT2.cpp
+    ${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen/md_metrics_MTL_GT2.cpp
+    ${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen/md_metrics_MTL_GT3.cpp
+
+    ${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen/md_metric_sets_HSW.cpp
+    ${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen/md_metric_sets_BDW.cpp
+    ${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen/md_metric_sets_SKL_GT2.cpp
+    ${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen/md_metric_sets_SKL_GT3.cpp
+    ${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen/md_metric_sets_SKL_GT4.cpp
+    ${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen/md_metric_sets_BXT.cpp
+    ${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen/md_metric_sets_KBL_GT2.cpp
+    ${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen/md_metric_sets_KBL_GT3.cpp
+    ${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen/md_metric_sets_CFL_GT2.cpp
+    ${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen/md_metric_sets_CFL_GT3.cpp
+    ${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen/md_metric_sets_GLK.cpp
+    ${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen/md_metric_sets_ICL.cpp
+    ${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen/md_metric_sets_EHL.cpp
+    ${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen/md_metric_sets_TGL_GT1.cpp
+    ${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen/md_metric_sets_TGL_GT2.cpp
+    ${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen/md_metric_sets_DG1.cpp
+    ${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen/md_metric_sets_RKL.cpp
+    ${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen/md_metric_sets_XEHP_SDV_GT1_GT2.cpp
+    ${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen/md_metric_sets_XEHP_SDV_GT1.cpp
+    ${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen/md_metric_sets_XEHP_SDV_GT2.cpp
+    ${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen/md_metric_sets_ACM_GT1.cpp
+    ${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen/md_metric_sets_ACM_GT2.cpp
+    ${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen/md_metric_sets_ACM_GT3.cpp
+    ${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen/md_metric_sets_ADLP.cpp
+    ${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen/md_metric_sets_ADLS.cpp
+    ${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen/md_metric_sets_ADLN.cpp
+    ${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen/md_metric_sets_PVC_GT1.cpp
+    ${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen/md_metric_sets_PVC_GT2.cpp
+    ${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen/md_metric_sets_MTL_GT2.cpp
+    ${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen/md_metric_sets_MTL_GT3.cpp
+    ${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen/md_metric_sets_common.cpp
+
     ${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen/md_metrics.cpp
     # mdapi core
     ${BS_DIR_INSTRUMENTATION}/metrics_discovery/common/md_main.cpp

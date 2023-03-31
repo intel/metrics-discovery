@@ -828,7 +828,6 @@ namespace MetricsDiscoveryInternal
 
             reportType = (TReportType) ReadUInt32FromFileBuffer( bufferPtr, adapterId );
 
-            bool              addMetricSet = false;
             TByteArrayLatest* platformMask = nullptr;
 
             if( fileVersion >= CUSTOM_METRICS_FILE_VERSION_3 )

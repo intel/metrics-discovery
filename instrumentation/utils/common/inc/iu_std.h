@@ -1,6 +1,6 @@
 /*========================== begin_copyright_notice ============================
 
-Copyright (C) 2019-2022 Intel Corporation
+Copyright (C) 2019-2023 Intel Corporation
 
 SPDX-License-Identifier: MIT
 
@@ -50,6 +50,7 @@ extern "C"
     size_t  iu_wstrnlen( const wchar_t* wstr, size_t wstrSize );
     int32_t iu_wstrncmp( const wchar_t* wstr1, const wchar_t* wstr2, size_t count );
     size_t  iu_wstrtombs_s( char* destStr, size_t destSize, const wchar_t* srcWstr, size_t count );
+    size_t  iu_mbstowstr_s( wchar_t* destWstr, size_t destSize, const char* srcStr, size_t count );
 
     // Printing
     int32_t iu_sprintf_s( char* destStr, size_t destSize, const char* format, ... );
@@ -63,6 +64,9 @@ extern "C"
     // Files
     bool   iu_fopen_s( FILE** pFile, const char* filename, const char* mode );
     size_t iu_fread_s( void* buff, size_t buffSize, size_t elemSize, size_t count, FILE* stream );
+
+    // Environment variable
+    const char* iu_dupenv_s( const char* varName );
 
 #if defined( __cplusplus )
 } // extern "C"

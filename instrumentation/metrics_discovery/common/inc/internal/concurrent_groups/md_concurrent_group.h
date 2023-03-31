@@ -71,6 +71,66 @@ namespace MetricsDiscoveryInternal
         uint32_t            GetInformationCount();
         CMetricsDevice*     GetMetricsDevice();
 
+        template <typename TMetricSet>
+        TMetricSet* AddMetricSetExplicit( const char* symbolicName, const char* shortName, const uint32_t apiMask, const uint32_t categoryMask, const uint32_t snapshotReportSize, const uint32_t deltaReportSize, const TReportType reportType, TByteArrayLatest* platformMask, const char* availabilityEquation = nullptr, const uint32_t gtMask = GT_TYPE_ALL, const bool isCustom = false )
+        {
+            TCompletionCode ret             = CC_OK;
+            const uint32_t  adapterId       = OBTAIN_ADAPTER_ID( m_device );
+            CMetricSet*     alreadyAddedSet = nullptr;
+            TMetricSet*     set             = new( std::nothrow ) TMetricSet( m_device, this, symbolicName, shortName, apiMask, categoryMask, snapshotReportSize, deltaReportSize, reportType, platformMask, gtMask, isCustom );
+            MD_CHECK_PTR_RET_A( adapterId, set, nullptr );
+
+            if( set->Initialize() != CC_OK )
+            {
+                MD_LOG_A( adapterId, LOG_ERROR, "Error initializing metrics" );
+                MD_SAFE_DELETE( set );
+                return nullptr;
+            }
+
+            if( set->SetAvailabilityEquation( availabilityEquation ) != CC_OK )
+            {
+                MD_LOG_A( adapterId, LOG_ERROR, "Error setting metric set equations" );
+                MD_SAFE_DELETE( set );
+                return nullptr;
+            }
+
+            bool isSuitablePlatform = m_device->IsPlatformTypeOf( platformMask, gtMask ) && set->IsAvailabilityEquationTrue();
+            if( isSuitablePlatform )
+            {
+                // Check if metric set is already present in m_setsVector or m_otherSetsList.
+                alreadyAddedSet = GetMatchingMetricSet( symbolicName, platformMask, gtMask, true );
+                if( alreadyAddedSet != nullptr )
+                {
+                    // If metric set present in m_setsVector it should be move to m_otherSetsList.
+                    // Metric set compared to alreadyAddedSet will be added in else section as unavailable on this platform.
+                    auto iterator = std::find( m_setsVector.begin(), m_setsVector.end(), alreadyAddedSet );
+                    if( iterator != m_setsVector.end() )
+                    {
+                        MD_LOG_A( adapterId, LOG_WARNING, "Attempt to add metric set [%s] with the same name and true availability equation.", alreadyAddedSet->GetParams()->SymbolName );
+
+                        m_setsVector.erase( iterator );
+                        m_params.MetricSetsCount = m_setsVector.size();
+
+                        m_otherSetsList.push_back( alreadyAddedSet );
+                    }
+                }
+            }
+
+            if( isSuitablePlatform && alreadyAddedSet == nullptr )
+            {
+                m_setsVector.push_back( set );
+                m_params.MetricSetsCount = m_setsVector.size();
+                MD_LOG_A( adapterId, LOG_INFO, "%s - added", set->GetParams()->SymbolName );
+            }
+            else
+            {
+                MD_LOG_A( adapterId, LOG_INFO, "%s - not available", set->GetParams()->SymbolName );
+                m_otherSetsList.push_back( set );
+            }
+
+            return set;
+        }
+
         TCompletionCode Lock();
         TCompletionCode Unlock();
         TCompletionCode WriteCConcurrentGroupToFile( FILE* metricFile );

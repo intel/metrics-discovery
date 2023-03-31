@@ -172,7 +172,7 @@ namespace MetricsDiscoveryInternal
     {
         TCompletionCode ret = SetEquation( m_device, m_ioReadEquation, equationString );
 
-        m_params_1_0.IoReadEquation = (IEquation_1_0*) m_ioReadEquation;
+        m_params_1_0.IoReadEquation = static_cast<IEquation_1_0*>( m_ioReadEquation );
         return ret;
     }
 
@@ -198,7 +198,7 @@ namespace MetricsDiscoveryInternal
     {
         TCompletionCode ret = SetEquation( m_device, m_queryReadEquation, equationString );
 
-        m_params_1_0.QueryReadEquation = (IEquation_1_0*) m_queryReadEquation;
+        m_params_1_0.QueryReadEquation = static_cast<IEquation_1_0*>( m_queryReadEquation );
         return ret;
     }
 
@@ -359,34 +359,33 @@ namespace MetricsDiscoveryInternal
     //     Sets the value for the information as a given equation.
     //
     // Input:
-    //     uint32_t        value           - information value
-    //     TEquationType   equationType    - equation to be set
+    //     const uint32_t      value        - information value
+    //     const TEquationType equationType - equation to be set
     //
     // Output:
-    //     TCompletionCode - result of operation
+    //     TCompletionCode                  - result of operation
     //
     //////////////////////////////////////////////////////////////////////////////
-    TCompletionCode CInformation::SetInformationValue( uint32_t value, TEquationType equationType )
+    TCompletionCode CInformation::SetInformationValue( const uint32_t value, const TEquationType equationType )
     {
-        TCompletionCode ret = CC_OK;
+        CEquation* equation = ( equationType == EQUATION_IO_READ )
+            ? m_ioReadEquation
+            : ( equationType == EQUATION_QUERY_READ )
+            ? m_queryReadEquation
+            : nullptr;
 
-        char strValue[11]; // Max string length for decimal uint32_t
-        iu_sprintf_s( strValue, sizeof( strValue ), "%d", value );
-
-        if( equationType == EQUATION_IO_READ )
+        if( equation != nullptr &&
+            equation->GetEquationElementsCount() == 1 &&
+            equation->GetEquationElement( 0 )->Type == EQUATION_ELEM_IMM_UINT64 )
         {
-            ret = SetSnapshotReportReadEquation( strValue );
-        }
-        else if( equationType == EQUATION_QUERY_READ )
-        {
-            ret = SetDeltaReportReadEquation( strValue );
+            equation->GetEquationElement( 0 )->ImmediateUInt64 = value;
         }
         else
         {
-            ret = CC_ERROR_INVALID_PARAMETER;
+            return CC_ERROR_INVALID_PARAMETER;
         }
 
-        return ret;
+        return CC_OK;
     }
 
     //////////////////////////////////////////////////////////////////////////////

@@ -12,7 +12,6 @@ SPDX-License-Identifier: MIT
 
 #include "md_oa_concurrent_group.h"
 #include "md_information.h"
-
 #include "md_calculation.h"
 #include "md_driver_ifc.h"
 
@@ -175,15 +174,15 @@ namespace MetricsDiscoveryInternal
 
             // Order (indices) should be in sync with AddIoMeasurementInfoPredefined()
             uint32_t index = 0;
-            SetIoMeasurementInfoPredefined( IO_MEASUREMENT_INFO_CORE_FREQUENCY_MHZ, frequency, &index );
-            SetIoMeasurementInfoPredefined( IO_MEASUREMENT_INFO_FREQUENCY_CHANGED, exceptions.FrequencyChanged, &index );
-            SetIoMeasurementInfoPredefined( IO_MEASUREMENT_INFO_FREQUENCY_CHANGED_INVALID, exceptions.FrequencyChangedInvalid, &index );
-            SetIoMeasurementInfoPredefined( IO_MEASUREMENT_INFO_SLICE_SHUTDOWN, exceptions.SliceShutdown, &index );
-            SetIoMeasurementInfoPredefined( IO_MEASUREMENT_INFO_REPORT_LOST, exceptions.ReportLost, &index );
-            SetIoMeasurementInfoPredefined( IO_MEASUREMENT_INFO_DATA_OUTSTANDING, exceptions.DataOutstanding, &index );
-            SetIoMeasurementInfoPredefined( IO_MEASUREMENT_INFO_BUFFER_OVERFLOW, exceptions.BufferOverflow, &index );
-            SetIoMeasurementInfoPredefined( IO_MEASUREMENT_INFO_BUFFER_OVERRUN, exceptions.BufferOverrun, &index );
-            SetIoMeasurementInfoPredefined( IO_MEASUREMENT_INFO_COUNTERS_OVERFLOW, exceptions.CountersOverflow, &index );
+            SetIoMeasurementInfoPredefined( IO_MEASUREMENT_INFO_CORE_FREQUENCY_MHZ, frequency, index );
+            SetIoMeasurementInfoPredefined( IO_MEASUREMENT_INFO_FREQUENCY_CHANGED, exceptions.FrequencyChanged, index );
+            SetIoMeasurementInfoPredefined( IO_MEASUREMENT_INFO_FREQUENCY_CHANGED_INVALID, exceptions.FrequencyChangedInvalid, index );
+            SetIoMeasurementInfoPredefined( IO_MEASUREMENT_INFO_SLICE_SHUTDOWN, exceptions.SliceShutdown, index );
+            SetIoMeasurementInfoPredefined( IO_MEASUREMENT_INFO_REPORT_LOST, exceptions.ReportLost, index );
+            SetIoMeasurementInfoPredefined( IO_MEASUREMENT_INFO_DATA_OUTSTANDING, exceptions.DataOutstanding, index );
+            SetIoMeasurementInfoPredefined( IO_MEASUREMENT_INFO_BUFFER_OVERFLOW, exceptions.BufferOverflow, index );
+            SetIoMeasurementInfoPredefined( IO_MEASUREMENT_INFO_BUFFER_OVERRUN, exceptions.BufferOverrun, index );
+            SetIoMeasurementInfoPredefined( IO_MEASUREMENT_INFO_COUNTERS_OVERFLOW, exceptions.CountersOverflow, index );
 
             m_params.IoMeasurementInformationCount = m_ioMeasurementInfoVector.size();
         }
@@ -704,8 +703,8 @@ namespace MetricsDiscoveryInternal
 
         MD_CHECK_PTR_RET_A( adapterId, measurementInfo, nullptr );
 
-        measurementInfo->SetSnapshotReportReadEquation( "" );
-        measurementInfo->SetDeltaReportReadEquation( "" );
+        measurementInfo->SetSnapshotReportReadEquation( "0" );
+        measurementInfo->SetDeltaReportReadEquation( "0" );
 
         m_ioMeasurementInfoVector.push_back( measurementInfo );
         return measurementInfo;
@@ -818,24 +817,22 @@ namespace MetricsDiscoveryInternal
     //     Used indices should be in sync with AddIoMeasurementInfoPredefined() (right order).
     //
     // Input:
-    //     TIoMeasurementInfoType ioMeasurementInfoType - IO measurement information type
-    //     uint32_t               value                 - value to set
-    //     uint32_t*              index                 - IO measurement information index (should be in sync with AddIoMeasurementInfoPredefined())
+    //     const TIoMeasurementInfoType ioMeasurementInfoType - IO measurement information type
+    //     const uint32_t               value                 - value to set
+    //     uint32_t&                    index                 - IO measurement information index (should be in sync with AddIoMeasurementInfoPredefined())
     //
     //////////////////////////////////////////////////////////////////////////////
-    void COAConcurrentGroup::SetIoMeasurementInfoPredefined( TIoMeasurementInfoType ioMeasurementInfoType, uint32_t value, uint32_t* index )
+    void COAConcurrentGroup::SetIoMeasurementInfoPredefined( const TIoMeasurementInfoType ioMeasurementInfoType, const uint32_t value, uint32_t& index )
     {
-        if( !index || *index >= m_ioMeasurementInfoVector.size() )
+        if( index < m_ioMeasurementInfoVector.size() )
         {
-            return;
-        }
+            CDriverInterface& driverInterface = m_device->GetDriverInterface();
 
-        CDriverInterface& driverInterface = m_device->GetDriverInterface();
-
-        // Set information if available
-        if( driverInterface.IsIoMeasurementInfoAvailable( ioMeasurementInfoType ) )
-        {
-            m_ioMeasurementInfoVector[( *index )++]->SetInformationValue( value, EQUATION_IO_READ );
+            // Set information if available
+            if( driverInterface.IsIoMeasurementInfoAvailable( ioMeasurementInfoType ) )
+            {
+                m_ioMeasurementInfoVector[index++]->SetInformationValue( value, EQUATION_IO_READ );
+            }
         }
     }
 

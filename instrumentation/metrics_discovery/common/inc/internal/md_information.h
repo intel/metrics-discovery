@@ -66,7 +66,7 @@ namespace MetricsDiscoveryInternal
         TCompletionCode SetOverflowFunction( TDeltaFunction_1_0 overflowFunction );
 
         TCompletionCode WriteCInformationToFile( FILE* metricFile );
-        TCompletionCode SetInformationValue( uint32_t value, TEquationType equationType );
+        TCompletionCode SetInformationValue( const uint32_t value, const TEquationType equationType );
         void            SetIdInSetParam( uint32_t id );
 
         // Variables:

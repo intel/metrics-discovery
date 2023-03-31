@@ -288,6 +288,8 @@ namespace MetricsDiscoveryInternal
 
         const bool useDualSubslice = IsPlatformMatch(
             platformIndex,
+            // Only on ACM and MTL dual subslices are used to calculate XeCore global symbols.
+            GENERATION_MTL,
             GENERATION_ACM );
 
         if( name == "EuCoresTotalCount" || name == "VectorEngineTotalCount" )
@@ -624,11 +626,13 @@ namespace MetricsDiscoveryInternal
 
         const bool isXeHpgPlus = IsPlatformMatch(
             platformIndex,
+            GENERATION_MTL,
             GENERATION_ACM,
             GENERATION_PVC );
 
         const bool useDualSubslice = IsPlatformMatch(
             platformIndex,
+            GENERATION_MTL,
             GENERATION_TGL,
             GENERATION_DG1,
             GENERATION_XEHP_SDV,
@@ -643,6 +647,7 @@ namespace MetricsDiscoveryInternal
         {
             const bool oamSupported = IsPlatformMatch(
                 platformIndex,
+                GENERATION_MTL,
                 GENERATION_ACM );
 
             MD_LOG_A( adapterId, LOG_DEBUG, "Media symbol name is%s supported: %s", oamSupported ? "" : " not", globalSymbolName );
@@ -737,12 +742,13 @@ namespace MetricsDiscoveryInternal
     {
         TCompletionCode ret = CC_OK;
         TTypedValue_1_0 typedValue;
-        typedValue.ValueType   = VALUE_TYPE_UINT32;
-        typedValue.ValueUInt32 = value;
+        typedValue.ValueType     = VALUE_TYPE_UINT32;
+        typedValue.ValueUInt32   = value;
+        const uint32_t adapterId = m_metricsDevice.GetAdapter().GetAdapterId();
 
         ret = AddSymbol( name, typedValue, symbolType );
 
-        MD_CHECK_CC_MSG_A( m_metricsDevice.GetAdapter().GetAdapterId(), ret, "Failed to add global symbol: %s, ret: %d", name, ret );
+        MD_CHECK_CC_MSG_A( adapterId, ret, "Failed to add global symbol: %s, ret: %d", name, ret );
         return ret;
     }
 
@@ -770,12 +776,13 @@ namespace MetricsDiscoveryInternal
     {
         TCompletionCode ret = CC_OK;
         TTypedValue_1_0 typedValue;
-        typedValue.ValueType   = VALUE_TYPE_UINT64;
-        typedValue.ValueUInt64 = value;
+        typedValue.ValueType     = VALUE_TYPE_UINT64;
+        typedValue.ValueUInt64   = value;
+        const uint32_t adapterId = m_metricsDevice.GetAdapter().GetAdapterId();
 
         ret = AddSymbol( name, typedValue, symbolType );
 
-        MD_CHECK_CC_MSG_A( m_metricsDevice.GetAdapter().GetAdapterId(), ret, "Failed to add global symbol: %s, ret: %d", name, ret );
+        MD_CHECK_CC_MSG_A( adapterId, ret, "Failed to add global symbol: %s, ret: %d", name, ret );
         return ret;
     }
 
@@ -803,12 +810,13 @@ namespace MetricsDiscoveryInternal
     {
         TCompletionCode ret = CC_OK;
         TTypedValue_1_0 typedValue;
-        typedValue.ValueType = VALUE_TYPE_BOOL;
-        typedValue.ValueBool = value;
+        typedValue.ValueType     = VALUE_TYPE_BOOL;
+        typedValue.ValueBool     = value;
+        const uint32_t adapterId = m_metricsDevice.GetAdapter().GetAdapterId();
 
         ret = AddSymbol( name, typedValue, symbolType );
 
-        MD_CHECK_CC_MSG_A( m_metricsDevice.GetAdapter().GetAdapterId(), ret, "Failed to add global symbol: %s, ret: %d", name, ret );
+        MD_CHECK_CC_MSG_A( adapterId, ret, "Failed to add global symbol: %s, ret: %d", name, ret );
         return ret;
     }
 
@@ -836,12 +844,13 @@ namespace MetricsDiscoveryInternal
     {
         TCompletionCode ret = CC_OK;
         TTypedValue_1_0 typedValue;
-        typedValue.ValueType  = VALUE_TYPE_FLOAT;
-        typedValue.ValueFloat = value;
+        typedValue.ValueType     = VALUE_TYPE_FLOAT;
+        typedValue.ValueFloat    = value;
+        const uint32_t adapterId = m_metricsDevice.GetAdapter().GetAdapterId();
 
         ret = AddSymbol( name, typedValue, symbolType );
 
-        MD_CHECK_CC_MSG_A( m_metricsDevice.GetAdapter().GetAdapterId(), ret, "Failed to add global symbol: %s, ret: %d", name, ret );
+        MD_CHECK_CC_MSG_A( adapterId, ret, "Failed to add global symbol: %s, ret: %d", name, ret );
         return ret;
     }
 
@@ -869,12 +878,13 @@ namespace MetricsDiscoveryInternal
     {
         TCompletionCode ret = CC_OK;
         TTypedValue_1_0 typedValue;
-        typedValue.ValueType    = VALUE_TYPE_CSTRING;
-        typedValue.ValueCString = value;
+        typedValue.ValueType     = VALUE_TYPE_CSTRING;
+        typedValue.ValueCString  = value;
+        const uint32_t adapterId = m_metricsDevice.GetAdapter().GetAdapterId();
 
         ret = AddSymbol( name, typedValue, symbolType );
 
-        MD_CHECK_CC_MSG_A( m_metricsDevice.GetAdapter().GetAdapterId(), ret, "Failed to add global symbol: %s, ret: %d", name, ret );
+        MD_CHECK_CC_MSG_A( adapterId, ret, "Failed to add global symbol: %s, ret: %d", name, ret );
         return ret;
     }
 
@@ -905,10 +915,11 @@ namespace MetricsDiscoveryInternal
 
         typedValue.ValueType      = VALUE_TYPE_BYTEARRAY;
         typedValue.ValueByteArray = value;
+        const uint32_t adapterId  = m_metricsDevice.GetAdapter().GetAdapterId();
 
         ret = AddSymbol( name, typedValue, symbolType );
 
-        MD_CHECK_CC_MSG_A( m_metricsDevice.GetAdapter().GetAdapterId(), ret, "Failed to add global symbol: %s, ret: %d", name, ret );
+        MD_CHECK_CC_MSG_A( adapterId, ret, "Failed to add global symbol: %s, ret: %d", name, ret );
         return ret;
     }
 
@@ -1054,6 +1065,7 @@ namespace MetricsDiscoveryInternal
 
         const bool useDualSubslice = IsPlatformMatch(
             platformIndex,
+            GENERATION_MTL,
             GENERATION_ACM );
 
         // Unpack mask

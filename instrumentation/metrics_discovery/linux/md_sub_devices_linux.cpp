@@ -321,7 +321,9 @@ namespace MetricsDiscoveryInternal
         const uint32_t        index,
         TSubDeviceParams_1_9& params )
     {
-        MD_CHECK_CC_RET_A( m_adapter.GetAdapterId(), index < m_subDeviceEngines.size() ? CC_OK : CC_ERROR_INVALID_PARAMETER );
+        const uint32_t adapterId = m_adapter.GetAdapterId();
+        const size_t   size      = m_subDeviceEngines.size();
+        MD_CHECK_CC_RET_A( adapterId, ( index < size ) ? CC_OK : CC_ERROR_INVALID_PARAMETER );
 
         params.EnginesCount = m_subDeviceEngines[index].GetEnginesCount();
 
@@ -353,10 +355,12 @@ namespace MetricsDiscoveryInternal
         const uint32_t     engineIndex,
         TEngineParams_1_9& params )
     {
-        const uint32_t adapterId = m_adapter.GetAdapterId();
+        const uint32_t adapterId    = m_adapter.GetAdapterId();
+        const uint32_t enginesCount = m_subDeviceEngines[subDeviceIndex].GetEnginesCount();
+        const size_t   size         = m_subDeviceEngines.size();
 
-        MD_CHECK_CC_RET_A( adapterId, subDeviceIndex < m_subDeviceEngines.size() ? CC_OK : CC_ERROR_INVALID_PARAMETER );
-        MD_CHECK_CC_RET_A( adapterId, engineIndex < m_subDeviceEngines[subDeviceIndex].GetEnginesCount() ? CC_OK : CC_ERROR_INVALID_PARAMETER );
+        MD_CHECK_CC_RET_A( adapterId, ( subDeviceIndex < size ) ? CC_OK : CC_ERROR_INVALID_PARAMETER );
+        MD_CHECK_CC_RET_A( adapterId, ( engineIndex < enginesCount ) ? CC_OK : CC_ERROR_INVALID_PARAMETER );
 
         params = m_subDeviceEngines[subDeviceIndex].GetEngineParams( engineIndex );
 
@@ -390,7 +394,9 @@ namespace MetricsDiscoveryInternal
         const uint32_t     requestedEngineInstance /*= -1*/,
         const bool         isOam /*= false*/ )
     {
-        MD_CHECK_CC_RET_A( m_adapter.GetAdapterId(), subDeviceIndex < m_subDeviceEngines.size() ? CC_OK : CC_ERROR_INVALID_PARAMETER );
+        const uint32_t adapterId = m_adapter.GetAdapterId();
+        const size_t   size      = m_subDeviceEngines.size();
+        MD_CHECK_CC_RET_A( adapterId, ( subDeviceIndex < size ) ? CC_OK : CC_ERROR_INVALID_PARAMETER );
 
         return m_subDeviceEngines[subDeviceIndex].GetTbsEngineParams( params, requestedEngineInstance, isOam );
     }
@@ -422,7 +428,9 @@ namespace MetricsDiscoveryInternal
         const uint32_t         subDeviceIndex,
         std::vector<uint64_t>& properties )
     {
-        MD_CHECK_CC_RET_A( m_adapter.GetAdapterId(), subDeviceIndex < m_subDeviceEngines.size() ? CC_OK : CC_ERROR_INVALID_PARAMETER );
+        const uint32_t adapterId = m_adapter.GetAdapterId();
+        const size_t   size      = m_subDeviceEngines.size();
+        MD_CHECK_CC_RET_A( adapterId, ( subDeviceIndex < size ) ? CC_OK : CC_ERROR_INVALID_PARAMETER );
 
         return m_subDeviceEngines[subDeviceIndex].UpdateTbsEngineParams( properties );
     }
@@ -576,7 +584,7 @@ namespace MetricsDiscoveryInternal
         CMetricsDevice* metricsDevice = nullptr;
 
         // Open metrics device and set sub device index
-        TCompletionCode result = m_adapter.OpenMetricsDeviceByIndex( &metricsDevice, index );
+        m_adapter.OpenMetricsDeviceByIndex( &metricsDevice, index );
 
         if( metricsDevice && m_subDevices[index] == nullptr )
         {
@@ -619,9 +627,9 @@ namespace MetricsDiscoveryInternal
         CMetricsDevice* metricsDevice = nullptr;
 
         // Open metrics device from file and set sub device index
-        TCompletionCode result = m_adapter.OpenMetricsDeviceFromFileByIndex( filename, parameters, &metricsDevice, index );
+        m_adapter.OpenMetricsDeviceFromFileByIndex( filename, parameters, &metricsDevice, index );
 
-        if( metricsDevice )
+        if( metricsDevice && m_subDevices[index] == nullptr )
         {
             m_subDevices[index] = metricsDevice;
         }
@@ -717,11 +725,12 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     TCompletionCode CSubDevices::Enumerate()
     {
-        const uint32_t adapterId = m_adapter.GetAdapterId();
-        auto           driver    = reinterpret_cast<CDriverInterfaceLinuxPerf*>( m_adapter.GetDriverInterface() );
-        auto           engines   = std::vector<drm_i915_engine_info>();
-        auto           regions   = std::vector<drm_i915_memory_region_info>();
-        auto           distances = std::vector<prelim_drm_i915_query_distance_info>();
+        const uint32_t  adapterId = m_adapter.GetAdapterId();
+        auto            driver    = reinterpret_cast<CDriverInterfaceLinuxPerf*>( m_adapter.GetDriverInterface() );
+        auto            engines   = std::vector<drm_i915_engine_info>();
+        auto            regions   = std::vector<drm_i915_memory_region_info>();
+        auto            distances = std::vector<prelim_drm_i915_query_distance_info>();
+        TCompletionCode ret       = CC_OK;
 
         // Check driver interface support.
         MD_CHECK_PTR_RET_A( adapterId, driver, CC_ERROR_NO_MEMORY );
@@ -731,6 +740,7 @@ namespace MetricsDiscoveryInternal
 
         m_subDevicesSupported &= IsPlatformMatch(
             m_adapter.GetParams()->Platform,
+            GENERATION_MTL,
             GENERATION_XEHP_SDV,
             GENERATION_ACM,
             GENERATION_PVC );
@@ -738,16 +748,20 @@ namespace MetricsDiscoveryInternal
         if( m_subDevicesSupported )
         {
             // Enumerate engines.
-            MD_CHECK_CC_RET_A( adapterId, GetEngines( *driver, engines ) );
+            ret = GetEngines( *driver, engines );
+            MD_CHECK_CC_RET_A( adapterId, ret );
 
             // Enumerate memory regions.
-            MD_CHECK_CC_RET_A( adapterId, GetMemoryRegions( *driver, regions ) );
+            ret = GetMemoryRegions( *driver, regions );
+            MD_CHECK_CC_RET_A( adapterId, ret );
 
             // Enumerate engine distances.
-            MD_CHECK_CC_RET_A( adapterId, GetEngineDistances( *driver, engines, regions, distances ) );
+            ret = GetEngineDistances( *driver, engines, regions, distances );
+            MD_CHECK_CC_RET_A( adapterId, ret );
 
             // Enumerate sub device engines.
-            MD_CHECK_CC_RET_A( adapterId, GetSubDeviceEngines( distances ) );
+            ret = GetSubDeviceEngines( distances );
+            MD_CHECK_CC_RET_A( adapterId, ret );
 
             // Make space for CmetricsDevices.
             m_subDevices.resize( m_subDeviceEngines.size(), nullptr );
@@ -785,11 +799,13 @@ namespace MetricsDiscoveryInternal
         CDriverInterfaceLinuxPerf&         driver,
         std::vector<drm_i915_engine_info>& engines )
     {
-        auto           buffer    = std::vector<uint8_t>();
-        const uint32_t adapterId = m_adapter.GetAdapterId();
+        auto            buffer    = std::vector<uint8_t>();
+        const uint32_t  adapterId = m_adapter.GetAdapterId();
+        TCompletionCode ret       = driver.QueryDrm( DRM_I915_QUERY_ENGINE_INFO, buffer );
+        const size_t    size      = buffer.size();
 
-        MD_CHECK_CC_RET_A( adapterId, driver.QueryDrm( DRM_I915_QUERY_ENGINE_INFO, buffer ) );
-        MD_CHECK_CC_RET_A( adapterId, buffer.size() ? CC_OK : CC_ERROR_GENERAL );
+        MD_CHECK_CC_RET_A( adapterId, ret );
+        MD_CHECK_CC_RET_A( adapterId, size ? CC_OK : CC_ERROR_GENERAL );
 
         // Copy engine data.
         auto enginesData = reinterpret_cast<drm_i915_query_engine_info*>( buffer.data() );
@@ -829,19 +845,41 @@ namespace MetricsDiscoveryInternal
         CDriverInterfaceLinuxPerf&                driver,
         std::vector<drm_i915_memory_region_info>& regions )
     {
-        // Obtain memory regions.
-        auto           buffer    = std::vector<uint8_t>();
-        const uint32_t adapterId = m_adapter.GetAdapterId();
+        // Check supported memory classes. Prefer device local memory.
+        auto getPreferredMemoryClass = [&]( drm_i915_query_memory_regions* regionsData )
+        {
+            for( uint32_t i = 0; i < regionsData->num_regions; ++i )
+            {
+                if( regionsData->regions[i].region.memory_class == I915_MEMORY_CLASS_DEVICE )
+                {
+                    // Device has local memory.
+                    return I915_MEMORY_CLASS_DEVICE;
+                }
+            }
+            // Device has only system memory.
+            return I915_MEMORY_CLASS_SYSTEM;
+        };
 
-        MD_CHECK_CC_RET_A( adapterId, driver.QueryDrm( DRM_I915_QUERY_MEMORY_REGIONS, buffer ) );
-        MD_CHECK_CC_RET_A( adapterId, buffer.size() ? CC_OK : CC_ERROR_GENERAL );
+        // Obtain memory regions.
+        auto            buffer    = std::vector<uint8_t>();
+        const uint32_t  adapterId = m_adapter.GetAdapterId();
+        TCompletionCode ret       = driver.QueryDrm( DRM_I915_QUERY_MEMORY_REGIONS, buffer );
+        const size_t    size      = buffer.size();
+
+        MD_CHECK_CC_RET_A( adapterId, ret );
+        MD_CHECK_CC_RET_A( adapterId, size ? CC_OK : CC_ERROR_GENERAL );
 
         // Legacy version check.
         auto regionsData = reinterpret_cast<drm_i915_query_memory_regions*>( buffer.data() );
 
+        const auto preferredMemoryClass = getPreferredMemoryClass( regionsData );
+
         for( uint32_t i = 0; i < regionsData->num_regions; ++i )
         {
-            regions.push_back( std::move( regionsData->regions[i] ) );
+            if( regionsData->regions[i].region.memory_class == preferredMemoryClass )
+            {
+                regions.push_back( std::move( regionsData->regions[i] ) );
+            }
         }
 
         MD_ASSERT_A( adapterId, regions.size() );
@@ -885,28 +923,25 @@ namespace MetricsDiscoveryInternal
         // Prepare distance information.
         for( uint32_t i = 0; i < regions.size(); ++i )
         {
-            if( I915_MEMORY_CLASS_DEVICE == regions[i].region.memory_class )
+            auto distance                   = prelim_drm_i915_query_distance_info{};
+            distance.region.memory_class    = regions[i].region.memory_class;
+            distance.region.memory_instance = regions[i].region.memory_instance;
+
+            for( uint32_t j = 0; j < engines.size(); ++j )
             {
-                auto distance                   = prelim_drm_i915_query_distance_info{};
-                distance.region.memory_class    = I915_MEMORY_CLASS_DEVICE;
-                distance.region.memory_instance = regions[i].region.memory_instance;
+                auto engine = engines[j];
 
-                for( uint32_t j = 0; j < engines.size(); ++j )
+                switch( engine.engine.engine_class )
                 {
-                    auto engine = engines[j];
-
-                    switch( engine.engine.engine_class )
-                    {
-                        case I915_ENGINE_CLASS_RENDER:
-                        case I915_ENGINE_CLASS_COPY:
-                        case I915_ENGINE_CLASS_COMPUTE:
-                        case I915_ENGINE_CLASS_VIDEO:
-                        case I915_ENGINE_CLASS_VIDEO_ENHANCE:
-                            distance.engine = engine.engine;
-                            distances.push_back( std::move( distance ) );
-                        default:
-                            break;
-                    }
+                    case I915_ENGINE_CLASS_RENDER:
+                    case I915_ENGINE_CLASS_COPY:
+                    case I915_ENGINE_CLASS_COMPUTE:
+                    case I915_ENGINE_CLASS_VIDEO:
+                    case I915_ENGINE_CLASS_VIDEO_ENHANCE:
+                        distance.engine = engine.engine;
+                        distances.push_back( std::move( distance ) );
+                    default:
+                        break;
                 }
             }
         }
@@ -1046,10 +1081,12 @@ namespace MetricsDiscoveryInternal
         query.items_ptr = reinterpret_cast<uint64_t>( &queryItem );
 
         // Send io control.
-        MD_CHECK_CC_RET_A( adapterId, result = driver->QueryDrm( query ) );
+        result = driver->QueryDrm( query );
+        MD_CHECK_CC_RET_A( adapterId, result );
 
         // Return cpu and gpu timestamp information.
-        MD_CHECK_CC_RET_A( adapterId, result = driver->GetOaTimestamp( queryTimestamp.cs_cycles, oaGpuTimestampCycles ) );
+        result = driver->GetOaTimestamp( queryTimestamp.cs_cycles, oaGpuTimestampCycles );
+        MD_CHECK_CC_RET_A( adapterId, result );
 
         oaGpuTimestampNs = device->ConvertGpuTimestampToNs( oaGpuTimestampCycles, gpuTimestampFrequency );
         gpuTimestampNs   = oaGpuTimestampNs;

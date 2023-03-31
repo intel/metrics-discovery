@@ -484,6 +484,7 @@ namespace MetricsDiscoveryInternal
             // Workaround for renamed EuCoresTotalCount
             bool platformXeHpPlus = IsPlatformMatch(
                 platformIndex,
+                GENERATION_MTL,
                 GENERATION_ACM,
                 GENERATION_PVC );
 

@@ -293,8 +293,28 @@ namespace MetricsDiscoveryInternal
         MD_LOG_ENTER_A( m_adapterId );
         MD_CHECK_PTR_RET_A( m_adapterId, metricsDevice, CC_ERROR_INVALID_PARAMETER );
 
+        TCompletionCode retVal = CC_OK;
+
+        // if MD_METRIC_EXTENSION environment var is set, OpenMetricsDeviceFromFileByIndex  instead
+        const char* metricFilename = iu_dupenv_s( MD_METRIC_EXTENSION );
+        if( metricFilename != nullptr )
+        {
+            MD_LOG_A( m_adapterId, LOG_INFO, "Opening metrics device from extension file %s ...", metricFilename );
+
+            retVal = OpenMetricsDeviceFromFileByIndex( metricFilename, (void*) "", metricsDevice, subDeviceIndex );
+
+            free( (void*) metricFilename );
+
+            // Return if succeded or failed for reasons other than a lack of the metric file
+            if( retVal != CC_ERROR_FILE_NOT_FOUND )
+            {
+                MD_LOG_EXIT_A( m_adapterId );
+                return retVal;
+            }
+        }
+
         // 1. Obtain semaphore
-        TCompletionCode retVal = GetOpenCloseSemaphore();
+        retVal = GetOpenCloseSemaphore();
         if( retVal != CC_OK )
         {
             MD_LOG_A( m_adapterId, LOG_ERROR, "Get semaphore failed" );
