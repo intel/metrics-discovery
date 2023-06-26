@@ -1,0 +1,821 @@
+MetricSet	SymbolName	ShortName	Group	LongName
+PipelineStats	IAVertices	Input vertices	3D Pipe/Input Assembler	The total number of vertices that entered the 3D Pipeline.
+PipelineStats	IAPrimitives	Input primitives	3D Pipe/Input Assembler	The total number of rendering primitives assembled and put into the input assembly stage of the 3D Pipeline.
+PipelineStats	VsInvocations	VS per vertex invocations	3D Pipe/Vertex Shader	The total number of times a vertex shader was invoked. 3D rendering invokes the vertex shader once per vertex.
+PipelineStats	HsInvocations	HS invocations	3D Pipe/Hull Shader	The total number of times a hull shader was invoked.
+PipelineStats	DsInvocations	DS invocations	3D Pipe/Domain Shader	The total number of times a domain shader was invoked.
+PipelineStats	GsInvocations	GS per triangle invocations	3D Pipe/Geometry Shader	The total number of times a geometry shader was invoked per triangle.
+PipelineStats	GsPrimitives	Post-GS primitives	3D Pipe/Geometry Shader	The total number of primitives that flowed through from GS to the clipper if GS was enabled.
+PipelineStats	ClipperInvocations	Clipper invocations	3D Pipe/Clipper	The total number of primitives sent to the Clipper.
+PipelineStats	ClipperPrimitives	Clipper primitives	3D Pipe/Clipper	The total number of primitives that flowed out of the Clipper.
+PipelineStats	PsInvocations	PS invocations	3D Pipe/Pixel Shader	The total number of times a pixel shader was invoked. 3D rendering invokes a pixel shader once per pixel or subsample.
+PipelineStats	CsInvocations	CS invocations	3D Pipe/Compute Shader	The total number of times a compute shader was invoked.
+PipelineStats	CpsInvocations	CPS invocations	3D Pipe/Compute Shader	The total number of times a coarse shader was invoked.
+HDCAndSF_Slice01	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
+HDCAndSF_Slice01	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
+HDCAndSF_Slice01	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
+HDCAndSF_Slice01	GpuBusy	GPU Busy	GPU	The percentage of time in which the GPU has been processing GPU commands.
+HDCAndSF_Slice01	NonSamplerShader00AccessStalledOnL3	Slice0 Dualsubslice0 Non-sampler Shader Access Stalled On L3	GPU/Data Port	Percentage of time when HDC has messages to L3, but it's stalled due to lack of credits (Slice0 Dualsubslice0)
+HDCAndSF_Slice01	NonSamplerShader01AccessStalledOnL3	Slice0 Dualsubslice1 Non-sampler Shader Access Stalled On L3	GPU/Data Port	Percentage of time when HDC has messages to L3, but it's stalled due to lack of credits (Slice0 Dualsubslice1)
+HDCAndSF_Slice01	NonSamplerShader02AccessStalledOnL3	Slice0 Dualsubslice2 Non-sampler Shader Access Stalled On L3	GPU/Data Port	Percentage of time when HDC has messages to L3, but it's stalled due to lack of credits (Slice0 Dualsubslice2)
+HDCAndSF_Slice01	NonSamplerShader03AccessStalledOnL3	Slice0 Dualsubslice3 Non-sampler Shader Access Stalled On L3	GPU/Data Port	Percentage of time when HDC has messages to L3, but it's stalled due to lack of credits (Slice0 Dualsubslice3)
+HDCAndSF_Slice01	NonSamplerShader10AccessStalledOnL3	Slice1 Dualsubslice0 Non-sampler Shader Access Stalled On L3	GPU/Data Port	Percentage of time when HDC has messages to L3, but it's stalled due to lack of credits (Slice1 Dualsubslice0)
+HDCAndSF_Slice01	NonSamplerShader11AccessStalledOnL3	Slice1 Dualsubslice1 Non-sampler Shader Access Stalled On L3	GPU/Data Port	Percentage of time when HDC has messages to L3, but it's stalled due to lack of credits (Slice1 Dualsubslice1)
+HDCAndSF_Slice01	NonSamplerShader12AccessStalledOnL3	Slice1 Dualsubslice2 Non-sampler Shader Access Stalled On L3	GPU/Data Port	Percentage of time when HDC has messages to L3, but it's stalled due to lack of credits (Slice1 Dualsubslice2)
+HDCAndSF_Slice01	NonSamplerShader13AccessStalledOnL3	Slice1 Dualsubslice3 Non-sampler Shader Access Stalled On L3	GPU/Data Port	Percentage of time when HDC has messages to L3, but it's stalled due to lack of credits (Slice1 Dualsubslice3)
+HDCAndSF_Slice23	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
+HDCAndSF_Slice23	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
+HDCAndSF_Slice23	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
+HDCAndSF_Slice23	GpuBusy	GPU Busy	GPU	The percentage of time in which the GPU has been processing GPU commands.
+HDCAndSF_Slice23	NonSamplerShader20AccessStalledOnL3	Slice2 Dualsubslice0 Non-sampler Shader Access Stalled On L3	GPU/Data Port	Percentage of time when HDC has messages to L3, but it's stalled due to lack of credits (Slice2 Dualsubslice0)
+HDCAndSF_Slice23	NonSamplerShader21AccessStalledOnL3	Slice2 Dualsubslice1 Non-sampler Shader Access Stalled On L3	GPU/Data Port	Percentage of time when HDC has messages to L3, but it's stalled due to lack of credits (Slice2 Dualsubslice1)
+HDCAndSF_Slice23	NonSamplerShader22AccessStalledOnL3	Slice2 Dualsubslice2 Non-sampler Shader Access Stalled On L3	GPU/Data Port	Percentage of time when HDC has messages to L3, but it's stalled due to lack of credits (Slice2 Dualsubslice2)
+HDCAndSF_Slice23	NonSamplerShader23AccessStalledOnL3	Slice2 Dualsubslice3 Non-sampler Shader Access Stalled On L3	GPU/Data Port	Percentage of time when HDC has messages to L3, but it's stalled due to lack of credits (Slice2 Dualsubslice3)
+HDCAndSF_Slice23	NonSamplerShader30AccessStalledOnL3	Slice3 Dualsubslice0 Non-sampler Shader Access Stalled On L3	GPU/Data Port	Percentage of time when HDC has messages to L3, but it's stalled due to lack of credits (Slice3 Dualsubslice0)
+HDCAndSF_Slice23	NonSamplerShader31AccessStalledOnL3	Slice3 Dualsubslice1 Non-sampler Shader Access Stalled On L3	GPU/Data Port	Percentage of time when HDC has messages to L3, but it's stalled due to lack of credits (Slice3 Dualsubslice1)
+HDCAndSF_Slice23	NonSamplerShader32AccessStalledOnL3	Slice3 Dualsubslice2 Non-sampler Shader Access Stalled On L3	GPU/Data Port	Percentage of time when HDC has messages to L3, but it's stalled due to lack of credits (Slice3 Dualsubslice2)
+HDCAndSF_Slice23	NonSamplerShader33AccessStalledOnL3	Slice3 Dualsubslice3 Non-sampler Shader Access Stalled On L3	GPU/Data Port	Percentage of time when HDC has messages to L3, but it's stalled due to lack of credits (Slice3 Dualsubslice3)
+HDCAndSF_Slice45	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
+HDCAndSF_Slice45	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
+HDCAndSF_Slice45	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
+HDCAndSF_Slice45	GpuBusy	GPU Busy	GPU	The percentage of time in which the GPU has been processing GPU commands.
+HDCAndSF_Slice45	NonSamplerShader40AccessStalledOnL3	Slice4 Dualsubslice0 Non-sampler Shader Access Stalled On L3	GPU/Data Port	Percentage of time when HDC has messages to L3, but it's stalled due to lack of credits (Slice4 Dualsubslice0)
+HDCAndSF_Slice45	NonSamplerShader41AccessStalledOnL3	Slice4 Dualsubslice1 Non-sampler Shader Access Stalled On L3	GPU/Data Port	Percentage of time when HDC has messages to L3, but it's stalled due to lack of credits (Slice4 Dualsubslice1)
+HDCAndSF_Slice45	NonSamplerShader42AccessStalledOnL3	Slice4 Dualsubslice2 Non-sampler Shader Access Stalled On L3	GPU/Data Port	Percentage of time when HDC has messages to L3, but it's stalled due to lack of credits (Slice4 Dualsubslice2)
+HDCAndSF_Slice45	NonSamplerShader43AccessStalledOnL3	Slice4 Dualsubslice3 Non-sampler Shader Access Stalled On L3	GPU/Data Port	Percentage of time when HDC has messages to L3, but it's stalled due to lack of credits (Slice4 Dualsubslice3)
+HDCAndSF_Slice45	NonSamplerShader50AccessStalledOnL3	Slice5 Dualsubslice0 Non-sampler Shader Access Stalled On L3	GPU/Data Port	Percentage of time when HDC has messages to L3, but it's stalled due to lack of credits (Slice5 Dualsubslice0)
+HDCAndSF_Slice45	NonSamplerShader51AccessStalledOnL3	Slice5 Dualsubslice1 Non-sampler Shader Access Stalled On L3	GPU/Data Port	Percentage of time when HDC has messages to L3, but it's stalled due to lack of credits (Slice5 Dualsubslice1)
+HDCAndSF_Slice45	NonSamplerShader52AccessStalledOnL3	Slice5 Dualsubslice2 Non-sampler Shader Access Stalled On L3	GPU/Data Port	Percentage of time when HDC has messages to L3, but it's stalled due to lack of credits (Slice5 Dualsubslice2)
+HDCAndSF_Slice45	NonSamplerShader53AccessStalledOnL3	Slice5 Dualsubslice3 Non-sampler Shader Access Stalled On L3	GPU/Data Port	Percentage of time when HDC has messages to L3, but it's stalled due to lack of credits (Slice5 Dualsubslice3)
+HDCAndSF_Slice67	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
+HDCAndSF_Slice67	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
+HDCAndSF_Slice67	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
+HDCAndSF_Slice67	GpuBusy	GPU Busy	GPU	The percentage of time in which the GPU has been processing GPU commands.
+HDCAndSF_Slice67	NonSamplerShader60AccessStalledOnL3	Slice6 Dualsubslice0 Non-sampler Shader Access Stalled On L3	GPU/Data Port	Percentage of time when HDC has messages to L3, but it's stalled due to lack of credits (Slice6 Dualsubslice0)
+HDCAndSF_Slice67	NonSamplerShader61AccessStalledOnL3	Slice6 Dualsubslice1 Non-sampler Shader Access Stalled On L3	GPU/Data Port	Percentage of time when HDC has messages to L3, but it's stalled due to lack of credits (Slice6 Dualsubslice1)
+HDCAndSF_Slice67	NonSamplerShader62AccessStalledOnL3	Slice6 Dualsubslice2 Non-sampler Shader Access Stalled On L3	GPU/Data Port	Percentage of time when HDC has messages to L3, but it's stalled due to lack of credits (Slice6 Dualsubslice2)
+HDCAndSF_Slice67	NonSamplerShader63AccessStalledOnL3	Slice6 Dualsubslice3 Non-sampler Shader Access Stalled On L3	GPU/Data Port	Percentage of time when HDC has messages to L3, but it's stalled due to lack of credits (Slice6 Dualsubslice3)
+HDCAndSF_Slice67	NonSamplerShader70AccessStalledOnL3	Slice7 Dualsubslice0 Non-sampler Shader Access Stalled On L3	GPU/Data Port	Percentage of time when HDC has messages to L3, but it's stalled due to lack of credits (Slice7 Dualsubslice0)
+HDCAndSF_Slice67	NonSamplerShader71AccessStalledOnL3	Slice7 Dualsubslice1 Non-sampler Shader Access Stalled On L3	GPU/Data Port	Percentage of time when HDC has messages to L3, but it's stalled due to lack of credits (Slice7 Dualsubslice1)
+HDCAndSF_Slice67	NonSamplerShader72AccessStalledOnL3	Slice7 Dualsubslice2 Non-sampler Shader Access Stalled On L3	GPU/Data Port	Percentage of time when HDC has messages to L3, but it's stalled due to lack of credits (Slice7 Dualsubslice2)
+HDCAndSF_Slice67	NonSamplerShader73AccessStalledOnL3	Slice7 Dualsubslice3 Non-sampler Shader Access Stalled On L3	GPU/Data Port	Percentage of time when HDC has messages to L3, but it's stalled due to lack of credits (Slice7 Dualsubslice3)
+HDCAndSF1	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
+HDCAndSF1	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
+HDCAndSF1	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
+HDCAndSF1	GpuBusy	GPU Busy	GPU	The percentage of time in which the GPU has been processing GPU commands.
+HDCAndSF1	Poly0DataReady	Polygon (Slice0) Data Ready	GPU/3D Pipe/Strip-Fans	The percentage of time in which geometry pipeline output is ready
+HDCAndSF1	Poly1DataReady	Polygon (Slice1) Data Ready	GPU/3D Pipe/Strip-Fans	The percentage of time in which geometry pipeline output is ready
+HDCAndSF1	Poly2DataReady	Polygon (Slice2) Data Ready	GPU/3D Pipe/Strip-Fans	The percentage of time in which geometry pipeline output is ready
+HDCAndSF1	Poly3DataReady	Polygon (Slice3) Data Ready	GPU/3D Pipe/Strip-Fans	The percentage of time in which geometry pipeline output is ready
+HDCAndSF1	Poly4DataReady	Polygon (Slice4) Data Ready	GPU/3D Pipe/Strip-Fans	The percentage of time in which geometry pipeline output is ready
+HDCAndSF1	Poly5DataReady	Polygon (Slice5) Data Ready	GPU/3D Pipe/Strip-Fans	The percentage of time in which geometry pipeline output is ready
+HDCAndSF1	Poly6DataReady	Polygon (Slice6) Data Ready	GPU/3D Pipe/Strip-Fans	The percentage of time in which geometry pipeline output is ready
+HDCAndSF1	Poly7DataReady	Polygon (Slice7) Data Ready	GPU/3D Pipe/Strip-Fans	The percentage of time in which geometry pipeline output is ready
+HDCAndSF1	GTRequestQueue00Full	SQ00 is full	GTI	The percentage of time when IDI0 SQ00 is filled above a threshold (usually 48 entries)
+HDCAndSF1	GTRequestQueue10Full	SQ10 is full	GTI	The percentage of time when IDI0 SQ10 is filled above a threshold (usually 48 entries)
+HDCAndSF1	GTRequestQueue20Full	SQ20 is full	GTI	The percentage of time when IDI0 SQ20 is filled above a threshold (usually 48 entries)
+HDCAndSF1	GTRequestQueue30Full	SQ30 is full	GTI	The percentage of time when IDI0 SQ30 is filled above a threshold (usually 48 entries)
+HDCAndSF1	GTRequestQueue40Full	SQ40 is full	GTI	The percentage of time when IDI0 SQ40 is filled above a threshold (usually 48 entries)
+HDCAndSF1	GTRequestQueue50Full	SQ50 is full	GTI	The percentage of time when IDI0 SQ50 is filled above a threshold (usually 48 entries)
+HDCAndSF1	GTRequestQueue60Full	SQ60 is full	GTI	The percentage of time when IDI0 SQ60 is filled above a threshold (usually 48 entries)
+HDCAndSF1	GTRequestQueue70Full	SQ70 is full	GTI	The percentage of time when IDI0 SQ70 is filled above a threshold (usually 48 entries)
+L3_Slice01	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
+L3_Slice01	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
+L3_Slice01	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
+L3_Slice01	GpuBusy	GPU Busy	GPU	The percentage of time in which the GPU has been processing GPU commands.
+L3_Slice01	L3Bank00InputAvailable	L3Bank00 Input Available	GPU/L3	The percentage of time when L3Bank00 has input available
+L3_Slice01	L3Bank01InputAvailable	L3Bank01 Input Available	GPU/L3	The percentage of time when L3Bank01 has input available
+L3_Slice01	L3Bank02InputAvailable	L3Bank02 Input Available	GPU/L3	The percentage of time when L3Bank02 has input available
+L3_Slice01	L3Bank03InputAvailable	L3Bank03 Input Available	GPU/L3	The percentage of time when L3Bank03 has input available
+L3_Slice01	L3Bank04InputAvailable	L3Bank04 Input Available	GPU/L3	The percentage of time when L3Bank04 has input available
+L3_Slice01	L3Bank05InputAvailable	L3Bank05 Input Available	GPU/L3	The percentage of time when L3Bank05 has input available
+L3_Slice01	L3Bank06InputAvailable	L3Bank06 Input Available	GPU/L3	The percentage of time when L3Bank06 has input available
+L3_Slice01	L3Bank07InputAvailable	L3Bank07 Input Available	GPU/L3	The percentage of time when L3Bank07 has input available
+L3_Slice01	L3Bank00OutputReady	L3Bank00 Output Ready	GPU/L3	The percentage of time when L3Bank00 output is ready
+L3_Slice01	L3Bank01OutputReady	L3Bank01 Output Ready	GPU/L3	The percentage of time when L3Bank01 output is ready
+L3_Slice01	L3Bank02OutputReady	L3Bank02 Output Ready	GPU/L3	The percentage of time when L3Bank02 output is ready
+L3_Slice01	L3Bank03OutputReady	L3Bank03 Output Ready	GPU/L3	The percentage of time when L3Bank03 output is ready
+L3_Slice01	L3Bank04OutputReady	L3Bank04 Output Ready	GPU/L3	The percentage of time when L3Bank04 output is ready
+L3_Slice01	L3Bank05OutputReady	L3Bank05 Output Ready	GPU/L3	The percentage of time when L3Bank05 output is ready
+L3_Slice01	L3Bank06OutputReady	L3Bank06 Output Ready	GPU/L3	The percentage of time when L3Bank06 output is ready
+L3_Slice01	L3Bank07OutputReady	L3Bank07 Output Ready	GPU/L3	The percentage of time when L3Bank07 output is ready
+L3_Slice23	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
+L3_Slice23	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
+L3_Slice23	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
+L3_Slice23	GpuBusy	GPU Busy	GPU	The percentage of time in which the GPU has been processing GPU commands.
+L3_Slice23	L3Bank10InputAvailable	L3Bank10 Input Available	GPU/L3	The percentage of time when L3Bank10 has input available
+L3_Slice23	L3Bank11InputAvailable	L3Bank11 Input Available	GPU/L3	The percentage of time when L3Bank11 has input available
+L3_Slice23	L3Bank12InputAvailable	L3Bank12 Input Available	GPU/L3	The percentage of time when L3Bank12 has input available
+L3_Slice23	L3Bank13InputAvailable	L3Bank13 Input Available	GPU/L3	The percentage of time when L3Bank13 has input available
+L3_Slice23	L3Bank14InputAvailable	L3Bank14 Input Available	GPU/L3	The percentage of time when L3Bank14 has input available
+L3_Slice23	L3Bank15InputAvailable	L3Bank15 Input Available	GPU/L3	The percentage of time when L3Bank15 has input available
+L3_Slice23	L3Bank16InputAvailable	L3Bank16 Input Available	GPU/L3	The percentage of time when L3Bank16 has input available
+L3_Slice23	L3Bank17InputAvailable	L3Bank17 Input Available	GPU/L3	The percentage of time when L3Bank17 has input available
+L3_Slice23	L3Bank10OutputReady	L3Bank10 Output Ready	GPU/L3	The percentage of time when L3Bank10 output is ready
+L3_Slice23	L3Bank11OutputReady	L3Bank11 Output Ready	GPU/L3	The percentage of time when L3Bank11 output is ready
+L3_Slice23	L3Bank12OutputReady	L3Bank12 Output Ready	GPU/L3	The percentage of time when L3Bank12 output is ready
+L3_Slice23	L3Bank13OutputReady	L3Bank13 Output Ready	GPU/L3	The percentage of time when L3Bank13 output is ready
+L3_Slice23	L3Bank14OutputReady	L3Bank14 Output Ready	GPU/L3	The percentage of time when L3Bank14 output is ready
+L3_Slice23	L3Bank15OutputReady	L3Bank15 Output Ready	GPU/L3	The percentage of time when L3Bank15 output is ready
+L3_Slice23	L3Bank16OutputReady	L3Bank16 Output Ready	GPU/L3	The percentage of time when L3Bank16 output is ready
+L3_Slice23	L3Bank17OutputReady	L3Bank17 Output Ready	GPU/L3	The percentage of time when L3Bank17 output is ready
+L3_Slice45	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
+L3_Slice45	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
+L3_Slice45	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
+L3_Slice45	GpuBusy	GPU Busy	GPU	The percentage of time in which the GPU has been processing GPU commands.
+L3_Slice45	L3Bank20InputAvailable	L3Bank20 Input Available	GPU/L3	The percentage of time when L3Bank20 has input available
+L3_Slice45	L3Bank21InputAvailable	L3Bank21 Input Available	GPU/L3	The percentage of time when L3Bank21 has input available
+L3_Slice45	L3Bank22InputAvailable	L3Bank22 Input Available	GPU/L3	The percentage of time when L3Bank22 has input available
+L3_Slice45	L3Bank23InputAvailable	L3Bank23 Input Available	GPU/L3	The percentage of time when L3Bank23 has input available
+L3_Slice45	L3Bank24InputAvailable	L3Bank24 Input Available	GPU/L3	The percentage of time when L3Bank24 has input available
+L3_Slice45	L3Bank25InputAvailable	L3Bank25 Input Available	GPU/L3	The percentage of time when L3Bank25 has input available
+L3_Slice45	L3Bank26InputAvailable	L3Bank26 Input Available	GPU/L3	The percentage of time when L3Bank26 has input available
+L3_Slice45	L3Bank27InputAvailable	L3Bank27 Input Available	GPU/L3	The percentage of time when L3Bank27 has input available
+L3_Slice45	L3Bank20OutputReady	L3Bank20 Output Ready	GPU/L3	The percentage of time when L3Bank20 output is ready
+L3_Slice45	L3Bank21OutputReady	L3Bank21 Output Ready	GPU/L3	The percentage of time when L3Bank21 output is ready
+L3_Slice45	L3Bank22OutputReady	L3Bank22 Output Ready	GPU/L3	The percentage of time when L3Bank22 output is ready
+L3_Slice45	L3Bank23OutputReady	L3Bank23 Output Ready	GPU/L3	The percentage of time when L3Bank23 output is ready
+L3_Slice45	L3Bank24OutputReady	L3Bank24 Output Ready	GPU/L3	The percentage of time when L3Bank24 output is ready
+L3_Slice45	L3Bank25OutputReady	L3Bank25 Output Ready	GPU/L3	The percentage of time when L3Bank25 output is ready
+L3_Slice45	L3Bank26OutputReady	L3Bank26 Output Ready	GPU/L3	The percentage of time when L3Bank26 output is ready
+L3_Slice45	L3Bank27OutputReady	L3Bank27 Output Ready	GPU/L3	The percentage of time when L3Bank27 output is ready
+L3_Slice67	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
+L3_Slice67	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
+L3_Slice67	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
+L3_Slice67	GpuBusy	GPU Busy	GPU	The percentage of time in which the GPU has been processing GPU commands.
+L3_Slice67	L3Bank30InputAvailable	L3Bank30 Input Available	GPU/L3	The percentage of time when L3Bank30 has input available
+L3_Slice67	L3Bank31InputAvailable	L3Bank31 Input Available	GPU/L3	The percentage of time when L3Bank31 has input available
+L3_Slice67	L3Bank32InputAvailable	L3Bank32 Input Available	GPU/L3	The percentage of time when L3Bank32 has input available
+L3_Slice67	L3Bank33InputAvailable	L3Bank33 Input Available	GPU/L3	The percentage of time when L3Bank33 has input available
+L3_Slice67	L3Bank34InputAvailable	L3Bank34 Input Available	GPU/L3	The percentage of time when L3Bank34 has input available
+L3_Slice67	L3Bank35InputAvailable	L3Bank35 Input Available	GPU/L3	The percentage of time when L3Bank35 has input available
+L3_Slice67	L3Bank36InputAvailable	L3Bank36 Input Available	GPU/L3	The percentage of time when L3Bank36 has input available
+L3_Slice67	L3Bank37InputAvailable	L3Bank37 Input Available	GPU/L3	The percentage of time when L3Bank37 has input available
+L3_Slice67	L3Bank30OutputReady	L3Bank30 Output Ready	GPU/L3	The percentage of time when L3Bank30 output is ready
+L3_Slice67	L3Bank31OutputReady	L3Bank31 Output Ready	GPU/L3	The percentage of time when L3Bank31 output is ready
+L3_Slice67	L3Bank32OutputReady	L3Bank32 Output Ready	GPU/L3	The percentage of time when L3Bank32 output is ready
+L3_Slice67	L3Bank33OutputReady	L3Bank33 Output Ready	GPU/L3	The percentage of time when L3Bank33 output is ready
+L3_Slice67	L3Bank34OutputReady	L3Bank34 Output Ready	GPU/L3	The percentage of time when L3Bank34 output is ready
+L3_Slice67	L3Bank35OutputReady	L3Bank35 Output Ready	GPU/L3	The percentage of time when L3Bank35 output is ready
+L3_Slice67	L3Bank36OutputReady	L3Bank36 Output Ready	GPU/L3	The percentage of time when L3Bank36 output is ready
+L3_Slice67	L3Bank37OutputReady	L3Bank37 Output Ready	GPU/L3	The percentage of time when L3Bank37 output is ready
+RasterizerAndPixelBackend1	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
+RasterizerAndPixelBackend1	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
+RasterizerAndPixelBackend1	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
+RasterizerAndPixelBackend1	GpuBusy	GPU Busy	GPU	The percentage of time in which the GPU has been processing GPU commands.
+RasterizerAndPixelBackend1	Rasterizer0InputAvailable	Slice0 Rasterizer Input Available	GPU/Rasterizer	The percentage of time in which slice0 rasterizer input is available
+RasterizerAndPixelBackend1	Rasterizer1OutputReady	Slice1 Rasterizer Output Ready	GPU/Rasterizer	The percentage of time in which slice1 rasterizer output is ready
+RasterizerAndPixelBackend1	PixelData00Ready	Slice0 Pipe0 Post-EarlyZ Pixel Data Ready	GPU/Rasterizer/Early Depth Test	The percentage of time in which slice0  pipe0 post-EarlyZ pixel data is ready (after early Z tests have been applied)
+RasterizerAndPixelBackend1	PixelData01Ready	Slice0 Pipe1 Post-EarlyZ Pixel Data Ready	GPU/Rasterizer/Early Depth Test	The percentage of time in which slice0  pipe1 post-EarlyZ pixel data is ready (after early Z tests have been applied)
+RasterizerAndPixelBackend1	Rasterizer2InputAvailable	Slice2 Rasterizer Input Available	GPU/Rasterizer	The percentage of time in which slice2 rasterizer input is available
+RasterizerAndPixelBackend1	Rasterizer3OutputReady	Slice3 Rasterizer Output Ready	GPU/Rasterizer	The percentage of time in which slice3 rasterizer output is ready
+RasterizerAndPixelBackend1	PixelData20Ready	Slice2 Pipe0 Post-EarlyZ Pixel Data Ready	GPU/Rasterizer/Early Depth Test	The percentage of time in which slice2  pipe0 post-EarlyZ pixel data is ready (after early Z tests have been applied)
+RasterizerAndPixelBackend1	PixelData21Ready	Slice2 Pipe1 Post-EarlyZ Pixel Data Ready	GPU/Rasterizer/Early Depth Test	The percentage of time in which slice2  pipe1 post-EarlyZ pixel data is ready (after early Z tests have been applied)
+RasterizerAndPixelBackend2	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
+RasterizerAndPixelBackend2	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
+RasterizerAndPixelBackend2	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
+RasterizerAndPixelBackend2	GpuBusy	GPU Busy	GPU	The percentage of time in which the GPU has been processing GPU commands.
+RasterizerAndPixelBackend2	Rasterizer1InputAvailable	Slice1 Rasterizer Input Available	GPU/Rasterizer	The percentage of time in which slice1 rasterizer input is available
+RasterizerAndPixelBackend2	Rasterizer0OutputReady	Slice0 Rasterizer Output Ready	GPU/Rasterizer	The percentage of time in which slice0 rasterizer output is ready
+RasterizerAndPixelBackend2	PixelData10Ready	Slice1 Pipe0 Post-EarlyZ Pixel Data Ready	GPU/Rasterizer/Early Depth Test	The percentage of time in which slice1  pipe0 post-EarlyZ pixel data is ready (after early Z tests have been applied)
+RasterizerAndPixelBackend2	PixelData11Ready	Slice1 Pipe1 Post-EarlyZ Pixel Data Ready	GPU/Rasterizer/Early Depth Test	The percentage of time in which slice1  pipe1 post-EarlyZ pixel data is ready (after early Z tests have been applied)
+RasterizerAndPixelBackend2	Rasterizer3InputAvailable	Slice3 Rasterizer Input Available	GPU/Rasterizer	The percentage of time in which slice3 rasterizer input is available
+RasterizerAndPixelBackend2	Rasterizer2OutputReady	Slice2 Rasterizer Output Ready	GPU/Rasterizer	The percentage of time in which slice2 rasterizer output is ready
+RasterizerAndPixelBackend2	PixelData30Ready	Slice3 Pipe0 Post-EarlyZ Pixel Data Ready	GPU/Rasterizer/Early Depth Test	The percentage of time in which slice3  pipe0 post-EarlyZ pixel data is ready (after early Z tests have been applied)
+RasterizerAndPixelBackend2	PixelData31Ready	Slice3 Pipe1 Post-EarlyZ Pixel Data Ready	GPU/Rasterizer/Early Depth Test	The percentage of time in which slice3  pipe1 post-EarlyZ pixel data is ready (after early Z tests have been applied)
+RasterizerAndPixelBackend3	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
+RasterizerAndPixelBackend3	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
+RasterizerAndPixelBackend3	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
+RasterizerAndPixelBackend3	GpuBusy	GPU Busy	GPU	The percentage of time in which the GPU has been processing GPU commands.
+RasterizerAndPixelBackend3	Rasterizer4InputAvailable	Slice4 Rasterizer Input Available	GPU/Rasterizer	The percentage of time in which slice4 rasterizer input is available
+RasterizerAndPixelBackend3	Rasterizer5OutputReady	Slice5 Rasterizer Output Ready	GPU/Rasterizer	The percentage of time in which slice5 rasterizer output is ready
+RasterizerAndPixelBackend3	PixelData40Ready	Slice4 Pipe0 Post-EarlyZ Pixel Data Ready	GPU/Rasterizer/Early Depth Test	The percentage of time in which slice4  pipe0 post-EarlyZ pixel data is ready (after early Z tests have been applied)
+RasterizerAndPixelBackend3	PixelData41Ready	Slice4 Pipe1 Post-EarlyZ Pixel Data Ready	GPU/Rasterizer/Early Depth Test	The percentage of time in which slice4  pipe1 post-EarlyZ pixel data is ready (after early Z tests have been applied)
+RasterizerAndPixelBackend3	Rasterizer6InputAvailable	Slice6 Rasterizer Input Available	GPU/Rasterizer	The percentage of time in which slice6 rasterizer input is available
+RasterizerAndPixelBackend3	Rasterizer7OutputReady	Slice7 Rasterizer Output Ready	GPU/Rasterizer	The percentage of time in which slice7 rasterizer output is ready
+RasterizerAndPixelBackend3	PixelData60Ready	Slice6 Pipe0 Post-EarlyZ Pixel Data Ready	GPU/Rasterizer/Early Depth Test	The percentage of time in which slice6  pipe0 post-EarlyZ pixel data is ready (after early Z tests have been applied)
+RasterizerAndPixelBackend3	PixelData61Ready	Slice6 Pipe1 Post-EarlyZ Pixel Data Ready	GPU/Rasterizer/Early Depth Test	The percentage of time in which slice6  pipe1 post-EarlyZ pixel data is ready (after early Z tests have been applied)
+RasterizerAndPixelBackend4	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
+RasterizerAndPixelBackend4	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
+RasterizerAndPixelBackend4	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
+RasterizerAndPixelBackend4	GpuBusy	GPU Busy	GPU	The percentage of time in which the GPU has been processing GPU commands.
+RasterizerAndPixelBackend4	Rasterizer5InputAvailable	Slice5 Rasterizer Input Available	GPU/Rasterizer	The percentage of time in which slice5 rasterizer input is available
+RasterizerAndPixelBackend4	Rasterizer4OutputReady	Slice4 Rasterizer Output Ready	GPU/Rasterizer	The percentage of time in which slice4 rasterizer output is ready
+RasterizerAndPixelBackend4	PixelData50Ready	Slice5 Pipe0 Post-EarlyZ Pixel Data Ready	GPU/Rasterizer/Early Depth Test	The percentage of time in which slice5  pipe0 post-EarlyZ pixel data is ready (after early Z tests have been applied)
+RasterizerAndPixelBackend4	PixelData51Ready	Slice5 Pipe1 Post-EarlyZ Pixel Data Ready	GPU/Rasterizer/Early Depth Test	The percentage of time in which slice5  pipe1 post-EarlyZ pixel data is ready (after early Z tests have been applied)
+RasterizerAndPixelBackend4	Rasterizer7InputAvailable	Slice7 Rasterizer Input Available	GPU/Rasterizer	The percentage of time in which slice7 rasterizer input is available
+RasterizerAndPixelBackend4	Rasterizer6OutputReady	Slice6 Rasterizer Output Ready	GPU/Rasterizer	The percentage of time in which slice6 rasterizer output is ready
+RasterizerAndPixelBackend4	PixelData70Ready	Slice7 Pipe0 Post-EarlyZ Pixel Data Ready	GPU/Rasterizer/Early Depth Test	The percentage of time in which slice7  pipe0 post-EarlyZ pixel data is ready (after early Z tests have been applied)
+RasterizerAndPixelBackend4	PixelData71Ready	Slice7 Pipe1 Post-EarlyZ Pixel Data Ready	GPU/Rasterizer/Early Depth Test	The percentage of time in which slice7  pipe1 post-EarlyZ pixel data is ready (after early Z tests have been applied)
+RasterizerAndPixelBackend5	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
+RasterizerAndPixelBackend5	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
+RasterizerAndPixelBackend5	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
+RasterizerAndPixelBackend5	GpuBusy	GPU Busy	GPU	The percentage of time in which the GPU has been processing GPU commands.
+RasterizerAndPixelBackend5	PSOutput00Available	PS00 Output Available	GPU/3D Pipe	The percentage of time in which PS00 output is available
+RasterizerAndPixelBackend5	PSOutput01Available	PS01 Output Available	GPU/3D Pipe	The percentage of time in which PS01 output is available
+RasterizerAndPixelBackend5	PSOutput10Available	PS10 Output Available	GPU/3D Pipe	The percentage of time in which PS10 output is available
+RasterizerAndPixelBackend5	PSOutput11Available	PS11 Output Available	GPU/3D Pipe	The percentage of time in which PS11 output is available
+RasterizerAndPixelBackend5	PSOutput20Available	PS20 Output Available	GPU/3D Pipe	The percentage of time in which PS20 output is available
+RasterizerAndPixelBackend5	PSOutput21Available	PS21 Output Available	GPU/3D Pipe	The percentage of time in which PS21 output is available
+RasterizerAndPixelBackend5	PSOutput30Available	PS30 Output Available	GPU/3D Pipe	The percentage of time in which PS30 output is available
+RasterizerAndPixelBackend5	PSOutput31Available	PS31 Output Available	GPU/3D Pipe	The percentage of time in which PS31 output is available
+RasterizerAndPixelBackend5	PixelValues00Ready	Pixel Values 00 Ready	GPU/3D Pipe	The percentage of time in which pixel values 00 are ready
+RasterizerAndPixelBackend5	PixelValues01Ready	Pixel Values 01 Ready	GPU/3D Pipe	The percentage of time in which pixel values 01 are ready
+RasterizerAndPixelBackend5	PixelValues10Ready	Pixel Values 10 Ready	GPU/3D Pipe	The percentage of time in which pixel values 10 are ready
+RasterizerAndPixelBackend5	PixelValues11Ready	Pixel Values 11 Ready	GPU/3D Pipe	The percentage of time in which pixel values 11 are ready
+RasterizerAndPixelBackend5	PixelValues20Ready	Pixel Values 20 Ready	GPU/3D Pipe	The percentage of time in which pixel values 20 are ready
+RasterizerAndPixelBackend5	PixelValues21Ready	Pixel Values 21 Ready	GPU/3D Pipe	The percentage of time in which pixel values 21 are ready
+RasterizerAndPixelBackend5	PixelValues30Ready	Pixel Values 30 Ready	GPU/3D Pipe	The percentage of time in which pixel values 30 are ready
+RasterizerAndPixelBackend5	PixelValues31Ready	Pixel Values 31 Ready	GPU/3D Pipe	The percentage of time in which pixel values 31 are ready
+RenderPipeProfile_Slice0	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
+RenderPipeProfile_Slice0	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
+RenderPipeProfile_Slice0	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
+RenderPipeProfile_Slice0	GpuBusy	GPU Busy	GPU	The percentage of time in which the GPU has been processing GPU commands.
+RenderPipeProfile_Slice0	Vf0Bottleneck	VF0 Bottleneck	3D Pipe/Input Assembler	The percentage of time in which vertex fetch pipeline stage was slowing down the 3D pipeline.
+RenderPipeProfile_Slice0	Vs0Bottleneck	VS0 Bottleneck	3D Pipe/Vertex Shader	The percentage of time in which VS0 pipeline stage was slowing down the 3D pipeline.
+RenderPipeProfile_Slice0	Cl0Bottleneck	Clipper0 Bottleneck	3D Pipe/Clipper	The percentage of time in which clipper pipeline stage was slowing down the 3D pipeline.
+RenderPipeProfile_Slice0	Hs0Bottleneck	HS0 Bottleneck	3D Pipe/Hull Shader	The percentage of time in which hull shader pipeline stage was slowing down the 3D pipeline.
+RenderPipeProfile_Slice0	Ds0Bottleneck	DS0 Bottleneck	3D Pipe/Domain Shader	The percentage of time in which domain shader pipeline stage was slowing down the 3D pipeline.
+RenderPipeProfile_Slice0	Gs0Bottleneck	GS0 Bottleneck	3D Pipe/Geometry Shader	The percentage of time in which geometry shader pipeline stage was slowing down the 3D pipeline.
+RenderPipeProfile_Slice0	Sf0Bottleneck	SF0 Bottleneck	3D Pipe/Rasterizer/Strip-Fans	The percentage of time in which strip-fans pipeline stage was slowing down the 3D pipeline.
+RenderPipeProfile_Slice0	So0Bottleneck	SO0 Bottleneck	3D Pipe/Stream Output	The percentage of time in which stream output pipeline stage was slowing down the 3D pipeline.
+RenderPipeProfile_Slice0	Cl0Stall	CL0 Stall	3D Pipe/Clipper	The percentage of time in which clipper pipeline stage was stalled.
+RenderPipeProfile_Slice0	Hs0Stall	HS0 Stall	3D Pipe/Hull Shader	The percentage of time in which hull stall pipeline stage was stalled.
+RenderPipeProfile_Slice0	Ds0Stall	DS0 Stall	3D Pipe/Domain Shader	The percentage of time in which domain shader pipeline stage was stalled.
+RenderPipeProfile_Slice0	Sf0Stall	SF0 Stall	3D Pipe/Rasterizer/Strip-Fans	The percentage of time in which strip-fans pipeline stage was stalled.
+RenderPipeProfile_Slice0	So0Stall	SO0 Stall	3D Pipe/Stream Output	The percentage of time in which stream-output pipeline stage was stalled.
+RenderPipeProfile_Slice0	Hi0DepthBottleneck	Hi0Depth Bottleneck	3D Pipe/Rasterizer/Hi-Depth Test	The percentage of time in which early hierarchical depth test pipeline stage was slowing down the 3D pipeline.
+RenderPipeProfile_Slice0	Bc0Bottleneck	BC0 Bottleneck	3D Pipe/Rasterizer/Barycentric Calc	The percentage of time in which barycentric coordinates calculation pipeline stage was slowing down the 3D pipeline.
+RenderPipeProfile_Slice1	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
+RenderPipeProfile_Slice1	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
+RenderPipeProfile_Slice1	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
+RenderPipeProfile_Slice1	GpuBusy	GPU Busy	GPU	The percentage of time in which the GPU has been processing GPU commands.
+RenderPipeProfile_Slice1	Vf1Bottleneck	VF1 Bottleneck	3D Pipe/Input Assembler	The percentage of time in which vertex fetch pipeline stage was slowing down the 3D pipeline.
+RenderPipeProfile_Slice1	Vs1Bottleneck	VS1 Bottleneck	3D Pipe/Vertex Shader	The percentage of time in which VS1 pipeline stage was slowing down the 3D pipeline.
+RenderPipeProfile_Slice1	Cl1Bottleneck	Clipper1 Bottleneck	3D Pipe/Clipper	The percentage of time in which clipper pipeline stage was slowing down the 3D pipeline.
+RenderPipeProfile_Slice1	Hs1Bottleneck	HS1 Bottleneck	3D Pipe/Hull Shader	The percentage of time in which hull shader pipeline stage was slowing down the 3D pipeline.
+RenderPipeProfile_Slice1	Ds1Bottleneck	DS1 Bottleneck	3D Pipe/Domain Shader	The percentage of time in which domain shader pipeline stage was slowing down the 3D pipeline.
+RenderPipeProfile_Slice1	Gs1Bottleneck	GS1 Bottleneck	3D Pipe/Geometry Shader	The percentage of time in which geometry shader pipeline stage was slowing down the 3D pipeline.
+RenderPipeProfile_Slice1	Sf1Bottleneck	SF1 Bottleneck	3D Pipe/Rasterizer/Strip-Fans	The percentage of time in which strip-fans pipeline stage was slowing down the 3D pipeline.
+RenderPipeProfile_Slice1	So1Bottleneck	SO1 Bottleneck	3D Pipe/Stream Output	The percentage of time in which stream output pipeline stage was slowing down the 3D pipeline.
+RenderPipeProfile_Slice1	Cl1Stall	CL1 Stall	3D Pipe/Clipper	The percentage of time in which clipper pipeline stage was stalled.
+RenderPipeProfile_Slice1	Hs1Stall	HS1 Stall	3D Pipe/Hull Shader	The percentage of time in which hull stall pipeline stage was stalled.
+RenderPipeProfile_Slice1	Ds1Stall	DS1 Stall	3D Pipe/Domain Shader	The percentage of time in which domain shader pipeline stage was stalled.
+RenderPipeProfile_Slice1	Sf1Stall	SF1 Stall	3D Pipe/Rasterizer/Strip-Fans	The percentage of time in which strip-fans pipeline stage was stalled.
+RenderPipeProfile_Slice1	So1Stall	SO1 Stall	3D Pipe/Stream Output	The percentage of time in which stream-output pipeline stage was stalled.
+RenderPipeProfile_Slice1	Hi1DepthBottleneck	Hi1Depth Bottleneck	3D Pipe/Rasterizer/Hi-Depth Test	The percentage of time in which early hierarchical depth test pipeline stage was slowing down the 3D pipeline.
+RenderPipeProfile_Slice1	Bc1Bottleneck	BC1 Bottleneck	3D Pipe/Rasterizer/Barycentric Calc	The percentage of time in which barycentric coordinates calculation pipeline stage was slowing down the 3D pipeline.
+RenderPipeProfile_Slice2	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
+RenderPipeProfile_Slice2	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
+RenderPipeProfile_Slice2	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
+RenderPipeProfile_Slice2	GpuBusy	GPU Busy	GPU	The percentage of time in which the GPU has been processing GPU commands.
+RenderPipeProfile_Slice2	Vf2Bottleneck	VF2 Bottleneck	3D Pipe/Input Assembler	The percentage of time in which vertex fetch pipeline stage was slowing down the 3D pipeline.
+RenderPipeProfile_Slice2	Vs2Bottleneck	VS2 Bottleneck	3D Pipe/Vertex Shader	The percentage of time in which VS2 pipeline stage was slowing down the 3D pipeline.
+RenderPipeProfile_Slice2	Cl2Bottleneck	Clipper2 Bottleneck	3D Pipe/Clipper	The percentage of time in which clipper pipeline stage was slowing down the 3D pipeline.
+RenderPipeProfile_Slice2	Hs2Bottleneck	HS2 Bottleneck	3D Pipe/Hull Shader	The percentage of time in which hull shader pipeline stage was slowing down the 3D pipeline.
+RenderPipeProfile_Slice2	Ds2Bottleneck	DS2 Bottleneck	3D Pipe/Domain Shader	The percentage of time in which domain shader pipeline stage was slowing down the 3D pipeline.
+RenderPipeProfile_Slice2	Gs2Bottleneck	GS2 Bottleneck	3D Pipe/Geometry Shader	The percentage of time in which geometry shader pipeline stage was slowing down the 3D pipeline.
+RenderPipeProfile_Slice2	Sf2Bottleneck	SF2 Bottleneck	3D Pipe/Rasterizer/Strip-Fans	The percentage of time in which strip-fans pipeline stage was slowing down the 3D pipeline.
+RenderPipeProfile_Slice2	So2Bottleneck	SO2 Bottleneck	3D Pipe/Stream Output	The percentage of time in which stream output pipeline stage was slowing down the 3D pipeline.
+RenderPipeProfile_Slice2	Cl2Stall	CL2 Stall	3D Pipe/Clipper	The percentage of time in which clipper pipeline stage was stalled.
+RenderPipeProfile_Slice2	Hs2Stall	HS2 Stall	3D Pipe/Hull Shader	The percentage of time in which hull stall pipeline stage was stalled.
+RenderPipeProfile_Slice2	Ds2Stall	DS2 Stall	3D Pipe/Domain Shader	The percentage of time in which domain shader pipeline stage was stalled.
+RenderPipeProfile_Slice2	Sf2Stall	SF2 Stall	3D Pipe/Rasterizer/Strip-Fans	The percentage of time in which strip-fans pipeline stage was stalled.
+RenderPipeProfile_Slice2	So2Stall	SO2 Stall	3D Pipe/Stream Output	The percentage of time in which stream-output pipeline stage was stalled.
+RenderPipeProfile_Slice2	Hi2DepthBottleneck	Hi2Depth Bottleneck	3D Pipe/Rasterizer/Hi-Depth Test	The percentage of time in which early hierarchical depth test pipeline stage was slowing down the 3D pipeline.
+RenderPipeProfile_Slice2	Bc2Bottleneck	BC2 Bottleneck	3D Pipe/Rasterizer/Barycentric Calc	The percentage of time in which barycentric coordinates calculation pipeline stage was slowing down the 3D pipeline.
+RenderPipeProfile_Slice3	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
+RenderPipeProfile_Slice3	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
+RenderPipeProfile_Slice3	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
+RenderPipeProfile_Slice3	GpuBusy	GPU Busy	GPU	The percentage of time in which the GPU has been processing GPU commands.
+RenderPipeProfile_Slice3	Vf3Bottleneck	VF3 Bottleneck	3D Pipe/Input Assembler	The percentage of time in which vertex fetch pipeline stage was slowing down the 3D pipeline.
+RenderPipeProfile_Slice3	Vs3Bottleneck	VS3 Bottleneck	3D Pipe/Vertex Shader	The percentage of time in which VS3 pipeline stage was slowing down the 3D pipeline.
+RenderPipeProfile_Slice3	Cl3Bottleneck	Clipper3 Bottleneck	3D Pipe/Clipper	The percentage of time in which clipper pipeline stage was slowing down the 3D pipeline.
+RenderPipeProfile_Slice3	Hs3Bottleneck	HS3 Bottleneck	3D Pipe/Hull Shader	The percentage of time in which hull shader pipeline stage was slowing down the 3D pipeline.
+RenderPipeProfile_Slice3	Ds3Bottleneck	DS3 Bottleneck	3D Pipe/Domain Shader	The percentage of time in which domain shader pipeline stage was slowing down the 3D pipeline.
+RenderPipeProfile_Slice3	Gs3Bottleneck	GS3 Bottleneck	3D Pipe/Geometry Shader	The percentage of time in which geometry shader pipeline stage was slowing down the 3D pipeline.
+RenderPipeProfile_Slice3	Sf3Bottleneck	SF3 Bottleneck	3D Pipe/Rasterizer/Strip-Fans	The percentage of time in which strip-fans pipeline stage was slowing down the 3D pipeline.
+RenderPipeProfile_Slice3	So3Bottleneck	SO3 Bottleneck	3D Pipe/Stream Output	The percentage of time in which stream output pipeline stage was slowing down the 3D pipeline.
+RenderPipeProfile_Slice3	Cl3Stall	CL3 Stall	3D Pipe/Clipper	The percentage of time in which clipper pipeline stage was stalled.
+RenderPipeProfile_Slice3	Hs3Stall	HS3 Stall	3D Pipe/Hull Shader	The percentage of time in which hull stall pipeline stage was stalled.
+RenderPipeProfile_Slice3	Ds3Stall	DS3 Stall	3D Pipe/Domain Shader	The percentage of time in which domain shader pipeline stage was stalled.
+RenderPipeProfile_Slice3	Sf3Stall	SF3 Stall	3D Pipe/Rasterizer/Strip-Fans	The percentage of time in which strip-fans pipeline stage was stalled.
+RenderPipeProfile_Slice3	So3Stall	SO3 Stall	3D Pipe/Stream Output	The percentage of time in which stream-output pipeline stage was stalled.
+RenderPipeProfile_Slice3	Hi3DepthBottleneck	Hi3Depth Bottleneck	3D Pipe/Rasterizer/Hi-Depth Test	The percentage of time in which early hierarchical depth test pipeline stage was slowing down the 3D pipeline.
+RenderPipeProfile_Slice3	Bc3Bottleneck	BC3 Bottleneck	3D Pipe/Rasterizer/Barycentric Calc	The percentage of time in which barycentric coordinates calculation pipeline stage was slowing down the 3D pipeline.
+RenderPipeProfile_Slice4	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
+RenderPipeProfile_Slice4	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
+RenderPipeProfile_Slice4	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
+RenderPipeProfile_Slice4	GpuBusy	GPU Busy	GPU	The percentage of time in which the GPU has been processing GPU commands.
+RenderPipeProfile_Slice4	Vf4Bottleneck	VF4 Bottleneck	3D Pipe/Input Assembler	The percentage of time in which vertex fetch pipeline stage was slowing down the 3D pipeline.
+RenderPipeProfile_Slice4	Vs4Bottleneck	VS4 Bottleneck	3D Pipe/Vertex Shader	The percentage of time in which VS4 pipeline stage was slowing down the 3D pipeline.
+RenderPipeProfile_Slice4	Cl4Bottleneck	Clipper4 Bottleneck	3D Pipe/Clipper	The percentage of time in which clipper pipeline stage was slowing down the 3D pipeline.
+RenderPipeProfile_Slice4	Hs4Bottleneck	HS4 Bottleneck	3D Pipe/Hull Shader	The percentage of time in which hull shader pipeline stage was slowing down the 3D pipeline.
+RenderPipeProfile_Slice4	Ds4Bottleneck	DS4 Bottleneck	3D Pipe/Domain Shader	The percentage of time in which domain shader pipeline stage was slowing down the 3D pipeline.
+RenderPipeProfile_Slice4	Gs4Bottleneck	GS4 Bottleneck	3D Pipe/Geometry Shader	The percentage of time in which geometry shader pipeline stage was slowing down the 3D pipeline.
+RenderPipeProfile_Slice4	Sf4Bottleneck	SF4 Bottleneck	3D Pipe/Rasterizer/Strip-Fans	The percentage of time in which strip-fans pipeline stage was slowing down the 3D pipeline.
+RenderPipeProfile_Slice4	So4Bottleneck	SO4 Bottleneck	3D Pipe/Stream Output	The percentage of time in which stream output pipeline stage was slowing down the 3D pipeline.
+RenderPipeProfile_Slice4	Cl4Stall	CL4 Stall	3D Pipe/Clipper	The percentage of time in which clipper pipeline stage was stalled.
+RenderPipeProfile_Slice4	Hs4Stall	HS4 Stall	3D Pipe/Hull Shader	The percentage of time in which hull stall pipeline stage was stalled.
+RenderPipeProfile_Slice4	Ds4Stall	DS4 Stall	3D Pipe/Domain Shader	The percentage of time in which domain shader pipeline stage was stalled.
+RenderPipeProfile_Slice4	Sf4Stall	SF4 Stall	3D Pipe/Rasterizer/Strip-Fans	The percentage of time in which strip-fans pipeline stage was stalled.
+RenderPipeProfile_Slice4	So4Stall	SO4 Stall	3D Pipe/Stream Output	The percentage of time in which stream-output pipeline stage was stalled.
+RenderPipeProfile_Slice4	Hi4DepthBottleneck	Hi4Depth Bottleneck	3D Pipe/Rasterizer/Hi-Depth Test	The percentage of time in which early hierarchical depth test pipeline stage was slowing down the 3D pipeline.
+RenderPipeProfile_Slice4	Bc4Bottleneck	BC4 Bottleneck	3D Pipe/Rasterizer/Barycentric Calc	The percentage of time in which barycentric coordinates calculation pipeline stage was slowing down the 3D pipeline.
+RenderPipeProfile_Slice5	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
+RenderPipeProfile_Slice5	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
+RenderPipeProfile_Slice5	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
+RenderPipeProfile_Slice5	GpuBusy	GPU Busy	GPU	The percentage of time in which the GPU has been processing GPU commands.
+RenderPipeProfile_Slice5	Vf5Bottleneck	VF5 Bottleneck	3D Pipe/Input Assembler	The percentage of time in which vertex fetch pipeline stage was slowing down the 3D pipeline.
+RenderPipeProfile_Slice5	Vs5Bottleneck	VS5 Bottleneck	3D Pipe/Vertex Shader	The percentage of time in which VS5 pipeline stage was slowing down the 3D pipeline.
+RenderPipeProfile_Slice5	Cl5Bottleneck	Clipper5 Bottleneck	3D Pipe/Clipper	The percentage of time in which clipper pipeline stage was slowing down the 3D pipeline.
+RenderPipeProfile_Slice5	Hs5Bottleneck	HS5 Bottleneck	3D Pipe/Hull Shader	The percentage of time in which hull shader pipeline stage was slowing down the 3D pipeline.
+RenderPipeProfile_Slice5	Ds5Bottleneck	DS5 Bottleneck	3D Pipe/Domain Shader	The percentage of time in which domain shader pipeline stage was slowing down the 3D pipeline.
+RenderPipeProfile_Slice5	Gs5Bottleneck	GS5 Bottleneck	3D Pipe/Geometry Shader	The percentage of time in which geometry shader pipeline stage was slowing down the 3D pipeline.
+RenderPipeProfile_Slice5	Sf5Bottleneck	SF5 Bottleneck	3D Pipe/Rasterizer/Strip-Fans	The percentage of time in which strip-fans pipeline stage was slowing down the 3D pipeline.
+RenderPipeProfile_Slice5	So5Bottleneck	SO5 Bottleneck	3D Pipe/Stream Output	The percentage of time in which stream output pipeline stage was slowing down the 3D pipeline.
+RenderPipeProfile_Slice5	Cl5Stall	CL5 Stall	3D Pipe/Clipper	The percentage of time in which clipper pipeline stage was stalled.
+RenderPipeProfile_Slice5	Hs5Stall	HS5 Stall	3D Pipe/Hull Shader	The percentage of time in which hull stall pipeline stage was stalled.
+RenderPipeProfile_Slice5	Ds5Stall	DS5 Stall	3D Pipe/Domain Shader	The percentage of time in which domain shader pipeline stage was stalled.
+RenderPipeProfile_Slice5	Sf5Stall	SF5 Stall	3D Pipe/Rasterizer/Strip-Fans	The percentage of time in which strip-fans pipeline stage was stalled.
+RenderPipeProfile_Slice5	So5Stall	SO5 Stall	3D Pipe/Stream Output	The percentage of time in which stream-output pipeline stage was stalled.
+RenderPipeProfile_Slice5	Hi5DepthBottleneck	Hi5Depth Bottleneck	3D Pipe/Rasterizer/Hi-Depth Test	The percentage of time in which early hierarchical depth test pipeline stage was slowing down the 3D pipeline.
+RenderPipeProfile_Slice5	Bc5Bottleneck	BC5 Bottleneck	3D Pipe/Rasterizer/Barycentric Calc	The percentage of time in which barycentric coordinates calculation pipeline stage was slowing down the 3D pipeline.
+RenderPipeProfile_Slice6	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
+RenderPipeProfile_Slice6	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
+RenderPipeProfile_Slice6	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
+RenderPipeProfile_Slice6	GpuBusy	GPU Busy	GPU	The percentage of time in which the GPU has been processing GPU commands.
+RenderPipeProfile_Slice6	Vf6Bottleneck	VF6 Bottleneck	3D Pipe/Input Assembler	The percentage of time in which vertex fetch pipeline stage was slowing down the 3D pipeline.
+RenderPipeProfile_Slice6	Vs6Bottleneck	VS6 Bottleneck	3D Pipe/Vertex Shader	The percentage of time in which VS6 pipeline stage was slowing down the 3D pipeline.
+RenderPipeProfile_Slice6	Cl6Bottleneck	Clipper6 Bottleneck	3D Pipe/Clipper	The percentage of time in which clipper pipeline stage was slowing down the 3D pipeline.
+RenderPipeProfile_Slice6	Hs6Bottleneck	HS6 Bottleneck	3D Pipe/Hull Shader	The percentage of time in which hull shader pipeline stage was slowing down the 3D pipeline.
+RenderPipeProfile_Slice6	Ds6Bottleneck	DS6 Bottleneck	3D Pipe/Domain Shader	The percentage of time in which domain shader pipeline stage was slowing down the 3D pipeline.
+RenderPipeProfile_Slice6	Gs6Bottleneck	GS6 Bottleneck	3D Pipe/Geometry Shader	The percentage of time in which geometry shader pipeline stage was slowing down the 3D pipeline.
+RenderPipeProfile_Slice6	Sf6Bottleneck	SF6 Bottleneck	3D Pipe/Rasterizer/Strip-Fans	The percentage of time in which strip-fans pipeline stage was slowing down the 3D pipeline.
+RenderPipeProfile_Slice6	So6Bottleneck	SO6 Bottleneck	3D Pipe/Stream Output	The percentage of time in which stream output pipeline stage was slowing down the 3D pipeline.
+RenderPipeProfile_Slice6	Cl6Stall	CL6 Stall	3D Pipe/Clipper	The percentage of time in which clipper pipeline stage was stalled.
+RenderPipeProfile_Slice6	Hs6Stall	HS6 Stall	3D Pipe/Hull Shader	The percentage of time in which hull stall pipeline stage was stalled.
+RenderPipeProfile_Slice6	Ds6Stall	DS6 Stall	3D Pipe/Domain Shader	The percentage of time in which domain shader pipeline stage was stalled.
+RenderPipeProfile_Slice6	Sf6Stall	SF6 Stall	3D Pipe/Rasterizer/Strip-Fans	The percentage of time in which strip-fans pipeline stage was stalled.
+RenderPipeProfile_Slice6	So6Stall	SO6 Stall	3D Pipe/Stream Output	The percentage of time in which stream-output pipeline stage was stalled.
+RenderPipeProfile_Slice6	Hi6DepthBottleneck	Hi6Depth Bottleneck	3D Pipe/Rasterizer/Hi-Depth Test	The percentage of time in which early hierarchical depth test pipeline stage was slowing down the 3D pipeline.
+RenderPipeProfile_Slice6	Bc6Bottleneck	BC6 Bottleneck	3D Pipe/Rasterizer/Barycentric Calc	The percentage of time in which barycentric coordinates calculation pipeline stage was slowing down the 3D pipeline.
+RenderPipeProfile_Slice7	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
+RenderPipeProfile_Slice7	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
+RenderPipeProfile_Slice7	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
+RenderPipeProfile_Slice7	GpuBusy	GPU Busy	GPU	The percentage of time in which the GPU has been processing GPU commands.
+RenderPipeProfile_Slice7	Vf7Bottleneck	VF7 Bottleneck	3D Pipe/Input Assembler	The percentage of time in which vertex fetch pipeline stage was slowing down the 3D pipeline.
+RenderPipeProfile_Slice7	Vs7Bottleneck	VS7 Bottleneck	3D Pipe/Vertex Shader	The percentage of time in which VS7 pipeline stage was slowing down the 3D pipeline.
+RenderPipeProfile_Slice7	Cl7Bottleneck	Clipper7 Bottleneck	3D Pipe/Clipper	The percentage of time in which clipper pipeline stage was slowing down the 3D pipeline.
+RenderPipeProfile_Slice7	Hs7Bottleneck	HS7 Bottleneck	3D Pipe/Hull Shader	The percentage of time in which hull shader pipeline stage was slowing down the 3D pipeline.
+RenderPipeProfile_Slice7	Ds7Bottleneck	DS7 Bottleneck	3D Pipe/Domain Shader	The percentage of time in which domain shader pipeline stage was slowing down the 3D pipeline.
+RenderPipeProfile_Slice7	Gs7Bottleneck	GS7 Bottleneck	3D Pipe/Geometry Shader	The percentage of time in which geometry shader pipeline stage was slowing down the 3D pipeline.
+RenderPipeProfile_Slice7	Sf7Bottleneck	SF7 Bottleneck	3D Pipe/Rasterizer/Strip-Fans	The percentage of time in which strip-fans pipeline stage was slowing down the 3D pipeline.
+RenderPipeProfile_Slice7	So7Bottleneck	SO7 Bottleneck	3D Pipe/Stream Output	The percentage of time in which stream output pipeline stage was slowing down the 3D pipeline.
+RenderPipeProfile_Slice7	Cl7Stall	CL7 Stall	3D Pipe/Clipper	The percentage of time in which clipper pipeline stage was stalled.
+RenderPipeProfile_Slice7	Hs7Stall	HS7 Stall	3D Pipe/Hull Shader	The percentage of time in which hull stall pipeline stage was stalled.
+RenderPipeProfile_Slice7	Ds7Stall	DS7 Stall	3D Pipe/Domain Shader	The percentage of time in which domain shader pipeline stage was stalled.
+RenderPipeProfile_Slice7	Sf7Stall	SF7 Stall	3D Pipe/Rasterizer/Strip-Fans	The percentage of time in which strip-fans pipeline stage was stalled.
+RenderPipeProfile_Slice7	So7Stall	SO7 Stall	3D Pipe/Stream Output	The percentage of time in which stream-output pipeline stage was stalled.
+RenderPipeProfile_Slice7	Hi7DepthBottleneck	Hi7Depth Bottleneck	3D Pipe/Rasterizer/Hi-Depth Test	The percentage of time in which early hierarchical depth test pipeline stage was slowing down the 3D pipeline.
+RenderPipeProfile_Slice7	Bc7Bottleneck	BC7 Bottleneck	3D Pipe/Rasterizer/Barycentric Calc	The percentage of time in which barycentric coordinates calculation pipeline stage was slowing down the 3D pipeline.
+Sampler_1	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
+Sampler_1	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
+Sampler_1	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
+Sampler_1	GpuBusy	GPU Busy	GPU	The percentage of time in which the GPU has been processing GPU commands.
+Sampler_1	Sampler00InputAvailable	Slice0 DualSubslice0 Input Available	GPU/Sampler	The percentage of time in which slice0 dualsubslice0 sampler input is available
+Sampler_1	Sampler01InputAvailable	Slice0 DualSubslice1 Input Available	GPU/Sampler	The percentage of time in which slice0 dualsubslice1 sampler input is available
+Sampler_1	Sampler02InputAvailable	Slice0 DualSubslice2 Input Available	GPU/Sampler	The percentage of time in which slice0 dualsubslice2 sampler input is available
+Sampler_1	Sampler03InputAvailable	Slice0 DualSubslice3 Input Available	GPU/Sampler	The percentage of time in which slice0 dualsubslice3 sampler input is available
+Sampler_1	Sampler10InputAvailable	Slice1 DualSubslice0 Input Available	GPU/Sampler	The percentage of time in which slice1 dualsubslice0 sampler input is available
+Sampler_1	Sampler11InputAvailable	Slice1 DualSubslice1 Input Available	GPU/Sampler	The percentage of time in which slice1 dualsubslice1 sampler input is available
+Sampler_1	Sampler12InputAvailable	Slice1 DualSubslice2 Input Available	GPU/Sampler	The percentage of time in which slice1 dualsubslice2 sampler input is available
+Sampler_1	Sampler13InputAvailable	Slice1 DualSubslice3 Input Available	GPU/Sampler	The percentage of time in which slice1 dualsubslice3 sampler input is available
+Sampler_1	Sampler20InputAvailable	Slice2 DualSubslice0 Input Available	GPU/Sampler	The percentage of time in which slice2 dualsubslice0 sampler input is available
+Sampler_1	Sampler21InputAvailable	Slice2 DualSubslice1 Input Available	GPU/Sampler	The percentage of time in which slice2 dualsubslice1 sampler input is available
+Sampler_1	Sampler22InputAvailable	Slice2 DualSubslice2 Input Available	GPU/Sampler	The percentage of time in which slice2 dualsubslice2 sampler input is available
+Sampler_1	Sampler23InputAvailable	Slice2 DualSubslice3 Input Available	GPU/Sampler	The percentage of time in which slice2 dualsubslice3 sampler input is available
+Sampler_1	Sampler30InputAvailable	Slice3 DualSubslice0 Input Available	GPU/Sampler	The percentage of time in which slice3 dualsubslice0 sampler input is available
+Sampler_1	Sampler31InputAvailable	Slice3 DualSubslice1 Input Available	GPU/Sampler	The percentage of time in which slice3 dualsubslice1 sampler input is available
+Sampler_1	Sampler32InputAvailable	Slice3 DualSubslice2 Input Available	GPU/Sampler	The percentage of time in which slice3 dualsubslice2 sampler input is available
+Sampler_1	Sampler33InputAvailable	Slice3 DualSubslice3 Input Available	GPU/Sampler	The percentage of time in which slice3 dualsubslice3 sampler input is available
+Sampler_2	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
+Sampler_2	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
+Sampler_2	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
+Sampler_2	GpuBusy	GPU Busy	GPU	The percentage of time in which the GPU has been processing GPU commands.
+Sampler_2	Sampler40InputAvailable	Slice4 DualSubslice0 Input Available	GPU/Sampler	The percentage of time in which slice4 dualsubslice0 sampler input is available
+Sampler_2	Sampler41InputAvailable	Slice4 DualSubslice1 Input Available	GPU/Sampler	The percentage of time in which slice4 dualsubslice1 sampler input is available
+Sampler_2	Sampler42InputAvailable	Slice4 DualSubslice2 Input Available	GPU/Sampler	The percentage of time in which slice4 dualsubslice2 sampler input is available
+Sampler_2	Sampler43InputAvailable	Slice4 DualSubslice3 Input Available	GPU/Sampler	The percentage of time in which slice4 dualsubslice3 sampler input is available
+Sampler_2	Sampler50InputAvailable	Slice5 DualSubslice0 Input Available	GPU/Sampler	The percentage of time in which slice5 dualsubslice0 sampler input is available
+Sampler_2	Sampler51InputAvailable	Slice5 DualSubslice1 Input Available	GPU/Sampler	The percentage of time in which slice5 dualsubslice1 sampler input is available
+Sampler_2	Sampler52InputAvailable	Slice5 DualSubslice2 Input Available	GPU/Sampler	The percentage of time in which slice5 dualsubslice2 sampler input is available
+Sampler_2	Sampler53InputAvailable	Slice5 DualSubslice3 Input Available	GPU/Sampler	The percentage of time in which slice5 dualsubslice3 sampler input is available
+Sampler_2	Sampler60InputAvailable	Slice6 DualSubslice0 Input Available	GPU/Sampler	The percentage of time in which slice6 dualsubslice0 sampler input is available
+Sampler_2	Sampler61InputAvailable	Slice6 DualSubslice1 Input Available	GPU/Sampler	The percentage of time in which slice6 dualsubslice1 sampler input is available
+Sampler_2	Sampler62InputAvailable	Slice6 DualSubslice2 Input Available	GPU/Sampler	The percentage of time in which slice6 dualsubslice2 sampler input is available
+Sampler_2	Sampler63InputAvailable	Slice6 DualSubslice3 Input Available	GPU/Sampler	The percentage of time in which slice6 dualsubslice3 sampler input is available
+Sampler_2	Sampler70InputAvailable	Slice7 DualSubslice0 Input Available	GPU/Sampler	The percentage of time in which slice7 dualsubslice0 sampler input is available
+Sampler_2	Sampler71InputAvailable	Slice7 DualSubslice1 Input Available	GPU/Sampler	The percentage of time in which slice7 dualsubslice1 sampler input is available
+Sampler_2	Sampler72InputAvailable	Slice7 DualSubslice2 Input Available	GPU/Sampler	The percentage of time in which slice7 dualsubslice2 sampler input is available
+Sampler_2	Sampler73InputAvailable	Slice7 DualSubslice3 Input Available	GPU/Sampler	The percentage of time in which slice7 dualsubslice3 sampler input is available
+Sampler_3	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
+Sampler_3	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
+Sampler_3	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
+Sampler_3	GpuBusy	GPU Busy	GPU	The percentage of time in which the GPU has been processing GPU commands.
+Sampler_3	Sampler00OutputReady	Slice0 DualSubslice0 Sampler Output Ready	GPU/Sampler	The percentage of time in which slice0 dualsubslice0 sampler output is ready
+Sampler_3	Sampler01OutputReady	Slice0 DualSubslice1 Sampler Output Ready	GPU/Sampler	The percentage of time in which slice0 dualsubslice1 sampler output is ready
+Sampler_3	Sampler02OutputReady	Slice0 DualSubslice2 Sampler Output Ready	GPU/Sampler	The percentage of time in which slice0 dualsubslice2 sampler output is ready
+Sampler_3	Sampler03OutputReady	Slice0 DualSubslice3 Sampler Output Ready	GPU/Sampler	The percentage of time in which slice0 dualsubslice3 sampler output is ready
+Sampler_3	Sampler10OutputReady	Slice1 DualSubslice0 Sampler Output Ready	GPU/Sampler	The percentage of time in which slice1 dualsubslice0 sampler output is ready
+Sampler_3	Sampler11OutputReady	Slice1 DualSubslice1 Sampler Output Ready	GPU/Sampler	The percentage of time in which slice1 dualsubslice1 sampler output is ready
+Sampler_3	Sampler12OutputReady	Slice1 DualSubslice2 Sampler Output Ready	GPU/Sampler	The percentage of time in which slice1 dualsubslice2 sampler output is ready
+Sampler_3	Sampler13OutputReady	Slice1 DualSubslice3 Sampler Output Ready	GPU/Sampler	The percentage of time in which slice1 dualsubslice3 sampler output is ready
+Sampler_4	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
+Sampler_4	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
+Sampler_4	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
+Sampler_4	GpuBusy	GPU Busy	GPU	The percentage of time in which the GPU has been processing GPU commands.
+Sampler_4	Sampler20OutputReady	Slice2 DualSubslice0 Sampler Output Ready	GPU/Sampler	The percentage of time in which slice2 dualsubslice0 sampler output is ready
+Sampler_4	Sampler21OutputReady	Slice2 DualSubslice1 Sampler Output Ready	GPU/Sampler	The percentage of time in which slice2 dualsubslice1 sampler output is ready
+Sampler_4	Sampler22OutputReady	Slice2 DualSubslice2 Sampler Output Ready	GPU/Sampler	The percentage of time in which slice2 dualsubslice2 sampler output is ready
+Sampler_4	Sampler23OutputReady	Slice2 DualSubslice3 Sampler Output Ready	GPU/Sampler	The percentage of time in which slice2 dualsubslice3 sampler output is ready
+Sampler_4	Sampler30OutputReady	Slice3 DualSubslice0 Sampler Output Ready	GPU/Sampler	The percentage of time in which slice3 dualsubslice0 sampler output is ready
+Sampler_4	Sampler31OutputReady	Slice3 DualSubslice1 Sampler Output Ready	GPU/Sampler	The percentage of time in which slice3 dualsubslice1 sampler output is ready
+Sampler_4	Sampler32OutputReady	Slice3 DualSubslice2 Sampler Output Ready	GPU/Sampler	The percentage of time in which slice3 dualsubslice2 sampler output is ready
+Sampler_4	Sampler33OutputReady	Slice3 DualSubslice3 Sampler Output Ready	GPU/Sampler	The percentage of time in which slice3 dualsubslice3 sampler output is ready
+Sampler_5	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
+Sampler_5	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
+Sampler_5	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
+Sampler_5	GpuBusy	GPU Busy	GPU	The percentage of time in which the GPU has been processing GPU commands.
+Sampler_5	Sampler40OutputReady	Slice4 DualSubslice0 Sampler Output Ready	GPU/Sampler	The percentage of time in which slice4 dualsubslice0 sampler output is ready
+Sampler_5	Sampler41OutputReady	Slice4 DualSubslice1 Sampler Output Ready	GPU/Sampler	The percentage of time in which slice4 dualsubslice1 sampler output is ready
+Sampler_5	Sampler42OutputReady	Slice4 DualSubslice2 Sampler Output Ready	GPU/Sampler	The percentage of time in which slice4 dualsubslice2 sampler output is ready
+Sampler_5	Sampler43OutputReady	Slice4 DualSubslice3 Sampler Output Ready	GPU/Sampler	The percentage of time in which slice4 dualsubslice3 sampler output is ready
+Sampler_5	Sampler50OutputReady	Slice5 DualSubslice0 Sampler Output Ready	GPU/Sampler	The percentage of time in which slice5 dualsubslice0 sampler output is ready
+Sampler_5	Sampler51OutputReady	Slice5 DualSubslice1 Sampler Output Ready	GPU/Sampler	The percentage of time in which slice5 dualsubslice1 sampler output is ready
+Sampler_5	Sampler52OutputReady	Slice5 DualSubslice2 Sampler Output Ready	GPU/Sampler	The percentage of time in which slice5 dualsubslice2 sampler output is ready
+Sampler_5	Sampler53OutputReady	Slice5 DualSubslice3 Sampler Output Ready	GPU/Sampler	The percentage of time in which slice5 dualsubslice3 sampler output is ready
+Sampler_6	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
+Sampler_6	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
+Sampler_6	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
+Sampler_6	GpuBusy	GPU Busy	GPU	The percentage of time in which the GPU has been processing GPU commands.
+Sampler_6	Sampler60OutputReady	Slice6 DualSubslice0 Sampler Output Ready	GPU/Sampler	The percentage of time in which slice6 dualsubslice0 sampler output is ready
+Sampler_6	Sampler61OutputReady	Slice6 DualSubslice1 Sampler Output Ready	GPU/Sampler	The percentage of time in which slice6 dualsubslice1 sampler output is ready
+Sampler_6	Sampler62OutputReady	Slice6 DualSubslice2 Sampler Output Ready	GPU/Sampler	The percentage of time in which slice6 dualsubslice2 sampler output is ready
+Sampler_6	Sampler63OutputReady	Slice6 DualSubslice3 Sampler Output Ready	GPU/Sampler	The percentage of time in which slice6 dualsubslice3 sampler output is ready
+Sampler_6	Sampler70OutputReady	Slice7 DualSubslice0 Sampler Output Ready	GPU/Sampler	The percentage of time in which slice7 dualsubslice0 sampler output is ready
+Sampler_6	Sampler71OutputReady	Slice7 DualSubslice1 Sampler Output Ready	GPU/Sampler	The percentage of time in which slice7 dualsubslice1 sampler output is ready
+Sampler_6	Sampler72OutputReady	Slice7 DualSubslice2 Sampler Output Ready	GPU/Sampler	The percentage of time in which slice7 dualsubslice2 sampler output is ready
+Sampler_6	Sampler73OutputReady	Slice7 DualSubslice3 Sampler Output Ready	GPU/Sampler	The percentage of time in which slice7 dualsubslice3 sampler output is ready
+TDL_1	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
+TDL_1	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
+TDL_1	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
+TDL_1	GpuBusy	GPU Busy	GPU	The percentage of time in which the GPU has been processing GPU commands.
+TDL_1	ThreadHeader00Ready	Thread Header Ready on Slice0 DualSubslice0 Thread Dispatcher	GPU/Thread Dispatcher	The percentage of time in which thread header is ready on slice0 dualsubslice0 thread dispatcher
+TDL_1	ThreadHeader01Ready	Thread Header Ready on Slice0 DualSubslice1 Thread Dispatcher	GPU/Thread Dispatcher	The percentage of time in which thread header is ready on slice0 dualsubslice1 thread dispatcher
+TDL_1	ThreadHeader02Ready	Thread Header Ready on Slice0 DualSubslice2 Thread Dispatcher	GPU/Thread Dispatcher	The percentage of time in which thread header is ready on slice0 dualsubslice2 thread dispatcher
+TDL_1	ThreadHeader03Ready	Thread Header Ready on Slice0 DualSubslice3 Thread Dispatcher	GPU/Thread Dispatcher	The percentage of time in which thread header is ready on slice0 dualsubslice3 thread dispatcher
+TDL_1	ThreadHeader00ReadyPort0	Thread Header Ready on Slice0 DualSubslice0 Thread Dispatcher Port 0	GPU/Thread Dispatcher	The percentage of time in which thread header is ready on slice0 dualsubslice0 thread dispatcher port 0
+TDL_1	ThreadHeader01ReadyPort0	Thread Header Ready on Slice0 DualSubslice1 Thread Dispatcher Port 0	GPU/Thread Dispatcher	The percentage of time in which thread header is ready on slice0 dualsubslice1 thread dispatcher port 0
+TDL_1	ThreadHeader02ReadyPort0	Thread Header Ready on Slice0 DualSubslice2 Thread Dispatcher Port 0	GPU/Thread Dispatcher	The percentage of time in which thread header is ready on slice0 dualsubslice2 thread dispatcher port 0
+TDL_1	ThreadHeader03ReadyPort0	Thread Header Ready on Slice0 DualSubslice3 Thread Dispatcher Port 0	GPU/Thread Dispatcher	The percentage of time in which thread header is ready on slice0 dualsubslice3 thread dispatcher port 0
+TDL_1	ThreadHeader00ReadyPort1	Thread Header Ready on Slice0 DualSubslice0 Thread Dispatcher Port 1	GPU/Thread Dispatcher	The percentage of time in which thread header is ready on slice0 dualsubslice0 thread dispatcher port 1
+TDL_1	ThreadHeader01ReadyPort1	Thread Header Ready on Slice0 DualSubslice1 Thread Dispatcher Port 1	GPU/Thread Dispatcher	The percentage of time in which thread header is ready on slice0 dualsubslice1 thread dispatcher port 1
+TDL_1	ThreadHeader02ReadyPort1	Thread Header Ready on Slice0 DualSubslice2 Thread Dispatcher Port 1	GPU/Thread Dispatcher	The percentage of time in which thread header is ready on slice0 dualsubslice2 thread dispatcher port 1
+TDL_1	ThreadHeader03ReadyPort1	Thread Header Ready on Slice0 DualSubslice3 Thread Dispatcher Port 1	GPU/Thread Dispatcher	The percentage of time in which thread header is ready on slice0 dualsubslice3 thread dispatcher port 1
+TDL_1	ThreadHeader00ReadyPort2	Thread Header Ready on Slice0 DualSubslice0 Thread Dispatcher Port 2	GPU/Thread Dispatcher	The percentage of time in which thread header is ready on slice0 dualsubslice0 thread dispatcher port 2
+TDL_1	ThreadHeader01ReadyPort2	Thread Header Ready on Slice0 DualSubslice1 Thread Dispatcher Port 2	GPU/Thread Dispatcher	The percentage of time in which thread header is ready on slice0 dualsubslice1 thread dispatcher port 2
+TDL_1	ThreadHeader02ReadyPort2	Thread Header Ready on Slice0 DualSubslice2 Thread Dispatcher Port 2	GPU/Thread Dispatcher	The percentage of time in which thread header is ready on slice0 dualsubslice2 thread dispatcher port 2
+TDL_1	ThreadHeader03ReadyPort2	Thread Header Ready on Slice0 DualSubslice3 Thread Dispatcher Port 2	GPU/Thread Dispatcher	The percentage of time in which thread header is ready on slice0 dualsubslice3 thread dispatcher port 2
+TDL_2	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
+TDL_2	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
+TDL_2	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
+TDL_2	GpuBusy	GPU Busy	GPU	The percentage of time in which the GPU has been processing GPU commands.
+TDL_2	ThreadHeader10Ready	Thread Header Ready on Slice1 DualSubslice0 Thread Dispatcher	GPU/Thread Dispatcher	The percentage of time in which thread header is ready on slice1 dualsubslice0 thread dispatcher
+TDL_2	ThreadHeader11Ready	Thread Header Ready on Slice1 DualSubslice1 Thread Dispatcher	GPU/Thread Dispatcher	The percentage of time in which thread header is ready on slice1 dualsubslice1 thread dispatcher
+TDL_2	ThreadHeader12Ready	Thread Header Ready on Slice1 DualSubslice2 Thread Dispatcher	GPU/Thread Dispatcher	The percentage of time in which thread header is ready on slice1 dualsubslice2 thread dispatcher
+TDL_2	ThreadHeader13Ready	Thread Header Ready on Slice1 DualSubslice3 Thread Dispatcher	GPU/Thread Dispatcher	The percentage of time in which thread header is ready on slice1 dualsubslice3 thread dispatcher
+TDL_2	ThreadHeader10ReadyPort0	Thread Header Ready on Slice1 DualSubslice0 Thread Dispatcher Port 0	GPU/Thread Dispatcher	The percentage of time in which thread header is ready on slice1 dualsubslice0 thread dispatcher port 0
+TDL_2	ThreadHeader11ReadyPort0	Thread Header Ready on Slice1 DualSubslice1 Thread Dispatcher Port 0	GPU/Thread Dispatcher	The percentage of time in which thread header is ready on slice1 dualsubslice1 thread dispatcher port 0
+TDL_2	ThreadHeader12ReadyPort0	Thread Header Ready on Slice1 DualSubslice2 Thread Dispatcher Port 0	GPU/Thread Dispatcher	The percentage of time in which thread header is ready on slice1 dualsubslice2 thread dispatcher port 0
+TDL_2	ThreadHeader13ReadyPort0	Thread Header Ready on Slice1 DualSubslice3 Thread Dispatcher Port 0	GPU/Thread Dispatcher	The percentage of time in which thread header is ready on slice1 dualsubslice3 thread dispatcher port 0
+TDL_2	ThreadHeader10ReadyPort1	Thread Header Ready on Slice1 DualSubslice0 Thread Dispatcher Port 1	GPU/Thread Dispatcher	The percentage of time in which thread header is ready on slice1 dualsubslice0 thread dispatcher port 1
+TDL_2	ThreadHeader11ReadyPort1	Thread Header Ready on Slice1 DualSubslice1 Thread Dispatcher Port 1	GPU/Thread Dispatcher	The percentage of time in which thread header is ready on slice1 dualsubslice1 thread dispatcher port 1
+TDL_2	ThreadHeader12ReadyPort1	Thread Header Ready on Slice1 DualSubslice2 Thread Dispatcher Port 1	GPU/Thread Dispatcher	The percentage of time in which thread header is ready on slice1 dualsubslice2 thread dispatcher port 1
+TDL_2	ThreadHeader13ReadyPort1	Thread Header Ready on Slice1 DualSubslice3 Thread Dispatcher Port 1	GPU/Thread Dispatcher	The percentage of time in which thread header is ready on slice1 dualsubslice3 thread dispatcher port 1
+TDL_2	ThreadHeader10ReadyPort2	Thread Header Ready on Slice1 DualSubslice0 Thread Dispatcher Port 2	GPU/Thread Dispatcher	The percentage of time in which thread header is ready on slice1 dualsubslice0 thread dispatcher port 2
+TDL_2	ThreadHeader11ReadyPort2	Thread Header Ready on Slice1 DualSubslice1 Thread Dispatcher Port 2	GPU/Thread Dispatcher	The percentage of time in which thread header is ready on slice1 dualsubslice1 thread dispatcher port 2
+TDL_2	ThreadHeader12ReadyPort2	Thread Header Ready on Slice1 DualSubslice2 Thread Dispatcher Port 2	GPU/Thread Dispatcher	The percentage of time in which thread header is ready on slice1 dualsubslice2 thread dispatcher port 2
+TDL_2	ThreadHeader13ReadyPort2	Thread Header Ready on Slice1 DualSubslice3 Thread Dispatcher Port 2	GPU/Thread Dispatcher	The percentage of time in which thread header is ready on slice1 dualsubslice3 thread dispatcher port 2
+TDL_3	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
+TDL_3	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
+TDL_3	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
+TDL_3	GpuBusy	GPU Busy	GPU	The percentage of time in which the GPU has been processing GPU commands.
+TDL_3	ThreadHeader20Ready	Thread Header Ready on Slice2 DualSubslice0 Thread Dispatcher	GPU/Thread Dispatcher	The percentage of time in which thread header is ready on slice2 dualsubslice0 thread dispatcher
+TDL_3	ThreadHeader21Ready	Thread Header Ready on Slice2 DualSubslice1 Thread Dispatcher	GPU/Thread Dispatcher	The percentage of time in which thread header is ready on slice2 dualsubslice1 thread dispatcher
+TDL_3	ThreadHeader22Ready	Thread Header Ready on Slice2 DualSubslice2 Thread Dispatcher	GPU/Thread Dispatcher	The percentage of time in which thread header is ready on slice2 dualsubslice2 thread dispatcher
+TDL_3	ThreadHeader23Ready	Thread Header Ready on Slice2 DualSubslice3 Thread Dispatcher	GPU/Thread Dispatcher	The percentage of time in which thread header is ready on slice2 dualsubslice3 thread dispatcher
+TDL_3	ThreadHeader20ReadyPort0	Thread Header Ready on Slice2 DualSubslice0 Thread Dispatcher Port 0	GPU/Thread Dispatcher	The percentage of time in which thread header is ready on slice2 dualsubslice0 thread dispatcher port 0
+TDL_3	ThreadHeader21ReadyPort0	Thread Header Ready on Slice2 DualSubslice1 Thread Dispatcher Port 0	GPU/Thread Dispatcher	The percentage of time in which thread header is ready on slice2 dualsubslice1 thread dispatcher port 0
+TDL_3	ThreadHeader22ReadyPort0	Thread Header Ready on Slice2 DualSubslice2 Thread Dispatcher Port 0	GPU/Thread Dispatcher	The percentage of time in which thread header is ready on slice2 dualsubslice2 thread dispatcher port 0
+TDL_3	ThreadHeader23ReadyPort0	Thread Header Ready on Slice2 DualSubslice3 Thread Dispatcher Port 0	GPU/Thread Dispatcher	The percentage of time in which thread header is ready on slice2 dualsubslice3 thread dispatcher port 0
+TDL_3	ThreadHeader20ReadyPort1	Thread Header Ready on Slice2 DualSubslice0 Thread Dispatcher Port 1	GPU/Thread Dispatcher	The percentage of time in which thread header is ready on slice2 dualsubslice0 thread dispatcher port 1
+TDL_3	ThreadHeader21ReadyPort1	Thread Header Ready on Slice2 DualSubslice1 Thread Dispatcher Port 1	GPU/Thread Dispatcher	The percentage of time in which thread header is ready on slice2 dualsubslice1 thread dispatcher port 1
+TDL_3	ThreadHeader22ReadyPort1	Thread Header Ready on Slice2 DualSubslice2 Thread Dispatcher Port 1	GPU/Thread Dispatcher	The percentage of time in which thread header is ready on slice2 dualsubslice2 thread dispatcher port 1
+TDL_3	ThreadHeader23ReadyPort1	Thread Header Ready on Slice2 DualSubslice3 Thread Dispatcher Port 1	GPU/Thread Dispatcher	The percentage of time in which thread header is ready on slice2 dualsubslice3 thread dispatcher port 1
+TDL_3	ThreadHeader20ReadyPort2	Thread Header Ready on Slice2 DualSubslice0 Thread Dispatcher Port 2	GPU/Thread Dispatcher	The percentage of time in which thread header is ready on slice2 dualsubslice0 thread dispatcher port 2
+TDL_3	ThreadHeader21ReadyPort2	Thread Header Ready on Slice2 DualSubslice1 Thread Dispatcher Port 2	GPU/Thread Dispatcher	The percentage of time in which thread header is ready on slice2 dualsubslice1 thread dispatcher port 2
+TDL_3	ThreadHeader22ReadyPort2	Thread Header Ready on Slice2 DualSubslice2 Thread Dispatcher Port 2	GPU/Thread Dispatcher	The percentage of time in which thread header is ready on slice2 dualsubslice2 thread dispatcher port 2
+TDL_3	ThreadHeader23ReadyPort2	Thread Header Ready on Slice2 DualSubslice3 Thread Dispatcher Port 2	GPU/Thread Dispatcher	The percentage of time in which thread header is ready on slice2 dualsubslice3 thread dispatcher port 2
+TDL_4	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
+TDL_4	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
+TDL_4	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
+TDL_4	GpuBusy	GPU Busy	GPU	The percentage of time in which the GPU has been processing GPU commands.
+TDL_4	ThreadHeader30Ready	Thread Header Ready on Slice3 DualSubslice0 Thread Dispatcher	GPU/Thread Dispatcher	The percentage of time in which thread header is ready on slice3 dualsubslice0 thread dispatcher
+TDL_4	ThreadHeader31Ready	Thread Header Ready on Slice3 DualSubslice1 Thread Dispatcher	GPU/Thread Dispatcher	The percentage of time in which thread header is ready on slice3 dualsubslice1 thread dispatcher
+TDL_4	ThreadHeader32Ready	Thread Header Ready on Slice3 DualSubslice2 Thread Dispatcher	GPU/Thread Dispatcher	The percentage of time in which thread header is ready on slice3 dualsubslice2 thread dispatcher
+TDL_4	ThreadHeader33Ready	Thread Header Ready on Slice3 DualSubslice3 Thread Dispatcher	GPU/Thread Dispatcher	The percentage of time in which thread header is ready on slice3 dualsubslice3 thread dispatcher
+TDL_4	ThreadHeader30ReadyPort0	Thread Header Ready on Slice3 DualSubslice0 Thread Dispatcher Port 0	GPU/Thread Dispatcher	The percentage of time in which thread header is ready on slice3 dualsubslice0 thread dispatcher port 0
+TDL_4	ThreadHeader31ReadyPort0	Thread Header Ready on Slice3 DualSubslice1 Thread Dispatcher Port 0	GPU/Thread Dispatcher	The percentage of time in which thread header is ready on slice3 dualsubslice1 thread dispatcher port 0
+TDL_4	ThreadHeader32ReadyPort0	Thread Header Ready on Slice3 DualSubslice2 Thread Dispatcher Port 0	GPU/Thread Dispatcher	The percentage of time in which thread header is ready on slice3 dualsubslice2 thread dispatcher port 0
+TDL_4	ThreadHeader33ReadyPort0	Thread Header Ready on Slice3 DualSubslice3 Thread Dispatcher Port 0	GPU/Thread Dispatcher	The percentage of time in which thread header is ready on slice3 dualsubslice3 thread dispatcher port 0
+TDL_4	ThreadHeader30ReadyPort1	Thread Header Ready on Slice3 DualSubslice0 Thread Dispatcher Port 1	GPU/Thread Dispatcher	The percentage of time in which thread header is ready on slice3 dualsubslice0 thread dispatcher port 1
+TDL_4	ThreadHeader31ReadyPort1	Thread Header Ready on Slice3 DualSubslice1 Thread Dispatcher Port 1	GPU/Thread Dispatcher	The percentage of time in which thread header is ready on slice3 dualsubslice1 thread dispatcher port 1
+TDL_4	ThreadHeader32ReadyPort1	Thread Header Ready on Slice3 DualSubslice2 Thread Dispatcher Port 1	GPU/Thread Dispatcher	The percentage of time in which thread header is ready on slice3 dualsubslice2 thread dispatcher port 1
+TDL_4	ThreadHeader33ReadyPort1	Thread Header Ready on Slice3 DualSubslice3 Thread Dispatcher Port 1	GPU/Thread Dispatcher	The percentage of time in which thread header is ready on slice3 dualsubslice3 thread dispatcher port 1
+TDL_4	ThreadHeader30ReadyPort2	Thread Header Ready on Slice3 DualSubslice0 Thread Dispatcher Port 2	GPU/Thread Dispatcher	The percentage of time in which thread header is ready on slice3 dualsubslice0 thread dispatcher port 2
+TDL_4	ThreadHeader31ReadyPort2	Thread Header Ready on Slice3 DualSubslice1 Thread Dispatcher Port 2	GPU/Thread Dispatcher	The percentage of time in which thread header is ready on slice3 dualsubslice1 thread dispatcher port 2
+TDL_4	ThreadHeader32ReadyPort2	Thread Header Ready on Slice3 DualSubslice2 Thread Dispatcher Port 2	GPU/Thread Dispatcher	The percentage of time in which thread header is ready on slice3 dualsubslice2 thread dispatcher port 2
+TDL_4	ThreadHeader33ReadyPort2	Thread Header Ready on Slice3 DualSubslice3 Thread Dispatcher Port 2	GPU/Thread Dispatcher	The percentage of time in which thread header is ready on slice3 dualsubslice3 thread dispatcher port 2
+TDL_5	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
+TDL_5	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
+TDL_5	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
+TDL_5	GpuBusy	GPU Busy	GPU	The percentage of time in which the GPU has been processing GPU commands.
+TDL_5	ThreadHeader40Ready	Thread Header Ready on Slice4 DualSubslice0 Thread Dispatcher	GPU/Thread Dispatcher	The percentage of time in which thread header is ready on slice4 dualsubslice0 thread dispatcher
+TDL_5	ThreadHeader41Ready	Thread Header Ready on Slice4 DualSubslice1 Thread Dispatcher	GPU/Thread Dispatcher	The percentage of time in which thread header is ready on slice4 dualsubslice1 thread dispatcher
+TDL_5	ThreadHeader42Ready	Thread Header Ready on Slice4 DualSubslice2 Thread Dispatcher	GPU/Thread Dispatcher	The percentage of time in which thread header is ready on slice4 dualsubslice2 thread dispatcher
+TDL_5	ThreadHeader43Ready	Thread Header Ready on Slice4 DualSubslice3 Thread Dispatcher	GPU/Thread Dispatcher	The percentage of time in which thread header is ready on slice4 dualsubslice3 thread dispatcher
+TDL_5	ThreadHeader40ReadyPort0	Thread Header Ready on Slice4 DualSubslice0 Thread Dispatcher Port 0	GPU/Thread Dispatcher	The percentage of time in which thread header is ready on slice4 dualsubslice0 thread dispatcher port 0
+TDL_5	ThreadHeader41ReadyPort0	Thread Header Ready on Slice4 DualSubslice1 Thread Dispatcher Port 0	GPU/Thread Dispatcher	The percentage of time in which thread header is ready on slice4 dualsubslice1 thread dispatcher port 0
+TDL_5	ThreadHeader42ReadyPort0	Thread Header Ready on Slice4 DualSubslice2 Thread Dispatcher Port 0	GPU/Thread Dispatcher	The percentage of time in which thread header is ready on slice4 dualsubslice2 thread dispatcher port 0
+TDL_5	ThreadHeader43ReadyPort0	Thread Header Ready on Slice4 DualSubslice3 Thread Dispatcher Port 0	GPU/Thread Dispatcher	The percentage of time in which thread header is ready on slice4 dualsubslice3 thread dispatcher port 0
+TDL_5	ThreadHeader40ReadyPort1	Thread Header Ready on Slice4 DualSubslice0 Thread Dispatcher Port 1	GPU/Thread Dispatcher	The percentage of time in which thread header is ready on slice4 dualsubslice0 thread dispatcher port 1
+TDL_5	ThreadHeader41ReadyPort1	Thread Header Ready on Slice4 DualSubslice1 Thread Dispatcher Port 1	GPU/Thread Dispatcher	The percentage of time in which thread header is ready on slice4 dualsubslice1 thread dispatcher port 1
+TDL_5	ThreadHeader42ReadyPort1	Thread Header Ready on Slice4 DualSubslice2 Thread Dispatcher Port 1	GPU/Thread Dispatcher	The percentage of time in which thread header is ready on slice4 dualsubslice2 thread dispatcher port 1
+TDL_5	ThreadHeader43ReadyPort1	Thread Header Ready on Slice4 DualSubslice3 Thread Dispatcher Port 1	GPU/Thread Dispatcher	The percentage of time in which thread header is ready on slice4 dualsubslice3 thread dispatcher port 1
+TDL_5	ThreadHeader40ReadyPort2	Thread Header Ready on Slice4 DualSubslice0 Thread Dispatcher Port 2	GPU/Thread Dispatcher	The percentage of time in which thread header is ready on slice4 dualsubslice0 thread dispatcher port 2
+TDL_5	ThreadHeader41ReadyPort2	Thread Header Ready on Slice4 DualSubslice1 Thread Dispatcher Port 2	GPU/Thread Dispatcher	The percentage of time in which thread header is ready on slice4 dualsubslice1 thread dispatcher port 2
+TDL_5	ThreadHeader42ReadyPort2	Thread Header Ready on Slice4 DualSubslice2 Thread Dispatcher Port 2	GPU/Thread Dispatcher	The percentage of time in which thread header is ready on slice4 dualsubslice2 thread dispatcher port 2
+TDL_5	ThreadHeader43ReadyPort2	Thread Header Ready on Slice4 DualSubslice3 Thread Dispatcher Port 2	GPU/Thread Dispatcher	The percentage of time in which thread header is ready on slice4 dualsubslice3 thread dispatcher port 2
+TDL_6	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
+TDL_6	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
+TDL_6	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
+TDL_6	GpuBusy	GPU Busy	GPU	The percentage of time in which the GPU has been processing GPU commands.
+TDL_6	ThreadHeader50Ready	Thread Header Ready on Slice5 DualSubslice0 Thread Dispatcher	GPU/Thread Dispatcher	The percentage of time in which thread header is ready on slice5 dualsubslice0 thread dispatcher
+TDL_6	ThreadHeader51Ready	Thread Header Ready on Slice5 DualSubslice1 Thread Dispatcher	GPU/Thread Dispatcher	The percentage of time in which thread header is ready on slice5 dualsubslice1 thread dispatcher
+TDL_6	ThreadHeader52Ready	Thread Header Ready on Slice5 DualSubslice2 Thread Dispatcher	GPU/Thread Dispatcher	The percentage of time in which thread header is ready on slice5 dualsubslice2 thread dispatcher
+TDL_6	ThreadHeader53Ready	Thread Header Ready on Slice5 DualSubslice3 Thread Dispatcher	GPU/Thread Dispatcher	The percentage of time in which thread header is ready on slice5 dualsubslice3 thread dispatcher
+TDL_6	ThreadHeader50ReadyPort0	Thread Header Ready on Slice5 DualSubslice0 Thread Dispatcher Port 0	GPU/Thread Dispatcher	The percentage of time in which thread header is ready on slice5 dualsubslice0 thread dispatcher port 0
+TDL_6	ThreadHeader51ReadyPort0	Thread Header Ready on Slice5 DualSubslice1 Thread Dispatcher Port 0	GPU/Thread Dispatcher	The percentage of time in which thread header is ready on slice5 dualsubslice1 thread dispatcher port 0
+TDL_6	ThreadHeader52ReadyPort0	Thread Header Ready on Slice5 DualSubslice2 Thread Dispatcher Port 0	GPU/Thread Dispatcher	The percentage of time in which thread header is ready on slice5 dualsubslice2 thread dispatcher port 0
+TDL_6	ThreadHeader53ReadyPort0	Thread Header Ready on Slice5 DualSubslice3 Thread Dispatcher Port 0	GPU/Thread Dispatcher	The percentage of time in which thread header is ready on slice5 dualsubslice3 thread dispatcher port 0
+TDL_6	ThreadHeader50ReadyPort1	Thread Header Ready on Slice5 DualSubslice0 Thread Dispatcher Port 1	GPU/Thread Dispatcher	The percentage of time in which thread header is ready on slice5 dualsubslice0 thread dispatcher port 1
+TDL_6	ThreadHeader51ReadyPort1	Thread Header Ready on Slice5 DualSubslice1 Thread Dispatcher Port 1	GPU/Thread Dispatcher	The percentage of time in which thread header is ready on slice5 dualsubslice1 thread dispatcher port 1
+TDL_6	ThreadHeader52ReadyPort1	Thread Header Ready on Slice5 DualSubslice2 Thread Dispatcher Port 1	GPU/Thread Dispatcher	The percentage of time in which thread header is ready on slice5 dualsubslice2 thread dispatcher port 1
+TDL_6	ThreadHeader53ReadyPort1	Thread Header Ready on Slice5 DualSubslice3 Thread Dispatcher Port 1	GPU/Thread Dispatcher	The percentage of time in which thread header is ready on slice5 dualsubslice3 thread dispatcher port 1
+TDL_6	ThreadHeader50ReadyPort2	Thread Header Ready on Slice5 DualSubslice0 Thread Dispatcher Port 2	GPU/Thread Dispatcher	The percentage of time in which thread header is ready on slice5 dualsubslice0 thread dispatcher port 2
+TDL_6	ThreadHeader51ReadyPort2	Thread Header Ready on Slice5 DualSubslice1 Thread Dispatcher Port 2	GPU/Thread Dispatcher	The percentage of time in which thread header is ready on slice5 dualsubslice1 thread dispatcher port 2
+TDL_6	ThreadHeader52ReadyPort2	Thread Header Ready on Slice5 DualSubslice2 Thread Dispatcher Port 2	GPU/Thread Dispatcher	The percentage of time in which thread header is ready on slice5 dualsubslice2 thread dispatcher port 2
+TDL_6	ThreadHeader53ReadyPort2	Thread Header Ready on Slice5 DualSubslice3 Thread Dispatcher Port 2	GPU/Thread Dispatcher	The percentage of time in which thread header is ready on slice5 dualsubslice3 thread dispatcher port 2
+TDL_7	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
+TDL_7	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
+TDL_7	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
+TDL_7	GpuBusy	GPU Busy	GPU	The percentage of time in which the GPU has been processing GPU commands.
+TDL_7	ThreadHeader60Ready	Thread Header Ready on Slice6 DualSubslice0 Thread Dispatcher	GPU/Thread Dispatcher	The percentage of time in which thread header is ready on slice6 dualsubslice0 thread dispatcher
+TDL_7	ThreadHeader61Ready	Thread Header Ready on Slice6 DualSubslice1 Thread Dispatcher	GPU/Thread Dispatcher	The percentage of time in which thread header is ready on slice6 dualsubslice1 thread dispatcher
+TDL_7	ThreadHeader62Ready	Thread Header Ready on Slice6 DualSubslice2 Thread Dispatcher	GPU/Thread Dispatcher	The percentage of time in which thread header is ready on slice6 dualsubslice2 thread dispatcher
+TDL_7	ThreadHeader63Ready	Thread Header Ready on Slice6 DualSubslice3 Thread Dispatcher	GPU/Thread Dispatcher	The percentage of time in which thread header is ready on slice6 dualsubslice3 thread dispatcher
+TDL_7	ThreadHeader60ReadyPort0	Thread Header Ready on Slice6 DualSubslice0 Thread Dispatcher Port 0	GPU/Thread Dispatcher	The percentage of time in which thread header is ready on slice6 dualsubslice0 thread dispatcher port 0
+TDL_7	ThreadHeader61ReadyPort0	Thread Header Ready on Slice6 DualSubslice1 Thread Dispatcher Port 0	GPU/Thread Dispatcher	The percentage of time in which thread header is ready on slice6 dualsubslice1 thread dispatcher port 0
+TDL_7	ThreadHeader62ReadyPort0	Thread Header Ready on Slice6 DualSubslice2 Thread Dispatcher Port 0	GPU/Thread Dispatcher	The percentage of time in which thread header is ready on slice6 dualsubslice2 thread dispatcher port 0
+TDL_7	ThreadHeader63ReadyPort0	Thread Header Ready on Slice6 DualSubslice3 Thread Dispatcher Port 0	GPU/Thread Dispatcher	The percentage of time in which thread header is ready on slice6 dualsubslice3 thread dispatcher port 0
+TDL_7	ThreadHeader60ReadyPort1	Thread Header Ready on Slice6 DualSubslice0 Thread Dispatcher Port 1	GPU/Thread Dispatcher	The percentage of time in which thread header is ready on slice6 dualsubslice0 thread dispatcher port 1
+TDL_7	ThreadHeader61ReadyPort1	Thread Header Ready on Slice6 DualSubslice1 Thread Dispatcher Port 1	GPU/Thread Dispatcher	The percentage of time in which thread header is ready on slice6 dualsubslice1 thread dispatcher port 1
+TDL_7	ThreadHeader62ReadyPort1	Thread Header Ready on Slice6 DualSubslice2 Thread Dispatcher Port 1	GPU/Thread Dispatcher	The percentage of time in which thread header is ready on slice6 dualsubslice2 thread dispatcher port 1
+TDL_7	ThreadHeader63ReadyPort1	Thread Header Ready on Slice6 DualSubslice3 Thread Dispatcher Port 1	GPU/Thread Dispatcher	The percentage of time in which thread header is ready on slice6 dualsubslice3 thread dispatcher port 1
+TDL_7	ThreadHeader60ReadyPort2	Thread Header Ready on Slice6 DualSubslice0 Thread Dispatcher Port 2	GPU/Thread Dispatcher	The percentage of time in which thread header is ready on slice6 dualsubslice0 thread dispatcher port 2
+TDL_7	ThreadHeader61ReadyPort2	Thread Header Ready on Slice6 DualSubslice1 Thread Dispatcher Port 2	GPU/Thread Dispatcher	The percentage of time in which thread header is ready on slice6 dualsubslice1 thread dispatcher port 2
+TDL_7	ThreadHeader62ReadyPort2	Thread Header Ready on Slice6 DualSubslice2 Thread Dispatcher Port 2	GPU/Thread Dispatcher	The percentage of time in which thread header is ready on slice6 dualsubslice2 thread dispatcher port 2
+TDL_7	ThreadHeader63ReadyPort2	Thread Header Ready on Slice6 DualSubslice3 Thread Dispatcher Port 2	GPU/Thread Dispatcher	The percentage of time in which thread header is ready on slice6 dualsubslice3 thread dispatcher port 2
+TDL_8	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
+TDL_8	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
+TDL_8	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
+TDL_8	GpuBusy	GPU Busy	GPU	The percentage of time in which the GPU has been processing GPU commands.
+TDL_8	ThreadHeader70Ready	Thread Header Ready on Slice7 DualSubslice0 Thread Dispatcher	GPU/Thread Dispatcher	The percentage of time in which thread header is ready on slice7 dualsubslice0 thread dispatcher
+TDL_8	ThreadHeader71Ready	Thread Header Ready on Slice7 DualSubslice1 Thread Dispatcher	GPU/Thread Dispatcher	The percentage of time in which thread header is ready on slice7 dualsubslice1 thread dispatcher
+TDL_8	ThreadHeader72Ready	Thread Header Ready on Slice7 DualSubslice2 Thread Dispatcher	GPU/Thread Dispatcher	The percentage of time in which thread header is ready on slice7 dualsubslice2 thread dispatcher
+TDL_8	ThreadHeader73Ready	Thread Header Ready on Slice7 DualSubslice3 Thread Dispatcher	GPU/Thread Dispatcher	The percentage of time in which thread header is ready on slice7 dualsubslice3 thread dispatcher
+TDL_8	ThreadHeader70ReadyPort0	Thread Header Ready on Slice7 DualSubslice0 Thread Dispatcher Port 0	GPU/Thread Dispatcher	The percentage of time in which thread header is ready on slice7 dualsubslice0 thread dispatcher port 0
+TDL_8	ThreadHeader71ReadyPort0	Thread Header Ready on Slice7 DualSubslice1 Thread Dispatcher Port 0	GPU/Thread Dispatcher	The percentage of time in which thread header is ready on slice7 dualsubslice1 thread dispatcher port 0
+TDL_8	ThreadHeader72ReadyPort0	Thread Header Ready on Slice7 DualSubslice2 Thread Dispatcher Port 0	GPU/Thread Dispatcher	The percentage of time in which thread header is ready on slice7 dualsubslice2 thread dispatcher port 0
+TDL_8	ThreadHeader73ReadyPort0	Thread Header Ready on Slice7 DualSubslice3 Thread Dispatcher Port 0	GPU/Thread Dispatcher	The percentage of time in which thread header is ready on slice7 dualsubslice3 thread dispatcher port 0
+TDL_8	ThreadHeader70ReadyPort1	Thread Header Ready on Slice7 DualSubslice0 Thread Dispatcher Port 1	GPU/Thread Dispatcher	The percentage of time in which thread header is ready on slice7 dualsubslice0 thread dispatcher port 1
+TDL_8	ThreadHeader71ReadyPort1	Thread Header Ready on Slice7 DualSubslice1 Thread Dispatcher Port 1	GPU/Thread Dispatcher	The percentage of time in which thread header is ready on slice7 dualsubslice1 thread dispatcher port 1
+TDL_8	ThreadHeader72ReadyPort1	Thread Header Ready on Slice7 DualSubslice2 Thread Dispatcher Port 1	GPU/Thread Dispatcher	The percentage of time in which thread header is ready on slice7 dualsubslice2 thread dispatcher port 1
+TDL_8	ThreadHeader73ReadyPort1	Thread Header Ready on Slice7 DualSubslice3 Thread Dispatcher Port 1	GPU/Thread Dispatcher	The percentage of time in which thread header is ready on slice7 dualsubslice3 thread dispatcher port 1
+TDL_8	ThreadHeader70ReadyPort2	Thread Header Ready on Slice7 DualSubslice0 Thread Dispatcher Port 2	GPU/Thread Dispatcher	The percentage of time in which thread header is ready on slice7 dualsubslice0 thread dispatcher port 2
+TDL_8	ThreadHeader71ReadyPort2	Thread Header Ready on Slice7 DualSubslice1 Thread Dispatcher Port 2	GPU/Thread Dispatcher	The percentage of time in which thread header is ready on slice7 dualsubslice1 thread dispatcher port 2
+TDL_8	ThreadHeader72ReadyPort2	Thread Header Ready on Slice7 DualSubslice2 Thread Dispatcher Port 2	GPU/Thread Dispatcher	The percentage of time in which thread header is ready on slice7 dualsubslice2 thread dispatcher port 2
+TDL_8	ThreadHeader73ReadyPort2	Thread Header Ready on Slice7 DualSubslice3 Thread Dispatcher Port 2	GPU/Thread Dispatcher	The percentage of time in which thread header is ready on slice7 dualsubslice3 thread dispatcher port 2
+TDL_9	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
+TDL_9	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
+TDL_9	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
+TDL_9	GpuBusy	GPU Busy	GPU	The percentage of time in which the GPU has been processing GPU commands.
+TDL_9	NonPSThread00ReadyForDispatch	Non-PS Thread Ready For Dispatch on Slice0 DualSubslice0 Thread Dispatcher	GPU/Thread Dispatcher	The percentage of time in which non-PS thread is ready for dispatch on slice0 dualsubslice0 thread dispatcher
+TDL_9	NonPSThread01ReadyForDispatch	Non-PS Thread Ready For Dispatch on Slice0 DualSubslice1 Thread Dispatcher	GPU/Thread Dispatcher	The percentage of time in which non-PS thread is ready for dispatch on slice0 dualsubslice1 thread dispatcher
+TDL_9	NonPSThread02ReadyForDispatch	Non-PS Thread Ready For Dispatch on Slice0 DualSubslice2 Thread Dispatcher	GPU/Thread Dispatcher	The percentage of time in which non-PS thread is ready for dispatch on slice0 dualsubslice2 thread dispatcher
+TDL_9	NonPSThread03ReadyForDispatch	Non-PS Thread Ready For Dispatch on Slice0 DualSubslice3 Thread Dispatcher	GPU/Thread Dispatcher	The percentage of time in which non-PS thread is ready for dispatch on slice0 dualsubslice3 thread dispatcher
+TDL_9	NonPSThread10ReadyForDispatch	Non-PS Thread Ready For Dispatch on Slice1 DualSubslice0 Thread Dispatcher	GPU/Thread Dispatcher	The percentage of time in which non-PS thread is ready for dispatch on slice1 dualsubslice0 thread dispatcher
+TDL_9	NonPSThread11ReadyForDispatch	Non-PS Thread Ready For Dispatch on Slice1 DualSubslice1 Thread Dispatcher	GPU/Thread Dispatcher	The percentage of time in which non-PS thread is ready for dispatch on slice1 dualsubslice1 thread dispatcher
+TDL_9	NonPSThread12ReadyForDispatch	Non-PS Thread Ready For Dispatch on Slice1 DualSubslice2 Thread Dispatcher	GPU/Thread Dispatcher	The percentage of time in which non-PS thread is ready for dispatch on slice1 dualsubslice2 thread dispatcher
+TDL_9	NonPSThread13ReadyForDispatch	Non-PS Thread Ready For Dispatch on Slice1 DualSubslice3 Thread Dispatcher	GPU/Thread Dispatcher	The percentage of time in which non-PS thread is ready for dispatch on slice1 dualsubslice3 thread dispatcher
+TDL_9	ThreadHeader00ReadyPort3	Thread Header Ready on Slice0 DualSubslice0 Thread Dispatcher Port 3	GPU/Thread Dispatcher	The percentage of time in which thread header is ready on slice0 dualsubslice0 thread dispatcher port 3
+TDL_9	ThreadHeader01ReadyPort3	Thread Header Ready on Slice0 DualSubslice1 Thread Dispatcher Port 3	GPU/Thread Dispatcher	The percentage of time in which thread header is ready on slice0 dualsubslice1 thread dispatcher port 3
+TDL_9	ThreadHeader02ReadyPort3	Thread Header Ready on Slice0 DualSubslice2 Thread Dispatcher Port 3	GPU/Thread Dispatcher	The percentage of time in which thread header is ready on slice0 dualsubslice2 thread dispatcher port 3
+TDL_9	ThreadHeader03ReadyPort3	Thread Header Ready on Slice0 DualSubslice3 Thread Dispatcher Port 3	GPU/Thread Dispatcher	The percentage of time in which thread header is ready on slice0 dualsubslice3 thread dispatcher port 3
+TDL_9	ThreadHeader10ReadyPort3	Thread Header Ready on Slice1 DualSubslice0 Thread Dispatcher Port 3	GPU/Thread Dispatcher	The percentage of time in which thread header is ready on slice1 dualsubslice0 thread dispatcher port 3
+TDL_9	ThreadHeader11ReadyPort3	Thread Header Ready on Slice1 DualSubslice1 Thread Dispatcher Port 3	GPU/Thread Dispatcher	The percentage of time in which thread header is ready on slice1 dualsubslice1 thread dispatcher port 3
+TDL_9	ThreadHeader12ReadyPort3	Thread Header Ready on Slice1 DualSubslice2 Thread Dispatcher Port 3	GPU/Thread Dispatcher	The percentage of time in which thread header is ready on slice1 dualsubslice2 thread dispatcher port 3
+TDL_9	ThreadHeader13ReadyPort3	Thread Header Ready on Slice1 DualSubslice3 Thread Dispatcher Port 3	GPU/Thread Dispatcher	The percentage of time in which thread header is ready on slice1 dualsubslice3 thread dispatcher port 3
+TDL_10	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
+TDL_10	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
+TDL_10	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
+TDL_10	GpuBusy	GPU Busy	GPU	The percentage of time in which the GPU has been processing GPU commands.
+TDL_10	NonPSThread20ReadyForDispatch	Non-PS Thread Ready For Dispatch on Slice2 DualSubslice0 Thread Dispatcher	GPU/Thread Dispatcher	The percentage of time in which non-PS thread is ready for dispatch on slice2 dualsubslice0 thread dispatcher
+TDL_10	NonPSThread21ReadyForDispatch	Non-PS Thread Ready For Dispatch on Slice2 DualSubslice1 Thread Dispatcher	GPU/Thread Dispatcher	The percentage of time in which non-PS thread is ready for dispatch on slice2 dualsubslice1 thread dispatcher
+TDL_10	NonPSThread22ReadyForDispatch	Non-PS Thread Ready For Dispatch on Slice2 DualSubslice2 Thread Dispatcher	GPU/Thread Dispatcher	The percentage of time in which non-PS thread is ready for dispatch on slice2 dualsubslice2 thread dispatcher
+TDL_10	NonPSThread23ReadyForDispatch	Non-PS Thread Ready For Dispatch on Slice2 DualSubslice3 Thread Dispatcher	GPU/Thread Dispatcher	The percentage of time in which non-PS thread is ready for dispatch on slice2 dualsubslice3 thread dispatcher
+TDL_10	NonPSThread30ReadyForDispatch	Non-PS Thread Ready For Dispatch on Slice3 DualSubslice0 Thread Dispatcher	GPU/Thread Dispatcher	The percentage of time in which non-PS thread is ready for dispatch on slice3 dualsubslice0 thread dispatcher
+TDL_10	NonPSThread31ReadyForDispatch	Non-PS Thread Ready For Dispatch on Slice3 DualSubslice1 Thread Dispatcher	GPU/Thread Dispatcher	The percentage of time in which non-PS thread is ready for dispatch on slice3 dualsubslice1 thread dispatcher
+TDL_10	NonPSThread32ReadyForDispatch	Non-PS Thread Ready For Dispatch on Slice3 DualSubslice2 Thread Dispatcher	GPU/Thread Dispatcher	The percentage of time in which non-PS thread is ready for dispatch on slice3 dualsubslice2 thread dispatcher
+TDL_10	NonPSThread33ReadyForDispatch	Non-PS Thread Ready For Dispatch on Slice3 DualSubslice3 Thread Dispatcher	GPU/Thread Dispatcher	The percentage of time in which non-PS thread is ready for dispatch on slice3 dualsubslice3 thread dispatcher
+TDL_10	ThreadHeader20ReadyPort3	Thread Header Ready on Slice2 DualSubslice0 Thread Dispatcher Port 3	GPU/Thread Dispatcher	The percentage of time in which thread header is ready on slice2 dualsubslice0 thread dispatcher port 3
+TDL_10	ThreadHeader21ReadyPort3	Thread Header Ready on Slice2 DualSubslice1 Thread Dispatcher Port 3	GPU/Thread Dispatcher	The percentage of time in which thread header is ready on slice2 dualsubslice1 thread dispatcher port 3
+TDL_10	ThreadHeader22ReadyPort3	Thread Header Ready on Slice2 DualSubslice2 Thread Dispatcher Port 3	GPU/Thread Dispatcher	The percentage of time in which thread header is ready on slice2 dualsubslice2 thread dispatcher port 3
+TDL_10	ThreadHeader23ReadyPort3	Thread Header Ready on Slice2 DualSubslice3 Thread Dispatcher Port 3	GPU/Thread Dispatcher	The percentage of time in which thread header is ready on slice2 dualsubslice3 thread dispatcher port 3
+TDL_10	ThreadHeader30ReadyPort3	Thread Header Ready on Slice3 DualSubslice0 Thread Dispatcher Port 3	GPU/Thread Dispatcher	The percentage of time in which thread header is ready on slice3 dualsubslice0 thread dispatcher port 3
+TDL_10	ThreadHeader31ReadyPort3	Thread Header Ready on Slice3 DualSubslice1 Thread Dispatcher Port 3	GPU/Thread Dispatcher	The percentage of time in which thread header is ready on slice3 dualsubslice1 thread dispatcher port 3
+TDL_10	ThreadHeader32ReadyPort3	Thread Header Ready on Slice3 DualSubslice2 Thread Dispatcher Port 3	GPU/Thread Dispatcher	The percentage of time in which thread header is ready on slice3 dualsubslice2 thread dispatcher port 3
+TDL_10	ThreadHeader33ReadyPort3	Thread Header Ready on Slice3 DualSubslice3 Thread Dispatcher Port 3	GPU/Thread Dispatcher	The percentage of time in which thread header is ready on slice3 dualsubslice3 thread dispatcher port 3
+TDL_11	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
+TDL_11	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
+TDL_11	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
+TDL_11	GpuBusy	GPU Busy	GPU	The percentage of time in which the GPU has been processing GPU commands.
+TDL_11	NonPSThread40ReadyForDispatch	Non-PS Thread Ready For Dispatch on Slice4 DualSubslice0 Thread Dispatcher	GPU/Thread Dispatcher	The percentage of time in which non-PS thread is ready for dispatch on slice4 dualsubslice0 thread dispatcher
+TDL_11	NonPSThread41ReadyForDispatch	Non-PS Thread Ready For Dispatch on Slice4 DualSubslice1 Thread Dispatcher	GPU/Thread Dispatcher	The percentage of time in which non-PS thread is ready for dispatch on slice4 dualsubslice1 thread dispatcher
+TDL_11	NonPSThread42ReadyForDispatch	Non-PS Thread Ready For Dispatch on Slice4 DualSubslice2 Thread Dispatcher	GPU/Thread Dispatcher	The percentage of time in which non-PS thread is ready for dispatch on slice4 dualsubslice2 thread dispatcher
+TDL_11	NonPSThread43ReadyForDispatch	Non-PS Thread Ready For Dispatch on Slice4 DualSubslice3 Thread Dispatcher	GPU/Thread Dispatcher	The percentage of time in which non-PS thread is ready for dispatch on slice4 dualsubslice3 thread dispatcher
+TDL_11	NonPSThread50ReadyForDispatch	Non-PS Thread Ready For Dispatch on Slice5 DualSubslice0 Thread Dispatcher	GPU/Thread Dispatcher	The percentage of time in which non-PS thread is ready for dispatch on slice5 dualsubslice0 thread dispatcher
+TDL_11	NonPSThread51ReadyForDispatch	Non-PS Thread Ready For Dispatch on Slice5 DualSubslice1 Thread Dispatcher	GPU/Thread Dispatcher	The percentage of time in which non-PS thread is ready for dispatch on slice5 dualsubslice1 thread dispatcher
+TDL_11	NonPSThread52ReadyForDispatch	Non-PS Thread Ready For Dispatch on Slice5 DualSubslice2 Thread Dispatcher	GPU/Thread Dispatcher	The percentage of time in which non-PS thread is ready for dispatch on slice5 dualsubslice2 thread dispatcher
+TDL_11	NonPSThread53ReadyForDispatch	Non-PS Thread Ready For Dispatch on Slice5 DualSubslice3 Thread Dispatcher	GPU/Thread Dispatcher	The percentage of time in which non-PS thread is ready for dispatch on slice5 dualsubslice3 thread dispatcher
+TDL_11	ThreadHeader40ReadyPort3	Thread Header Ready on Slice4 DualSubslice0 Thread Dispatcher Port 3	GPU/Thread Dispatcher	The percentage of time in which thread header is ready on slice4 dualsubslice0 thread dispatcher port 3
+TDL_11	ThreadHeader41ReadyPort3	Thread Header Ready on Slice4 DualSubslice1 Thread Dispatcher Port 3	GPU/Thread Dispatcher	The percentage of time in which thread header is ready on slice4 dualsubslice1 thread dispatcher port 3
+TDL_11	ThreadHeader42ReadyPort3	Thread Header Ready on Slice4 DualSubslice2 Thread Dispatcher Port 3	GPU/Thread Dispatcher	The percentage of time in which thread header is ready on slice4 dualsubslice2 thread dispatcher port 3
+TDL_11	ThreadHeader43ReadyPort3	Thread Header Ready on Slice4 DualSubslice3 Thread Dispatcher Port 3	GPU/Thread Dispatcher	The percentage of time in which thread header is ready on slice4 dualsubslice3 thread dispatcher port 3
+TDL_11	ThreadHeader50ReadyPort3	Thread Header Ready on Slice5 DualSubslice0 Thread Dispatcher Port 3	GPU/Thread Dispatcher	The percentage of time in which thread header is ready on slice5 dualsubslice0 thread dispatcher port 3
+TDL_11	ThreadHeader51ReadyPort3	Thread Header Ready on Slice5 DualSubslice1 Thread Dispatcher Port 3	GPU/Thread Dispatcher	The percentage of time in which thread header is ready on slice5 dualsubslice1 thread dispatcher port 3
+TDL_11	ThreadHeader52ReadyPort3	Thread Header Ready on Slice5 DualSubslice2 Thread Dispatcher Port 3	GPU/Thread Dispatcher	The percentage of time in which thread header is ready on slice5 dualsubslice2 thread dispatcher port 3
+TDL_11	ThreadHeader53ReadyPort3	Thread Header Ready on Slice5 DualSubslice3 Thread Dispatcher Port 3	GPU/Thread Dispatcher	The percentage of time in which thread header is ready on slice5 dualsubslice3 thread dispatcher port 3
+TDL_12	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
+TDL_12	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
+TDL_12	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
+TDL_12	GpuBusy	GPU Busy	GPU	The percentage of time in which the GPU has been processing GPU commands.
+TDL_12	NonPSThread60ReadyForDispatch	Non-PS Thread Ready For Dispatch on Slice6 DualSubslice0 Thread Dispatcher	GPU/Thread Dispatcher	The percentage of time in which non-PS thread is ready for dispatch on slice6 dualsubslice0 thread dispatcher
+TDL_12	NonPSThread61ReadyForDispatch	Non-PS Thread Ready For Dispatch on Slice6 DualSubslice1 Thread Dispatcher	GPU/Thread Dispatcher	The percentage of time in which non-PS thread is ready for dispatch on slice6 dualsubslice1 thread dispatcher
+TDL_12	NonPSThread62ReadyForDispatch	Non-PS Thread Ready For Dispatch on Slice6 DualSubslice2 Thread Dispatcher	GPU/Thread Dispatcher	The percentage of time in which non-PS thread is ready for dispatch on slice6 dualsubslice2 thread dispatcher
+TDL_12	NonPSThread63ReadyForDispatch	Non-PS Thread Ready For Dispatch on Slice6 DualSubslice3 Thread Dispatcher	GPU/Thread Dispatcher	The percentage of time in which non-PS thread is ready for dispatch on slice6 dualsubslice3 thread dispatcher
+TDL_12	NonPSThread70ReadyForDispatch	Non-PS Thread Ready For Dispatch on Slice7 DualSubslice0 Thread Dispatcher	GPU/Thread Dispatcher	The percentage of time in which non-PS thread is ready for dispatch on slice7 dualsubslice0 thread dispatcher
+TDL_12	NonPSThread71ReadyForDispatch	Non-PS Thread Ready For Dispatch on Slice7 DualSubslice1 Thread Dispatcher	GPU/Thread Dispatcher	The percentage of time in which non-PS thread is ready for dispatch on slice7 dualsubslice1 thread dispatcher
+TDL_12	NonPSThread72ReadyForDispatch	Non-PS Thread Ready For Dispatch on Slice7 DualSubslice2 Thread Dispatcher	GPU/Thread Dispatcher	The percentage of time in which non-PS thread is ready for dispatch on slice7 dualsubslice2 thread dispatcher
+TDL_12	NonPSThread73ReadyForDispatch	Non-PS Thread Ready For Dispatch on Slice7 DualSubslice3 Thread Dispatcher	GPU/Thread Dispatcher	The percentage of time in which non-PS thread is ready for dispatch on slice7 dualsubslice3 thread dispatcher
+TDL_12	ThreadHeader60ReadyPort3	Thread Header Ready on Slice6 DualSubslice0 Thread Dispatcher Port 3	GPU/Thread Dispatcher	The percentage of time in which thread header is ready on slice6 dualsubslice0 thread dispatcher port 3
+TDL_12	ThreadHeader61ReadyPort3	Thread Header Ready on Slice6 DualSubslice1 Thread Dispatcher Port 3	GPU/Thread Dispatcher	The percentage of time in which thread header is ready on slice6 dualsubslice1 thread dispatcher port 3
+TDL_12	ThreadHeader62ReadyPort3	Thread Header Ready on Slice6 DualSubslice2 Thread Dispatcher Port 3	GPU/Thread Dispatcher	The percentage of time in which thread header is ready on slice6 dualsubslice2 thread dispatcher port 3
+TDL_12	ThreadHeader63ReadyPort3	Thread Header Ready on Slice6 DualSubslice3 Thread Dispatcher Port 3	GPU/Thread Dispatcher	The percentage of time in which thread header is ready on slice6 dualsubslice3 thread dispatcher port 3
+TDL_12	ThreadHeader70ReadyPort3	Thread Header Ready on Slice7 DualSubslice0 Thread Dispatcher Port 3	GPU/Thread Dispatcher	The percentage of time in which thread header is ready on slice7 dualsubslice0 thread dispatcher port 3
+TDL_12	ThreadHeader71ReadyPort3	Thread Header Ready on Slice7 DualSubslice1 Thread Dispatcher Port 3	GPU/Thread Dispatcher	The percentage of time in which thread header is ready on slice7 dualsubslice1 thread dispatcher port 3
+TDL_12	ThreadHeader72ReadyPort3	Thread Header Ready on Slice7 DualSubslice2 Thread Dispatcher Port 3	GPU/Thread Dispatcher	The percentage of time in which thread header is ready on slice7 dualsubslice2 thread dispatcher port 3
+TDL_12	ThreadHeader73ReadyPort3	Thread Header Ready on Slice7 DualSubslice3 Thread Dispatcher Port 3	GPU/Thread Dispatcher	The percentage of time in which thread header is ready on slice7 dualsubslice3 thread dispatcher port 3
+TDL_13	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
+TDL_13	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
+TDL_13	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
+TDL_13	GpuBusy	GPU Busy	GPU	The percentage of time in which the GPU has been processing GPU commands.
+TDL_13	PSThread00ReadyForDispatch	PS Thread Ready For Dispatch on Slice0 Dualsubslice0 Thread Dispatcher	GPU/Thread Dispatcher	The percentage of time in which PS thread is ready for dispatch on slice0 dualsubslice0 thread dispatcher
+TDL_13	PSThread01ReadyForDispatch	PS Thread Ready For Dispatch on Slice0 Dualsubslice1 Thread Dispatcher	GPU/Thread Dispatcher	The percentage of time in which PS thread is ready for dispatch on slice0 dualsubslice1 thread dispatcher
+TDL_13	PSThread02ReadyForDispatch	PS Thread Ready For Dispatch on Slice0 Dualsubslice2 Thread Dispatcher	GPU/Thread Dispatcher	The percentage of time in which PS thread is ready for dispatch on slice0 dualsubslice2 thread dispatcher
+TDL_13	PSThread03ReadyForDispatch	PS Thread Ready For Dispatch on Slice0 Dualsubslice3 Thread Dispatcher	GPU/Thread Dispatcher	The percentage of time in which PS thread is ready for dispatch on slice0 dualsubslice3 thread dispatcher
+TDL_13	PSThread10ReadyForDispatch	PS Thread Ready For Dispatch on Slice1 Dualsubslice0 Thread Dispatcher	GPU/Thread Dispatcher	The percentage of time in which PS thread is ready for dispatch on slice1 dualsubslice0 thread dispatcher
+TDL_13	PSThread11ReadyForDispatch	PS Thread Ready For Dispatch on Slice1 Dualsubslice1 Thread Dispatcher	GPU/Thread Dispatcher	The percentage of time in which PS thread is ready for dispatch on slice1 dualsubslice1 thread dispatcher
+TDL_13	PSThread12ReadyForDispatch	PS Thread Ready For Dispatch on Slice1 Dualsubslice2 Thread Dispatcher	GPU/Thread Dispatcher	The percentage of time in which PS thread is ready for dispatch on slice1 dualsubslice2 thread dispatcher
+TDL_13	PSThread13ReadyForDispatch	PS Thread Ready For Dispatch on Slice1 Dualsubslice3 Thread Dispatcher	GPU/Thread Dispatcher	The percentage of time in which PS thread is ready for dispatch on slice1 dualsubslice3 thread dispatcher
+TDL_14	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
+TDL_14	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
+TDL_14	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
+TDL_14	GpuBusy	GPU Busy	GPU	The percentage of time in which the GPU has been processing GPU commands.
+TDL_14	PSThread20ReadyForDispatch	PS Thread Ready For Dispatch on Slice2 Dualsubslice0 Thread Dispatcher	GPU/Thread Dispatcher	The percentage of time in which PS thread is ready for dispatch on slice2 dualsubslice0 thread dispatcher
+TDL_14	PSThread21ReadyForDispatch	PS Thread Ready For Dispatch on Slice2 Dualsubslice1 Thread Dispatcher	GPU/Thread Dispatcher	The percentage of time in which PS thread is ready for dispatch on slice2 dualsubslice1 thread dispatcher
+TDL_14	PSThread22ReadyForDispatch	PS Thread Ready For Dispatch on Slice2 Dualsubslice2 Thread Dispatcher	GPU/Thread Dispatcher	The percentage of time in which PS thread is ready for dispatch on slice2 dualsubslice2 thread dispatcher
+TDL_14	PSThread23ReadyForDispatch	PS Thread Ready For Dispatch on Slice2 Dualsubslice3 Thread Dispatcher	GPU/Thread Dispatcher	The percentage of time in which PS thread is ready for dispatch on slice2 dualsubslice3 thread dispatcher
+TDL_14	PSThread30ReadyForDispatch	PS Thread Ready For Dispatch on Slice3 Dualsubslice0 Thread Dispatcher	GPU/Thread Dispatcher	The percentage of time in which PS thread is ready for dispatch on slice3 dualsubslice0 thread dispatcher
+TDL_14	PSThread31ReadyForDispatch	PS Thread Ready For Dispatch on Slice3 Dualsubslice1 Thread Dispatcher	GPU/Thread Dispatcher	The percentage of time in which PS thread is ready for dispatch on slice3 dualsubslice1 thread dispatcher
+TDL_14	PSThread32ReadyForDispatch	PS Thread Ready For Dispatch on Slice3 Dualsubslice2 Thread Dispatcher	GPU/Thread Dispatcher	The percentage of time in which PS thread is ready for dispatch on slice3 dualsubslice2 thread dispatcher
+TDL_14	PSThread33ReadyForDispatch	PS Thread Ready For Dispatch on Slice3 Dualsubslice3 Thread Dispatcher	GPU/Thread Dispatcher	The percentage of time in which PS thread is ready for dispatch on slice3 dualsubslice3 thread dispatcher
+TDL_15	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
+TDL_15	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
+TDL_15	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
+TDL_15	GpuBusy	GPU Busy	GPU	The percentage of time in which the GPU has been processing GPU commands.
+TDL_15	PSThread40ReadyForDispatch	PS Thread Ready For Dispatch on Slice4 Dualsubslice0 Thread Dispatcher	GPU/Thread Dispatcher	The percentage of time in which PS thread is ready for dispatch on slice4 dualsubslice0 thread dispatcher
+TDL_15	PSThread41ReadyForDispatch	PS Thread Ready For Dispatch on Slice4 Dualsubslice1 Thread Dispatcher	GPU/Thread Dispatcher	The percentage of time in which PS thread is ready for dispatch on slice4 dualsubslice1 thread dispatcher
+TDL_15	PSThread42ReadyForDispatch	PS Thread Ready For Dispatch on Slice4 Dualsubslice2 Thread Dispatcher	GPU/Thread Dispatcher	The percentage of time in which PS thread is ready for dispatch on slice4 dualsubslice2 thread dispatcher
+TDL_15	PSThread43ReadyForDispatch	PS Thread Ready For Dispatch on Slice4 Dualsubslice3 Thread Dispatcher	GPU/Thread Dispatcher	The percentage of time in which PS thread is ready for dispatch on slice4 dualsubslice3 thread dispatcher
+TDL_15	PSThread50ReadyForDispatch	PS Thread Ready For Dispatch on Slice5 Dualsubslice0 Thread Dispatcher	GPU/Thread Dispatcher	The percentage of time in which PS thread is ready for dispatch on slice5 dualsubslice0 thread dispatcher
+TDL_15	PSThread51ReadyForDispatch	PS Thread Ready For Dispatch on Slice5 Dualsubslice1 Thread Dispatcher	GPU/Thread Dispatcher	The percentage of time in which PS thread is ready for dispatch on slice5 dualsubslice1 thread dispatcher
+TDL_15	PSThread52ReadyForDispatch	PS Thread Ready For Dispatch on Slice5 Dualsubslice2 Thread Dispatcher	GPU/Thread Dispatcher	The percentage of time in which PS thread is ready for dispatch on slice5 dualsubslice2 thread dispatcher
+TDL_15	PSThread53ReadyForDispatch	PS Thread Ready For Dispatch on Slice5 Dualsubslice3 Thread Dispatcher	GPU/Thread Dispatcher	The percentage of time in which PS thread is ready for dispatch on slice5 dualsubslice3 thread dispatcher
+TDL_16	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
+TDL_16	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
+TDL_16	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
+TDL_16	GpuBusy	GPU Busy	GPU	The percentage of time in which the GPU has been processing GPU commands.
+TDL_16	PSThread60ReadyForDispatch	PS Thread Ready For Dispatch on Slice6 Dualsubslice0 Thread Dispatcher	GPU/Thread Dispatcher	The percentage of time in which PS thread is ready for dispatch on slice6 dualsubslice0 thread dispatcher
+TDL_16	PSThread61ReadyForDispatch	PS Thread Ready For Dispatch on Slice6 Dualsubslice1 Thread Dispatcher	GPU/Thread Dispatcher	The percentage of time in which PS thread is ready for dispatch on slice6 dualsubslice1 thread dispatcher
+TDL_16	PSThread62ReadyForDispatch	PS Thread Ready For Dispatch on Slice6 Dualsubslice2 Thread Dispatcher	GPU/Thread Dispatcher	The percentage of time in which PS thread is ready for dispatch on slice6 dualsubslice2 thread dispatcher
+TDL_16	PSThread63ReadyForDispatch	PS Thread Ready For Dispatch on Slice6 Dualsubslice3 Thread Dispatcher	GPU/Thread Dispatcher	The percentage of time in which PS thread is ready for dispatch on slice6 dualsubslice3 thread dispatcher
+TDL_16	PSThread70ReadyForDispatch	PS Thread Ready For Dispatch on Slice7 Dualsubslice0 Thread Dispatcher	GPU/Thread Dispatcher	The percentage of time in which PS thread is ready for dispatch on slice7 dualsubslice0 thread dispatcher
+TDL_16	PSThread71ReadyForDispatch	PS Thread Ready For Dispatch on Slice7 Dualsubslice1 Thread Dispatcher	GPU/Thread Dispatcher	The percentage of time in which PS thread is ready for dispatch on slice7 dualsubslice1 thread dispatcher
+TDL_16	PSThread72ReadyForDispatch	PS Thread Ready For Dispatch on Slice7 Dualsubslice2 Thread Dispatcher	GPU/Thread Dispatcher	The percentage of time in which PS thread is ready for dispatch on slice7 dualsubslice2 thread dispatcher
+TDL_16	PSThread73ReadyForDispatch	PS Thread Ready For Dispatch on Slice7 Dualsubslice3 Thread Dispatcher	GPU/Thread Dispatcher	The percentage of time in which PS thread is ready for dispatch on slice7 dualsubslice3 thread dispatcher
+TDL_17	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
+TDL_17	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
+TDL_17	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
+TDL_17	GpuBusy	GPU Busy	GPU	The percentage of time in which the GPU has been processing GPU commands.
+TDL_17	Tdl00InputAvailable	Tdl00 Input Available	GPU/Thread Dispatcher	The percentage of time when Tdl00 input is available
+TDL_17	Tdl01InputAvailable	Tdl01 Input Available	GPU/Thread Dispatcher	The percentage of time when Tdl01 input is available
+TDL_17	Tdl02InputAvailable	Tdl02 Input Available	GPU/Thread Dispatcher	The percentage of time when Tdl02 input is available
+TDL_17	Tdl03InputAvailable	Tdl03 Input Available	GPU/Thread Dispatcher	The percentage of time when Tdl03 input is available
+TDL_18	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
+TDL_18	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
+TDL_18	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
+TDL_18	GpuBusy	GPU Busy	GPU	The percentage of time in which the GPU has been processing GPU commands.
+TDL_18	Tdl10InputAvailable	Tdl10 Input Available	GPU/Thread Dispatcher	The percentage of time when Tdl10 input is available
+TDL_18	Tdl11InputAvailable	Tdl11 Input Available	GPU/Thread Dispatcher	The percentage of time when Tdl11 input is available
+TDL_18	Tdl12InputAvailable	Tdl12 Input Available	GPU/Thread Dispatcher	The percentage of time when Tdl12 input is available
+TDL_18	Tdl13InputAvailable	Tdl13 Input Available	GPU/Thread Dispatcher	The percentage of time when Tdl13 input is available
+TDL_19	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
+TDL_19	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
+TDL_19	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
+TDL_19	GpuBusy	GPU Busy	GPU	The percentage of time in which the GPU has been processing GPU commands.
+TDL_19	Tdl20InputAvailable	Tdl20 Input Available	GPU/Thread Dispatcher	The percentage of time when Tdl20 input is available
+TDL_19	Tdl21InputAvailable	Tdl21 Input Available	GPU/Thread Dispatcher	The percentage of time when Tdl21 input is available
+TDL_19	Tdl22InputAvailable	Tdl22 Input Available	GPU/Thread Dispatcher	The percentage of time when Tdl22 input is available
+TDL_19	Tdl23InputAvailable	Tdl23 Input Available	GPU/Thread Dispatcher	The percentage of time when Tdl23 input is available
+TDL_20	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
+TDL_20	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
+TDL_20	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
+TDL_20	GpuBusy	GPU Busy	GPU	The percentage of time in which the GPU has been processing GPU commands.
+TDL_20	Tdl30InputAvailable	Tdl30 Input Available	GPU/Thread Dispatcher	The percentage of time when Tdl30 input is available
+TDL_20	Tdl31InputAvailable	Tdl31 Input Available	GPU/Thread Dispatcher	The percentage of time when Tdl31 input is available
+TDL_20	Tdl32InputAvailable	Tdl32 Input Available	GPU/Thread Dispatcher	The percentage of time when Tdl32 input is available
+TDL_20	Tdl33InputAvailable	Tdl33 Input Available	GPU/Thread Dispatcher	The percentage of time when Tdl33 input is available
+TDL_21	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
+TDL_21	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
+TDL_21	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
+TDL_21	GpuBusy	GPU Busy	GPU	The percentage of time in which the GPU has been processing GPU commands.
+TDL_21	Tdl40InputAvailable	Tdl40 Input Available	GPU/Thread Dispatcher	The percentage of time when Tdl40 input is available
+TDL_21	Tdl41InputAvailable	Tdl41 Input Available	GPU/Thread Dispatcher	The percentage of time when Tdl41 input is available
+TDL_21	Tdl42InputAvailable	Tdl42 Input Available	GPU/Thread Dispatcher	The percentage of time when Tdl42 input is available
+TDL_21	Tdl43InputAvailable	Tdl43 Input Available	GPU/Thread Dispatcher	The percentage of time when Tdl43 input is available
+TDL_22	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
+TDL_22	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
+TDL_22	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
+TDL_22	GpuBusy	GPU Busy	GPU	The percentage of time in which the GPU has been processing GPU commands.
+TDL_22	Tdl50InputAvailable	Tdl50 Input Available	GPU/Thread Dispatcher	The percentage of time when Tdl50 input is available
+TDL_22	Tdl51InputAvailable	Tdl51 Input Available	GPU/Thread Dispatcher	The percentage of time when Tdl51 input is available
+TDL_22	Tdl52InputAvailable	Tdl52 Input Available	GPU/Thread Dispatcher	The percentage of time when Tdl52 input is available
+TDL_22	Tdl53InputAvailable	Tdl53 Input Available	GPU/Thread Dispatcher	The percentage of time when Tdl53 input is available
+TDL_23	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
+TDL_23	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
+TDL_23	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
+TDL_23	GpuBusy	GPU Busy	GPU	The percentage of time in which the GPU has been processing GPU commands.
+TDL_23	Tdl60InputAvailable	Tdl60 Input Available	GPU/Thread Dispatcher	The percentage of time when Tdl60 input is available
+TDL_23	Tdl61InputAvailable	Tdl61 Input Available	GPU/Thread Dispatcher	The percentage of time when Tdl61 input is available
+TDL_23	Tdl62InputAvailable	Tdl62 Input Available	GPU/Thread Dispatcher	The percentage of time when Tdl62 input is available
+TDL_23	Tdl63InputAvailable	Tdl63 Input Available	GPU/Thread Dispatcher	The percentage of time when Tdl63 input is available
+TDL_24	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
+TDL_24	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
+TDL_24	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
+TDL_24	GpuBusy	GPU Busy	GPU	The percentage of time in which the GPU has been processing GPU commands.
+TDL_24	Tdl70InputAvailable	Tdl70 Input Available	GPU/Thread Dispatcher	The percentage of time when Tdl70 input is available
+TDL_24	Tdl71InputAvailable	Tdl71 Input Available	GPU/Thread Dispatcher	The percentage of time when Tdl71 input is available
+TDL_24	Tdl72InputAvailable	Tdl72 Input Available	GPU/Thread Dispatcher	The percentage of time when Tdl72 input is available
+TDL_24	Tdl73InputAvailable	Tdl73 Input Available	GPU/Thread Dispatcher	The percentage of time when Tdl73 input is available

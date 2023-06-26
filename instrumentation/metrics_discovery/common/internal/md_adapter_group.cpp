@@ -384,7 +384,7 @@ namespace MetricsDiscoveryInternal
         std::vector<TAdapterData> availableAdapters;
 
         // 1. Get adapter information from OS
-        auto ret = CDriverInterface::GetAvailableAdapters( availableAdapters, IU_ADAPTER_ID_UNKNOWN );
+        auto ret = CDriverInterface::GetAvailableAdapters( availableAdapters );
         MD_CHECK_CC_RET( ret );
 
         // 2. Create adapter objects
@@ -447,7 +447,7 @@ namespace MetricsDiscoveryInternal
 
         MD_LOG_A( adapterId, LOG_INFO, "Adapter %s - added", adapterParams->ShortName );
         MD_LOG_A( adapterId, LOG_INFO, "Platform ID: %u", adapterParams->Platform );
-        MD_LOG_A( adapterId, LOG_INFO, "Device ID: %u", adapterParams->DeviceId );
+        MD_LOG_A( adapterId, LOG_INFO, "Device ID: %x", adapterParams->DeviceId );
         MD_LOG_A( adapterId, LOG_INFO, "Adapter ID: %u", adapterId );
         return CC_OK;
     }

@@ -46,7 +46,7 @@ namespace MetricsDiscoveryInternal
         // Non-API:
         uint32_t             GetSymbolCount();
         TGlobalSymbolLatest* GetSymbol( uint32_t index );
-        TTypedValueLatest*   GetSymbolValueByName( const char* name );
+        TTypedValueLatest*   GetSymbolValueByName( std::string_view name );
         TCompletionCode      AddSymbol( const char* name, TTypedValueLatest typedValue, TSymbolType symbolType );
         TCompletionCode      DetectSymbolValue( std::string_view name, TTypedValueLatest& typedValue );
         TCompletionCode      AddSymbolUINT32( const char* name, uint32_t value, TSymbolType symbolType );
@@ -57,7 +57,7 @@ namespace MetricsDiscoveryInternal
         TCompletionCode      AddSymbolBYTEARRAY( const char* name, TByteArrayLatest* value, TSymbolType symbolType );
         TCompletionCode      WriteSymbolSetToFile( FILE* metricFile );
         bool                 IsSymbolAlreadyAdded( std::string_view symbolName );
-        TCompletionCode      RedetectSymbol( const char* name );
+        TCompletionCode      RedetectSymbol( std::string_view name );
 
     private:
         bool            IsPavpDisabled( uint32_t capabilities );

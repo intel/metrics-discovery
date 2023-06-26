@@ -42,7 +42,25 @@ namespace MetricsDiscoveryInternal
 
     public:
         // Constructor & Destructor:
-        CMetric( CMetricsDevice* device, uint32_t id, const char* name, const char* shortName, const char* longName, const char* group, uint32_t groupId, uint32_t usageFlagsMask, uint32_t apiMask, TMetricType metricType, TMetricResultType resultType, const char* units, int64_t loWatermark, int64_t hiWatermark, THwUnitType hwType, const char* alias, const char* signalName, bool isCustom = false );
+        CMetric(
+            CMetricsDevice&   device,
+            uint32_t          id,
+            const char*       name,
+            const char*       shortName,
+            const char*       longName,
+            const char*       group,
+            uint32_t          groupId,
+            uint32_t          usageFlagsMask,
+            uint32_t          apiMask,
+            TMetricType       metricType,
+            TMetricResultType resultType,
+            const char*       units,
+            int64_t           loWatermark,
+            int64_t           hiWatermark,
+            THwUnitType       hwType,
+            const char*       alias,
+            const char*       signalName,
+            bool              isCustom = false );
         explicit CMetric( const CMetric& other );
         virtual ~CMetric();
 
@@ -60,22 +78,23 @@ namespace MetricsDiscoveryInternal
         TCompletionCode SetSnapshotReportDeltaFunction( TDeltaFunction_1_0 deltaFunction );
         const char*     GetSignalName();
 
-        // Variables:
-        uint32_t m_id;       // Position in set before any filterings (SetApiFiltering, AvailableEquation check)
-        bool     m_isCustom; // true if metric was created from AddCustomMetric function
+        uint32_t GetId() const;
 
     private:
         uint64_t GetMetricValue( const char* valueString );
 
     private:
         // Variables:
-        TMetricParamsLatest m_params_1_0;
-        const char*         m_signalName;
-        CEquation*          m_availabilityEquation;
-        CEquation*          m_ioReadEquation;
-        CEquation*          m_queryReadEquation;
-        CEquation*          m_normEquation;
-        CEquation*          m_maxValueEquation;
-        CMetricsDevice*     m_device;
+        TMetricParamsLatest m_params;
+        uint32_t            m_id;       // Position in set before any filterings (SetApiFiltering, AvailableEquation check)
+        bool                m_isCustom; // true if metric was created from AddCustomMetric function
+
+        const char*     m_signalName;
+        CEquation*      m_availabilityEquation;
+        CEquation*      m_ioReadEquation;
+        CEquation*      m_queryReadEquation;
+        CEquation*      m_normEquation;
+        CEquation*      m_maxValueEquation;
+        CMetricsDevice& m_device;
     };
 } // namespace MetricsDiscoveryInternal

@@ -337,24 +337,23 @@ namespace MetricsDiscoveryInternal
     //
     // Input:
     //     std::vector<TAdapterData>& adapters  - [out] available Intel adapters
-    //     const uint32_t             adapterId - adapter id for the purpose of logging
     //
     // Output:
     //     TCompletionCode - result of operation (*CC_OK* is OK)
     //
     //////////////////////////////////////////////////////////////////////////////
-    TCompletionCode CDriverInterface::GetAvailableAdapters( std::vector<TAdapterData>& adapters, const uint32_t adapterId )
+    TCompletionCode CDriverInterface::GetAvailableAdapters( std::vector<TAdapterData>& adapters )
     {
         // The maximum number of drm devices is 64, see:
         // https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/tree/drivers/gpu/drm/drm_drv.c#n110
         const uint32_t DRM_MAX_DEVICES = 64;
 
-        std::array<drmDevicePtr, DRM_MAX_DEVICES> devices;
+        std::array<drmDevicePtr, DRM_MAX_DEVICES> devices          = {};
         int32_t                                   availableDevices = drmGetDevices( devices.data(), devices.size() );
 
         if( availableDevices < 0 )
         {
-            MD_LOG_A( adapterId, LOG_ERROR, "ERROR: Failed to get the list of drm devices" );
+            MD_LOG( LOG_ERROR, "ERROR: Failed to get the list of drm devices" );
             return CC_ERROR_GENERAL;
         }
 
@@ -364,7 +363,7 @@ namespace MetricsDiscoveryInternal
         {
             if( devices[i] == nullptr )
             {
-                MD_LOG_A( adapterId, LOG_ERROR, "ERROR: Uninitialized drm device" );
+                MD_LOG( LOG_ERROR, "ERROR: Uninitialized drm device" );
                 continue;
             }
 
@@ -374,21 +373,21 @@ namespace MetricsDiscoveryInternal
 
             if( IS_DRM_NODE_AVAILABLE( device.available_nodes, DRM_NODE_RENDER ) )
             {
-                MD_LOG_A( adapterId, LOG_DEBUG, "Open render noder '%s'", device.nodes[DRM_NODE_RENDER] );
+                MD_LOG( LOG_DEBUG, "Open render node '%s'", device.nodes[DRM_NODE_RENDER] );
                 drmFd     = open( device.nodes[DRM_NODE_RENDER], O_RDWR );
                 minorBase = DRM_NODE_RENDER * DRM_MAX_DEVICES;
             }
 
             if( drmFd == -1 && IS_DRM_NODE_AVAILABLE( device.available_nodes, DRM_NODE_PRIMARY ) )
             {
-                MD_LOG_A( adapterId, LOG_DEBUG, "Open primary noder '%s'", device.nodes[DRM_NODE_PRIMARY] );
+                MD_LOG( LOG_DEBUG, "Open primary node '%s'", device.nodes[DRM_NODE_PRIMARY] );
                 drmFd     = open( device.nodes[DRM_NODE_PRIMARY], O_RDWR );
                 minorBase = DRM_NODE_PRIMARY * DRM_MAX_DEVICES;
             }
 
             if( drmFd == -1 )
             {
-                MD_LOG_A( adapterId, LOG_ERROR, "ERROR: Failed to open drm device" );
+                MD_LOG( LOG_ERROR, "ERROR: Failed to open drm device" );
                 continue;
             }
 
@@ -396,15 +395,16 @@ namespace MetricsDiscoveryInternal
 
             if( deviceVersion == nullptr )
             {
-                MD_LOG_A( adapterId, LOG_ERROR, "ERROR: Cannot get version for drm device" );
+                MD_LOG( LOG_ERROR, "ERROR: Cannot get version for drm device" );
 
                 close( drmFd );
                 continue;
             }
 
-            if( deviceVersion->name_len != 4 || strncmp( deviceVersion->name, "i915", 4 ) )
+            if( constexpr uint32_t nameLength = sizeof( "i915" ) - 1;
+                deviceVersion->name_len != nameLength || iu_strncmp( deviceVersion->name, "i915", nameLength ) )
             {
-                MD_LOG_A( adapterId, LOG_DEBUG, "Skip non-Intel device '%s'", ( deviceVersion->name_len && deviceVersion->name ? deviceVersion->name : "" ) );
+                MD_LOG( LOG_DEBUG, "Skip non-Intel device '%s'", ( deviceVersion->name_len && deviceVersion->name ? deviceVersion->name : "" ) );
 
                 drmFreeVersion( deviceVersion );
                 close( drmFd );
@@ -418,11 +418,11 @@ namespace MetricsDiscoveryInternal
             // Get platform info
             TGfxDeviceInfo gfxDeviceInfo = {};
 
-            TCompletionCode ret = CDriverInterfaceLinuxPerf::GetGfxDeviceInfo( device.deviceinfo.pci->device_id, &gfxDeviceInfo, adapterId );
+            TCompletionCode ret = CDriverInterfaceLinuxPerf::GetGfxDeviceInfo( device.deviceinfo.pci->device_id, &gfxDeviceInfo );
 
             if( ret != CC_OK || gfxDeviceInfo.PlatformIndex == GTDI_PLATFORM_MAX )
             {
-                MD_LOG_A( adapterId, LOG_ERROR, "ERROR: Cannot detect platform index" );
+                MD_LOG( LOG_ERROR, "ERROR: Cannot detect platform index" );
 
                 close( drmFd );
                 continue;
@@ -435,7 +435,7 @@ namespace MetricsDiscoveryInternal
             struct stat sbuf = {};
             if( fstat( drmFd, &sbuf ) )
             {
-                MD_LOG_A( adapterId, LOG_ERROR, "ERROR: Cannot get system id" );
+                MD_LOG( LOG_ERROR, "ERROR: Cannot get system id" );
 
                 close( drmFd );
                 continue;
@@ -462,13 +462,13 @@ namespace MetricsDiscoveryInternal
                 adapter.Params.SubVendorId = device.deviceinfo.pci->subvendor_id;
                 adapter.Params.DeviceId    = device.deviceinfo.pci->device_id;
 
-                adapter.Params.ShortName = GetCopiedCString( drmGetDeviceNameFromFd2( drmFd ), adapterId );
+                adapter.Params.ShortName = GetCopiedCString( drmGetDeviceNameFromFd2( drmFd ), IU_ADAPTER_ID_UNKNOWN );
             }
 
             adapter.Handle = new( std::nothrow ) CAdapterHandleLinux( drmFd ); // Important: adapterData.Handle has to be deleted later!
             if( adapter.Handle == nullptr )
             {
-                MD_LOG_A( adapterId, LOG_ERROR, "ERROR: Cannot create adapter handle" );
+                MD_LOG( LOG_ERROR, "ERROR: Cannot create adapter handle" );
 
                 close( drmFd );
                 continue;
@@ -1025,13 +1025,13 @@ namespace MetricsDiscoveryInternal
                 // Returning mapped GtType for compatibility reasons
                 out->ValueType = GTDI_DEVICE_PARAM_VALUE_TYPE_UINT32;
                 // GfxVer12 gt values is based of revId and slicesMask
-                if( IsPlatformMatch( platformId, GENERATION_ACM, GENERATION_XEHP_SDV, GENERATION_PVC ) )
+                if( IsPlatformMatch( platformId, GENERATION_XEHP_SDV, GENERATION_PVC ) )
                 {
-                    out->ValueUint32 = (uint32_t) MapDeviceInfoToInstrGtTypeGfxVer12( gfxDeviceInfo, metricsDevice );
+                    out->ValueUint32 = static_cast<uint32_t>( MapDeviceInfoToInstrGtTypeGfxVer12( gfxDeviceInfo, metricsDevice ) );
                 }
                 else
                 {
-                    out->ValueUint32 = (uint32_t) gfxDeviceInfo->GtType;
+                    out->ValueUint32 = static_cast<uint32_t>( gfxDeviceInfo->GtType );
                 }
                 break;
             }
@@ -1742,12 +1742,11 @@ namespace MetricsDiscoveryInternal
     TCompletionCode CDriverInterfaceLinuxPerf::OpenIoStream( COAConcurrentGroup& oaConcurrentGroup, const uint32_t processId, uint32_t& nsTimerPeriod, uint32_t& bufferSize )
     {
         const char* concurrentGroupName = oaConcurrentGroup.GetParams()->SymbolName;
+        auto&       metricsDevice       = oaConcurrentGroup.GetMetricsDevice();
         auto        metricSet           = oaConcurrentGroup.GetIoMetricSet();
-        auto        metricsDevice       = oaConcurrentGroup.GetMetricsDevice();
 
         MD_CHECK_PTR_RET_A( m_adapterId, concurrentGroupName, CC_ERROR_INVALID_PARAMETER );
         MD_CHECK_PTR_RET_A( m_adapterId, metricSet, CC_ERROR_INVALID_PARAMETER );
-        MD_CHECK_PTR_RET_A( m_adapterId, metricsDevice, CC_ERROR_INVALID_PARAMETER );
 
         if( !IsStreamTypeSupported( oaConcurrentGroup.GetStreamType() ) )
         {
@@ -1755,17 +1754,17 @@ namespace MetricsDiscoveryInternal
         }
 
         // 1. ACTIVATE
-        TCompletionCode ret = metricSet->ActivateInternal( false, false );
+        auto ret = metricSet->ActivateInternal( false, false );
         MD_CHECK_CC_RET_A( m_adapterId, ret );
 
-        MD_ASSERT_A( m_adapterId, metricsDevice->GetStreamConfigId() == -1 ); // Should be -1, which means stream is closed
+        MD_ASSERT_A( m_adapterId, metricsDevice.GetStreamConfigId() == -1 ); // Should be -1, which means stream is closed
 
         // 2. SET PARAMS
         const uint32_t timerPeriodExponent = GetTimerPeriodExponent( nsTimerPeriod );
         const uint32_t perfReportType      = GetPerfReportType( metricSet->GetReportType() );
         int32_t        perfMetricSetId     = -1;
         uint32_t       regCount            = 0;
-        TRegister**    regVector           = metricSet->GetStartConfiguration( &regCount );
+        TRegister**    regVector           = metricSet->GetStartConfiguration( regCount );
 
         if( perfReportType == static_cast<uint32_t>( -1 ) )
         {
@@ -1774,7 +1773,7 @@ namespace MetricsDiscoveryInternal
         }
 
         // 3. ADD HW CONFIG
-        ret = AddPerfConfig( regVector, regCount, metricsDevice->GetSubDeviceIndex(), nullptr, perfMetricSetId );
+        ret = AddPerfConfig( regVector, regCount, metricsDevice.GetSubDeviceIndex(), nullptr, perfMetricSetId );
         if( ret != CC_OK )
         {
             goto deactivate;
@@ -1782,7 +1781,7 @@ namespace MetricsDiscoveryInternal
         MD_ASSERT_A( m_adapterId, perfMetricSetId != -1 );
 
         // 4. OPEN PERF STREAM
-        ret = OpenPerfStream( *metricsDevice, perfMetricSetId, perfReportType, timerPeriodExponent, bufferSize, oaConcurrentGroup.GetOaBufferType() );
+        ret = OpenPerfStream( metricsDevice, perfMetricSetId, perfReportType, timerPeriodExponent, bufferSize, oaConcurrentGroup.GetOaBufferType() );
         if( ret != CC_OK )
         {
             goto remove_config;
@@ -1792,7 +1791,7 @@ namespace MetricsDiscoveryInternal
         nsTimerPeriod = GetNsTimerPeriod( timerPeriodExponent );
         bufferSize    = MD_OA_BUFFER_SIZE_MAX;
 
-        metricsDevice->SetStreamConfigId( perfMetricSetId ); // Remember Perf config id so it could be removed from the kernel on CloseIoStream
+        metricsDevice.SetStreamConfigId( perfMetricSetId ); // Remember Perf config id so it could be removed from the kernel on CloseIoStream
 
         MD_LOG_A( m_adapterId, LOG_DEBUG, "Perf stream opened with metricSetId: %d, periodNs: %u, exponent: %u, bufferSize: %u", perfMetricSetId, nsTimerPeriod, timerPeriodExponent, bufferSize );
         return CC_OK;
@@ -1834,11 +1833,9 @@ namespace MetricsDiscoveryInternal
             return CC_ERROR_NOT_SUPPORTED;
         }
 
-        auto metricSet     = oaConcurrentGroup.GetIoMetricSet();
-        auto metricsDevice = oaConcurrentGroup.GetMetricsDevice();
+        auto metricSet = oaConcurrentGroup.GetIoMetricSet();
 
         MD_CHECK_PTR_RET_A( m_adapterId, metricSet, CC_ERROR_INVALID_PARAMETER );
-        MD_CHECK_PTR_RET_A( m_adapterId, metricsDevice, CC_ERROR_INVALID_PARAMETER );
         MD_CHECK_PTR_RET_A( m_adapterId, reportData, CC_ERROR_INVALID_PARAMETER );
 
         const uint32_t reportSize  = metricSet->GetParams()->RawReportSize;
@@ -1846,7 +1843,7 @@ namespace MetricsDiscoveryInternal
         uint32_t       readBytes   = 0;
 
         // Read flags are ignored for Perf
-        TCompletionCode ret = ReadPerfStream( *metricsDevice, reportSize, reportsCount, reportData, readBytes, exceptions );
+        TCompletionCode ret = ReadPerfStream( oaConcurrentGroup.GetMetricsDevice(), reportSize, reportsCount, reportData, readBytes, exceptions );
         if( ret == CC_OK )
         {
             MD_ASSERT_A( m_adapterId, ( readBytes % reportSize ) == 0 );
@@ -1893,19 +1890,18 @@ namespace MetricsDiscoveryInternal
             return CC_ERROR_NOT_SUPPORTED;
         }
 
-        auto metricSet     = oaConcurrentGroup.GetIoMetricSet();
-        auto metricsDevice = oaConcurrentGroup.GetMetricsDevice();
+        auto& metricsDevice = oaConcurrentGroup.GetMetricsDevice();
+        auto  metricSet     = oaConcurrentGroup.GetIoMetricSet();
 
         MD_CHECK_PTR_RET_A( m_adapterId, metricSet, CC_ERROR_INVALID_PARAMETER );
-        MD_CHECK_PTR_RET_A( m_adapterId, metricsDevice, CC_ERROR_INVALID_PARAMETER );
 
         // 1. CLOSE STREAM
-        ClosePerfStream( *metricsDevice );
+        ClosePerfStream( metricsDevice );
 
         // 2. REMOVE HW CONFIG
-        if( RemovePerfConfig( metricsDevice->GetStreamConfigId() ) == CC_OK )
+        if( RemovePerfConfig( metricsDevice.GetStreamConfigId() ) == CC_OK )
         {
-            metricsDevice->SetStreamConfigId( -1 );
+            metricsDevice.SetStreamConfigId( -1 );
         }
 
         // 3. DEACTIVATE
@@ -1973,10 +1969,7 @@ namespace MetricsDiscoveryInternal
             return CC_ERROR_NOT_SUPPORTED;
         }
 
-        auto metricsDevice = oaConcurrentGroup.GetMetricsDevice();
-        MD_CHECK_PTR_RET_A( m_adapterId, metricsDevice, CC_ERROR_INVALID_PARAMETER );
-
-        return WaitForPerfStreamReports( *metricsDevice, milliseconds );
+        return WaitForPerfStreamReports( oaConcurrentGroup.GetMetricsDevice(), milliseconds );
     }
 
     //////////////////////////////////////////////////////////////////////////////
@@ -2245,7 +2238,7 @@ namespace MetricsDiscoveryInternal
             return getPerfRevisionRet == CC_OK && perfRevision >= requiredPerfRevision;
         };
 
-        // Check capabilities. Update when OA interrupt will be mergerd.
+        // Check capabilities. Update when OA interrupt will be merged.
 
         m_PerfCapabilities.IsOaInterruptSupported     = false;
         m_PerfCapabilities.IsSubDeviceSupported       = requirePerfRevision( 10 );
@@ -2268,7 +2261,7 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     void CDriverInterfaceLinuxPerf::ResetPerfCapabilities()
     {
-        memset( &m_PerfCapabilities, 0, sizeof( m_PerfCapabilities ) );
+        m_PerfCapabilities = {};
     }
 
     //////////////////////////////////////////////////////////////////////////////
@@ -2599,10 +2592,8 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     TCompletionCode CDriverInterfaceLinuxPerf::WaitForPerfStreamReports( CMetricsDevice& metricsDevice, uint32_t timeoutMs )
     {
-        TCompletionCode retVal = CC_OK;
-        struct pollfd   pollParams;
-
-        memset( &pollParams, 0, sizeof( pollParams ) );
+        TCompletionCode retVal     = CC_OK;
+        pollfd          pollParams = {};
 
         pollParams.fd      = metricsDevice.GetStreamId();
         pollParams.revents = 0;
@@ -2625,7 +2616,7 @@ namespace MetricsDiscoveryInternal
         else if( /*ret < 0 && */ errno == EINTR )
         {
             MD_LOG_A( m_adapterId, LOG_DEBUG, "Poll interrupted" );
-            retVal = MetricsDiscovery::CC_INTERRUPTED;
+            retVal = CC_INTERRUPTED;
         }
         else
         {
@@ -3218,7 +3209,7 @@ namespace MetricsDiscoveryInternal
         while( ( entry = readdir( drmDir ) ) != nullptr )
         {
             // If it's a directory named 'card.*'
-            if( entry->d_type == DT_DIR && strncmp( entry->d_name, "card", 4 ) == 0 )
+            if( entry->d_type == DT_DIR && iu_strncmp( entry->d_name, "card", 4 ) == 0 )
             {
                 retCardNumber = strtoull( entry->d_name + 4, nullptr, 10 );
                 MD_LOG_A( retCardNumber, LOG_DEBUG, "DRM card number: %d", retCardNumber ); // Should NOT use reCardNumber as adapter id if we
@@ -3551,9 +3542,9 @@ namespace MetricsDiscoveryInternal
     //     TCompletionCode                       - *CC_OK* means success
     //
     //////////////////////////////////////////////////////////////////////////////
-    TCompletionCode CDriverInterfaceLinuxPerf::GetGfxDeviceInfo( int32_t deviceId, TGfxDeviceInfo* gfxDeviceInfo, const uint32_t adapterId )
+    TCompletionCode CDriverInterfaceLinuxPerf::GetGfxDeviceInfo( int32_t deviceId, TGfxDeviceInfo* gfxDeviceInfo )
     {
-        MD_CHECK_PTR_RET_A( adapterId, gfxDeviceInfo, CC_ERROR_INVALID_PARAMETER );
+        MD_CHECK_PTR_RET( gfxDeviceInfo, CC_ERROR_INVALID_PARAMETER );
         TCompletionCode ret = CC_ERROR_NOT_SUPPORTED;
 
         if( platformIndexMap.find( deviceId ) != platformIndexMap.end() )
@@ -3746,16 +3737,13 @@ namespace MetricsDiscoveryInternal
         uint32_t flags = ( engine.EngineId.ClassInstance.Class & 0xFF ) | ( ( engine.EngineId.ClassInstance.Instance & 0xFF ) << 8 );
         // DRM_I915_QUERY_GEOMETRY_SUBSLICES is returning empty subslice mask on PVC.
         // Use PRELIM_DRM_I915_QUERY_COMPUTE_SLICES instead.
-        if( IsPlatformMatch( gfxDeviceInfo->PlatformIndex, GENERATION_PVC ) )
-        {
-            ret = QueryDrm( PRELIM_DRM_I915_QUERY_COMPUTE_SUBSLICES, buffer, flags );
-            MD_CHECK_CC_RET_A( m_adapterId, ret );
-        }
-        else
-        {
-            ret = QueryDrm( DRM_I915_QUERY_GEOMETRY_SUBSLICES, buffer, flags );
-            MD_CHECK_CC_RET_A( m_adapterId, ret );
-        }
+        uint32_t queryItemId = ( gfxDeviceInfo->PlatformIndex == GENERATION_PVC )
+            ? PRELIM_DRM_I915_QUERY_COMPUTE_SUBSLICES
+            : DRM_I915_QUERY_GEOMETRY_SUBSLICES;
+
+        ret = QueryDrm( queryItemId, buffer, flags );
+
+        MD_CHECK_CC_RET_A( m_adapterId, ret );
         MD_CHECK_CC_RET_A( m_adapterId, buffer.size() ? CC_OK : CC_ERROR_GENERAL );
 
         return CC_OK;
@@ -4045,7 +4033,7 @@ namespace MetricsDiscoveryInternal
 
             MD_CHECK_CC_RET_A( m_adapterId, ret );
 
-            if( GetGfxDeviceInfo( deviceId, &m_CachedGfxDeviceInfo, m_adapterId ) != CC_OK )
+            if( GetGfxDeviceInfo( deviceId, &m_CachedGfxDeviceInfo ) != CC_OK )
             {
                 return CC_ERROR_NOT_SUPPORTED;
             }
@@ -4852,92 +4840,33 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     TGfxGtType CDriverInterfaceLinuxPerf::MapDeviceInfoToInstrGtTypeGfxVer12( const TGfxDeviceInfo* gfxDeviceInfo, CMetricsDevice* metricsDevice )
     {
-        TGfxGtType      gtType                 = GFX_GTTYPE_UNDEFINED;
-        bool            isAdderWorkaroundValid = false;
-        bool            isAdderWaNeeded        = false;
-        TCompletionCode ret                    = CC_OK;
-        int64_t         sliceMask              = 0;
+        TGfxGtType gtType = GFX_GTTYPE_UNDEFINED;
 
-        MD_CHECK_PTR_RET_A( m_adapterId, metricsDevice, gtType );
-        ret = GetSubsliceMask( &sliceMask, metricsDevice );
-        if( ret != CC_OK )
+        if( IsPlatformMatch( gfxDeviceInfo->PlatformIndex, GENERATION_XEHP_SDV ) )
         {
-            MD_LOG_A( m_adapterId, LOG_ERROR, "Unable to obtain dual-subslice/subslice mask while defining GT type" );
-            return gtType;
-        }
+            bool            isAdderWorkaroundValid = false;
+            bool            isAdderWaNeeded        = false;
+            TCompletionCode ret                    = CC_OK;
+            int64_t         sliceMask              = 0;
 
-        if( ( sliceMask & SLICES0TO3 ) && ( sliceMask & SLICES4TO7 ) )
-        {
-            isAdderWorkaroundValid = true;
-            isAdderWaNeeded        = true;
-        }
-        else if( !( ( sliceMask & SLICES4AND5 ) && ( sliceMask & SLICES6AND7 ) ) )
-        {
-            isAdderWorkaroundValid = true;
-        }
-
-        if( IsPlatformMatch( gfxDeviceInfo->PlatformIndex, GENERATION_ACM ) )
-        {
-            drmDevicePtr drmDevice = nullptr;
-
-            if( drmGetDevice( m_DrmDeviceHandle, &drmDevice ) != 0 || drmDevice == nullptr )
+            MD_CHECK_PTR_RET_A( m_adapterId, metricsDevice, gtType );
+            ret = GetSubsliceMask( &sliceMask, metricsDevice );
+            if( ret != CC_OK )
             {
-                MD_LOG_A( m_adapterId, LOG_ERROR, "PCI revision_id not recognized. drmGetDevice failed." );
+                MD_LOG_A( m_adapterId, LOG_ERROR, "Unable to obtain dual-subslice/subslice mask while defining GT type" );
                 return gtType;
             }
 
-            switch( drmDevice->deviceinfo.pci->device_id )
+            if( ( sliceMask & SLICES0TO3 ) && ( sliceMask & SLICES4TO7 ) )
             {
-                case 0x4F80:
-                case 0x4F81:
-                case 0x4F82:
-                case 0x4F83:
-                case 0x4F84:
-                case 0x5690:
-                case 0x5691:
-                case 0x5692:
-                case 0x56A0:
-                case 0x56A1:
-                case 0x56A2:
-                case 0x56C0:
-                {
-                    MD_LOG_A( m_adapterId, LOG_INFO, "PCI revision_id is %u", drmDevice->deviceinfo.pci->revision_id );
-                    if( drmDevice->deviceinfo.pci->revision_id > 1 )
-                    {
-                        gtType = GFX_GTTYPE_GT3; // 512
-                    }
-                    break;
-                }
-                case 0x4F85:
-                case 0x4F86:
-                case 0x5696:
-                case 0x5697:
-                case 0x56A3:
-                case 0x56A4:
-                case 0x56B2:
-                case 0x56B3:
-                {
-                    gtType = GFX_GTTYPE_GT2; // 256
-                    break;
-                }
-                case 0x4F87:
-                case 0x4F88:
-                case 0x5693:
-                case 0x5694:
-                case 0x5695:
-                case 0x56A5:
-                case 0x56A6:
-                case 0x56B0:
-                case 0x56B1:
-                case 0x56C1:
-                {
-                    gtType = GFX_GTTYPE_GT1; // 128
-                    break;
-                }
+                isAdderWorkaroundValid = true;
+                isAdderWaNeeded        = true;
             }
-        }
-        else if( IsPlatformMatch( gfxDeviceInfo->PlatformIndex, GENERATION_XEHP_SDV ) )
-        {
+            else if( !( ( sliceMask & SLICES4AND5 ) && ( sliceMask & SLICES6AND7 ) ) )
+            {
+                isAdderWorkaroundValid = true;
+            }
+
             if( isAdderWorkaroundValid )
             {
                 gtType = isAdderWaNeeded ? GFX_GTTYPE_GT1 : GFX_GTTYPE_GT2;

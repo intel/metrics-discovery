@@ -58,7 +58,7 @@ namespace MetricsDiscoveryInternal
 
     public:
         // Constructor & Destructor:
-        CConcurrentGroup( CMetricsDevice* device, const char* name, const char* longName, const uint32_t measurementTypeMask );
+        CConcurrentGroup( CMetricsDevice& device, const char* name, const char* longName, const uint32_t measurementTypeMask );
         virtual ~CConcurrentGroup();
 
         // Non-API:
@@ -69,13 +69,15 @@ namespace MetricsDiscoveryInternal
         CInformation*       AddInformation( CInformation* information );
         IInformationLatest* GetInformation( uint32_t index );
         uint32_t            GetInformationCount();
-        CMetricsDevice*     GetMetricsDevice();
+
+        CMetricsDevice& GetMetricsDevice();
 
         template <typename TMetricSet>
         TMetricSet* AddMetricSetExplicit( const char* symbolicName, const char* shortName, const uint32_t apiMask, const uint32_t categoryMask, const uint32_t snapshotReportSize, const uint32_t deltaReportSize, const TReportType reportType, TByteArrayLatest* platformMask, const char* availabilityEquation = nullptr, const uint32_t gtMask = GT_TYPE_ALL, const bool isCustom = false )
         {
+            const uint32_t adapterId = m_device.GetAdapter().GetAdapterId();
+
             TCompletionCode ret             = CC_OK;
-            const uint32_t  adapterId       = OBTAIN_ADAPTER_ID( m_device );
             CMetricSet*     alreadyAddedSet = nullptr;
             TMetricSet*     set             = new( std::nothrow ) TMetricSet( m_device, this, symbolicName, shortName, apiMask, categoryMask, snapshotReportSize, deltaReportSize, reportType, platformMask, gtMask, isCustom );
             MD_CHECK_PTR_RET_A( adapterId, set, nullptr );
@@ -94,7 +96,7 @@ namespace MetricsDiscoveryInternal
                 return nullptr;
             }
 
-            bool isSuitablePlatform = m_device->IsPlatformTypeOf( platformMask, gtMask ) && set->IsAvailabilityEquationTrue();
+            bool isSuitablePlatform = m_device.IsPlatformTypeOf( platformMask, gtMask ) && set->IsAvailabilityEquationTrue();
             if( isSuitablePlatform )
             {
                 // Check if metric set is already present in m_setsVector or m_otherSetsList.
@@ -156,7 +158,7 @@ namespace MetricsDiscoveryInternal
         std::vector<CInformation*> m_otherInformationVector;
         uint32_t                   m_informationCount;
 
-        CMetricsDevice* m_device;
+        CMetricsDevice& m_device;
 
     protected:
         // Static variables:

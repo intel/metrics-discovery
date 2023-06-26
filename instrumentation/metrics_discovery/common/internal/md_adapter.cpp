@@ -481,7 +481,7 @@ namespace MetricsDiscoveryInternal
             }
             else
             {
-                retVal = m_metricsDevice->OpenFromFile( fileName, MD_IS_INTERNAL_BUILD );
+                retVal = m_metricsDevice->OpenFromFile( fileName );
                 if( retVal == CC_OK )
                 {
                     *metricsDevice = m_metricsDevice;

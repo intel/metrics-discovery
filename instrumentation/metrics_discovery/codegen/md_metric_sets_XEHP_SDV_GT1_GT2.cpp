@@ -20,10 +20,11 @@ SPDX-License-Identifier: MIT
 
 namespace MetricsDiscoveryInternal::MetricSets_XEHP_SDV_GT1_GT2_PipelineStatistics
 {
-    CPipelineStatsMetricSet::CPipelineStatsMetricSet( CMetricsDevice* device, CConcurrentGroup* concurrentGroup, const char* symbolicName, const char* shortName, uint32_t apiMask, uint32_t category, uint32_t snapshotReportSize, uint32_t deltaReportSize, TReportType reportType, TByteArrayLatest* platformMask, uint32_t gtMask /*= GT_TYPE_ALL*/, bool isCustom /*= false*/ )
+    CPipelineStatsMetricSet::CPipelineStatsMetricSet( CMetricsDevice& device, CConcurrentGroup* concurrentGroup, const char* symbolicName, const char* shortName, uint32_t apiMask, uint32_t category, uint32_t snapshotReportSize, uint32_t deltaReportSize, TReportType reportType, TByteArrayLatest* platformMask, uint32_t gtMask /*= GT_TYPE_ALL*/, bool isCustom /*= false*/ )
         : CMetricSet( device, concurrentGroup, symbolicName, shortName, apiMask, category, snapshotReportSize, deltaReportSize, reportType, platformMask, gtMask, isCustom )
     {
     }
+
     TCompletionCode CPipelineStatsMetricSet::Initialize()
     {
         TCompletionCode ret                  = CC_OK;
@@ -159,14 +160,16 @@ namespace MetricsDiscoveryInternal::MetricSets_XEHP_SDV_GT1_GT2_PipelineStatisti
     exception:
         return ret;
     }
+
 } // namespace MetricsDiscoveryInternal::MetricSets_XEHP_SDV_GT1_GT2_PipelineStatistics
 
 namespace MetricsDiscoveryInternal::MetricSets_XEHP_SDV_GT1_GT2_OA
 {
-    CHDCAndSF_Slice01MetricSet::CHDCAndSF_Slice01MetricSet( CMetricsDevice* device, CConcurrentGroup* concurrentGroup, const char* symbolicName, const char* shortName, uint32_t apiMask, uint32_t category, uint32_t snapshotReportSize, uint32_t deltaReportSize, TReportType reportType, TByteArrayLatest* platformMask, uint32_t gtMask /*= GT_TYPE_ALL*/, bool isCustom /*= false*/ )
+    CHDCAndSF_Slice01MetricSet::CHDCAndSF_Slice01MetricSet( CMetricsDevice& device, CConcurrentGroup* concurrentGroup, const char* symbolicName, const char* shortName, uint32_t apiMask, uint32_t category, uint32_t snapshotReportSize, uint32_t deltaReportSize, TReportType reportType, TByteArrayLatest* platformMask, uint32_t gtMask /*= GT_TYPE_ALL*/, bool isCustom /*= false*/ )
         : CMetricSet( device, concurrentGroup, symbolicName, shortName, apiMask, category, snapshotReportSize, deltaReportSize, reportType, platformMask, gtMask, isCustom )
     {
     }
+
     TCompletionCode CHDCAndSF_Slice01MetricSet::Initialize()
     {
         TCompletionCode ret                  = CC_OK;
@@ -463,10 +466,12 @@ namespace MetricsDiscoveryInternal::MetricSets_XEHP_SDV_GT1_GT2_OA
     exception:
         return ret;
     }
-    CHDCAndSF_Slice23MetricSet::CHDCAndSF_Slice23MetricSet( CMetricsDevice* device, CConcurrentGroup* concurrentGroup, const char* symbolicName, const char* shortName, uint32_t apiMask, uint32_t category, uint32_t snapshotReportSize, uint32_t deltaReportSize, TReportType reportType, TByteArrayLatest* platformMask, uint32_t gtMask /*= GT_TYPE_ALL*/, bool isCustom /*= false*/ )
+
+    CHDCAndSF_Slice23MetricSet::CHDCAndSF_Slice23MetricSet( CMetricsDevice& device, CConcurrentGroup* concurrentGroup, const char* symbolicName, const char* shortName, uint32_t apiMask, uint32_t category, uint32_t snapshotReportSize, uint32_t deltaReportSize, TReportType reportType, TByteArrayLatest* platformMask, uint32_t gtMask /*= GT_TYPE_ALL*/, bool isCustom /*= false*/ )
         : CMetricSet( device, concurrentGroup, symbolicName, shortName, apiMask, category, snapshotReportSize, deltaReportSize, reportType, platformMask, gtMask, isCustom )
     {
     }
+
     TCompletionCode CHDCAndSF_Slice23MetricSet::Initialize()
     {
         TCompletionCode ret                  = CC_OK;
@@ -763,10 +768,12 @@ namespace MetricsDiscoveryInternal::MetricSets_XEHP_SDV_GT1_GT2_OA
     exception:
         return ret;
     }
-    CHDCAndSF_Slice45MetricSet::CHDCAndSF_Slice45MetricSet( CMetricsDevice* device, CConcurrentGroup* concurrentGroup, const char* symbolicName, const char* shortName, uint32_t apiMask, uint32_t category, uint32_t snapshotReportSize, uint32_t deltaReportSize, TReportType reportType, TByteArrayLatest* platformMask, uint32_t gtMask /*= GT_TYPE_ALL*/, bool isCustom /*= false*/ )
+
+    CHDCAndSF_Slice45MetricSet::CHDCAndSF_Slice45MetricSet( CMetricsDevice& device, CConcurrentGroup* concurrentGroup, const char* symbolicName, const char* shortName, uint32_t apiMask, uint32_t category, uint32_t snapshotReportSize, uint32_t deltaReportSize, TReportType reportType, TByteArrayLatest* platformMask, uint32_t gtMask /*= GT_TYPE_ALL*/, bool isCustom /*= false*/ )
         : CMetricSet( device, concurrentGroup, symbolicName, shortName, apiMask, category, snapshotReportSize, deltaReportSize, reportType, platformMask, gtMask, isCustom )
     {
     }
+
     TCompletionCode CHDCAndSF_Slice45MetricSet::Initialize()
     {
         TCompletionCode ret                  = CC_OK;
@@ -1064,10 +1071,12 @@ namespace MetricsDiscoveryInternal::MetricSets_XEHP_SDV_GT1_GT2_OA
     exception:
         return ret;
     }
-    CHDCAndSF_Slice67MetricSet::CHDCAndSF_Slice67MetricSet( CMetricsDevice* device, CConcurrentGroup* concurrentGroup, const char* symbolicName, const char* shortName, uint32_t apiMask, uint32_t category, uint32_t snapshotReportSize, uint32_t deltaReportSize, TReportType reportType, TByteArrayLatest* platformMask, uint32_t gtMask /*= GT_TYPE_ALL*/, bool isCustom /*= false*/ )
+
+    CHDCAndSF_Slice67MetricSet::CHDCAndSF_Slice67MetricSet( CMetricsDevice& device, CConcurrentGroup* concurrentGroup, const char* symbolicName, const char* shortName, uint32_t apiMask, uint32_t category, uint32_t snapshotReportSize, uint32_t deltaReportSize, TReportType reportType, TByteArrayLatest* platformMask, uint32_t gtMask /*= GT_TYPE_ALL*/, bool isCustom /*= false*/ )
         : CMetricSet( device, concurrentGroup, symbolicName, shortName, apiMask, category, snapshotReportSize, deltaReportSize, reportType, platformMask, gtMask, isCustom )
     {
     }
+
     TCompletionCode CHDCAndSF_Slice67MetricSet::Initialize()
     {
         TCompletionCode ret                  = CC_OK;
@@ -1364,10 +1373,12 @@ namespace MetricsDiscoveryInternal::MetricSets_XEHP_SDV_GT1_GT2_OA
     exception:
         return ret;
     }
-    CHDCAndSF1MetricSet::CHDCAndSF1MetricSet( CMetricsDevice* device, CConcurrentGroup* concurrentGroup, const char* symbolicName, const char* shortName, uint32_t apiMask, uint32_t category, uint32_t snapshotReportSize, uint32_t deltaReportSize, TReportType reportType, TByteArrayLatest* platformMask, uint32_t gtMask /*= GT_TYPE_ALL*/, bool isCustom /*= false*/ )
+
+    CHDCAndSF1MetricSet::CHDCAndSF1MetricSet( CMetricsDevice& device, CConcurrentGroup* concurrentGroup, const char* symbolicName, const char* shortName, uint32_t apiMask, uint32_t category, uint32_t snapshotReportSize, uint32_t deltaReportSize, TReportType reportType, TByteArrayLatest* platformMask, uint32_t gtMask /*= GT_TYPE_ALL*/, bool isCustom /*= false*/ )
         : CMetricSet( device, concurrentGroup, symbolicName, shortName, apiMask, category, snapshotReportSize, deltaReportSize, reportType, platformMask, gtMask, isCustom )
     {
     }
+
     TCompletionCode CHDCAndSF1MetricSet::Initialize()
     {
         TCompletionCode ret                  = CC_OK;
@@ -1832,10 +1843,12 @@ namespace MetricsDiscoveryInternal::MetricSets_XEHP_SDV_GT1_GT2_OA
     exception:
         return ret;
     }
-    CL3_Slice01MetricSet::CL3_Slice01MetricSet( CMetricsDevice* device, CConcurrentGroup* concurrentGroup, const char* symbolicName, const char* shortName, uint32_t apiMask, uint32_t category, uint32_t snapshotReportSize, uint32_t deltaReportSize, TReportType reportType, TByteArrayLatest* platformMask, uint32_t gtMask /*= GT_TYPE_ALL*/, bool isCustom /*= false*/ )
+
+    CL3_Slice01MetricSet::CL3_Slice01MetricSet( CMetricsDevice& device, CConcurrentGroup* concurrentGroup, const char* symbolicName, const char* shortName, uint32_t apiMask, uint32_t category, uint32_t snapshotReportSize, uint32_t deltaReportSize, TReportType reportType, TByteArrayLatest* platformMask, uint32_t gtMask /*= GT_TYPE_ALL*/, bool isCustom /*= false*/ )
         : CMetricSet( device, concurrentGroup, symbolicName, shortName, apiMask, category, snapshotReportSize, deltaReportSize, reportType, platformMask, gtMask, isCustom )
     {
     }
+
     TCompletionCode CL3_Slice01MetricSet::Initialize()
     {
         TCompletionCode ret                  = CC_OK;
@@ -2214,10 +2227,12 @@ namespace MetricsDiscoveryInternal::MetricSets_XEHP_SDV_GT1_GT2_OA
     exception:
         return ret;
     }
-    CL3_Slice23MetricSet::CL3_Slice23MetricSet( CMetricsDevice* device, CConcurrentGroup* concurrentGroup, const char* symbolicName, const char* shortName, uint32_t apiMask, uint32_t category, uint32_t snapshotReportSize, uint32_t deltaReportSize, TReportType reportType, TByteArrayLatest* platformMask, uint32_t gtMask /*= GT_TYPE_ALL*/, bool isCustom /*= false*/ )
+
+    CL3_Slice23MetricSet::CL3_Slice23MetricSet( CMetricsDevice& device, CConcurrentGroup* concurrentGroup, const char* symbolicName, const char* shortName, uint32_t apiMask, uint32_t category, uint32_t snapshotReportSize, uint32_t deltaReportSize, TReportType reportType, TByteArrayLatest* platformMask, uint32_t gtMask /*= GT_TYPE_ALL*/, bool isCustom /*= false*/ )
         : CMetricSet( device, concurrentGroup, symbolicName, shortName, apiMask, category, snapshotReportSize, deltaReportSize, reportType, platformMask, gtMask, isCustom )
     {
     }
+
     TCompletionCode CL3_Slice23MetricSet::Initialize()
     {
         TCompletionCode ret                  = CC_OK;
@@ -2596,10 +2611,12 @@ namespace MetricsDiscoveryInternal::MetricSets_XEHP_SDV_GT1_GT2_OA
     exception:
         return ret;
     }
-    CL3_Slice45MetricSet::CL3_Slice45MetricSet( CMetricsDevice* device, CConcurrentGroup* concurrentGroup, const char* symbolicName, const char* shortName, uint32_t apiMask, uint32_t category, uint32_t snapshotReportSize, uint32_t deltaReportSize, TReportType reportType, TByteArrayLatest* platformMask, uint32_t gtMask /*= GT_TYPE_ALL*/, bool isCustom /*= false*/ )
+
+    CL3_Slice45MetricSet::CL3_Slice45MetricSet( CMetricsDevice& device, CConcurrentGroup* concurrentGroup, const char* symbolicName, const char* shortName, uint32_t apiMask, uint32_t category, uint32_t snapshotReportSize, uint32_t deltaReportSize, TReportType reportType, TByteArrayLatest* platformMask, uint32_t gtMask /*= GT_TYPE_ALL*/, bool isCustom /*= false*/ )
         : CMetricSet( device, concurrentGroup, symbolicName, shortName, apiMask, category, snapshotReportSize, deltaReportSize, reportType, platformMask, gtMask, isCustom )
     {
     }
+
     TCompletionCode CL3_Slice45MetricSet::Initialize()
     {
         TCompletionCode ret                  = CC_OK;
@@ -2979,10 +2996,12 @@ namespace MetricsDiscoveryInternal::MetricSets_XEHP_SDV_GT1_GT2_OA
     exception:
         return ret;
     }
-    CL3_Slice67MetricSet::CL3_Slice67MetricSet( CMetricsDevice* device, CConcurrentGroup* concurrentGroup, const char* symbolicName, const char* shortName, uint32_t apiMask, uint32_t category, uint32_t snapshotReportSize, uint32_t deltaReportSize, TReportType reportType, TByteArrayLatest* platformMask, uint32_t gtMask /*= GT_TYPE_ALL*/, bool isCustom /*= false*/ )
+
+    CL3_Slice67MetricSet::CL3_Slice67MetricSet( CMetricsDevice& device, CConcurrentGroup* concurrentGroup, const char* symbolicName, const char* shortName, uint32_t apiMask, uint32_t category, uint32_t snapshotReportSize, uint32_t deltaReportSize, TReportType reportType, TByteArrayLatest* platformMask, uint32_t gtMask /*= GT_TYPE_ALL*/, bool isCustom /*= false*/ )
         : CMetricSet( device, concurrentGroup, symbolicName, shortName, apiMask, category, snapshotReportSize, deltaReportSize, reportType, platformMask, gtMask, isCustom )
     {
     }
+
     TCompletionCode CL3_Slice67MetricSet::Initialize()
     {
         TCompletionCode ret                  = CC_OK;
@@ -3361,10 +3380,12 @@ namespace MetricsDiscoveryInternal::MetricSets_XEHP_SDV_GT1_GT2_OA
     exception:
         return ret;
     }
-    CRasterizerAndPixelBackend1MetricSet::CRasterizerAndPixelBackend1MetricSet( CMetricsDevice* device, CConcurrentGroup* concurrentGroup, const char* symbolicName, const char* shortName, uint32_t apiMask, uint32_t category, uint32_t snapshotReportSize, uint32_t deltaReportSize, TReportType reportType, TByteArrayLatest* platformMask, uint32_t gtMask /*= GT_TYPE_ALL*/, bool isCustom /*= false*/ )
+
+    CRasterizerAndPixelBackend1MetricSet::CRasterizerAndPixelBackend1MetricSet( CMetricsDevice& device, CConcurrentGroup* concurrentGroup, const char* symbolicName, const char* shortName, uint32_t apiMask, uint32_t category, uint32_t snapshotReportSize, uint32_t deltaReportSize, TReportType reportType, TByteArrayLatest* platformMask, uint32_t gtMask /*= GT_TYPE_ALL*/, bool isCustom /*= false*/ )
         : CMetricSet( device, concurrentGroup, symbolicName, shortName, apiMask, category, snapshotReportSize, deltaReportSize, reportType, platformMask, gtMask, isCustom )
     {
     }
+
     TCompletionCode CRasterizerAndPixelBackend1MetricSet::Initialize()
     {
         TCompletionCode ret                  = CC_OK;
@@ -3673,10 +3694,12 @@ namespace MetricsDiscoveryInternal::MetricSets_XEHP_SDV_GT1_GT2_OA
     exception:
         return ret;
     }
-    CRasterizerAndPixelBackend2MetricSet::CRasterizerAndPixelBackend2MetricSet( CMetricsDevice* device, CConcurrentGroup* concurrentGroup, const char* symbolicName, const char* shortName, uint32_t apiMask, uint32_t category, uint32_t snapshotReportSize, uint32_t deltaReportSize, TReportType reportType, TByteArrayLatest* platformMask, uint32_t gtMask /*= GT_TYPE_ALL*/, bool isCustom /*= false*/ )
+
+    CRasterizerAndPixelBackend2MetricSet::CRasterizerAndPixelBackend2MetricSet( CMetricsDevice& device, CConcurrentGroup* concurrentGroup, const char* symbolicName, const char* shortName, uint32_t apiMask, uint32_t category, uint32_t snapshotReportSize, uint32_t deltaReportSize, TReportType reportType, TByteArrayLatest* platformMask, uint32_t gtMask /*= GT_TYPE_ALL*/, bool isCustom /*= false*/ )
         : CMetricSet( device, concurrentGroup, symbolicName, shortName, apiMask, category, snapshotReportSize, deltaReportSize, reportType, platformMask, gtMask, isCustom )
     {
     }
+
     TCompletionCode CRasterizerAndPixelBackend2MetricSet::Initialize()
     {
         TCompletionCode ret                  = CC_OK;
@@ -3992,10 +4015,12 @@ namespace MetricsDiscoveryInternal::MetricSets_XEHP_SDV_GT1_GT2_OA
     exception:
         return ret;
     }
-    CRasterizerAndPixelBackend3MetricSet::CRasterizerAndPixelBackend3MetricSet( CMetricsDevice* device, CConcurrentGroup* concurrentGroup, const char* symbolicName, const char* shortName, uint32_t apiMask, uint32_t category, uint32_t snapshotReportSize, uint32_t deltaReportSize, TReportType reportType, TByteArrayLatest* platformMask, uint32_t gtMask /*= GT_TYPE_ALL*/, bool isCustom /*= false*/ )
+
+    CRasterizerAndPixelBackend3MetricSet::CRasterizerAndPixelBackend3MetricSet( CMetricsDevice& device, CConcurrentGroup* concurrentGroup, const char* symbolicName, const char* shortName, uint32_t apiMask, uint32_t category, uint32_t snapshotReportSize, uint32_t deltaReportSize, TReportType reportType, TByteArrayLatest* platformMask, uint32_t gtMask /*= GT_TYPE_ALL*/, bool isCustom /*= false*/ )
         : CMetricSet( device, concurrentGroup, symbolicName, shortName, apiMask, category, snapshotReportSize, deltaReportSize, reportType, platformMask, gtMask, isCustom )
     {
     }
+
     TCompletionCode CRasterizerAndPixelBackend3MetricSet::Initialize()
     {
         TCompletionCode ret                  = CC_OK;
@@ -4305,10 +4330,12 @@ namespace MetricsDiscoveryInternal::MetricSets_XEHP_SDV_GT1_GT2_OA
     exception:
         return ret;
     }
-    CRasterizerAndPixelBackend4MetricSet::CRasterizerAndPixelBackend4MetricSet( CMetricsDevice* device, CConcurrentGroup* concurrentGroup, const char* symbolicName, const char* shortName, uint32_t apiMask, uint32_t category, uint32_t snapshotReportSize, uint32_t deltaReportSize, TReportType reportType, TByteArrayLatest* platformMask, uint32_t gtMask /*= GT_TYPE_ALL*/, bool isCustom /*= false*/ )
+
+    CRasterizerAndPixelBackend4MetricSet::CRasterizerAndPixelBackend4MetricSet( CMetricsDevice& device, CConcurrentGroup* concurrentGroup, const char* symbolicName, const char* shortName, uint32_t apiMask, uint32_t category, uint32_t snapshotReportSize, uint32_t deltaReportSize, TReportType reportType, TByteArrayLatest* platformMask, uint32_t gtMask /*= GT_TYPE_ALL*/, bool isCustom /*= false*/ )
         : CMetricSet( device, concurrentGroup, symbolicName, shortName, apiMask, category, snapshotReportSize, deltaReportSize, reportType, platformMask, gtMask, isCustom )
     {
     }
+
     TCompletionCode CRasterizerAndPixelBackend4MetricSet::Initialize()
     {
         TCompletionCode ret                  = CC_OK;
@@ -4625,10 +4652,12 @@ namespace MetricsDiscoveryInternal::MetricSets_XEHP_SDV_GT1_GT2_OA
     exception:
         return ret;
     }
-    CRasterizerAndPixelBackend5MetricSet::CRasterizerAndPixelBackend5MetricSet( CMetricsDevice* device, CConcurrentGroup* concurrentGroup, const char* symbolicName, const char* shortName, uint32_t apiMask, uint32_t category, uint32_t snapshotReportSize, uint32_t deltaReportSize, TReportType reportType, TByteArrayLatest* platformMask, uint32_t gtMask /*= GT_TYPE_ALL*/, bool isCustom /*= false*/ )
+
+    CRasterizerAndPixelBackend5MetricSet::CRasterizerAndPixelBackend5MetricSet( CMetricsDevice& device, CConcurrentGroup* concurrentGroup, const char* symbolicName, const char* shortName, uint32_t apiMask, uint32_t category, uint32_t snapshotReportSize, uint32_t deltaReportSize, TReportType reportType, TByteArrayLatest* platformMask, uint32_t gtMask /*= GT_TYPE_ALL*/, bool isCustom /*= false*/ )
         : CMetricSet( device, concurrentGroup, symbolicName, shortName, apiMask, category, snapshotReportSize, deltaReportSize, reportType, platformMask, gtMask, isCustom )
     {
     }
+
     TCompletionCode CRasterizerAndPixelBackend5MetricSet::Initialize()
     {
         TCompletionCode ret                  = CC_OK;
@@ -5055,10 +5084,12 @@ namespace MetricsDiscoveryInternal::MetricSets_XEHP_SDV_GT1_GT2_OA
     exception:
         return ret;
     }
-    CRenderPipeProfile_Slice0MetricSet::CRenderPipeProfile_Slice0MetricSet( CMetricsDevice* device, CConcurrentGroup* concurrentGroup, const char* symbolicName, const char* shortName, uint32_t apiMask, uint32_t category, uint32_t snapshotReportSize, uint32_t deltaReportSize, TReportType reportType, TByteArrayLatest* platformMask, uint32_t gtMask /*= GT_TYPE_ALL*/, bool isCustom /*= false*/ )
+
+    CRenderPipeProfile_Slice0MetricSet::CRenderPipeProfile_Slice0MetricSet( CMetricsDevice& device, CConcurrentGroup* concurrentGroup, const char* symbolicName, const char* shortName, uint32_t apiMask, uint32_t category, uint32_t snapshotReportSize, uint32_t deltaReportSize, TReportType reportType, TByteArrayLatest* platformMask, uint32_t gtMask /*= GT_TYPE_ALL*/, bool isCustom /*= false*/ )
         : CMetricSet( device, concurrentGroup, symbolicName, shortName, apiMask, category, snapshotReportSize, deltaReportSize, reportType, platformMask, gtMask, isCustom )
     {
     }
+
     TCompletionCode CRenderPipeProfile_Slice0MetricSet::Initialize()
     {
         TCompletionCode ret                  = CC_OK;
@@ -5427,10 +5458,12 @@ namespace MetricsDiscoveryInternal::MetricSets_XEHP_SDV_GT1_GT2_OA
     exception:
         return ret;
     }
-    CRenderPipeProfile_Slice1MetricSet::CRenderPipeProfile_Slice1MetricSet( CMetricsDevice* device, CConcurrentGroup* concurrentGroup, const char* symbolicName, const char* shortName, uint32_t apiMask, uint32_t category, uint32_t snapshotReportSize, uint32_t deltaReportSize, TReportType reportType, TByteArrayLatest* platformMask, uint32_t gtMask /*= GT_TYPE_ALL*/, bool isCustom /*= false*/ )
+
+    CRenderPipeProfile_Slice1MetricSet::CRenderPipeProfile_Slice1MetricSet( CMetricsDevice& device, CConcurrentGroup* concurrentGroup, const char* symbolicName, const char* shortName, uint32_t apiMask, uint32_t category, uint32_t snapshotReportSize, uint32_t deltaReportSize, TReportType reportType, TByteArrayLatest* platformMask, uint32_t gtMask /*= GT_TYPE_ALL*/, bool isCustom /*= false*/ )
         : CMetricSet( device, concurrentGroup, symbolicName, shortName, apiMask, category, snapshotReportSize, deltaReportSize, reportType, platformMask, gtMask, isCustom )
     {
     }
+
     TCompletionCode CRenderPipeProfile_Slice1MetricSet::Initialize()
     {
         TCompletionCode ret                  = CC_OK;
@@ -5809,10 +5842,12 @@ namespace MetricsDiscoveryInternal::MetricSets_XEHP_SDV_GT1_GT2_OA
     exception:
         return ret;
     }
-    CRenderPipeProfile_Slice2MetricSet::CRenderPipeProfile_Slice2MetricSet( CMetricsDevice* device, CConcurrentGroup* concurrentGroup, const char* symbolicName, const char* shortName, uint32_t apiMask, uint32_t category, uint32_t snapshotReportSize, uint32_t deltaReportSize, TReportType reportType, TByteArrayLatest* platformMask, uint32_t gtMask /*= GT_TYPE_ALL*/, bool isCustom /*= false*/ )
+
+    CRenderPipeProfile_Slice2MetricSet::CRenderPipeProfile_Slice2MetricSet( CMetricsDevice& device, CConcurrentGroup* concurrentGroup, const char* symbolicName, const char* shortName, uint32_t apiMask, uint32_t category, uint32_t snapshotReportSize, uint32_t deltaReportSize, TReportType reportType, TByteArrayLatest* platformMask, uint32_t gtMask /*= GT_TYPE_ALL*/, bool isCustom /*= false*/ )
         : CMetricSet( device, concurrentGroup, symbolicName, shortName, apiMask, category, snapshotReportSize, deltaReportSize, reportType, platformMask, gtMask, isCustom )
     {
     }
+
     TCompletionCode CRenderPipeProfile_Slice2MetricSet::Initialize()
     {
         TCompletionCode ret                  = CC_OK;
@@ -6181,10 +6216,12 @@ namespace MetricsDiscoveryInternal::MetricSets_XEHP_SDV_GT1_GT2_OA
     exception:
         return ret;
     }
-    CRenderPipeProfile_Slice3MetricSet::CRenderPipeProfile_Slice3MetricSet( CMetricsDevice* device, CConcurrentGroup* concurrentGroup, const char* symbolicName, const char* shortName, uint32_t apiMask, uint32_t category, uint32_t snapshotReportSize, uint32_t deltaReportSize, TReportType reportType, TByteArrayLatest* platformMask, uint32_t gtMask /*= GT_TYPE_ALL*/, bool isCustom /*= false*/ )
+
+    CRenderPipeProfile_Slice3MetricSet::CRenderPipeProfile_Slice3MetricSet( CMetricsDevice& device, CConcurrentGroup* concurrentGroup, const char* symbolicName, const char* shortName, uint32_t apiMask, uint32_t category, uint32_t snapshotReportSize, uint32_t deltaReportSize, TReportType reportType, TByteArrayLatest* platformMask, uint32_t gtMask /*= GT_TYPE_ALL*/, bool isCustom /*= false*/ )
         : CMetricSet( device, concurrentGroup, symbolicName, shortName, apiMask, category, snapshotReportSize, deltaReportSize, reportType, platformMask, gtMask, isCustom )
     {
     }
+
     TCompletionCode CRenderPipeProfile_Slice3MetricSet::Initialize()
     {
         TCompletionCode ret                  = CC_OK;
@@ -6563,10 +6600,12 @@ namespace MetricsDiscoveryInternal::MetricSets_XEHP_SDV_GT1_GT2_OA
     exception:
         return ret;
     }
-    CRenderPipeProfile_Slice4MetricSet::CRenderPipeProfile_Slice4MetricSet( CMetricsDevice* device, CConcurrentGroup* concurrentGroup, const char* symbolicName, const char* shortName, uint32_t apiMask, uint32_t category, uint32_t snapshotReportSize, uint32_t deltaReportSize, TReportType reportType, TByteArrayLatest* platformMask, uint32_t gtMask /*= GT_TYPE_ALL*/, bool isCustom /*= false*/ )
+
+    CRenderPipeProfile_Slice4MetricSet::CRenderPipeProfile_Slice4MetricSet( CMetricsDevice& device, CConcurrentGroup* concurrentGroup, const char* symbolicName, const char* shortName, uint32_t apiMask, uint32_t category, uint32_t snapshotReportSize, uint32_t deltaReportSize, TReportType reportType, TByteArrayLatest* platformMask, uint32_t gtMask /*= GT_TYPE_ALL*/, bool isCustom /*= false*/ )
         : CMetricSet( device, concurrentGroup, symbolicName, shortName, apiMask, category, snapshotReportSize, deltaReportSize, reportType, platformMask, gtMask, isCustom )
     {
     }
+
     TCompletionCode CRenderPipeProfile_Slice4MetricSet::Initialize()
     {
         TCompletionCode ret                  = CC_OK;
@@ -6936,10 +6975,12 @@ namespace MetricsDiscoveryInternal::MetricSets_XEHP_SDV_GT1_GT2_OA
     exception:
         return ret;
     }
-    CRenderPipeProfile_Slice5MetricSet::CRenderPipeProfile_Slice5MetricSet( CMetricsDevice* device, CConcurrentGroup* concurrentGroup, const char* symbolicName, const char* shortName, uint32_t apiMask, uint32_t category, uint32_t snapshotReportSize, uint32_t deltaReportSize, TReportType reportType, TByteArrayLatest* platformMask, uint32_t gtMask /*= GT_TYPE_ALL*/, bool isCustom /*= false*/ )
+
+    CRenderPipeProfile_Slice5MetricSet::CRenderPipeProfile_Slice5MetricSet( CMetricsDevice& device, CConcurrentGroup* concurrentGroup, const char* symbolicName, const char* shortName, uint32_t apiMask, uint32_t category, uint32_t snapshotReportSize, uint32_t deltaReportSize, TReportType reportType, TByteArrayLatest* platformMask, uint32_t gtMask /*= GT_TYPE_ALL*/, bool isCustom /*= false*/ )
         : CMetricSet( device, concurrentGroup, symbolicName, shortName, apiMask, category, snapshotReportSize, deltaReportSize, reportType, platformMask, gtMask, isCustom )
     {
     }
+
     TCompletionCode CRenderPipeProfile_Slice5MetricSet::Initialize()
     {
         TCompletionCode ret                  = CC_OK;
@@ -7319,10 +7360,12 @@ namespace MetricsDiscoveryInternal::MetricSets_XEHP_SDV_GT1_GT2_OA
     exception:
         return ret;
     }
-    CRenderPipeProfile_Slice6MetricSet::CRenderPipeProfile_Slice6MetricSet( CMetricsDevice* device, CConcurrentGroup* concurrentGroup, const char* symbolicName, const char* shortName, uint32_t apiMask, uint32_t category, uint32_t snapshotReportSize, uint32_t deltaReportSize, TReportType reportType, TByteArrayLatest* platformMask, uint32_t gtMask /*= GT_TYPE_ALL*/, bool isCustom /*= false*/ )
+
+    CRenderPipeProfile_Slice6MetricSet::CRenderPipeProfile_Slice6MetricSet( CMetricsDevice& device, CConcurrentGroup* concurrentGroup, const char* symbolicName, const char* shortName, uint32_t apiMask, uint32_t category, uint32_t snapshotReportSize, uint32_t deltaReportSize, TReportType reportType, TByteArrayLatest* platformMask, uint32_t gtMask /*= GT_TYPE_ALL*/, bool isCustom /*= false*/ )
         : CMetricSet( device, concurrentGroup, symbolicName, shortName, apiMask, category, snapshotReportSize, deltaReportSize, reportType, platformMask, gtMask, isCustom )
     {
     }
+
     TCompletionCode CRenderPipeProfile_Slice6MetricSet::Initialize()
     {
         TCompletionCode ret                  = CC_OK;
@@ -7691,10 +7734,12 @@ namespace MetricsDiscoveryInternal::MetricSets_XEHP_SDV_GT1_GT2_OA
     exception:
         return ret;
     }
-    CRenderPipeProfile_Slice7MetricSet::CRenderPipeProfile_Slice7MetricSet( CMetricsDevice* device, CConcurrentGroup* concurrentGroup, const char* symbolicName, const char* shortName, uint32_t apiMask, uint32_t category, uint32_t snapshotReportSize, uint32_t deltaReportSize, TReportType reportType, TByteArrayLatest* platformMask, uint32_t gtMask /*= GT_TYPE_ALL*/, bool isCustom /*= false*/ )
+
+    CRenderPipeProfile_Slice7MetricSet::CRenderPipeProfile_Slice7MetricSet( CMetricsDevice& device, CConcurrentGroup* concurrentGroup, const char* symbolicName, const char* shortName, uint32_t apiMask, uint32_t category, uint32_t snapshotReportSize, uint32_t deltaReportSize, TReportType reportType, TByteArrayLatest* platformMask, uint32_t gtMask /*= GT_TYPE_ALL*/, bool isCustom /*= false*/ )
         : CMetricSet( device, concurrentGroup, symbolicName, shortName, apiMask, category, snapshotReportSize, deltaReportSize, reportType, platformMask, gtMask, isCustom )
     {
     }
+
     TCompletionCode CRenderPipeProfile_Slice7MetricSet::Initialize()
     {
         TCompletionCode ret                  = CC_OK;
@@ -8073,10 +8118,12 @@ namespace MetricsDiscoveryInternal::MetricSets_XEHP_SDV_GT1_GT2_OA
     exception:
         return ret;
     }
-    CSampler_1MetricSet::CSampler_1MetricSet( CMetricsDevice* device, CConcurrentGroup* concurrentGroup, const char* symbolicName, const char* shortName, uint32_t apiMask, uint32_t category, uint32_t snapshotReportSize, uint32_t deltaReportSize, TReportType reportType, TByteArrayLatest* platformMask, uint32_t gtMask /*= GT_TYPE_ALL*/, bool isCustom /*= false*/ )
+
+    CSampler_1MetricSet::CSampler_1MetricSet( CMetricsDevice& device, CConcurrentGroup* concurrentGroup, const char* symbolicName, const char* shortName, uint32_t apiMask, uint32_t category, uint32_t snapshotReportSize, uint32_t deltaReportSize, TReportType reportType, TByteArrayLatest* platformMask, uint32_t gtMask /*= GT_TYPE_ALL*/, bool isCustom /*= false*/ )
         : CMetricSet( device, concurrentGroup, symbolicName, shortName, apiMask, category, snapshotReportSize, deltaReportSize, reportType, platformMask, gtMask, isCustom )
     {
     }
+
     TCompletionCode CSampler_1MetricSet::Initialize()
     {
         TCompletionCode ret                  = CC_OK;
@@ -8560,10 +8607,12 @@ namespace MetricsDiscoveryInternal::MetricSets_XEHP_SDV_GT1_GT2_OA
     exception:
         return ret;
     }
-    CSampler_2MetricSet::CSampler_2MetricSet( CMetricsDevice* device, CConcurrentGroup* concurrentGroup, const char* symbolicName, const char* shortName, uint32_t apiMask, uint32_t category, uint32_t snapshotReportSize, uint32_t deltaReportSize, TReportType reportType, TByteArrayLatest* platformMask, uint32_t gtMask /*= GT_TYPE_ALL*/, bool isCustom /*= false*/ )
+
+    CSampler_2MetricSet::CSampler_2MetricSet( CMetricsDevice& device, CConcurrentGroup* concurrentGroup, const char* symbolicName, const char* shortName, uint32_t apiMask, uint32_t category, uint32_t snapshotReportSize, uint32_t deltaReportSize, TReportType reportType, TByteArrayLatest* platformMask, uint32_t gtMask /*= GT_TYPE_ALL*/, bool isCustom /*= false*/ )
         : CMetricSet( device, concurrentGroup, symbolicName, shortName, apiMask, category, snapshotReportSize, deltaReportSize, reportType, platformMask, gtMask, isCustom )
     {
     }
+
     TCompletionCode CSampler_2MetricSet::Initialize()
     {
         TCompletionCode ret                  = CC_OK;
@@ -9048,10 +9097,12 @@ namespace MetricsDiscoveryInternal::MetricSets_XEHP_SDV_GT1_GT2_OA
     exception:
         return ret;
     }
-    CSampler_3MetricSet::CSampler_3MetricSet( CMetricsDevice* device, CConcurrentGroup* concurrentGroup, const char* symbolicName, const char* shortName, uint32_t apiMask, uint32_t category, uint32_t snapshotReportSize, uint32_t deltaReportSize, TReportType reportType, TByteArrayLatest* platformMask, uint32_t gtMask /*= GT_TYPE_ALL*/, bool isCustom /*= false*/ )
+
+    CSampler_3MetricSet::CSampler_3MetricSet( CMetricsDevice& device, CConcurrentGroup* concurrentGroup, const char* symbolicName, const char* shortName, uint32_t apiMask, uint32_t category, uint32_t snapshotReportSize, uint32_t deltaReportSize, TReportType reportType, TByteArrayLatest* platformMask, uint32_t gtMask /*= GT_TYPE_ALL*/, bool isCustom /*= false*/ )
         : CMetricSet( device, concurrentGroup, symbolicName, shortName, apiMask, category, snapshotReportSize, deltaReportSize, reportType, platformMask, gtMask, isCustom )
     {
     }
+
     TCompletionCode CSampler_3MetricSet::Initialize()
     {
         TCompletionCode ret                  = CC_OK;
@@ -9358,10 +9409,12 @@ namespace MetricsDiscoveryInternal::MetricSets_XEHP_SDV_GT1_GT2_OA
     exception:
         return ret;
     }
-    CSampler_4MetricSet::CSampler_4MetricSet( CMetricsDevice* device, CConcurrentGroup* concurrentGroup, const char* symbolicName, const char* shortName, uint32_t apiMask, uint32_t category, uint32_t snapshotReportSize, uint32_t deltaReportSize, TReportType reportType, TByteArrayLatest* platformMask, uint32_t gtMask /*= GT_TYPE_ALL*/, bool isCustom /*= false*/ )
+
+    CSampler_4MetricSet::CSampler_4MetricSet( CMetricsDevice& device, CConcurrentGroup* concurrentGroup, const char* symbolicName, const char* shortName, uint32_t apiMask, uint32_t category, uint32_t snapshotReportSize, uint32_t deltaReportSize, TReportType reportType, TByteArrayLatest* platformMask, uint32_t gtMask /*= GT_TYPE_ALL*/, bool isCustom /*= false*/ )
         : CMetricSet( device, concurrentGroup, symbolicName, shortName, apiMask, category, snapshotReportSize, deltaReportSize, reportType, platformMask, gtMask, isCustom )
     {
     }
+
     TCompletionCode CSampler_4MetricSet::Initialize()
     {
         TCompletionCode ret                  = CC_OK;
@@ -9668,10 +9721,12 @@ namespace MetricsDiscoveryInternal::MetricSets_XEHP_SDV_GT1_GT2_OA
     exception:
         return ret;
     }
-    CSampler_5MetricSet::CSampler_5MetricSet( CMetricsDevice* device, CConcurrentGroup* concurrentGroup, const char* symbolicName, const char* shortName, uint32_t apiMask, uint32_t category, uint32_t snapshotReportSize, uint32_t deltaReportSize, TReportType reportType, TByteArrayLatest* platformMask, uint32_t gtMask /*= GT_TYPE_ALL*/, bool isCustom /*= false*/ )
+
+    CSampler_5MetricSet::CSampler_5MetricSet( CMetricsDevice& device, CConcurrentGroup* concurrentGroup, const char* symbolicName, const char* shortName, uint32_t apiMask, uint32_t category, uint32_t snapshotReportSize, uint32_t deltaReportSize, TReportType reportType, TByteArrayLatest* platformMask, uint32_t gtMask /*= GT_TYPE_ALL*/, bool isCustom /*= false*/ )
         : CMetricSet( device, concurrentGroup, symbolicName, shortName, apiMask, category, snapshotReportSize, deltaReportSize, reportType, platformMask, gtMask, isCustom )
     {
     }
+
     TCompletionCode CSampler_5MetricSet::Initialize()
     {
         TCompletionCode ret                  = CC_OK;
@@ -9979,10 +10034,12 @@ namespace MetricsDiscoveryInternal::MetricSets_XEHP_SDV_GT1_GT2_OA
     exception:
         return ret;
     }
-    CSampler_6MetricSet::CSampler_6MetricSet( CMetricsDevice* device, CConcurrentGroup* concurrentGroup, const char* symbolicName, const char* shortName, uint32_t apiMask, uint32_t category, uint32_t snapshotReportSize, uint32_t deltaReportSize, TReportType reportType, TByteArrayLatest* platformMask, uint32_t gtMask /*= GT_TYPE_ALL*/, bool isCustom /*= false*/ )
+
+    CSampler_6MetricSet::CSampler_6MetricSet( CMetricsDevice& device, CConcurrentGroup* concurrentGroup, const char* symbolicName, const char* shortName, uint32_t apiMask, uint32_t category, uint32_t snapshotReportSize, uint32_t deltaReportSize, TReportType reportType, TByteArrayLatest* platformMask, uint32_t gtMask /*= GT_TYPE_ALL*/, bool isCustom /*= false*/ )
         : CMetricSet( device, concurrentGroup, symbolicName, shortName, apiMask, category, snapshotReportSize, deltaReportSize, reportType, platformMask, gtMask, isCustom )
     {
     }
+
     TCompletionCode CSampler_6MetricSet::Initialize()
     {
         TCompletionCode ret                  = CC_OK;
@@ -10289,10 +10346,12 @@ namespace MetricsDiscoveryInternal::MetricSets_XEHP_SDV_GT1_GT2_OA
     exception:
         return ret;
     }
-    CTDL_1MetricSet::CTDL_1MetricSet( CMetricsDevice* device, CConcurrentGroup* concurrentGroup, const char* symbolicName, const char* shortName, uint32_t apiMask, uint32_t category, uint32_t snapshotReportSize, uint32_t deltaReportSize, TReportType reportType, TByteArrayLatest* platformMask, uint32_t gtMask /*= GT_TYPE_ALL*/, bool isCustom /*= false*/ )
+
+    CTDL_1MetricSet::CTDL_1MetricSet( CMetricsDevice& device, CConcurrentGroup* concurrentGroup, const char* symbolicName, const char* shortName, uint32_t apiMask, uint32_t category, uint32_t snapshotReportSize, uint32_t deltaReportSize, TReportType reportType, TByteArrayLatest* platformMask, uint32_t gtMask /*= GT_TYPE_ALL*/, bool isCustom /*= false*/ )
         : CMetricSet( device, concurrentGroup, symbolicName, shortName, apiMask, category, snapshotReportSize, deltaReportSize, reportType, platformMask, gtMask, isCustom )
     {
     }
+
     TCompletionCode CTDL_1MetricSet::Initialize()
     {
         TCompletionCode ret                  = CC_OK;
@@ -10708,10 +10767,12 @@ namespace MetricsDiscoveryInternal::MetricSets_XEHP_SDV_GT1_GT2_OA
     exception:
         return ret;
     }
-    CTDL_2MetricSet::CTDL_2MetricSet( CMetricsDevice* device, CConcurrentGroup* concurrentGroup, const char* symbolicName, const char* shortName, uint32_t apiMask, uint32_t category, uint32_t snapshotReportSize, uint32_t deltaReportSize, TReportType reportType, TByteArrayLatest* platformMask, uint32_t gtMask /*= GT_TYPE_ALL*/, bool isCustom /*= false*/ )
+
+    CTDL_2MetricSet::CTDL_2MetricSet( CMetricsDevice& device, CConcurrentGroup* concurrentGroup, const char* symbolicName, const char* shortName, uint32_t apiMask, uint32_t category, uint32_t snapshotReportSize, uint32_t deltaReportSize, TReportType reportType, TByteArrayLatest* platformMask, uint32_t gtMask /*= GT_TYPE_ALL*/, bool isCustom /*= false*/ )
         : CMetricSet( device, concurrentGroup, symbolicName, shortName, apiMask, category, snapshotReportSize, deltaReportSize, reportType, platformMask, gtMask, isCustom )
     {
     }
+
     TCompletionCode CTDL_2MetricSet::Initialize()
     {
         TCompletionCode ret                  = CC_OK;
@@ -11137,10 +11198,12 @@ namespace MetricsDiscoveryInternal::MetricSets_XEHP_SDV_GT1_GT2_OA
     exception:
         return ret;
     }
-    CTDL_3MetricSet::CTDL_3MetricSet( CMetricsDevice* device, CConcurrentGroup* concurrentGroup, const char* symbolicName, const char* shortName, uint32_t apiMask, uint32_t category, uint32_t snapshotReportSize, uint32_t deltaReportSize, TReportType reportType, TByteArrayLatest* platformMask, uint32_t gtMask /*= GT_TYPE_ALL*/, bool isCustom /*= false*/ )
+
+    CTDL_3MetricSet::CTDL_3MetricSet( CMetricsDevice& device, CConcurrentGroup* concurrentGroup, const char* symbolicName, const char* shortName, uint32_t apiMask, uint32_t category, uint32_t snapshotReportSize, uint32_t deltaReportSize, TReportType reportType, TByteArrayLatest* platformMask, uint32_t gtMask /*= GT_TYPE_ALL*/, bool isCustom /*= false*/ )
         : CMetricSet( device, concurrentGroup, symbolicName, shortName, apiMask, category, snapshotReportSize, deltaReportSize, reportType, platformMask, gtMask, isCustom )
     {
     }
+
     TCompletionCode CTDL_3MetricSet::Initialize()
     {
         TCompletionCode ret                  = CC_OK;
@@ -11556,10 +11619,12 @@ namespace MetricsDiscoveryInternal::MetricSets_XEHP_SDV_GT1_GT2_OA
     exception:
         return ret;
     }
-    CTDL_4MetricSet::CTDL_4MetricSet( CMetricsDevice* device, CConcurrentGroup* concurrentGroup, const char* symbolicName, const char* shortName, uint32_t apiMask, uint32_t category, uint32_t snapshotReportSize, uint32_t deltaReportSize, TReportType reportType, TByteArrayLatest* platformMask, uint32_t gtMask /*= GT_TYPE_ALL*/, bool isCustom /*= false*/ )
+
+    CTDL_4MetricSet::CTDL_4MetricSet( CMetricsDevice& device, CConcurrentGroup* concurrentGroup, const char* symbolicName, const char* shortName, uint32_t apiMask, uint32_t category, uint32_t snapshotReportSize, uint32_t deltaReportSize, TReportType reportType, TByteArrayLatest* platformMask, uint32_t gtMask /*= GT_TYPE_ALL*/, bool isCustom /*= false*/ )
         : CMetricSet( device, concurrentGroup, symbolicName, shortName, apiMask, category, snapshotReportSize, deltaReportSize, reportType, platformMask, gtMask, isCustom )
     {
     }
+
     TCompletionCode CTDL_4MetricSet::Initialize()
     {
         TCompletionCode ret                  = CC_OK;
@@ -11985,10 +12050,12 @@ namespace MetricsDiscoveryInternal::MetricSets_XEHP_SDV_GT1_GT2_OA
     exception:
         return ret;
     }
-    CTDL_5MetricSet::CTDL_5MetricSet( CMetricsDevice* device, CConcurrentGroup* concurrentGroup, const char* symbolicName, const char* shortName, uint32_t apiMask, uint32_t category, uint32_t snapshotReportSize, uint32_t deltaReportSize, TReportType reportType, TByteArrayLatest* platformMask, uint32_t gtMask /*= GT_TYPE_ALL*/, bool isCustom /*= false*/ )
+
+    CTDL_5MetricSet::CTDL_5MetricSet( CMetricsDevice& device, CConcurrentGroup* concurrentGroup, const char* symbolicName, const char* shortName, uint32_t apiMask, uint32_t category, uint32_t snapshotReportSize, uint32_t deltaReportSize, TReportType reportType, TByteArrayLatest* platformMask, uint32_t gtMask /*= GT_TYPE_ALL*/, bool isCustom /*= false*/ )
         : CMetricSet( device, concurrentGroup, symbolicName, shortName, apiMask, category, snapshotReportSize, deltaReportSize, reportType, platformMask, gtMask, isCustom )
     {
     }
+
     TCompletionCode CTDL_5MetricSet::Initialize()
     {
         TCompletionCode ret                  = CC_OK;
@@ -12405,10 +12472,12 @@ namespace MetricsDiscoveryInternal::MetricSets_XEHP_SDV_GT1_GT2_OA
     exception:
         return ret;
     }
-    CTDL_6MetricSet::CTDL_6MetricSet( CMetricsDevice* device, CConcurrentGroup* concurrentGroup, const char* symbolicName, const char* shortName, uint32_t apiMask, uint32_t category, uint32_t snapshotReportSize, uint32_t deltaReportSize, TReportType reportType, TByteArrayLatest* platformMask, uint32_t gtMask /*= GT_TYPE_ALL*/, bool isCustom /*= false*/ )
+
+    CTDL_6MetricSet::CTDL_6MetricSet( CMetricsDevice& device, CConcurrentGroup* concurrentGroup, const char* symbolicName, const char* shortName, uint32_t apiMask, uint32_t category, uint32_t snapshotReportSize, uint32_t deltaReportSize, TReportType reportType, TByteArrayLatest* platformMask, uint32_t gtMask /*= GT_TYPE_ALL*/, bool isCustom /*= false*/ )
         : CMetricSet( device, concurrentGroup, symbolicName, shortName, apiMask, category, snapshotReportSize, deltaReportSize, reportType, platformMask, gtMask, isCustom )
     {
     }
+
     TCompletionCode CTDL_6MetricSet::Initialize()
     {
         TCompletionCode ret                  = CC_OK;
@@ -12835,10 +12904,12 @@ namespace MetricsDiscoveryInternal::MetricSets_XEHP_SDV_GT1_GT2_OA
     exception:
         return ret;
     }
-    CTDL_7MetricSet::CTDL_7MetricSet( CMetricsDevice* device, CConcurrentGroup* concurrentGroup, const char* symbolicName, const char* shortName, uint32_t apiMask, uint32_t category, uint32_t snapshotReportSize, uint32_t deltaReportSize, TReportType reportType, TByteArrayLatest* platformMask, uint32_t gtMask /*= GT_TYPE_ALL*/, bool isCustom /*= false*/ )
+
+    CTDL_7MetricSet::CTDL_7MetricSet( CMetricsDevice& device, CConcurrentGroup* concurrentGroup, const char* symbolicName, const char* shortName, uint32_t apiMask, uint32_t category, uint32_t snapshotReportSize, uint32_t deltaReportSize, TReportType reportType, TByteArrayLatest* platformMask, uint32_t gtMask /*= GT_TYPE_ALL*/, bool isCustom /*= false*/ )
         : CMetricSet( device, concurrentGroup, symbolicName, shortName, apiMask, category, snapshotReportSize, deltaReportSize, reportType, platformMask, gtMask, isCustom )
     {
     }
+
     TCompletionCode CTDL_7MetricSet::Initialize()
     {
         TCompletionCode ret                  = CC_OK;
@@ -13254,10 +13325,12 @@ namespace MetricsDiscoveryInternal::MetricSets_XEHP_SDV_GT1_GT2_OA
     exception:
         return ret;
     }
-    CTDL_8MetricSet::CTDL_8MetricSet( CMetricsDevice* device, CConcurrentGroup* concurrentGroup, const char* symbolicName, const char* shortName, uint32_t apiMask, uint32_t category, uint32_t snapshotReportSize, uint32_t deltaReportSize, TReportType reportType, TByteArrayLatest* platformMask, uint32_t gtMask /*= GT_TYPE_ALL*/, bool isCustom /*= false*/ )
+
+    CTDL_8MetricSet::CTDL_8MetricSet( CMetricsDevice& device, CConcurrentGroup* concurrentGroup, const char* symbolicName, const char* shortName, uint32_t apiMask, uint32_t category, uint32_t snapshotReportSize, uint32_t deltaReportSize, TReportType reportType, TByteArrayLatest* platformMask, uint32_t gtMask /*= GT_TYPE_ALL*/, bool isCustom /*= false*/ )
         : CMetricSet( device, concurrentGroup, symbolicName, shortName, apiMask, category, snapshotReportSize, deltaReportSize, reportType, platformMask, gtMask, isCustom )
     {
     }
+
     TCompletionCode CTDL_8MetricSet::Initialize()
     {
         TCompletionCode ret                  = CC_OK;
@@ -13683,10 +13756,12 @@ namespace MetricsDiscoveryInternal::MetricSets_XEHP_SDV_GT1_GT2_OA
     exception:
         return ret;
     }
-    CTDL_9MetricSet::CTDL_9MetricSet( CMetricsDevice* device, CConcurrentGroup* concurrentGroup, const char* symbolicName, const char* shortName, uint32_t apiMask, uint32_t category, uint32_t snapshotReportSize, uint32_t deltaReportSize, TReportType reportType, TByteArrayLatest* platformMask, uint32_t gtMask /*= GT_TYPE_ALL*/, bool isCustom /*= false*/ )
+
+    CTDL_9MetricSet::CTDL_9MetricSet( CMetricsDevice& device, CConcurrentGroup* concurrentGroup, const char* symbolicName, const char* shortName, uint32_t apiMask, uint32_t category, uint32_t snapshotReportSize, uint32_t deltaReportSize, TReportType reportType, TByteArrayLatest* platformMask, uint32_t gtMask /*= GT_TYPE_ALL*/, bool isCustom /*= false*/ )
         : CMetricSet( device, concurrentGroup, symbolicName, shortName, apiMask, category, snapshotReportSize, deltaReportSize, reportType, platformMask, gtMask, isCustom )
     {
     }
+
     TCompletionCode CTDL_9MetricSet::Initialize()
     {
         TCompletionCode ret                  = CC_OK;
@@ -14168,10 +14243,12 @@ namespace MetricsDiscoveryInternal::MetricSets_XEHP_SDV_GT1_GT2_OA
     exception:
         return ret;
     }
-    CTDL_10MetricSet::CTDL_10MetricSet( CMetricsDevice* device, CConcurrentGroup* concurrentGroup, const char* symbolicName, const char* shortName, uint32_t apiMask, uint32_t category, uint32_t snapshotReportSize, uint32_t deltaReportSize, TReportType reportType, TByteArrayLatest* platformMask, uint32_t gtMask /*= GT_TYPE_ALL*/, bool isCustom /*= false*/ )
+
+    CTDL_10MetricSet::CTDL_10MetricSet( CMetricsDevice& device, CConcurrentGroup* concurrentGroup, const char* symbolicName, const char* shortName, uint32_t apiMask, uint32_t category, uint32_t snapshotReportSize, uint32_t deltaReportSize, TReportType reportType, TByteArrayLatest* platformMask, uint32_t gtMask /*= GT_TYPE_ALL*/, bool isCustom /*= false*/ )
         : CMetricSet( device, concurrentGroup, symbolicName, shortName, apiMask, category, snapshotReportSize, deltaReportSize, reportType, platformMask, gtMask, isCustom )
     {
     }
+
     TCompletionCode CTDL_10MetricSet::Initialize()
     {
         TCompletionCode ret                  = CC_OK;
@@ -14653,10 +14730,12 @@ namespace MetricsDiscoveryInternal::MetricSets_XEHP_SDV_GT1_GT2_OA
     exception:
         return ret;
     }
-    CTDL_11MetricSet::CTDL_11MetricSet( CMetricsDevice* device, CConcurrentGroup* concurrentGroup, const char* symbolicName, const char* shortName, uint32_t apiMask, uint32_t category, uint32_t snapshotReportSize, uint32_t deltaReportSize, TReportType reportType, TByteArrayLatest* platformMask, uint32_t gtMask /*= GT_TYPE_ALL*/, bool isCustom /*= false*/ )
+
+    CTDL_11MetricSet::CTDL_11MetricSet( CMetricsDevice& device, CConcurrentGroup* concurrentGroup, const char* symbolicName, const char* shortName, uint32_t apiMask, uint32_t category, uint32_t snapshotReportSize, uint32_t deltaReportSize, TReportType reportType, TByteArrayLatest* platformMask, uint32_t gtMask /*= GT_TYPE_ALL*/, bool isCustom /*= false*/ )
         : CMetricSet( device, concurrentGroup, symbolicName, shortName, apiMask, category, snapshotReportSize, deltaReportSize, reportType, platformMask, gtMask, isCustom )
     {
     }
+
     TCompletionCode CTDL_11MetricSet::Initialize()
     {
         TCompletionCode ret                  = CC_OK;
@@ -15139,10 +15218,12 @@ namespace MetricsDiscoveryInternal::MetricSets_XEHP_SDV_GT1_GT2_OA
     exception:
         return ret;
     }
-    CTDL_12MetricSet::CTDL_12MetricSet( CMetricsDevice* device, CConcurrentGroup* concurrentGroup, const char* symbolicName, const char* shortName, uint32_t apiMask, uint32_t category, uint32_t snapshotReportSize, uint32_t deltaReportSize, TReportType reportType, TByteArrayLatest* platformMask, uint32_t gtMask /*= GT_TYPE_ALL*/, bool isCustom /*= false*/ )
+
+    CTDL_12MetricSet::CTDL_12MetricSet( CMetricsDevice& device, CConcurrentGroup* concurrentGroup, const char* symbolicName, const char* shortName, uint32_t apiMask, uint32_t category, uint32_t snapshotReportSize, uint32_t deltaReportSize, TReportType reportType, TByteArrayLatest* platformMask, uint32_t gtMask /*= GT_TYPE_ALL*/, bool isCustom /*= false*/ )
         : CMetricSet( device, concurrentGroup, symbolicName, shortName, apiMask, category, snapshotReportSize, deltaReportSize, reportType, platformMask, gtMask, isCustom )
     {
     }
+
     TCompletionCode CTDL_12MetricSet::Initialize()
     {
         TCompletionCode ret                  = CC_OK;
@@ -15624,10 +15705,12 @@ namespace MetricsDiscoveryInternal::MetricSets_XEHP_SDV_GT1_GT2_OA
     exception:
         return ret;
     }
-    CTDL_13MetricSet::CTDL_13MetricSet( CMetricsDevice* device, CConcurrentGroup* concurrentGroup, const char* symbolicName, const char* shortName, uint32_t apiMask, uint32_t category, uint32_t snapshotReportSize, uint32_t deltaReportSize, TReportType reportType, TByteArrayLatest* platformMask, uint32_t gtMask /*= GT_TYPE_ALL*/, bool isCustom /*= false*/ )
+
+    CTDL_13MetricSet::CTDL_13MetricSet( CMetricsDevice& device, CConcurrentGroup* concurrentGroup, const char* symbolicName, const char* shortName, uint32_t apiMask, uint32_t category, uint32_t snapshotReportSize, uint32_t deltaReportSize, TReportType reportType, TByteArrayLatest* platformMask, uint32_t gtMask /*= GT_TYPE_ALL*/, bool isCustom /*= false*/ )
         : CMetricSet( device, concurrentGroup, symbolicName, shortName, apiMask, category, snapshotReportSize, deltaReportSize, reportType, platformMask, gtMask, isCustom )
     {
     }
+
     TCompletionCode CTDL_13MetricSet::Initialize()
     {
         TCompletionCode ret                  = CC_OK;
@@ -15951,10 +16034,12 @@ namespace MetricsDiscoveryInternal::MetricSets_XEHP_SDV_GT1_GT2_OA
     exception:
         return ret;
     }
-    CTDL_14MetricSet::CTDL_14MetricSet( CMetricsDevice* device, CConcurrentGroup* concurrentGroup, const char* symbolicName, const char* shortName, uint32_t apiMask, uint32_t category, uint32_t snapshotReportSize, uint32_t deltaReportSize, TReportType reportType, TByteArrayLatest* platformMask, uint32_t gtMask /*= GT_TYPE_ALL*/, bool isCustom /*= false*/ )
+
+    CTDL_14MetricSet::CTDL_14MetricSet( CMetricsDevice& device, CConcurrentGroup* concurrentGroup, const char* symbolicName, const char* shortName, uint32_t apiMask, uint32_t category, uint32_t snapshotReportSize, uint32_t deltaReportSize, TReportType reportType, TByteArrayLatest* platformMask, uint32_t gtMask /*= GT_TYPE_ALL*/, bool isCustom /*= false*/ )
         : CMetricSet( device, concurrentGroup, symbolicName, shortName, apiMask, category, snapshotReportSize, deltaReportSize, reportType, platformMask, gtMask, isCustom )
     {
     }
+
     TCompletionCode CTDL_14MetricSet::Initialize()
     {
         TCompletionCode ret                  = CC_OK;
@@ -16278,10 +16363,12 @@ namespace MetricsDiscoveryInternal::MetricSets_XEHP_SDV_GT1_GT2_OA
     exception:
         return ret;
     }
-    CTDL_15MetricSet::CTDL_15MetricSet( CMetricsDevice* device, CConcurrentGroup* concurrentGroup, const char* symbolicName, const char* shortName, uint32_t apiMask, uint32_t category, uint32_t snapshotReportSize, uint32_t deltaReportSize, TReportType reportType, TByteArrayLatest* platformMask, uint32_t gtMask /*= GT_TYPE_ALL*/, bool isCustom /*= false*/ )
+
+    CTDL_15MetricSet::CTDL_15MetricSet( CMetricsDevice& device, CConcurrentGroup* concurrentGroup, const char* symbolicName, const char* shortName, uint32_t apiMask, uint32_t category, uint32_t snapshotReportSize, uint32_t deltaReportSize, TReportType reportType, TByteArrayLatest* platformMask, uint32_t gtMask /*= GT_TYPE_ALL*/, bool isCustom /*= false*/ )
         : CMetricSet( device, concurrentGroup, symbolicName, shortName, apiMask, category, snapshotReportSize, deltaReportSize, reportType, platformMask, gtMask, isCustom )
     {
     }
+
     TCompletionCode CTDL_15MetricSet::Initialize()
     {
         TCompletionCode ret                  = CC_OK;
@@ -16606,10 +16693,12 @@ namespace MetricsDiscoveryInternal::MetricSets_XEHP_SDV_GT1_GT2_OA
     exception:
         return ret;
     }
-    CTDL_16MetricSet::CTDL_16MetricSet( CMetricsDevice* device, CConcurrentGroup* concurrentGroup, const char* symbolicName, const char* shortName, uint32_t apiMask, uint32_t category, uint32_t snapshotReportSize, uint32_t deltaReportSize, TReportType reportType, TByteArrayLatest* platformMask, uint32_t gtMask /*= GT_TYPE_ALL*/, bool isCustom /*= false*/ )
+
+    CTDL_16MetricSet::CTDL_16MetricSet( CMetricsDevice& device, CConcurrentGroup* concurrentGroup, const char* symbolicName, const char* shortName, uint32_t apiMask, uint32_t category, uint32_t snapshotReportSize, uint32_t deltaReportSize, TReportType reportType, TByteArrayLatest* platformMask, uint32_t gtMask /*= GT_TYPE_ALL*/, bool isCustom /*= false*/ )
         : CMetricSet( device, concurrentGroup, symbolicName, shortName, apiMask, category, snapshotReportSize, deltaReportSize, reportType, platformMask, gtMask, isCustom )
     {
     }
+
     TCompletionCode CTDL_16MetricSet::Initialize()
     {
         TCompletionCode ret                  = CC_OK;
@@ -16933,10 +17022,12 @@ namespace MetricsDiscoveryInternal::MetricSets_XEHP_SDV_GT1_GT2_OA
     exception:
         return ret;
     }
-    CTDL_17MetricSet::CTDL_17MetricSet( CMetricsDevice* device, CConcurrentGroup* concurrentGroup, const char* symbolicName, const char* shortName, uint32_t apiMask, uint32_t category, uint32_t snapshotReportSize, uint32_t deltaReportSize, TReportType reportType, TByteArrayLatest* platformMask, uint32_t gtMask /*= GT_TYPE_ALL*/, bool isCustom /*= false*/ )
+
+    CTDL_17MetricSet::CTDL_17MetricSet( CMetricsDevice& device, CConcurrentGroup* concurrentGroup, const char* symbolicName, const char* shortName, uint32_t apiMask, uint32_t category, uint32_t snapshotReportSize, uint32_t deltaReportSize, TReportType reportType, TByteArrayLatest* platformMask, uint32_t gtMask /*= GT_TYPE_ALL*/, bool isCustom /*= false*/ )
         : CMetricSet( device, concurrentGroup, symbolicName, shortName, apiMask, category, snapshotReportSize, deltaReportSize, reportType, platformMask, gtMask, isCustom )
     {
     }
+
     TCompletionCode CTDL_17MetricSet::Initialize()
     {
         TCompletionCode ret                  = CC_OK;
@@ -17162,10 +17253,12 @@ namespace MetricsDiscoveryInternal::MetricSets_XEHP_SDV_GT1_GT2_OA
     exception:
         return ret;
     }
-    CTDL_18MetricSet::CTDL_18MetricSet( CMetricsDevice* device, CConcurrentGroup* concurrentGroup, const char* symbolicName, const char* shortName, uint32_t apiMask, uint32_t category, uint32_t snapshotReportSize, uint32_t deltaReportSize, TReportType reportType, TByteArrayLatest* platformMask, uint32_t gtMask /*= GT_TYPE_ALL*/, bool isCustom /*= false*/ )
+
+    CTDL_18MetricSet::CTDL_18MetricSet( CMetricsDevice& device, CConcurrentGroup* concurrentGroup, const char* symbolicName, const char* shortName, uint32_t apiMask, uint32_t category, uint32_t snapshotReportSize, uint32_t deltaReportSize, TReportType reportType, TByteArrayLatest* platformMask, uint32_t gtMask /*= GT_TYPE_ALL*/, bool isCustom /*= false*/ )
         : CMetricSet( device, concurrentGroup, symbolicName, shortName, apiMask, category, snapshotReportSize, deltaReportSize, reportType, platformMask, gtMask, isCustom )
     {
     }
+
     TCompletionCode CTDL_18MetricSet::Initialize()
     {
         TCompletionCode ret                  = CC_OK;
@@ -17401,10 +17494,12 @@ namespace MetricsDiscoveryInternal::MetricSets_XEHP_SDV_GT1_GT2_OA
     exception:
         return ret;
     }
-    CTDL_19MetricSet::CTDL_19MetricSet( CMetricsDevice* device, CConcurrentGroup* concurrentGroup, const char* symbolicName, const char* shortName, uint32_t apiMask, uint32_t category, uint32_t snapshotReportSize, uint32_t deltaReportSize, TReportType reportType, TByteArrayLatest* platformMask, uint32_t gtMask /*= GT_TYPE_ALL*/, bool isCustom /*= false*/ )
+
+    CTDL_19MetricSet::CTDL_19MetricSet( CMetricsDevice& device, CConcurrentGroup* concurrentGroup, const char* symbolicName, const char* shortName, uint32_t apiMask, uint32_t category, uint32_t snapshotReportSize, uint32_t deltaReportSize, TReportType reportType, TByteArrayLatest* platformMask, uint32_t gtMask /*= GT_TYPE_ALL*/, bool isCustom /*= false*/ )
         : CMetricSet( device, concurrentGroup, symbolicName, shortName, apiMask, category, snapshotReportSize, deltaReportSize, reportType, platformMask, gtMask, isCustom )
     {
     }
+
     TCompletionCode CTDL_19MetricSet::Initialize()
     {
         TCompletionCode ret                  = CC_OK;
@@ -17630,10 +17725,12 @@ namespace MetricsDiscoveryInternal::MetricSets_XEHP_SDV_GT1_GT2_OA
     exception:
         return ret;
     }
-    CTDL_20MetricSet::CTDL_20MetricSet( CMetricsDevice* device, CConcurrentGroup* concurrentGroup, const char* symbolicName, const char* shortName, uint32_t apiMask, uint32_t category, uint32_t snapshotReportSize, uint32_t deltaReportSize, TReportType reportType, TByteArrayLatest* platformMask, uint32_t gtMask /*= GT_TYPE_ALL*/, bool isCustom /*= false*/ )
+
+    CTDL_20MetricSet::CTDL_20MetricSet( CMetricsDevice& device, CConcurrentGroup* concurrentGroup, const char* symbolicName, const char* shortName, uint32_t apiMask, uint32_t category, uint32_t snapshotReportSize, uint32_t deltaReportSize, TReportType reportType, TByteArrayLatest* platformMask, uint32_t gtMask /*= GT_TYPE_ALL*/, bool isCustom /*= false*/ )
         : CMetricSet( device, concurrentGroup, symbolicName, shortName, apiMask, category, snapshotReportSize, deltaReportSize, reportType, platformMask, gtMask, isCustom )
     {
     }
+
     TCompletionCode CTDL_20MetricSet::Initialize()
     {
         TCompletionCode ret                  = CC_OK;
@@ -17869,10 +17966,12 @@ namespace MetricsDiscoveryInternal::MetricSets_XEHP_SDV_GT1_GT2_OA
     exception:
         return ret;
     }
-    CTDL_21MetricSet::CTDL_21MetricSet( CMetricsDevice* device, CConcurrentGroup* concurrentGroup, const char* symbolicName, const char* shortName, uint32_t apiMask, uint32_t category, uint32_t snapshotReportSize, uint32_t deltaReportSize, TReportType reportType, TByteArrayLatest* platformMask, uint32_t gtMask /*= GT_TYPE_ALL*/, bool isCustom /*= false*/ )
+
+    CTDL_21MetricSet::CTDL_21MetricSet( CMetricsDevice& device, CConcurrentGroup* concurrentGroup, const char* symbolicName, const char* shortName, uint32_t apiMask, uint32_t category, uint32_t snapshotReportSize, uint32_t deltaReportSize, TReportType reportType, TByteArrayLatest* platformMask, uint32_t gtMask /*= GT_TYPE_ALL*/, bool isCustom /*= false*/ )
         : CMetricSet( device, concurrentGroup, symbolicName, shortName, apiMask, category, snapshotReportSize, deltaReportSize, reportType, platformMask, gtMask, isCustom )
     {
     }
+
     TCompletionCode CTDL_21MetricSet::Initialize()
     {
         TCompletionCode ret                  = CC_OK;
@@ -18099,10 +18198,12 @@ namespace MetricsDiscoveryInternal::MetricSets_XEHP_SDV_GT1_GT2_OA
     exception:
         return ret;
     }
-    CTDL_22MetricSet::CTDL_22MetricSet( CMetricsDevice* device, CConcurrentGroup* concurrentGroup, const char* symbolicName, const char* shortName, uint32_t apiMask, uint32_t category, uint32_t snapshotReportSize, uint32_t deltaReportSize, TReportType reportType, TByteArrayLatest* platformMask, uint32_t gtMask /*= GT_TYPE_ALL*/, bool isCustom /*= false*/ )
+
+    CTDL_22MetricSet::CTDL_22MetricSet( CMetricsDevice& device, CConcurrentGroup* concurrentGroup, const char* symbolicName, const char* shortName, uint32_t apiMask, uint32_t category, uint32_t snapshotReportSize, uint32_t deltaReportSize, TReportType reportType, TByteArrayLatest* platformMask, uint32_t gtMask /*= GT_TYPE_ALL*/, bool isCustom /*= false*/ )
         : CMetricSet( device, concurrentGroup, symbolicName, shortName, apiMask, category, snapshotReportSize, deltaReportSize, reportType, platformMask, gtMask, isCustom )
     {
     }
+
     TCompletionCode CTDL_22MetricSet::Initialize()
     {
         TCompletionCode ret                  = CC_OK;
@@ -18339,10 +18440,12 @@ namespace MetricsDiscoveryInternal::MetricSets_XEHP_SDV_GT1_GT2_OA
     exception:
         return ret;
     }
-    CTDL_23MetricSet::CTDL_23MetricSet( CMetricsDevice* device, CConcurrentGroup* concurrentGroup, const char* symbolicName, const char* shortName, uint32_t apiMask, uint32_t category, uint32_t snapshotReportSize, uint32_t deltaReportSize, TReportType reportType, TByteArrayLatest* platformMask, uint32_t gtMask /*= GT_TYPE_ALL*/, bool isCustom /*= false*/ )
+
+    CTDL_23MetricSet::CTDL_23MetricSet( CMetricsDevice& device, CConcurrentGroup* concurrentGroup, const char* symbolicName, const char* shortName, uint32_t apiMask, uint32_t category, uint32_t snapshotReportSize, uint32_t deltaReportSize, TReportType reportType, TByteArrayLatest* platformMask, uint32_t gtMask /*= GT_TYPE_ALL*/, bool isCustom /*= false*/ )
         : CMetricSet( device, concurrentGroup, symbolicName, shortName, apiMask, category, snapshotReportSize, deltaReportSize, reportType, platformMask, gtMask, isCustom )
     {
     }
+
     TCompletionCode CTDL_23MetricSet::Initialize()
     {
         TCompletionCode ret                  = CC_OK;
@@ -18568,10 +18671,12 @@ namespace MetricsDiscoveryInternal::MetricSets_XEHP_SDV_GT1_GT2_OA
     exception:
         return ret;
     }
-    CTDL_24MetricSet::CTDL_24MetricSet( CMetricsDevice* device, CConcurrentGroup* concurrentGroup, const char* symbolicName, const char* shortName, uint32_t apiMask, uint32_t category, uint32_t snapshotReportSize, uint32_t deltaReportSize, TReportType reportType, TByteArrayLatest* platformMask, uint32_t gtMask /*= GT_TYPE_ALL*/, bool isCustom /*= false*/ )
+
+    CTDL_24MetricSet::CTDL_24MetricSet( CMetricsDevice& device, CConcurrentGroup* concurrentGroup, const char* symbolicName, const char* shortName, uint32_t apiMask, uint32_t category, uint32_t snapshotReportSize, uint32_t deltaReportSize, TReportType reportType, TByteArrayLatest* platformMask, uint32_t gtMask /*= GT_TYPE_ALL*/, bool isCustom /*= false*/ )
         : CMetricSet( device, concurrentGroup, symbolicName, shortName, apiMask, category, snapshotReportSize, deltaReportSize, reportType, platformMask, gtMask, isCustom )
     {
     }
+
     TCompletionCode CTDL_24MetricSet::Initialize()
     {
         TCompletionCode ret                  = CC_OK;
@@ -18807,6 +18912,7 @@ namespace MetricsDiscoveryInternal::MetricSets_XEHP_SDV_GT1_GT2_OA
     exception:
         return ret;
     }
+
 } // namespace MetricsDiscoveryInternal::MetricSets_XEHP_SDV_GT1_GT2_OA
 
 #endif

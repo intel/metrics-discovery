@@ -192,7 +192,7 @@ namespace MetricsDiscoveryInternal
     public:
         // Constructor & Destructor:
         CMetricSet(
-            CMetricsDevice*   device,
+            CMetricsDevice&   device,
             CConcurrentGroup* concurrentGroup,
             const char*       symbolicName,
             const char*       shortName,
@@ -205,6 +205,8 @@ namespace MetricsDiscoveryInternal
             uint32_t          gtMask   = GT_TYPE_ALL,
             bool              isCustom = false );
         virtual ~CMetricSet();
+
+        virtual TCompletionCode Initialize();
 
         // Non-API:
         TCompletionCode SetApiSpecificId( const char* dx9Fourcc, uint32_t dx9QueryId, uint32_t dx10Counter, uint32_t oglQuery, uint32_t ocl, uint32_t hwConfig, const char* dx10CounterName, uint32_t dx10QueryId, const char* oglQueryName, uint32_t oglQueryARB );
@@ -223,7 +225,7 @@ namespace MetricsDiscoveryInternal
         TCompletionCode AddStartRegisterSet( uint32_t configId, uint32_t configPriority, const char* availabilityEquation = nullptr, TConfigType configType = CONFIG_TYPE_COMMON );
         TCompletionCode AddStartConfigRegister( uint32_t offset, uint32_t value, TRegisterType type );
         TCompletionCode RefreshConfigRegisters();
-        TRegister**     GetStartConfiguration( uint32_t* count );
+        TRegister**     GetStartConfiguration( uint32_t& count );
         TCompletionCode SendStartConfiguration( bool sendQueryConfigFlag );
         void            AppendToConfiguration( std::vector<TRegister*>& sourceRegs, std::vector<TRegister*>& outPmRegs, std::vector<TRegister*>& outReadRegs );
         bool            CheckSendConfigRequired( bool sendQueryConfigFlag );
@@ -238,7 +240,7 @@ namespace MetricsDiscoveryInternal
 
         CConcurrentGroup*   GetConcurrentGroup();
         CMetricsCalculator* GetMetricsCalculator();
-        CMetricsDevice*     GetMetricsDevice();
+        CMetricsDevice&     GetMetricsDevice();
         TByteArrayLatest*   GetPlatformMask();
 
         TCompletionCode SetAvailabilityEquation( const char* equationString );
@@ -258,12 +260,12 @@ namespace MetricsDiscoveryInternal
     protected:
         CConcurrentGroup*      m_concurrentGroup;
         TMetricSetParamsLatest m_params_1_0;
-        CMetricsDevice*        m_device;
+        CMetricsDevice&        m_device;
 
     private:
         // API filtering:
-        bool            IsApiFilteringMaskValid( uint32_t apiMask );
-        void            EnableApiFiltering( uint32_t apiMask, bool enable );
+        bool            IsApiFilteringMaskValid( const uint32_t apiMask );
+        void            EnableApiFiltering( const uint32_t apiMask, const bool enable );
         void            UpdateMetricIndicesInEquations();
         void            UseApiFilteredVariables( bool enable );
         void            RefreshCachedMetricsAndInformation();

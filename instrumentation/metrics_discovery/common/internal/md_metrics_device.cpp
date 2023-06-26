@@ -55,6 +55,7 @@ namespace MetricsDiscoveryInternal
         , m_gtType( GT_TYPE_UNKNOWN )
         , m_isOpenedFromFile( false )
         , m_referenceCounter( 0 )
+        , m_oaBuferCount( 0 )
     {
         const uint32_t adapterId = m_adapter.GetAdapterId();
 
@@ -200,6 +201,10 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     TTypedValue_1_0* CMetricsDevice::GetGlobalSymbolValueByName( const char* name )
     {
+        const uint32_t adapterId = m_adapter.GetAdapterId();
+
+        MD_CHECK_PTR_RET_A( adapterId, name, nullptr );
+
         return m_symbolSet.GetSymbolValueByName( name );
     }
 
@@ -398,15 +403,15 @@ namespace MetricsDiscoveryInternal
                 return nullptr;
             }
 
-            group = new( std::nothrow ) COAMConcurrentGroup( this, symbolicName, shortName, measurementTypeMask );
+            group = new( std::nothrow ) COAMConcurrentGroup( *this, symbolicName, shortName, measurementTypeMask );
         }
         else if( strstr( symbolicName, "OA" ) != nullptr )
         {
-            group = new( std::nothrow ) COAConcurrentGroup( this, symbolicName, shortName, measurementTypeMask );
+            group = new( std::nothrow ) COAConcurrentGroup( *this, symbolicName, shortName, measurementTypeMask );
         }
         else
         {
-            group = new( std::nothrow ) CConcurrentGroup( this, symbolicName, shortName, measurementTypeMask );
+            group = new( std::nothrow ) CConcurrentGroup( *this, symbolicName, shortName, measurementTypeMask );
         }
 
         MD_CHECK_PTR_RET_A( m_adapter.GetAdapterId(), group, nullptr );
@@ -436,7 +441,7 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     IOverride_1_2* CMetricsDevice::AddOverride( TOverrideType overrideType )
     {
-        const uint32_t adapterId = GetAdapter().GetAdapterId();
+        const uint32_t adapterId = m_adapter.GetAdapterId();
         // 1. CHECK AVAILABILITY ON CURRENT DRIVER INTERFACE
         if( !m_driverInterface.IsOverrideAvailable( overrideType ) )
         {
@@ -449,23 +454,23 @@ namespace MetricsDiscoveryInternal
         switch( overrideType )
         {
             case OVERRIDE_TYPE_FREQUENCY:
-                override = new( std::nothrow ) COverride<OVERRIDE_TYPE_FREQUENCY>( this );
+                override = new( std::nothrow ) COverride<OVERRIDE_TYPE_FREQUENCY>( *this );
                 break;
             case OVERRIDE_TYPE_NULL_HARDWARE:
-                override = new( std::nothrow ) COverride<OVERRIDE_TYPE_NULL_HARDWARE>( this );
+                override = new( std::nothrow ) COverride<OVERRIDE_TYPE_NULL_HARDWARE>( *this );
                 break;
             case OVERRIDE_TYPE_MULTISAMPLED_QUERY:
-                override = new( std::nothrow ) COverride<OVERRIDE_TYPE_MULTISAMPLED_QUERY>( this );
+                override = new( std::nothrow ) COverride<OVERRIDE_TYPE_MULTISAMPLED_QUERY>( *this );
                 break;
             case OVERRIDE_TYPE_EXTENDED_QUERY:
-                override = new( std::nothrow ) COverride<OVERRIDE_TYPE_EXTENDED_QUERY>( this );
+                override = new( std::nothrow ) COverride<OVERRIDE_TYPE_EXTENDED_QUERY>( *this );
                 break;
             case OVERRIDE_TYPE_FLUSH_GPU_CACHES:
-                override = new( std::nothrow ) COverride<OVERRIDE_TYPE_FLUSH_GPU_CACHES>( this );
+                override = new( std::nothrow ) COverride<OVERRIDE_TYPE_FLUSH_GPU_CACHES>( *this );
                 break;
 #if defined( _RELEASE_INTERNAL )
             case OVERRIDE_TYPE_FREQUENCY_CHANGE_REPORTS:
-                override = new( std::nothrow ) COverride<OVERRIDE_TYPE_FREQUENCY_CHANGE_REPORTS>( this );
+                override = new( std::nothrow ) COverride<OVERRIDE_TYPE_FREQUENCY_CHANGE_REPORTS>( *this );
                 break;
 #endif
             default:
@@ -705,15 +710,14 @@ namespace MetricsDiscoveryInternal
     //     Reads concurrent groups from file buffer and advances the pointer.
     //
     // Input:
-    //     uint8_t**        bufferPtr       - file buffer
-    //     bool             isInternalBuild - true if current build is internal
-    //     TApiVersion_1_0* apiVersion      - API version
-    //     uint32_t         fileVersion     - custom metric file version
+    //     uint8_t**        bufferPtr   - file buffer
+    //     TApiVersion_1_0* apiVersion  - API version
+    //     uint32_t         fileVersion - custom metric file version
     // Output:
     //     TCompletionCode - result of the operation
     //
     //////////////////////////////////////////////////////////////////////////////
-    TCompletionCode CMetricsDevice::ReadConcurrentGroupsFromFileBuffer( uint8_t** bufferPtr, bool isInternalBuild, TApiVersion_1_0* apiVersion, uint32_t fileVersion )
+    TCompletionCode CMetricsDevice::ReadConcurrentGroupsFromFileBuffer( uint8_t** bufferPtr, TApiVersion_1_0* apiVersion, uint32_t fileVersion )
     {
         const uint32_t adapterId = m_adapter.GetAdapterId();
 
@@ -749,7 +753,7 @@ namespace MetricsDiscoveryInternal
             }
 
             // MetricSets
-            ret = ReadMetricSetsFromFileBuffer( bufferPtr, aGroup, isInternalBuild, apiVersion, fileVersion );
+            ret = ReadMetricSetsFromFileBuffer( bufferPtr, aGroup, apiVersion, fileVersion );
             MD_CHECK_CC_RET_A( adapterId, ret );
         }
 
@@ -768,17 +772,16 @@ namespace MetricsDiscoveryInternal
     //     Reads metric sets from file buffer, adds them to the group and advances the pointer.
     //
     // Input:
-    //     uint8_t**         bufferPtr       - file buffer
-    //     CConcurrentGroup* group           - parent concurrent group
-    //     bool              isInternalBuild - true if current build is internal
-    //     TApiVersion_1_0*  apiVersion      - API version
-    //     uint32_t          fileVersion     - custom metric file version
+    //     uint8_t**         bufferPtr   - file buffer
+    //     CConcurrentGroup* group       - parent concurrent group
+    //     TApiVersion_1_0*  apiVersion  - API version
+    //     uint32_t          fileVersion - custom metric file version
     //
     // Output:
     //     TCompletionCode - result of the operation
     //
     //////////////////////////////////////////////////////////////////////////////
-    TCompletionCode CMetricsDevice::ReadMetricSetsFromFileBuffer( uint8_t** bufferPtr, CConcurrentGroup* group, bool isInternalBuild, TApiVersion_1_0* apiVersion, uint32_t fileVersion )
+    TCompletionCode CMetricsDevice::ReadMetricSetsFromFileBuffer( uint8_t** bufferPtr, CConcurrentGroup* group, TApiVersion_1_0* apiVersion, uint32_t fileVersion )
     {
         const uint32_t adapterId = m_adapter.GetAdapterId();
 
@@ -1234,14 +1237,13 @@ namespace MetricsDiscoveryInternal
 
     //
     // Input:
-    //     const char*    fileName        - file name
-    //     bool           isInternalBuild - if true, then this is internal build
+    //     const char* fileName - file name
     //
     // Output:
-    //     TCompletionCode                - result
+    //     TCompletionCode      - result
     //
     //////////////////////////////////////////////////////////////////////////////
-    TCompletionCode CMetricsDevice::OpenFromFile( const char* fileName, bool isInternalBuild )
+    TCompletionCode CMetricsDevice::OpenFromFile( const char* fileName )
     {
         TCompletionCode retVal           = CC_OK;
         FILE*           metricFile       = nullptr;
@@ -1249,7 +1251,7 @@ namespace MetricsDiscoveryInternal
         uint8_t*        bufferPtr        = nullptr;
         uint32_t        fileSize         = 0;
         uint32_t        fileVersion      = CUSTOM_METRICS_FILE_VERSION_0;
-        const uint32_t  adapterId        = GetAdapter().GetAdapterId();
+        const uint32_t  adapterId        = m_adapter.GetAdapterId();
 
         iu_fopen_s( &metricFile, fileName, "rb" );
         MD_CHECK_PTR_RET_A( adapterId, metricFile, CC_ERROR_FILE_NOT_FOUND );
@@ -1266,7 +1268,7 @@ namespace MetricsDiscoveryInternal
             fclose( metricFile );
             return CC_ERROR_NO_MEMORY;
         }
-        memset( metricFileBuffer, 0, fileSize );
+        iu_zeromem( metricFileBuffer, fileSize );
 
         MD_LOG_A( adapterId, LOG_DEBUG, "Check if file is in MDAPI plain text format" );
         if( IsMetricsFileInPlainTextFormat( metricFile, fileVersion ) )
@@ -1354,7 +1356,7 @@ namespace MetricsDiscoveryInternal
             // ConcurrentGroup tree
             if( retVal == CC_OK )
             {
-                retVal = ReadConcurrentGroupsFromFileBuffer( &bufferPtr, isInternalBuild, &apiVersion, fileVersion );
+                retVal = ReadConcurrentGroupsFromFileBuffer( &bufferPtr, &apiVersion, fileVersion );
             }
         }
         m_isOpenedFromFile = ( retVal == CC_OK );
@@ -1462,15 +1464,15 @@ namespace MetricsDiscoveryInternal
     //     GetSymbolSet
     //
     // Description:
-    //     Returns pointer to the symbol set.
+    //     Returns reference to the symbol set.
     //
     // Output:
-    //     CSymbolSet*   - pointer to the symbol set
+    //     CSymbolSet& - reference to the symbol set
     //
     //////////////////////////////////////////////////////////////////////////////
-    CSymbolSet* CMetricsDevice::GetSymbolSet()
+    CSymbolSet& CMetricsDevice::GetSymbolSet()
     {
-        return &m_symbolSet;
+        return m_symbolSet;
     }
 
     //////////////////////////////////////////////////////////////////////////////
@@ -1576,6 +1578,43 @@ namespace MetricsDiscoveryInternal
     uint32_t CMetricsDevice::GetSubDeviceIndex()
     {
         return m_subDeviceIndex;
+    }
+
+    //////////////////////////////////////////////////////////////////////////////
+    //
+    // Class:
+    //     CMetricsDevice
+    //
+    // Method:
+    //     GetOaBufferCount
+    //
+    // Description:
+    //     Returns oa buffer count.
+    //
+    // Output:
+    //     uint32_t - oa buffer count
+    //
+    //////////////////////////////////////////////////////////////////////////////
+    uint32_t CMetricsDevice::GetOaBufferCount()
+    {
+        if( m_oaBuferCount == 0 )
+        {
+            const uint32_t adapterId = m_adapter.GetAdapterId();
+
+            GTDIDeviceInfoParamExtOut out = {};
+            const auto                ret = m_driverInterface.SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_OA_BUFFERS_COUNT, &out );
+            if( ret == CC_OK )
+            {
+                MD_LOG_A( adapterId, LOG_DEBUG, "Oa buffer count: %u", m_oaBuferCount );
+                m_oaBuferCount = out.ValueUint32;
+            }
+            else
+            {
+                MD_LOG_A( adapterId, LOG_ERROR, "ERROR: Unable to get oa buffer count. Return code: %u", ret );
+            }
+        }
+
+        return m_oaBuferCount;
     }
 
     //////////////////////////////////////////////////////////////////////////////

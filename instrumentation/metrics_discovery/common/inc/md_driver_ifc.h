@@ -102,7 +102,7 @@ namespace MetricsDiscoveryInternal
         static bool              IsSupportEnableRequired();
 
         // Adapter enumeration static:
-        static TCompletionCode GetAvailableAdapters( std::vector<TAdapterData>& adapters, const uint32_t adapterId );
+        static TCompletionCode GetAvailableAdapters( std::vector<TAdapterData>& adapters );
 
         // Synchronization static:
         static TCompletionCode      SemaphoreCreate( const char* name, void** semaphore, const uint32_t adapterId );

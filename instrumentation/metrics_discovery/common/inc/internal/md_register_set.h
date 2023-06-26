@@ -43,7 +43,7 @@ namespace MetricsDiscoveryInternal
     {
     public:
         // Constructor & Destructor:
-        CRegisterSet( CMetricsDevice* device, uint32_t configId, uint32_t configPriority, TConfigType configType );
+        CRegisterSet( CMetricsDevice& device, uint32_t configId, uint32_t configPriority, TConfigType configType );
         virtual ~CRegisterSet();
 
         // Non-API:
@@ -60,7 +60,7 @@ namespace MetricsDiscoveryInternal
         std::list<TRegister> m_regList;
         TRegisterSetParams   m_params;
         CEquation*           m_availabilityEquation;
-        CMetricsDevice*      m_device;
+        CMetricsDevice&      m_device;
         bool                 m_isAvailable;
     };
 } // namespace MetricsDiscoveryInternal

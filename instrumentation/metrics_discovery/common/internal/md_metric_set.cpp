@@ -47,7 +47,7 @@ namespace MetricsDiscoveryInternal
     //     Constructor.
     //
     // Input:
-    //     CMetricsDevice*     device               -
+    //     CMetricsDevice&     device               -
     //     CConcurrentGroup*   concurrentGroup      -
     //     const char*         symbolicName         -
     //     const char*         shortName            -
@@ -61,7 +61,7 @@ namespace MetricsDiscoveryInternal
     //     bool                isCustom             -
     //
     //////////////////////////////////////////////////////////////////////////////
-    CMetricSet::CMetricSet( CMetricsDevice* device, CConcurrentGroup* concurrentGroup, const char* symbolicName, const char* shortName, uint32_t apiMask, uint32_t categoryMask, uint32_t snapshotReportSize, uint32_t deltaReportSize, TReportType reportType, TByteArrayLatest* platformMask, uint32_t gtMask /*= GT_TYPE_ALL*/, bool isCustom /*= false*/ )
+    CMetricSet::CMetricSet( CMetricsDevice& device, CConcurrentGroup* concurrentGroup, const char* symbolicName, const char* shortName, uint32_t apiMask, uint32_t categoryMask, uint32_t snapshotReportSize, uint32_t deltaReportSize, TReportType reportType, TByteArrayLatest* platformMask, uint32_t gtMask /*= GT_TYPE_ALL*/, bool isCustom /*= false*/ )
         : m_concurrentGroup( concurrentGroup )
         , m_params_1_0{}
         , m_device( device )
@@ -74,7 +74,7 @@ namespace MetricsDiscoveryInternal
         , m_startRegisterSetList()
         , m_otherMetricsVector()
         , m_otherInformationVector()
-        , m_platformMask( GetCopiedByteArray( platformMask, OBTAIN_ADAPTER_ID( m_device ) ) )
+        , m_platformMask( GetCopiedByteArray( platformMask, m_device.GetAdapter().GetAdapterId() ) )
         , m_availabilityEquation( nullptr )
         , m_filteredMetricsVector()
         , m_filteredInformationVector()
@@ -82,7 +82,7 @@ namespace MetricsDiscoveryInternal
         , m_isReadRegsCfgSet( false )
         , m_metricsCalculator( new( std::nothrow ) CMetricsCalculator( m_device ) )
     {
-        const uint32_t adapterId = OBTAIN_ADAPTER_ID( m_device );
+        const uint32_t adapterId = m_device.GetAdapter().GetAdapterId();
 
         m_params_1_0.SymbolName             = GetCopiedCString( symbolicName, adapterId );
         m_params_1_0.ShortName              = GetCopiedCString( shortName, adapterId );
@@ -164,7 +164,25 @@ namespace MetricsDiscoveryInternal
 
         MD_SAFE_DELETE( m_availabilityEquation );
 
-        DeleteByteArray( m_platformMask, OBTAIN_ADAPTER_ID( m_device ) );
+        DeleteByteArray( m_platformMask, m_device.GetAdapter().GetAdapterId() );
+    }
+
+    //////////////////////////////////////////////////////////////////////////////
+    //
+    // Class:
+    //     CMetricSet
+    //
+    // Method:
+    //     Initialize
+    //
+    // Description:
+    //     Virtual method that initialize metric set.
+    //     Used in derived metric set classes.
+    //
+    //////////////////////////////////////////////////////////////////////////////
+    TCompletionCode CMetricSet::Initialize()
+    {
+        return CC_OK;
     }
 
     //////////////////////////////////////////////////////////////////////////////
@@ -207,7 +225,7 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     IMetric_1_0* CMetricSet::GetMetric( uint32_t index )
     {
-        const uint32_t adapterId = OBTAIN_ADAPTER_ID( m_device );
+        const uint32_t adapterId = m_device.GetAdapter().GetAdapterId();
 
         MD_CHECK_PTR_RET_A( adapterId, m_currentMetricsVector, nullptr );
 
@@ -239,7 +257,7 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     IInformation_1_0* CMetricSet::GetInformation( uint32_t index )
     {
-        const uint32_t adapterId = OBTAIN_ADAPTER_ID( m_device );
+        const uint32_t adapterId = m_device.GetAdapter().GetAdapterId();
 
         MD_CHECK_PTR_RET_A( adapterId, m_currentInformationVector, nullptr );
 
@@ -345,15 +363,16 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     TCompletionCode CMetricSet::Deactivate( void )
     {
-        const uint32_t adapterId = OBTAIN_ADAPTER_ID( m_device );
+        const uint32_t adapterId = m_device.GetAdapter().GetAdapterId();
 
         MD_LOG_ENTER_A( adapterId );
         TCompletionCode ret = CC_OK;
         if( m_isReadRegsCfgSet )
         {
-            CDriverInterface& driverInterface  = m_device->GetDriverInterface();
-            TRegister         emptyRrConfig    = { 0, 0, REGISTER_TYPE_MMIO };
-            TRegister*        emptyRrConfigPtr = &emptyRrConfig; // Because we will need 'array of pointers'
+            auto& driverInterface = m_device.GetDriverInterface();
+
+            TRegister  emptyRrConfig    = { 0, 0, REGISTER_TYPE_MMIO };
+            TRegister* emptyRrConfigPtr = &emptyRrConfig; // Because we will need 'array of pointers'
 
             ret = driverInterface.SendReadRegsConfig( &emptyRrConfigPtr, 1, m_currentParams->ApiMask );
             if( ret == CC_OK )
@@ -390,7 +409,7 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     uint32_t CMetricSet::MetricGroupNameToId( const char* groupName )
     {
-        const uint32_t adapterId = OBTAIN_ADAPTER_ID( m_device );
+        const uint32_t adapterId = m_device.GetAdapter().GetAdapterId();
 
         MD_CHECK_PTR_RET_A( adapterId, groupName, METRIC_GROUP_NAME_ID_INVALID );
 
@@ -438,7 +457,7 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     uint32_t CMetricSet::GetPartialGroupId( char* groupName, uint32_t level )
     {
-        const uint32_t adapterId = OBTAIN_ADAPTER_ID( m_device );
+        const uint32_t adapterId = m_device.GetAdapter().GetAdapterId();
 
         MD_ASSERT_A( adapterId, groupName != nullptr );
 
@@ -489,7 +508,7 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     IMetricLatest* CMetricSet::AddCustomMetric( TAddCustomMetricParams* params )
     {
-        const uint32_t adapterId = OBTAIN_ADAPTER_ID( m_device );
+        const uint32_t adapterId = m_device.GetAdapter().GetAdapterId();
 
         if( params == nullptr )
         {
@@ -651,7 +670,7 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     TCompletionCode CMetricSet::SetApiSpecificId( const char* dx9Fourcc, uint32_t dx9QueryId, uint32_t dx10Counter, uint32_t oglQuery, uint32_t ocl, uint32_t hwConfig, const char* dx10CounterName, uint32_t dx10QueryId, const char* oglQueryName, uint32_t oglQueryARB )
     {
-        const uint32_t adapterId = OBTAIN_ADAPTER_ID( m_device );
+        const uint32_t adapterId = m_device.GetAdapter().GetAdapterId();
 
         m_params_1_0.ApiSpecificId.D3D9QueryId           = dx9QueryId;
         m_params_1_0.ApiSpecificId.D3D9Fourcc            = dx9Fourcc ? ( dx9Fourcc[0] ) + ( dx9Fourcc[1] << 8 ) + ( dx9Fourcc[2] << 16 ) + ( dx9Fourcc[3] << 24 ) : 0;
@@ -687,7 +706,7 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     TCompletionCode CMetricSet::SetApiSpecificId( TApiSpecificId_1_0 apiSpecificId )
     {
-        const uint32_t adapterId = OBTAIN_ADAPTER_ID( m_device );
+        const uint32_t adapterId = m_device.GetAdapter().GetAdapterId();
 
         m_params_1_0.ApiSpecificId                       = apiSpecificId;
         m_params_1_0.ApiSpecificId.D3D1XDevDependentName = GetCopiedCString( apiSpecificId.D3D1XDevDependentName, adapterId );
@@ -734,7 +753,7 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     CMetric* CMetricSet::AddMetric( const char* symbolName, const char* shortName, const char* longName, const char* groupName, uint32_t groupId, uint32_t usageFlagsMask, uint32_t apiMask, TMetricType metricType, TMetricResultType resultType, const char* units, int64_t loWatermark, int64_t hiWatermark, THwUnitType hwType, const char* availabilityEquation, const char* alias, const char* signalName, uint32_t metricXmlId, bool isCustom /*= false*/ )
     {
-        const uint32_t adapterId = OBTAIN_ADAPTER_ID( m_device );
+        const uint32_t adapterId = m_device.GetAdapter().GetAdapterId();
 
         if( groupName == nullptr )
         {
@@ -797,7 +816,7 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     CMetric* CMetricSet::AddMetric( CMetric* metric )
     {
-        const uint32_t adapterId = OBTAIN_ADAPTER_ID( m_device );
+        const uint32_t adapterId = m_device.GetAdapter().GetAdapterId();
 
         MD_CHECK_PTR_RET_A( adapterId, metric, nullptr );
 
@@ -841,7 +860,7 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     CInformation* CMetricSet::AddInformation( const char* symbolName, const char* shortName, const char* longName, const char* groupName, uint32_t apiMask, TInformationType informationType, const char* informationUnits, const char* availabilityEquation, uint32_t informationXmlId )
     {
-        const uint32_t adapterId = OBTAIN_ADAPTER_ID( m_device );
+        const uint32_t adapterId = m_device.GetAdapter().GetAdapterId();
 
         CInformation* information = new( std::nothrow ) CInformation( m_device, informationXmlId, symbolName, shortName, longName, groupName, apiMask, informationType, informationUnits );
 
@@ -887,7 +906,7 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     CInformation* CMetricSet::AddInformation( CInformation* information )
     {
-        MD_CHECK_PTR_RET_A( OBTAIN_ADAPTER_ID( m_device ), information, nullptr );
+        MD_CHECK_PTR_RET_A( m_device.GetAdapter().GetAdapterId(), information, nullptr );
 
         m_informationVector.push_back( information );
         m_params_1_0.InformationCount = m_informationVector.size() + m_concurrentGroup->GetInformationCount();
@@ -915,7 +934,7 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     TCompletionCode CMetricSet::AddComplementaryMetricSet( const char* complementaryMetricSetSymbolicName )
     {
-        const uint32_t adapterId = OBTAIN_ADAPTER_ID( m_device );
+        const uint32_t adapterId = m_device.GetAdapter().GetAdapterId();
 
         MD_CHECK_PTR_RET_A( adapterId, complementaryMetricSetSymbolicName, CC_ERROR_INVALID_PARAMETER );
 
@@ -952,7 +971,7 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     TCompletionCode CMetricSet::AddComplementaryMetricSets( const char* complementarySetsList )
     {
-        const uint32_t adapterId = OBTAIN_ADAPTER_ID( m_device );
+        const uint32_t adapterId = m_device.GetAdapter().GetAdapterId();
 
         MD_CHECK_PTR_RET_A( adapterId, complementarySetsList, CC_ERROR_INVALID_PARAMETER );
 
@@ -966,7 +985,7 @@ namespace MetricsDiscoveryInternal
         {
             if( AddComplementaryMetricSet( token ) != CC_OK )
             {
-                MD_LOG_A( m_device->GetAdapter().GetAdapterId(), LOG_DEBUG, "error adding complementary metric sets" );
+                MD_LOG_A( adapterId, LOG_DEBUG, "error adding complementary metric sets" );
                 MD_SAFE_DELETE_ARRAY( complementarySets );
                 return CC_ERROR_GENERAL;
             }
@@ -1000,7 +1019,7 @@ namespace MetricsDiscoveryInternal
     TCompletionCode CMetricSet::ActivateInternal( bool sendConfigFlag, bool sendQueryConfigFlag )
     {
         TCompletionCode retVal    = CC_OK;
-        const uint32_t  adapterId = OBTAIN_ADAPTER_ID( m_device );
+        const uint32_t  adapterId = m_device.GetAdapter().GetAdapterId();
 
         MD_LOG_ENTER_A( adapterId );
 
@@ -1042,7 +1061,7 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     TCompletionCode CMetricSet::AddStartRegisterSet( uint32_t configId, uint32_t configPriority, const char* availabilityEquation /*= nullptr */, TConfigType configType /*= CONFIG_TYPE_COMMON*/ )
     {
-        const uint32_t adapterId = OBTAIN_ADAPTER_ID( m_device );
+        const uint32_t adapterId = m_device.GetAdapter().GetAdapterId();
 
         CRegisterSet* registerSet = new( std::nothrow ) CRegisterSet( m_device, configId, configPriority, configType );
         MD_CHECK_PTR_RET_A( adapterId, registerSet, CC_ERROR_NO_MEMORY );
@@ -1081,7 +1100,7 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     TCompletionCode CMetricSet::AddStartConfigRegister( uint32_t offset, uint32_t value, TRegisterType type )
     {
-        const uint32_t adapterId = OBTAIN_ADAPTER_ID( m_device );
+        const uint32_t adapterId = m_device.GetAdapter().GetAdapterId();
 
         CRegisterSet* registerSet = m_startRegisterSetList.size() > 0 ? m_startRegisterSetList.back() : nullptr;
         MD_CHECK_PTR_RET_A( adapterId, registerSet, CC_ERROR_GENERAL );
@@ -1129,7 +1148,7 @@ namespace MetricsDiscoveryInternal
                 }
                 else
                 {
-                    MD_LOG_A( OBTAIN_ADAPTER_ID( m_device ), LOG_ERROR, "Unknown register method" );
+                    MD_LOG_A( m_device.GetAdapter().GetAdapterId(), LOG_ERROR, "Unknown register method" );
                     return CC_ERROR_GENERAL;
                 }
             }
@@ -1161,7 +1180,7 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     bool CMetricSet::GetStartRegSetHiPriority( uint32_t id, CRegisterSet** registerSet )
     {
-        const uint32_t adapterId = OBTAIN_ADAPTER_ID( m_device );
+        const uint32_t adapterId = m_device.GetAdapter().GetAdapterId();
 
         MD_CHECK_PTR_RET_A( adapterId, registerSet, false );
 
@@ -1199,18 +1218,15 @@ namespace MetricsDiscoveryInternal
     //     Returns common start config registers (without query specific).
     //
     // Input:
-    //     uint32_t*     count - (out) registers count
+    //     uint32_t&     count - (out) registers count
     //
     // Output:
     //     TRegister**         - pointers to the common start config registers
     //
     //////////////////////////////////////////////////////////////////////////////
-    TRegister** CMetricSet::GetStartConfiguration( uint32_t* count )
+    TRegister** CMetricSet::GetStartConfiguration( uint32_t& count )
     {
-        if( count != nullptr )
-        {
-            *count = m_startRegsVector.size();
-        }
+        count = m_startRegsVector.size();
         return m_startRegsVector.data();
     }
 
@@ -1234,9 +1250,9 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     TCompletionCode CMetricSet::SendStartConfiguration( bool sendQueryConfigFlag )
     {
-        TCompletionCode     ret               = CC_OK;
-        CDriverInterface&   driverInterface   = m_device->GetDriverInterface();
-        COAConcurrentGroup& oaConcurrentGroup = static_cast<COAConcurrentGroup&>( *m_concurrentGroup );
+        auto&           driverInterface   = m_device.GetDriverInterface();
+        auto&           oaConcurrentGroup = static_cast<COAConcurrentGroup&>( *m_concurrentGroup );
+        TCompletionCode ret               = CC_OK;
 
         if( CheckSendConfigRequired( sendQueryConfigFlag ) )
         {
@@ -1257,7 +1273,7 @@ namespace MetricsDiscoveryInternal
             if( ( pmRegs.size() > 0 || readRegs.size() > 0 ) || m_startRegisterSetList.size() == 0 )
             {
                 // Send configurations
-                ret = driverInterface.SendPmRegsConfig( pmRegs.data(), pmRegs.size(), m_currentParams->ApiMask, m_device->GetSubDeviceIndex(), oaConcurrentGroup.GetOaBufferType() );
+                ret = driverInterface.SendPmRegsConfig( pmRegs.data(), pmRegs.size(), m_currentParams->ApiMask, m_device.GetSubDeviceIndex(), oaConcurrentGroup.GetOaBufferType() );
                 if( ret == CC_OK && readRegs.size() )
                 {
                     ret = driverInterface.SendReadRegsConfig( readRegs.data(), readRegs.size(), m_currentParams->ApiMask );
@@ -1273,7 +1289,7 @@ namespace MetricsDiscoveryInternal
             }
             else
             {
-                MD_LOG_A( OBTAIN_ADAPTER_ID( m_device ), LOG_ERROR, "Programming missing" );
+                MD_LOG_A( m_device.GetAdapter().GetAdapterId(), LOG_ERROR, "Programming missing" );
                 ret = CC_ERROR_NOT_SUPPORTED;
             }
 
@@ -1334,9 +1350,9 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     bool CMetricSet::CheckSendConfigRequired( bool sendQueryConfigFlag )
     {
-        bool              ret             = true;
-        CDriverInterface& driverInterface = m_device->GetDriverInterface();
-        const uint32_t    adapterId       = OBTAIN_ADAPTER_ID( m_device );
+        const uint32_t adapterId       = m_device.GetAdapter().GetAdapterId();
+        auto&          driverInterface = m_device.GetDriverInterface();
+        bool           ret             = true;
 
         // If measurement type didn't change and config handles were checked before
         if( m_pmRegsConfigInfo.IsQueryConfig == sendQueryConfigFlag && ( m_pmRegsConfigInfo.OaConfigHandle != 0 || m_pmRegsConfigInfo.GpConfigHandle != 0 || m_pmRegsConfigInfo.RrConfigHandle != 0 ) )
@@ -1404,7 +1420,7 @@ namespace MetricsDiscoveryInternal
     TCompletionCode CMetricSet::WriteCMetricSetToFile( FILE* metricFile )
     {
         uint32_t       count     = 0;
-        const uint32_t adapterId = OBTAIN_ADAPTER_ID( m_device );
+        const uint32_t adapterId = m_device.GetAdapter().GetAdapterId();
 
         if( metricFile == nullptr )
         {
@@ -1446,7 +1462,7 @@ namespace MetricsDiscoveryInternal
             // Define which vector is not finished and write remaining available metrics
             if( i == m_metricsVector.size() )
             {
-                for( uint32_t k = j; k < m_otherMetricsVector.size(); k++ )
+                for( uint32_t k = j; k < m_otherMetricsVector.size(); ++k )
                 {
                     m_otherMetricsVector[k]->WriteCMetricToFile( metricFile );
                 }
@@ -1454,7 +1470,7 @@ namespace MetricsDiscoveryInternal
             }
             if( j == m_otherMetricsVector.size() )
             {
-                for( uint32_t k = i; k < m_metricsVector.size(); k++ )
+                for( uint32_t k = i; k < m_metricsVector.size(); ++k )
                 {
                     m_metricsVector[k]->WriteCMetricToFile( metricFile );
                 }
@@ -1462,15 +1478,13 @@ namespace MetricsDiscoveryInternal
             }
 
             // Write in the correct order
-            if( m_metricsVector[i]->m_id < m_otherMetricsVector[j]->m_id )
+            if( m_metricsVector[i]->GetId() < m_otherMetricsVector[j]->GetId() )
             {
-                m_metricsVector[i]->WriteCMetricToFile( metricFile );
-                i++;
+                m_metricsVector[i++]->WriteCMetricToFile( metricFile );
             }
             else
             {
-                m_otherMetricsVector[j]->WriteCMetricToFile( metricFile );
-                j++;
+                m_otherMetricsVector[j++]->WriteCMetricToFile( metricFile );
             }
         }
 
@@ -1484,7 +1498,7 @@ namespace MetricsDiscoveryInternal
             // Define which vector is not finished and write remaining available informations
             if( i == m_informationVector.size() )
             {
-                for( uint32_t k = j; k < m_otherInformationVector.size(); k++ )
+                for( uint32_t k = j; k < m_otherInformationVector.size(); ++k )
                 {
                     m_otherInformationVector[k]->WriteCInformationToFile( metricFile );
                 }
@@ -1492,7 +1506,7 @@ namespace MetricsDiscoveryInternal
             }
             if( j == m_otherInformationVector.size() )
             {
-                for( uint32_t k = i; k < m_informationVector.size(); k++ )
+                for( uint32_t k = i; k < m_informationVector.size(); ++k )
                 {
                     m_informationVector[k]->WriteCInformationToFile( metricFile );
                 }
@@ -1500,7 +1514,7 @@ namespace MetricsDiscoveryInternal
             }
 
             // Write in the correct order
-            if( m_informationVector[i]->m_id < m_otherInformationVector[j]->m_id )
+            if( m_informationVector[i]->GetId() < m_otherInformationVector[j]->GetId() )
             {
                 m_informationVector[i++]->WriteCInformationToFile( metricFile );
             }
@@ -1525,7 +1539,7 @@ namespace MetricsDiscoveryInternal
         // m_complementarySetsVector
         count = m_complementarySetsVector.size();
         fwrite( &count, sizeof( uint32_t ), 1, metricFile );
-        for( i = 0; i < count; i++ )
+        for( i = 0; i < count; ++i )
         {
             WriteCStringToFile( m_complementarySetsVector[i], metricFile, adapterId );
         }
@@ -1556,7 +1570,7 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     TCompletionCode CMetricSet::InheritFromMetricSet( CMetricSet* referenceMetricSet, const char* signalName, bool copyInformationOnly )
     {
-        const uint32_t adapterId = OBTAIN_ADAPTER_ID( m_device );
+        const uint32_t adapterId = m_device.GetAdapter().GetAdapterId();
 
         MD_CHECK_PTR_RET_A( adapterId, referenceMetricSet, CC_ERROR_INVALID_PARAMETER );
 
@@ -1576,7 +1590,7 @@ namespace MetricsDiscoveryInternal
                 referenceMetric = referenceMetricSet->GetMetricExplicit( i );
                 if( referenceMetric == nullptr )
                 {
-                    MD_ASSERT_A( m_device->GetAdapter().GetAdapterId(), false );
+                    MD_ASSERT_A( m_device.GetAdapter().GetAdapterId(), false );
                     return CC_ERROR_GENERAL;
                 }
                 metricSignalName = referenceMetric->GetSignalName();
@@ -1585,7 +1599,7 @@ namespace MetricsDiscoveryInternal
                     metric = new( std::nothrow ) CMetric( *referenceMetric );
                     if( !metric )
                     {
-                        MD_LOG_A( m_device->GetAdapter().GetAdapterId(), LOG_DEBUG, "error copying metrics" );
+                        MD_LOG_A( m_device.GetAdapter().GetAdapterId(), LOG_DEBUG, "error copying metrics" );
                         return CC_ERROR_GENERAL;
                     }
                     AddMetric( metric );
@@ -1600,13 +1614,13 @@ namespace MetricsDiscoveryInternal
             referenceInformation = static_cast<CInformation*>( referenceMetricSet->GetInformation( i ) );
             if( referenceInformation == nullptr )
             {
-                MD_ASSERT_A( m_device->GetAdapter().GetAdapterId(), false );
+                MD_ASSERT_A( m_device.GetAdapter().GetAdapterId(), false );
                 return CC_ERROR_GENERAL;
             }
             information = new( std::nothrow ) CInformation( *referenceInformation );
             if( !information )
             {
-                MD_LOG_A( m_device->GetAdapter().GetAdapterId(), LOG_DEBUG, "error copying information" );
+                MD_LOG_A( m_device.GetAdapter().GetAdapterId(), LOG_DEBUG, "error copying information" );
                 return CC_ERROR_GENERAL;
             }
             AddInformation( information );
@@ -1635,7 +1649,7 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     bool CMetricSet::IsMetricAlreadyAdded( const char* symbolName )
     {
-        MD_CHECK_PTR_RET_A( OBTAIN_ADAPTER_ID( m_device ), symbolName, false );
+        MD_CHECK_PTR_RET_A( m_device.GetAdapter().GetAdapterId(), symbolName, false );
 
         for( auto& metric : m_metricsVector )
         {
@@ -1715,7 +1729,7 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     TCompletionCode CMetricSet::SetApiFiltering( uint32_t apiMask )
     {
-        const uint32_t adapterId = OBTAIN_ADAPTER_ID( m_device );
+        const uint32_t adapterId = m_device.GetAdapter().GetAdapterId();
 
         MD_LOG_ENTER_A( adapterId );
 
@@ -1755,14 +1769,17 @@ namespace MetricsDiscoveryInternal
     //     Validates API mask used in SetApiFiltering method.
     //     IoStream and Query measurements MUST NOT be mixed.
     //
+    // Input:
+    //    const uint32_t apiMask - api mask
+    //
     // Output:
-    //     bool - true if valid, false otherwise
+    //     bool                  - true if valid, false otherwise
     //
     //////////////////////////////////////////////////////////////////////////////
-    bool CMetricSet::IsApiFilteringMaskValid( uint32_t apiMask )
+    bool CMetricSet::IsApiFilteringMaskValid( const uint32_t apiMask )
     {
-        bool     ret        = true;
-        uint32_t streamMask = API_TYPE_IOSTREAM | API_TYPE_BBSTREAM;
+        constexpr uint32_t streamMask = API_TYPE_IOSTREAM;
+        bool               ret        = true;
 
         if( apiMask == 0 || apiMask == API_TYPE_ALL )
         {
@@ -1771,7 +1788,7 @@ namespace MetricsDiscoveryInternal
         // Do not allow mixing stream and query metrics
         else if( ( apiMask & streamMask ) && ( apiMask & ~streamMask ) )
         {
-            MD_LOG_A( OBTAIN_ADAPTER_ID( m_device ), LOG_DEBUG, "error: IoStream and Query api mask mixed, apiMask: %u", apiMask );
+            MD_LOG_A( m_device.GetAdapter().GetAdapterId(), LOG_DEBUG, "error: IoStream and Query api mask mixed, apiMask: %u", apiMask );
             ret = false;
         }
 
@@ -1791,13 +1808,13 @@ namespace MetricsDiscoveryInternal
     //     IoStream and Query measurements MUST NOT be mixed.
     //
     // Input:
-    //     uint32_t     apiMask - API mask for filtering
-    //     bool         enable  - if true enable, if false disable
+    //     const uint32_t apiMask - API mask for filtering
+    //     const bool     enable  - if true enable, if false disable
     //
     //////////////////////////////////////////////////////////////////////////////
-    void CMetricSet::EnableApiFiltering( uint32_t apiMask, bool enable )
+    void CMetricSet::EnableApiFiltering( const uint32_t apiMask, const bool enable )
     {
-        const uint32_t adapterId = OBTAIN_ADAPTER_ID( m_device );
+        const uint32_t adapterId = m_device.GetAdapter().GetAdapterId();
 
         MD_LOG_ENTER_A( adapterId );
 
@@ -1923,7 +1940,7 @@ namespace MetricsDiscoveryInternal
             m_isFiltered               = false;
         }
 
-        MD_LOG_A( OBTAIN_ADAPTER_ID( m_device ), LOG_DEBUG, "use API filtered variables: %s", enable ? "TRUE" : "FALSE" );
+        MD_LOG_A( m_device.GetAdapter().GetAdapterId(), LOG_DEBUG, "use API filtered variables: %s", enable ? "TRUE" : "FALSE" );
     }
 
     //////////////////////////////////////////////////////////////////////////////
@@ -2054,7 +2071,7 @@ namespace MetricsDiscoveryInternal
     {
         if( enableContextFiltering )
         {
-            MD_LOG_A( OBTAIN_ADAPTER_ID( m_device ), LOG_ERROR, "error: context filtering not supported" );
+            MD_LOG_A( m_device.GetAdapter().GetAdapterId(), LOG_ERROR, "error: context filtering not supported" );
             return CC_ERROR_NOT_SUPPORTED;
         }
 
@@ -2095,7 +2112,7 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     TCompletionCode CMetricSet::CalculateMetrics( const uint8_t* rawData, uint32_t rawDataSize, TTypedValue_1_0* out, uint32_t outSize, uint32_t* outReportCount, TTypedValue_1_0* outMaxValues, uint32_t outMaxValuesSize )
     {
-        const uint32_t adapterId = OBTAIN_ADAPTER_ID( m_device );
+        const uint32_t adapterId = m_device.GetAdapter().GetAdapterId();
 
         MD_LOG_ENTER_A( adapterId );
 
@@ -2129,19 +2146,23 @@ namespace MetricsDiscoveryInternal
             return CC_OK;
         }
 
-        TCompletionCode  ret             = CC_OK;
-        uint32_t         streamMask      = API_TYPE_IOSTREAM | API_TYPE_BBSTREAM;
-        TMeasurementType measurementType = ( m_currentParams->ApiMask & streamMask ) ? MEASUREMENT_TYPE_SNAPSHOT_IO : MEASUREMENT_TYPE_DELTA_QUERY;
-        uint32_t         rawReportSize   = ( measurementType == MEASUREMENT_TYPE_SNAPSHOT_IO ) ? m_currentParams->RawReportSize : m_currentParams->QueryReportSize;
-        uint32_t         rawReportCount  = rawDataSize / rawReportSize;
+        constexpr uint32_t streamMask = API_TYPE_IOSTREAM;
+
+        const auto     measurementType = ( m_currentParams->ApiMask & streamMask )
+                ? MEASUREMENT_TYPE_SNAPSHOT_IO
+                : MEASUREMENT_TYPE_DELTA_QUERY;
+        const uint32_t rawReportSize   = ( measurementType == MEASUREMENT_TYPE_SNAPSHOT_IO )
+              ? m_currentParams->RawReportSize
+              : m_currentParams->QueryReportSize;
+        const uint32_t rawReportCount  = rawDataSize / rawReportSize;
 
         // Validation
-        ret = ValidateCalculateMetricsParams( rawDataSize, rawReportSize, outSize, rawReportCount, outMaxValuesSize );
+        auto ret = ValidateCalculateMetricsParams( rawDataSize, rawReportSize, outSize, rawReportCount, outMaxValuesSize );
         MD_CHECK_CC_RET_A( adapterId, ret );
 
         // Initialize manager and context
+        TCalculationContext  calculationContext = {};
         CCalculationManager* calculationManager = nullptr;
-        TCalculationContext  calculationContext;
 
         InitializeCalculationManager( measurementType, &calculationManager, true );
         MD_CHECK_PTR_RET_A( adapterId, calculationManager, CC_ERROR_NO_MEMORY );
@@ -2197,7 +2218,7 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     TCompletionCode CMetricSet::CalculateIoMeasurementInformation( TTypedValue_1_0* out, uint32_t outSize )
     {
-        const uint32_t adapterId = OBTAIN_ADAPTER_ID( m_device );
+        const uint32_t adapterId = m_device.GetAdapter().GetAdapterId();
 
         MD_LOG_ENTER_A( adapterId );
 
@@ -2251,7 +2272,7 @@ namespace MetricsDiscoveryInternal
         // Size of one individual calculated max values report in bytes
         uint32_t maxValuesReportSize = m_currentParams->MetricsCount * sizeof( TTypedValue_1_0 );
 
-        const uint32_t adapterId = OBTAIN_ADAPTER_ID( m_device );
+        const uint32_t adapterId = m_device.GetAdapter().GetAdapterId();
 
         MD_ASSERT_A( adapterId, rawReportSize != 0 );
 
@@ -2308,7 +2329,7 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     void CMetricSet::InitializeCalculationManager( TMeasurementType measurementType, CCalculationManager** calculationManager, bool init )
     {
-        const uint32_t adapterId = OBTAIN_ADAPTER_ID( m_device );
+        const uint32_t adapterId = m_device.GetAdapter().GetAdapterId();
 
         if( !init )
         {
@@ -2366,7 +2387,7 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     TCompletionCode CMetricSet::InitializeCalculationContext( TCalculationContext& context, CCalculationManager* calculationManager, TMeasurementType measurementType, TTypedValue_1_0* out, TTypedValue_1_0* outMaxValues, const uint8_t* rawData, uint32_t rawReportCount, bool init )
     {
-        const uint32_t adapterId = OBTAIN_ADAPTER_ID( m_device );
+        const uint32_t adapterId = m_device.GetAdapter().GetAdapterId();
 
         MD_LOG_ENTER_A( adapterId );
         if( !init )
@@ -2434,7 +2455,7 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     bool CMetricSet::AreMetricParamsValid( const char* symbolName, const char* shortName, const char* longName, const char* groupName, TMetricType metricType, TMetricResultType resultType, const char* units, THwUnitType hwType, const char* alias )
     {
-        const uint32_t adapterId = OBTAIN_ADAPTER_ID( m_device );
+        const uint32_t adapterId = m_device.GetAdapter().GetAdapterId();
 
         if( ( symbolName == nullptr ) || ( strcmp( symbolName, "" ) == 0 ) )
         {
@@ -2506,11 +2527,11 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     bool CMetricSet::HasInformation( const char* symbolName )
     {
-        MD_CHECK_PTR_RET_A( OBTAIN_ADAPTER_ID( m_device ), symbolName, false );
+        MD_CHECK_PTR_RET_A( m_device.GetAdapter().GetAdapterId(), symbolName, false );
 
-        for( uint32_t i = 0; i < m_params_1_0.InformationCount; i++ )
+        for( uint32_t i = 0; i < m_params_1_0.InformationCount; ++i )
         {
-            IInformation_1_0* information = GetInformation( i );
+            auto information = GetInformation( i );
             if( information && information->GetParams()->SymbolName != nullptr && strcmp( information->GetParams()->SymbolName, symbolName ) == 0 )
             {
                 return true;
@@ -2552,10 +2573,10 @@ namespace MetricsDiscoveryInternal
     //     Returns metrics device.
     //
     // Output:
-    //     CMetricsDevice* - metrics calculator or *nullptr* if error
+    //     CMetricsDevice& - reference to metrics device associated with metrics set
     //
     //////////////////////////////////////////////////////////////////////////////
-    CMetricsDevice* CMetricSet::GetMetricsDevice()
+    CMetricsDevice& CMetricSet::GetMetricsDevice()
     {
         return m_device;
     }
@@ -2602,7 +2623,7 @@ namespace MetricsDiscoveryInternal
     TCompletionCode CMetricSet::SetAvailabilityEquation( const char* equationString )
     {
         TCompletionCode ret       = SetEquation( m_device, m_availabilityEquation, equationString );
-        const uint32_t  adapterId = OBTAIN_ADAPTER_ID( m_device );
+        const uint32_t  adapterId = m_device.GetAdapter().GetAdapterId();
 
         if( ret == CC_OK )
         {

@@ -179,7 +179,7 @@ namespace MetricsDiscoveryInternal
 
     public: // Methods
         // Static
-        static TCompletionCode GetGfxDeviceInfo( int32_t deviceId, TGfxDeviceInfo* gfxDeviceInfo, const uint32_t adapterId );
+        static TCompletionCode GetGfxDeviceInfo( int32_t deviceId, TGfxDeviceInfo* gfxDeviceInfo );
         static TAdapterType    GetAdapterType( const TGfxDeviceInfo* gfxDeviceInfo );
 
         // Drm queries.

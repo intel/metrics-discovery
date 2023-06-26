@@ -77,13 +77,13 @@ namespace MetricsDiscoveryInternal
 
     public:
         // Constructor & Destructor:
-        COverride( CMetricsDevice* device );
+        COverride( CMetricsDevice& device );
         virtual ~COverride();
 
     private:
         // Variables:
         TOverrideParams_1_2 m_params;
-        CMetricsDevice*     m_device;
+        CMetricsDevice&     m_device;
     };
 
 } // namespace MetricsDiscoveryInternal

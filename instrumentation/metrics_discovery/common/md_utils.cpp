@@ -151,7 +151,7 @@ namespace MetricsDiscoveryInternal
     //     Sets the given equation.
     //
     // Input:
-    //     CMetricsDevice* device         - metric device
+    //     CMetricsDevice& device         - metric device
     //     CEquation*&     equation       - pointer to the equation to be set
     //     const char*     equationString - euqation string, could be empty or null
     //
@@ -159,12 +159,10 @@ namespace MetricsDiscoveryInternal
     //     TCompletionCode            - result of the operation
     //
     //////////////////////////////////////////////////////////////////////////////
-    TCompletionCode SetEquation( CMetricsDevice* device, CEquation*& equation, const char* equationString )
+    TCompletionCode SetEquation( CMetricsDevice& device, CEquation*& equation, const char* equationString )
     {
-        const uint32_t  adapterId = OBTAIN_ADAPTER_ID( device );
+        const uint32_t  adapterId = device.GetAdapter().GetAdapterId();
         TCompletionCode ret       = CC_OK;
-
-        MD_CHECK_PTR_RET_A( adapterId, device, CC_ERROR_INVALID_PARAMETER );
 
         // Delete previous equation if any
         MD_SAFE_DELETE( equation );
@@ -972,9 +970,9 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     TTypedValue_1_0 ReadTTypedValueFromFileBuffer( uint8_t** fileBuffer, const uint32_t adapterId )
     {
-        TTypedValue_1_0 typedValue;
-        typedValue.ValueType   = VALUE_TYPE_UINT32;
-        typedValue.ValueUInt32 = 0;
+        TTypedValue_1_0 typedValue = {};
+        typedValue.ValueType       = VALUE_TYPE_UINT32;
+        typedValue.ValueUInt32     = 0;
 
         if( fileBuffer == nullptr || *fileBuffer == nullptr )
         {

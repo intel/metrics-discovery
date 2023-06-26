@@ -66,14 +66,14 @@ namespace MetricsDiscoveryInternal
 
     public:
         // Constructor and Destructor:
-        CEquation( CMetricsDevice* device );
+        CEquation( CMetricsDevice& device );
         explicit CEquation( const CEquation& other );
         virtual ~CEquation();
 
         // Non-API:
         bool SolveBooleanEquation( void ); // Used only for availability equations
         bool ParseEquationString( const char* equationString );
-        bool AddEquationElement( const CEquationElementInternal* element );
+        bool AddEquationElement( const CEquationElementInternal& element );
         bool ParseEquationElement( const char* element );
 
         TCompletionCode WriteCEquationToFile( FILE* metricFile );
@@ -88,7 +88,7 @@ namespace MetricsDiscoveryInternal
         // Variables:
         std::vector<CEquationElementInternal> m_elementsVector;
         const char*                           m_equationString;
-        CMetricsDevice*                       m_device;
+        CMetricsDevice&                       m_device;
 
     private:
         // Static variables:

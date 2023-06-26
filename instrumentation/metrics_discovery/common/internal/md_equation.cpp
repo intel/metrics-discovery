@@ -35,7 +35,7 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     CEquationElementInternal::CEquationElementInternal()
     {
-        memset( &Element_1_0, 0x0, sizeof( Element_1_0 ) );
+        Element_1_0            = {};
         SymbolNameInternal[0]  = 0;
         Element_1_0.SymbolName = SymbolNameInternal;
         MetricIndexInternal    = -1;
@@ -94,15 +94,15 @@ namespace MetricsDiscoveryInternal
     //     Constructor.
     //
     // Input:
-    //     CMetricsDevice* device - parent metric device
+    //     CMetricsDevice& device - parent metric device
     //
     //////////////////////////////////////////////////////////////////////////////
-    CEquation::CEquation( CMetricsDevice* device )
+    CEquation::CEquation( CMetricsDevice& device )
         : m_elementsVector()
+        , m_equationString( nullptr )
         , m_device( device )
     {
         m_elementsVector.reserve( EQUATION_VECTOR_INCREASE );
-        m_equationString = nullptr;
     }
 
     //////////////////////////////////////////////////////////////////////////////
@@ -119,9 +119,9 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     CEquation::CEquation( const CEquation& other )
         : m_elementsVector( other.m_elementsVector )
+        , m_equationString( GetCopiedCString( other.m_equationString, other.m_device.GetAdapter().GetAdapterId() ) )
         , m_device( other.m_device )
     {
-        m_equationString = GetCopiedCString( other.m_equationString, OBTAIN_ADAPTER_ID( m_device ) );
     }
 
     //////////////////////////////////////////////////////////////////////////////
@@ -206,14 +206,15 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     bool CEquation::SolveBooleanEquation( void )
     {
-        std::list<uint64_t> equationStack;
-        uint64_t            qwordValue;
-        uint32_t            algorithmCheck = 0;
-        const uint32_t      adapterId      = OBTAIN_ADAPTER_ID( m_device );
+        const uint32_t adapterId = m_device.GetAdapter().GetAdapterId();
 
-        for( uint32_t i = 0; i < m_elementsVector.size(); i++ )
+        std::list<uint64_t> equationStack  = {};
+        uint64_t            qwordValue     = 0ULL;
+        uint32_t            algorithmCheck = 0;
+
+        for( uint32_t i = 0; i < m_elementsVector.size(); ++i )
         {
-            TEquationElement_1_0* element = &( m_elementsVector[i].Element_1_0 );
+            auto element = &( m_elementsVector[i].Element_1_0 );
             switch( element->Type )
             {
                 case EQUATION_ELEM_IMM_UINT64:
@@ -242,30 +243,30 @@ namespace MetricsDiscoveryInternal
 
                 case EQUATION_ELEM_GLOBAL_SYMBOL:
                 {
-                    TTypedValue_1_0* pValue = m_device->GetGlobalSymbolValueByName( element->SymbolName );
-
+                    auto pValue = m_device.GetGlobalSymbolValueByName( element->SymbolName );
                     if( pValue && ( pValue->ValueType == VALUE_TYPE_UINT64 ) )
                     {
-                        qwordValue = (uint64_t) pValue->ValueUInt64;
+                        qwordValue = static_cast<uint64_t>( pValue->ValueUInt64 );
                     }
                     else if( pValue && ( pValue->ValueType == VALUE_TYPE_UINT32 ) )
                     {
-                        qwordValue = (uint64_t) pValue->ValueUInt32;
+                        qwordValue = static_cast<uint64_t>( pValue->ValueUInt32 );
                     }
                     else if( pValue && ( pValue->ValueType == VALUE_TYPE_BOOL ) )
                     {
-                        qwordValue = (uint64_t) pValue->ValueBool;
+                        qwordValue = static_cast<uint64_t>( pValue->ValueBool );
                     }
                     else if( pValue && ( pValue->ValueType == VALUE_TYPE_BYTEARRAY ) )
                     {
                         // TODO: should be improved (the array can be bigger than 64bits)
-                        qwordValue = *( reinterpret_cast<uint64_t*>( pValue->ValueByteArray->Data ) );
+                        qwordValue = static_cast<uint64_t>( *( pValue->ValueByteArray->Data ) );
                     }
                     else
                     {
                         MD_ASSERT_A( adapterId, false );
-                        qwordValue = 0;
+                        qwordValue = 0ULL;
                     }
+
                     equationStack.push_back( qwordValue );
                     algorithmCheck++;
                     break;
@@ -273,11 +274,16 @@ namespace MetricsDiscoveryInternal
 
                 case EQUATION_ELEM_OPERATION:
                 {
+                    if( equationStack.size() < 2 )
+                    {
+                        MD_LOG_A( adapterId, LOG_DEBUG, "Not enough elements in equationStack, size is less than 2." );
+                        return false;
+                    }
                     // Pop two values from stack
-                    uint64_t valueLast = equationStack.back();
+                    const uint64_t valueLast = equationStack.back();
                     equationStack.pop_back();
                     algorithmCheck--;
-                    uint64_t valuePrev = equationStack.back();
+                    const uint64_t valuePrev = equationStack.back();
                     equationStack.pop_back();
                     algorithmCheck--;
 
@@ -369,7 +375,7 @@ namespace MetricsDiscoveryInternal
         {
             // here should be only 1 element on the list - the result (if the equation is fine)
             MD_ASSERT_A( adapterId, algorithmCheck == 1 );
-            qwordValue = equationStack.back();
+            qwordValue = ( equationStack.size() > 0 ) ? equationStack.back() : 0LL;
         }
         else
         {
@@ -400,20 +406,20 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     bool CEquation::ParseEquationString( const char* equationString )
     {
-        if( ( equationString == nullptr ) || ( strcmp( equationString, "" ) == 0 ) )
+        if( equationString == nullptr || ( strcmp( equationString, "" ) == 0 ) )
         {
             m_equationString = nullptr;
             return false;
         }
 
-        char *token = nullptr, *tokenNext = nullptr, *string = nullptr;
+        const uint32_t adapterId = m_device.GetAdapter().GetAdapterId();
 
-        const uint32_t adapterId = OBTAIN_ADAPTER_ID( m_device );
+        char* tokenNext = nullptr;
 
-        string = GetCopiedCString( equationString, adapterId );
+        char* string = GetCopiedCString( equationString, adapterId );
         MD_CHECK_PTR_RET_A( adapterId, string, false );
 
-        token = iu_strtok_s( string, " ", &tokenNext );
+        char* token = iu_strtok_s( string, " ", &tokenNext );
         while( token != nullptr )
         {
             if( !ParseEquationElement( token ) )
@@ -441,15 +447,15 @@ namespace MetricsDiscoveryInternal
     //     Adds the element to the equation list.
     //
     // Input:
-    //     const CEquationElementInternal * element  - equation element to add
+    //     const CEquationElementInternal& element - equation element to add
     //
     // Output:
-    //     bool                                - result of the operation
+    //     bool                                    - result of the operation
     //
     //////////////////////////////////////////////////////////////////////////////
-    bool CEquation::AddEquationElement( const CEquationElementInternal* element )
+    bool CEquation::AddEquationElement( const CEquationElementInternal& element )
     {
-        m_elementsVector.push_back( *element );
+        m_elementsVector.push_back( element );
 
         return true;
     }
@@ -475,11 +481,11 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     bool CEquation::ParseEquationElement( const char* element )
     {
-        const uint32_t adapterId = OBTAIN_ADAPTER_ID( m_device );
+        const uint32_t adapterId = m_device.GetAdapter().GetAdapterId();
 
         if( strcmp( element, "EuAggrDurationSlice" ) == 0 )
         {
-            const uint32_t platformIndex = m_device->GetPlatformIndex();
+            const uint32_t platformIndex = m_device.GetPlatformIndex();
 
             // Workaround for renamed EuCoresTotalCount
             bool platformXeHpPlus = IsPlatformMatch(
@@ -488,13 +494,15 @@ namespace MetricsDiscoveryInternal
                 GENERATION_ACM,
                 GENERATION_PVC );
 
-            return ParseEquationString( platformXeHpPlus ? "$Self $GpuSliceClocksCount $VectorEngineTotalCount UMUL FDIV 100 FMUL" : "$Self $GpuSliceClocksCount $EuCoresTotalCount UMUL FDIV 100 FMUL" );
+            return ParseEquationString( platformXeHpPlus
+                    ? "$Self $GpuSliceClocksCount $VectorEngineTotalCount UMUL FDIV 100 FMUL"
+                    : "$Self $GpuSliceClocksCount $EuCoresTotalCount UMUL FDIV 100 FMUL" );
         }
         else if( strcmp( element, "EuAggrDuration" ) == 0 )
         {
             CEquationElementInternal anElement;
             anElement.Element_1_0.Type = EQUATION_ELEM_STD_NORM_EU_AGGR_DURATION;
-            return AddEquationElement( &anElement );
+            return AddEquationElement( anElement );
         }
         else if( strcmp( element, "GpuDurationSlice" ) == 0 )
         {
@@ -504,224 +512,224 @@ namespace MetricsDiscoveryInternal
         {
             CEquationElementInternal anElement;
             anElement.Element_1_0.Type = EQUATION_ELEM_STD_NORM_GPU_DURATION;
-            return AddEquationElement( &anElement );
+            return AddEquationElement( anElement );
         }
         else if( strcmp( element, "UADD" ) == 0 )
         {
             CEquationElementInternal anElement;
             anElement.Element_1_0.Type      = EQUATION_ELEM_OPERATION;
             anElement.Element_1_0.Operation = EQUATION_OPER_UADD;
-            return AddEquationElement( &anElement );
+            return AddEquationElement( anElement );
         }
         else if( strcmp( element, "USUB" ) == 0 )
         {
             CEquationElementInternal anElement;
             anElement.Element_1_0.Type      = EQUATION_ELEM_OPERATION;
             anElement.Element_1_0.Operation = EQUATION_OPER_USUB;
-            return AddEquationElement( &anElement );
+            return AddEquationElement( anElement );
         }
         else if( strcmp( element, "UMUL" ) == 0 )
         {
             CEquationElementInternal anElement;
             anElement.Element_1_0.Type      = EQUATION_ELEM_OPERATION;
             anElement.Element_1_0.Operation = EQUATION_OPER_UMUL;
-            return AddEquationElement( &anElement );
+            return AddEquationElement( anElement );
         }
         else if( strcmp( element, "UDIV" ) == 0 )
         {
             CEquationElementInternal anElement;
             anElement.Element_1_0.Type      = EQUATION_ELEM_OPERATION;
             anElement.Element_1_0.Operation = EQUATION_OPER_UDIV;
-            return AddEquationElement( &anElement );
+            return AddEquationElement( anElement );
         }
         else if( strcmp( element, "AND" ) == 0 )
         {
             CEquationElementInternal anElement;
             anElement.Element_1_0.Type      = EQUATION_ELEM_OPERATION;
             anElement.Element_1_0.Operation = EQUATION_OPER_AND;
-            return AddEquationElement( &anElement );
+            return AddEquationElement( anElement );
         }
         else if( strcmp( element, "OR" ) == 0 )
         {
             CEquationElementInternal anElement;
             anElement.Element_1_0.Type      = EQUATION_ELEM_OPERATION;
             anElement.Element_1_0.Operation = EQUATION_OPER_OR;
-            return AddEquationElement( &anElement );
+            return AddEquationElement( anElement );
         }
         else if( strcmp( element, "XNOR" ) == 0 )
         {
             CEquationElementInternal anElement;
             anElement.Element_1_0.Type      = EQUATION_ELEM_OPERATION;
             anElement.Element_1_0.Operation = EQUATION_OPER_XNOR;
-            return AddEquationElement( &anElement );
+            return AddEquationElement( anElement );
         }
         else if( strcmp( element, "XOR" ) == 0 )
         {
             CEquationElementInternal anElement;
             anElement.Element_1_0.Type      = EQUATION_ELEM_OPERATION;
             anElement.Element_1_0.Operation = EQUATION_OPER_XOR;
-            return AddEquationElement( &anElement );
+            return AddEquationElement( anElement );
         }
         else if( strcmp( element, "==" ) == 0 )
         {
             CEquationElementInternal anElement;
             anElement.Element_1_0.Type      = EQUATION_ELEM_OPERATION;
             anElement.Element_1_0.Operation = EQUATION_OPER_EQUALS;
-            return AddEquationElement( &anElement );
+            return AddEquationElement( anElement );
         }
         else if( strcmp( element, "&&" ) == 0 )
         {
             CEquationElementInternal anElement;
             anElement.Element_1_0.Type      = EQUATION_ELEM_OPERATION;
             anElement.Element_1_0.Operation = EQUATION_OPER_AND_L;
-            return AddEquationElement( &anElement );
+            return AddEquationElement( anElement );
         }
         else if( strcmp( element, "<<" ) == 0 )
         {
             CEquationElementInternal anElement;
             anElement.Element_1_0.Type      = EQUATION_ELEM_OPERATION;
             anElement.Element_1_0.Operation = EQUATION_OPER_LSHIFT;
-            return AddEquationElement( &anElement );
+            return AddEquationElement( anElement );
         }
         else if( strcmp( element, ">>" ) == 0 )
         {
             CEquationElementInternal anElement;
             anElement.Element_1_0.Type      = EQUATION_ELEM_OPERATION;
             anElement.Element_1_0.Operation = EQUATION_OPER_RSHIFT;
-            return AddEquationElement( &anElement );
+            return AddEquationElement( anElement );
         }
         else if( strcmp( element, "FADD" ) == 0 )
         {
             CEquationElementInternal anElement;
             anElement.Element_1_0.Type      = EQUATION_ELEM_OPERATION;
             anElement.Element_1_0.Operation = EQUATION_OPER_FADD;
-            return AddEquationElement( &anElement );
+            return AddEquationElement( anElement );
         }
         else if( strcmp( element, "FSUB" ) == 0 )
         {
             CEquationElementInternal anElement;
             anElement.Element_1_0.Type      = EQUATION_ELEM_OPERATION;
             anElement.Element_1_0.Operation = EQUATION_OPER_FSUB;
-            return AddEquationElement( &anElement );
+            return AddEquationElement( anElement );
         }
         else if( strcmp( element, "FMUL" ) == 0 )
         {
             CEquationElementInternal anElement;
             anElement.Element_1_0.Type      = EQUATION_ELEM_OPERATION;
             anElement.Element_1_0.Operation = EQUATION_OPER_FMUL;
-            return AddEquationElement( &anElement );
+            return AddEquationElement( anElement );
         }
         else if( strcmp( element, "FDIV" ) == 0 )
         {
             CEquationElementInternal anElement;
             anElement.Element_1_0.Type      = EQUATION_ELEM_OPERATION;
             anElement.Element_1_0.Operation = EQUATION_OPER_FDIV;
-            return AddEquationElement( &anElement );
+            return AddEquationElement( anElement );
         }
         else if( strcmp( element, "UGTE" ) == 0 )
         {
             CEquationElementInternal anElement;
             anElement.Element_1_0.Type      = EQUATION_ELEM_OPERATION;
             anElement.Element_1_0.Operation = EQUATION_OPER_UGTE;
-            return AddEquationElement( &anElement );
+            return AddEquationElement( anElement );
         }
         else if( strcmp( element, "ULTE" ) == 0 )
         {
             CEquationElementInternal anElement;
             anElement.Element_1_0.Type      = EQUATION_ELEM_OPERATION;
             anElement.Element_1_0.Operation = EQUATION_OPER_ULTE;
-            return AddEquationElement( &anElement );
+            return AddEquationElement( anElement );
         }
         else if( strcmp( element, "UGT" ) == 0 )
         {
             CEquationElementInternal anElement;
             anElement.Element_1_0.Type      = EQUATION_ELEM_OPERATION;
             anElement.Element_1_0.Operation = EQUATION_OPER_UGT;
-            return AddEquationElement( &anElement );
+            return AddEquationElement( anElement );
         }
         else if( strcmp( element, "ULT" ) == 0 )
         {
             CEquationElementInternal anElement;
             anElement.Element_1_0.Type      = EQUATION_ELEM_OPERATION;
             anElement.Element_1_0.Operation = EQUATION_OPER_ULT;
-            return AddEquationElement( &anElement );
+            return AddEquationElement( anElement );
         }
         else if( strcmp( element, "FGTE" ) == 0 )
         {
             CEquationElementInternal anElement;
             anElement.Element_1_0.Type      = EQUATION_ELEM_OPERATION;
             anElement.Element_1_0.Operation = EQUATION_OPER_FGTE;
-            return AddEquationElement( &anElement );
+            return AddEquationElement( anElement );
         }
         else if( strcmp( element, "FLTE" ) == 0 )
         {
             CEquationElementInternal anElement;
             anElement.Element_1_0.Type      = EQUATION_ELEM_OPERATION;
             anElement.Element_1_0.Operation = EQUATION_OPER_FLTE;
-            return AddEquationElement( &anElement );
+            return AddEquationElement( anElement );
         }
         else if( strcmp( element, "FGT" ) == 0 )
         {
             CEquationElementInternal anElement;
             anElement.Element_1_0.Type      = EQUATION_ELEM_OPERATION;
             anElement.Element_1_0.Operation = EQUATION_OPER_FGT;
-            return AddEquationElement( &anElement );
+            return AddEquationElement( anElement );
         }
         else if( strcmp( element, "FLT" ) == 0 )
         {
             CEquationElementInternal anElement;
             anElement.Element_1_0.Type      = EQUATION_ELEM_OPERATION;
             anElement.Element_1_0.Operation = EQUATION_OPER_FLT;
-            return AddEquationElement( &anElement );
+            return AddEquationElement( anElement );
         }
         else if( strcmp( element, "UMIN" ) == 0 )
         {
             CEquationElementInternal anElement;
             anElement.Element_1_0.Type      = EQUATION_ELEM_OPERATION;
             anElement.Element_1_0.Operation = EQUATION_OPER_UMIN;
-            return AddEquationElement( &anElement );
+            return AddEquationElement( anElement );
         }
         else if( strcmp( element, "UMAX" ) == 0 )
         {
             CEquationElementInternal anElement;
             anElement.Element_1_0.Type      = EQUATION_ELEM_OPERATION;
             anElement.Element_1_0.Operation = EQUATION_OPER_UMAX;
-            return AddEquationElement( &anElement );
+            return AddEquationElement( anElement );
         }
         else if( strcmp( element, "FMIN" ) == 0 )
         {
             CEquationElementInternal anElement;
             anElement.Element_1_0.Type      = EQUATION_ELEM_OPERATION;
             anElement.Element_1_0.Operation = EQUATION_OPER_FMIN;
-            return AddEquationElement( &anElement );
+            return AddEquationElement( anElement );
         }
         else if( strcmp( element, "FMAX" ) == 0 )
         {
             CEquationElementInternal anElement;
             anElement.Element_1_0.Type      = EQUATION_ELEM_OPERATION;
             anElement.Element_1_0.Operation = EQUATION_OPER_FMAX;
-            return AddEquationElement( &anElement );
+            return AddEquationElement( anElement );
         }
         else if( strncmp( element, "dw@", sizeof( "dw@" ) - 1 ) == 0 )
         {
             CEquationElementInternal anElement;
             anElement.Element_1_0.Type                  = EQUATION_ELEM_RD_UINT32;
             anElement.Element_1_0.ReadParams.ByteOffset = strtoul( &element[3], nullptr, 0 );
-            return AddEquationElement( &anElement );
+            return AddEquationElement( anElement );
         }
         else if( strncmp( element, "fl@", sizeof( "fl@" ) - 1 ) == 0 )
         {
             CEquationElementInternal anElement;
             anElement.Element_1_0.Type                  = EQUATION_ELEM_RD_FLOAT;
             anElement.Element_1_0.ReadParams.ByteOffset = strtoul( &element[3], nullptr, 0 );
-            return AddEquationElement( &anElement );
+            return AddEquationElement( anElement );
         }
         else if( strncmp( element, "qw@", sizeof( "qw@" ) - 1 ) == 0 )
         {
             CEquationElementInternal anElement;
             anElement.Element_1_0.Type                  = EQUATION_ELEM_RD_UINT64;
             anElement.Element_1_0.ReadParams.ByteOffset = strtoul( &element[3], nullptr, 0 );
-            return AddEquationElement( &anElement );
+            return AddEquationElement( anElement );
         }
         else if( strncmp( element, "rd40@", sizeof( "rd40@" ) - 1 ) == 0 )
         {
@@ -732,7 +740,7 @@ namespace MetricsDiscoveryInternal
             if( pEnd )
             {
                 anElement.Element_1_0.ReadParams.ByteOffsetExt = strtoul( ++pEnd, &pEnd, 0 );
-                return AddEquationElement( &anElement );
+                return AddEquationElement( anElement );
             }
             return false;
         }
@@ -748,7 +756,7 @@ namespace MetricsDiscoveryInternal
                 if( pEnd )
                 {
                     anElement.Element_1_0.ReadParams.BitsCount = strtoul( ++pEnd, &pEnd, 10 );
-                    return AddEquationElement( &anElement );
+                    return AddEquationElement( anElement );
                 }
             }
             return false;
@@ -758,7 +766,7 @@ namespace MetricsDiscoveryInternal
             CEquationElementInternal anElement;
 
             anElement.Element_1_0.Type = EQUATION_ELEM_SELF_COUNTER_VALUE;
-            return AddEquationElement( &anElement );
+            return AddEquationElement( anElement );
         }
         else if( strncmp( element, "$$", sizeof( "$$" ) - 1 ) == 0 )
         {
@@ -770,12 +778,12 @@ namespace MetricsDiscoveryInternal
             anElement.Element_1_0.SymbolName = anElement.SymbolNameInternal;
             anElement.Element_1_0.Type       = EQUATION_ELEM_LOCAL_METRIC_SYMBOL;
 
-            return AddEquationElement( &anElement );
+            return AddEquationElement( anElement );
         }
         else if( ( element[0] == '$' ) && ( element[1] != 0 ) )
         {
             CEquationElementInternal anElement;
-            TTypedValue_1_0*         value = m_device->GetGlobalSymbolValueByName( &element[1] );
+            auto                     value = m_device.GetGlobalSymbolValueByName( &element[1] );
 
             iu_strncpy_s( anElement.SymbolNameInternal, sizeof( anElement.SymbolNameInternal ), &element[1], sizeof( anElement.SymbolNameInternal ) - 1 );
             anElement.Element_1_0.SymbolName = anElement.SymbolNameInternal;
@@ -790,7 +798,7 @@ namespace MetricsDiscoveryInternal
                 // Finish element as global symbol
                 anElement.Element_1_0.Type = EQUATION_ELEM_GLOBAL_SYMBOL;
             }
-            return AddEquationElement( &anElement );
+            return AddEquationElement( anElement );
         }
         else if( strncmp( element, "i$", sizeof( "i$" ) - 1 ) == 0 )
         {
@@ -802,28 +810,28 @@ namespace MetricsDiscoveryInternal
             anElement.Element_1_0.SymbolName = anElement.SymbolNameInternal;
             anElement.Element_1_0.Type       = EQUATION_ELEM_INFORMATION_SYMBOL;
 
-            return AddEquationElement( &anElement );
+            return AddEquationElement( anElement );
         }
         else if( strchr( element, '.' ) != nullptr ) // assume float number
         {
             CEquationElementInternal anElement;
             anElement.Element_1_0.Type           = EQUATION_ELEM_IMM_FLOAT;
             anElement.Element_1_0.ImmediateFloat = (float) atof( element );
-            return AddEquationElement( &anElement );
+            return AddEquationElement( anElement );
         }
         else if( strncmp( element, "0x", sizeof( "0x" ) - 1 ) == 0 ) // assume hex integer 64
         {
             CEquationElementInternal anElement;
             anElement.Element_1_0.Type            = EQUATION_ELEM_IMM_UINT64;
             anElement.Element_1_0.ImmediateUInt64 = strtoull( element, nullptr, 0 );
-            return AddEquationElement( &anElement );
+            return AddEquationElement( anElement );
         }
         else if( element[0] >= '0' && element[0] <= '9' ) // assume decimal integer 64
         {
             CEquationElementInternal anElement;
             anElement.Element_1_0.Type            = EQUATION_ELEM_IMM_UINT64;
             anElement.Element_1_0.ImmediateUInt64 = strtoull( element, nullptr, 10 );
-            return AddEquationElement( &anElement );
+            return AddEquationElement( anElement );
         }
         else if( strncmp( element, "mask$", sizeof( "mask$" ) - 1 ) == 0 ) // assume hex integer 64
         {
@@ -831,7 +839,7 @@ namespace MetricsDiscoveryInternal
             anElement.Element_1_0.Type = EQUATION_ELEM_MASK;
             anElement.Element_1_0.Mask = GetByteArrayFromCStringMask( element + sizeof( "mask$" ) - 1, adapterId );
             MD_CHECK_PTR_RET_A( adapterId, anElement.Element_1_0.Mask.Data, false )
-            return AddEquationElement( &anElement );
+            return AddEquationElement( anElement );
         }
 
         MD_LOG_A( adapterId, LOG_ERROR, "Unknown equation element: %s", element );
@@ -858,7 +866,7 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     TCompletionCode CEquation::WriteCEquationToFile( FILE* metricFile )
     {
-        const uint32_t adapterId = OBTAIN_ADAPTER_ID( m_device );
+        const uint32_t adapterId = m_device.GetAdapter().GetAdapterId();
 
         if( metricFile == nullptr )
         {

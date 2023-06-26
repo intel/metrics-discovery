@@ -1,0 +1,207 @@
+MetricSet	SymbolName	ShortName	Group	LongName
+RenderBasic	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
+RenderBasic	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
+RenderBasic	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
+RenderBasic	VsThreads	VS Threads Dispatched	EU Array/Vertex Shader	The total number of vertex shader hardware threads dispatched.
+RenderBasic	HsThreads	HS Threads Dispatched	EU Array/Hull Shader	The total number of hull shader hardware threads dispatched.
+RenderBasic	DsThreads	DS Threads Dispatched	EU Array/Domain Shader	The total number of domain shader hardware threads dispatched.
+RenderBasic	GsThreads	GS Threads Dispatched	EU Array/Geometry Shader	The total number of geometry shader hardware threads dispatched.
+RenderBasic	PsThreads	PS Threads Dispatched	EU Array/Pixel Shader	The total number of pixel shader hardware threads dispatched.
+RenderBasic	CsThreads	CS Threads Dispatched	EU Array/Compute Shader	The total number of compute shader hardware threads dispatched.
+RenderBasic	GpuBusy	GPU Busy	GPU	The percentage of time in which the GPU has been processing GPU commands.
+RenderBasic	EuActive	EU Active	EU Array	The percentage of time in which the Execution Units were actively processing.
+RenderBasic	EuStall	EU Stall	EU Array	The percentage of time in which the Execution Units were stalled.
+RenderBasic	EuThreadOccupancy	EU Thread Occupancy	EU Array	The percentage of time in which hardware threads occupied EUs.
+RenderBasic	RasterizedPixels	Rasterized Pixels	3D Pipe/Rasterizer	The total number of rasterized pixels.
+RenderBasic	HiDepthTestFails	Early Hi-Depth Test Fails	3D Pipe/Rasterizer/Hi-Depth Test	The total number of pixels dropped on early hierarchical depth test.
+RenderBasic	EarlyDepthTestFails	Early Depth Test Fails	3D Pipe/Rasterizer/Early Depth Test	The total number of pixels dropped on early depth test.
+RenderBasic	SamplesKilledInPs	Samples Killed in PS	3D Pipe/Pixel Shader	The total number of samples or pixels dropped in pixel shaders.
+RenderBasic	PixelsFailingPostPsTests	Pixels Failing Tests	3D Pipe/Output Merger	The total number of pixels dropped on post-PS alpha, stencil, or depth tests.
+RenderBasic	SamplesWritten	Samples Written	3D Pipe/Output Merger	The total number of samples or pixels written to all render targets.
+RenderBasic	SamplesBlended	Samples Blended	3D Pipe/Output Merger	The total number of blended samples or pixels written to all render targets.
+RenderBasic	SamplerTexels	Sampler Texels	Sampler/Sampler Input	The total number of texels seen on input (with 2x2 accuracy) in all sampler units.
+RenderBasic	SamplerTexelMisses	Sampler Texels Misses	Sampler/Sampler Cache	The total number of texels lookups (with 2x2 accuracy) that missed L1 sampler cache.
+RenderBasic	SlmReads	SLM Bytes Read	L3/Data Port/SLM	The total number of reads from shared local memory.
+RenderBasic	SlmWrites	SLM Writes	L3/Data Port/SLM	The total number of writes into shared local memory.
+RenderBasic	ShaderMemoryAccesses	Shader Memory Accesses	L3/Data Port	The total number of shader memory accesses to L3.
+RenderBasic	ShaderAtomics	Shader Atomic Memory Accesses	L3/Data Port/Atomics	The total number of shader atomic memory accesses.
+RenderBasic	ShaderBarriers	Shader Barrier Messages	EU Array/Barrier	The total number of shader barrier messages.
+RenderBasic	GtiReadThroughput	GTI Read Throughput	GTI	The total number of GPU memory bytes read from GTI.
+RenderBasic	GtiWriteThroughput	GTI Write Throughput	GTI	The total number of GPU memory bytes written to GTI.
+RenderBasic	Sampler00OrL1CacheBusy	Sampler or L1 Cache Slice0 Dualsubslice0 is busy	GPU/Sampler	The percentage of time when sampler or L1 cache slice0 dualsubslice0 is busy
+RenderBasic	SamplersOrL1CacheBusy	Samplers Or L1 Cache Busy	Sampler	The percentage of time in which samplers or L1 caches are not idle.
+RenderBasic	Sampler00Bottleneck	Sampler00 Bottleneck	Sampler	The percentage of time in which Slice0 Sampler0 has been slowing down the pipe when processing EU requests.
+RenderBasic	SamplerBottleneck	Samplers Bottleneck	Sampler	The percentage of time in which samplers have been slowing down the pipe when processing EU requests.
+RenderBasic	SamplersBusy	Samplers Busy	Sampler	The percentage of time in which samplers inputs or outputs are active
+ComputeBasic	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
+ComputeBasic	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
+ComputeBasic	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
+ComputeBasic	GpuBusy	GPU Busy	GPU	The percentage of time in which the GPU has been processing GPU commands.
+ComputeBasic	VsThreads	VS Threads Dispatched	EU Array/Vertex Shader	The total number of vertex shader hardware threads dispatched.
+ComputeBasic	HsThreads	HS Threads Dispatched	EU Array/Hull Shader	The total number of hull shader hardware threads dispatched.
+ComputeBasic	DsThreads	DS Threads Dispatched	EU Array/Domain Shader	The total number of domain shader hardware threads dispatched.
+ComputeBasic	GsThreads	GS Threads Dispatched	EU Array/Geometry Shader	The total number of geometry shader hardware threads dispatched.
+ComputeBasic	PsThreads	PS Threads Dispatched	EU Array/Pixel Shader	The total number of pixel shader hardware threads dispatched.
+ComputeBasic	CsThreads	CS Threads Dispatched	EU Array/Compute Shader	The total number of compute shader hardware threads dispatched.
+ComputeBasic	EuActive	EU Active	EU Array	The percentage of time in which the Execution Units were actively processing.
+ComputeBasic	EuStall	EU Stall	EU Array	The percentage of time in which the Execution Units were stalled.
+ComputeBasic	EuThreadOccupancy	EU Thread Occupancy	EU Array	The percentage of time in which hardware threads occupied EUs.
+ComputeBasic	RasterizedPixels	Rasterized Pixels	3D Pipe/Rasterizer	The total number of rasterized pixels.
+ComputeBasic	HiDepthTestFails	Early Hi-Depth Test Fails	3D Pipe/Rasterizer/Hi-Depth Test	The total number of pixels dropped on early hierarchical depth test.
+ComputeBasic	EarlyDepthTestFails	Early Depth Test Fails	3D Pipe/Rasterizer/Early Depth Test	The total number of pixels dropped on early depth test.
+ComputeBasic	SamplesKilledInPs	Samples Killed in PS	3D Pipe/Pixel Shader	The total number of samples or pixels dropped in pixel shaders.
+ComputeBasic	PixelsFailingPostPsTests	Pixels Failing Tests	3D Pipe/Output Merger	The total number of pixels dropped on post-PS alpha, stencil, or depth tests.
+ComputeBasic	SamplesWritten	Samples Written	3D Pipe/Output Merger	The total number of samples or pixels written to all render targets.
+ComputeBasic	SamplesBlended	Samples Blended	3D Pipe/Output Merger	The total number of blended samples or pixels written to all render targets.
+ComputeBasic	SamplerTexels	Sampler Texels	Sampler/Sampler Input	The total number of texels seen on input (with 2x2 accuracy) in all sampler units.
+ComputeBasic	SamplerTexelMisses	Sampler Texels Misses	Sampler/Sampler Cache	The total number of texels lookups (with 2x2 accuracy) that missed L1 sampler cache.
+ComputeBasic	SlmReads	SLM Bytes Read	L3/Data Port/SLM	The total number of reads from shared local memory.
+ComputeBasic	SlmWrites	SLM Writes	L3/Data Port/SLM	The total number of writes into shared local memory.
+ComputeBasic	ShaderMemoryAccesses	Shader Memory Accesses	L3/Data Port	The total number of shader memory accesses to L3.
+ComputeBasic	ShaderAtomics	Shader Atomic Memory Accesses	L3/Data Port/Atomics	The total number of shader atomic memory accesses.
+ComputeBasic	ShaderBarriers	Shader Barrier Messages	EU Array/Barrier	The total number of shader barrier messages.
+ComputeBasic	GtiReadThroughput	GTI Read Throughput	GTI	The total number of GPU memory bytes read from GTI.
+ComputeBasic	GtiWriteThroughput	GTI Write Throughput	GTI	The total number of GPU memory bytes written to GTI.
+EuActivity1	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
+EuActivity1	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
+EuActivity1	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
+EuActivity1	GpuBusy	GPU Busy	GPU	The percentage of time in which the GPU has been processing GPU commands.
+EuActivity1	VsThreads	VS Threads Dispatched	EU Array/Vertex Shader	The total number of vertex shader hardware threads dispatched.
+EuActivity1	HsThreads	HS Threads Dispatched	EU Array/Hull Shader	The total number of hull shader hardware threads dispatched.
+EuActivity1	DsThreads	DS Threads Dispatched	EU Array/Domain Shader	The total number of domain shader hardware threads dispatched.
+EuActivity1	GsThreads	GS Threads Dispatched	EU Array/Geometry Shader	The total number of geometry shader hardware threads dispatched.
+EuActivity1	PsThreads	PS Threads Dispatched	EU Array/Pixel Shader	The total number of pixel shader hardware threads dispatched.
+EuActivity1	CsThreads	CS Threads Dispatched	EU Array/Compute Shader	The total number of compute shader hardware threads dispatched.
+EuActivity1	VsFpuActive	VS FPU Pipe Active	EU Array/Vertex Shader	The percentage of time in which EU FPU pipeline was actively processing a vertex shader instruction.
+EuActivity1	PsFpuActive	PS FPU Pipe Active	EU Array/Pixel Shader	The percentage of time in which EU FPU pipeline was actively processing a pixel shader instruction.
+EuActivity1	EuSendActive	EU Send Pipe Active	EU Array/Pipes	The percentage of time in which EU send pipeline was actively processing.
+EuActivity2	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
+EuActivity2	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
+EuActivity2	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
+EuActivity2	GpuBusy	GPU Busy	GPU	The percentage of time in which the GPU has been processing GPU commands.
+EuActivity2	VsThreads	VS Threads Dispatched	EU Array/Vertex Shader	The total number of vertex shader hardware threads dispatched.
+EuActivity2	HsThreads	HS Threads Dispatched	EU Array/Hull Shader	The total number of hull shader hardware threads dispatched.
+EuActivity2	DsThreads	DS Threads Dispatched	EU Array/Domain Shader	The total number of domain shader hardware threads dispatched.
+EuActivity2	GsThreads	GS Threads Dispatched	EU Array/Geometry Shader	The total number of geometry shader hardware threads dispatched.
+EuActivity2	PsThreads	PS Threads Dispatched	EU Array/Pixel Shader	The total number of pixel shader hardware threads dispatched.
+EuActivity2	CsThreads	CS Threads Dispatched	EU Array/Compute Shader	The total number of compute shader hardware threads dispatched.
+EuActivity2	CsEmActive	CS EM Pipe Active	EU Array	The percentage of time in which EU FPU1 pipeline was actively processing a compute shader instruction.
+EuActivity2	CsFpuActive	CS FPU Pipe Active	EU Array	The percentage of time in which EU FPU pipeline was actively processing a compute shader instruction.
+EuActivity2	CsSendActive	CS Send Pipeline Active	EU Array	The percentage of time in which EU send pipeline was actively processing a compute shader instruction.
+EuActivity3	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
+EuActivity3	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
+EuActivity3	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
+EuActivity3	GpuBusy	GPU Busy	GPU	The percentage of time in which the GPU has been processing GPU commands.
+EuActivity3	VsThreads	VS Threads Dispatched	EU Array/Vertex Shader	The total number of vertex shader hardware threads dispatched.
+EuActivity3	HsThreads	HS Threads Dispatched	EU Array/Hull Shader	The total number of hull shader hardware threads dispatched.
+EuActivity3	DsThreads	DS Threads Dispatched	EU Array/Domain Shader	The total number of domain shader hardware threads dispatched.
+EuActivity3	GsThreads	GS Threads Dispatched	EU Array/Geometry Shader	The total number of geometry shader hardware threads dispatched.
+EuActivity3	PsThreads	PS Threads Dispatched	EU Array/Pixel Shader	The total number of pixel shader hardware threads dispatched.
+EuActivity3	CsThreads	CS Threads Dispatched	EU Array/Compute Shader	The total number of compute shader hardware threads dispatched.
+EuActivity3	VsEmActive	VS EM Pipe Active	EU Array/Vertex Shader	The percentage of time in which EU EM pipeline was actively processing a vertex shader instruction.
+EuActivity3	PsEmActive	PS EM Pipe Active	EU Array/Pixel Shader	The percentage of time in which EU EM pipeline was actively processing a pixel shader instruction.
+EuActivity3	PsSendActive	PS Send Pipeline Active	EU Array/Pixel Shader	The percentage of time in which EU send pipeline was actively processing a pixel shader instruction.
+EuActivity4	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
+EuActivity4	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
+EuActivity4	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
+EuActivity4	GpuBusy	GPU Busy	GPU	The percentage of time in which the GPU has been processing GPU commands.
+EuActivity4	VsThreads	VS Threads Dispatched	EU Array/Vertex Shader	The total number of vertex shader hardware threads dispatched.
+EuActivity4	HsThreads	HS Threads Dispatched	EU Array/Hull Shader	The total number of hull shader hardware threads dispatched.
+EuActivity4	DsThreads	DS Threads Dispatched	EU Array/Domain Shader	The total number of domain shader hardware threads dispatched.
+EuActivity4	GsThreads	GS Threads Dispatched	EU Array/Geometry Shader	The total number of geometry shader hardware threads dispatched.
+EuActivity4	PsThreads	PS Threads Dispatched	EU Array/Pixel Shader	The total number of pixel shader hardware threads dispatched.
+EuActivity4	CsThreads	CS Threads Dispatched	EU Array/Compute Shader	The total number of compute shader hardware threads dispatched.
+EuActivity4	HsFpuActive	HS FPU Pipe Active	EU Array/Hull Shader	The percentage of time in which EU FPU pipeline was actively processing a hull shader instruction.
+EuActivity4	DsFpuActive	DS FPU Pipe Active	EU Array/Domain Shader	The percentage of time in which EU FPU pipeline was actively processing a domain shader instructions.
+EuActivity4	VsSendActive	VS Send Pipe Active	EU Array/Vertex Shader	The percentage of time in which EU send pipeline was actively processing a vertex shader instruction.
+EuActivity5	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
+EuActivity5	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
+EuActivity5	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
+EuActivity5	GpuBusy	GPU Busy	GPU	The percentage of time in which the GPU has been processing GPU commands.
+EuActivity5	VsThreads	VS Threads Dispatched	EU Array/Vertex Shader	The total number of vertex shader hardware threads dispatched.
+EuActivity5	HsThreads	HS Threads Dispatched	EU Array/Hull Shader	The total number of hull shader hardware threads dispatched.
+EuActivity5	DsThreads	DS Threads Dispatched	EU Array/Domain Shader	The total number of domain shader hardware threads dispatched.
+EuActivity5	GsThreads	GS Threads Dispatched	EU Array/Geometry Shader	The total number of geometry shader hardware threads dispatched.
+EuActivity5	PsThreads	PS Threads Dispatched	EU Array/Pixel Shader	The total number of pixel shader hardware threads dispatched.
+EuActivity5	CsThreads	CS Threads Dispatched	EU Array/Compute Shader	The total number of compute shader hardware threads dispatched.
+EuActivity5	HsEmActive	HS EM Pipe Active	EU Array/Hull Shader	The percentage of time in which EU EM pipeline was actively processing a hull shader instructions.
+EuActivity5	DsEmActive	DS EM Pipe Active	EU Array/Domain Shader	The percentage of time in which EU EM pipeline was actively processing a domain shader instructions.
+EuActivity5	HsSendActive	HS Send Pipe Active	EU Array/Hull Shader	The percentage of time in which EU send pipeline was actively processing a hull shader instruction.
+EuActivity6	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
+EuActivity6	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
+EuActivity6	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
+EuActivity6	GpuBusy	GPU Busy	GPU	The percentage of time in which the GPU has been processing GPU commands.
+EuActivity6	VsThreads	VS Threads Dispatched	EU Array/Vertex Shader	The total number of vertex shader hardware threads dispatched.
+EuActivity6	HsThreads	HS Threads Dispatched	EU Array/Hull Shader	The total number of hull shader hardware threads dispatched.
+EuActivity6	DsThreads	DS Threads Dispatched	EU Array/Domain Shader	The total number of domain shader hardware threads dispatched.
+EuActivity6	GsThreads	GS Threads Dispatched	EU Array/Geometry Shader	The total number of geometry shader hardware threads dispatched.
+EuActivity6	PsThreads	PS Threads Dispatched	EU Array/Pixel Shader	The total number of pixel shader hardware threads dispatched.
+EuActivity6	CsThreads	CS Threads Dispatched	EU Array/Compute Shader	The total number of compute shader hardware threads dispatched.
+EuActivity6	GsFpuActive	GS FPU Pipe Active	EU Array/Geometry Shader	The percentage of time in which EU FPU pipeline was actively processing a geometry shader instructions.
+EuActivity6	GsEmActive	GS EM Pipe Active	EU Array/Geometry Shader	The percentage of time in which EU EM pipeline was actively processing a geometry shader instructions.
+EuActivity6	GsSendActive	GS Send Pipe Active	EU Array/Geometry Shader	The percentage of time in which EU send pipeline was actively processing a geometry shader instruction.
+EuActivity7	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
+EuActivity7	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
+EuActivity7	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
+EuActivity7	GpuBusy	GPU Busy	GPU	The percentage of time in which the GPU has been processing GPU commands.
+EuActivity7	VsThreads	VS Threads Dispatched	EU Array/Vertex Shader	The total number of vertex shader hardware threads dispatched.
+EuActivity7	HsThreads	HS Threads Dispatched	EU Array/Hull Shader	The total number of hull shader hardware threads dispatched.
+EuActivity7	DsThreads	DS Threads Dispatched	EU Array/Domain Shader	The total number of domain shader hardware threads dispatched.
+EuActivity7	GsThreads	GS Threads Dispatched	EU Array/Geometry Shader	The total number of geometry shader hardware threads dispatched.
+EuActivity7	PsThreads	PS Threads Dispatched	EU Array/Pixel Shader	The total number of pixel shader hardware threads dispatched.
+EuActivity7	CsThreads	CS Threads Dispatched	EU Array/Compute Shader	The total number of compute shader hardware threads dispatched.
+EuActivity7	FpuActive	EU FPU Pipe Active	EU Array/Pipes	The percentage of time in which EU FPU pipeline was actively processing.
+EuActivity7	EmActive	EM Pipe Active	EU Array/Pipes	The percentage of time in which EU EM pipeline was actively processing.
+EuActivity7	EuFpuEmActive	EU FPU And EM Pipes Active	EU Array/Pipes	The percentage of time in which EU FPU and EM pipelines were actively processing.
+EuActivity7	EuAvgIpcRate	EU AVG IPC Rate	EU Array	The average rate of IPC calculated for 2 FPU pipelines.
+EuActivity8	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
+EuActivity8	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
+EuActivity8	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
+EuActivity8	GpuBusy	GPU Busy	GPU	The percentage of time in which the GPU has been processing GPU commands.
+EuActivity8	VsThreads	VS Threads Dispatched	EU Array/Vertex Shader	The total number of vertex shader hardware threads dispatched.
+EuActivity8	HsThreads	HS Threads Dispatched	EU Array/Hull Shader	The total number of hull shader hardware threads dispatched.
+EuActivity8	DsThreads	DS Threads Dispatched	EU Array/Domain Shader	The total number of domain shader hardware threads dispatched.
+EuActivity8	GsThreads	GS Threads Dispatched	EU Array/Geometry Shader	The total number of geometry shader hardware threads dispatched.
+EuActivity8	PsThreads	PS Threads Dispatched	EU Array/Pixel Shader	The total number of pixel shader hardware threads dispatched.
+EuActivity8	CsThreads	CS Threads Dispatched	EU Array/Compute Shader	The total number of compute shader hardware threads dispatched.
+EuActivity8	DsSendActive	DS Send Pipe Active	EU Array/Domain Shader	The percentage of time in which EU send pipeline was actively processing a domain shader instruction.
+EuActivity8	EuSysFpuActive	EU FPU And SYS Pipes Active	EU Array/Pipes	The percentage of time in which EU FPU and SYS pipelines were actively processing.
+EuActivity8	SysActive	SYS Pipe Active	EU Array/Pipes	The percentage of time in which EU SYS pipeline was actively processing.
+GpuBusyness	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
+GpuBusyness	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
+GpuBusyness	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
+GpuBusyness	GpuBusy	GPU Busy	GPU	The percentage of time in which the GPU has been processing GPU commands.
+GpuBusyness	EuActive	EU Active	EU Array	The percentage of time in which the Execution Units were actively processing.
+GpuBusyness	EuStall	EU Stall	EU Array	The percentage of time in which the Execution Units were stalled.
+GpuBusyness	EuThreadOccupancy	EU Thread Occupancy	EU Array	The percentage of time in which hardware threads occupied EUs.
+GpuBusyness	VsThreads	VS Threads Dispatched	EU Array/Vertex Shader	The total number of vertex shader hardware threads dispatched.
+GpuBusyness	HsThreads	HS Threads Dispatched	EU Array/Hull Shader	The total number of hull shader hardware threads dispatched.
+GpuBusyness	DsThreads	DS Threads Dispatched	EU Array/Domain Shader	The total number of domain shader hardware threads dispatched.
+GpuBusyness	GsThreads	GS Threads Dispatched	EU Array/Geometry Shader	The total number of geometry shader hardware threads dispatched.
+GpuBusyness	PsThreads	PS Threads Dispatched	EU Array/Pixel Shader	The total number of pixel shader hardware threads dispatched.
+GpuBusyness	CsThreads	CS Threads Dispatched	EU Array/Compute Shader	The total number of compute shader hardware threads dispatched.
+GpuBusyness	RenderBusy	Render Ring Busy	GPU	The percentage of time when render command streamer was busy.
+GpuBusyness	ComputeEngine0Busy	ComputeEngine0 Ring Busy	GPU	The percentage of time when compute command streamer 0 was busy.
+GpuBusyness	ComputeEngine1Busy	ComputeEngine1 Ring Busy	GPU	The percentage of time when compute command streamer 1 was busy.
+GpuBusyness	ComputeEngine2Busy	ComputeEngine2 Ring Busy	GPU	The percentage of time when compute command streamer 2 was busy.
+GpuBusyness	ComputeEngine3Busy	ComputeEngine3 Ring Busy	GPU	The percentage of time when compute command streamer 3 was busy.
+GpuBusyness	PoshEngineBusy	Posh Ring Busy	GPU	The percentage of time when posh command streamer was busy.
+GpuBusyness	BlitterBusy	Blitter Ring Busy	GPU	The percentage of time when blitter command streamer was busy.
+GpuBusyness	VeboxBusy	Vebox Ring Busy	GPU	The percentage of time when vebox command streamer was busy.
+GpuBusyness	Vdbox0Busy	Vdbox0 Ring Busy	GPU	The percentage of time when Vdbox0 command streamer was busy.
+GpuBusyness	Vdbox1Busy	Vdbox1 Ring Busy	GPU	The percentage of time when Vdbox1 command streamer was busy.
+GpuBusyness	AnyComputeEngineBusy	Any compute engine busy	GPU	The percentage of time when any compute engine is busy
+GpuBusyness	RenderAndAnyComputeEngineBusy	Render and any compute engines are simultaneously busy	GPU	The percentage of time when render and any compute engines are simultaneously busy
+TestOa	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
+TestOa	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
+TestOa	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
+TestOa	Counter0	TestCounter0	GPU	HW test counter 0. Factor: 0.0
+TestOa	Counter1	TestCounter1	GPU	HW test counter 1. Factor: 1.0
+TestOa	Counter2	TestCounter2	GPU	HW test counter 2. Factor: 1.0
+TestOa	Counter3	TestCounter3	GPU	HW test counter 3. Factor: 0.5
+TestOa	Counter4	TestCounter4	GPU	HW test counter 4. Factor: 0.3333
+TestOa	Counter5	TestCounter5	GPU	HW test counter 5. Factor: 0.3333
+TestOa	Counter6	TestCounter6	GPU	HW test counter 6. Factor: 0.16666
+TestOa	Counter7	TestCounter7	GPU	HW test counter 7. Factor: 0.6666
+TestOa	Counter8	TestCounter8	GPU	HW test counter 8. Should be equal to 1 in IOStream or in OAG query mode
+TestOa	Counter9	TestCounter9 - OAR enable	GPU	HW test counter 9. Should be equal to 1 in query.

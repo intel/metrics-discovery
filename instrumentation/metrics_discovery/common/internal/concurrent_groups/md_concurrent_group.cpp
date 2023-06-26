@@ -89,9 +89,8 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     IMetricSetLatest* CConcurrentGroup::AddCustomMetricSet( TAddCustomMetricSetParams* params, IMetricSetLatest* referenceMetricSet, bool copyInformationOnly /*= false*/ )
     {
-        const uint32_t adapterId = OBTAIN_ADAPTER_ID( m_device );
+        const uint32_t adapterId = m_device.GetAdapter().GetAdapterId();
 
-        MD_CHECK_PTR_RET_A( adapterId, m_device, nullptr );
         MD_CHECK_PTR_RET_A( adapterId, params, nullptr );
 
         IMetricSetLatest* set        = nullptr;
@@ -219,13 +218,13 @@ namespace MetricsDiscoveryInternal
     //     Constructor.
     //
     // Input:
-    //     CMetricsDevice* device              - parent metrics device
+    //     CMetricsDevice& device              - parent metrics device
     //     const char*     name                - concurrent group name
     //     const char*     description         - concurrent group description
     //     const uint32_t  measurementTypeMask - measurement type mask
     //
     //////////////////////////////////////////////////////////////////////////////
-    CConcurrentGroup::CConcurrentGroup( CMetricsDevice* device, const char* name, const char* description, const uint32_t measurementTypeMask )
+    CConcurrentGroup::CConcurrentGroup( CMetricsDevice& device, const char* name, const char* description, const uint32_t measurementTypeMask )
         : m_params{}
         , m_semaphore( nullptr )
         , m_setsVector()
@@ -235,7 +234,7 @@ namespace MetricsDiscoveryInternal
         , m_informationCount( 0 )
         , m_device( device )
     {
-        const uint32_t adapterId = OBTAIN_ADAPTER_ID( device );
+        const uint32_t adapterId = device.GetAdapter().GetAdapterId();
 
         m_params.SymbolName                    = GetCopiedCString( name, adapterId );
         m_params.Description                   = GetCopiedCString( description, adapterId );
@@ -301,53 +300,7 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     CMetricSet* CConcurrentGroup::AddMetricSet( const char* symbolicName, const char* shortName, uint32_t apiMask, uint32_t categoryMask, uint32_t snapshotReportSize, uint32_t deltaReportSize, TReportType reportType, TByteArrayLatest* platformMask, const char* availabilityEquation /*= nullptr*/, uint32_t gtMask /*= GT_TYPE_ALL*/, bool isCustom /*= false*/ )
     {
-        const uint32_t adapterId       = OBTAIN_ADAPTER_ID( m_device );
-        CMetricSet*    alreadyAddedSet = nullptr;
-        CMetricSet*    set             = new( std::nothrow ) CMetricSet( m_device, this, symbolicName, shortName, apiMask, categoryMask, snapshotReportSize, deltaReportSize, reportType, platformMask, gtMask, isCustom );
-        MD_CHECK_PTR_RET_A( adapterId, set, nullptr );
-
-        if( set->SetAvailabilityEquation( availabilityEquation ) != CC_OK )
-        {
-            MD_LOG_A( adapterId, LOG_ERROR, "Error setting metric set equations" );
-            MD_SAFE_DELETE( set );
-            return nullptr;
-        }
-
-        bool isSuitablePlatform = m_device->IsPlatformTypeOf( platformMask, gtMask ) && set->IsAvailabilityEquationTrue();
-        if( isSuitablePlatform )
-        {
-            // Check if metric set is already present in m_setsVector or m_otherSetsList.
-            alreadyAddedSet = GetMatchingMetricSet( symbolicName, platformMask, gtMask, true );
-            if( alreadyAddedSet != nullptr )
-            {
-                // If metric set present in m_setsVector it should be move to m_otherSetsList.
-                // Metric set compared to alreadyAddedSet will be added in else section as unavailable on this platform.
-                auto iterator = std::find( m_setsVector.begin(), m_setsVector.end(), alreadyAddedSet );
-                if( iterator != m_setsVector.end() )
-                {
-                    MD_LOG_A( adapterId, LOG_WARNING, "Attempt to add metric set [%s] with the same name and true availability equation.", alreadyAddedSet->GetParams()->SymbolName );
-
-                    m_setsVector.erase( iterator );
-                    m_params.MetricSetsCount = m_setsVector.size();
-
-                    m_otherSetsList.push_back( alreadyAddedSet );
-                }
-            }
-        }
-
-        if( isSuitablePlatform && alreadyAddedSet == nullptr )
-        {
-            m_setsVector.push_back( set );
-            m_params.MetricSetsCount = m_setsVector.size();
-            MD_LOG_A( adapterId, LOG_INFO, "%s - added", set->GetParams()->SymbolName );
-        }
-        else
-        {
-            MD_LOG_A( adapterId, LOG_INFO, "%s - not available", set->GetParams()->SymbolName );
-            m_otherSetsList.push_back( set );
-        }
-
-        return set;
+        return AddMetricSetExplicit<CMetricSet>( symbolicName, shortName, apiMask, categoryMask, snapshotReportSize, deltaReportSize, reportType, platformMask, availabilityEquation, gtMask, isCustom );
     }
 
     //////////////////////////////////////////////////////////////////////////////
@@ -374,7 +327,7 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     CMetricSet* CConcurrentGroup::GetMatchingMetricSet( const char* symbolName, TByteArrayLatest* platformMask, uint32_t gtMask, bool findWithTrueAvailabilityEquation /* = false */ )
     {
-        const uint32_t adapterId = OBTAIN_ADAPTER_ID( m_device );
+        const uint32_t adapterId = m_device.GetAdapter().GetAdapterId();
 
         MD_CHECK_PTR_RET_A( adapterId, symbolName, nullptr );
         MD_CHECK_PTR_RET_A( adapterId, platformMask, nullptr );
@@ -386,7 +339,7 @@ namespace MetricsDiscoveryInternal
 
             if( setParams && ( strcmp( symbolName, setParams->SymbolName ) == 0 ) )
             {
-                if( m_device->IsPlatformTypeOf( platformMask, gtMask ) )
+                if( m_device.IsPlatformTypeOf( platformMask, gtMask ) )
                 {
                     return metricSet;
                 }
@@ -443,8 +396,10 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     CInformation* CConcurrentGroup::AddInformation( const char* symbolName, const char* shortName, const char* longName, const char* groupName, uint32_t apiMask, TInformationType informationType, const char* informationUnits, const char* availabilityEquation, uint32_t informationXmlId )
     {
-        CInformation* information = new( std::nothrow ) CInformation( m_device, informationXmlId, symbolName, shortName, longName, groupName, apiMask, informationType, informationUnits );
-        MD_CHECK_PTR_RET_A( OBTAIN_ADAPTER_ID( m_device ), information, nullptr );
+        const uint32_t adapterId = m_device.GetAdapter().GetAdapterId();
+
+        auto information = new( std::nothrow ) CInformation( m_device, informationXmlId, symbolName, shortName, longName, groupName, apiMask, informationType, informationUnits );
+        MD_CHECK_PTR_RET_A( adapterId, information, nullptr );
 
         if( information->SetAvailabilityEquation( availabilityEquation ) != CC_OK )
         {
@@ -552,10 +507,10 @@ namespace MetricsDiscoveryInternal
     //     Returns metrics device.
     //
     // Output:
-    //     CMetricsDevice* - a pointer to a metrics device object.
+    //     CMetricsDevice& - reference to a metrics device member
     //
     //////////////////////////////////////////////////////////////////////////////
-    CMetricsDevice* CConcurrentGroup::GetMetricsDevice()
+    CMetricsDevice& CConcurrentGroup::GetMetricsDevice()
     {
         return m_device;
     }
@@ -587,7 +542,7 @@ namespace MetricsDiscoveryInternal
         if( ret == CC_OK )
         {
             // 2. Get driver interface
-            CDriverInterface& driverInterface = m_device->GetDriverInterface();
+            CDriverInterface& driverInterface = m_device.GetDriverInterface();
 
             // 3. Lock concurrent group
             ret = driverInterface.LockConcurrentGroup( semaphoreName, &m_semaphore );
@@ -622,7 +577,7 @@ namespace MetricsDiscoveryInternal
         if( ret == CC_OK )
         {
             // 2. Get driver interface
-            CDriverInterface& driverInterface = m_device->GetDriverInterface();
+            CDriverInterface& driverInterface = m_device.GetDriverInterface();
 
             // 3. Unlock concurrent group
             ret = driverInterface.UnlockConcurrentGroup( semaphoreName, &m_semaphore );
@@ -651,7 +606,7 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     TCompletionCode CConcurrentGroup::WriteCConcurrentGroupToFile( FILE* metricFile )
     {
-        const uint32_t adapterId = OBTAIN_ADAPTER_ID( m_device );
+        const uint32_t adapterId = m_device.GetAdapter().GetAdapterId();
         if( metricFile == nullptr )
         {
             MD_ASSERT_A( adapterId, metricFile != nullptr );
@@ -722,7 +677,7 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     IMetricSetLatest* CConcurrentGroup::AddCustomMetricSet( CMetricSet* referenceMetricSet, const char* signalName, const char* symbolName, const char* shortName, uint32_t apiMask, uint32_t categoryMask, TByteArrayLatest* platformMask, uint32_t gtMask, uint32_t rawReportSize, uint32_t queryReportSize, const char* complementarySetsList, TApiSpecificId_1_0 apiSpecificId, TRegisterSet* startRegSets, uint32_t startRegSetsCount, const char* availabilityEquation, TReportType reportType, bool copyInformationOnly /*= false*/ )
     {
-        const uint32_t adapterId = OBTAIN_ADAPTER_ID( m_device );
+        const uint32_t adapterId = m_device.GetAdapter().GetAdapterId();
         MD_LOG_ENTER_A( adapterId );
 
         if( !AreMetricSetParamsValid( symbolName, shortName, platformMask, gtMask, startRegSets, startRegSetsCount ) )
@@ -790,7 +745,7 @@ namespace MetricsDiscoveryInternal
             goto customMetricSetCleanup;
         }
 
-        if( m_device->IsPlatformTypeOf( platformMask, gtMask ) && set->IsAvailabilityEquationTrue() )
+        if( m_device.IsPlatformTypeOf( platformMask, gtMask ) && set->IsAvailabilityEquationTrue() )
         {
             m_setsVector.push_back( set );
             m_params.MetricSetsCount = m_setsVector.size();
@@ -858,9 +813,9 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     bool CConcurrentGroup::AreMetricSetParamsValid( const char* symbolName, const char* shortName, TByteArrayLatest* platformMask, uint32_t gtMask, TRegisterSet* startRegSets, uint32_t startRegSetsCount )
     {
-        CDriverInterface& driverInterface = m_device->GetDriverInterface();
-        const uint32_t    platformIndex   = m_device->GetPlatformIndex();
-        const uint32_t    adapterId       = OBTAIN_ADAPTER_ID( m_device );
+        CDriverInterface& driverInterface = m_device.GetDriverInterface();
+        const uint32_t    platformIndex   = m_device.GetPlatformIndex();
+        const uint32_t    adapterId       = m_device.GetAdapter().GetAdapterId();
 
         if( ( symbolName == nullptr ) || ( strcmp( symbolName, "" ) == 0 ) )
         {
@@ -978,11 +933,11 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     TCompletionCode CConcurrentGroup::FillLockSemaphoreName( char* name, size_t size )
     {
-        const uint32_t adapterId = OBTAIN_ADAPTER_ID( m_device );
+        const uint32_t adapterId = m_device.GetAdapter().GetAdapterId();
         MD_ASSERT_A( adapterId, name != nullptr );
 
         // Create a semaphore name: "<CcgSymbolName>_<BusNumber>_<DeviceNumber>_<FunctionNumber>"
-        const TAdapterParams_1_9* adapterParams = m_device->GetAdapter().GetParams();
+        const TAdapterParams_1_9* adapterParams = m_device.GetAdapter().GetParams();
         MD_CHECK_PTR_RET_A( adapterId, adapterParams, CC_ERROR_GENERAL );
 
         int32_t neededSize = snprintf( name, size, "%s_%u_%u_%u", m_params.SymbolName, adapterParams->BusNumber, adapterParams->DeviceNumber, adapterParams->FunctionNumber );
@@ -1020,7 +975,7 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     CMetricSet* CConcurrentGroup::FindSameMetricSetForPlatform( CMetricSet* metricSet, const TByteArrayLatest* platformMask, const uint32_t gtMask )
     {
-        const uint32_t adapterId = OBTAIN_ADAPTER_ID( m_device );
+        const uint32_t adapterId = m_device.GetAdapter().GetAdapterId();
 
         MD_CHECK_PTR_RET_A( adapterId, metricSet, nullptr );
         MD_CHECK_PTR_RET_A( adapterId, platformMask, nullptr );

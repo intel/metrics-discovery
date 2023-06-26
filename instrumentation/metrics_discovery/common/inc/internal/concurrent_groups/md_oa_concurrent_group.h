@@ -52,7 +52,7 @@ namespace MetricsDiscoveryInternal
 
     public:
         // Constructor & Destructor:
-        COAConcurrentGroup( CMetricsDevice* device, const char* name, const char* longName, const uint32_t measurementTypeMask );
+        COAConcurrentGroup( CMetricsDevice& device, const char* name, const char* longName, const uint32_t measurementTypeMask );
         virtual ~COAConcurrentGroup();
 
         CMetricSet*               GetIoMetricSet();
@@ -64,7 +64,7 @@ namespace MetricsDiscoveryInternal
 
     protected:
         // Constructor:
-        COAConcurrentGroup( CMetricsDevice* device, const char* name, const char* description, const uint32_t measurementTypeMask, const TStreamType streamType, const GTDI_OA_BUFFER_TYPE oaBufferType );
+        COAConcurrentGroup( CMetricsDevice& device, const char* name, const char* description, const uint32_t measurementTypeMask, const TStreamType streamType, const GTDI_OA_BUFFER_TYPE oaBufferType );
 
         TCompletionCode SetIoMetricSet( IMetricSet_1_0* metricSet );
 

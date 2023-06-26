@@ -82,17 +82,18 @@ namespace MetricsDiscoveryInternal
 
         // Non-API:
         CConcurrentGroup* AddConcurrentGroup( const char* symbolicName, const char* shortName, const uint32_t measurementTypeMask, bool& isSupported );
-        TCompletionCode   AddOverrides();
-        bool              IsPlatformTypeOf( TByteArrayLatest* platformMask, uint32_t gtMask = GT_TYPE_ALL );
-        bool              IsPavpDisabled( uint32_t capabilities );
+
+        TCompletionCode AddOverrides();
+        bool            IsPlatformTypeOf( TByteArrayLatest* platformMask, uint32_t gtMask = GT_TYPE_ALL );
+        bool            IsPavpDisabled( uint32_t capabilities );
 
         TCompletionCode SaveToFile( const char* fileName, const uint32_t minMajorApiVersion = 0, const uint32_t minMinorApiVersion = 0 );
-        TCompletionCode OpenFromFile( const char* fileName, bool isInternalBuild );
+        TCompletionCode OpenFromFile( const char* fileName );
 
         CConcurrentGroup* GetConcurrentGroupByName( const char* symbolicName );
         CDriverInterface& GetDriverInterface();
         CAdapter&         GetAdapter();
-        CSymbolSet*       GetSymbolSet();
+        CSymbolSet&       GetSymbolSet();
         uint32_t          GetPlatformIndex();
         bool              IsOpenedFromFile();
         uint64_t          ConvertGpuTimestampToNs( const uint64_t gpuTimestampTicks, const uint64_t gpuTimestampFrequency );
@@ -102,6 +103,8 @@ namespace MetricsDiscoveryInternal
 
         // Sub devices.
         uint32_t GetSubDeviceIndex();
+
+        uint32_t GetOaBufferCount();
 
         // Performance stream.
         int32_t               GetStreamId();
@@ -113,8 +116,8 @@ namespace MetricsDiscoveryInternal
     private:
         // Methods to read from file must be used in correct order
         TCompletionCode ReadGlobalSymbolsFromFileBuffer( uint8_t** bufferPtr );
-        TCompletionCode ReadConcurrentGroupsFromFileBuffer( uint8_t** bufferPtr, bool isInternalBuild, TApiVersion_1_0* apiVersion, uint32_t fileVersion );
-        TCompletionCode ReadMetricSetsFromFileBuffer( uint8_t** bufferPtr, CConcurrentGroup* group, bool isInternalBuild, TApiVersion_1_0* apiVersion, uint32_t fileVersion );
+        TCompletionCode ReadConcurrentGroupsFromFileBuffer( uint8_t** bufferPtr, TApiVersion_1_0* apiVersion, uint32_t fileVersion );
+        TCompletionCode ReadMetricSetsFromFileBuffer( uint8_t** bufferPtr, CConcurrentGroup* group, TApiVersion_1_0* apiVersion, uint32_t fileVersion );
         TCompletionCode ReadMetricsFromFileBuffer( uint8_t** bufferPtr, CMetricSet* set, bool isSetNew );
         TCompletionCode ReadInformationFromFileBuffer( uint8_t** bufferPtr, CMetricSet* set );
         TCompletionCode ReadRegistersFromFileBuffer( uint8_t** bufferPtr, CMetricSet* set );
@@ -143,6 +146,8 @@ namespace MetricsDiscoveryInternal
         TGTType  m_gtType;
         bool     m_isOpenedFromFile;
         uint32_t m_referenceCounter;
+
+        uint32_t m_oaBuferCount;
 
     private:
         // Static variables:

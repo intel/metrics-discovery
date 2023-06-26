@@ -40,7 +40,7 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     TCompletionCode COAConcurrentGroup::SetIoStreamSamplingType( TSamplingType samplingType )
     {
-        const uint32_t adapterId = OBTAIN_ADAPTER_ID( m_device );
+        const uint32_t adapterId = m_device.GetAdapter().GetAdapterId();
         MD_LOG_ENTER_A( adapterId );
 
         TStreamType     streamType = STREAM_TYPE_OA;
@@ -93,7 +93,7 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     TCompletionCode COAConcurrentGroup::OpenIoStream( IMetricSet_1_0* metricSet, uint32_t processId, uint32_t* nsTimerPeriod, uint32_t* oaBufferSize )
     {
-        const uint32_t adapterId = OBTAIN_ADAPTER_ID( m_device );
+        const uint32_t adapterId = m_device.GetAdapter().GetAdapterId();
         MD_LOG_ENTER_A( adapterId );
         MD_CHECK_PTR_RET_A( adapterId, nsTimerPeriod, CC_ERROR_INVALID_PARAMETER );
         MD_CHECK_PTR_RET_A( adapterId, oaBufferSize, CC_ERROR_INVALID_PARAMETER );
@@ -101,7 +101,7 @@ namespace MetricsDiscoveryInternal
         TCompletionCode ret = SetIoMetricSet( metricSet );
         MD_CHECK_CC_RET_A( adapterId, ret );
 
-        CDriverInterface& driverInterface = m_device->GetDriverInterface();
+        CDriverInterface& driverInterface = m_device.GetDriverInterface();
         ret                               = driverInterface.OpenIoStream( *this, processId, *nsTimerPeriod, *oaBufferSize );
         MD_CHECK_CC_RET_A( adapterId, ret );
         MD_LOG_A( adapterId, LOG_DEBUG, "Stream opened using type: %u", m_streamType );
@@ -144,9 +144,8 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     TCompletionCode COAConcurrentGroup::ReadIoStream( uint32_t* reportCount, char* reportData, uint32_t readFlags )
     {
-        const uint32_t adapterId = OBTAIN_ADAPTER_ID( m_device );
+        const uint32_t adapterId = m_device.GetAdapter().GetAdapterId();
 
-        MD_CHECK_PTR_RET_A( adapterId, m_device, CC_ERROR_INVALID_PARAMETER );
         MD_CHECK_PTR_RET_A( adapterId, reportData, CC_ERROR_INVALID_PARAMETER );
         MD_CHECK_PTR_RET_A( adapterId, reportCount, CC_ERROR_INVALID_PARAMETER );
 
@@ -162,12 +161,11 @@ namespace MetricsDiscoveryInternal
             return CC_OK;
         }
 
-        TCompletionCode                 ret             = CC_OK;
-        CDriverInterface&               driverInterface = m_device->GetDriverInterface();
+        auto&                           driverInterface = m_device.GetDriverInterface();
         uint32_t                        frequency       = 0;
         GTDIReadCounterStreamExceptions exceptions      = {};
 
-        ret = driverInterface.ReadIoStream( *this, readFlags, reportData, *reportCount, frequency, exceptions );
+        auto ret = driverInterface.ReadIoStream( *this, readFlags, reportData, *reportCount, frequency, exceptions );
         if( ret == CC_OK || ret == CC_READ_PENDING )
         {
             driverInterface.HandleIoStreamExceptions( *this, m_processId, *reportCount, exceptions );
@@ -208,12 +206,12 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     TCompletionCode COAConcurrentGroup::CloseIoStream( void )
     {
-        const uint32_t adapterId = OBTAIN_ADAPTER_ID( m_device );
+        const uint32_t adapterId = m_device.GetAdapter().GetAdapterId();
         MD_LOG_ENTER_A( adapterId );
         MD_CHECK_PTR_RET_A( adapterId, m_ioMetricSet, CC_ERROR_GENERAL );
 
         TCompletionCode   ret             = CC_OK;
-        CDriverInterface& driverInterface = m_device->GetDriverInterface();
+        CDriverInterface& driverInterface = m_device.GetDriverInterface();
 
         ret = driverInterface.CloseIoStream( *this );
         if( ret != CC_OK )
@@ -250,7 +248,7 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     TCompletionCode COAConcurrentGroup::WaitForReports( uint32_t milliseconds )
     {
-        auto& driverInterface = m_device->GetDriverInterface();
+        auto& driverInterface = m_device.GetDriverInterface();
 
         return driverInterface.WaitForIoStreamReports( *this, milliseconds );
     }
@@ -339,9 +337,8 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     IMetricSetLatest* COAConcurrentGroup::AddCustomMetricSet( TAddCustomMetricSetParams* params, IMetricSetLatest* referenceMetricSet, bool copyInformationOnly /*= false*/ )
     {
-        const uint32_t adapterId = OBTAIN_ADAPTER_ID( m_device );
+        const uint32_t adapterId = m_device.GetAdapter().GetAdapterId();
 
-        MD_CHECK_PTR_RET_A( adapterId, m_device, nullptr );
         MD_CHECK_PTR_RET_A( adapterId, params, nullptr );
 
         IMetricSetLatest* set        = nullptr;
@@ -469,13 +466,13 @@ namespace MetricsDiscoveryInternal
     //     Constructor.
     //
     // Input:
-    //     CMetricsDevice* device                 - parent metrics device
+    //     CMetricsDevice& device                 - parent metrics device
     //     const char*     name                   - concurrent group name
     //     const char*     description            - concurrent group description
     //     const uint32_t  measurementTypeMask    - measurement type mask
     //
     //////////////////////////////////////////////////////////////////////////////
-    COAConcurrentGroup::COAConcurrentGroup( CMetricsDevice* device, const char* name, const char* description, const uint32_t measurementTypeMask )
+    COAConcurrentGroup::COAConcurrentGroup( CMetricsDevice& device, const char* name, const char* description, const uint32_t measurementTypeMask )
         : COAConcurrentGroup( device, name, description, measurementTypeMask, STREAM_TYPE_OA, GTDI_OA_BUFFER_TYPE_DEFAULT )
     {
     }
@@ -500,7 +497,7 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     TCompletionCode COAConcurrentGroup::SetIoMetricSet( IMetricSet_1_0* metricSet )
     {
-        const uint32_t adapterId = OBTAIN_ADAPTER_ID( m_device );
+        const uint32_t adapterId = m_device.GetAdapter().GetAdapterId();
         MD_CHECK_PTR_RET_A( adapterId, metricSet, CC_ERROR_INVALID_PARAMETER );
 
         auto metricSetInternal = static_cast<CMetricSet*>( metricSet );
@@ -647,7 +644,7 @@ namespace MetricsDiscoveryInternal
     //     Constructor.
     //
     // Input:
-    //     CMetricsDevice*           device                 - parent metrics device
+    //     CMetricsDevice&           device                 - parent metrics device
     //     const char*               name                   - concurrent group name
     //     const char*               description            - concurrent group description
     //     const uint32_t            measurementTypeMask    - measurement type mask
@@ -655,7 +652,7 @@ namespace MetricsDiscoveryInternal
     //     const GTDI_OA_BUFFER_TYPE oaBufferType           - oa buffer type
     //
     //////////////////////////////////////////////////////////////////////////////
-    COAConcurrentGroup::COAConcurrentGroup( CMetricsDevice* device, const char* name, const char* description, const uint32_t measurementTypeMask, const TStreamType streamType, const GTDI_OA_BUFFER_TYPE oaBufferType )
+    COAConcurrentGroup::COAConcurrentGroup( CMetricsDevice& device, const char* name, const char* description, const uint32_t measurementTypeMask, const TStreamType streamType, const GTDI_OA_BUFFER_TYPE oaBufferType )
         : CConcurrentGroup( device, name, description, measurementTypeMask )
         , m_streamType( streamType )
         , m_oaBufferType( oaBufferType )
@@ -698,8 +695,8 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     CInformation* COAConcurrentGroup::AddIoMeasurementInformation( const char* name, const char* shortName, const char* longName, const char* group, TInformationType informationType, const char* informationUnits )
     {
-        const uint32_t adapterId       = OBTAIN_ADAPTER_ID( m_device );
-        CInformation*  measurementInfo = new( std::nothrow ) CInformation( m_device, m_ioMeasurementInfoVector.size(), name, shortName, longName, group, API_TYPE_IOSTREAM | API_TYPE_BBSTREAM, informationType, informationUnits );
+        const uint32_t adapterId       = m_device.GetAdapter().GetAdapterId();
+        CInformation*  measurementInfo = new( std::nothrow ) CInformation( m_device, m_ioMeasurementInfoVector.size(), name, shortName, longName, group, API_TYPE_IOSTREAM, informationType, informationUnits );
 
         MD_CHECK_PTR_RET_A( adapterId, measurementInfo, nullptr );
 
@@ -725,7 +722,7 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     void COAConcurrentGroup::AddIoMeasurementInfoPredefined( void )
     {
-        CDriverInterface& driverInterface = m_device->GetDriverInterface();
+        CDriverInterface& driverInterface = m_device.GetDriverInterface();
 
         if( driverInterface.IsIoMeasurementInfoAvailable( IO_MEASUREMENT_INFO_CORE_FREQUENCY_MHZ ) )
         {
@@ -791,7 +788,7 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     CInformation* COAConcurrentGroup::AddIoGpuContextInformation( const char* name, const char* shortName, const char* longName, const char* group, TInformationType informationType, const char* informationUnits )
     {
-        const uint32_t adapterId      = OBTAIN_ADAPTER_ID( m_device );
+        const uint32_t adapterId      = m_device.GetAdapter().GetAdapterId();
         CInformation*  gpuContextInfo = new( std::nothrow ) CInformation( m_device, m_ioGpuContextInfoVector.size(), name, shortName, longName, group, API_TYPE_IOSTREAM | 0x0, informationType, informationUnits );
 
         MD_CHECK_PTR_RET_A( adapterId, gpuContextInfo, nullptr );
@@ -826,7 +823,7 @@ namespace MetricsDiscoveryInternal
     {
         if( index < m_ioMeasurementInfoVector.size() )
         {
-            CDriverInterface& driverInterface = m_device->GetDriverInterface();
+            CDriverInterface& driverInterface = m_device.GetDriverInterface();
 
             // Set information if available
             if( driverInterface.IsIoMeasurementInfoAvailable( ioMeasurementInfoType ) )

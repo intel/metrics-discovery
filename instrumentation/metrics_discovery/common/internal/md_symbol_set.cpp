@@ -145,18 +145,14 @@ namespace MetricsDiscoveryInternal
     //     Returns chosen symbol by name or nullptr if not exists.
     //
     // Input:
-    //     const char* name   - name of symbol
+    //     std::string_view name - name of symbol
     //
     // Output:
-    //     TTypedValue_1_0*   - pointer to symbol
+    //     TTypedValue_1_0*      - pointer to symbol
     //
     //////////////////////////////////////////////////////////////////////////////
-    TTypedValue_1_0* CSymbolSet::GetSymbolValueByName( const char* name )
+    TTypedValue_1_0* CSymbolSet::GetSymbolValueByName( std::string_view name )
     {
-        const uint32_t adapterId = m_metricsDevice.GetAdapter().GetAdapterId();
-
-        MD_CHECK_PTR_RET_A( adapterId, name, nullptr );
-
         auto symbol = m_symbolMap.find( name );
 
         return ( symbol != m_symbolMap.end() )
@@ -740,13 +736,13 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     TCompletionCode CSymbolSet::AddSymbolUINT32( const char* name, uint32_t value, TSymbolType symbolType )
     {
-        TCompletionCode ret = CC_OK;
-        TTypedValue_1_0 typedValue;
-        typedValue.ValueType     = VALUE_TYPE_UINT32;
-        typedValue.ValueUInt32   = value;
         const uint32_t adapterId = m_metricsDevice.GetAdapter().GetAdapterId();
 
-        ret = AddSymbol( name, typedValue, symbolType );
+        TTypedValue_1_0 typedValue = {};
+        typedValue.ValueType       = VALUE_TYPE_UINT32;
+        typedValue.ValueUInt32     = value;
+
+        const auto ret = AddSymbol( name, typedValue, symbolType );
 
         MD_CHECK_CC_MSG_A( adapterId, ret, "Failed to add global symbol: %s, ret: %d", name, ret );
         return ret;
@@ -774,13 +770,13 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     TCompletionCode CSymbolSet::AddSymbolUINT64( const char* name, uint64_t value, TSymbolType symbolType )
     {
-        TCompletionCode ret = CC_OK;
-        TTypedValue_1_0 typedValue;
-        typedValue.ValueType     = VALUE_TYPE_UINT64;
-        typedValue.ValueUInt64   = value;
         const uint32_t adapterId = m_metricsDevice.GetAdapter().GetAdapterId();
 
-        ret = AddSymbol( name, typedValue, symbolType );
+        TTypedValue_1_0 typedValue = {};
+        typedValue.ValueType       = VALUE_TYPE_UINT64;
+        typedValue.ValueUInt64     = value;
+
+        const auto ret = AddSymbol( name, typedValue, symbolType );
 
         MD_CHECK_CC_MSG_A( adapterId, ret, "Failed to add global symbol: %s, ret: %d", name, ret );
         return ret;
@@ -808,13 +804,13 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     TCompletionCode CSymbolSet::AddSymbolBOOL( const char* name, bool value, TSymbolType symbolType )
     {
-        TCompletionCode ret = CC_OK;
-        TTypedValue_1_0 typedValue;
-        typedValue.ValueType     = VALUE_TYPE_BOOL;
-        typedValue.ValueBool     = value;
         const uint32_t adapterId = m_metricsDevice.GetAdapter().GetAdapterId();
 
-        ret = AddSymbol( name, typedValue, symbolType );
+        TTypedValue_1_0 typedValue = {};
+        typedValue.ValueType       = VALUE_TYPE_BOOL;
+        typedValue.ValueBool       = value;
+
+        const auto ret = AddSymbol( name, typedValue, symbolType );
 
         MD_CHECK_CC_MSG_A( adapterId, ret, "Failed to add global symbol: %s, ret: %d", name, ret );
         return ret;
@@ -842,13 +838,13 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     TCompletionCode CSymbolSet::AddSymbolFLOAT( const char* name, float value, TSymbolType symbolType )
     {
-        TCompletionCode ret = CC_OK;
-        TTypedValue_1_0 typedValue;
-        typedValue.ValueType     = VALUE_TYPE_FLOAT;
-        typedValue.ValueFloat    = value;
         const uint32_t adapterId = m_metricsDevice.GetAdapter().GetAdapterId();
 
-        ret = AddSymbol( name, typedValue, symbolType );
+        TTypedValue_1_0 typedValue = {};
+        typedValue.ValueType       = VALUE_TYPE_FLOAT;
+        typedValue.ValueFloat      = value;
+
+        const auto ret = AddSymbol( name, typedValue, symbolType );
 
         MD_CHECK_CC_MSG_A( adapterId, ret, "Failed to add global symbol: %s, ret: %d", name, ret );
         return ret;
@@ -876,13 +872,13 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     TCompletionCode CSymbolSet::AddSymbolCSTRING( const char* name, char* value, TSymbolType symbolType )
     {
-        TCompletionCode ret = CC_OK;
-        TTypedValue_1_0 typedValue;
-        typedValue.ValueType     = VALUE_TYPE_CSTRING;
-        typedValue.ValueCString  = value;
         const uint32_t adapterId = m_metricsDevice.GetAdapter().GetAdapterId();
 
-        ret = AddSymbol( name, typedValue, symbolType );
+        TTypedValue_1_0 typedValue = {};
+        typedValue.ValueType       = VALUE_TYPE_CSTRING;
+        typedValue.ValueCString    = value;
+
+        const auto ret = AddSymbol( name, typedValue, symbolType );
 
         MD_CHECK_CC_MSG_A( adapterId, ret, "Failed to add global symbol: %s, ret: %d", name, ret );
         return ret;
@@ -998,18 +994,18 @@ namespace MetricsDiscoveryInternal
     //     Redetects (updates) the symbol value.
     //
     // Input:
-    //     const char* name - name of a symbol to redetect
+    //     std::string_view name - name of a symbol to redetect
     //
     // Output:
-    //     TCompletionCode  - result, *CC_OK* means success
+    //     TCompletionCode       - result, *CC_OK* means success
     //
     //////////////////////////////////////////////////////////////////////////////
-    TCompletionCode CSymbolSet::RedetectSymbol( const char* symbolName )
+    TCompletionCode CSymbolSet::RedetectSymbol( std::string_view symbolName )
     {
         TTypedValue_1_0* symbolValue = GetSymbolValueByName( symbolName );
         if( !symbolValue )
         {
-            MD_LOG_A( m_metricsDevice.GetAdapter().GetAdapterId(), LOG_DEBUG, "Symbol doesn't exist, name: %s", symbolName );
+            MD_LOG_A( m_metricsDevice.GetAdapter().GetAdapterId(), LOG_DEBUG, "Symbol doesn't exist, name: %s", GetCStringFromStringView( symbolName ) );
             return CC_ERROR_INVALID_PARAMETER;
         }
 

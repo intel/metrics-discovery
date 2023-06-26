@@ -107,16 +107,14 @@ namespace MetricsDiscoveryInternal
     //     Frequency override constructor.
     //
     // Input:
-    //     CMetricsDevice* device - parent metrics device
+    //     CMetricsDevice& device - parent metrics device
     //
     //////////////////////////////////////////////////////////////////////////////
     template <>
-    COverride<OVERRIDE_TYPE_FREQUENCY>::COverride( CMetricsDevice* device )
+    COverride<OVERRIDE_TYPE_FREQUENCY>::COverride( CMetricsDevice& device )
+        : m_device( device )
     {
-        MD_CHECK_PTR_RET( device, MD_EMPTY );
-        const uint32_t adapterId = OBTAIN_ADAPTER_ID( device );
-
-        m_device = device;
+        const uint32_t adapterId = device.GetAdapter().GetAdapterId();
 
         m_params.SymbolName       = "FrequencyOverride";
         m_params.Description      = "Overrides device GPU frequency with a static value.";
@@ -144,16 +142,14 @@ namespace MetricsDiscoveryInternal
     //     Null Hardware override constructor.
     //
     // Input:
-    //     CMetricsDevice* device - parent metrics device
+    //     CMetricsDevice& device - parent metrics device
     //
     //////////////////////////////////////////////////////////////////////////////
     template <>
-    COverride<OVERRIDE_TYPE_NULL_HARDWARE>::COverride( CMetricsDevice* device )
+    COverride<OVERRIDE_TYPE_NULL_HARDWARE>::COverride( CMetricsDevice& device )
+        : m_device( device )
     {
-        MD_CHECK_PTR_RET( device, MD_EMPTY );
-        const uint32_t adapterId = OBTAIN_ADAPTER_ID( device );
-
-        m_device = device;
+        const uint32_t adapterId = device.GetAdapter().GetAdapterId();
 
         m_params.SymbolName       = "Null Hardware";
         m_params.Description      = "Do not send primitives to the hardware rasterizer.";
@@ -181,16 +177,14 @@ namespace MetricsDiscoveryInternal
     //     Flush GPU caches override constructor.
     //
     // Input:
-    //     CMetricsDevice* device - parent metrics device
+    //     CMetricsDevice& device - parent metrics device
     //
     //////////////////////////////////////////////////////////////////////////////
     template <>
-    COverride<OVERRIDE_TYPE_FLUSH_GPU_CACHES>::COverride( CMetricsDevice* device )
+    COverride<OVERRIDE_TYPE_FLUSH_GPU_CACHES>::COverride( CMetricsDevice& device )
+        : m_device( device )
     {
-        MD_CHECK_PTR_RET( device, MD_EMPTY );
-        const uint32_t adapterId = OBTAIN_ADAPTER_ID( device );
-
-        m_device = device;
+        const uint32_t adapterId = device.GetAdapter().GetAdapterId();
 
         m_params.SymbolName       = "Flush GPU caches";
         m_params.Description      = "Flushes all GPU caches.";
@@ -218,16 +212,14 @@ namespace MetricsDiscoveryInternal
     //     Extended query override constructor.
     //
     // Input:
-    //     CMetricsDevice* device - parent metrics device
+    //     CMetricsDevice& device - parent metrics device
     //
     //////////////////////////////////////////////////////////////////////////////
     template <>
-    COverride<OVERRIDE_TYPE_EXTENDED_QUERY>::COverride( CMetricsDevice* device )
+    COverride<OVERRIDE_TYPE_EXTENDED_QUERY>::COverride( CMetricsDevice& device )
+        : m_device( device )
     {
-        MD_CHECK_PTR_RET( device, MD_EMPTY );
-        const uint32_t adapterId = OBTAIN_ADAPTER_ID( device );
-
-        m_device = device;
+        const uint32_t adapterId = device.GetAdapter().GetAdapterId();
 
         m_params.SymbolName       = "Extended query";
         m_params.Description      = "Enables extended query mode.";
@@ -255,16 +247,14 @@ namespace MetricsDiscoveryInternal
     //     Multisampled query override constructor.
     //
     // Input:
-    //     CMetricsDevice* device - parent metrics device
+    //     CMetricsDevice& device - parent metrics device
     //
     //////////////////////////////////////////////////////////////////////////////
     template <>
-    COverride<OVERRIDE_TYPE_MULTISAMPLED_QUERY>::COverride( CMetricsDevice* device )
+    COverride<OVERRIDE_TYPE_MULTISAMPLED_QUERY>::COverride( CMetricsDevice& device )
+        : m_device( device )
     {
-        MD_CHECK_PTR_RET( device, MD_EMPTY );
-        const uint32_t adapterId = OBTAIN_ADAPTER_ID( device );
-
-        m_device = device;
+        const uint32_t adapterId = device.GetAdapter().GetAdapterId();
 
         m_params.SymbolName       = "Multisampled query";
         m_params.Description      = "Enables multisampled query mode.";
@@ -292,16 +282,14 @@ namespace MetricsDiscoveryInternal
     //     Frequency change reports override constructor.
     //
     // Input:
-    //     CMetricsDevice* device - parent metrics device
+    //     CMetricsDevice& device - parent metrics device
     //
     //////////////////////////////////////////////////////////////////////////////
     template <>
-    COverride<OVERRIDE_TYPE_FREQUENCY_CHANGE_REPORTS>::COverride( CMetricsDevice* device )
+    COverride<OVERRIDE_TYPE_FREQUENCY_CHANGE_REPORTS>::COverride( CMetricsDevice& device )
+        : m_device( device )
     {
-        MD_CHECK_PTR_RET( device, MD_EMPTY );
-        const uint32_t adapterId = OBTAIN_ADAPTER_ID( device );
-
-        m_device = device;
+        const uint32_t adapterId = device.GetAdapter().GetAdapterId();
 
         m_params.SymbolName       = "FrequencyChangeReports";
         m_params.Description      = "Allows to toggle frequency change reports.";
@@ -378,14 +366,15 @@ namespace MetricsDiscoveryInternal
     template <>
     TCompletionCode COverride<OVERRIDE_TYPE_FREQUENCY>::SetOverride( TSetOverrideParams_1_2* params, uint32_t paramsSize )
     {
-        const uint32_t adapterId = OBTAIN_ADAPTER_ID( m_device );
+        const uint32_t adapterId = m_device.GetAdapter().GetAdapterId();
 
         MD_LOG_ENTER_A( adapterId );
         MD_CHECK_PTR_RET_A( adapterId, params, CC_ERROR_INVALID_PARAMETER );
         MD_CHECK_SIZE_RET_A( adapterId, paramsSize, TSetFrequencyOverrideParams_1_2, CC_ERROR_INVALID_PARAMETER );
 
-        auto& driverInterface         = m_device->GetDriverInterface();
-        auto  frequencyOverrideParams = static_cast<TSetFrequencyOverrideParams_1_2*>( params );
+        auto& driverInterface = m_device.GetDriverInterface();
+
+        auto frequencyOverrideParams = static_cast<TSetFrequencyOverrideParams_1_2*>( params );
 
         auto ret = driverInterface.SetFrequencyOverride( frequencyOverrideParams );
         if( ret != CC_OK )
@@ -395,8 +384,7 @@ namespace MetricsDiscoveryInternal
         else
         {
             // Update Frequency global symbol
-            CSymbolSet* symbolSet = m_device->GetSymbolSet();
-            symbolSet->RedetectSymbol( "GpuCurrentFrequencyMHz" );
+            m_device.GetSymbolSet().RedetectSymbol( "GpuCurrentFrequencyMHz" );
         }
 
         MD_LOG_EXIT_A( adapterId );
@@ -426,15 +414,15 @@ namespace MetricsDiscoveryInternal
     template <>
     TCompletionCode COverride<OVERRIDE_TYPE_EXTENDED_QUERY>::SetOverride( TSetOverrideParams_1_2* params, uint32_t paramsSize )
     {
-        const uint32_t adapterId = OBTAIN_ADAPTER_ID( m_device );
+        const uint32_t adapterId = m_device.GetAdapter().GetAdapterId();
 
         MD_LOG_ENTER_A( adapterId );
-        MD_CHECK_PTR_RET_A( adapterId, m_device, CC_ERROR_INVALID_PARAMETER );
         MD_CHECK_PTR_RET_A( adapterId, params, CC_ERROR_INVALID_PARAMETER );
         MD_CHECK_SIZE_RET_A( adapterId, paramsSize, TSetQueryOverrideParams_1_2, CC_ERROR_INVALID_PARAMETER );
 
-        auto& driverInterface = m_device->GetDriverInterface();
-        auto  oaBufferSize    = m_device->GetGlobalSymbolValueByName( "OABufferMaxSize" );
+        auto& driverInterface = m_device.GetDriverInterface();
+
+        auto oaBufferSize = m_device.GetGlobalSymbolValueByName( "OABufferMaxSize" );
         if( oaBufferSize == nullptr )
         {
             MD_LOG_A( adapterId, LOG_ERROR, "Unable to obtain maximum OA buffer size" );
@@ -475,16 +463,15 @@ namespace MetricsDiscoveryInternal
     template <>
     TCompletionCode COverride<OVERRIDE_TYPE_MULTISAMPLED_QUERY>::SetOverride( TSetOverrideParams_1_2* params, uint32_t paramsSize )
     {
-        const uint32_t adapterId = OBTAIN_ADAPTER_ID( m_device );
+        const uint32_t adapterId = m_device.GetAdapter().GetAdapterId();
 
         MD_LOG_ENTER_A( adapterId );
-        MD_CHECK_PTR_RET_A( adapterId, m_device, CC_ERROR_INVALID_PARAMETER );
         MD_CHECK_PTR_RET_A( adapterId, params, CC_ERROR_INVALID_PARAMETER );
         MD_CHECK_SIZE_RET_A( adapterId, paramsSize, TSetQueryOverrideParams_1_2, CC_ERROR_INVALID_PARAMETER );
 
-        auto& driverInterface = m_device->GetDriverInterface();
+        auto& driverInterface = m_device.GetDriverInterface();
 
-        auto oaBufferSize = m_device->GetGlobalSymbolValueByName( "OABufferMaxSize" );
+        auto oaBufferSize = m_device.GetGlobalSymbolValueByName( "OABufferMaxSize" );
         if( oaBufferSize == nullptr )
         {
             MD_LOG_A( adapterId, LOG_ERROR, "Unable to obtain maximum OA buffer size" );
@@ -525,15 +512,15 @@ namespace MetricsDiscoveryInternal
     template <>
     TCompletionCode COverride<OVERRIDE_TYPE_FREQUENCY_CHANGE_REPORTS>::SetOverride( TSetOverrideParams_1_2* params, uint32_t paramsSize )
     {
-        const uint32_t adapterId = OBTAIN_ADAPTER_ID( m_device );
+        const uint32_t adapterId = m_device.GetAdapter().GetAdapterId();
 
         MD_LOG_ENTER_A( adapterId );
-        MD_CHECK_PTR_RET_A( adapterId, m_device, CC_ERROR_INVALID_PARAMETER );
         MD_CHECK_PTR_RET_A( adapterId, params, CC_ERROR_INVALID_PARAMETER );
         MD_CHECK_SIZE_RET_A( adapterId, paramsSize, TSetOverrideParams_1_2, CC_ERROR_INVALID_PARAMETER );
 
-        auto& driverInterface = m_device->GetDriverInterface();
-        auto  ret             = driverInterface.SetFreqChangeReportsOverride( params->Enable );
+        auto& driverInterface = m_device.GetDriverInterface();
+
+        auto ret = driverInterface.SetFreqChangeReportsOverride( params->Enable );
         if( ret != CC_OK )
         {
             MD_LOG_A( adapterId, LOG_ERROR, "Setting frequency change reports override failed, res: %u", ret );
@@ -565,7 +552,8 @@ namespace MetricsDiscoveryInternal
     template <TOverrideType overrideType>
     TCompletionCode COverride<overrideType>::SetOverride( TSetOverrideParams_1_2* params, uint32_t paramsSize )
     {
-        MD_LOG_A( OBTAIN_ADAPTER_ID( m_device ), LOG_ERROR, "Override %u not supported in global mode", overrideType );
+        const uint32_t adapterId = m_device.GetAdapter().GetAdapterId();
+        MD_LOG_A( adapterId, LOG_ERROR, "Override %u not supported in global mode", overrideType );
         return CC_ERROR_NOT_SUPPORTED;
     }
 } // namespace MetricsDiscoveryInternal

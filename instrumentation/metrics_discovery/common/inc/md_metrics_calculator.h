@@ -50,11 +50,11 @@ namespace MetricsDiscoveryInternal
         //     CMetricsCalculator constructor.
         //
         // Input:
-        //     CMetricsDevice* metricsDevice - MetricsDevice used for obtaining GlobalSymbols
+        //     CMetricsDevice& metricsDevice - metrics device is used for obtaining global symbols
         //                                     during calculations
         //
         //////////////////////////////////////////////////////////////////////////////
-        inline CMetricsCalculator( CMetricsDevice* metricsDevice )
+        inline CMetricsCalculator( CMetricsDevice& metricsDevice )
             : m_readEquationStack{}
             , m_readEquationAndDeltaStack{}
             , m_normalizationEquationStack{}
@@ -118,7 +118,7 @@ namespace MetricsDiscoveryInternal
                 m_savedReport = new( std::nothrow ) uint8_t[rawReportSize];
                 if( m_savedReport == nullptr )
                 {
-                    MD_LOG_A( m_device->GetAdapter().GetAdapterId(), LOG_ERROR, "error allocating saved report memory" );
+                    MD_LOG_A( m_device.GetAdapter().GetAdapterId(), LOG_ERROR, "error allocating saved report memory" );
                     m_savedReportSize = 0;
                 }
                 else
@@ -151,27 +151,28 @@ namespace MetricsDiscoveryInternal
         //////////////////////////////////////////////////////////////////////////////
         inline TCompletionCode ReadMetricsFromQueryReport( const uint8_t* rawReport, TTypedValue_1_0* outValues, CMetricSet& metricSet )
         {
-            const uint32_t adapterId = OBTAIN_ADAPTER_ID( m_device );
+            const uint32_t adapterId = m_device.GetAdapter().GetAdapterId();
 
             MD_CHECK_PTR_RET_A( adapterId, rawReport, CC_ERROR_INVALID_PARAMETER );
             MD_CHECK_PTR_RET_A( adapterId, outValues, CC_ERROR_INVALID_PARAMETER );
 
             m_gpuCoreClocks = 0;
 
-            uint32_t metricsCount = metricSet.GetParams()->MetricsCount;
-            for( uint32_t i = 0; i < metricsCount; i++ )
+            const uint32_t metricsCount = metricSet.GetParams()->MetricsCount;
+            for( uint32_t i = 0; i < metricsCount; ++i )
             {
-                TMetricParams_1_0* metricParams = metricSet.GetMetricExplicit( i )->GetParams();
+                outValues[i].ValueType   = VALUE_TYPE_UINT64;
+                outValues[i].ValueUInt64 = 0ULL;
+
+                auto metric = metricSet.GetMetricExplicit( i );
+                MD_CHECK_PTR_RET_A( adapterId, metric, CC_ERROR_GENERAL );
+
+                auto metricParams = metric->GetParams();
+                MD_CHECK_PTR_RET_A( adapterId, metricParams, CC_ERROR_GENERAL );
 
                 if( metricParams->QueryReadEquation )
                 {
-                    CEquation& equation = static_cast<CEquation&>( *metricParams->QueryReadEquation );
-                    outValues[i]        = CalculateReadEquation( equation, rawReport );
-                }
-                else
-                {
-                    outValues[i].ValueType   = VALUE_TYPE_UINT64;
-                    outValues[i].ValueUInt64 = 0ULL;
+                    outValues[i] = CalculateReadEquation( static_cast<CEquation&>( *( metricParams->QueryReadEquation ) ), rawReport );
                 }
 
                 if( std::string_view( metricParams->SymbolName ) == "GpuCoreClocks" )
@@ -206,29 +207,29 @@ namespace MetricsDiscoveryInternal
         //////////////////////////////////////////////////////////////////////////////
         inline TCompletionCode ReadMetricsFromIoReport( const uint8_t* rawRaportLast, const uint8_t* rawRaportPrev, TTypedValue_1_0* outValues, CMetricSet& metricSet )
         {
-            const uint32_t adapterId = OBTAIN_ADAPTER_ID( m_device );
+            const uint32_t adapterId = m_device.GetAdapter().GetAdapterId();
 
             MD_CHECK_PTR_RET_A( adapterId, rawRaportLast, CC_ERROR_INVALID_PARAMETER );
             MD_CHECK_PTR_RET_A( adapterId, rawRaportPrev, CC_ERROR_INVALID_PARAMETER );
             MD_CHECK_PTR_RET_A( adapterId, outValues, CC_ERROR_INVALID_PARAMETER );
 
-            uint32_t metricsCount = metricSet.GetParams()->MetricsCount;
-            m_gpuCoreClocks       = 0;
+            m_gpuCoreClocks = 0;
 
-            for( uint32_t i = 0; i < metricsCount; i++ )
+            const uint32_t metricsCount = metricSet.GetParams()->MetricsCount;
+            for( uint32_t i = 0; i < metricsCount; ++i )
             {
-                TMetricParams_1_0* metricParams = metricSet.GetMetricExplicit( i )->GetParams();
+                outValues[i].ValueType   = VALUE_TYPE_UINT64;
+                outValues[i].ValueUInt64 = 0ULL;
+
+                auto metric = metricSet.GetMetricExplicit( i );
+                MD_CHECK_PTR_RET_A( adapterId, metric, CC_ERROR_GENERAL );
+
+                auto metricParams = metric->GetParams();
+                MD_CHECK_PTR_RET_A( adapterId, metricParams, CC_ERROR_GENERAL );
 
                 if( metricParams->IoReadEquation )
                 {
-                    CEquation&         equationInternal = static_cast<CEquation&>( *metricParams->IoReadEquation );
-                    TDeltaFunction_1_0 deltaFunc        = metricParams->DeltaFunction;
-                    outValues[i]                        = CalculateReadEquationAndDelta( equationInternal, deltaFunc, rawRaportLast, rawRaportPrev );
-                }
-                else
-                {
-                    outValues[i].ValueType   = VALUE_TYPE_UINT64;
-                    outValues[i].ValueUInt64 = 0ULL;
+                    outValues[i] = CalculateReadEquationAndDelta( static_cast<CEquation&>( *( metricParams->IoReadEquation ) ), metricParams->DeltaFunction, rawRaportLast, rawRaportPrev );
                 }
 
                 if( std::string_view( metricParams->SymbolName ) == "GpuCoreClocks" )
@@ -259,7 +260,7 @@ namespace MetricsDiscoveryInternal
         //////////////////////////////////////////////////////////////////////////////
         inline void NormalizeMetrics( TTypedValue_1_0* deltaValues, TTypedValue_1_0* outValues, CMetricSet& metricSet )
         {
-            const uint32_t adapterId = OBTAIN_ADAPTER_ID( m_device );
+            const uint32_t adapterId = m_device.GetAdapter().GetAdapterId();
 
             if( !deltaValues || !outValues )
             {
@@ -269,24 +270,18 @@ namespace MetricsDiscoveryInternal
                 return;
             }
 
-            uint32_t metricsCount = metricSet.GetParams()->MetricsCount;
-
-            for( uint32_t i = 0; i < metricsCount; i++ )
+            const uint32_t metricsCount = metricSet.GetParams()->MetricsCount;
+            for( uint32_t i = 0; i < metricsCount; ++i )
             {
-                CMetric*           metric                = metricSet.GetMetricExplicit( i );
-                TMetricParams_1_0* metricParams          = metric->GetParams();
-                IEquation_1_0*     normalizationEquation = metricParams->NormEquation;
+                auto metric = metricSet.GetMetricExplicit( i );
+                MD_CHECK_PTR_RET_A( adapterId, metric, MD_EMPTY );
 
-                if( normalizationEquation )
-                {
-                    // do final calculation, may refer to global symbols, local delta results and local normalization results
-                    CEquation& equationInternal = static_cast<CEquation&>( *normalizationEquation );
-                    outValues[i]                = CalculateLocalNormalizationEquation( equationInternal, deltaValues, outValues, i );
-                }
-                else
-                {
-                    outValues[i] = deltaValues[i];
-                }
+                auto metricParams = metric->GetParams();
+                MD_CHECK_PTR_RET_A( adapterId, metricParams, MD_EMPTY );
+
+                outValues[i] = metricParams->NormEquation
+                    ? CalculateLocalNormalizationEquation( static_cast<CEquation&>( *( metricParams->NormEquation ) ), deltaValues, outValues, i )
+                    : deltaValues[i];
 
                 switch( metricParams->ResultType )
                 {
@@ -350,7 +345,7 @@ namespace MetricsDiscoveryInternal
         {
             if( !rawData || !outValues )
             {
-                const uint32_t adapterId = OBTAIN_ADAPTER_ID( m_device );
+                const uint32_t adapterId = m_device.GetAdapter().GetAdapterId();
 
                 MD_ASSERT_A( adapterId, rawData != nullptr );
                 MD_ASSERT_A( adapterId, outValues != nullptr );
@@ -358,15 +353,15 @@ namespace MetricsDiscoveryInternal
                 return;
             }
 
-            uint32_t informationCount = metricSet.GetParams()->InformationCount;
-
-            for( uint32_t i = 0; i < informationCount; i++ )
+            const uint32_t informationCount = metricSet.GetParams()->InformationCount;
+            for( uint32_t i = 0; i < informationCount; ++i )
             {
-                IInformation_1_0* information = metricSet.GetInformation( i );
-                const uint32_t    apiMask     = metricSet.GetParams()->ApiMask;
+                auto           information = metricSet.GetInformation( i );
+                const uint32_t apiMask     = metricSet.GetParams()->ApiMask;
 
                 ReadSingleInformation( rawData, information, apiMask, &outValues[i] );
             }
+
             if( contextIdIdx != -1 )
             {
                 // Value stored to handle PreviousContextId information and context filtering
@@ -397,17 +392,16 @@ namespace MetricsDiscoveryInternal
             if( contextIdIdx == -1 )
             {
                 m_contextIdPrev = 0;
+                return;
             }
-            else
-            {
-                TTypedValue_1_0   outValue    = {};
-                IInformation_1_0* information = metricSet.GetInformation( contextIdIdx );
-                const uint32_t    apiMask     = metricSet.GetParams()->ApiMask;
 
-                ReadSingleInformation( rawData, information, apiMask, &outValue );
+            TTypedValue_1_0   outValue    = {};
+            IInformation_1_0* information = metricSet.GetInformation( contextIdIdx );
+            const uint32_t    apiMask     = metricSet.GetParams()->ApiMask;
 
-                m_contextIdPrev = outValue.ValueUInt64;
-            }
+            ReadSingleInformation( rawData, information, apiMask, &outValue );
+
+            m_contextIdPrev = outValue.ValueUInt64;
         }
 
         //////////////////////////////////////////////////////////////////////////////
@@ -436,16 +430,14 @@ namespace MetricsDiscoveryInternal
             {
                 return 0;
             }
-            else
-            {
-                TTypedValue_1_0   outValue    = {};
-                IInformation_1_0* information = metricSet.GetInformation( informationIndex );
-                const uint32_t    apiMask     = metricSet.GetParams()->ApiMask;
 
-                ReadSingleInformation( rawData, information, apiMask, &outValue );
+            TTypedValue_1_0   outValue    = {};
+            IInformation_1_0* information = metricSet.GetInformation( informationIndex );
+            const uint32_t    apiMask     = metricSet.GetParams()->ApiMask;
 
-                return outValue.ValueUInt64;
-            }
+            ReadSingleInformation( rawData, information, apiMask, &outValue );
+
+            return outValue.ValueUInt64;
         }
 
         //////////////////////////////////////////////////////////////////////////////
@@ -470,7 +462,7 @@ namespace MetricsDiscoveryInternal
         {
             if( !rawReport || !information || !outValue )
             {
-                const uint32_t adapterId = OBTAIN_ADAPTER_ID( m_device );
+                const uint32_t adapterId = m_device.GetAdapter().GetAdapterId();
 
                 MD_ASSERT_A( adapterId, rawReport != nullptr );
                 MD_ASSERT_A( adapterId, information != nullptr );
@@ -479,14 +471,16 @@ namespace MetricsDiscoveryInternal
                 return;
             }
 
-            uint32_t                streamMask        = API_TYPE_IOSTREAM | API_TYPE_BBSTREAM;
-            TInformationParams_1_0* informationParams = information->GetParams();
-            IEquation_1_0*          equation          = ( apiMask & streamMask ) ? informationParams->IoReadEquation : informationParams->QueryReadEquation;
+            constexpr uint32_t streamMask = API_TYPE_IOSTREAM;
 
-            if( equation )
+            auto informationParams = information->GetParams();
+            auto equation          = ( apiMask & streamMask )
+                         ? informationParams->IoReadEquation
+                         : informationParams->QueryReadEquation;
+
+            if( equation != nullptr )
             {
-                CEquation& equationInternal = static_cast<CEquation&>( *equation );
-                *outValue                   = CalculateReadEquation( equationInternal, rawReport );
+                *outValue = CalculateReadEquation( static_cast<CEquation&>( *equation ), rawReport );
             }
             else
             {
@@ -521,7 +515,7 @@ namespace MetricsDiscoveryInternal
         //////////////////////////////////////////////////////////////////////////////
         inline void ReadIoMeasurementInformation( IConcurrentGroup_1_1& concurrentGroup, TTypedValue_1_0* outValues )
         {
-            const uint32_t adapterId = OBTAIN_ADAPTER_ID( m_device );
+            const uint32_t adapterId = m_device.GetAdapter().GetAdapterId();
 
             if( !outValues )
             {
@@ -577,10 +571,10 @@ namespace MetricsDiscoveryInternal
         //////////////////////////////////////////////////////////////////////////////
         inline void CalculateMaxValues( TTypedValue_1_0* deltaMetricValues, TTypedValue_1_0* outMetricValues, TTypedValue_1_0* outMaxValues, CMetricSet& metricSet )
         {
+            const uint32_t adapterId = m_device.GetAdapter().GetAdapterId();
+
             if( !deltaMetricValues || !outMetricValues || !outMaxValues )
             {
-                const uint32_t adapterId = OBTAIN_ADAPTER_ID( m_device );
-
                 MD_ASSERT_A( adapterId, deltaMetricValues != nullptr );
                 MD_ASSERT_A( adapterId, outMetricValues != nullptr );
                 MD_ASSERT_A( adapterId, outMaxValues != nullptr );
@@ -588,26 +582,18 @@ namespace MetricsDiscoveryInternal
                 return;
             }
 
-            uint32_t metricsCount = metricSet.GetParams()->MetricsCount;
-
-            for( uint32_t i = 0; i < metricsCount; i++ )
+            const uint32_t metricsCount = metricSet.GetParams()->MetricsCount;
+            for( uint32_t i = 0; i < metricsCount; ++i )
             {
-                CMetric*           metric           = metricSet.GetMetricExplicit( i );
-                TMetricParams_1_0* metricParams     = metric->GetParams();
-                IEquation_1_0*     maxValueEquation = metricParams->MaxValueEquation;
+                auto metric = metricSet.GetMetricExplicit( i );
+                MD_CHECK_PTR_RET_A( adapterId, metric, MD_EMPTY );
 
-                if( maxValueEquation )
-                {
-                    // Do final calculation, may refer to global symbols, local delta results and local normalization results.
-                    // Normalization equation function is used because NormalizationEquation has the same restrictions as MaxValueEquation.
+                auto metricParams = metric->GetParams();
+                MD_CHECK_PTR_RET_A( adapterId, metricParams, MD_EMPTY );
 
-                    CEquation& equationInternal = static_cast<CEquation&>( *maxValueEquation );
-                    outMaxValues[i]             = CalculateLocalNormalizationEquation( equationInternal, deltaMetricValues, outMetricValues, i );
-                }
-                else
-                {
-                    outMaxValues[i] = outMetricValues[i];
-                }
+                outMaxValues[i] = metricParams->MaxValueEquation
+                    ? CalculateLocalNormalizationEquation( static_cast<CEquation&>( *( metricParams->MaxValueEquation ) ), deltaMetricValues, outMetricValues, i )
+                    : outMetricValues[i];
             }
         }
 
@@ -631,7 +617,7 @@ namespace MetricsDiscoveryInternal
         //////////////////////////////////////////////////////////////////////////////
         inline TCompletionCode SaveReport( const uint8_t* reportToSave )
         {
-            const uint32_t adapterId = OBTAIN_ADAPTER_ID( m_device );
+            const uint32_t adapterId = m_device.GetAdapter().GetAdapterId();
 
             MD_CHECK_PTR_RET_A( adapterId, m_savedReport, CC_ERROR_INVALID_PARAMETER );
             MD_CHECK_PTR_RET_A( adapterId, reportToSave, CC_ERROR_INVALID_PARAMETER );
@@ -885,7 +871,7 @@ namespace MetricsDiscoveryInternal
         {
             if( !rawReport || ( bitCount > 32 ) || ( bitCount == 0 ) || ( bitCount + bitOffset > 32 ) )
             {
-                const uint32_t adapterId = OBTAIN_ADAPTER_ID( m_device );
+                const uint32_t adapterId = m_device.GetAdapter().GetAdapterId();
 
                 MD_ASSERT_A( adapterId, false );
                 MD_LOG_A( adapterId, LOG_ERROR, "error: invalid params" );
@@ -913,10 +899,10 @@ namespace MetricsDiscoveryInternal
         //     Returns metrics device
         //
         // Output:
-        //     CMetricsDevice* - metrics device
+        //     CMetricsDevice& - metrics device
         //
         //////////////////////////////////////////////////////////////////////////////
-        inline CMetricsDevice* GetMetricsDevice()
+        inline CMetricsDevice& GetMetricsDevice()
         {
             return m_device;
         }
@@ -947,7 +933,7 @@ namespace MetricsDiscoveryInternal
             const TTypedValue_1_0& lastValue,
             const TTypedValue_1_0& previousValue )
         {
-            TTypedValue_1_0 typedValue;
+            TTypedValue_1_0 typedValue = {};
 
             switch( deltaFunction.FunctionType )
             {
@@ -997,7 +983,7 @@ namespace MetricsDiscoveryInternal
                     return typedValue;
 
                 default:
-                    MD_ASSERT_A( m_device->GetAdapter().GetAdapterId(), false );
+                    MD_ASSERT_A( m_device.GetAdapter().GetAdapterId(), false );
                     break;
             }
 
@@ -1027,12 +1013,10 @@ namespace MetricsDiscoveryInternal
         //////////////////////////////////////////////////////////////////////////////
         inline TTypedValue_1_0* GetGlobalSymbolValue( const char* symbolName )
         {
-            const uint32_t adapterId = OBTAIN_ADAPTER_ID( m_device );
-
-            MD_CHECK_PTR_RET_A( adapterId, m_device, nullptr );
+            const uint32_t adapterId = m_device.GetAdapter().GetAdapterId();
             MD_CHECK_PTR_RET_A( adapterId, symbolName, nullptr );
 
-            return m_device->GetGlobalSymbolValueByName( symbolName );
+            return m_device.GetGlobalSymbolValueByName( symbolName );
         }
 
         //////////////////////////////////////////////////////////////////////////////
@@ -1058,14 +1042,15 @@ namespace MetricsDiscoveryInternal
             CEquation&     equation,
             const uint8_t* rawReport )
         {
-            TTypedValue_1_0 typedValue;
-            const uint32_t  adapterId      = m_device->GetAdapter().GetAdapterId();
+            const uint32_t adapterId = m_device.GetAdapter().GetAdapterId();
+
+            TTypedValue_1_0 typedValue     = {};
             bool            isValid        = true;
             uint32_t        algorithmCheck = 0;
 
             ClearStack( m_readEquationStack );
             const auto& equationElements = equation.GetElementsVector();
-            for( uint32_t i = 0; i < equationElements.size() && isValid; i++ )
+            for( uint32_t i = 0; i < equationElements.size() && isValid; ++i )
             {
                 const auto& element = equationElements[i].Element_1_0;
                 switch( element.Type )
@@ -1192,7 +1177,7 @@ namespace MetricsDiscoveryInternal
                         typedValue.ValueType   = VALUE_TYPE_UINT64;
                         isValid                = EquationStackPush( m_readEquationStack, typedValue, algorithmCheck );
 
-                        if( IsPlatformMatch( m_device->GetPlatformIndex(), GENERATION_ACM ) &&
+                        if( IsPlatformMatch( m_device.GetPlatformIndex(), GENERATION_ACM ) &&
                             strstr( element.SymbolName, "GtSlice" ) != nullptr )
                         {
                             break;
@@ -1263,13 +1248,13 @@ namespace MetricsDiscoveryInternal
                 readDeltaFunction = deltaFunction;
             }
 
-            const uint32_t adapterId      = m_device->GetAdapter().GetAdapterId();
+            const uint32_t adapterId      = m_device.GetAdapter().GetAdapterId();
             bool           isValid        = true;
             uint32_t       algorithmCheck = 0;
 
             ClearStack( m_readEquationAndDeltaStack );
             const auto& equationElements = equation.GetElementsVector();
-            for( uint32_t i = 0; i < equationElements.size() && isValid; i++ )
+            for( uint32_t i = 0; i < equationElements.size() && isValid; ++i )
             {
                 const auto& element = equationElements[i].Element_1_0;
                 switch( element.Type )
@@ -1413,7 +1398,7 @@ namespace MetricsDiscoveryInternal
                         typedValue.ValueType   = VALUE_TYPE_UINT64;
                         isValid                = EquationStackPush( m_readEquationAndDeltaStack, typedValue, algorithmCheck );
 
-                        if( IsPlatformMatch( m_device->GetPlatformIndex(), GENERATION_ACM ) &&
+                        if( IsPlatformMatch( m_device.GetPlatformIndex(), GENERATION_ACM ) &&
                             strstr( element.SymbolName, "GtSlice" ) != nullptr )
                         {
                             break;
@@ -1471,14 +1456,15 @@ namespace MetricsDiscoveryInternal
             TTypedValue_1_0* outValues,
             uint32_t         metricIndex )
         {
-            TTypedValue_1_0 typedValue;
+            const uint32_t adapterId = m_device.GetAdapter().GetAdapterId();
+
+            TTypedValue_1_0 typedValue     = {};
             bool            isValid        = true;
             uint32_t        algorithmCheck = 0;
-            const uint32_t  adapterId      = m_device->GetAdapter().GetAdapterId();
 
             ClearStack( m_normalizationEquationStack );
             const auto& equationElements = equation.GetElementsVector();
-            for( uint32_t i = 0; i < equationElements.size() && isValid; i++ )
+            for( uint32_t i = 0; i < equationElements.size() && isValid; ++i )
             {
                 const auto& element = equationElements[i].Element_1_0;
                 switch( element.Type )
@@ -1889,6 +1875,6 @@ namespace MetricsDiscoveryInternal
         uint8_t*                    m_savedReport;
         bool                        m_savedReportPresent;
         uint64_t                    m_contextIdPrev;
-        CMetricsDevice*             m_device;
+        CMetricsDevice&             m_device;
     };
 } // namespace MetricsDiscoveryInternal

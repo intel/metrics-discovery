@@ -107,7 +107,7 @@ namespace MetricsDiscoveryInternal
 
     TCompletionCode WriteEquationToFile( CEquation* equation, FILE* metricFile, const uint32_t adapterId );
     TCompletionCode SetDeltaFunction( const char* equationString, TDeltaFunction_1_0* deltaFunction, const uint32_t adapterId );
-    TCompletionCode SetEquation( CMetricsDevice* device, CEquation*& equation, const char* equationString );
+    TCompletionCode SetEquation( CMetricsDevice& device, CEquation*& equation, const char* equationString );
 
     TCompletionCode GetNamedSemaphore( const char* semaphoreName, void** semaphorePtr, const uint32_t adapterId );
     TCompletionCode ReleaseNamedSemaphore( void** semaphorePtr, const uint32_t adapterId );

@@ -31,14 +31,14 @@ namespace MetricsDiscoveryInternal
     //     Constructor.
     //
     // Input:
-    //     CMetricsDevice* device                 - parent metrics device
+    //     CMetricsDevice& device                 - parent metrics device
     //     const char*     name                   - concurrent group name
     //     const char*     description            - concurrent group description
     //     const uint32_t  measurementTypeMask    - measurement type mask
     //
     //////////////////////////////////////////////////////////////////////////////
-    COAMConcurrentGroup::COAMConcurrentGroup( CMetricsDevice* device, const char* name, const char* description, const uint32_t measurementTypeMask )
-        : COAConcurrentGroup( device, name, description, measurementTypeMask, STREAM_TYPE_OAM, GetOaBufferTypeFromName( name, OBTAIN_ADAPTER_ID( device ) ) )
+    COAMConcurrentGroup::COAMConcurrentGroup( CMetricsDevice& device, const char* name, const char* description, const uint32_t measurementTypeMask )
+        : COAConcurrentGroup( device, name, description, measurementTypeMask, STREAM_TYPE_OAM, GetOaBufferTypeFromName( name, device ) )
     {
     }
 
@@ -84,27 +84,16 @@ namespace MetricsDiscoveryInternal
     //     Checks if OAM concurrent groups is supported on current platform.
     //
     // Input:
-    //    const char*     symbolicName  - concurrent group symbolic name
-    //    CMetricsDevice& metricsDevice - metrics device
+    //    const char*     symbolicName - concurrent group symbolic name
+    //    CMetricsDevice& device       - metrics device
     //
     // Output:
-    //     bool                         - true if supported
+    //     bool                        - true if supported
     //
     //////////////////////////////////////////////////////////////////////////////
-    bool COAMConcurrentGroup::IsSupported( const char* symbolicName, CMetricsDevice& metricsDevice )
+    bool COAMConcurrentGroup::IsSupported( const char* symbolicName, CMetricsDevice& device )
     {
-        const uint32_t            adapterId    = metricsDevice.GetAdapter().GetAdapterId();
-        const GTDI_OA_BUFFER_TYPE oaBufferType = GetOaBufferTypeFromName( symbolicName, adapterId );
-
-        if( oaBufferType == GTDI_OA_BUFFER_TYPE_DEFAULT )
-        {
-            MD_LOG_A( adapterId, LOG_ERROR, "Error: Incorrect oa buffer type for OAM" );
-            return false;
-        }
-
-        auto& driverInterface = metricsDevice.GetDriverInterface();
-
-        return driverInterface.IsOaBufferSupported( oaBufferType, &metricsDevice );
+        return GetOaBufferTypeFromName( symbolicName, device ) != GTDI_OA_BUFFER_TYPE_DEFAULT;
     }
 
     //////////////////////////////////////////////////////////////////////////////
@@ -119,25 +108,35 @@ namespace MetricsDiscoveryInternal
     //     Gets oa buffer type from concurrent group symbolic name.
     //
     // Input:
-    //     const char*    symbolicName - concurrent group symbolic name
-    //     const uint32_t adapterId    - adapter id
+    //     const char*     symbolName - concurrent group symbol name
+    //     CMetricsDevice& device     - metrics device
     //
     // Output:
-    //     GTDI_OA_BUFFER_TYPE         - oa buffer type
+    //     GTDI_OA_BUFFER_TYPE        - oa buffer type
     //
     //////////////////////////////////////////////////////////////////////////////
-    GTDI_OA_BUFFER_TYPE COAMConcurrentGroup::GetOaBufferTypeFromName( const char* symbolicName, const uint32_t adapterId )
+    GTDI_OA_BUFFER_TYPE COAMConcurrentGroup::GetOaBufferTypeFromName( const char* symbolName, CMetricsDevice& device )
     {
-        if( strlen( symbolicName ) > 3 && strstr( symbolicName, "OAM" ) != nullptr )
+        if( strlen( symbolName ) > 3 && strstr( symbolName, "OAM" ) != nullptr )
         {
-            const uint32_t oamBufferType = symbolicName[3] - '0' + 1;
-            if( oamBufferType >= GTDI_OA_BUFFER_TYPE_OAM_SLICE_0 && oamBufferType <= GTDI_OA_BUFFER_TYPE_OAM_SLICE_5 )
+            const uint32_t oaBuferCount = device.GetOaBufferCount();
+
+            if( symbolName[3] == 'G' ) // OAMG
             {
-                return static_cast<GTDI_OA_BUFFER_TYPE>( oamBufferType );
+                return static_cast<GTDI_OA_BUFFER_TYPE>( oaBuferCount - 1 );
+            }
+            else
+            {
+                const uint32_t oamBufferType = symbolName[3] - '0' + 1;
+                if( oamBufferType >= GTDI_OA_BUFFER_TYPE_OAM_SLICE_0 && oamBufferType < oaBuferCount )
+                {
+                    return static_cast<GTDI_OA_BUFFER_TYPE>( oamBufferType );
+                }
+
+                const uint32_t adapterId = device.GetAdapter().GetAdapterId();
+                MD_LOG_A( adapterId, LOG_DEBUG, "ERROR: Cannot get oa buffer type for OAM. Given symbol name: %s, OA buffer count: %u", symbolName, oaBuferCount );
             }
         }
-
-        MD_LOG_A( adapterId, LOG_ERROR, "ERROR: Cannot get oa buffer type for OAM. Given symbolic name: %s", symbolicName );
 
         return GTDI_OA_BUFFER_TYPE_DEFAULT;
     }

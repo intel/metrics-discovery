@@ -32,13 +32,13 @@ namespace MetricsDiscoveryInternal
     //     CRegisterSet constructor.
     //
     // Input:
-    //     CMetricsDevice* device         - metrics device
+    //     CMetricsDevice& device         - metrics device
     //     uint32_t        configId       - config id
     //     uint32_t        configPriority - priority, lower more important
     //     TConfigType     configType     - e.g. COMMON, SNAPSHOT
     //
     //////////////////////////////////////////////////////////////////////////////
-    CRegisterSet::CRegisterSet( CMetricsDevice* device, uint32_t configId, uint32_t configPriority, TConfigType configType )
+    CRegisterSet::CRegisterSet( CMetricsDevice& device, uint32_t configId, uint32_t configPriority, TConfigType configType )
         : m_regList()
         , m_availabilityEquation( nullptr )
         , m_device( device )
@@ -115,7 +115,7 @@ namespace MetricsDiscoveryInternal
         }
         else
         {
-            MD_LOG_A( OBTAIN_ADAPTER_ID( m_device ), LOG_ERROR, "Error setting availability equation" );
+            MD_LOG_A( m_device.GetAdapter().GetAdapterId(), LOG_ERROR, "Error setting availability equation" );
             m_isAvailable = false;
         }
 
@@ -223,7 +223,7 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     TCompletionCode CRegisterSet::WriteCRegisterSetToFile( FILE* metricFile )
     {
-        const uint32_t adapterId = OBTAIN_ADAPTER_ID( m_device );
+        const uint32_t adapterId = m_device.GetAdapter().GetAdapterId();
 
         MD_CHECK_PTR_RET_A( adapterId, metricFile, CC_ERROR_INVALID_PARAMETER );
 

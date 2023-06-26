@@ -45,8 +45,7 @@ namespace MetricsDiscoveryInternal
     template <>
     void CMetricsCalculationManager<MEASUREMENT_TYPE_SNAPSHOT_IO>::ResetContext( TCalculationContext& context )
     {
-        memset( &context.StreamCalculationContext, 0, sizeof( context.StreamCalculationContext ) );
-
+        context.StreamCalculationContext              = {};
         context.StreamCalculationContext.ContextIdIdx = -1;
     }
 
@@ -68,7 +67,7 @@ namespace MetricsDiscoveryInternal
     template <>
     void CMetricsCalculationManager<MEASUREMENT_TYPE_DELTA_QUERY>::ResetContext( TCalculationContext& context )
     {
-        memset( &context.QueryCalculationContext, 0, sizeof( context.QueryCalculationContext ) );
+        context.QueryCalculationContext = {};
     }
 
     //////////////////////////////////////////////////////////////////////////////
@@ -96,7 +95,7 @@ namespace MetricsDiscoveryInternal
         TStreamCalculationContext* sc = &context.StreamCalculationContext;
         MD_CHECK_PTR_RET( sc->Calculator, CC_ERROR_INVALID_PARAMETER );
 
-        const uint32_t adapterId = OBTAIN_ADAPTER_ID( sc->Calculator->GetMetricsDevice() );
+        const uint32_t adapterId = sc->Calculator->GetMetricsDevice().GetAdapter().GetAdapterId();
 
         MD_CHECK_PTR_RET_A( adapterId, sc->MetricSet, CC_ERROR_INVALID_PARAMETER );
         MD_CHECK_PTR_RET_A( adapterId, sc->RawData, CC_ERROR_INVALID_PARAMETER );
@@ -158,7 +157,7 @@ namespace MetricsDiscoveryInternal
         TQueryCalculationContext* qc = &context.QueryCalculationContext;
         MD_CHECK_PTR_RET( qc->Calculator, CC_ERROR_INVALID_PARAMETER );
 
-        const uint32_t adapterId = OBTAIN_ADAPTER_ID( qc->Calculator->GetMetricsDevice() );
+        const uint32_t adapterId = qc->Calculator->GetMetricsDevice().GetAdapter().GetAdapterId();
 
         MD_CHECK_PTR_RET_A( adapterId, qc->MetricSet, CC_ERROR_INVALID_PARAMETER );
         MD_CHECK_PTR_RET_A( adapterId, qc->RawData, CC_ERROR_INVALID_PARAMETER );
@@ -206,9 +205,15 @@ namespace MetricsDiscoveryInternal
         TStreamCalculationContext* sc = &context.StreamCalculationContext;
         MD_CHECK_PTR_RET( sc->Calculator, false );
 
-        const uint32_t adapterId = OBTAIN_ADAPTER_ID( sc->Calculator->GetMetricsDevice() );
+        const uint32_t adapterId = sc->Calculator->GetMetricsDevice().GetAdapter().GetAdapterId();
 
-        if( sc->LastRawReportNumber >= sc->RawReportCount || sc->PrevRawReportNumber >= sc->RawReportCount - 1 )
+        const bool isSavedReport  = sc->Calculator->SavedReportPresent();
+        const bool isSingleReport = sc->RawReportCount == 1;
+
+        // Save first report if there are no other reports
+        // or if the report is the last one.
+        if( ( !isSavedReport && isSingleReport ) ||
+            ( ( !isSavedReport && !isSingleReport ) && ( sc->LastRawReportNumber >= sc->RawReportCount || sc->PrevRawReportNumber >= sc->RawReportCount - 1 ) ) )
         {
             // Nothing to be calculated
             MD_LOG_A( adapterId, LOG_DEBUG, "Calculation complete" );
@@ -220,7 +225,7 @@ namespace MetricsDiscoveryInternal
             return false;
         }
 
-        if( sc->Calculator->SavedReportPresent() && sc->PrevRawReportNumber == 0 )
+        if( isSavedReport && sc->PrevRawReportNumber == 0 )
         {
             // Use saved report as 'Prev', 0 offset report as "Last"
             sc->PrevRawDataPtr      = sc->Calculator->GetSavedReport();
@@ -255,7 +260,18 @@ namespace MetricsDiscoveryInternal
         sc->PrevRawDataPtr      = sc->LastRawDataPtr;
         sc->PrevRawReportNumber = sc->LastRawReportNumber;
 
-        if( sc->Calculator->SavedReportPresent() )
+        if( isSingleReport )
+        {
+            // If there is a single report in calculation, do not discard saved report and save the current report.
+            if( CC_OK != sc->Calculator->SaveReport( sc->LastRawDataPtr ) )
+            {
+                MD_LOG_A( adapterId, LOG_DEBUG, "Unable to store last raw report for reuse." );
+            }
+
+            return false;
+        }
+
+        if( isSavedReport )
         {
             sc->Calculator->DiscardSavedReport();
         }
@@ -288,8 +304,7 @@ namespace MetricsDiscoveryInternal
     {
         TQueryCalculationContext* qc = &context.QueryCalculationContext;
         MD_CHECK_PTR_RET( qc->Calculator, false );
-
-        const uint32_t adapterId = OBTAIN_ADAPTER_ID( qc->Calculator->GetMetricsDevice() );
+        const uint32_t adapterId = qc->Calculator->GetMetricsDevice().GetAdapter().GetAdapterId();
 
         if( qc->OutReportCount >= qc->RawReportCount )
         {
@@ -343,17 +358,17 @@ namespace MetricsDiscoveryInternal
     {
         MD_CHECK_PTR_RET( metricSet, -1 );
 
-        const uint32_t adapterId = OBTAIN_ADAPTER_ID( metricSet->GetMetricsDevice() );
+        const uint32_t adapterId = metricSet->GetMetricsDevice().GetAdapter().GetAdapterId();
 
         MD_CHECK_PTR_RET_A( adapterId, symbolName, -1 );
 
-        uint32_t count = metricSet->GetParams()->InformationCount;
-        for( uint32_t i = 0; i < count; i++ )
+        const uint32_t count = metricSet->GetParams()->InformationCount;
+        for( uint32_t i = 0; i < count; ++i )
         {
-            IInformation_1_0* information = metricSet->GetInformation( i );
+            auto information = metricSet->GetInformation( i );
             MD_ASSERT_A( adapterId, information != nullptr );
 
-            TInformationParams_1_0* informationParams = information->GetParams();
+            auto informationParams = information->GetParams();
             if( informationParams->SymbolName && strcmp( informationParams->SymbolName, symbolName ) == 0 )
             {
                 return i;

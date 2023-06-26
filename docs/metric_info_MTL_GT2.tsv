@@ -1,0 +1,1489 @@
+MetricSet	SymbolName	ShortName	Group	LongName
+PipelineStats	IAVertices	Input vertices	3D Pipe/Input Assembler	The total number of vertices that entered the 3D Pipeline.
+PipelineStats	IAPrimitives	Input primitives	3D Pipe/Input Assembler	The total number of rendering primitives assembled and put into the input assembly stage of the 3D Pipeline.
+PipelineStats	VsInvocations	VS per vertex invocations	3D Pipe/Vertex Shader	The total number of times a vertex shader was invoked. 3D rendering invokes the vertex shader once per vertex.
+PipelineStats	HsInvocations	HS invocations	3D Pipe/Hull Shader	The total number of times a hull shader was invoked.
+PipelineStats	DsInvocations	DS invocations	3D Pipe/Domain Shader	The total number of times a domain shader was invoked.
+PipelineStats	GsInvocations	GS per triangle invocations	3D Pipe/Geometry Shader	The total number of times a geometry shader was invoked per triangle.
+PipelineStats	GsPrimitives	Post-GS primitives	3D Pipe/Geometry Shader	The total number of primitives that flowed through from GS to the clipper if GS was enabled.
+PipelineStats	ClipperInvocations	Clipper invocations	3D Pipe/Clipper	The total number of primitives sent to the Clipper.
+PipelineStats	ClipperPrimitives	Clipper primitives	3D Pipe/Clipper	The total number of primitives that flowed out of the Clipper.
+PipelineStats	PsInvocations	PS invocations	3D Pipe/Pixel Shader	The total number of times a pixel shader was invoked. 3D rendering invokes a pixel shader once per pixel or subsample.
+PipelineStats	CsInvocations	CS invocations	3D Pipe/Compute Shader	The total number of times a compute shader was invoked.
+PipelineStats	CpsInvocations	CPS invocations	3D Pipe/Compute Shader	The total number of times a coarse shader was invoked.
+RenderBasic	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
+RenderBasic	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
+RenderBasic	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
+RenderBasic	VsThreads	VS Threads Dispatched	EU Array/Vertex Shader	The total number of vertex shader hardware threads dispatched.
+RenderBasic	HsThreads	HS Threads Dispatched	EU Array/Hull Shader	The total number of hull shader hardware threads dispatched.
+RenderBasic	DsThreads	DS Threads Dispatched	EU Array/Domain Shader	The total number of domain shader hardware threads dispatched.
+RenderBasic	GsThreads	GS Threads Dispatched	EU Array/Geometry Shader	The total number of geometry shader hardware threads dispatched.
+RenderBasic	PsThreads	PS Threads Dispatched	EU Array/Pixel Shader	The total number of pixel shader hardware threads dispatched.
+RenderBasic	CsThreads	CS Threads Dispatched	EU Array/Compute Shader	The total number of compute shader hardware threads dispatched.
+RenderBasic	GpuBusy	GPU Busy	GPU	The percentage of time in which the GPU has been processing GPU commands.
+RenderBasic	XveActive	XVE Active	EU Array	The percentage of time in which the Execution Units were actively processing.
+RenderBasic	XveStall	XVE Stall	EU Array	The percentage of time in which the Execution Units were stalled.
+RenderBasic	XveThreadOccupancy	XVE Thread Occupancy	EU Array	The percentage of time in which hardware threads occupied XVEs.
+RenderBasic	XveFpuEmActive	EM And FPU Pipes Active	EU Array/Pipes	The percentage of time in which XVE EM INT and FPU INT64 pipelines were actively processing.
+RenderBasic	VsFpuActive	VS FPU Pipe Active	EU Array/Vertex Shader	The percentage of time in which XVE FPU INT64 pipeline was actively processing a vertex shader instruction.
+RenderBasic	VsEmActive	VS EM Pipe Active	EU Array/Vertex Shader	The percentage of time in which XVE EM INT pipeline was actively processing a vertex shader instruction.
+RenderBasic	VsSendActive	VS Send Pipe Active	EU Array/Vertex Shader	The percentage of time in which XVE send pipeline was actively processing a vertex shader instruction.
+RenderBasic	PsFpuActive	PS FPU Pipe Active	EU Array/Pixel Shader	The percentage of time in which XVE FPU INT64 pipeline was actively processing a pixel shader instruction.
+RenderBasic	PsEmActive	PS EM Pipe Active	EU Array/Pixel Shader	The percentage of time in which XVE EM INT pipeline was actively processing a pixel shader instruction.
+RenderBasic	PsSendActive	PS Send Pipe Active	EU Array/Pixel Shader	The percentage of time in which XVE send pipeline was actively processing a pixel shader instruction.
+RenderBasic	RasterizedPixels	Rasterized Pixels	3D Pipe/Rasterizer	The total number of rasterized pixels.
+RenderBasic	HiDepthTestFails	Early Hi-Depth Test Fails	3D Pipe/Rasterizer/Hi-Depth Test	The total number of pixels dropped on early hierarchical depth test.
+RenderBasic	EarlyDepthTestFails	Early Depth Test Fails	3D Pipe/Rasterizer/Early Depth Test	The total number of pixels dropped on early depth test.
+RenderBasic	SamplesKilledInPs	Samples Killed in PS	3D Pipe/Pixel Shader	The total number of samples or pixels dropped in pixel shaders.
+RenderBasic	PixelsFailingPostPsTests	Pixels Failing Tests	3D Pipe/Output Merger	The total number of pixels dropped on post-PS alpha, stencil, or depth tests.
+RenderBasic	SamplesWritten	Samples Written	3D Pipe/Output Merger	The total number of samples or pixels written to all render targets.
+RenderBasic	SamplesBlended	Samples Blended	3D Pipe/Output Merger	The total number of blended samples or pixels written to all render targets.
+RenderBasic	SamplerTexels	Sampler Texels	Sampler/Sampler Input	The total number of texels seen on input (with 2x2 accuracy) in all sampler units.
+RenderBasic	SamplerTexelMisses	Sampler Texels Misses	Sampler/Sampler Cache	The total number of texels lookups (with 2x2 accuracy) that missed L1 sampler cache.
+RenderBasic	SlmReads	SLM Bytes Read	L3/Data Port/SLM	The total number of reads from shared local memory.
+RenderBasic	SlmWrites	SLM Writes	L3/Data Port/SLM	The total number of writes into shared local memory.
+RenderBasic	ShaderMemoryAccesses	Shader Memory Accesses	L3/Data Port	The total number of shader memory accesses to L3.
+RenderBasic	ShaderAtomics	Shader Atomic Memory Accesses	L3/Data Port/Atomics	The total number of shader atomic memory accesses.
+RenderBasic	ShaderBarriers	Shader Barrier Messages	EU Array/Barrier	The total number of shader barrier messages.
+RenderBasic	GtiReadThroughput	GTI Read Throughput	GTI	The total number of GPU memory bytes read from GTI.
+RenderBasic	GtiWriteThroughput	GTI Write Throughput	GTI	The total number of GPU memory bytes written to GTI.
+RenderBasic	SamplersBusy	Samplers Busy	Sampler	The percentage of time in which samplers or L1 cache are not idle.
+RenderBasic	SamplerBottleneck	Samplers Bottleneck	Sampler	The percentage of time in which samplers have been slowing down the pipe when processing XVE requests.
+ComputeBasic	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
+ComputeBasic	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
+ComputeBasic	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
+ComputeBasic	GpuBusy	GPU Busy	GPU	The percentage of time in which the GPU has been processing GPU commands.
+ComputeBasic	VsThreads	VS Threads Dispatched	EU Array/Vertex Shader	The total number of vertex shader hardware threads dispatched.
+ComputeBasic	HsThreads	HS Threads Dispatched	EU Array/Hull Shader	The total number of hull shader hardware threads dispatched.
+ComputeBasic	DsThreads	DS Threads Dispatched	EU Array/Domain Shader	The total number of domain shader hardware threads dispatched.
+ComputeBasic	GsThreads	GS Threads Dispatched	EU Array/Geometry Shader	The total number of geometry shader hardware threads dispatched.
+ComputeBasic	PsThreads	PS Threads Dispatched	EU Array/Pixel Shader	The total number of pixel shader hardware threads dispatched.
+ComputeBasic	CsThreads	CS Threads Dispatched	EU Array/Compute Shader	The total number of compute shader hardware threads dispatched.
+ComputeBasic	XveActive	XVE Active	EU Array	The percentage of time in which the Execution Units were actively processing.
+ComputeBasic	XveStall	XVE Stall	EU Array	The percentage of time in which the Execution Units were stalled.
+ComputeBasic	FpuActive	XVE FPU Pipe Active	EU Array/Pipes	The percentage of time in which XVE FPU INT64 pipeline was actively processing.
+ComputeBasic	EmActive	EM Pipe Active	EU Array/Pipes	The percentage of time in which XVE EM INT pipeline was actively processing.
+ComputeBasic	XmxActive	XMX Pipe Active	EU Array/Pipes	The percentage of time in which XVE XMX pipeline was actively processing.
+ComputeBasic	XveFpuEmActive	EM And FPU Pipes Active	EU Array/Pipes	The percentage of time in which XVE EM INT and FPU INT64 pipelines were actively processing.
+ComputeBasic	XveFpuXmxActive	XMX And FPU Pipes Active	EU Array/Pipes	The percentage of time in which XVE XMX and FPU INT64 pipelines were actively processing.
+ComputeBasic	XveAvgIpcRate	XVE AVG IPC Rate	EU Array	The average rate of IPC calculated for 2 FPU pipelines.
+ComputeBasic	SendActive	Send Pipe Active	EU Array/Pipes	The percentage of time in which XVE send pipeline was actively processing.
+ComputeBasic	XveThreadOccupancy	XVE Thread Occupancy	EU Array	The percentage of time in which hardware threads occupied XVEs.
+ComputeBasic	XveFpuFlt16	FPU FLT16 Instruction	EU Array	The percentage of time in which FLT16 instruction were processed actively on FPU INT64 pipeline.
+ComputeBasic	XveFpuFlt32	FPU FLT32 Instruction	EU Array	The percentage of time in which FLT32 instruction were processed actively on FPU INT64 pipeline.
+ComputeBasic	XveFpuFlt64	FPU FLT64 Instruction	EU Array	The percentage of time in which FLT64 instruction were processed actively on FPU INT64 pipeline.
+ComputeBasic	RasterizedPixels	Rasterized Pixels	3D Pipe/Rasterizer	The total number of rasterized pixels.
+ComputeBasic	HiDepthTestFails	Early Hi-Depth Test Fails	3D Pipe/Rasterizer/Hi-Depth Test	The total number of pixels dropped on early hierarchical depth test.
+ComputeBasic	EarlyDepthTestFails	Early Depth Test Fails	3D Pipe/Rasterizer/Early Depth Test	The total number of pixels dropped on early depth test.
+ComputeBasic	SamplesKilledInPs	Samples Killed in PS	3D Pipe/Pixel Shader	The total number of samples or pixels dropped in pixel shaders.
+ComputeBasic	PixelsFailingPostPsTests	Pixels Failing Tests	3D Pipe/Output Merger	The total number of pixels dropped on post-PS alpha, stencil, or depth tests.
+ComputeBasic	SamplesWritten	Samples Written	3D Pipe/Output Merger	The total number of samples or pixels written to all render targets.
+ComputeBasic	SamplesBlended	Samples Blended	3D Pipe/Output Merger	The total number of blended samples or pixels written to all render targets.
+ComputeBasic	SamplerTexels	Sampler Texels	Sampler/Sampler Input	The total number of texels seen on input (with 2x2 accuracy) in all sampler units.
+ComputeBasic	SamplerTexelMisses	Sampler Texels Misses	Sampler/Sampler Cache	The total number of texels lookups (with 2x2 accuracy) that missed L1 sampler cache.
+ComputeBasic	SlmReads	SLM Bytes Read	L3/Data Port/SLM	The total number of reads from shared local memory.
+ComputeBasic	SlmWrites	SLM Writes	L3/Data Port/SLM	The total number of writes into shared local memory.
+ComputeBasic	ShaderMemoryAccesses	Shader Memory Accesses	L3/Data Port	The total number of shader memory accesses to L3.
+ComputeBasic	ShaderAtomics	Shader Atomic Memory Accesses	L3/Data Port/Atomics	The total number of shader atomic memory accesses.
+ComputeBasic	ShaderBarriers	Shader Barrier Messages	EU Array/Barrier	The total number of shader barrier messages.
+ComputeBasic	GtiReadThroughput	GTI Read Throughput	GTI	The total number of GPU memory bytes read from GTI.
+ComputeBasic	GtiWriteThroughput	GTI Write Throughput	GTI	The total number of GPU memory bytes written to GTI.
+AsyncCompute	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
+AsyncCompute	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
+AsyncCompute	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
+AsyncCompute	GpuBusy	GPU Busy	GPU	The percentage of time in which the GPU has been processing GPU commands.
+AsyncCompute	VsThreads	VS Threads Dispatched	EU Array/Vertex Shader	The total number of vertex shader hardware threads dispatched.
+AsyncCompute	HsThreads	HS Threads Dispatched	EU Array/Hull Shader	The total number of hull shader hardware threads dispatched.
+AsyncCompute	DsThreads	DS Threads Dispatched	EU Array/Domain Shader	The total number of domain shader hardware threads dispatched.
+AsyncCompute	GsThreads	GS Threads Dispatched	EU Array/Geometry Shader	The total number of geometry shader hardware threads dispatched.
+AsyncCompute	PsThreads	PS Threads Dispatched	EU Array/Pixel Shader	The total number of pixel shader hardware threads dispatched.
+AsyncCompute	CsThreads	CS Threads Dispatched	EU Array/Compute Shader	The total number of compute shader hardware threads dispatched.
+AsyncCompute	FpuActive	XVE FPU Pipe Active	EU Array/Pipes	The percentage of time in which XVE FPU INT64 pipeline was actively processing.
+AsyncCompute	VsFpuActive	VS FPU Pipe Active	EU Array/Vertex Shader	The percentage of time in which XVE FPU INT64 pipeline was actively processing a vertex shader instruction.
+AsyncCompute	PsFpuActive	PS FPU Pipe Active	EU Array/Pixel Shader	The percentage of time in which XVE FPU INT64 pipeline was actively processing a pixel shader instruction.
+AsyncCompute	CsFpuActive	CS FPU Pipe Active	EU Array/Compute Shader	The percentage of time in which XVE FPU INT64 pipeline was actively processing a compute shader instruction.
+AsyncCompute	AsyncCsFpuActive	ASYNC CS FPU Pipe Active	EU Array/Compute Shader	The percentage of time in which XVE FPU INT64 pipeline was actively processing a compute shader instruction.
+AsyncCompute	EmActive	EM Pipe Active	EU Array/Pipes	The percentage of time in which XVE EM INT pipeline was actively processing.
+AsyncCompute	VsEmActive	VS EM Pipe Active	EU Array/Vertex Shader	The percentage of time in which XVE EM INT pipeline was actively processing a vertex shader instruction.
+AsyncCompute	PsEmActive	PS EM Pipe Active	EU Array/Pixel Shader	The percentage of time in which XVE EM INT pipeline was actively processing a pixel shader instruction.
+AsyncCompute	CsEmActive	CS EM Pipe Active	EU Array/Compute Shader	The percentage of time in which XVE EM INT pipeline was actively processing a compute shader instruction.
+AsyncCompute	AsyncCsEmActive	ASYNC CS EM Pipe Active	EU Array/Compute Shader	The percentage of time in which XVE EM INT pipeline was actively processing a compute shader instruction.
+AsyncCompute	XveThreadOccupancy	XVE Thread Occupancy	EU Array	The percentage of time in which hardware threads occupied XVEs.
+AsyncCompute	XveActive	XVE Active	EU Array	The percentage of time in which the Execution Units were actively processing.
+AsyncCompute	XveStall	XVE Stall	EU Array	The percentage of time in which the Execution Units were stalled.
+XveActivity	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
+XveActivity	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
+XveActivity	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
+XveActivity	GpuBusy	GPU Busy	GPU	The percentage of time in which the GPU has been processing GPU commands.
+XveActivity	VsThreads	VS Threads Dispatched	EU Array/Vertex Shader	The total number of vertex shader hardware threads dispatched.
+XveActivity	HsThreads	HS Threads Dispatched	EU Array/Hull Shader	The total number of hull shader hardware threads dispatched.
+XveActivity	DsThreads	DS Threads Dispatched	EU Array/Domain Shader	The total number of domain shader hardware threads dispatched.
+XveActivity	GsThreads	GS Threads Dispatched	EU Array/Geometry Shader	The total number of geometry shader hardware threads dispatched.
+XveActivity	PsThreads	PS Threads Dispatched	EU Array/Pixel Shader	The total number of pixel shader hardware threads dispatched.
+XveActivity	CsThreads	CS Threads Dispatched	EU Array/Compute Shader	The total number of compute shader hardware threads dispatched.
+XveActivity	HsFpuActive	HS FPU Pipe Active	EU Array/Hull Shader	The percentage of time in which XVE FPU INT64 pipeline was actively processing a hull shader instruction.
+XveActivity	DsFpuActive	DS FPU Pipe Active	EU Array/Domain Shader	The percentage of time in which XVE FPU INT64 pipeline was actively processing a domain shader instruction.
+XveActivity	GsFpuActive	GS FPU Pipe Active	EU Array/Geometry Shader	The percentage of time in which XVE FPU INT64 pipeline was actively processing a geometry shader instruction.
+XveActivity	HsEmActive	HS EM Pipe Active	EU Array/Hull Shader	The percentage of time in which XVE EM INT pipeline was actively processing a hull shader instruction.
+XveActivity	DsEmActive	DS EM Pipe Active	EU Array/Domain Shader	The percentage of time in which XVE EM INT pipeline was actively processing a domain shader instruction.
+XveActivity	GsEmActive	GS EM Pipe Active	EU Array/Geometry Shader	The percentage of time in which XVE EM INT pipeline was actively processing a geometry shader instruction.
+XveActivity	HsSendActive	HS Send Pipe Active	EU Array/Hull Shader	The percentage of time in which XVE send pipeline was actively processing a hull shader instruction.
+XveActivity	DsSendActive	DS Send Pipe Active	EU Array/Domain Shader	The percentage of time in which XVE send pipeline was actively processing a domain shader instruction.
+XveActivity	GsSendActive	GS Send Pipe Active	EU Array/Geometry Shader	The percentage of time in which XVE send pipeline was actively processing a geometry shader instruction.
+XveActivity	CsSendActive	CS Send Pipe Active	EU Array/Compute Shader	The percentage of time in which XVE send pipeline was actively processing a compute shader instruction.
+GpuBusyness	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
+GpuBusyness	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
+GpuBusyness	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
+GpuBusyness	GpuBusy	GPU Busy	GPU	The percentage of time in which the GPU has been processing GPU commands.
+GpuBusyness	XveActive	XVE Active	EU Array	The percentage of time in which the Execution Units were actively processing.
+GpuBusyness	XveStall	XVE Stall	EU Array	The percentage of time in which the Execution Units were stalled.
+GpuBusyness	XveThreadOccupancy	XVE Thread Occupancy	EU Array	The percentage of time in which hardware threads occupied XVEs.
+GpuBusyness	VsThreads	VS Threads Dispatched	EU Array/Vertex Shader	The total number of vertex shader hardware threads dispatched.
+GpuBusyness	HsThreads	HS Threads Dispatched	EU Array/Hull Shader	The total number of hull shader hardware threads dispatched.
+GpuBusyness	DsThreads	DS Threads Dispatched	EU Array/Domain Shader	The total number of domain shader hardware threads dispatched.
+GpuBusyness	GsThreads	GS Threads Dispatched	EU Array/Geometry Shader	The total number of geometry shader hardware threads dispatched.
+GpuBusyness	PsThreads	PS Threads Dispatched	EU Array/Pixel Shader	The total number of pixel shader hardware threads dispatched.
+GpuBusyness	CsThreads	CS Threads Dispatched	EU Array/Compute Shader	The total number of compute shader hardware threads dispatched.
+GpuBusyness	RenderBusy	Render Ring Busy	GPU	The percentage of time when render command streamer was busy.
+GpuBusyness	ComputeEngine0Busy	ComputeEngine0 Ring Busy	GPU	The percentage of time when compute command streamer 0 was busy.
+GpuBusyness	BlitterBusy	Blitter Ring Busy	GPU	The percentage of time when blitter command streamer was busy.
+HDCAndSF	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
+HDCAndSF	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
+HDCAndSF	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
+HDCAndSF	GpuBusy	GPU Busy	GPU	The percentage of time in which the GPU has been processing GPU commands.
+HDCAndSF	NonSamplerShader00AccessStalledOnL3	Slice0 Xe Core0 Non-sampler Shader Access Stalled On L3	GPU/Data Port	Percentage of time when HDC has messages to L3, but it's stalled due to lack of credits (Slice0 Xe Core0)
+HDCAndSF	NonSamplerShader01AccessStalledOnL3	Slice0 Xe Core1 Non-sampler Shader Access Stalled On L3	GPU/Data Port	Percentage of time when HDC has messages to L3, but it's stalled due to lack of credits (Slice0 Xe Core1)
+HDCAndSF	NonSamplerShader02AccessStalledOnL3	Slice0 Xe Core2 Non-sampler Shader Access Stalled On L3	GPU/Data Port	Percentage of time when HDC has messages to L3, but it's stalled due to lack of credits (Slice0 Xe Core2)
+HDCAndSF	NonSamplerShader03AccessStalledOnL3	Slice0 Xe Core3 Non-sampler Shader Access Stalled On L3	GPU/Data Port	Percentage of time when HDC has messages to L3, but it's stalled due to lack of credits (Slice0 Xe Core3)
+HDCAndSF	Poly0DataReady	Polygon (Slice0) Data Ready	GPU/3D Pipe/Strip-Fans	The percentage of time in which geometry pipeline output is ready
+HDCAndSF	GTRequestQueue00Full	SQ00 is full	GTI	The percentage of time when IDI0 SQ00 is filled above a threshold (usually 48 entries)
+HDCAndSF	GTRequestQueue01Full	SQ01 is full	GTI	The percentage of time when IDI0 SQ01 is filled above a threshold (usually 48 entries)
+HDCAndSF	GTRequestQueue10Full	SQ10 is full	GTI	The percentage of time when IDI0 SQ10 is filled above a threshold (usually 48 entries)
+HDCAndSF	GTRequestQueue11Full	SQ11 is full	GTI	The percentage of time when IDI0 SQ11 is filled above a threshold (usually 48 entries)
+L3	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
+L3	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
+L3	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
+L3	GpuBusy	GPU Busy	GPU	The percentage of time in which the GPU has been processing GPU commands.
+L3	L3_INPUT_AVAILABLE_L3BANK0	L3 INPUT AVAILABLE L3BANK0	GTI/L3	Percentage of time in which L3 Bank has input requests
+L3	L3_INPUT_AVAILABLE_L3BANK1	L3 INPUT AVAILABLE L3BANK1	GTI/L3	Percentage of time in which L3 Bank has input requests
+L3	L3_INPUT_AVAILABLE_L3BANK2	L3 INPUT AVAILABLE L3BANK2	GTI/L3	Percentage of time in which L3 Bank has input requests
+L3	L3_INPUT_AVAILABLE_L3BANK3	L3 INPUT AVAILABLE L3BANK3	GTI/L3	Percentage of time in which L3 Bank has input requests
+L3	L3_OUTPUT_READY_L3BANK0	L3 OUTPUT READY L3BANK0	GTI/L3	Percentage of time in which L3 Bank has output ready
+L3	L3_OUTPUT_READY_L3BANK1	L3 OUTPUT READY L3BANK1	GTI/L3	Percentage of time in which L3 Bank has output ready
+L3	L3_OUTPUT_READY_L3BANK2	L3 OUTPUT READY L3BANK2	GTI/L3	Percentage of time in which L3 Bank has output ready
+L3	L3_OUTPUT_READY_L3BANK3	L3 OUTPUT READY L3BANK3	GTI/L3	Percentage of time in which L3 Bank has output ready
+RasterizerAndPixelBackend1	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
+RasterizerAndPixelBackend1	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
+RasterizerAndPixelBackend1	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
+RasterizerAndPixelBackend1	GpuBusy	GPU Busy	GPU	The percentage of time in which the GPU has been processing GPU commands.
+RasterizerAndPixelBackend1	Rasterizer0OutputReady	Slice0 Rasterizer Output Ready	GPU/Rasterizer	The percentage of time in which slice0 rasterizer output is ready
+RasterizerAndPixelBackend1	PixelData00Ready	Slice0 Pipe0 Post-EarlyZ Pixel Data Ready	GPU/Rasterizer/Early Depth Test	The percentage of time in which slice0  pipe0 post-EarlyZ pixel data is ready (after early Z tests have been applied)
+RasterizerAndPixelBackend1	PixelData01Ready	Slice0 Pipe1 Post-EarlyZ Pixel Data Ready	GPU/Rasterizer/Early Depth Test	The percentage of time in which slice0  pipe1 post-EarlyZ pixel data is ready (after early Z tests have been applied)
+RasterizerAndPixelBackend1	PSOutput00Available	PS00 Output Available	GPU/3D Pipe	The percentage of time in which PS00 output is available
+RasterizerAndPixelBackend1	PixelValues00Ready	Pixel Values 00 Ready	GPU/3D Pipe	The percentage of time in which pixel values 00 are ready
+RasterizerAndPixelBackend2	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
+RasterizerAndPixelBackend2	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
+RasterizerAndPixelBackend2	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
+RasterizerAndPixelBackend2	GpuBusy	GPU Busy	GPU	The percentage of time in which the GPU has been processing GPU commands.
+RasterizerAndPixelBackend2	Rasterizer0InputAvailable	Slice0 Rasterizer Input Available	GPU/Rasterizer	The percentage of time in which slice0 rasterizer input is available
+RasterizerAndPixelBackend2	PixelData00Ready	Slice0 Pipe0 Post-EarlyZ Pixel Data Ready	GPU/Rasterizer/Early Depth Test	The percentage of time in which slice0  pipe0 post-EarlyZ pixel data is ready (after early Z tests have been applied)
+RasterizerAndPixelBackend2	PixelData01Ready	Slice0 Pipe1 Post-EarlyZ Pixel Data Ready	GPU/Rasterizer/Early Depth Test	The percentage of time in which slice0  pipe1 post-EarlyZ pixel data is ready (after early Z tests have been applied)
+RasterizerAndPixelBackend2	PSOutput00Available	PS00 Output Available	GPU/3D Pipe	The percentage of time in which PS00 output is available
+RasterizerAndPixelBackend2	PixelValues00Ready	Pixel Values 00 Ready	GPU/3D Pipe	The percentage of time in which pixel values 00 are ready
+RenderPipeProfile	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
+RenderPipeProfile	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
+RenderPipeProfile	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
+RenderPipeProfile	GpuBusy	GPU Busy	GPU	The percentage of time in which the GPU has been processing GPU commands.
+RenderPipeProfile	Vf0Bottleneck	VF0 Bottleneck	3D Pipe/Input Assembler	The percentage of time in which vertex fetch pipeline stage was slowing down the 3D pipeline.
+RenderPipeProfile	Vs0Bottleneck	VS0 Bottleneck	3D Pipe/Vertex Shader	The percentage of time in which VS0 pipeline stage was slowing down the 3D pipeline.
+RenderPipeProfile	Cl0Bottleneck	Clipper0 Bottleneck	3D Pipe/Clipper	The percentage of time in which clipper pipeline stage was slowing down the 3D pipeline.
+RenderPipeProfile	Hs0Bottleneck	HS0 Bottleneck	3D Pipe/Hull Shader	The percentage of time in which hull shader pipeline stage was slowing down the 3D pipeline.
+RenderPipeProfile	Ds0Bottleneck	DS0 Bottleneck	3D Pipe/Domain Shader	The percentage of time in which domain shader pipeline stage was slowing down the 3D pipeline.
+RenderPipeProfile	Gs0Bottleneck	GS0 Bottleneck	3D Pipe/Geometry Shader	The percentage of time in which geometry shader pipeline stage was slowing down the 3D pipeline.
+RenderPipeProfile	Sf0Bottleneck	SF0 Bottleneck	3D Pipe/Rasterizer/Strip-Fans	The percentage of time in which strip-fans pipeline stage was slowing down the 3D pipeline.
+RenderPipeProfile	So0Bottleneck	SO0 Bottleneck	3D Pipe/Stream Output	The percentage of time in which stream output pipeline stage was slowing down the 3D pipeline.
+RenderPipeProfile	Cl0Stall	CL0 Stall	3D Pipe/Clipper	The percentage of time in which clipper pipeline stage was stalled.
+RenderPipeProfile	Hs0Stall	HS0 Stall	3D Pipe/Hull Shader	The percentage of time in which hull stall pipeline stage was stalled.
+RenderPipeProfile	Ds0Stall	DS0 Stall	3D Pipe/Domain Shader	The percentage of time in which domain shader pipeline stage was stalled.
+RenderPipeProfile	Sf0Stall	SF0 Stall	3D Pipe/Rasterizer/Strip-Fans	The percentage of time in which strip-fans pipeline stage was stalled.
+RenderPipeProfile	So0Stall	SO0 Stall	3D Pipe/Stream Output	The percentage of time in which stream-output pipeline stage was stalled.
+RenderPipeProfile	HiDepth00Bottleneck	Hi-Depth00 Bottleneck	3D Pipe/Rasterizer/Hi-Depth Test	The percentage of time in which early hierarchical depth test pipeline stage was slowing down the 3D pipeline.
+RenderPipeProfile	HiDepth01Bottleneck	Hi-Depth01 Bottleneck	3D Pipe/Rasterizer/Hi-Depth Test	The percentage of time in which early hierarchical depth test pipeline stage was slowing down the 3D pipeline.
+RenderPipeProfile	Bc00Bottleneck	BC00 Bottleneck	3D Pipe/Rasterizer/Barycentric Calc	The percentage of time in which barycentric coordinates calculation pipeline stage was slowing down the 3D pipeline.
+Sampler	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
+Sampler	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
+Sampler	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
+Sampler	GpuBusy	GPU Busy	GPU	The percentage of time in which the GPU has been processing GPU commands.
+Sampler	Sampler00InputAvailable	Slice0 Xe Core0 Input Available	GPU/Sampler	The percentage of time in which slice0 Xe core0 sampler input is available
+Sampler	Sampler01InputAvailable	Slice0 Xe Core1 Input Available	GPU/Sampler	The percentage of time in which slice0 Xe core1 sampler input is available
+Sampler	Sampler02InputAvailable	Slice0 Xe Core2 Input Available	GPU/Sampler	The percentage of time in which slice0 Xe core2 sampler input is available
+Sampler	Sampler03InputAvailable	Slice0 Xe Core3 Input Available	GPU/Sampler	The percentage of time in which slice0 Xe core3 sampler input is available
+Sampler	Sampler00OutputReady	Slice0 Xe Core0 Sampler Output Ready	GPU/Sampler	The percentage of time in which slice0 Xe core0 sampler output is ready
+Sampler	Sampler01OutputReady	Slice0 Xe Core1 Sampler Output Ready	GPU/Sampler	The percentage of time in which slice0 Xe core1 sampler output is ready
+Sampler	Sampler02OutputReady	Slice0 Xe Core2 Sampler Output Ready	GPU/Sampler	The percentage of time in which slice0 Xe core2 sampler output is ready
+Sampler	Sampler03OutputReady	Slice0 Xe Core3 Sampler Output Ready	GPU/Sampler	The percentage of time in which slice0 Xe core3 sampler output is ready
+TDL1	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
+TDL1	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
+TDL1	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
+TDL1	GpuBusy	GPU Busy	GPU	The percentage of time in which the GPU has been processing GPU commands.
+TDL1	NonPSThread00ReadyForDispatch	Non-PS Thread Ready For Dispatch on Slice0 Xe Core0 Thread Dispatcher	GPU/Thread Dispatcher	The percentage of time in which non-PS thread is ready for dispatch on slice0 Xe core0 thread dispatcher
+TDL1	PSThread00ReadyForDispatch	PS Thread Ready For Dispatch on Slice0 Xe Core0 Thread Dispatcher	GPU/Thread Dispatcher	The percentage of time in which PS thread is ready for dispatch on slice0 Xe core0 thread dispatcher
+TDL1	ThreadHeader00Ready	Thread Header Ready on Slice0 Xe Core0 Thread Dispatcher	GPU/Thread Dispatcher	The percentage of time in which thread header is ready on slice0 Xe core0 thread dispatcher
+TDL1	ThreadHeader00ReadyPort0	Thread Header Ready on Slice0 Xe Core0 Thread Dispatcher Port 0	GPU/Thread Dispatcher	The percentage of time in which thread header is ready on slice0 Xe core0 thread dispatcher port 0
+TDL1	ThreadHeader00ReadyPort1	Thread Header Ready on Slice0 Xe Core0 Thread Dispatcher Port 1	GPU/Thread Dispatcher	The percentage of time in which thread header is ready on slice0 Xe core0 thread dispatcher port 1
+TDL1	ThreadHeader00ReadyPort2	Thread Header Ready on Slice0 Xe Core0 Thread Dispatcher Port 2	GPU/Thread Dispatcher	The percentage of time in which thread header is ready on slice0 Xe core0 thread dispatcher port 2
+TDL1	ThreadHeader00ReadyPort3	Thread Header Ready on Slice0 Xe Core0 Thread Dispatcher Port 3	GPU/Thread Dispatcher	The percentage of time in which thread header is ready on slice0 Xe core0 thread dispatcher port 3
+TDL1	NonPSThread01ReadyForDispatch	Non-PS Thread Ready For Dispatch on Slice0 Xe Core1 Thread Dispatcher	GPU/Thread Dispatcher	The percentage of time in which non-PS thread is ready for dispatch on slice0 Xe core1 thread dispatcher
+TDL1	PSThread01ReadyForDispatch	PS Thread Ready For Dispatch on Slice0 Xe Core1 Thread Dispatcher	GPU/Thread Dispatcher	The percentage of time in which PS thread is ready for dispatch on slice0 Xe core1 thread dispatcher
+TDL1	ThreadHeader01Ready	Thread Header Ready on Slice0 Xe Core1 Thread Dispatcher	GPU/Thread Dispatcher	The percentage of time in which thread header is ready on slice0 Xe core1 thread dispatcher
+TDL1	ThreadHeader01ReadyPort0	Thread Header Ready on Slice0 Xe Core1 Thread Dispatcher Port 0	GPU/Thread Dispatcher	The percentage of time in which thread header is ready on slice0 Xe core1 thread dispatcher port 0
+TDL1	ThreadHeader01ReadyPort1	Thread Header Ready on Slice0 Xe Core1 Thread Dispatcher Port 1	GPU/Thread Dispatcher	The percentage of time in which thread header is ready on slice0 Xe core1 thread dispatcher port 1
+TDL1	ThreadHeader01ReadyPort2	Thread Header Ready on Slice0 Xe Core1 Thread Dispatcher Port 2	GPU/Thread Dispatcher	The percentage of time in which thread header is ready on slice0 Xe core1 thread dispatcher port 2
+TDL1	ThreadHeader01ReadyPort3	Thread Header Ready on Slice0 Xe Core1 Thread Dispatcher Port 3	GPU/Thread Dispatcher	The percentage of time in which thread header is ready on slice0 Xe core1 thread dispatcher port 3
+TDL2	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
+TDL2	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
+TDL2	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
+TDL2	GpuBusy	GPU Busy	GPU	The percentage of time in which the GPU has been processing GPU commands.
+TDL2	NonPSThread02ReadyForDispatch	Non-PS Thread Ready For Dispatch on Slice0 Xe Core2 Thread Dispatcher	GPU/Thread Dispatcher	The percentage of time in which non-PS thread is ready for dispatch on slice0 Xe core2 thread dispatcher
+TDL2	PSThread02ReadyForDispatch	PS Thread Ready For Dispatch on Slice0 Xe Core2 Thread Dispatcher	GPU/Thread Dispatcher	The percentage of time in which PS thread is ready for dispatch on slice0 Xe core2 thread dispatcher
+TDL2	ThreadHeader02Ready	Thread Header Ready on Slice0 Xe Core2 Thread Dispatcher	GPU/Thread Dispatcher	The percentage of time in which thread header is ready on slice0 Xe core2 thread dispatcher
+TDL2	ThreadHeader02ReadyPort0	Thread Header Ready on Slice0 Xe Core2 Thread Dispatcher Port 0	GPU/Thread Dispatcher	The percentage of time in which thread header is ready on slice0 Xe core2 thread dispatcher port 0
+TDL2	ThreadHeader02ReadyPort1	Thread Header Ready on Slice0 Xe Core2 Thread Dispatcher Port 1	GPU/Thread Dispatcher	The percentage of time in which thread header is ready on slice0 Xe core2 thread dispatcher port 1
+TDL2	ThreadHeader02ReadyPort2	Thread Header Ready on Slice0 Xe Core2 Thread Dispatcher Port 2	GPU/Thread Dispatcher	The percentage of time in which thread header is ready on slice0 Xe core2 thread dispatcher port 2
+TDL2	ThreadHeader02ReadyPort3	Thread Header Ready on Slice0 Xe Core2 Thread Dispatcher Port 3	GPU/Thread Dispatcher	The percentage of time in which thread header is ready on slice0 Xe core2 thread dispatcher port 3
+TDL2	NonPSThread03ReadyForDispatch	Non-PS Thread Ready For Dispatch on Slice0 Xe Core3 Thread Dispatcher	GPU/Thread Dispatcher	The percentage of time in which non-PS thread is ready for dispatch on slice0 Xe core3 thread dispatcher
+TDL2	PSThread03ReadyForDispatch	PS Thread Ready For Dispatch on Slice0 Xe Core3 Thread Dispatcher	GPU/Thread Dispatcher	The percentage of time in which PS thread is ready for dispatch on slice0 Xe core3 thread dispatcher
+TDL2	ThreadHeader03Ready	Thread Header Ready on Slice0 Xe Core3 Thread Dispatcher	GPU/Thread Dispatcher	The percentage of time in which thread header is ready on slice0 Xe core3 thread dispatcher
+TDL2	ThreadHeader03ReadyPort0	Thread Header Ready on Slice0 Xe Core3 Thread Dispatcher Port 0	GPU/Thread Dispatcher	The percentage of time in which thread header is ready on slice0 Xe core3 thread dispatcher port 0
+TDL2	ThreadHeader03ReadyPort1	Thread Header Ready on Slice0 Xe Core3 Thread Dispatcher Port 1	GPU/Thread Dispatcher	The percentage of time in which thread header is ready on slice0 Xe core3 thread dispatcher port 1
+TDL2	ThreadHeader03ReadyPort2	Thread Header Ready on Slice0 Xe Core3 Thread Dispatcher Port 2	GPU/Thread Dispatcher	The percentage of time in which thread header is ready on slice0 Xe core3 thread dispatcher port 2
+TDL2	ThreadHeader03ReadyPort3	Thread Header Ready on Slice0 Xe Core3 Thread Dispatcher Port 3	GPU/Thread Dispatcher	The percentage of time in which thread header is ready on slice0 Xe core3 thread dispatcher port 3
+TestOa	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
+TestOa	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
+TestOa	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
+TestOa	Counter0	TestCounter0	GPU	HW test counter 0. Factor: 0.0
+TestOa	Counter1	TestCounter1	GPU	HW test counter 1. Factor: 1.0
+TestOa	Counter2	TestCounter2	GPU	HW test counter 2. Factor: 1.0
+TestOa	Counter3	TestCounter3	GPU	HW test counter 3. Factor: 0.5
+TestOa	Counter4	TestCounter4	GPU	HW test counter 4. Factor: 0.3333
+TestOa	Counter5	TestCounter5	GPU	HW test counter 5. Factor: 0.3333
+TestOa	Counter6	TestCounter6	GPU	HW test counter 6. Factor: 0.16666
+TestOa	Counter7	TestCounter7	GPU	HW test counter 7. Factor: 0.6666
+TestOa	Counter8	TestCounter8	GPU	HW test counter 8. Should be equal to 1 in IOStream or in OAG query mode
+TestOa	Counter9	TestCounter9 - OAR enable	GPU	HW test counter 9. Should be equal to 1 in query.
+Ext1	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
+Ext1	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
+Ext1	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
+Ext1	GPU_MEMORY_BYTE_WRITE_SQIDI0	GPU MEMORY BYTE WRITE SQIDI0	GPU	Number of device local memory (HBM, GDDR, LPDDR, etc.) write bytes
+Ext1	GPU_MEMORY_BYTE_WRITE_SQIDI1	GPU MEMORY BYTE WRITE SQIDI1	GPU	Number of device local memory (HBM, GDDR, LPDDR, etc.) write bytes
+Ext1	GPU_MEMORY_WRITE_SQIDI0	GPU MEMORY WRITE SQIDI0	GPU	Number of GTI memory writes
+Ext1	GPU_MEMORY_WRITE_SQIDI1	GPU MEMORY WRITE SQIDI1	GPU	Number of GTI memory writes
+Ext1	GPU_MEMORY_WRITE	GPU MEMORY WRITE	GPU	Number of GTI memory writes
+Ext1	GPU_MEMORY_READ_SQIDI0	GPU MEMORY READ SQIDI0	GPU	Number of GTI memory reads
+Ext1	GPU_MEMORY_READ_SQIDI1	GPU MEMORY READ SQIDI1	GPU	Number of GTI memory reads
+Ext1	GPU_MEMORY_READ	GPU MEMORY READ	GPU	Number of GTI memory reads
+Ext1	GPU_MEMORY_BYTE_READ_SQIDI0	GPU MEMORY BYTE READ SQIDI0	GPU	Number of device local memory (HBM, GDDR, LPDDR, etc.) read bytes
+Ext1	GPU_MEMORY_BYTE_READ_SQIDI1	GPU MEMORY BYTE READ SQIDI1	GPU	Number of device local memory (HBM, GDDR, LPDDR, etc.) read bytes
+Ext1	GPU_MEMORY_ACTIVE_SQIDI0	GPU MEMORY ACTIVE SQIDI0	GPU	Percentage of time in which device local memory (HBM, GDDR, LPDDR, etc.) is active
+Ext1	GPU_MEMORY_ACTIVE_SQIDI1	GPU MEMORY ACTIVE SQIDI1	GPU	Percentage of time in which device local memory (HBM, GDDR, LPDDR, etc.) is active
+Ext1	GPU_MEMORY_BYTE_READ_BW_SQIDI0	GPU MEMORY BYTE READ BW SQIDI0	GPU	Device local memory (HBM, GDDR, LPDDR, etc.) read bandwidth
+Ext1	GPU_MEMORY_BYTE_READ_BW_SQIDI1	GPU MEMORY BYTE READ BW SQIDI1	GPU	Device local memory (HBM, GDDR, LPDDR, etc.) read bandwidth
+Ext1	GPU_MEMORY_BYTE_WRITE_BW_SQIDI0	GPU MEMORY BYTE WRITE BW SQIDI0	GPU	Device local memory (HBM, GDDR, LPDDR, etc.) write bandwidth
+Ext1	GPU_MEMORY_BYTE_WRITE_BW_SQIDI1	GPU MEMORY BYTE WRITE BW SQIDI1	GPU	Device local memory (HBM, GDDR, LPDDR, etc.) write bandwidth
+Ext4	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
+Ext4	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
+Ext4	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
+Ext4	L3_READ_L3BANK0	L3 READ L3BANK0	GPU	Number of L3 read requests
+Ext4	L3_READ_L3BANK1	L3 READ L3BANK1	GPU	Number of L3 read requests
+Ext4	L3_READ_L3BANK2	L3 READ L3BANK2	GPU	Number of L3 read requests
+Ext4	L3_READ_L3BANK3	L3 READ L3BANK3	GPU	Number of L3 read requests
+Ext4	L3_WRITE_L3BANK0	L3 WRITE L3BANK0	GTI/L3	Number of L3 write requests
+Ext4	L3_WRITE_L3BANK1	L3 WRITE L3BANK1	GTI/L3	Number of L3 write requests
+Ext4	L3_WRITE_L3BANK2	L3 WRITE L3BANK2	GTI/L3	Number of L3 write requests
+Ext4	L3_WRITE_L3BANK3	L3 WRITE L3BANK3	GTI/L3	Number of L3 write requests
+Ext5	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
+Ext5	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
+Ext5	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
+Ext5	DATAPORT_L3_READ_L3BANK0	DATAPORT L3 READ L3BANK0	GTI/L3	Number of L3 read requests coming from XVE via Dataport
+Ext5	DATAPORT_L3_READ_L3BANK1	DATAPORT L3 READ L3BANK1	GTI/L3	Number of L3 read requests coming from XVE via Dataport
+Ext5	DATAPORT_L3_READ_L3BANK2	DATAPORT L3 READ L3BANK2	GTI/L3	Number of L3 read requests coming from XVE via Dataport
+Ext5	DATAPORT_L3_READ_L3BANK3	DATAPORT L3 READ L3BANK3	GTI/L3	Number of L3 read requests coming from XVE via Dataport
+Ext5	DATAPORT_L3_WRITE_L3BANK0	DATAPORT L3 WRITE L3BANK0	GTI/L3	Number of L3 write requests coming from XVE via Dataport
+Ext5	DATAPORT_L3_WRITE_L3BANK1	DATAPORT L3 WRITE L3BANK1	GTI/L3	Number of L3 write requests coming from XVE via Dataport
+Ext5	DATAPORT_L3_WRITE_L3BANK2	DATAPORT L3 WRITE L3BANK2	GTI/L3	Number of L3 write requests coming from XVE via Dataport
+Ext5	DATAPORT_L3_WRITE_L3BANK3	DATAPORT L3 WRITE L3BANK3	GTI/L3	Number of L3 write requests coming from XVE via Dataport
+Ext5	L3_HIT_L3BANK0	L3 HIT L3BANK0	GTI/L3	Number of L3 accesses which hits in the L3 cache
+Ext5	L3_HIT_L3BANK1	L3 HIT L3BANK1	GTI/L3	Number of L3 accesses which hits in the L3 cache
+Ext5	L3_HIT_L3BANK2	L3 HIT L3BANK2	GTI/L3	Number of L3 accesses which hits in the L3 cache
+Ext5	L3_HIT_L3BANK3	L3 HIT L3BANK3	GTI/L3	Number of L3 accesses which hits in the L3 cache
+Ext7	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
+Ext7	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
+Ext7	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
+Ext7	SAMPLER_L3_READ_L3BANK0	SAMPLER L3 READ L3BANK0	GTI/L3	Number of L3 read requests resulting from Sampler local cache miss
+Ext7	SAMPLER_L3_READ_L3BANK1	SAMPLER L3 READ L3BANK1	GTI/L3	Number of L3 read requests resulting from Sampler local cache miss
+Ext7	SAMPLER_L3_READ_L3BANK2	SAMPLER L3 READ L3BANK2	GTI/L3	Number of L3 read requests resulting from Sampler local cache miss
+Ext7	SAMPLER_L3_READ_L3BANK3	SAMPLER L3 READ L3BANK3	GTI/L3	Number of L3 read requests resulting from Sampler local cache miss
+Ext7	SAMPLER_L3_HIT_L3BANK0	SAMPLER L3 HIT L3BANK0	GTI/L3	Number of L3 hit requests resulting from Sampler local cache miss which hits in L3
+Ext7	SAMPLER_L3_HIT_L3BANK1	SAMPLER L3 HIT L3BANK1	GTI/L3	Number of L3 hit requests resulting from Sampler local cache miss which hits in L3
+Ext7	SAMPLER_L3_HIT_L3BANK2	SAMPLER L3 HIT L3BANK2	GTI/L3	Number of L3 hit requests resulting from Sampler local cache miss which hits in L3
+Ext7	SAMPLER_L3_HIT_L3BANK3	SAMPLER L3 HIT L3BANK3	GTI/L3	Number of L3 hit requests resulting from Sampler local cache miss which hits in L3
+Ext7	SAMPLER_BUSY_XECORE0	SAMPLER BUSY XECORE0	GPU	Percentage of time in which Sampler pipeline active
+Ext7	SAMPLER_BUSY_XECORE1	SAMPLER BUSY XECORE1	GPU	Percentage of time in which Sampler pipeline active
+Ext7	SAMPLER_BUSY_XECORE2	SAMPLER BUSY XECORE2	GPU	Percentage of time in which Sampler pipeline active
+Ext7	SAMPLER_BUSY_XECORE3	SAMPLER BUSY XECORE3	GPU	Percentage of time in which Sampler pipeline active
+Ext8	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
+Ext8	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
+Ext8	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
+Ext8	ICACHE_L3_READ_L3BANK0	ICACHE L3 READ L3BANK0	GTI/L3	Number of L3 read requests coming from XVE Instruction Cache
+Ext8	ICACHE_L3_READ_L3BANK1	ICACHE L3 READ L3BANK1	GTI/L3	Number of L3 read requests coming from XVE Instruction Cache
+Ext8	ICACHE_L3_READ_L3BANK2	ICACHE L3 READ L3BANK2	GTI/L3	Number of L3 read requests coming from XVE Instruction Cache
+Ext8	ICACHE_L3_READ_L3BANK3	ICACHE L3 READ L3BANK3	GTI/L3	Number of L3 read requests coming from XVE Instruction Cache
+Ext8	ICACHE_L3_HIT_L3BANK0	ICACHE L3 HIT L3BANK0	GTI/L3	Number of XVE instruction cache requests that hit the L3
+Ext8	ICACHE_L3_HIT_L3BANK1	ICACHE L3 HIT L3BANK1	GTI/L3	Number of XVE instruction cache requests that hit the L3
+Ext8	ICACHE_L3_HIT_L3BANK2	ICACHE L3 HIT L3BANK2	GTI/L3	Number of XVE instruction cache requests that hit the L3
+Ext8	ICACHE_L3_HIT_L3BANK3	ICACHE L3 HIT L3BANK3	GTI/L3	Number of XVE instruction cache requests that hit the L3
+Ext10	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
+Ext10	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
+Ext10	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
+Ext10	DATAPORT_L3_HIT_L3BANK0	DATAPORT L3 HIT L3BANK0	GTI/L3	Number of L3 hits for requests coming from the Dataport
+Ext10	DATAPORT_L3_HIT_L3BANK1	DATAPORT L3 HIT L3BANK1	GTI/L3	Number of L3 hits for requests coming from the Dataport
+Ext10	DATAPORT_L3_HIT_L3BANK2	DATAPORT L3 HIT L3BANK2	GTI/L3	Number of L3 hits for requests coming from the Dataport
+Ext10	DATAPORT_L3_HIT_L3BANK3	DATAPORT L3 HIT L3BANK3	GTI/L3	Number of L3 hits for requests coming from the Dataport
+Ext10	COLOR_L3_HIT_L3BANK0	COLOR L3 HIT L3BANK0	GTI/L3	Number of L3 read requests resulting from color local cache miss which hits in L3
+Ext10	COLOR_L3_HIT_L3BANK1	COLOR L3 HIT L3BANK1	GTI/L3	Number of L3 read requests resulting from color local cache miss which hits in L3
+Ext10	COLOR_L3_HIT_L3BANK2	COLOR L3 HIT L3BANK2	GTI/L3	Number of L3 read requests resulting from color local cache miss which hits in L3
+Ext10	COLOR_L3_HIT_L3BANK3	COLOR L3 HIT L3BANK3	GTI/L3	Number of L3 read requests resulting from color local cache miss which hits in L3
+Ext10	Z_L3_ACCESS_L3BANK0	Z L3 ACCESS L3BANK0	GTI/L3	Number of L3 read requests resulting from Z local cache miss
+Ext10	Z_L3_ACCESS_L3BANK1	Z L3 ACCESS L3BANK1	GTI/L3	Number of L3 read requests resulting from Z local cache miss
+Ext10	Z_L3_ACCESS_L3BANK2	Z L3 ACCESS L3BANK2	GTI/L3	Number of L3 read requests resulting from Z local cache miss
+Ext10	Z_L3_ACCESS_L3BANK3	Z L3 ACCESS L3BANK3	GTI/L3	Number of L3 read requests resulting from Z local cache miss
+Ext11	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
+Ext11	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
+Ext11	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
+Ext11	Z_L3_HIT_L3BANK0	Z L3 HIT L3BANK0	GTI/L3	Number of L3 read requests resulting from Z local cache miss which hits in L3
+Ext11	Z_L3_HIT_L3BANK1	Z L3 HIT L3BANK1	GTI/L3	Number of L3 read requests resulting from Z local cache miss which hits in L3
+Ext11	Z_L3_HIT_L3BANK2	Z L3 HIT L3BANK2	GTI/L3	Number of L3 read requests resulting from Z local cache miss which hits in L3
+Ext11	Z_L3_HIT_L3BANK3	Z L3 HIT L3BANK3	GTI/L3	Number of L3 read requests resulting from Z local cache miss which hits in L3
+Ext11	L3_ATOMIC_ACCESS_L3BANK0	L3 ATOMIC ACCESS L3BANK0	GTI/L3	Number of atomic accesses to L3 Bank
+Ext11	L3_ATOMIC_ACCESS_L3BANK1	L3 ATOMIC ACCESS L3BANK1	GTI/L3	Number of atomic accesses to L3 Bank
+Ext11	L3_ATOMIC_ACCESS_L3BANK2	L3 ATOMIC ACCESS L3BANK2	GTI/L3	Number of atomic accesses to L3 Bank
+Ext11	L3_ATOMIC_ACCESS_L3BANK3	L3 ATOMIC ACCESS L3BANK3	GTI/L3	Number of atomic accesses to L3 Bank
+Ext12	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
+Ext12	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
+Ext12	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
+Ext12	L3_INPUT_AVAILABLE_L3BANK0	L3 INPUT AVAILABLE L3BANK0	GTI/L3	Percentage of time in which L3 Bank has input requests
+Ext12	L3_INPUT_AVAILABLE_L3BANK1	L3 INPUT AVAILABLE L3BANK1	GTI/L3	Percentage of time in which L3 Bank has input requests
+Ext12	L3_INPUT_AVAILABLE_L3BANK2	L3 INPUT AVAILABLE L3BANK2	GTI/L3	Percentage of time in which L3 Bank has input requests
+Ext12	L3_INPUT_AVAILABLE_L3BANK3	L3 INPUT AVAILABLE L3BANK3	GTI/L3	Percentage of time in which L3 Bank has input requests
+Ext12	L3_OUTPUT_READY_L3BANK0	L3 OUTPUT READY L3BANK0	GTI/L3	Percentage of time in which L3 Bank has output ready
+Ext12	L3_OUTPUT_READY_L3BANK1	L3 OUTPUT READY L3BANK1	GTI/L3	Percentage of time in which L3 Bank has output ready
+Ext12	L3_OUTPUT_READY_L3BANK2	L3 OUTPUT READY L3BANK2	GTI/L3	Percentage of time in which L3 Bank has output ready
+Ext12	L3_OUTPUT_READY_L3BANK3	L3 OUTPUT READY L3BANK3	GTI/L3	Percentage of time in which L3 Bank has output ready
+Ext13	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
+Ext13	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
+Ext13	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
+Ext13	L3_SUPERQ_FULL_L3BANK0	L3 SUPERQ FULL L3BANK0	GTI/L3	Percentage of time in which all slots in L3 request queue are waiting for data return / response
+Ext13	L3_SUPERQ_FULL_L3BANK1	L3 SUPERQ FULL L3BANK1	GTI/L3	Percentage of time in which all slots in L3 request queue are waiting for data return / response
+Ext13	L3_SUPERQ_FULL_L3BANK2	L3 SUPERQ FULL L3BANK2	GTI/L3	Percentage of time in which all slots in L3 request queue are waiting for data return / response
+Ext13	L3_SUPERQ_FULL_L3BANK3	L3 SUPERQ FULL L3BANK3	GTI/L3	Percentage of time in which all slots in L3 request queue are waiting for data return / response
+Ext13	COLOR_L3_ACCESS_L3BANK0	COLOR L3 ACCESS L3BANK0	GTI/L3	Number of L3 request resulting from color local cache miss
+Ext13	COLOR_L3_ACCESS_L3BANK1	COLOR L3 ACCESS L3BANK1	GTI/L3	Number of L3 request resulting from color local cache miss
+Ext13	COLOR_L3_ACCESS_L3BANK2	COLOR L3 ACCESS L3BANK2	GTI/L3	Number of L3 request resulting from color local cache miss
+Ext13	COLOR_L3_ACCESS_L3BANK3	COLOR L3 ACCESS L3BANK3	GTI/L3	Number of L3 request resulting from color local cache miss
+Ext14	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
+Ext14	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
+Ext14	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
+Ext14	L3_BUSY_L3BANK0	L3 BUSY L3BANK0	GTI/L3	Percentage of time in which L3 request queue has one or more requests pending
+Ext14	L3_BUSY_L3BANK1	L3 BUSY L3BANK1	GTI/L3	Percentage of time in which L3 request queue has one or more requests pending
+Ext14	L3_BUSY_L3BANK2	L3 BUSY L3BANK2	GTI/L3	Percentage of time in which L3 request queue has one or more requests pending
+Ext14	L3_BUSY_L3BANK3	L3 BUSY L3BANK3	GTI/L3	Percentage of time in which L3 request queue has one or more requests pending
+Ext14	L3_STALL_L3BANK0	L3 STALL L3BANK0	GTI/L3	Percentage of time in which L3 Bank Stalled
+Ext14	L3_STALL_L3BANK1	L3 STALL L3BANK1	GTI/L3	Percentage of time in which L3 Bank Stalled
+Ext14	L3_STALL_L3BANK2	L3 STALL L3BANK2	GTI/L3	Percentage of time in which L3 Bank Stalled
+Ext14	L3_STALL_L3BANK3	L3 STALL L3BANK3	GTI/L3	Percentage of time in which L3 Bank Stalled
+Ext17	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
+Ext17	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
+Ext17	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
+Ext17	LOAD_STORE_CACHE_INPUT_AVAILABLE_XECORE0	LOAD STORE CACHE INPUT AVAILABLE XECORE0	GPU	Percentage of time in which the Load Store Cache has input available
+Ext17	LOAD_STORE_CACHE_INPUT_AVAILABLE_XECORE1	LOAD STORE CACHE INPUT AVAILABLE XECORE1	GPU	Percentage of time in which the Load Store Cache has input available
+Ext17	LOAD_STORE_CACHE_INPUT_AVAILABLE_XECORE2	LOAD STORE CACHE INPUT AVAILABLE XECORE2	GPU	Percentage of time in which the Load Store Cache has input available
+Ext17	LOAD_STORE_CACHE_INPUT_AVAILABLE_XECORE3	LOAD STORE CACHE INPUT AVAILABLE XECORE3	GPU	Percentage of time in which the Load Store Cache has input available
+Ext17	LOAD_STORE_CACHE_OUTPUT_READY_XECORE0	LOAD STORE CACHE OUTPUT READY XECORE0	GPU	Percentage of time in which the Load Store Cache has output ready
+Ext17	LOAD_STORE_CACHE_OUTPUT_READY_XECORE1	LOAD STORE CACHE OUTPUT READY XECORE1	GPU	Percentage of time in which the Load Store Cache has output ready
+Ext17	LOAD_STORE_CACHE_OUTPUT_READY_XECORE2	LOAD STORE CACHE OUTPUT READY XECORE2	GPU	Percentage of time in which the Load Store Cache has output ready
+Ext17	LOAD_STORE_CACHE_OUTPUT_READY_XECORE3	LOAD STORE CACHE OUTPUT READY XECORE3	GPU	Percentage of time in which the Load Store Cache has output ready
+Ext21	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
+Ext21	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
+Ext21	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
+Ext21	LOAD_STORE_CACHE_ACCESS_XECORE0	LOAD STORE CACHE ACCESS XECORE0	GPU	Number of Load Store Cache accesses
+Ext21	LOAD_STORE_CACHE_ACCESS_XECORE1	LOAD STORE CACHE ACCESS XECORE1	GPU	Number of Load Store Cache accesses
+Ext21	LOAD_STORE_CACHE_ACCESS_XECORE2	LOAD STORE CACHE ACCESS XECORE2	GPU	Number of Load Store Cache accesses
+Ext21	LOAD_STORE_CACHE_ACCESS_XECORE3	LOAD STORE CACHE ACCESS XECORE3	GPU	Number of Load Store Cache accesses
+Ext21	LOAD_STORE_CACHE_L3_READ_XECORE0	LOAD STORE CACHE L3 READ XECORE0	GPU	Number of cacheline read requests from the Load Store Cache to L3
+Ext21	LOAD_STORE_CACHE_L3_READ_XECORE1	LOAD STORE CACHE L3 READ XECORE1	GPU	Number of cacheline read requests from the Load Store Cache to L3
+Ext21	LOAD_STORE_CACHE_L3_READ_XECORE2	LOAD STORE CACHE L3 READ XECORE2	GPU	Number of cacheline read requests from the Load Store Cache to L3
+Ext21	LOAD_STORE_CACHE_L3_READ_XECORE3	LOAD STORE CACHE L3 READ XECORE3	GPU	Number of cacheline read requests from the Load Store Cache to L3
+Ext23	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
+Ext23	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
+Ext23	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
+Ext23	LOAD_STORE_CACHE_HIT_XECORE0	LOAD STORE CACHE HIT XECORE0	GPU	Number of Load Store Cache hits
+Ext23	LOAD_STORE_CACHE_HIT_XECORE1	LOAD STORE CACHE HIT XECORE1	GPU	Number of Load Store Cache hits
+Ext23	LOAD_STORE_CACHE_HIT_XECORE2	LOAD STORE CACHE HIT XECORE2	GPU	Number of Load Store Cache hits
+Ext23	LOAD_STORE_CACHE_HIT_XECORE3	LOAD STORE CACHE HIT XECORE3	GPU	Number of Load Store Cache hits
+Ext28	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
+Ext28	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
+Ext28	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
+Ext28	LOAD_STORE_CACHE_L3_WRITE_XECORE0	LOAD STORE CACHE L3 WRITE XECORE0	GPU	Number of cacheline write requests from the Load Store Cache to L3
+Ext28	LOAD_STORE_CACHE_L3_WRITE_XECORE1	LOAD STORE CACHE L3 WRITE XECORE1	GPU	Number of cacheline write requests from the Load Store Cache to L3
+Ext28	LOAD_STORE_CACHE_L3_WRITE_XECORE2	LOAD STORE CACHE L3 WRITE XECORE2	GPU	Number of cacheline write requests from the Load Store Cache to L3
+Ext28	LOAD_STORE_CACHE_L3_WRITE_XECORE3	LOAD STORE CACHE L3 WRITE XECORE3	GPU	Number of cacheline write requests from the Load Store Cache to L3
+Ext28	LOAD_STORE_CACHE_PARTIAL_WRITE_COUNT_XECORE0	LOAD STORE CACHE PARTIAL WRITE COUNT XECORE0	GPU	Number of writes to the Load Store Cache that don't fill a subsector
+Ext28	LOAD_STORE_CACHE_PARTIAL_WRITE_COUNT_XECORE1	LOAD STORE CACHE PARTIAL WRITE COUNT XECORE1	GPU	Number of writes to the Load Store Cache that don't fill a subsector
+Ext28	LOAD_STORE_CACHE_PARTIAL_WRITE_COUNT_XECORE2	LOAD STORE CACHE PARTIAL WRITE COUNT XECORE2	GPU	Number of writes to the Load Store Cache that don't fill a subsector
+Ext28	LOAD_STORE_CACHE_PARTIAL_WRITE_COUNT_XECORE3	LOAD STORE CACHE PARTIAL WRITE COUNT XECORE3	GPU	Number of writes to the Load Store Cache that don't fill a subsector
+Ext31	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
+Ext31	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
+Ext31	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
+Ext31	XVE_LOAD_STORE_CACHE_READ_MESSAGE_COUNT_XECORE0	XVE LOAD STORE CACHE READ MESSAGE COUNT XECORE0	GPU	Number of read messages sent by XVEs to the Load Store Cache
+Ext31	XVE_LOAD_STORE_CACHE_READ_MESSAGE_COUNT_XECORE1	XVE LOAD STORE CACHE READ MESSAGE COUNT XECORE1	GPU	Number of read messages sent by XVEs to the Load Store Cache
+Ext31	XVE_LOAD_STORE_CACHE_READ_MESSAGE_COUNT_XECORE2	XVE LOAD STORE CACHE READ MESSAGE COUNT XECORE2	GPU	Number of read messages sent by XVEs to the Load Store Cache
+Ext31	XVE_LOAD_STORE_CACHE_READ_MESSAGE_COUNT_XECORE3	XVE LOAD STORE CACHE READ MESSAGE COUNT XECORE3	GPU	Number of read messages sent by XVEs to the Load Store Cache
+Ext35	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
+Ext35	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
+Ext35	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
+Ext35	XVE_LOAD_STORE_CACHE_WRITE_MESSAGE_COUNT_XECORE0	XVE LOAD STORE CACHE WRITE MESSAGE COUNT XECORE0	GPU	Number of write messages sent by XVEs to the Load Store Cache
+Ext35	XVE_LOAD_STORE_CACHE_WRITE_MESSAGE_COUNT_XECORE1	XVE LOAD STORE CACHE WRITE MESSAGE COUNT XECORE1	GPU	Number of write messages sent by XVEs to the Load Store Cache
+Ext35	XVE_LOAD_STORE_CACHE_WRITE_MESSAGE_COUNT_XECORE2	XVE LOAD STORE CACHE WRITE MESSAGE COUNT XECORE2	GPU	Number of write messages sent by XVEs to the Load Store Cache
+Ext35	XVE_LOAD_STORE_CACHE_WRITE_MESSAGE_COUNT_XECORE3	XVE LOAD STORE CACHE WRITE MESSAGE COUNT XECORE3	GPU	Number of write messages sent by XVEs to the Load Store Cache
+Ext39	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
+Ext39	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
+Ext39	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
+Ext39	XVE_LOAD_STORE_CACHE_FENCE_MESSAGE_COUNT_XECORE0	XVE LOAD STORE CACHE FENCE MESSAGE COUNT XECORE0	GPU	Number of fence messages sent by XVEs to the Load Store Cache
+Ext39	XVE_LOAD_STORE_CACHE_FENCE_MESSAGE_COUNT_XECORE1	XVE LOAD STORE CACHE FENCE MESSAGE COUNT XECORE1	GPU	Number of fence messages sent by XVEs to the Load Store Cache
+Ext39	XVE_LOAD_STORE_CACHE_FENCE_MESSAGE_COUNT_XECORE2	XVE LOAD STORE CACHE FENCE MESSAGE COUNT XECORE2	GPU	Number of fence messages sent by XVEs to the Load Store Cache
+Ext39	XVE_LOAD_STORE_CACHE_FENCE_MESSAGE_COUNT_XECORE3	XVE LOAD STORE CACHE FENCE MESSAGE COUNT XECORE3	GPU	Number of fence messages sent by XVEs to the Load Store Cache
+Ext43	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
+Ext43	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
+Ext43	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
+Ext43	XVE_LOAD_STORE_CACHE_ATOMIC_MESSAGE_COUNT_XECORE0	XVE LOAD STORE CACHE ATOMIC MESSAGE COUNT XECORE0	GPU	Number of atomic operations sent by XVEs to the Load Store Cache
+Ext43	XVE_LOAD_STORE_CACHE_ATOMIC_MESSAGE_COUNT_XECORE1	XVE LOAD STORE CACHE ATOMIC MESSAGE COUNT XECORE1	GPU	Number of atomic operations sent by XVEs to the Load Store Cache
+Ext43	XVE_LOAD_STORE_CACHE_REGISTER_REQUEST_COUNT_XECORE0	XVE LOAD STORE CACHE REGISTER REQUEST COUNT XECORE0	GPU	Number of message payload transactions sent by XVEs to the Load Store Cache
+Ext43	XVE_LOAD_STORE_CACHE_REGISTER_REQUEST_COUNT_XECORE1	XVE LOAD STORE CACHE REGISTER REQUEST COUNT XECORE1	GPU	Number of message payload transactions sent by XVEs to the Load Store Cache
+Ext45	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
+Ext45	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
+Ext45	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
+Ext45	XVE_LOAD_STORE_CACHE_ATOMIC_MESSAGE_COUNT_XECORE2	XVE LOAD STORE CACHE ATOMIC MESSAGE COUNT XECORE2	GPU	Number of atomic operations sent by XVEs to the Load Store Cache
+Ext45	XVE_LOAD_STORE_CACHE_ATOMIC_MESSAGE_COUNT_XECORE3	XVE LOAD STORE CACHE ATOMIC MESSAGE COUNT XECORE3	GPU	Number of atomic operations sent by XVEs to the Load Store Cache
+Ext45	XVE_LOAD_STORE_CACHE_REGISTER_REQUEST_COUNT_XECORE2	XVE LOAD STORE CACHE REGISTER REQUEST COUNT XECORE2	GPU	Number of message payload transactions sent by XVEs to the Load Store Cache
+Ext45	XVE_LOAD_STORE_CACHE_REGISTER_REQUEST_COUNT_XECORE3	XVE LOAD STORE CACHE REGISTER REQUEST COUNT XECORE3	GPU	Number of message payload transactions sent by XVEs to the Load Store Cache
+Ext51	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
+Ext51	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
+Ext51	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
+Ext51	XVE_LOAD_STORE_CACHE_REGISTER_RESPONSE_COUNT_XECORE0	XVE LOAD STORE CACHE REGISTER RESPONSE COUNT XECORE0	GPU	Number of message payload transactions sent from the Load Store Cache back to XVEs
+Ext51	XVE_LOAD_STORE_CACHE_REGISTER_RESPONSE_COUNT_XECORE1	XVE LOAD STORE CACHE REGISTER RESPONSE COUNT XECORE1	GPU	Number of message payload transactions sent from the Load Store Cache back to XVEs
+Ext51	XVE_LOAD_STORE_CACHE_REGISTER_RESPONSE_COUNT_XECORE2	XVE LOAD STORE CACHE REGISTER RESPONSE COUNT XECORE2	GPU	Number of message payload transactions sent from the Load Store Cache back to XVEs
+Ext51	XVE_LOAD_STORE_CACHE_REGISTER_RESPONSE_COUNT_XECORE3	XVE LOAD STORE CACHE REGISTER RESPONSE COUNT XECORE3	GPU	Number of message payload transactions sent from the Load Store Cache back to XVEs
+Ext53	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
+Ext53	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
+Ext53	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
+Ext53	XVE_SLM_READ_MESSAGE_COUNT_XECORE0	XVE SLM READ MESSAGE COUNT XECORE0	GPU	Number of SLM read messages sent by XVEs
+Ext53	XVE_SLM_READ_MESSAGE_COUNT_XECORE1	XVE SLM READ MESSAGE COUNT XECORE1	GPU	Number of SLM read messages sent by XVEs
+Ext53	XVE_SLM_READ_MESSAGE_COUNT_XECORE2	XVE SLM READ MESSAGE COUNT XECORE2	GPU	Number of SLM read messages sent by XVEs
+Ext53	XVE_SLM_READ_MESSAGE_COUNT_XECORE3	XVE SLM READ MESSAGE COUNT XECORE3	GPU	Number of SLM read messages sent by XVEs
+Ext57	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
+Ext57	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
+Ext57	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
+Ext57	XVE_SLM_WRITE_MESSAGE_COUNT_XECORE0	XVE SLM WRITE MESSAGE COUNT XECORE0	GPU	Number of SLM write messages sent by XVEs
+Ext57	XVE_SLM_WRITE_MESSAGE_COUNT_XECORE1	XVE SLM WRITE MESSAGE COUNT XECORE1	GPU	Number of SLM write messages sent by XVEs
+Ext57	XVE_SLM_WRITE_MESSAGE_COUNT_XECORE2	XVE SLM WRITE MESSAGE COUNT XECORE2	GPU	Number of SLM write messages sent by XVEs
+Ext57	XVE_SLM_WRITE_MESSAGE_COUNT_XECORE3	XVE SLM WRITE MESSAGE COUNT XECORE3	GPU	Number of SLM write messages sent by XVEs
+Ext61	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
+Ext61	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
+Ext61	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
+Ext61	XVE_SLM_FENCE_MESSAGE_COUNT_XECORE0	XVE SLM FENCE MESSAGE COUNT XECORE0	GPU	Number of SLM fence operations sent by XVEs
+Ext61	XVE_SLM_FENCE_MESSAGE_COUNT_XECORE1	XVE SLM FENCE MESSAGE COUNT XECORE1	GPU	Number of SLM fence operations sent by XVEs
+Ext61	XVE_SLM_FENCE_MESSAGE_COUNT_XECORE2	XVE SLM FENCE MESSAGE COUNT XECORE2	GPU	Number of SLM fence operations sent by XVEs
+Ext61	XVE_SLM_FENCE_MESSAGE_COUNT_XECORE3	XVE SLM FENCE MESSAGE COUNT XECORE3	GPU	Number of SLM fence operations sent by XVEs
+Ext65	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
+Ext65	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
+Ext65	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
+Ext65	XVE_SLM_ATOMIC_MESSAGE_COUNT_XECORE0	XVE SLM ATOMIC MESSAGE COUNT XECORE0	GPU	Number of SLM atomic operations sent by XVEs
+Ext65	XVE_SLM_ATOMIC_MESSAGE_COUNT_XECORE1	XVE SLM ATOMIC MESSAGE COUNT XECORE1	GPU	Number of SLM atomic operations sent by XVEs
+Ext66	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
+Ext66	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
+Ext66	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
+Ext66	XVE_SLM_ATOMIC_MESSAGE_COUNT_XECORE2	XVE SLM ATOMIC MESSAGE COUNT XECORE2	GPU	Number of SLM atomic operations sent by XVEs
+Ext66	XVE_SLM_ATOMIC_MESSAGE_COUNT_XECORE3	XVE SLM ATOMIC MESSAGE COUNT XECORE3	GPU	Number of SLM atomic operations sent by XVEs
+Ext73	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
+Ext73	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
+Ext73	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
+Ext73	DATAPORT_INPUT_AVAILABLE_XECORE0	DATAPORT INPUT AVAILABLE XECORE0	GPU	Percentage of time in which XVEs have requests to the Dataport
+Ext73	DATAPORT_INPUT_AVAILABLE_XECORE1	DATAPORT INPUT AVAILABLE XECORE1	GPU	Percentage of time in which XVEs have requests to the Dataport
+Ext74	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
+Ext74	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
+Ext74	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
+Ext74	DATAPORT_INPUT_AVAILABLE_XECORE2	DATAPORT INPUT AVAILABLE XECORE2	GPU	Percentage of time in which XVEs have requests to the Dataport
+Ext74	DATAPORT_INPUT_AVAILABLE_XECORE3	DATAPORT INPUT AVAILABLE XECORE3	GPU	Percentage of time in which XVEs have requests to the Dataport
+Ext77	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
+Ext77	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
+Ext77	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
+Ext77	DATAPORT_OUTPUT_READY_XECORE0	DATAPORT OUTPUT READY XECORE0	GPU	Percentage of time in which the Dataport has data to return to XVEs
+Ext77	DATAPORT_OUTPUT_READY_XECORE1	DATAPORT OUTPUT READY XECORE1	GPU	Percentage of time in which the Dataport has data to return to XVEs
+Ext77	DATAPORT_OUTPUT_READY_XECORE2	DATAPORT OUTPUT READY XECORE2	GPU	Percentage of time in which the Dataport has data to return to XVEs
+Ext77	DATAPORT_OUTPUT_READY_XECORE3	DATAPORT OUTPUT READY XECORE3	GPU	Percentage of time in which the Dataport has data to return to XVEs
+Ext79	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
+Ext79	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
+Ext79	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
+Ext79	DATAPORT_BYTE_READ_XECORE0	DATAPORT BYTE READ XECORE0	GPU	Number of bytes read through the Dataport
+Ext79	DATAPORT_BYTE_READ_XECORE1	DATAPORT BYTE READ XECORE1	GPU	Number of bytes read through the Dataport
+Ext80	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
+Ext80	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
+Ext80	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
+Ext80	DATAPORT_BYTE_READ_XECORE2	DATAPORT BYTE READ XECORE2	GPU	Number of bytes read through the Dataport
+Ext80	DATAPORT_BYTE_READ_XECORE3	DATAPORT BYTE READ XECORE3	GPU	Number of bytes read through the Dataport
+Ext83	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
+Ext83	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
+Ext83	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
+Ext83	DATAPORT_BYTE_WRITE_XECORE0	DATAPORT BYTE WRITE XECORE0	GPU	Number of bytes written through the Dataport
+Ext83	DATAPORT_BYTE_WRITE_XECORE1	DATAPORT BYTE WRITE XECORE1	GPU	Number of bytes written through the Dataport
+Ext83	DATAPORT_BYTE_WRITE_XECORE2	DATAPORT BYTE WRITE XECORE2	GPU	Number of bytes written through the Dataport
+Ext83	DATAPORT_BYTE_WRITE_XECORE3	DATAPORT BYTE WRITE XECORE3	GPU	Number of bytes written through the Dataport
+Ext83	DATAPORT_TEXTURE_CACHE_ACCESS_XECORE0	DATAPORT TEXTURE CACHE ACCESS XECORE0	GPU	Number of cacheline requests from the Dataport to the texture cache not including uncached accesses
+Ext83	DATAPORT_TEXTURE_CACHE_ACCESS_XECORE1	DATAPORT TEXTURE CACHE ACCESS XECORE1	GPU	Number of cacheline requests from the Dataport to the texture cache not including uncached accesses
+Ext83	DATAPORT_TEXTURE_CACHE_ACCESS_XECORE2	DATAPORT TEXTURE CACHE ACCESS XECORE2	GPU	Number of cacheline requests from the Dataport to the texture cache not including uncached accesses
+Ext83	DATAPORT_TEXTURE_CACHE_ACCESS_XECORE3	DATAPORT TEXTURE CACHE ACCESS XECORE3	GPU	Number of cacheline requests from the Dataport to the texture cache not including uncached accesses
+Ext85	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
+Ext85	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
+Ext85	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
+Ext85	XVE_DATAPORT_READ_MESSAGE_COUNT_XECORE0	XVE DATAPORT READ MESSAGE COUNT XECORE0	GPU	Number of read messages sent by XVEs to the Dataport
+Ext85	XVE_DATAPORT_READ_MESSAGE_COUNT_XECORE1	XVE DATAPORT READ MESSAGE COUNT XECORE1	GPU	Number of read messages sent by XVEs to the Dataport
+Ext85	XVE_DATAPORT_READ_MESSAGE_COUNT_XECORE2	XVE DATAPORT READ MESSAGE COUNT XECORE2	GPU	Number of read messages sent by XVEs to the Dataport
+Ext85	XVE_DATAPORT_READ_MESSAGE_COUNT_XECORE3	XVE DATAPORT READ MESSAGE COUNT XECORE3	GPU	Number of read messages sent by XVEs to the Dataport
+Ext85	DATAPORT_TEXTURE_CACHE_HIT_XECORE0	DATAPORT TEXTURE CACHE HIT XECORE0	GPU	Number of cache requests from the Dataport to the texture cache that resulted in a cache hit
+Ext85	DATAPORT_TEXTURE_CACHE_HIT_XECORE1	DATAPORT TEXTURE CACHE HIT XECORE1	GPU	Number of cache requests from the Dataport to the texture cache that resulted in a cache hit
+Ext85	DATAPORT_TEXTURE_CACHE_HIT_XECORE2	DATAPORT TEXTURE CACHE HIT XECORE2	GPU	Number of cache requests from the Dataport to the texture cache that resulted in a cache hit
+Ext85	DATAPORT_TEXTURE_CACHE_HIT_XECORE3	DATAPORT TEXTURE CACHE HIT XECORE3	GPU	Number of cache requests from the Dataport to the texture cache that resulted in a cache hit
+Ext87	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
+Ext87	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
+Ext87	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
+Ext87	XVE_DATAPORT_WRITE_MESSAGE_COUNT_XECORE0	XVE DATAPORT WRITE MESSAGE COUNT XECORE0	GPU	Number of write messages sent by XVEs to the Dataport
+Ext87	XVE_DATAPORT_WRITE_MESSAGE_COUNT_XECORE1	XVE DATAPORT WRITE MESSAGE COUNT XECORE1	GPU	Number of write messages sent by XVEs to the Dataport
+Ext87	XVE_DATAPORT_WRITE_MESSAGE_COUNT_XECORE2	XVE DATAPORT WRITE MESSAGE COUNT XECORE2	GPU	Number of write messages sent by XVEs to the Dataport
+Ext87	XVE_DATAPORT_WRITE_MESSAGE_COUNT_XECORE3	XVE DATAPORT WRITE MESSAGE COUNT XECORE3	GPU	Number of write messages sent by XVEs to the Dataport
+Ext91	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
+Ext91	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
+Ext91	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
+Ext91	XVE_DATAPORT_ATOMIC_MESSAGE_COUNT_XECORE0	XVE DATAPORT ATOMIC MESSAGE COUNT XECORE0	GPU	Number of atomic messages sent by XVEs to the Dataport
+Ext91	XVE_DATAPORT_ATOMIC_MESSAGE_COUNT_XECORE1	XVE DATAPORT ATOMIC MESSAGE COUNT XECORE1	GPU	Number of atomic messages sent by XVEs to the Dataport
+Ext91	XVE_DATAPORT_ATOMIC_MESSAGE_COUNT_XECORE2	XVE DATAPORT ATOMIC MESSAGE COUNT XECORE2	GPU	Number of atomic messages sent by XVEs to the Dataport
+Ext91	XVE_DATAPORT_ATOMIC_MESSAGE_COUNT_XECORE3	XVE DATAPORT ATOMIC MESSAGE COUNT XECORE3	GPU	Number of atomic messages sent by XVEs to the Dataport
+Ext93	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
+Ext93	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
+Ext93	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
+Ext93	XVE_DATAPORT_REGISTER_RESPONSE_COUNT_XECORE0	XVE DATAPORT REGISTER RESPONSE COUNT XECORE0	GPU	Number of return message payload transactions sent from the Dataport to XVEs
+Ext93	XVE_DATAPORT_REGISTER_RESPONSE_COUNT_XECORE1	XVE DATAPORT REGISTER RESPONSE COUNT XECORE1	GPU	Number of return message payload transactions sent from the Dataport to XVEs
+Ext94	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
+Ext94	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
+Ext94	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
+Ext94	XVE_DATAPORT_REGISTER_RESPONSE_COUNT_XECORE2	XVE DATAPORT REGISTER RESPONSE COUNT XECORE2	GPU	Number of return message payload transactions sent from the Dataport to XVEs
+Ext94	XVE_DATAPORT_REGISTER_RESPONSE_COUNT_XECORE3	XVE DATAPORT REGISTER RESPONSE COUNT XECORE3	GPU	Number of return message payload transactions sent from the Dataport to XVEs
+Ext97	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
+Ext97	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
+Ext97	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
+Ext97	XVE_DATAPORT_REGISTER_REQUEST_COUNT_XECORE0	XVE DATAPORT REGISTER REQUEST COUNT XECORE0	GPU	Number of message payload transactions sent from XVEs to the Dataport
+Ext97	XVE_DATAPORT_REGISTER_REQUEST_COUNT_XECORE1	XVE DATAPORT REGISTER REQUEST COUNT XECORE1	GPU	Number of message payload transactions sent from XVEs to the Dataport
+Ext97	XVE_DATAPORT_REGISTER_REQUEST_COUNT_XECORE2	XVE DATAPORT REGISTER REQUEST COUNT XECORE2	GPU	Number of message payload transactions sent from XVEs to the Dataport
+Ext97	XVE_DATAPORT_REGISTER_REQUEST_COUNT_XECORE3	XVE DATAPORT REGISTER REQUEST COUNT XECORE3	GPU	Number of message payload transactions sent from XVEs to the Dataport
+Ext98	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
+Ext98	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
+Ext98	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
+Ext98	SAMPLER_OUTPUT_READY_XECORE0	SAMPLER OUTPUT READY XECORE0	GPU	Percentage of time in which Sampler output is ready
+Ext98	SAMPLER_OUTPUT_READY_XECORE1	SAMPLER OUTPUT READY XECORE1	GPU	Percentage of time in which Sampler output is ready
+Ext98	SAMPLER_OUTPUT_READY_XECORE2	SAMPLER OUTPUT READY XECORE2	GPU	Percentage of time in which Sampler output is ready
+Ext98	SAMPLER_OUTPUT_READY_XECORE3	SAMPLER OUTPUT READY XECORE3	GPU	Percentage of time in which Sampler output is ready
+Ext100	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
+Ext100	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
+Ext100	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
+Ext100	SAMPLER_MEMORY_LATENCY_STALL_XECORE0	SAMPLER MEMORY LATENCY STALL XECORE0	GPU	Percentage of time in which Sampler stalled due to latency hiding structure full
+Ext100	SAMPLER_MEMORY_LATENCY_STALL_XECORE1	SAMPLER MEMORY LATENCY STALL XECORE1	GPU	Percentage of time in which Sampler stalled due to latency hiding structure full
+Ext100	SAMPLER_MEMORY_LATENCY_STALL_XECORE2	SAMPLER MEMORY LATENCY STALL XECORE2	GPU	Percentage of time in which Sampler stalled due to latency hiding structure full
+Ext100	SAMPLER_MEMORY_LATENCY_STALL_XECORE3	SAMPLER MEMORY LATENCY STALL XECORE3	GPU	Percentage of time in which Sampler stalled due to latency hiding structure full
+Ext100	SAMPLER_INPUT_AVAILABLE_XECORE0	SAMPLER INPUT AVAILABLE XECORE0	GPU	Percentage of time in which Sampler input is available
+Ext100	SAMPLER_INPUT_AVAILABLE_XECORE1	SAMPLER INPUT AVAILABLE XECORE1	GPU	Percentage of time in which Sampler input is available
+Ext100	SAMPLER_INPUT_AVAILABLE_XECORE2	SAMPLER INPUT AVAILABLE XECORE2	GPU	Percentage of time in which Sampler input is available
+Ext100	SAMPLER_INPUT_AVAILABLE_XECORE3	SAMPLER INPUT AVAILABLE XECORE3	GPU	Percentage of time in which Sampler input is available
+Ext101	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
+Ext101	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
+Ext101	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
+Ext101	THREAD_DISPATCH_STALL_XECORE0	THREAD DISPATCH STALL XECORE0	GPU	Percentage of time in which Thread Dispatch is stalled waiting for threads to be available
+Ext101	THREAD_DISPATCH_STALL_XECORE1	THREAD DISPATCH STALL XECORE1	GPU	Percentage of time in which Thread Dispatch is stalled waiting for threads to be available
+Ext101	THREAD_DISPATCH_STALL_XECORE2	THREAD DISPATCH STALL XECORE2	GPU	Percentage of time in which Thread Dispatch is stalled waiting for threads to be available
+Ext101	THREAD_DISPATCH_STALL_XECORE3	THREAD DISPATCH STALL XECORE3	GPU	Percentage of time in which Thread Dispatch is stalled waiting for threads to be available
+Ext101	THREAD_DISPATCH_INPUT_AVAILABLE_XECORE0	THREAD DISPATCH INPUT AVAILABLE XECORE0	GPU	Percentage of time in which Thread Dispatch input is available
+Ext101	THREAD_DISPATCH_INPUT_AVAILABLE_XECORE1	THREAD DISPATCH INPUT AVAILABLE XECORE1	GPU	Percentage of time in which Thread Dispatch input is available
+Ext101	THREAD_DISPATCH_INPUT_AVAILABLE_XECORE2	THREAD DISPATCH INPUT AVAILABLE XECORE2	GPU	Percentage of time in which Thread Dispatch input is available
+Ext101	THREAD_DISPATCH_INPUT_AVAILABLE_XECORE3	THREAD DISPATCH INPUT AVAILABLE XECORE3	GPU	Percentage of time in which Thread Dispatch input is available
+Ext102	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
+Ext102	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
+Ext102	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
+Ext102	SAMPLER_TEXTURE_CACHE_ACCESS_XECORE0	SAMPLER TEXTURE CACHE ACCESS XECORE0	GPU	Number of Sampler L1 requests
+Ext102	SAMPLER_TEXTURE_CACHE_ACCESS_XECORE1	SAMPLER TEXTURE CACHE ACCESS XECORE1	GPU	Number of Sampler L1 requests
+Ext102	SAMPLER_TEXTURE_CACHE_ACCESS_XECORE2	SAMPLER TEXTURE CACHE ACCESS XECORE2	GPU	Number of Sampler L1 requests
+Ext102	SAMPLER_TEXTURE_CACHE_ACCESS_XECORE3	SAMPLER TEXTURE CACHE ACCESS XECORE3	GPU	Number of Sampler L1 requests
+Ext102	SAMPLER_TEXTURE_CACHE_MISS_XECORE0	SAMPLER TEXTURE CACHE MISS XECORE0	GPU	Number of Sampler L1 misses
+Ext102	SAMPLER_TEXTURE_CACHE_MISS_XECORE1	SAMPLER TEXTURE CACHE MISS XECORE1	GPU	Number of Sampler L1 misses
+Ext102	SAMPLER_TEXTURE_CACHE_MISS_XECORE2	SAMPLER TEXTURE CACHE MISS XECORE2	GPU	Number of Sampler L1 misses
+Ext102	SAMPLER_TEXTURE_CACHE_MISS_XECORE3	SAMPLER TEXTURE CACHE MISS XECORE3	GPU	Number of Sampler L1 misses
+Ext104	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
+Ext104	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
+Ext104	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
+Ext104	ASYNC_GPGPU_THREAD_EXIT_COUNT_XECORE0	ASYNC GPGPU THREAD EXIT COUNT XECORE0	GPU	Number of Async GPGPU EOT messages received
+Ext104	TASK_THREAD_EXIT_COUNT_XECORE0	TASK THREAD EXIT COUNT XECORE0	GPU	Number of Task Shader EOT messages received
+Ext104	GPGPU_THREADGROUP_COUNT_XECORE2	GPGPU THREADGROUP COUNT XECORE2	GPU	Number of GPGPU threadgroups dispatched
+Ext104	TASK_THREADGROUP_COUNT_XECORE2	TASK THREADGROUP COUNT XECORE2	GPU	Number of Task Shader threadgroups dispatched
+Ext105	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
+Ext105	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
+Ext105	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
+Ext105	ASYNC_GPGPU_THREAD_EXIT_COUNT_XECORE1	ASYNC GPGPU THREAD EXIT COUNT XECORE1	GPU	Number of Async GPGPU EOT messages received
+Ext105	TASK_THREAD_EXIT_COUNT_XECORE1	TASK THREAD EXIT COUNT XECORE1	GPU	Number of Task Shader EOT messages received
+Ext105	GPGPU_THREADGROUP_COUNT_XECORE3	GPGPU THREADGROUP COUNT XECORE3	GPU	Number of GPGPU threadgroups dispatched
+Ext105	TASK_THREADGROUP_COUNT_XECORE3	TASK THREADGROUP COUNT XECORE3	GPU	Number of Task Shader threadgroups dispatched
+Ext106	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
+Ext106	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
+Ext106	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
+Ext106	ASYNC_GPGPU_THREAD_EXIT_COUNT_XECORE2	ASYNC GPGPU THREAD EXIT COUNT XECORE2	GPU	Number of Async GPGPU EOT messages received
+Ext106	TASK_THREAD_EXIT_COUNT_XECORE2	TASK THREAD EXIT COUNT XECORE2	GPU	Number of Task Shader EOT messages received
+Ext106	GPGPU_THREADGROUP_COUNT_XECORE0	GPGPU THREADGROUP COUNT XECORE0	GPU	Number of GPGPU threadgroups dispatched
+Ext106	TASK_THREADGROUP_COUNT_XECORE0	TASK THREADGROUP COUNT XECORE0	GPU	Number of Task Shader threadgroups dispatched
+Ext107	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
+Ext107	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
+Ext107	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
+Ext107	ASYNC_GPGPU_THREAD_EXIT_COUNT_XECORE3	ASYNC GPGPU THREAD EXIT COUNT XECORE3	GPU	Number of Async GPGPU EOT messages received
+Ext107	TASK_THREAD_EXIT_COUNT_XECORE3	TASK THREAD EXIT COUNT XECORE3	GPU	Number of Task Shader EOT messages received
+Ext107	GPGPU_THREADGROUP_COUNT_XECORE1	GPGPU THREADGROUP COUNT XECORE1	GPU	Number of GPGPU threadgroups dispatched
+Ext107	TASK_THREADGROUP_COUNT_XECORE1	TASK THREADGROUP COUNT XECORE1	GPU	Number of Task Shader threadgroups dispatched
+Ext113	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
+Ext113	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
+Ext113	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
+Ext113	THREAD_DISPATCH_PS_ACTIVE_XECORE0	THREAD DISPATCH PS ACTIVE XECORE0	GPU	Percentage of time in which Pixel Shader threads are ready for dispatch in a particular Xe core
+Ext113	THREAD_DISPATCH_PS_ACTIVE_XECORE1	THREAD DISPATCH PS ACTIVE XECORE1	GPU	Percentage of time in which Pixel Shader threads are ready for dispatch in a particular Xe core
+Ext113	THREAD_DISPATCH_PS_ACTIVE_XECORE2	THREAD DISPATCH PS ACTIVE XECORE2	GPU	Percentage of time in which Pixel Shader threads are ready for dispatch in a particular Xe core
+Ext113	THREAD_DISPATCH_PS_ACTIVE_XECORE3	THREAD DISPATCH PS ACTIVE XECORE3	GPU	Percentage of time in which Pixel Shader threads are ready for dispatch in a particular Xe core
+Ext113	THREAD_DISPATCH_QUEUE0_ACTIVE_XECORE0	THREAD DISPATCH QUEUE0 ACTIVE XECORE0	GPU	Percentage of time in which non-Pixel Shader threads are ready for dispatch in a particular Xe core
+Ext113	THREAD_DISPATCH_QUEUE1_ACTIVE_XECORE0	THREAD DISPATCH QUEUE1 ACTIVE XECORE0	GPU	Percentage of time in which Async GPGPU threads are ready for dispatch in a particular Xe core
+Ext113	THREAD_DISPATCH_QUEUE0_ACTIVE_XECORE1	THREAD DISPATCH QUEUE0 ACTIVE XECORE1	GPU	Percentage of time in which non-Pixel Shader threads are ready for dispatch in a particular Xe core
+Ext113	THREAD_DISPATCH_QUEUE1_ACTIVE_XECORE1	THREAD DISPATCH QUEUE1 ACTIVE XECORE1	GPU	Percentage of time in which Async GPGPU threads are ready for dispatch in a particular Xe core
+Ext113	THREAD_DISPATCH_QUEUE0_ACTIVE_XECORE2	THREAD DISPATCH QUEUE0 ACTIVE XECORE2	GPU	Percentage of time in which non-Pixel Shader threads are ready for dispatch in a particular Xe core
+Ext113	THREAD_DISPATCH_QUEUE1_ACTIVE_XECORE2	THREAD DISPATCH QUEUE1 ACTIVE XECORE2	GPU	Percentage of time in which Async GPGPU threads are ready for dispatch in a particular Xe core
+Ext113	THREAD_DISPATCH_QUEUE0_ACTIVE_XECORE3	THREAD DISPATCH QUEUE0 ACTIVE XECORE3	GPU	Percentage of time in which non-Pixel Shader threads are ready for dispatch in a particular Xe core
+Ext113	THREAD_DISPATCH_QUEUE1_ACTIVE_XECORE3	THREAD DISPATCH QUEUE1 ACTIVE XECORE3	GPU	Percentage of time in which Async GPGPU threads are ready for dispatch in a particular Xe core
+Ext116	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
+Ext116	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
+Ext116	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
+Ext116	THREADGROUP_DISPATCH_RESOURCE_STALL_XECORE0	THREADGROUP DISPATCH RESOURCE STALL XECORE0	GPU	Percentage of time in which Thread Spawner is stalled waiting for resources to be available (SLM, Barrier, BTD stack)
+Ext116	THREADGROUP_DISPATCH_RESOURCE_STALL_XECORE1	THREADGROUP DISPATCH RESOURCE STALL XECORE1	GPU	Percentage of time in which Thread Spawner is stalled waiting for resources to be available (SLM, Barrier, BTD stack)
+Ext116	THREADGROUP_DISPATCH_RESOURCE_STALL_XECORE2	THREADGROUP DISPATCH RESOURCE STALL XECORE2	GPU	Percentage of time in which Thread Spawner is stalled waiting for resources to be available (SLM, Barrier, BTD stack)
+Ext116	THREADGROUP_DISPATCH_RESOURCE_STALL_XECORE3	THREADGROUP DISPATCH RESOURCE STALL XECORE3	GPU	Percentage of time in which Thread Spawner is stalled waiting for resources to be available (SLM, Barrier, BTD stack)
+Ext118	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
+Ext118	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
+Ext118	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
+Ext118	AMFS_STALL_ALL_INPUT_SLICE0	AMFS STALL ALL INPUT SLICE0	GPU	Percentage of time in which AMFS stalls at both of the color pipe inputs
+Ext118	AMFS_STALL_ANY_INPUT_SLICE0	AMFS STALL ANY INPUT SLICE0	GPU	Percentage of time in which AMFS stalls at any of the color pipe inputs
+Ext118	AMFS_CACHE_HIT_SLICE0	AMFS CACHE HIT SLICE0	GPU	Number of hits in the AMFS cache
+Ext118	AMFS_CACHE_MISS_SLICE0	AMFS CACHE MISS SLICE0	GPU	Number of cache misses in AMFS
+Ext118	RENDER_CACHE_HIT_L3NODE0	RENDER CACHE HIT L3NODE0	GPU	Number of Render Cache hits
+Ext118	RENDER_CACHE_READ_L3NODE0	RENDER CACHE READ L3NODE0	GPU	Number of Render Cache reads
+Ext118	RENDER_CACHE_WRITE_L3NODE0	RENDER CACHE WRITE L3NODE0	GPU	Number of Render Cache writes
+Ext118	RENDER_CACHE_INPUT_AVAILABLE_L3NODE0	RENDER CACHE INPUT AVAILABLE _L3NODE0	GPU	Percentage of time when Render Cache input is available
+Ext118	RENDER_CACHE_OUTPUT_READY_L3NODE0	RENDER CACHE OUTPUT READY _L3NODE0	GPU	Percentage of time when Render Cache output is ready
+Ext120	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
+Ext120	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
+Ext120	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
+Ext120	PIXEL_POST_PROCESS_INPUT_AVAILABLE_XECORE0	PIXEL POST PROCESS INPUT AVAILABLE XECORE0	GPU	Percentage of time in which Color Pipeline input ready
+Ext120	PIXEL_POST_PROCESS_INPUT_AVAILABLE_XECORE1	PIXEL POST PROCESS INPUT AVAILABLE XECORE1	GPU	Percentage of time in which Color Pipeline input ready
+Ext120	PIXEL_POST_PROCESS_INPUT_AVAILABLE_XECORE2	PIXEL POST PROCESS INPUT AVAILABLE XECORE2	GPU	Percentage of time in which Color Pipeline input ready
+Ext120	PIXEL_POST_PROCESS_INPUT_AVAILABLE_XECORE3	PIXEL POST PROCESS INPUT AVAILABLE XECORE3	GPU	Percentage of time in which Color Pipeline input ready
+Ext122	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
+Ext122	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
+Ext122	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
+Ext122	AMFS_4X4_SHADING_REQUEST_SLICE0	AMFS 4X4 SHADING REQUEST SLICE0	GPU	Number of Shading Request (evaluate) messages processed by AMFS
+Ext122	COLOR_PIPE_CACHE_LATENCY1_STALL_CPIPE0	COLOR PIPE CACHE LATENCY1 STALL CPIPE0	GPU	Percentage of time in which Color Pipeline stalled due to MultiSampling Cache latency hiding structure full
+Ext122	COLOR_PIPE_CACHE_LATENCY1_STALL_CPIPE1	COLOR PIPE CACHE LATENCY1 STALL CPIPE1	GPU	Percentage of time in which Color Pipeline stalled due to MultiSampling Cache latency hiding structure full
+Ext122	PIXEL_POST_PROCESS_OUTPUT_READY_CPIPE0	PIXEL POST PROCESS OUTPUT READY CPIPE0	GPU	Percentage of time in which Color Pipeline pixel output ready
+Ext122	PIXEL_POST_PROCESS_OUTPUT_READY_CPIPE1	PIXEL POST PROCESS OUTPUT READY CPIPE1	GPU	Percentage of time in which Color Pipeline pixel output ready
+Ext122	COLOR_PIPE_CACHE_LATENCY2_STALL_L3NODE0	COLOR PIPE CACHE LATENCY2 STALL L3NODE0	GPU	Percentage of time in which Color Pipeline stalled due to Render Cache latency hiding structure full
+Ext122	PIXEL_BACKEND_INPUT_AVAILABLE_L3NODE0	PIXEL BACKEND INPUT AVAILABLE _L3NODE0	GPU	Percentage of time when  the data is available at input of Pixel Backend
+Ext122	PIXEL_BACKEND_OUTPUT_READY_L3NODE0	PIXEL BACKEND OUTPUT READY _L3NODE0	GPU	Percentage of time when  the data at Pixel Backend output is ready
+Ext123	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
+Ext123	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
+Ext123	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
+Ext123	PS_OUTPUT_AVAILABLE_CPIPE0	PS OUTPUT AVAILABLE CPIPE0	GPU	Percentage of time in which Pixel Shader data is available
+Ext123	PS_OUTPUT_AVAILABLE_CPIPE1	PS OUTPUT AVAILABLE CPIPE1	GPU	Percentage of time in which Pixel Shader data is available
+Ext123	AMFS_L3_ACCESS_SLICE0	AMFS L3 ACCESS SLICE0	GPU	Number of AMFS accesses to L3
+Ext123	AMFS_L3_ATOMIC_SLICE0	AMFS L3 ATOMIC SLICE0	GPU	Number of AMFS atomics to L3
+Ext123	CLIPPER_PRIMITIVE_FAR_NEAR_CLIP_SLICE0	CLIPPER PRIMITIVE FAR NEAR CLIP SLICE0	GPU	Number of primitives clipped by Clipper due to near/far planes
+Ext124	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
+Ext124	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
+Ext124	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
+Ext124	VERTEX_FETCH_INPUT_AVAILABLE_SLICE0	VERTEX FETCH INPUT AVAILABLE SLICE0	GPU	Percentage of time in which Vertex Fetch input is available
+Ext124	VERTEX_FETCH_OUTPUT_READY_SLICE0	VERTEX FETCH OUTPUT READY SLICE0	GPU	Percentage of time in which Vertex Fetch output is ready
+Ext124	CLIPPER_INPUT_VERTEX_SLICE0	CLIPPER INPUT VERTEX SLICE0	GPU	Number of Clipper input vertices
+Ext124	STREAMOUT_OUTPUT_VERTEX_COUNT_SLICE0	STREAMOUT OUTPUT VERTEX COUNT SLICE0	GPU	Number of vertices written by SOL
+Ext124	VS_OUTPUT_READY_SLICE0	VS OUTPUT READY SLICE0	GPU	Percentage of time in which Vertex Shader output is ready
+Ext124	CLIPPER_INPUT_AVAILABLE_SLICE0	CLIPPER INPUT AVAILABLE SLICE0	GPU	Percentage of time in which Clipper has input available (from Vertex Shader or SOL)
+Ext124	CLIPPER_OUTPUT_READY_SLICE0	CLIPPER OUTPUT READY SLICE0	GPU	Percentage of time in which Clipper output ready
+Ext124	CLIPPER_PRIMITIVE_OUTPUT_SLICE0	CLIPPER PRIMITIVE OUTPUT SLICE0	GPU	Number of primitives going out of Clipper, must clip plus the trivial accept
+Ext124	STRIPSFAN_OUTPUT_READY_SLICE0	STRIPSFAN OUTPUT READY SLICE0	GPU	Percentage of time in which in which geometry pipeline output is ready
+Ext126	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
+Ext126	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
+Ext126	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
+Ext126	STRIPSFAN_OBJECT_COUNT_SLICE0	STRIPSFAN OBJECT COUNT SLICE0	GPU	Number of objects exiting Stripsfan stage
+Ext126	STRIPSFAN_OBJECTS_CULL_SLICE0	STRIPSFAN OBJECTS CULL SLICE0	GPU	Number of simple culled objects in Stripsfan stage
+Ext126	CLIPPER_TRANSACTION_OUTPUT_SLICE0	CLIPPER TRANSACTION OUTPUT SLICE0	GPU	Number of elements pushed by Clipper into Stripsfan stage
+Ext126	RASTERIZER_TRANSACTION_OUTPUT_SLICE0	RASTERIZER TRANSACTION OUTPUT SLICE0	GPU	Number of transactions pushed from Rasterizer to the Z pipe
+Ext126	CLIPPER_PRIMITIVE_CULL_SLICE0	CLIPPER PRIMITIVE CULL SLICE0	GPU	Number of Clipper early cull primitives
+Ext126	RASTERIZER_INPUT_AVAILABLE_SLICE0	RASTERIZER INPUT AVAILABLE SLICE0	GPU	Percentage of time in which Rasterizer input is available
+Ext126	RASTERIZER_OUTPUT_READY_SLICE0	RASTERIZER OUTPUT READY SLICE0	GPU	Percentage of time in which Rasterizer output is ready
+Ext128	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
+Ext128	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
+Ext128	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
+Ext128	URB_READ_SLICE0	URB READ SLICE0	GPU	Number of URB reads
+Ext128	URB_WRITE_SLICE0	URB WRITE SLICE0	GPU	Number of URB writes
+Ext128	URB_CROSS_SLICE_READ_SLICE0	URB CROSS SLICE READ SLICE0	GPU	Number of URB reads occurred from cross slices
+Ext130	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
+Ext130	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
+Ext130	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
+Ext130	EARLY_DEPTH_STENCIL_TEST_FAIL_NP_ZPIPE0	EARLY DEPTH STENCIL TEST FAIL NP ZPIPE0	GPU	Number of non-promoted 2x2 that failed Depth / Stencil before the Pixel Shader that were previously ambiguous at HiZ
+Ext130	EARLY_DEPTH_STENCIL_TEST_FAIL_P_ZPIPE0	EARLY DEPTH STENCIL TEST FAIL P ZPIPE0	GPU	Number of promoted 2x2 that failed Depth / Stencil that were previously ambiguous at HiZ
+Ext131	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
+Ext131	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
+Ext131	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
+Ext131	EARLY_DEPTH_STENCIL_TEST_FAIL_NP_ZPIPE1	EARLY DEPTH STENCIL TEST FAIL NP ZPIPE1	GPU	Number of non-promoted 2x2 that failed Depth / Stencil before the Pixel Shader that were previously ambiguous at HiZ
+Ext131	EARLY_DEPTH_STENCIL_TEST_FAIL_P_ZPIPE1	EARLY DEPTH STENCIL TEST FAIL P ZPIPE1	GPU	Number of promoted 2x2 that failed Depth / Stencil that were previously ambiguous at HiZ
+Ext134	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
+Ext134	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
+Ext134	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
+Ext134	HIZ_DEPTH_TEST_AMBIG_NP_ZPIPE0	HIZ DEPTH TEST AMBIG NP ZPIPE0	GPU	Number of non-promoted 2x2 that are ambiguous by hierarchical depth test
+Ext135	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
+Ext135	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
+Ext135	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
+Ext135	HIZ_DEPTH_TEST_AMBIG_NP_ZPIPE1	HIZ DEPTH TEST AMBIG NP ZPIPE1	GPU	Number of non-promoted 2x2 that are ambiguous by hierarchical depth test
+Ext138	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
+Ext138	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
+Ext138	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
+Ext138	HIZ_DEPTH_TEST_AMBIG_P_ZPIPE0	HIZ DEPTH TEST AMBIG P ZPIPE0	GPU	Number of promoted 2x2 that are ambiguous by hierarchical depth test
+Ext139	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
+Ext139	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
+Ext139	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
+Ext139	HIZ_DEPTH_TEST_AMBIG_P_ZPIPE1	HIZ DEPTH TEST AMBIG P ZPIPE1	GPU	Number of promoted 2x2 that are ambiguous by hierarchical depth test
+Ext142	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
+Ext142	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
+Ext142	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
+Ext142	HIZ_DEPTH_TEST_FAIL_NP_ZPIPE0	HIZ DEPTH TEST FAIL NP ZPIPE0	GPU	Number of non-promoted 2x2 that failed the hierarchical depth test
+Ext143	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
+Ext143	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
+Ext143	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
+Ext143	HIZ_DEPTH_TEST_FAIL_NP_ZPIPE1	HIZ DEPTH TEST FAIL NP ZPIPE1	GPU	Number of non-promoted 2x2 that failed the hierarchical depth test
+Ext146	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
+Ext146	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
+Ext146	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
+Ext146	HIZ_DEPTH_TEST_FAIL_P_ZPIPE0	HIZ DEPTH TEST FAIL P ZPIPE0	GPU	Number of promoted 2x2 that failed the hierarchical depth test
+Ext147	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
+Ext147	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
+Ext147	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
+Ext147	HIZ_DEPTH_TEST_FAIL_P_ZPIPE1	HIZ DEPTH TEST FAIL P ZPIPE1	GPU	Number of promoted 2x2 that failed the hierarchical depth test
+Ext150	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
+Ext150	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
+Ext150	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
+Ext150	HIZ_DEPTH_TEST_PASS_P_ZPIPE0	HIZ DEPTH TEST PASS P ZPIPE0	GPU	Number of promoted 2x2 passed by hierarchical depth test
+Ext151	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
+Ext151	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
+Ext151	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
+Ext151	HIZ_DEPTH_TEST_PASS_P_ZPIPE1	HIZ DEPTH TEST PASS P ZPIPE1	GPU	Number of promoted 2x2 passed by hierarchical depth test
+Ext154	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
+Ext154	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
+Ext154	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
+Ext154	HIZ_SUBSPAN_LATENCY_FIFOFULL_ZPIPE0	HIZ SUBSPAN LATENCY FIFOFULL ZPIPE0	GPU	Percentage of time in which HiZ latency hiding structure full
+Ext154	HIZ_SUBSPAN_LATENCY_FIFOFULL_ZPIPE1	HIZ SUBSPAN LATENCY FIFOFULL ZPIPE1	GPU	Percentage of time in which HiZ latency hiding structure full
+Ext154	IZ_SUBSPAN_LATENCY_FIFOFULL_ZPIPE0	IZ SUBSPAN LATENCY FIFOFULL ZPIPE0	GPU	Percentage of time in which IZ latency hiding structure full
+Ext154	IZ_SUBSPAN_LATENCY_FIFOFULL_ZPIPE1	IZ SUBSPAN LATENCY FIFOFULL ZPIPE1	GPU	Percentage of time in which IZ latency hiding structure full
+Ext154	IZ_OUTPUT_READY_ZPIPE0	IZ OUTPUT READY ZPIPE0	GPU	Percentage of time in which IZ has requests to different clients
+Ext154	IZ_OUTPUT_READY_ZPIPE1	IZ OUTPUT READY ZPIPE1	GPU	Percentage of time in which IZ has requests to different clients
+Ext155	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
+Ext155	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
+Ext155	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
+Ext155	COMMAND_PARSER_COMPUTE_ENGINE_BUSY_CCS0	COMMAND PARSER COMPUTE ENGINE BUSY CCS0	GPU	Percentage of time in which there is a context loaded and active on the compute queue
+Ext155	COMMAND_PARSER_RENDER_ENGINE_BUSY	COMMAND PARSER RENDER ENGINE BUSY	GPU	Percentage of time in which there is a context loaded and active on the 3D queue
+Ext155	COMMAND_PARSER_COPY_ENGINE_BUSY	COMMAND PARSER COPY ENGINE BUSY	GPU	Percentage of time in which there is a context loaded and active on the copy queue
+Ext155	COMMAND_PARSER_COMPUTE_ENGINE_DISPATCH_KERNEL_COUNT	COMMAND PARSER COMPUTE ENGINE DISPATCH KERNEL COUNT	GPU	Number of compute walker commands parsed on the compute engine
+Ext155	COMMAND_PARSER_RENDER_ENGINE_DISPATCH_KERNEL_COUNT	COMMAND PARSER RENDER ENGINE DISPATCH KERNEL COUNT	GPU	Number of compute walker commands parsed on the 3D engine
+Ext155	COMMAND_PARSER_RENDER_ENGINE_DRAW_COUNT	COMMAND PARSER RENDER ENGINE DRAW COUNT	GPU	Number of DRAW and MESH commands parsed on the 3D engine
+Ext155	COMMAND_PARSER_FLUSH_COUNT	COMMAND PARSER FLUSH COUNT	GPU	Number of Stalling flushes at the top of the pipe
+Ext158	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
+Ext158	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
+Ext158	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
+Ext158	RT_INPUT_MESSAGE_RAY_COUNT_XECORE0	RT INPUT MESSAGE RAY COUNT XECORE0	GPU	Number of valid SIMD lanes in the TraceRay message
+Ext158	RT_INPUT_MESSAGE_RAY_COUNT_XECORE1	RT INPUT MESSAGE RAY COUNT XECORE1	GPU	Number of valid SIMD lanes in the TraceRay message
+Ext158	RT_INPUT_MESSAGE_RAY_COUNT_XECORE2	RT INPUT MESSAGE RAY COUNT XECORE2	GPU	Number of valid SIMD lanes in the TraceRay message
+Ext158	RT_INPUT_MESSAGE_RAY_COUNT_XECORE3	RT INPUT MESSAGE RAY COUNT XECORE3	GPU	Number of valid SIMD lanes in the TraceRay message
+Ext158	RT_TRAVERSAL_INPUT_RAY_COUNT_XECORE0	RT TRAVERSAL INPUT RAY COUNT XECORE0	GPU	Number of Ray Tracing Traversal input rays
+Ext158	RT_TRAVERSAL_INPUT_RAY_COUNT_XECORE1	RT TRAVERSAL INPUT RAY COUNT XECORE1	GPU	Number of Ray Tracing Traversal input rays
+Ext158	RT_TRAVERSAL_INPUT_RAY_COUNT_XECORE2	RT TRAVERSAL INPUT RAY COUNT XECORE2	GPU	Number of Ray Tracing Traversal input rays
+Ext158	RT_TRAVERSAL_INPUT_RAY_COUNT_XECORE3	RT TRAVERSAL INPUT RAY COUNT XECORE3	GPU	Number of Ray Tracing Traversal input rays
+Ext159	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
+Ext159	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
+Ext159	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
+Ext159	RT_CLOSEST_HIT_THREAD_RAY_DISPATCH_XECORE0	RT CLOSEST HIT THREAD RAY DISPATCH XECORE0	GPU	Number of closest hit threads dispatched for RayQuery only
+Ext159	RT_CLOSEST_HIT_THREAD_RAY_DISPATCH_XECORE1	RT CLOSEST HIT THREAD RAY DISPATCH XECORE1	GPU	Number of closest hit threads dispatched for RayQuery only
+Ext159	RT_CLOSEST_HIT_THREAD_RAY_DISPATCH_XECORE2	RT CLOSEST HIT THREAD RAY DISPATCH XECORE2	GPU	Number of closest hit threads dispatched for RayQuery only
+Ext159	RT_CLOSEST_HIT_THREAD_RAY_DISPATCH_XECORE3	RT CLOSEST HIT THREAD RAY DISPATCH XECORE3	GPU	Number of closest hit threads dispatched for RayQuery only
+Ext161	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
+Ext161	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
+Ext161	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
+Ext161	RT_MISS_THREAD_RAY_DISPATCH_XECORE0	RT MISS THREAD RAY DISPATCH XECORE0	GPU	Number of miss threads dispatched for RayQuery only
+Ext161	RT_MISS_THREAD_RAY_DISPATCH_XECORE1	RT MISS THREAD RAY DISPATCH XECORE1	GPU	Number of miss threads dispatched for RayQuery only
+Ext161	RT_MISS_THREAD_RAY_DISPATCH_XECORE2	RT MISS THREAD RAY DISPATCH XECORE2	GPU	Number of miss threads dispatched for RayQuery only
+Ext161	RT_MISS_THREAD_RAY_DISPATCH_XECORE3	RT MISS THREAD RAY DISPATCH XECORE3	GPU	Number of miss threads dispatched for RayQuery only
+Ext163	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
+Ext163	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
+Ext163	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
+Ext163	RT_ANY_HIT_THREAD_RAY_DISPATCH_XECORE0	RT ANY HIT THREAD RAY DISPATCH XECORE0	GPU	Number of any hit threads dispatched for RayQuery only
+Ext163	RT_ANY_HIT_THREAD_RAY_DISPATCH_XECORE1	RT ANY HIT THREAD RAY DISPATCH XECORE1	GPU	Number of any hit threads dispatched for RayQuery only
+Ext163	RT_ANY_HIT_THREAD_RAY_DISPATCH_XECORE2	RT ANY HIT THREAD RAY DISPATCH XECORE2	GPU	Number of any hit threads dispatched for RayQuery only
+Ext163	RT_ANY_HIT_THREAD_RAY_DISPATCH_XECORE3	RT ANY HIT THREAD RAY DISPATCH XECORE3	GPU	Number of any hit threads dispatched for RayQuery only
+Ext165	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
+Ext165	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
+Ext165	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
+Ext165	RT_INTERSECTION_THREAD_RAY_DISPATCH_XECORE0	RT INTERSECTION THREAD RAY DISPATCH XECORE0	GPU	Number of intersection threads dispatched for RayQuery only
+Ext165	RT_INTERSECTION_THREAD_RAY_DISPATCH_XECORE1	RT INTERSECTION THREAD RAY DISPATCH XECORE1	GPU	Number of intersection threads dispatched for RayQuery only
+Ext165	RT_INTERSECTION_THREAD_RAY_DISPATCH_XECORE2	RT INTERSECTION THREAD RAY DISPATCH XECORE2	GPU	Number of intersection threads dispatched for RayQuery only
+Ext165	RT_INTERSECTION_THREAD_RAY_DISPATCH_XECORE3	RT INTERSECTION THREAD RAY DISPATCH XECORE3	GPU	Number of intersection threads dispatched for RayQuery only
+Ext167	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
+Ext167	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
+Ext167	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
+Ext167	RT_CALLABLE_THREAD_RAY_DISPATCH_XECORE0	RT CALLABLE THREAD RAY DISPATCH XECORE0	GPU	Number of callable threads dispatched for RayQuery only
+Ext167	RT_CALLABLE_THREAD_RAY_DISPATCH_XECORE1	RT CALLABLE THREAD RAY DISPATCH XECORE1	GPU	Number of callable threads dispatched for RayQuery only
+Ext167	RT_CALLABLE_THREAD_RAY_DISPATCH_XECORE2	RT CALLABLE THREAD RAY DISPATCH XECORE2	GPU	Number of callable threads dispatched for RayQuery only
+Ext167	RT_CALLABLE_THREAD_RAY_DISPATCH_XECORE3	RT CALLABLE THREAD RAY DISPATCH XECORE3	GPU	Number of callable threads dispatched for RayQuery only
+Ext169	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
+Ext169	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
+Ext169	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
+Ext169	RT_TRAVERSAL_OUTPUT_RAY_COUNT_XECORE0	RT TRAVERSAL OUTPUT RAY COUNT XECORE0	GPU	Number of Ray Tracing Traversal output rays
+Ext169	RT_TRAVERSAL_OUTPUT_RAY_COUNT_XECORE1	RT TRAVERSAL OUTPUT RAY COUNT XECORE1	GPU	Number of Ray Tracing Traversal output rays
+Ext169	RT_TRAVERSAL_OUTPUT_RAY_COUNT_XECORE2	RT TRAVERSAL OUTPUT RAY COUNT XECORE2	GPU	Number of Ray Tracing Traversal output rays
+Ext169	RT_TRAVERSAL_OUTPUT_RAY_COUNT_XECORE3	RT TRAVERSAL OUTPUT RAY COUNT XECORE3	GPU	Number of Ray Tracing Traversal output rays
+Ext171	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
+Ext171	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
+Ext171	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
+Ext171	RT_QUAD_TEST_RAY_COUNT_XECORE0	RT QUAD TEST RAY COUNT XECORE0	GPU	Number of nodes processed that use ray-quad intersection pipeline
+Ext171	RT_QUAD_TEST_RAY_COUNT_XECORE1	RT QUAD TEST RAY COUNT XECORE1	GPU	Number of nodes processed that use ray-quad intersection pipeline
+Ext171	RT_QUAD_TEST_RAY_COUNT_XECORE2	RT QUAD TEST RAY COUNT XECORE2	GPU	Number of nodes processed that use ray-quad intersection pipeline
+Ext171	RT_QUAD_TEST_RAY_COUNT_XECORE3	RT QUAD TEST RAY COUNT XECORE3	GPU	Number of nodes processed that use ray-quad intersection pipeline
+Ext171	RT_TRANSFORM_RAY_COUNT_XECORE0	RT TRANSFORM RAY COUNT XECORE0	GPU	Number of only HW transform accesses
+Ext171	RT_TRANSFORM_RAY_COUNT_XECORE1	RT TRANSFORM RAY COUNT XECORE1	GPU	Number of only HW transform accesses
+Ext171	RT_TRANSFORM_RAY_COUNT_XECORE2	RT TRANSFORM RAY COUNT XECORE2	GPU	Number of only HW transform accesses
+Ext171	RT_TRANSFORM_RAY_COUNT_XECORE3	RT TRANSFORM RAY COUNT XECORE3	GPU	Number of only HW transform accesses
+Ext171	RT_REQUEST_COLLISION_XECORE0	RT REQUEST COLLISION XECORE0	GPU	Percentage of time in which RayTracing Leaf has two Traversal inputs valid
+Ext171	RT_REQUEST_COLLISION_XECORE1	RT REQUEST COLLISION XECORE1	GPU	Percentage of time in which RayTracing Leaf has two Traversal inputs valid
+Ext171	RT_REQUEST_COLLISION_XECORE2	RT REQUEST COLLISION XECORE2	GPU	Percentage of time in which RayTracing Leaf has two Traversal inputs valid
+Ext171	RT_REQUEST_COLLISION_XECORE3	RT REQUEST COLLISION XECORE3	GPU	Percentage of time in which RayTracing Leaf has two Traversal inputs valid
+Ext171	RT_MESSAGE_STALL_COUNT_XECORE0	RT MESSAGE STALL COUNT XECORE0	GPU	Percentage of time in which Ray Tracing message input is stalled while accepting input
+Ext171	RT_MESSAGE_STALL_COUNT_XECORE1	RT MESSAGE STALL COUNT XECORE1	GPU	Percentage of time in which Ray Tracing message input is stalled while accepting input
+Ext171	RT_MESSAGE_STALL_COUNT_XECORE2	RT MESSAGE STALL COUNT XECORE2	GPU	Percentage of time in which Ray Tracing message input is stalled while accepting input
+Ext171	RT_MESSAGE_STALL_COUNT_XECORE3	RT MESSAGE STALL COUNT XECORE3	GPU	Percentage of time in which Ray Tracing message input is stalled while accepting input
+Ext173	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
+Ext173	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
+Ext173	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
+Ext173	XVE_STALL_ALUWR_XECORE0_XVE0_THREAD0	XVE STALL ALUWR XECORE0 XVE0 THREAD0	GPU	Percentage of time in which XVE stalled, with at least one thread waiting for ALU to write GRF/ACC register
+Ext173	XVE_STALL_BARRIER_XECORE0_XVE0_THREAD0	XVE STALL BARRIER XECORE0 XVE0 THREAD0	GPU	Percentage of time in which XVE stalled, with at least one thread waiting for Gateway to write Notify register
+Ext173	XVE_STALL_INSTFETCH_XECORE0_XVE0_THREAD0	XVE STALL INSTFETCH XECORE0 XVE0 THREAD0	GPU	Percentage of time in which XVE stalled, with at least one thread waiting for Instruction Fetch
+Ext173	XVE_STALL_OTHER_XECORE0_XVE0_THREAD0	XVE STALL OTHER XECORE0 XVE0 THREAD0	GPU	Percentage of time in which XVE stalled, with at least one thread waiting on any other dependency (Flag/EoT etc)
+Ext173	XVE_STALL_SBID_XECORE0_XVE0_THREAD0	XVE STALL SBID XECORE0 XVE0 THREAD0	GPU	Percentage of time in which XVE stalled, with at least one thread waiting for Scoreboard token to be available
+Ext173	XVE_SHARED_FUNCTION_ACCESS_HOLD_XECORE0_XVE0_THREAD0	XVE SHARED FUNCTION ACCESS HOLD XECORE0 XVE0 THREAD0	GPU	Percentage of time in which XVE requests stalled by Shared Function units
+Ext173	XVE_STALL_CONTROL_XECORE0_XVE0_THREAD0	XVE STALL CONTROL XECORE0 XVE0 THREAD0	GPU	Percentage of time in which XVE stalled, with at least one thread waiting for JEU to complete branch instruction
+Ext173	XVE_STALL_SENDWR_XECORE0_XVE0_THREAD0	XVE STALL SENDWR XECORE0 XVE0 THREAD0	GPU	Percentage of time in which XVE stalled, with at least one thread waiting for SEND to write GRF register
+Ext174	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
+Ext174	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
+Ext174	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
+Ext174	XVE_STALL_ALUWR_XECORE1_XVE0_THREAD0	XVE STALL ALUWR XECORE1 XVE0 THREAD0	GPU	Percentage of time in which XVE stalled, with at least one thread waiting for ALU to write GRF/ACC register
+Ext174	XVE_STALL_BARRIER_XECORE1_XVE0_THREAD0	XVE STALL BARRIER XECORE1 XVE0 THREAD0	GPU	Percentage of time in which XVE stalled, with at least one thread waiting for Gateway to write Notify register
+Ext174	XVE_STALL_INSTFETCH_XECORE1_XVE0_THREAD0	XVE STALL INSTFETCH XECORE1 XVE0 THREAD0	GPU	Percentage of time in which XVE stalled, with at least one thread waiting for Instruction Fetch
+Ext174	XVE_STALL_OTHER_XECORE1_XVE0_THREAD0	XVE STALL OTHER XECORE1 XVE0 THREAD0	GPU	Percentage of time in which XVE stalled, with at least one thread waiting on any other dependency (Flag/EoT etc)
+Ext174	XVE_STALL_SBID_XECORE1_XVE0_THREAD0	XVE STALL SBID XECORE1 XVE0 THREAD0	GPU	Percentage of time in which XVE stalled, with at least one thread waiting for Scoreboard token to be available
+Ext174	XVE_SHARED_FUNCTION_ACCESS_HOLD_XECORE1_XVE0_THREAD0	XVE SHARED FUNCTION ACCESS HOLD XECORE1 XVE0 THREAD0	GPU	Percentage of time in which XVE requests stalled by Shared Function units
+Ext174	XVE_STALL_CONTROL_XECORE1_XVE0_THREAD0	XVE STALL CONTROL XECORE1 XVE0 THREAD0	GPU	Percentage of time in which XVE stalled, with at least one thread waiting for JEU to complete branch instruction
+Ext174	XVE_STALL_SENDWR_XECORE1_XVE0_THREAD0	XVE STALL SENDWR XECORE1 XVE0 THREAD0	GPU	Percentage of time in which XVE stalled, with at least one thread waiting for SEND to write GRF register
+Ext175	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
+Ext175	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
+Ext175	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
+Ext175	XVE_STALL_ALUWR_XECORE2_XVE0_THREAD0	XVE STALL ALUWR XECORE2 XVE0 THREAD0	GPU	Percentage of time in which XVE stalled, with at least one thread waiting for ALU to write GRF/ACC register
+Ext175	XVE_STALL_BARRIER_XECORE2_XVE0_THREAD0	XVE STALL BARRIER XECORE2 XVE0 THREAD0	GPU	Percentage of time in which XVE stalled, with at least one thread waiting for Gateway to write Notify register
+Ext175	XVE_STALL_INSTFETCH_XECORE2_XVE0_THREAD0	XVE STALL INSTFETCH XECORE2 XVE0 THREAD0	GPU	Percentage of time in which XVE stalled, with at least one thread waiting for Instruction Fetch
+Ext175	XVE_STALL_OTHER_XECORE2_XVE0_THREAD0	XVE STALL OTHER XECORE2 XVE0 THREAD0	GPU	Percentage of time in which XVE stalled, with at least one thread waiting on any other dependency (Flag/EoT etc)
+Ext175	XVE_STALL_SBID_XECORE2_XVE0_THREAD0	XVE STALL SBID XECORE2 XVE0 THREAD0	GPU	Percentage of time in which XVE stalled, with at least one thread waiting for Scoreboard token to be available
+Ext175	XVE_SHARED_FUNCTION_ACCESS_HOLD_XECORE2_XVE0_THREAD0	XVE SHARED FUNCTION ACCESS HOLD XECORE2 XVE0 THREAD0	GPU	Percentage of time in which XVE requests stalled by Shared Function units
+Ext175	XVE_STALL_CONTROL_XECORE2_XVE0_THREAD0	XVE STALL CONTROL XECORE2 XVE0 THREAD0	GPU	Percentage of time in which XVE stalled, with at least one thread waiting for JEU to complete branch instruction
+Ext175	XVE_STALL_SENDWR_XECORE2_XVE0_THREAD0	XVE STALL SENDWR XECORE2 XVE0 THREAD0	GPU	Percentage of time in which XVE stalled, with at least one thread waiting for SEND to write GRF register
+Ext176	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
+Ext176	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
+Ext176	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
+Ext176	XVE_STALL_ALUWR_XECORE3_XVE0_THREAD0	XVE STALL ALUWR XECORE3 XVE0 THREAD0	GPU	Percentage of time in which XVE stalled, with at least one thread waiting for ALU to write GRF/ACC register
+Ext176	XVE_STALL_BARRIER_XECORE3_XVE0_THREAD0	XVE STALL BARRIER XECORE3 XVE0 THREAD0	GPU	Percentage of time in which XVE stalled, with at least one thread waiting for Gateway to write Notify register
+Ext176	XVE_STALL_INSTFETCH_XECORE3_XVE0_THREAD0	XVE STALL INSTFETCH XECORE3 XVE0 THREAD0	GPU	Percentage of time in which XVE stalled, with at least one thread waiting for Instruction Fetch
+Ext176	XVE_STALL_OTHER_XECORE3_XVE0_THREAD0	XVE STALL OTHER XECORE3 XVE0 THREAD0	GPU	Percentage of time in which XVE stalled, with at least one thread waiting on any other dependency (Flag/EoT etc)
+Ext176	XVE_STALL_SBID_XECORE3_XVE0_THREAD0	XVE STALL SBID XECORE3 XVE0 THREAD0	GPU	Percentage of time in which XVE stalled, with at least one thread waiting for Scoreboard token to be available
+Ext176	XVE_SHARED_FUNCTION_ACCESS_HOLD_XECORE3_XVE0_THREAD0	XVE SHARED FUNCTION ACCESS HOLD XECORE3 XVE0 THREAD0	GPU	Percentage of time in which XVE requests stalled by Shared Function units
+Ext176	XVE_STALL_CONTROL_XECORE3_XVE0_THREAD0	XVE STALL CONTROL XECORE3 XVE0 THREAD0	GPU	Percentage of time in which XVE stalled, with at least one thread waiting for JEU to complete branch instruction
+Ext176	XVE_STALL_SENDWR_XECORE3_XVE0_THREAD0	XVE STALL SENDWR XECORE3 XVE0 THREAD0	GPU	Percentage of time in which XVE stalled, with at least one thread waiting for SEND to write GRF register
+Ext177	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
+Ext177	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
+Ext177	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
+Ext177	XVE_STALL_PIPESTALL_XECORE0_XVE0	XVE STALL PIPESTALL XECORE0 XVE0	GPU	Percentage of time in which XVE stalled, with at least one thread is ready to be scheduled
+Ext177	XVE_STALL_PIPESTALL_XECORE1_XVE0	XVE STALL PIPESTALL XECORE1 XVE0	GPU	Percentage of time in which XVE stalled, with at least one thread is ready to be scheduled
+Ext177	XVE_STALL_PIPESTALL_XECORE2_XVE0	XVE STALL PIPESTALL XECORE2 XVE0	GPU	Percentage of time in which XVE stalled, with at least one thread is ready to be scheduled
+Ext177	XVE_STALL_PIPESTALL_XECORE3_XVE0	XVE STALL PIPESTALL XECORE3 XVE0	GPU	Percentage of time in which XVE stalled, with at least one thread is ready to be scheduled
+Ext177	XVE_INST_ISSUED_ALL_XECORE3_XVE0	XVE INST ISSUED ALL XECORE3 XVE0	GPU	Number of instructions issued (decoded) to any pipe
+Ext177	RENDER_CACHE_ALLOC_L3NODE0	RENDER CACHE ALLOC L3NODE0	GPU	Number of Render Cache allocations
+Ext181	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
+Ext181	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
+Ext181	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
+Ext181	XVE_INST_ISSUED_ALL_XECORE0_XVE0	XVE INST ISSUED ALL XECORE0 XVE0	GPU	Number of instructions issued (decoded) to any pipe
+Ext181	XVE_INST_ISSUED_ALL_XECORE1_XVE0	XVE INST ISSUED ALL XECORE1 XVE0	GPU	Number of instructions issued (decoded) to any pipe
+Ext181	XVE_INST_EXECUTED_BARRIER_XECORE0_XVE0_THREAD0	XVE INST EXECUTED BARRIER XECORE0 XVE0 THREAD0	VectorEngine	Number of execution slots taken by bit manipulation instructions
+Ext181	XVE_INST_EXECUTED_BARRIER_XECORE1_XVE0_THREAD0	XVE INST EXECUTED BARRIER XECORE1 XVE0 THREAD0	VectorEngine	Number of execution slots taken by bit manipulation instructions
+Ext181	XVE_INST_EXECUTED_NONDIVERGENT_XECORE0_XVE0_THREAD0	XVE INST EXECUTED_NONDIVERGENT XECORE0 XVE0 THREAD0	VectorEngine	Number of execution slots taken by nondivergent instructions executed
+Ext181	XVE_INST_EXECUTED_NONDIVERGENT_XECORE1_XVE0_THREAD0	XVE INST EXECUTED_NONDIVERGENT XECORE1 XVE0 THREAD0	VectorEngine	Number of execution slots taken by nondivergent instructions executed
+Ext181	XVE_INST_EXECUTED_PREDICATION_XECORE0_XVE0_THREAD0	XVE INST EXECUTED_PREDICATION XECORE0 XVE0 THREAD0	VectorEngine	Number of execution slots taken by instructions with predication mask enabled
+Ext181	XVE_INST_EXECUTED_PREDICATION_XECORE1_XVE0_THREAD0	XVE INST EXECUTED_PREDICATION XECORE1 XVE0 THREAD0	VectorEngine	Number of execution slots taken by instructions with predication mask enabled
+Ext182	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
+Ext182	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
+Ext182	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
+Ext182	XVE_INST_ISSUED_ALL_XECORE2_XVE0	XVE INST ISSUED ALL XECORE2 XVE0	GPU	Number of instructions issued (decoded) to any pipe
+Ext182	XVE_INST_ISSUED_ALL_XECORE3_XVE0	XVE INST ISSUED ALL XECORE3 XVE0	GPU	Number of instructions issued (decoded) to any pipe
+Ext182	XVE_INST_EXECUTED_BARRIER_XECORE2_XVE0_THREAD0	XVE INST EXECUTED BARRIER XECORE2 XVE0 THREAD0	VectorEngine	Number of execution slots taken by bit manipulation instructions
+Ext182	XVE_INST_EXECUTED_BARRIER_XECORE3_XVE0_THREAD0	XVE INST EXECUTED BARRIER XECORE3 XVE0 THREAD0	VectorEngine	Number of execution slots taken by bit manipulation instructions
+Ext182	XVE_INST_EXECUTED_NONDIVERGENT_XECORE2_XVE0_THREAD0	XVE INST EXECUTED_NONDIVERGENT XECORE2 XVE0 THREAD0	VectorEngine	Number of execution slots taken by nondivergent instructions executed
+Ext182	XVE_INST_EXECUTED_NONDIVERGENT_XECORE3_XVE0_THREAD0	XVE INST EXECUTED_NONDIVERGENT XECORE3 XVE0 THREAD0	VectorEngine	Number of execution slots taken by nondivergent instructions executed
+Ext182	XVE_INST_EXECUTED_PREDICATION_XECORE2_XVE0_THREAD0	XVE INST EXECUTED_PREDICATION XECORE2 XVE0 THREAD0	VectorEngine	Number of execution slots taken by instructions with predication mask enabled
+Ext182	XVE_INST_EXECUTED_PREDICATION_XECORE3_XVE0_THREAD0	XVE INST EXECUTED_PREDICATION XECORE3 XVE0 THREAD0	VectorEngine	Number of execution slots taken by instructions with predication mask enabled
+Ext184	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
+Ext184	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
+Ext184	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
+Ext184	RT_LOAD_STORE_CACHE_READ_MESSAGE_COUNT_XECORE0	RT LOAD STORE CACHE READ MESSAGE COUNT XECORE0	GPU	Number of read messages sent from Ray Tracing unit to the Load Store Cache
+Ext184	RT_LOAD_STORE_CACHE_READ_MESSAGE_COUNT_XECORE1	RT LOAD STORE CACHE READ MESSAGE COUNT XECORE1	GPU	Number of read messages sent from Ray Tracing unit to the Load Store Cache
+Ext184	RT_LOAD_STORE_CACHE_READ_MESSAGE_COUNT_XECORE2	RT LOAD STORE CACHE READ MESSAGE COUNT XECORE2	GPU	Number of read messages sent from Ray Tracing unit to the Load Store Cache
+Ext184	RT_LOAD_STORE_CACHE_READ_MESSAGE_COUNT_XECORE3	RT LOAD STORE CACHE READ MESSAGE COUNT XECORE3	GPU	Number of read messages sent from Ray Tracing unit to the Load Store Cache
+Ext188	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
+Ext188	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
+Ext188	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
+Ext188	RT_LOAD_STORE_CACHE_WRITE_FROM_MESSAGE_COUNT_XECORE0	RT LOAD STORE CACHE WRITE FROM MESSAGE COUNT XECORE0	GPU	Number of write messages sent from Ray Tracing unit to the Load Store Cache
+Ext188	RT_LOAD_STORE_CACHE_WRITE_FROM_MESSAGE_COUNT_XECORE1	RT LOAD STORE CACHE WRITE FROM MESSAGE COUNT XECORE1	GPU	Number of write messages sent from Ray Tracing unit to the Load Store Cache
+Ext188	RT_LOAD_STORE_CACHE_WRITE_FROM_MESSAGE_COUNT_XECORE2	RT LOAD STORE CACHE WRITE FROM MESSAGE COUNT XECORE2	GPU	Number of write messages sent from Ray Tracing unit to the Load Store Cache
+Ext188	RT_LOAD_STORE_CACHE_WRITE_FROM_MESSAGE_COUNT_XECORE3	RT LOAD STORE CACHE WRITE FROM MESSAGE COUNT XECORE3	GPU	Number of write messages sent from Ray Tracing unit to the Load Store Cache
+Ext190	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
+Ext190	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
+Ext190	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
+Ext190	PIXEL_POST_PROCESS_INPUT_AVAILABLE_CPIPE0	PIXEL POST PROCESS INPUT AVAILABLE CPIPE0	GPU	Percentage of time in which Color Pipeline input ready
+Ext190	PIXEL_POST_PROCESS_INPUT_AVAILABLE_CPIPE1	PIXEL POST PROCESS INPUT AVAILABLE CPIPE1	GPU	Percentage of time in which Color Pipeline input ready
+Ext192	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
+Ext192	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
+Ext192	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
+Ext192	RT_INPUT_AVAILABLE_XECORE0	RT INPUT AVAILABLE XECORE0	GPU	Percentage of time in which new message is accepted by Ray Tracing Frontend
+Ext192	RT_INPUT_AVAILABLE_XECORE1	RT INPUT AVAILABLE XECORE1	GPU	Percentage of time in which new message is accepted by Ray Tracing Frontend
+Ext192	RT_INPUT_AVAILABLE_XECORE2	RT INPUT AVAILABLE XECORE2	GPU	Percentage of time in which new message is accepted by Ray Tracing Frontend
+Ext192	RT_INPUT_AVAILABLE_XECORE3	RT INPUT AVAILABLE XECORE3	GPU	Percentage of time in which new message is accepted by Ray Tracing Frontend
+Ext192	RT_TRAVERSAL_STEP_RAY_COUNT_XECORE0	RT TRAVERSAL STEP RAY COUNT XECORE0	GPU	Number of BVH nodes processed
+Ext192	RT_TRAVERSAL_STEP_RAY_COUNT_XECORE1	RT TRAVERSAL STEP RAY COUNT XECORE1	GPU	Number of BVH nodes processed
+Ext192	RT_TRAVERSAL_STEP_RAY_COUNT_XECORE2	RT TRAVERSAL STEP RAY COUNT XECORE2	GPU	Number of BVH nodes processed
+Ext192	RT_TRAVERSAL_STEP_RAY_COUNT_XECORE3	RT TRAVERSAL STEP RAY COUNT XECORE3	GPU	Number of BVH nodes processed
+Ext195	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
+Ext195	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
+Ext195	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
+Ext195	XVE_MULTIPLE_PIPE_ACTIVE_XECORE0_XVE0	XVE MULTIPLE PIPE ACTIVE XECORE0 XVE0	GPU	Percentage of time in which at least two pipes are actively executing a Gen ISA instruction among ALU0, ALU1 and XMX pipes
+Ext195	XVE_MULTIPLE_PIPE_ACTIVE_XECORE1_XVE0	XVE MULTIPLE PIPE ACTIVE XECORE1 XVE0	GPU	Percentage of time in which at least two pipes are actively executing a Gen ISA instruction among ALU0, ALU1 and XMX pipes
+Ext195	XVE_MULTIPLE_PIPE_ACTIVE_XECORE2_XVE0	XVE MULTIPLE PIPE ACTIVE XECORE2 XVE0	GPU	Percentage of time in which at least two pipes are actively executing a Gen ISA instruction among ALU0, ALU1 and XMX pipes
+Ext195	XVE_MULTIPLE_PIPE_ACTIVE_XECORE3_XVE0	XVE MULTIPLE PIPE ACTIVE XECORE3 XVE0	GPU	Percentage of time in which at least two pipes are actively executing a Gen ISA instruction among ALU0, ALU1 and XMX pipes
+Ext195	GPGPU_DISPATCH_XECORE0	GPGPU DISPATCH XECORE0	GPU	Number of clocks spent dispatching GPGPU threads to XVEs
+Ext195	GPGPU_DISPATCH_XECORE1	GPGPU DISPATCH XECORE1	GPU	Number of clocks spent dispatching GPGPU threads to XVEs
+Ext195	GPGPU_DISPATCH_XECORE2	GPGPU DISPATCH XECORE2	GPU	Number of clocks spent dispatching GPGPU threads to XVEs
+Ext195	GPGPU_DISPATCH_XECORE3	GPGPU DISPATCH XECORE3	GPU	Number of clocks spent dispatching GPGPU threads to XVEs
+Ext200	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
+Ext200	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
+Ext200	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
+Ext200	SLM_ACCESS_COUNT_BANK0_XECORE0	SLM ACCESS COUNT BANK0 XECORE0	GPU	Number of SLM accesses
+Ext200	SLM_ACCESS_COUNT_BANK0_XECORE1	SLM ACCESS COUNT BANK0 XECORE1	GPU	Number of SLM accesses
+Ext200	SLM_ACCESS_COUNT_BANK0_XECORE2	SLM ACCESS COUNT BANK0 XECORE2	GPU	Number of SLM accesses
+Ext200	SLM_ACCESS_COUNT_BANK0_XECORE3	SLM ACCESS COUNT BANK0 XECORE3	GPU	Number of SLM accesses
+Ext201	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
+Ext201	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
+Ext201	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
+Ext201	SLM_ACCESS_COUNT_BANK1_XECORE0	SLM ACCESS COUNT BANK1 XECORE0	GPU	Number of SLM accesses
+Ext201	SLM_ACCESS_COUNT_BANK1_XECORE1	SLM ACCESS COUNT BANK1 XECORE1	GPU	Number of SLM accesses
+Ext201	SLM_ACCESS_COUNT_BANK1_XECORE2	SLM ACCESS COUNT BANK1 XECORE2	GPU	Number of SLM accesses
+Ext201	SLM_ACCESS_COUNT_BANK1_XECORE3	SLM ACCESS COUNT BANK1 XECORE3	GPU	Number of SLM accesses
+Ext202	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
+Ext202	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
+Ext202	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
+Ext202	GPU_MEMORY_L3_WRITE_SQIDI0	GPU MEMORY L3 WRITE SQIDI0	GPU	Number of GTI memory writes from L3 caused by L3 invalidations
+Ext203	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
+Ext203	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
+Ext203	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
+Ext203	GPU_MEMORY_L3_WRITE_SQIDI1	GPU MEMORY L3 WRITE SQIDI1	GPU	Number of GTI memory writes from L3 caused by L3 invalidations
+Ext204	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
+Ext204	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
+Ext204	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
+Ext204	RT_INTERNAL_NODE_RAY_COUNT_XECORE0	RT INTERNAL NODE RAY COUNT XECORE0	GPU	Number of internal BVH nodes processed by the traversal function
+Ext204	RT_INTERNAL_NODE_RAY_COUNT_XECORE1	RT INTERNAL NODE RAY COUNT XECORE1	GPU	Number of internal BVH nodes processed by the traversal function
+Ext204	RT_INTERNAL_NODE_RAY_COUNT_XECORE2	RT INTERNAL NODE RAY COUNT XECORE2	GPU	Number of internal BVH nodes processed by the traversal function
+Ext204	RT_INTERNAL_NODE_RAY_COUNT_XECORE3	RT INTERNAL NODE RAY COUNT XECORE3	GPU	Number of internal BVH nodes processed by the traversal function
+Ext205	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
+Ext205	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
+Ext205	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
+Ext205	RT_INSTANCE_NODE_RAY_COUNT_XECORE0	RT INSTANCE NODE RAY COUNT XECORE0	GPU	Number of instance BVH nodes processed by the traversal function
+Ext205	RT_INSTANCE_NODE_RAY_COUNT_XECORE1	RT INSTANCE NODE RAY COUNT XECORE1	GPU	Number of instance BVH nodes processed by the traversal function
+Ext205	RT_INSTANCE_NODE_RAY_COUNT_XECORE2	RT INSTANCE NODE RAY COUNT XECORE2	GPU	Number of instance BVH nodes processed by the traversal function
+Ext205	RT_INSTANCE_NODE_RAY_COUNT_XECORE3	RT INSTANCE NODE RAY COUNT XECORE3	GPU	Number of instance BVH nodes processed by the traversal function
+Ext212	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
+Ext212	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
+Ext212	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
+Ext212	RT_QUAD_LEAF_RAY_COUNT_XECORE0	RT QUAD LEAF RAY COUNT XECORE0	GPU	Number of triangle BVH nodes processed by the traversal function
+Ext212	RT_PROCEDURAL_NODE_RAY_COUNT_XECORE0	RT PROCEDURAL NODE RAY COUNT XECORE0	GPU	Number of procedural BVH nodes processed by the traversal function
+Ext212	RT_QUAD_LEAF_RAY_COUNT_XECORE1	RT QUAD LEAF RAY COUNT XECORE1	GPU	Number of triangle BVH nodes processed by the traversal function
+Ext212	RT_PROCEDURAL_NODE_RAY_COUNT_XECORE1	RT PROCEDURAL NODE RAY COUNT XECORE1	GPU	Number of procedural BVH nodes processed by the traversal function
+Ext214	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
+Ext214	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
+Ext214	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
+Ext214	RT_QUAD_LEAF_RAY_COUNT_XECORE2	RT QUAD LEAF RAY COUNT XECORE2	GPU	Number of triangle BVH nodes processed by the traversal function
+Ext214	RT_PROCEDURAL_NODE_RAY_COUNT_XECORE2	RT PROCEDURAL NODE RAY COUNT XECORE2	GPU	Number of procedural BVH nodes processed by the traversal function
+Ext214	RT_QUAD_LEAF_RAY_COUNT_XECORE3	RT QUAD LEAF RAY COUNT XECORE3	GPU	Number of triangle BVH nodes processed by the traversal function
+Ext214	RT_PROCEDURAL_NODE_RAY_COUNT_XECORE3	RT PROCEDURAL NODE RAY COUNT XECORE3	GPU	Number of procedural BVH nodes processed by the traversal function
+Ext220	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
+Ext220	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
+Ext220	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
+Ext220	RT_BVH_CACHE_MISS_XECORE0	RT BVH CACHE MISS XECORE0	GPU	Number of BVH cache misses for RayQuery only
+Ext220	RT_BVH_CACHE_MISS_XECORE1	RT BVH CACHE MISS XECORE1	GPU	Number of BVH cache misses for RayQuery only
+Ext220	RT_BVH_CACHE_MISS_XECORE2	RT BVH CACHE MISS XECORE2	GPU	Number of BVH cache misses for RayQuery only
+Ext220	RT_BVH_CACHE_MISS_XECORE3	RT BVH CACHE MISS XECORE3	GPU	Number of BVH cache misses for RayQuery only
+Ext223	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
+Ext223	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
+Ext223	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
+Ext223	LOAD_STORE_CACHE_NUMBER_OF_BANK_ACCESS_COUNT_XECORE0	LOAD STORE CACHE NUMBER OF BANK ACCESS COUNT XECORE0	L1Cache	Number of Load Store Cache banks accessed in a clock
+Ext223	LOAD_STORE_CACHE_NUMBER_OF_BANK_ACCESS_COUNT_XECORE1	LOAD STORE CACHE NUMBER OF BANK ACCESS COUNT XECORE1	L1Cache	Number of Load Store Cache banks accessed in a clock
+Ext223	LOAD_STORE_CACHE_NUMBER_OF_BANK_ACCESS_COUNT_XECORE2	LOAD STORE CACHE NUMBER OF BANK ACCESS COUNT XECORE2	L1Cache	Number of Load Store Cache banks accessed in a clock
+Ext223	LOAD_STORE_CACHE_NUMBER_OF_BANK_ACCESS_COUNT_XECORE3	LOAD STORE CACHE NUMBER OF BANK ACCESS COUNT XECORE3	L1Cache	Number of Load Store Cache banks accessed in a clock
+Ext225	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
+Ext225	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
+Ext225	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
+Ext225	PIXEL_2x2_LIT_POST_RASTERIZER_EARLY_DEPTH_SLICE0	PIXEL 2x2 LIT POST RASTERIZER EARLY DEPTH SLICE0	GPU	Number of promoted 2x2 that are lit from Rasterizer
+Ext227	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
+Ext227	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
+Ext227	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
+Ext227	PIXEL_2x2_LIT_POST_RASTERIZER_LATE_DEPTH_SLICE0	PIXEL 2x2 LIT POST RASTERIZER LATE DEPTH SLICE0	GPU	Number of non-promoted 2x2 that are lit from Rasterizer
+Ext229	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
+Ext229	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
+Ext229	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
+Ext229	SLM_BANK_CONFLICT_COUNT_XECORE0	SLM BANK CONFLICT COUNT XECORE0	GPU	Number of SLM accesses resulting in a bank conflict
+Ext229	SLM_BANK_CONFLICT_COUNT_XECORE1	SLM BANK CONFLICT COUNT XECORE1	GPU	Number of SLM accesses resulting in a bank conflict
+Ext231	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
+Ext231	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
+Ext231	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
+Ext231	SLM_BANK_CONFLICT_COUNT_XECORE2	SLM BANK CONFLICT COUNT XECORE2	GPU	Number of SLM accesses resulting in a bank conflict
+Ext231	SLM_BANK_CONFLICT_COUNT_XECORE3	SLM BANK CONFLICT COUNT XECORE3	GPU	Number of SLM accesses resulting in a bank conflict
+Ext237	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
+Ext237	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
+Ext237	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
+Ext237	L3_MISS_L3BANK0	L3 MISS L3BANK0	GTI/L3	Number of L3 accesses which miss in the L3 cache
+Ext237	L3_MISS_L3BANK1	L3 MISS L3BANK1	GTI/L3	Number of L3 accesses which miss in the L3 cache
+Ext237	L3_MISS_L3BANK2	L3 MISS L3BANK2	GTI/L3	Number of L3 accesses which miss in the L3 cache
+Ext237	L3_MISS_L3BANK3	L3 MISS L3BANK3	GTI/L3	Number of L3 accesses which miss in the L3 cache
+Ext238	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
+Ext238	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
+Ext238	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
+Ext238	AMFS_L3_WRITE_SLICE0	AMFS L3 WRITE SLICE0	GPU	Number of AMFS writes to L3
+Ext238	XVE_DATAPORT_FENCE_MESSAGE_COUNT_XECORE0	XVE DATAPORT FENCE MESSAGE COUNT XECORE0	GPU	Number of fence messages sent by XVEs to the Dataport
+Ext238	XVE_DATAPORT_FENCE_MESSAGE_COUNT_XECORE1	XVE DATAPORT FENCE MESSAGE COUNT XECORE1	GPU	Number of fence messages sent by XVEs to the Dataport
+Ext238	XVE_DATAPORT_FENCE_MESSAGE_COUNT_XECORE2	XVE DATAPORT FENCE MESSAGE COUNT XECORE2	GPU	Number of fence messages sent by XVEs to the Dataport
+Ext238	XVE_DATAPORT_FENCE_MESSAGE_COUNT_XECORE3	XVE DATAPORT FENCE MESSAGE COUNT XECORE3	GPU	Number of fence messages sent by XVEs to the Dataport
+Ext239	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
+Ext239	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
+Ext239	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
+Ext239	GPU_MEMORY_L3_READ_SQIDI0	GPU MEMORY L3 READ SQIDI0	GPU	Number of GTI memory reads from L3 caused by L3 Cache misses
+Ext240	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
+Ext240	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
+Ext240	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
+Ext240	GPU_MEMORY_L3_READ_SQIDI1	GPU MEMORY L3 READ SQIDI1	GPU	Number of GTI memory reads from L3 caused by L3 Cache misses
+Ext300	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
+Ext300	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
+Ext300	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
+Ext300	ASYNC_GPGPU_THREADGROUP_COUNT_XECORE0	ASYNC GPGPU THREADGROUP COUNT XECORE0	GPU	Number of Async GPGPU threadgroups dispatched
+Ext300	ASYNC_GPGPU_THREADGROUP_COUNT_XECORE1	ASYNC GPGPU THREADGROUP COUNT XECORE1	GPU	Number of Async GPGPU threadgroups dispatched
+Ext300	ASYNC_GPGPU_THREADGROUP_COUNT_XECORE2	ASYNC GPGPU THREADGROUP COUNT XECORE2	GPU	Number of Async GPGPU threadgroups dispatched
+Ext301	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
+Ext301	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
+Ext301	ASYNC_GPGPU_THREADGROUP_COUNT_XECORE3	ASYNC GPGPU THREADGROUP COUNT XECORE3	GPU	Number of Async GPGPU threadgroups dispatched
+Ext500	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
+Ext500	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
+Ext500	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
+Ext500	ICACHE_HIT_BANK0_XECORE0	ICACHE HIT BANK0 XECORE0	GPU	Number of Instruction Cache Hits
+Ext500	ICACHE_MISS_BANK0_XECORE0	ICACHE MISS BANK0 XECORE0	GPU	Number of Instruction Cache Misses
+Ext500	ICACHE_HIT_BANK0_XECORE1	ICACHE HIT BANK0 XECORE1	GPU	Number of Instruction Cache Hits
+Ext500	ICACHE_MISS_BANK0_XECORE1	ICACHE MISS BANK0 XECORE1	GPU	Number of Instruction Cache Misses
+Ext500	ICACHE_HIT_BANK0_XECORE2	ICACHE HIT BANK0 XECORE2	GPU	Number of Instruction Cache Hits
+Ext500	ICACHE_MISS_BANK0_XECORE2	ICACHE MISS BANK0 XECORE2	GPU	Number of Instruction Cache Misses
+Ext500	ICACHE_HIT_BANK0_XECORE3	ICACHE HIT BANK0 XECORE3	GPU	Number of Instruction Cache Hits
+Ext500	ICACHE_MISS_BANK0_XECORE3	ICACHE MISS BANK0 XECORE3	GPU	Number of Instruction Cache Misses
+Ext501	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
+Ext501	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
+Ext501	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
+Ext501	ICACHE_HIT_BANK1_XECORE0	ICACHE HIT BANK1 XECORE0	GPU	Number of Instruction Cache Hits
+Ext501	ICACHE_MISS_BANK1_XECORE0	ICACHE MISS BANK1 XECORE0	GPU	Number of Instruction Cache Misses
+Ext501	ICACHE_HIT_BANK1_XECORE1	ICACHE HIT BANK1 XECORE1	GPU	Number of Instruction Cache Hits
+Ext501	ICACHE_MISS_BANK1_XECORE1	ICACHE MISS BANK1 XECORE1	GPU	Number of Instruction Cache Misses
+Ext501	ICACHE_HIT_BANK1_XECORE2	ICACHE HIT BANK1 XECORE2	GPU	Number of Instruction Cache Hits
+Ext501	ICACHE_MISS_BANK1_XECORE2	ICACHE MISS BANK1 XECORE2	GPU	Number of Instruction Cache Misses
+Ext501	ICACHE_HIT_BANK1_XECORE3	ICACHE HIT BANK1 XECORE3	GPU	Number of Instruction Cache Hits
+Ext501	ICACHE_MISS_BANK1_XECORE3	ICACHE MISS BANK1 XECORE3	GPU	Number of Instruction Cache Misses
+Ext502	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
+Ext502	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
+Ext502	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
+Ext502	ICACHE_HIT_BANK2_XECORE0	ICACHE HIT BANK2 XECORE0	GPU	Number of Instruction Cache Hits
+Ext502	ICACHE_MISS_BANK2_XECORE0	ICACHE MISS BANK2 XECORE0	GPU	Number of Instruction Cache Misses
+Ext502	ICACHE_HIT_BANK2_XECORE1	ICACHE HIT BANK2 XECORE1	GPU	Number of Instruction Cache Hits
+Ext502	ICACHE_MISS_BANK2_XECORE1	ICACHE MISS BANK2 XECORE1	GPU	Number of Instruction Cache Misses
+Ext502	ICACHE_HIT_BANK2_XECORE2	ICACHE HIT BANK2 XECORE2	GPU	Number of Instruction Cache Hits
+Ext502	ICACHE_MISS_BANK2_XECORE2	ICACHE MISS BANK2 XECORE2	GPU	Number of Instruction Cache Misses
+Ext502	ICACHE_HIT_BANK2_XECORE3	ICACHE HIT BANK2 XECORE3	GPU	Number of Instruction Cache Hits
+Ext502	ICACHE_MISS_BANK2_XECORE3	ICACHE MISS BANK2 XECORE3	GPU	Number of Instruction Cache Misses
+Ext503	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
+Ext503	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
+Ext503	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
+Ext503	ICACHE_HIT_BANK3_XECORE0	ICACHE HIT BANK3 XECORE0	GPU	Number of Instruction Cache Hits
+Ext503	ICACHE_MISS_BANK3_XECORE0	ICACHE MISS BANK3 XECORE0	GPU	Number of Instruction Cache Misses
+Ext503	ICACHE_HIT_BANK3_XECORE1	ICACHE HIT BANK3 XECORE1	GPU	Number of Instruction Cache Hits
+Ext503	ICACHE_MISS_BANK3_XECORE1	ICACHE MISS BANK3 XECORE1	GPU	Number of Instruction Cache Misses
+Ext503	ICACHE_HIT_BANK3_XECORE2	ICACHE HIT BANK3 XECORE2	GPU	Number of Instruction Cache Hits
+Ext503	ICACHE_MISS_BANK3_XECORE2	ICACHE MISS BANK3 XECORE2	GPU	Number of Instruction Cache Misses
+Ext503	ICACHE_HIT_BANK3_XECORE3	ICACHE HIT BANK3 XECORE3	GPU	Number of Instruction Cache Hits
+Ext503	ICACHE_MISS_BANK3_XECORE3	ICACHE MISS BANK3 XECORE3	GPU	Number of Instruction Cache Misses
+Ext508	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
+Ext508	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
+Ext508	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
+Ext508	SLM_BYTE_READ_BANK0_XECORE0	SLM BYTE READ BANK0 XECORE0	GPU	Number of bytes read from SLM
+Ext508	SLM_BYTE_READ_BANK0_XECORE1	SLM BYTE READ BANK0 XECORE1	GPU	Number of bytes read from SLM
+Ext509	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
+Ext509	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
+Ext509	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
+Ext509	SLM_BYTE_READ_BANK1_XECORE0	SLM BYTE READ BANK1 XECORE0	GPU	Number of bytes read from SLM
+Ext509	SLM_BYTE_READ_BANK1_XECORE1	SLM BYTE READ BANK1 XECORE1	GPU	Number of bytes read from SLM
+Ext510	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
+Ext510	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
+Ext510	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
+Ext510	SLM_BYTE_READ_BANK0_XECORE2	SLM BYTE READ BANK0 XECORE2	GPU	Number of bytes read from SLM
+Ext510	SLM_BYTE_READ_BANK0_XECORE3	SLM BYTE READ BANK0 XECORE3	GPU	Number of bytes read from SLM
+Ext511	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
+Ext511	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
+Ext511	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
+Ext511	SLM_BYTE_READ_BANK1_XECORE2	SLM BYTE READ BANK1 XECORE2	GPU	Number of bytes read from SLM
+Ext511	SLM_BYTE_READ_BANK1_XECORE3	SLM BYTE READ BANK1 XECORE3	GPU	Number of bytes read from SLM
+Ext516	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
+Ext516	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
+Ext516	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
+Ext516	LOAD_STORE_CACHE_BYTE_READ_BANK0_XECORE0	LOAD STORE CACHE BYTE READ BANK0 XECORE0	GPU	Number of bytes read out of the Load Store Cache, excluding SLM accesses
+Ext516	LOAD_STORE_CACHE_BYTE_READ_BANK1_XECORE0	LOAD STORE CACHE BYTE READ BANK1 XECORE0	GPU	Number of bytes read out of the Load Store Cache, excluding SLM accesses
+Ext517	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
+Ext517	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
+Ext517	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
+Ext517	LOAD_STORE_CACHE_BYTE_WRITE_BANK0_XECORE0	LOAD STORE CACHE BYTE WRITE BANK0 XECORE0	GPU	Number of bytes written to the Load Store Cache, excluding SLM accesses
+Ext517	LOAD_STORE_CACHE_BYTE_WRITE_BANK1_XECORE0	LOAD STORE CACHE BYTE WRITE BANK1 XECORE0	GPU	Number of bytes written to the Load Store Cache, excluding SLM accesses
+Ext518	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
+Ext518	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
+Ext518	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
+Ext518	LOAD_STORE_CACHE_BYTE_READ_BANK0_XECORE1	LOAD STORE CACHE BYTE READ BANK0 XECORE1	GPU	Number of bytes read out of the Load Store Cache, excluding SLM accesses
+Ext518	LOAD_STORE_CACHE_BYTE_READ_BANK1_XECORE1	LOAD STORE CACHE BYTE READ BANK1 XECORE1	GPU	Number of bytes read out of the Load Store Cache, excluding SLM accesses
+Ext519	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
+Ext519	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
+Ext519	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
+Ext519	LOAD_STORE_CACHE_BYTE_WRITE_BANK0_XECORE1	LOAD STORE CACHE BYTE WRITE BANK0 XECORE1	GPU	Number of bytes written to the Load Store Cache, excluding SLM accesses
+Ext519	LOAD_STORE_CACHE_BYTE_WRITE_BANK1_XECORE1	LOAD STORE CACHE BYTE WRITE BANK1 XECORE1	GPU	Number of bytes written to the Load Store Cache, excluding SLM accesses
+Ext520	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
+Ext520	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
+Ext520	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
+Ext520	LOAD_STORE_CACHE_BYTE_READ_BANK0_XECORE2	LOAD STORE CACHE BYTE READ BANK0 XECORE2	GPU	Number of bytes read out of the Load Store Cache, excluding SLM accesses
+Ext520	LOAD_STORE_CACHE_BYTE_READ_BANK1_XECORE2	LOAD STORE CACHE BYTE READ BANK1 XECORE2	GPU	Number of bytes read out of the Load Store Cache, excluding SLM accesses
+Ext521	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
+Ext521	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
+Ext521	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
+Ext521	LOAD_STORE_CACHE_BYTE_WRITE_BANK0_XECORE2	LOAD STORE CACHE BYTE WRITE BANK0 XECORE2	GPU	Number of bytes written to the Load Store Cache, excluding SLM accesses
+Ext521	LOAD_STORE_CACHE_BYTE_WRITE_BANK1_XECORE2	LOAD STORE CACHE BYTE WRITE BANK1 XECORE2	GPU	Number of bytes written to the Load Store Cache, excluding SLM accesses
+Ext522	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
+Ext522	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
+Ext522	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
+Ext522	LOAD_STORE_CACHE_BYTE_READ_BANK0_XECORE3	LOAD STORE CACHE BYTE READ BANK0 XECORE3	GPU	Number of bytes read out of the Load Store Cache, excluding SLM accesses
+Ext522	LOAD_STORE_CACHE_BYTE_READ_BANK1_XECORE3	LOAD STORE CACHE BYTE READ BANK1 XECORE3	GPU	Number of bytes read out of the Load Store Cache, excluding SLM accesses
+Ext523	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
+Ext523	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
+Ext523	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
+Ext523	LOAD_STORE_CACHE_BYTE_WRITE_BANK0_XECORE3	LOAD STORE CACHE BYTE WRITE BANK0 XECORE3	GPU	Number of bytes written to the Load Store Cache, excluding SLM accesses
+Ext523	LOAD_STORE_CACHE_BYTE_WRITE_BANK1_XECORE3	LOAD STORE CACHE BYTE WRITE BANK1 XECORE3	GPU	Number of bytes written to the Load Store Cache, excluding SLM accesses
+Ext540	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
+Ext540	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
+Ext540	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
+Ext540	SLM_BYTE_WRITE_BANK0_XECORE0	SLM BYTE WRITE BANK0 XECORE0	GPU	Number of bytes written to SLM
+Ext540	SLM_BYTE_WRITE_BANK1_XECORE0	SLM BYTE WRITE BANK1 XECORE0	GPU	Number of bytes written to SLM
+Ext541	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
+Ext541	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
+Ext541	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
+Ext541	SLM_BYTE_WRITE_BANK0_XECORE1	SLM BYTE WRITE BANK0 XECORE1	GPU	Number of bytes written to SLM
+Ext541	SLM_BYTE_WRITE_BANK1_XECORE1	SLM BYTE WRITE BANK1 XECORE1	GPU	Number of bytes written to SLM
+Ext542	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
+Ext542	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
+Ext542	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
+Ext542	SLM_BYTE_WRITE_BANK0_XECORE2	SLM BYTE WRITE BANK0 XECORE2	GPU	Number of bytes written to SLM
+Ext542	SLM_BYTE_WRITE_BANK1_XECORE2	SLM BYTE WRITE BANK1 XECORE2	GPU	Number of bytes written to SLM
+Ext543	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
+Ext543	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
+Ext543	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
+Ext543	SLM_BYTE_WRITE_BANK0_XECORE3	SLM BYTE WRITE BANK0 XECORE3	GPU	Number of bytes written to SLM
+Ext543	SLM_BYTE_WRITE_BANK1_XECORE3	SLM BYTE WRITE BANK1 XECORE3	GPU	Number of bytes written to SLM
+Ext604	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
+Ext604	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
+Ext604	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
+Ext604	THREADGROUP_DISPATCH_QUEUE0_ACTIVE_XECORE0	THREADGROUP DISPATCH QUEUE0 ACTIVE XECORE0	GPU	Percentage of time in which non PS thread is ready for dispatch on thread dispatcher
+Ext604	THREADGROUP_DISPATCH_QUEUE0_ACTIVE_XECORE1	THREADGROUP DISPATCH QUEUE0 ACTIVE XECORE1	GPU	Percentage of time in which non PS thread is ready for dispatch on thread dispatcher
+Ext604	THREADGROUP_DISPATCH_QUEUE0_ACTIVE_XECORE2	THREADGROUP DISPATCH QUEUE0 ACTIVE XECORE2	GPU	Percentage of time in which non PS thread is ready for dispatch on thread dispatcher
+Ext604	THREADGROUP_DISPATCH_QUEUE0_ACTIVE_XECORE3	THREADGROUP DISPATCH QUEUE0 ACTIVE XECORE3	GPU	Percentage of time in which non PS thread is ready for dispatch on thread dispatcher
+Ext604	THREADGROUP_DISPATCH_QUEUE1_ACTIVE_XECORE0	THREADGROUP DISPATCH QUEUE1 ACTIVE XECORE0	GPU	Percentage of time in which non PS thread is ready for dispatch on thread dispatcher
+Ext604	THREADGROUP_DISPATCH_QUEUE1_ACTIVE_XECORE1	THREADGROUP DISPATCH QUEUE1 ACTIVE XECORE1	GPU	Percentage of time in which non PS thread is ready for dispatch on thread dispatcher
+Ext604	THREADGROUP_DISPATCH_QUEUE1_ACTIVE_XECORE2	THREADGROUP DISPATCH QUEUE1 ACTIVE XECORE2	GPU	Percentage of time in which non PS thread is ready for dispatch on thread dispatcher
+Ext604	THREADGROUP_DISPATCH_QUEUE1_ACTIVE_XECORE3	THREADGROUP DISPATCH QUEUE1 ACTIVE XECORE3	GPU	Percentage of time in which non PS thread is ready for dispatch on thread dispatcher
+Ext1000	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
+Ext1000	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
+Ext1000	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
+Ext1000	XVE_ACTIVE	XVE ACTIVE	EU Array	Percentage of time in which at least one pipe is active in XVE
+Ext1000	XVE_STALL	XVE STALL	EU Array	Percentage of time in which any threads are loaded but not even a single pipe is active in XVE
+Ext1000	XVE_THREADS_OCCUPANCY_ALL	XVE THREADS OCCUPANCY ALL	EU Array	Percentage of thread slots occupied
+Ext1000	XVE_INST_EXECUTED_ALU0_ALL	XVE INST EXECUTED ALU0 ALL	EU Array/Pipes	Number of execution slots taken by instructions executed on ALU0 pipe
+Ext1000	XVE_INST_EXECUTED_ALU1_ALL	XVE INST EXECUTED ALU1 ALL	EU Array/Pipes	Number of execution slots taken by instructions executed on ALU1 pipe
+Ext1000	XVE_INST_EXECUTED_XMX_ALL	XVE INST EXECUTED XMX ALL	EU Array/Pipes	Number of execution slots taken by instructions executed in XMX pipe
+Ext1000	XVE_INST_EXECUTED_SEND_ALL	XVE INST EXECUTED SEND ALL	EU Array/Pipes	Number of instructions executed on SEND pipe
+Ext1000	XVE_INST_EXECUTED_CONTROL_ALL	XVE INST EXECUTED CONTROL ALL	EU Array	Number of instructions executed on Jump Pipe
+Ext1000	XVE_PIPE_ALU0_AND_ALU1_ACTIVE	XVE PIPE ALU0 AND ALU1 ACTIVE	EU Array/Pipes	Percentage of time in which ALU0 and ALU1 pipes are both actively executing a Gen ISA instruction
+Ext1000	XVE_PIPE_ALU0_AND_XMX_ACTIVE	XVE PIPE ALU0 AND XMX ACTIVE	EU Array/Pipes	Percentage of time in which ALU0 and XMX pipes are both actively executing a Gen ISA instruction
+Ext1000	XVE_INST_EXECUTED_ALU0_ALL_UTILIZATION	XVE INST EXECUTED ALU0 ALL UTILIZATION	EU Array/Pipes	Percentage of execution slots taken by instructions executed on ALU0 pipe
+Ext1000	XVE_INST_EXECUTED_ALU1_ALL_UTILIZATION	XVE INST EXECUTED ALU1 ALL UTILIZATION	EU Array/Pipes	Percentage of execution slots taken by instructions executed on ALU1 pipe
+Ext1000	XVE_INST_EXECUTED_XMX_ALL_UTILIZATION	XVE INST EXECUTED XMX ALL UTILIZATION	EU Array/Pipes	Percentage of execution slots taken by instructions executed in XMX pipe
+Ext1000	XVE_INST_EXECUTED_SEND_ALL_UTILIZATION	XVE INST EXECUTED SEND ALL UTILIZATION	EU Array/Pipes	Percentage of time taken by instructions executed on SEND pipe
+Ext1000	XVE_INST_EXECUTED_CONTROL_ALL_UTILIZATION	XVE INST EXECUTED CONTROL ALL UTILIZATION	EU Array	Percentage of time taken by instructions executed on Jump Pipe
+Ext1000	XVE_ACTIVE_CYCLES	XVE ACTIVE CYCLES	EU Array	Number of cycles at least one pipe is active in XVE
+Ext1000	XVE_STALL_CYCLES	XVE STALL CYCLES	EU Array	Number of cycles any threads are loaded but not even a single pipe is active in XVE
+Ext1000	XVE_THREADS_OCCUPANCY_CYCLES_ALL	XVE THREADS OCCUPANCY CYCLES ALL	EU Array	Number of thread slots occupied
+Ext1000	XVE_PIPE_ALU0_AND_ALU1_ACTIVE_CYCLES	XVE PIPE ALU0 AND ALU1 ACTIVE CYCLES	EU Array/Pipes	Number of cycles in ALU0 and ALU1 pipes are both actively executing a Gen ISA instruction
+Ext1000	XVE_PIPE_ALU0_AND_XMX_ACTIVE_CYCLES	XVE PIPE ALU0 AND XMX ACTIVE CYCLES	EU Array/Pipes	Number of cycles ALU0 and XMX pipes are both actively executing a Gen ISA instruction
+Ext1001	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
+Ext1001	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
+Ext1001	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
+Ext1001	XVE_INST_EXECUTED_ALU0_VS	XVE INST EXECUTED ALU0 VS	EU Array/Vertex Shader	Number of execution slots taken by instructions executed by Vertex Shader on ALU0 pipe
+Ext1001	XVE_INST_EXECUTED_ALU0_HS	XVE INST EXECUTED ALU0 HS	EU Array/Hull Shader	Number of execution slots taken by instructions executed by Hull Shader on ALU0 pipe
+Ext1001	XVE_INST_EXECUTED_ALU0_DS	XVE INST EXECUTED ALU0 DS	EU Array/Domain Shader	Number of execution slots taken by instructions executed by Domain Shader on ALU0 pipe
+Ext1001	XVE_INST_EXECUTED_ALU0_PS	XVE INST EXECUTED ALU0 PS	EU Array/Pixel Shader	Number of execution slots taken by instructions executed by Pixel Shader on ALU0 pipe
+Ext1001	XVE_INST_EXECUTED_ALU0_CS	XVE INST EXECUTED ALU0 CS	EU Array/Compute Shader	Number of execution slots taken by instructions executed by Compute Shader (from Render Engine) on ALU0 pipe
+Ext1001	XVE_INST_EXECUTED_ALU0_ASYNC_CS	XVE INST EXECUTED ALU0 ASYNC CS	EU Array/Compute Shader	Number of execution slots taken by instructions executed by Async Compute Shader on ALU0 pipe
+Ext1001	XVE_INST_EXECUTED_ALU1_VS	XVE INST EXECUTED ALU1 VS	EU Array/Vertex Shader	Number of execution slots taken by instructions executed by Vertex Shader on ALU1 pipe
+Ext1001	XVE_INST_EXECUTED_ALU1_HS	XVE INST EXECUTED ALU1 HS	EU Array/Hull Shader	Number of execution slots taken by instructions executed by Hull Shader on ALU1 pipe
+Ext1001	XVE_INST_EXECUTED_ALU1_DS	XVE INST EXECUTED ALU1 DS	EU Array/Domain Shader	Number of execution slots taken by instructions executed by Domain Shader on ALU1 pipe
+Ext1001	XVE_INST_EXECUTED_ALU1_PS	XVE INST EXECUTED ALU1 PS	EU Array/Pixel Shader	Number of execution slots taken by instructions executed by Pixel Shader on ALU1 pipe
+Ext1001	XVE_INST_EXECUTED_ALU1_CS	XVE INST EXECUTED ALU1 CS	EU Array/Compute Shader	Number of execution slots taken by instructions executed by Compute Shader (from Render Engine) on ALU1 pipe
+Ext1001	XVE_INST_EXECUTED_ALU1_ASYNC_CS	XVE INST EXECUTED ALU1 ASYNC CS	EU Array/Compute Shader	Number of execution slots taken by instructions executed by Async Compute Shader on ALU1 pipe
+Ext1001	XVE_INST_EXECUTED_ALU0_VS_UTILIZATION	XVE INST EXECUTED ALU0 VS UTILIZATION	EU Array/Vertex Shader	Percentage of execution slots taken by instructions executed by Vertex Shader on ALU0 pipe
+Ext1001	XVE_INST_EXECUTED_ALU0_HS_UTILIZATION	XVE INST EXECUTED ALU0 HS UTILIZATION	EU Array/Hull Shader	Percentage of execution slots taken by instructions executed by Hull Shader on ALU0 pipe
+Ext1001	XVE_INST_EXECUTED_ALU0_DS_UTILIZATION	XVE INST EXECUTED ALU0 DS UTILIZATION	EU Array/Domain Shader	Percentage of execution slots taken by instructions executed by Domain Shader on ALU0 pipe
+Ext1001	XVE_INST_EXECUTED_ALU0_PS_UTILIZATION	XVE INST EXECUTED ALU0 PS UTILIZATION	EU Array/Pixel Shader	Percentage of execution slots taken by instructions executed by Pixel Shader on ALU0 pipe
+Ext1001	XVE_INST_EXECUTED_ALU0_CS_UTILIZATION	XVE INST EXECUTED ALU0 CS UTILIZATION	EU Array/Compute Shader	Percentage of execution slots taken by instructions executed by Compute Shader (from Render Engine) on ALU0 pipe
+Ext1001	XVE_INST_EXECUTED_ALU0_ASYNC_CS_UTILIZATION	XVE INST EXECUTED ALU0 ASYNC CS UTILIZATION	EU Array/Compute Shader	Percentage of execution slots taken by instructions executed by Async Compute Shader on ALU0 pipe
+Ext1001	XVE_INST_EXECUTED_ALU1_VS_UTILIZATION	XVE INST EXECUTED ALU1 VS UTILIZATION	EU Array/Vertex Shader	Percentage of execution slots taken by instructions executed by Vertex Shader on ALU1 pipe
+Ext1001	XVE_INST_EXECUTED_ALU1_HS_UTILIZATION	XVE INST EXECUTED ALU1 HS UTILIZATION	EU Array/Hull Shader	Percentage of execution slots taken by instructions executed by Hull Shader on ALU1 pipe
+Ext1001	XVE_INST_EXECUTED_ALU1_DS_UTILIZATION	XVE INST EXECUTED ALU1 DS UTILIZATION	EU Array/Domain Shader	Percentage of execution slots taken by instructions executed by Domain Shader on ALU1 pipe
+Ext1001	XVE_INST_EXECUTED_ALU1_PS_UTILIZATION	XVE INST EXECUTED ALU1 PS UTILIZATION	EU Array/Pixel Shader	Percentage of execution slots taken by instructions executed by Pixel Shader on ALU1 pipe
+Ext1001	XVE_INST_EXECUTED_ALU1_CS_UTILIZATION	XVE INST EXECUTED ALU1 CS UTILIZATION	EU Array/Compute Shader	Percentage of execution slots taken by instructions executed by Compute Shader (from Render Engine) on ALU1 pipe
+Ext1001	XVE_INST_EXECUTED_ALU1_ASYNC_CS_UTILIZATION	XVE INST EXECUTED ALU1 ASYNC CS UTILIZATION	EU Array/Compute Shader	Percentage of execution slots taken by instructions executed by Async Compute Shader on ALU1 pipe
+Ext1002	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
+Ext1002	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
+Ext1002	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
+Ext1002	XVE_INST_EXECUTED_ALU0_RT_AHS_UTILIZATION	XVE INST EXECUTED ALU0 RT AHS UTILIZATION	EU Array/Compute Shader	Percentage of execution slots taken by instructions executed by BTD Any Hit Shader on ALU0 pipe
+Ext1002	XVE_INST_EXECUTED_ALU1_RT_AHS_UTILIZATION	XVE INST EXECUTED ALU1 RT AHS UTILIZATION	EU Array/Compute Shader	Percentage of execution slots taken by instructions executed by BTD Any Hit Shader on ALU1 pipe
+Ext1002	XVE_INST_EXECUTED_SEND_RT_AHS_UTILIZATION	XVE INST EXECUTED SEND RT AHS UTILIZATION	EU Array/Compute Shader	Percentage of time taken by instructions executed by BTD Any Hit Shader threads on SEND pipe
+Ext1002	XVE_INST_EXECUTED_ALU0_RT_CHS_UTILIZATION	XVE INST EXECUTED ALU0 RT CHS UTILIZATION	EU Array/Compute Shader	Percentage of execution slots taken by instructions executed by BTD Closest Hit Shader on ALU0 pipe
+Ext1002	XVE_INST_EXECUTED_ALU1_RT_CHS_UTILIZATION	XVE INST EXECUTED ALU1 RT CHS UTILIZATION	EU Array/Compute Shader	Percentage of execution slots taken by instructions executed by BTD Closest Hit Shader on ALU1 pipe
+Ext1002	XVE_INST_EXECUTED_SEND_RT_CHS_UTILIZATION	XVE INST EXECUTED SEND RT CHS UTILIZATION	EU Array/Compute Shader	Percentage of time taken by instructions executed by BTD Closest Hit Shader threads on SEND pipe
+Ext1002	XVE_INST_EXECUTED_ALU0_RT_MS_UTILIZATION	XVE INST EXECUTED ALU0 RT MS UTILIZATION	EU Array/Compute Shader	Percentage of execution slots taken by instructions executed by BTD Miss Shader on ALU0 pipe
+Ext1002	XVE_INST_EXECUTED_ALU1_RT_MS_UTILIZATION	XVE INST EXECUTED ALU1 RT MS UTILIZATION	EU Array/Compute Shader	Percentage of execution slots taken by instructions executed by BTD Miss Shader on ALU1 pipe
+Ext1002	XVE_INST_EXECUTED_SEND_RT_MS_UTILIZATION	XVE INST EXECUTED SEND RT MS UTILIZATION	EU Array/Compute Shader	Percentage of time taken by instructions executed by BTD Miss Shader threads on SEND pipe
+Ext1002	XVE_INST_EXECUTED_ALU0_RT_AHS	XVE INST EXECUTED ALU0 RT AHS	EU Array/Compute Shader	Number of execution slots taken by instructions executed by BTD Any Hit Shader on ALU0 pipe
+Ext1002	XVE_INST_EXECUTED_ALU1_RT_AHS	XVE INST EXECUTED ALU1 RT AHS	EU Array/Compute Shader	Number of execution slots taken by instructions executed by BTD Any Hit Shader on ALU1 pipe
+Ext1002	XVE_INST_EXECUTED_SEND_RT_AHS	XVE INST EXECUTED SEND RT AHS	EU Array/Compute Shader	Number of instructions executed by BTD Any Hit Shader threads on SEND pipe
+Ext1002	XVE_INST_EXECUTED_ALU0_RT_CHS	XVE INST EXECUTED ALU0 RT CHS	EU Array/Compute Shader	Number of execution slots taken by instructions executed by BTD Closest Hit Shader on ALU0 pipe
+Ext1002	XVE_INST_EXECUTED_ALU1_RT_CHS	XVE INST EXECUTED ALU1 RT CHS	EU Array/Compute Shader	Number of execution slots taken by instructions executed by BTD Closest Hit Shader on ALU1 pipe
+Ext1002	XVE_INST_EXECUTED_SEND_RT_CHS	XVE INST EXECUTED SEND RT CHS	EU Array/Compute Shader	Number of instructions executed by BTD Closest Hit Shader threads on SEND pipe
+Ext1002	XVE_INST_EXECUTED_ALU0_RT_MS	XVE INST EXECUTED ALU0 RT MS	EU Array/Compute Shader	Number of execution slots taken by instructions executed by BTD Miss Shader on ALU0 pipe
+Ext1002	XVE_INST_EXECUTED_ALU1_RT_MS	XVE INST EXECUTED ALU1 RT MS	EU Array/Compute Shader	Number of execution slots taken by instructions executed by BTD Miss Shader on ALU1 pipe
+Ext1002	XVE_INST_EXECUTED_SEND_RT_MS	XVE INST EXECUTED SEND RT MS	EU Array/Compute Shader	Number of instructions executed by BTD Miss Shader threads on SEND pipe
+Ext1003	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
+Ext1003	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
+Ext1003	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
+Ext1003	XVE_ACTIVE	XVE ACTIVE	EU Array	Percentage of time in which at least one pipe is active in XVE
+Ext1003	XVE_ACTIVE_DS	XVE ACTIVE DS	EU Array/Domain Shader	Percentage of time in which at least one pipe is active in XVE and there are Domain Shader threads loaded
+Ext1003	XVE_ACTIVE_HS	XVE ACTIVE HS	EU Array/Hull Shader	Percentage of time in which at least one pipe is active in XVE and there are Hull Shader threads loaded
+Ext1003	XVE_ACTIVE_PS	XVE ACTIVE PS	EU Array/Pixel Shader	Percentage of time in which at least one pipe is active in XVE and there are Pixel Shader threads loaded
+Ext1003	XVE_ACTIVE_VS	XVE ACTIVE VS	EU Array/Vertex Shader	Percentage of time in which at least one pipe is active in XVE and there are Vertex Shader threads loaded
+Ext1003	XVE_ACTIVE_ASYNC_CS	XVE ACTIVE ASYNC CS	EU Array/Compute Shader	Percentage of time in which at least one pipe is active in XVE and there are Async Compute Shader threads loaded
+Ext1003	XVE_ACTIVE_CS	XVE ACTIVE CS	EU Array/Compute Shader	Percentage of time in which at least one pipe is active in XVE and there are Compute Shader (from Render Engine) threads loaded
+Ext1003	XVE_ACTIVE_MS	XVE ACTIVE MS	EU Array/Compute Shader	Percentage of time in which at least one pipe is active in XVE and there are Mesh Shader threads loaded
+Ext1003	XVE_ACTIVE_TS	XVE ACTIVE TS	EU Array/Compute Shader	Percentage of time in which at least one pipe is active in XVE and there are Task Shader threads loaded
+Ext1003	XVE_ACTIVE_RT	XVE ACTIVE RT	EU Array/Compute Shader	Percentage of time in which at least one pipe is active in XVE and there are Ray Tracing Shader threads loaded
+Ext1003	XVE_ACTIVE_CYCLES	XVE ACTIVE CYCLES	EU Array	Number of cycles at least one pipe is active in XVE
+Ext1003	XVE_ACTIVE_CYCLES_ASYNC_CS	XVE ACTIVE CYCLES ASYNC CS	EU Array/Compute Shader	Number of cycles at least one pipe is active in XVE and there are Async Compute Shader threads loaded
+Ext1003	XVE_ACTIVE_CYCLES_CS	XVE ACTIVE CYCLES CS	EU Array/Compute Shader	Number of cycles at least one pipe is active in XVE and there are Compute Shader (from Render Engine) threads loaded
+Ext1003	XVE_ACTIVE_CYCLES_HS	XVE ACTIVE CYCLES HS	EU Array/Hull Shader	Number of cycles at least one pipe is active in XVE and there are Hull Shader threads loaded
+Ext1003	XVE_ACTIVE_CYCLES_PS	XVE ACTIVE CYCLES PS	EU Array/Pixel Shader	Number of cycles at least one pipe is active in XVE and there are Pixel Shader threads loaded
+Ext1003	XVE_ACTIVE_CYCLES_VS	XVE ACTIVE CYCLES VS	EU Array/Vertex Shader	Number of cycles at least one pipe is active in XVE and there are Vertex Shader threads loaded
+Ext1003	XVE_ACTIVE_CYCLES_DS	XVE ACTIVE CYCLES DS	EU Array/Domain Shader	Number of cycles at least one pipe is active in XVE and there are Domain Shader threads loaded
+Ext1003	XVE_ACTIVE_CYCLES_MS	XVE ACTIVE CYCLES MS	EU Array/Compute Shader	Number of cycles at least one pipe is active in XVE and there are Mesh Shader threads loaded
+Ext1003	XVE_ACTIVE_CYCLES_TS	XVE ACTIVE CYCLES TS	EU Array/Compute Shader	Number of cycles at least one pipe is active in XVE and there are Task Shader threads loaded
+Ext1003	XVE_ACTIVE_CYCLES_RT	XVE ACTIVE CYCLES RT	EU Array/Compute Shader	Number of cycles at least one pipe is active in XVE and there are Ray Tracing Shader threads loaded
+Ext1004	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
+Ext1004	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
+Ext1004	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
+Ext1004	XVE_STALL	XVE STALL	EU Array	Percentage of time in which any threads are loaded but not even a single pipe is active in XVE
+Ext1004	XVE_STALL_ASYNC_CS	XVE STALL ASYNC CS	EU Array/Compute Shader	Percentage of time in which there are Async Compute Shader threads loaded but not even a single pipe is active in XVE
+Ext1004	XVE_STALL_CS	XVE STALL CS	EU Array/Compute Shader	Percentage of time in which there are Compute Shader (from Render Engine) threads loaded but not even a single pipe is active in XVE
+Ext1004	XVE_STALL_DS	XVE STALL DS	EU Array/Domain Shader	Percentage of time in which there are Domain Shader threads loaded but not even a single pipe is active in XVE
+Ext1004	XVE_STALL_HS	XVE STALL HS	EU Array/Hull Shader	Percentage of time in which there are Hull Shader threads loaded but not even a single pipe is active in XVE
+Ext1004	XVE_STALL_MS	XVE STALL MS	EU Array/Compute Shader	Percentage of time in which there are Mesh Shader threads loaded but not even a single pipe is active in XVE
+Ext1004	XVE_STALL_PS	XVE STALL PS	EU Array/Pixel Shader	Percentage of time in which there are Pixel Shader threads loaded but not even a single pipe is active in XVE
+Ext1004	XVE_STALL_TS	XVE STALL TS	EU Array/Compute Shader	Percentage of time in which there are Task Shader threads loaded but not even a single pipe is active in XVE
+Ext1004	XVE_STALL_VS	XVE STALL VS	EU Array/Vertex Shader	Percentage of time in which there are Vertex Shader threads loaded but not even a single pipe is active in XVE
+Ext1004	XVE_STALL_RT	XVE STALL RT	EU Array/Compute Shader	Percentage of time in which there are Ray Tracing Shader threads loaded but not even a single pipe is active in XVE
+Ext1004	XVE_STALL_CYCLES	XVE STALL CYCLES	EU Array	Number of cycles any threads are loaded but not even a single pipe is active in XVE
+Ext1004	XVE_STALL_CYCLES_ASYNC_CS	XVE STALL CYCLES ASYNC CS	EU Array/Compute Shader	Number of cycles there are Async Compute Shader threads loaded but not even a single pipe is active in XVE
+Ext1004	XVE_STALL_CYCLES_CS	XVE STALL CYCLES CS	EU Array/Compute Shader	Number of cycles there are Compute Shader (from Render Engine) threads loaded but not even a single pipe is active in XVE
+Ext1004	XVE_STALL_CYCLES_DS	XVE STALL CYCLES DS	EU Array/Domain Shader	Number of cycles there are Domain Shader threads loaded but not even a single pipe is active in XVE
+Ext1004	XVE_STALL_CYCLES_HS	XVE STALL CYCLES HS	EU Array/Hull Shader	Number of cycles there are Hull Shader threads loaded but not even a single pipe is active in XVE
+Ext1004	XVE_STALL_CYCLES_MS	XVE STALL CYCLES MS	EU Array/Compute Shader	Number of cycles there are Mesh Shader threads loaded but not even a single pipe is active in XVE
+Ext1004	XVE_STALL_CYCLES_PS	XVE STALL CYCLES PS	EU Array/Pixel Shader	Number of cycles there are Pixel Shader threads loaded but not even a single pipe is active in XVE
+Ext1004	XVE_STALL_CYCLES_TS	XVE STALL CYCLES TS	EU Array/Compute Shader	Number of cycles there are Task Shader threads loaded but not even a single pipe is active in XVE
+Ext1004	XVE_STALL_CYCLES_VS	XVE STALL CYCLES VS	EU Array/Vertex Shader	Number of cycles there are Vertex Shader threads loaded but not even a single pipe is active in XVE
+Ext1004	XVE_STALL_CYCLES_RT	XVE STALL CYCLES RT	EU Array/Compute Shader	Number of cycles there are Ray Tracing Shader threads loaded but not even a single pipe is active in XVE
+Ext1005	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
+Ext1005	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
+Ext1005	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
+Ext1005	XVE_INST_EXECUTED_ALU0_ALL	XVE INST EXECUTED ALU0 ALL	EU Array/Pipes	Number of execution slots taken by instructions executed on ALU0 pipe
+Ext1005	XVE_INST_EXECUTED_FP16	XVE INST EXECUTED FP16	EU Array	Number of execution slots taken by FP16 ALU instructions
+Ext1005	XVE_INST_EXECUTED_FP32	XVE INST EXECUTED FP32	EU Array	Number of execution slots taken by FP32 ALU instructions
+Ext1005	XVE_INST_EXECUTED_FP64	XVE INST EXECUTED FP64	EU Array	The number of FLT64 instructions executed in ALU0 INT64 pipeline.
+Ext1005	XVE_INST_EXECUTED_ALU1_ALL	XVE INST EXECUTED ALU1 ALL	EU Array/Pipes	Number of execution slots taken by instructions executed on ALU1 pipe
+Ext1005	XVE_INST_EXECUTED_INT16	XVE INST EXECUTED INT16	EU Array	Number of execution slots taken by INT16 ALU instructions
+Ext1005	XVE_INST_EXECUTED_INT32	XVE INST EXECUTED INT32	EU Array	Number of execution slots taken by INT32 ALU instructions
+Ext1005	XVE_INST_EXECUTED_MATH	XVE INST EXECUTED MATH	EU Array	Number of execution slots taken by extended math instructions
+Ext1005	XVE_INST_EXECUTED_XMX_ALL	XVE INST EXECUTED XMX ALL	EU Array/Pipes	Number of execution slots taken by instructions executed in XMX pipe
+Ext1005	XVE_INST_EXECUTED_XMX_BF16	XVE INST EXECUTED XMX BF16	EU Array	Number of execution slots taken by BF16 XMX instructions
+Ext1005	XVE_INST_EXECUTED_XMX_FP16	XVE INST EXECUTED XMX FP16	EU Array	Number of execution slots taken by FP16 XMX instructions
+Ext1005	XVE_INST_EXECUTED_XMX_INT8	XVE INST EXECUTED XMX INT8	EU Array	Number of execution slots taken by INT8 XMX instructions
+Ext1005	XVE_INST_EXECUTED_ALU0_ALL_UTILIZATION	XVE INST EXECUTED ALU0 ALL UTILIZATION	EU Array/Pipes	Percentage of execution slots taken by instructions executed on ALU0 pipe
+Ext1005	XVE_INST_EXECUTED_FP16_UTILIZATION	XVE INST EXECUTED FP16 UTILIZATION	EU Array	Percentage of execution slots taken by FP16 ALU instructions
+Ext1005	XVE_INST_EXECUTED_FP32_UTILIZATION	XVE INST EXECUTED FP32 UTILIZATION	EU Array	Percentage of execution slots taken by FP32 ALU instructions
+Ext1005	XVE_INST_EXECUTED_FP64_UTILIZATION	XVE INST EXECUTED FP64 UTILIZATION	EU Array	The percentage of time in which FLT64 instruction were processed actively on FPU INT64 pipeline.
+Ext1005	XVE_INST_EXECUTED_ALU1_ALL_UTILIZATION	XVE INST EXECUTED ALU1 ALL UTILIZATION	EU Array/Pipes	Percentage of execution slots taken by instructions executed on ALU1 pipe
+Ext1005	XVE_INST_EXECUTED_INT16_UTILIZATION	XVE INST EXECUTED INT16 UTILIZATION	EU Array	Percentage of execution slots taken by INT16 ALU instructions
+Ext1005	XVE_INST_EXECUTED_INT32_UTILIZATION	XVE INST EXECUTED INT32 UTILIZATION	EU Array	Percentage of execution slots taken by INT32 ALU instructions
+Ext1005	XVE_INST_EXECUTED_MATH_UTILIZATION	XVE INST EXECUTED MATH UTILIZATION	EU Array	Percentage of execution slots taken by extended math instructions
+Ext1005	XVE_INST_EXECUTED_XMX_ALL_UTILIZATION	XVE INST EXECUTED XMX ALL UTILIZATION	EU Array/Pipes	Percentage of execution slots taken by instructions executed in XMX pipe
+Ext1005	XVE_INST_EXECUTED_XMX_BF16_UTILIZATION	XVE INST EXECUTED XMX BF16 UTILIZATION	EU Array	Percentage of execution slots taken by BF16 XMX instructions
+Ext1005	XVE_INST_EXECUTED_XMX_FP16_UTILIZATION	XVE INST EXECUTED XMX FP16 UTILIZATION	EU Array	Percentage of execution slots taken by FP16 XMX instructions
+Ext1005	XVE_INST_EXECUTED_XMX_INT8_UTILIZATION	XVE INST EXECUTED XMX INT8 UTILIZATION	EU Array	Percentage of execution slots taken by INT8 XMX instructions
+Ext1006	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
+Ext1006	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
+Ext1006	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
+Ext1006	XVE_INST_EXECUTED_SEND_ALL	XVE INST EXECUTED SEND ALL	EU Array/Pipes	Number of instructions executed on SEND pipe
+Ext1006	XVE_INST_EXECUTED_SEND_ASYNC_CS	XVE INST EXECUTED SEND ASYNC CS	EU Array/Compute Shader	Number of instructions executed by Async Compute Shader threads on SEND pipe
+Ext1006	XVE_INST_EXECUTED_SEND_CS	XVE INST EXECUTED SEND CS	EU Array/Compute Shader	Number of instructions executed by Compute Shader (from Render Engine) threads on SEND pipe
+Ext1006	XVE_INST_EXECUTED_SEND_DS	XVE INST EXECUTED SEND DS	EU Array/Domain Shader	Number of instructions executed by Domain Shader threads on SEND pipe
+Ext1006	XVE_INST_EXECUTED_SEND_GS	XVE INST EXECUTED SEND GS	EU Array/Geometry Shader	Number of instructions executed by Geometry Shader threads on SEND pipe
+Ext1006	XVE_INST_EXECUTED_SEND_HS	XVE INST EXECUTED SEND HS	EU Array/Hull Shader	Number of instructions executed by Hull Shader threads on SEND pipe
+Ext1006	XVE_INST_EXECUTED_SEND_MS	XVE INST EXECUTED SEND MS	EU Array/Compute Shader	Number of instructions executed by Mesh Shader threads on SEND pipe
+Ext1006	XVE_INST_EXECUTED_SEND_PS	XVE INST EXECUTED SEND PS	EU Array/Pixel Shader	Number of instructions executed by Pixel Shader threads on SEND pipe
+Ext1006	XVE_INST_EXECUTED_SEND_TS	XVE INST EXECUTED SEND TS	EU Array/Compute Shader	Number of instructions executed by Task Shader threads on SEND pipe
+Ext1006	XVE_INST_EXECUTED_SEND_VS	XVE INST EXECUTED SEND VS	EU Array/Vertex Shader	Number of instructions executed by Vertex Shader threads on SEND pipe
+Ext1006	XVE_INST_EXECUTED_SEND_ALL_UTILIZATION	XVE INST EXECUTED SEND ALL UTILIZATION	EU Array/Pipes	Percentage of time taken by instructions executed on SEND pipe
+Ext1006	XVE_INST_EXECUTED_SEND_ASYNC_CS_UTILIZATION	XVE INST EXECUTED SEND ASYNC CS UTILIZATION	EU Array/Compute Shader	Percentage of time taken by instructions executed by Async Compute Shader threads on SEND pipe
+Ext1006	XVE_INST_EXECUTED_SEND_CS_UTILIZATION	XVE INST EXECUTED SEND CS UTILIZATION	EU Array/Compute Shader	Percentage of time taken by instructions executed by Compute Shader (from Render Engine) threads on SEND pipe
+Ext1006	XVE_INST_EXECUTED_SEND_DS_UTILIZATION	XVE INST EXECUTED SEND DS UTILIZATION	EU Array/Domain Shader	Percentage of time taken by instructions executed by Domain Shader threads on SEND pipe
+Ext1006	XVE_INST_EXECUTED_SEND_GS_UTILIZATION	XVE INST EXECUTED SEND GS UTILIZATION	EU Array/Geometry Shader	Percentage of time taken by instructions executed by Geometry Shader threads on SEND pipe
+Ext1006	XVE_INST_EXECUTED_SEND_HS_UTILIZATION	XVE INST EXECUTED SEND HS UTILIZATION	EU Array/Hull Shader	Percentage of time taken by instructions executed by Hull Shader threads on SEND pipe
+Ext1006	XVE_INST_EXECUTED_SEND_MS_UTILIZATION	XVE INST EXECUTED SEND MS UTILIZATION	EU Array/Compute Shader	Percentage of time taken by instructions executed by Mesh Shader threads on SEND pipe
+Ext1006	XVE_INST_EXECUTED_SEND_PS_UTILIZATION	XVE INST EXECUTED SEND PS UTILIZATION	EU Array/Pixel Shader	Percentage of time taken by instructions executed by Pixel Shader threads on SEND pipe
+Ext1006	XVE_INST_EXECUTED_SEND_TS_UTILIZATION	XVE INST EXECUTED SEND TS UTILIZATION	EU Array/Compute Shader	Percentage of time taken by instructions executed by Task Shader threads on SEND pipe
+Ext1006	XVE_INST_EXECUTED_SEND_VS_UTILIZATION	XVE INST EXECUTED SEND VS UTILIZATION	EU Array/Vertex Shader	Percentage of time taken by instructions executed by Vertex Shader threads on SEND pipe
+Ext1007	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
+Ext1007	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
+Ext1007	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
+Ext1007	XVE_ACTIVE_GS	XVE ACTIVE GS	EU Array/Geometry Shader	Percentage of time in which at least one pipe is active in XVE and there are Geometry Shader threads loaded
+Ext1007	XVE_STALL_GS	XVE STALL GS	EU Array/Geometry Shader	Percentage of time in which there are Geometry Shader threads loaded but not even a single pipe is active in XVE
+Ext1007	XVE_INST_EXECUTED_ALU0_GS	XVE INST EXECUTED ALU0 GS	EU Array/Geometry Shader	Number of execution slots taken by instructions executed by Geometry Shader on ALU0 pipe
+Ext1007	XVE_INST_EXECUTED_ALU1_GS	XVE INST EXECUTED ALU1 GS	EU Array/Geometry Shader	Number of execution slots taken by instructions executed by Geometry Shader on ALU1 pipe
+Ext1007	XVE_ACTIVE_CYCLES_GS	XVE ACTIVE CYCLES GS	EU Array/Geometry Shader	Number of cycles at least one pipe is active in XVE and there are Geometry Shader threads loaded
+Ext1007	XVE_STALL_CYCLES_GS	XVE STALL CYCLES GS	EU Array/Geometry Shader	Number of cycles there are Geometry Shader threads loaded but not even a single pipe is active in XVE
+Ext1007	XVE_INST_EXECUTED_ALU0_MS	XVE INST EXECUTED ALU0 MS	EU Array/Compute Shader	Number of execution slots taken by instructions executed by Mesh Shader on ALU0 pipe
+Ext1007	XVE_INST_EXECUTED_ALU0_TS	XVE INST EXECUTED ALU0 TS	EU Array/Compute Shader	Number of execution slots taken by instructions executed by Task Shader on ALU0 pipe
+Ext1007	XVE_INST_EXECUTED_ALU1_MS	XVE INST EXECUTED ALU1 MS	EU Array/Compute Shader	Number of execution slots taken by instructions executed by Mesh Shader on ALU1 pipe
+Ext1007	XVE_INST_EXECUTED_ALU1_TS	XVE INST EXECUTED ALU1 TS	EU Array/Compute Shader	Number of execution slots taken by instructions executed by Task Shader on ALU1 pipe
+Ext1007	XVE_INST_EXECUTED_ALU0_GS_UTILIZATION	XVE INST EXECUTED ALU0 GS UTILIZATION	EU Array/Geometry Shader	Percentage of execution slots taken by instructions executed by Geometry Shader on ALU0 pipe
+Ext1007	XVE_INST_EXECUTED_ALU1_GS_UTILIZATION	XVE INST EXECUTED ALU1 GS UTILIZATION	EU Array/Geometry Shader	Percentage of execution slots taken by instructions executed by Geometry Shader on ALU1 pipe
+Ext1007	XVE_INST_EXECUTED_ALU0_MS_UTILIZATION	XVE INST EXECUTED ALU0 MS UTILIZATION	EU Array/Compute Shader	Percentage of execution slots taken by instructions executed by Mesh Shader on ALU0 pipe
+Ext1007	XVE_INST_EXECUTED_ALU0_TS_UTILIZATION	XVE INST EXECUTED ALU0 TS UTILIZATION	EU Array/Compute Shader	Percentage of execution slots taken by instructions executed by Task Shader on ALU0 pipe
+Ext1007	XVE_INST_EXECUTED_ALU1_MS_UTILIZATION	XVE INST EXECUTED ALU1 MS UTILIZATION	EU Array/Compute Shader	Percentage of execution slots taken by instructions executed by Mesh Shader on ALU1 pipe
+Ext1007	XVE_INST_EXECUTED_ALU1_TS_UTILIZATION	XVE INST EXECUTED ALU1 TS UTILIZATION	EU Array/Compute Shader	Percentage of execution slots taken by instructions executed by Task Shader on ALU1 pipe
+Ext1010	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
+Ext1010	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
+Ext1010	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
+Ext1010	SAMPLER_2X2_READ	SAMPLER 2X2 READ	Sampler/Sampler Input	Number of 2x2 texel block requested from Sampler
+Ext1010	PIXEL_WRITE	PIXEL WRITE	3D Pipe/Output Merger	Number of 2x2 pixels written to all render targets
+Ext1010	PIXEL_BLEND	PIXEL BLEND	3D Pipe/Output Merger	Number of blended 2x2 pixels written to all render targets
+Ext1010	SHADER_PIX_KILL	SHADER PIX KILL	3D Pipe/Pixel Shader	Number of pixels that were lit from Rasterizer but killed by the Pixel Shader
+Ext1010	RASTERIZER_SAMPLE_OUTPUT	RASTERIZER SAMPLE OUTPUT	3D Pipe/Rasterizer	Number of lit samples emitted by Rasterizer
+Ext1010	POSTPS_DEPTH_STENCIL_ALPHA_TEST_FAIL	POSTPS DEPTH STENCIL ALPHA TEST FAIL	3D Pipe/Output Merger	Number of 2x2 that were lit from Rasterizer but failed the depth stencil test or alpha test
+MediaSet1	GpuTime	GPU Time Elapsed	GPU	GPU Time Elapsed
+MediaSet1	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
+MediaSet1	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
+MediaSet1	VIDEO_DECODE_BOX0_READ_REQUEST	VIDEO_DECODE_BOX0_READ_REQUEST	GPU	Number of VDBOX0 read requests
+MediaSet1	VIDEO_DECODE_BOX0_WRITE_REQUEST	VIDEO_DECODE_BOX0_WRITE_REQUEST	GPU	Number of VDBOX0 write requests
+MediaSet1	VIDEO_DECODE_BOX1_READ_REQUEST	VIDEO_DECODE_BOX1_READ_REQUEST	GPU	Number of VDBOX1 read requests
+MediaSet1	VIDEO_DECODE_BOX1_WRITE_REQUEST	VIDEO_DECODE_BOX1_WRITE_REQUEST	GPU	Number of VDBOX1 write requests
+MediaSet1	VIDEO_ENHANCEMENT_BOX0_READ_REQUEST	VIDEO_ENHANCEMENT_BOX0_READ_REQUEST	GPU	Number of VEBOX0 read requests
+MediaSet1	VIDEO_ENHANCEMENT_BOX0_WRITE_REQUEST	VIDEO_ENHANCEMENT_BOX0_WRITE_REQUEST	GPU	Number of VEBOX0 write requests
+MediaSet1	VIDEO_ENHANCEMENT_BOX1_READ_REQUEST	VIDEO_ENHANCEMENT_BOX1_READ_REQUEST	GPU	Number of VEBOX1 read requests
+MediaSet1	VIDEO_ENHANCEMENT_BOX1_WRITE_REQUEST	VIDEO_ENHANCEMENT_BOX1_WRITE_REQUEST	GPU	Number of VEBOX1 write requests
+MediaSet2	GpuTime	GPU Time Elapsed	GPU	GPU Time Elapsed
+MediaSet2	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
+MediaSet2	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
+MediaSet2	MEDIA_READ_REQUEST	MEDIA_READ_REQUEST	GPU	Number of read requests from stand alone media 
+MediaSet2	MEDIA_WRITE_REQUEST	MEDIA_WRITE_REQUEST	GPU	Number of write requests from stand alone media 
+MediaSet2	COMMAND_PARSER_VIDEO_DECODE_ENGINE0_BUSY	COMMAND PARSER VIDEO DECODE_ENGINE0 BUSY	GPU	Percentage of time in which there is a context loaded and active on the media VDBOX0
+MediaSet2	COMMAND_PARSER_VIDEO_DECODE_ENGINE1_BUSY	COMMAND_PARSER_VIDEO_DECODE_ENGINE1_BUSY	GPU	Percentage of time in which there is a context loaded and active on the media VDBOX1
+MediaSet2	COMMAND_PARSER_VIDEO_ENHANCEMENT_ENGINE0_BUSY	COMMAND_PARSER_VIDEO_ENHANCEMENT_ENGINE0_BUSY	GPU	Percentage of time in which there is a context loaded and active on the media VEBOX0
+MediaSet2	COMMAND_PARSER_VIDEO_ENHANCEMENT_ENGINE1_BUSY	COMMAND_PARSER_VIDEO_ENHANCEMENT_ENGINE1_BUSY	GPU	Percentage of time in which there is a context loaded and active on the media VEBOX0
+MediaSet2	COMMAND_PARSER_GRAPHICS_SECURITY_CONTROLLER_BUSY	COMMAND_PARSER_GRAPHICS_SECURITY_CONTROLLER_BUSY	GPU	Percentage of time in which Graphics Security Controller is active.
+TestOam	GpuTime	GPU Time Elapsed	GPU	GPU Time Elapsed
+TestOam	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
+TestOam	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
+TestOam	Counter0	TestCounter0	Test	HW test counter 0. Factor: 0.0
+TestOam	Counter1	TestCounter1	Test	HW test counter 1. Factor: 1.0
+TestOam	Counter2	TestCounter2	Test	HW test counter 2. Factor: 1.0
+TestOam	Counter3	TestCounter3	Test	HW test counter 3. Factor: 0.5
+TestOam	Counter4	TestCounter4	Test	HW test counter 4. Factor: 0.3333
+TestOam	Counter5	TestCounter5	Test	HW test counter 5. Factor: 0.3333
+TestOam	Counter6	TestCounter6	Test	HW test counter 6. Factor: 0.16666
+TestOam	Counter8	TestCounter8	GPU	TestCounter8
+TestOam	VIDEO_DECODE_BOX0_WRITE_REQUEST_VISA	VIDEO_DECODE_BOX0_WRITE_REQUEST_VISA	GPU	Number of VDBOX0 write requests
+TestOam	VIDEO_DECODE_BOX0_READ_REQUEST_VISA	VIDEO_DECODE_BOX0_READ_REQUEST_VISA	GPU	Number of VDBOX0 read requests
+TestOam	VIDEO_DECODE_BOX0_READ_REQUEST_MPEC	VIDEO_DECODE_BOX0_READ_REQUEST_MPEC	GPU	Number of VDBOX0 read requests
+TestOam	VIDEO_DECODE_BOX0_WRITE_REQUEST_MPEC	VIDEO_DECODE_BOX0_WRITE_REQUEST_MPEC	GPU	Number of VDBOX0 write requests
