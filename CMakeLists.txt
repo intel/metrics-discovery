@@ -63,10 +63,10 @@ else ()
     include (../instr.cmake NO_POLICY_SCOPE) # windows and others
 endif()
 
-# find libdrm-dev
+# find libdrm devel package
 find_library(libdrm drm)
 if (${libdrm} STREQUAL libdrm-NOTFOUND)
-    message(FATAL_ERROR "You need to install libdrm-dev")
+    message(FATAL_ERROR "You need to install libdrm-dev or libdrm-devel")
 else ()
     message(STATUS "libdrm-dev found as ${libdrm}")
 endif ()
