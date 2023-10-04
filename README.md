@@ -49,6 +49,10 @@ Event based measurements require minimum Mesa version 18.2.
 ```shell
 sudo apt install libdrm-dev
 ```
+or
+```shell
+sudo dnf install libdrm-devel
+```
 
 3\. Run CMake generation:
 
@@ -71,6 +75,8 @@ make -j$(nproc)
 
 6\. Install:
 
+If using native package manager (yum, dnf, etc..) skip to step 7
+
 ```shell
 sudo make install
 ```
@@ -79,6 +85,13 @@ sudo make install
 
 ```shell
 make package
+```
+
+After the process completes, there should be a set of files such as
+```code
+intel-metrics-discovery-[VERSION].x86_64.rpm
+intel-metrics-discovery-devel-[VERSION].x86_64.rpm
+intel-metrics-discovery-pkgconfig-[VERSION].x86_64.rpm
 ```
 
 *Note: To clear CMake params remove CMakeCache.txt, then regenerate.*
