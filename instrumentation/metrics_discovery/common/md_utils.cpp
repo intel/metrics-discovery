@@ -304,6 +304,11 @@ namespace MetricsDiscoveryInternal
         if( !fseek( pFile, 0, SEEK_END ) )
         {
             lSize = ftell( pFile );
+            if( lSize < 0 )
+            {
+                MD_LOG_A( adapterId, LOG_DEBUG, "ftell failed" );
+            }
+
             rewind( pFile );
         }
         else
@@ -789,38 +794,45 @@ namespace MetricsDiscoveryInternal
     //     Read byte array from file buffer.
     //
     // Input:
-    //     uint8_t**       fileBuffer - pointer to the binary file buffer array
-    //     const uint32_t  adapterId  - adapter id for purpose of logging
+    //     uint8_t*&           fileBuffer            - pointer to the binary file buffer array
+    //     const uint8_t*      fileBufferBeginOffset - file buffer begin offset
+    //     const uint32_t      fileSize              - file size
+    //     TByteArrayLatest*&  byteArray             - pointer to the TByteArrayLatest object
+    //     const uint32_t      adapterId             - adapter id for purpose of logging
     //
     // Output:
-    //     TByteArrayLatest*          - pointer to the created TByteArrayLatest object
+    //     TCompletionCode                           - result
     //
     //////////////////////////////////////////////////////////////////////////////
-    TByteArrayLatest* ReadByteArrayFromFileBuffer( uint8_t** fileBuffer, const uint32_t adapterId )
+    TCompletionCode ReadByteArrayFromFileBuffer( uint8_t*& fileBuffer, const uint8_t* fileBufferBeginOffset, const uint32_t fileSize, TByteArrayLatest*& byteArray, const uint32_t adapterId )
     {
-        MD_CHECK_PTR_RET_A( adapterId, fileBuffer, nullptr );
-        MD_CHECK_PTR_RET_A( adapterId, *fileBuffer, nullptr );
+        MD_CHECK_PTR_RET_A( adapterId, fileBuffer, CC_ERROR_INVALID_PARAMETER );
+        MD_CHECK_PTR_RET_A( adapterId, fileBufferBeginOffset, CC_ERROR_INVALID_PARAMETER );
 
-        auto magicNumber = *( (uint32_t*) *fileBuffer );
+        const uint32_t magicNumber = *( (uint32_t*) fileBuffer );
         if( magicNumber != MD_BYTE_ARRAY_MAGIC_NUMBER )
         {
             MD_LOG_A( adapterId, LOG_WARNING, "WARNING: Incorrect magic number or ByteArray is not present in fileBuffer." );
-            return nullptr;
+            return CC_ERROR_GENERAL;
         }
 
-        *fileBuffer += sizeof( uint32_t );
-        auto byteArraySize = *( (uint32_t*) *fileBuffer );
-        *fileBuffer += sizeof( uint32_t );
+        MD_CHECK_BUFFER_A( adapterId, fileBuffer, fileBufferBeginOffset, sizeof( uint32_t ), fileSize );
+        fileBuffer += sizeof( uint32_t );
+        const uint32_t byteArraySize = *( (uint32_t*) fileBuffer );
 
-        auto byteArray = new( std::nothrow ) TByteArrayLatest();
-        MD_CHECK_PTR_RET_A( adapterId, byteArray, nullptr );
+        MD_CHECK_BUFFER_A( adapterId, fileBuffer, fileBufferBeginOffset, sizeof( uint32_t ), fileSize );
+        fileBuffer += sizeof( uint32_t );
+
+        byteArray = new( std::nothrow ) TByteArrayLatest();
+        MD_CHECK_PTR_RET_A( adapterId, byteArray, CC_ERROR_NO_MEMORY );
 
         byteArray->Size = byteArraySize;
         if( byteArray->Size == 0 )
         {
             MD_LOG_A( adapterId, LOG_WARNING, "WARNING: Read ByteArray has size 0" );
             byteArray->Data = nullptr;
-            return byteArray;
+            MD_SAFE_DELETE( byteArray );
+            return CC_ERROR_GENERAL;
         }
 
         byteArray->Data = new( std::nothrow ) uint8_t[byteArray->Size]();
@@ -830,13 +842,13 @@ namespace MetricsDiscoveryInternal
 
             MD_LOG_A( adapterId, LOG_DEBUG, "ERROR: null pointer: byteArray->Data" );
             MD_LOG_EXIT_A( adapterId );
-            return nullptr;
+            return CC_ERROR_GENERAL;
         }
 
-        iu_memcpy_s( byteArray->Data, byteArray->Size, *fileBuffer, byteArray->Size );
-        *fileBuffer += byteArray->Size;
+        iu_memcpy_s( byteArray->Data, byteArray->Size, fileBuffer, byteArray->Size );
+        fileBuffer += byteArray->Size;
 
-        return byteArray;
+        return CC_OK;
     }
 
     //////////////////////////////////////////////////////////////////////////////
@@ -852,33 +864,32 @@ namespace MetricsDiscoveryInternal
     //     It only advances the fileBuffer pointer and returns a pointer to cstring in buffer.
     //
     // Input:
-    //     uint8_t**      fileBuffer - pointer to the binary file buffer array
-    //     const uint32_t adapterId  - adapter id for purpose of logging
+    //     uint8_t*&       fileBuffer            - pointer to the binary file buffer array
+    //     const uint8_t*  fileBufferBeginOffset - file buffer begin offset
+    //     const uint32_t  fileSize              - file size
+    //     const char*&    cstring               - given cstring in buffer
+    //     const uint32_t  adapterId             - adapter id for purpose of logging
     //
     // Output:
-    //     char*                 - pointer to the cstring in buffer (not copied)
+    //     TCompletionCode                       - result
     //
     //////////////////////////////////////////////////////////////////////////////
-    char* ReadCStringFromFileBuffer( uint8_t** fileBuffer, const uint32_t adapterId )
+    TCompletionCode ReadCStringFromFileBuffer( uint8_t*& fileBuffer, const uint8_t* fileBufferBeginOffset, const uint32_t fileSize, const char*& cstring, const uint32_t adapterId )
     {
-        if( fileBuffer == nullptr || *fileBuffer == nullptr )
-        {
-            MD_ASSERT_A( adapterId, fileBuffer != nullptr );
-            MD_ASSERT_A( adapterId, *fileBuffer != nullptr );
-            return (char*) "";
-        }
+        MD_CHECK_PTR_RET_A( adapterId, fileBuffer, CC_ERROR_INVALID_PARAMETER );
+        MD_CHECK_PTR_RET_A( adapterId, fileBufferBeginOffset, CC_ERROR_INVALID_PARAMETER );
 
-        char*  cstring       = (char*) *fileBuffer;
-        size_t cstringLength = strlen( cstring );
+        cstring                    = (char*) fileBuffer;
+        const size_t cstringLength = iu_strnlen_s( cstring, fileSize - ( fileBuffer - fileBufferBeginOffset ) );
 
         if( cstringLength == 0 )
         {
-            cstring = (char*) "";
+            MD_LOG_A( adapterId, LOG_DEBUG, "Empty string" );
         }
 
-        *fileBuffer += cstringLength + 1;
+        fileBuffer += cstringLength + 1;
 
-        return cstring;
+        return CC_OK;
     }
 
     //////////////////////////////////////////////////////////////////////////////
@@ -893,26 +904,27 @@ namespace MetricsDiscoveryInternal
     //     Reads uint32_t from file buffer.
     //
     // Input:
-    //     uint8_t**      fileBuffer - pointer to the binary file buffer array
-    //     const uint32_t adapterId  - adapter id for purpose of logging
+    //     uint8_t*&       fileBuffer            - pointer to the binary file buffer array
+    //     const uint8_t*  fileBufferBeginOffset - file buffer begin offset
+    //     const uint32_t  fileSize              - file size
+    //     uint32_t&       value                 - given value
+    //     const uint32_t  adapterId             - adapter id for purpose of logging
     //
     // Output:
-    //     uint32_t              - read uint32_t
+    //     TCompletionCode                       - result
     //
     //////////////////////////////////////////////////////////////////////////////
-    uint32_t ReadUInt32FromFileBuffer( uint8_t** fileBuffer, const uint32_t adapterId )
+    TCompletionCode ReadUInt32FromFileBuffer( uint8_t*& fileBuffer, const uint8_t* fileBufferBeginOffset, const uint32_t fileSize, uint32_t& value, const uint32_t adapterId )
     {
-        if( fileBuffer == nullptr || *fileBuffer == nullptr )
-        {
-            MD_ASSERT_A( adapterId, fileBuffer != nullptr );
-            MD_ASSERT_A( adapterId, *fileBuffer != nullptr );
-            return 0;
-        }
+        MD_CHECK_PTR_RET_A( adapterId, fileBuffer, CC_ERROR_INVALID_PARAMETER );
+        MD_CHECK_PTR_RET_A( adapterId, fileBufferBeginOffset, CC_ERROR_INVALID_PARAMETER );
 
-        uint32_t value = *( (uint32_t*) *fileBuffer );
-        *fileBuffer += sizeof( uint32_t );
+        MD_CHECK_BUFFER_A( adapterId, fileBuffer, fileBufferBeginOffset, sizeof( uint32_t ), fileSize );
 
-        return value;
+        value = *( (uint32_t*) fileBuffer );
+        fileBuffer += sizeof( uint32_t );
+
+        return CC_OK;
     }
 
     //////////////////////////////////////////////////////////////////////////////
@@ -927,26 +939,26 @@ namespace MetricsDiscoveryInternal
     //     Reads int64_t int from file buffer.
     //
     // Input:
-    //     uint8_t**      fileBuffer - pointer to the binary file buffer array
-    //     const uint32_t adapterId  - adapter id for purpose of logging
+    //     uint8_t*&       fileBuffer            - pointer to the binary file buffer array
+    //     const uint8_t*  fileBufferBeginOffset - file buffer begin offset
+    //     const uint32_t  fileSize              - file size
+    //     int64_t&        value                 - given value
+    //     const uint32_t  adapterId             - adapter id for purpose of logging
     //
     // Output:
-    //     int64_t               - read int64_t
+    //     TCompletionCode                       - result
     //
     //////////////////////////////////////////////////////////////////////////////
-    int64_t ReadInt64FromFileBuffer( uint8_t** fileBuffer, const uint32_t adapterId )
+    TCompletionCode ReadInt64FromFileBuffer( uint8_t*& fileBuffer, const uint8_t* fileBufferBeginOffset, const uint32_t fileSize, int64_t& value, const uint32_t adapterId )
     {
-        if( fileBuffer == nullptr || *fileBuffer == nullptr )
-        {
-            MD_ASSERT_A( adapterId, fileBuffer != nullptr );
-            MD_ASSERT_A( adapterId, *fileBuffer != nullptr );
-            return 0;
-        }
+        MD_CHECK_PTR_RET_A( adapterId, fileBuffer, CC_ERROR_INVALID_PARAMETER );
+        MD_CHECK_PTR_RET_A( adapterId, fileBufferBeginOffset, CC_ERROR_INVALID_PARAMETER );
 
-        int64_t value = *( (int64_t*) *fileBuffer );
-        *fileBuffer += sizeof( int64_t );
+        MD_CHECK_BUFFER_A( adapterId, fileBuffer, fileBufferBeginOffset, sizeof( int64_t ), fileSize );
+        value = *( (int64_t*) fileBuffer );
+        fileBuffer += sizeof( int64_t );
 
-        return value;
+        return CC_OK;
     }
 
     //////////////////////////////////////////////////////////////////////////////
@@ -961,67 +973,73 @@ namespace MetricsDiscoveryInternal
     //     Reads TTypedValue struct from file buffer.
     //
     // Input:
-    //     uint8_t**      fileBuffer - pointer to the binary file buffer array
-    //     const uint32_t adapterId  - adapter id for purpose of logging
+    //     uint8_t*&       fileBuffer            - pointer to the binary file buffer array
+    //     const uint8_t*  fileBufferBeginOffset - file buffer begin offset
+    //     const uint32_t  fileSize              - file size
+    //     const uint32_t  adapterId             - adapter id for purpose of logging
     //
     // Output:
-    //     TTypedValue_1_0       - read TTypedValue
+    //     TCompletionCode                       - result
     //
     //////////////////////////////////////////////////////////////////////////////
-    TTypedValue_1_0 ReadTTypedValueFromFileBuffer( uint8_t** fileBuffer, const uint32_t adapterId )
+    TCompletionCode ReadTTypedValueFromFileBuffer( uint8_t*& fileBuffer, const uint8_t* fileBufferBeginOffset, const uint32_t fileSize, TTypedValue_1_0& typedValue, const uint32_t adapterId )
     {
-        TTypedValue_1_0 typedValue = {};
-        typedValue.ValueType       = VALUE_TYPE_UINT32;
-        typedValue.ValueUInt32     = 0;
+        TCompletionCode ret      = CC_OK;
+        typedValue.ValueType     = VALUE_TYPE_UINT64;
+        typedValue.ValueUInt64   = 0;
+        const char* valueCString = nullptr;
 
-        if( fileBuffer == nullptr || *fileBuffer == nullptr )
-        {
-            MD_ASSERT_A( adapterId, fileBuffer != nullptr );
-            MD_ASSERT_A( adapterId, *fileBuffer != nullptr );
-            return typedValue;
-        }
+        MD_CHECK_PTR_RET_A( adapterId, fileBuffer, CC_ERROR_INVALID_PARAMETER );
+        MD_CHECK_PTR_RET_A( adapterId, fileBufferBeginOffset, CC_ERROR_INVALID_PARAMETER );
 
-        typedValue.ValueType = ( *(TValueType*) *fileBuffer );
-        *fileBuffer += sizeof( TValueType );
+        MD_CHECK_BUFFER_A( adapterId, fileBuffer, fileBufferBeginOffset, sizeof( TValueType ), fileSize );
+        typedValue.ValueType = ( *(TValueType*) fileBuffer );
+        fileBuffer += sizeof( TValueType );
 
         switch( typedValue.ValueType )
         {
             case VALUE_TYPE_UINT32:
-                typedValue.ValueUInt32 = *( (uint32_t*) *fileBuffer );
-                *fileBuffer += sizeof( uint32_t );
+                MD_CHECK_BUFFER_A( adapterId, fileBuffer, fileBufferBeginOffset, sizeof( uint32_t ), fileSize );
+                typedValue.ValueUInt32 = *( (uint32_t*) fileBuffer );
+                fileBuffer += sizeof( uint32_t );
                 break;
 
             case VALUE_TYPE_UINT64:
-                typedValue.ValueUInt64 = *( (uint64_t*) *fileBuffer );
-                *fileBuffer += sizeof( uint64_t );
+                MD_CHECK_BUFFER_A( adapterId, fileBuffer, fileBufferBeginOffset, sizeof( uint64_t ), fileSize );
+                typedValue.ValueUInt64 = *( (uint64_t*) fileBuffer );
+                fileBuffer += sizeof( uint64_t );
                 break;
 
             case VALUE_TYPE_FLOAT:
-                typedValue.ValueFloat = *( (float*) *fileBuffer );
-                *fileBuffer += sizeof( float );
+                MD_CHECK_BUFFER_A( adapterId, fileBuffer, fileBufferBeginOffset, sizeof( float ), fileSize );
+                typedValue.ValueFloat = *( (float*) fileBuffer );
+                fileBuffer += sizeof( float );
                 break;
 
             case VALUE_TYPE_BOOL:
-                typedValue.ValueBool = *( (bool*) *fileBuffer );
-                *fileBuffer += sizeof( bool );
+                MD_CHECK_BUFFER_A( adapterId, fileBuffer, fileBufferBeginOffset, sizeof( bool ), fileSize );
+                typedValue.ValueBool = *( (bool*) fileBuffer );
+                fileBuffer += sizeof( bool );
                 break;
 
             case VALUE_TYPE_CSTRING:
                 MD_LOG_A( adapterId, LOG_DEBUG, "calling ReadCStringFromFileBuffer()..." );
-                typedValue.ValueCString = ReadCStringFromFileBuffer( fileBuffer, adapterId );
-                *fileBuffer += sizeof( bool );
+                ret = ReadCStringFromFileBuffer( fileBuffer, fileBufferBeginOffset, fileSize, valueCString, adapterId );
+                MD_CHECK_CC_RET_A( adapterId, ret );
+                typedValue.ValueCString = GetCopiedCString( valueCString, adapterId );
                 break;
 
             case VALUE_TYPE_BYTEARRAY:
                 MD_LOG_A( adapterId, LOG_DEBUG, "calling ReadByteArrayFromFileBuffer()..." );
-                typedValue.ValueByteArray = ReadByteArrayFromFileBuffer( fileBuffer, adapterId );
+                ret = ReadByteArrayFromFileBuffer( fileBuffer, fileBufferBeginOffset, fileSize, typedValue.ValueByteArray, adapterId );
+                MD_CHECK_CC_RET_A( adapterId, ret );
                 break;
             default:
                 MD_ASSERT_A( adapterId, false );
                 break;
         }
 
-        return typedValue;
+        return CC_OK;
     }
 
     //////////////////////////////////////////////////////////////////////////////
@@ -1036,35 +1054,38 @@ namespace MetricsDiscoveryInternal
     //     Reads equation string from file buffer.
     //
     // Input:
-    //     uint8_t**      fileBuffer - pointer to the binary file buffer array
-    //     const uint32_t adapterId  - adapter id for purpose of logging
+    //     uint8_t*&       fileBuffer            - pointer to the binary file buffer array
+    //     const uint8_t*  fileBufferBeginOffset - file buffer begin offset
+    //     const uint32_t  fileSize              - file size
+    //     const char*&    cstring               - given cstring in buffer
+    //     const uint32_t  adapterId             - adapter id for purpose of logging
     //
     // Output:
-    //     char*                 - if not empty, pointer to the cstring in buffer (not copied)
+    //     TCompletionCode                       - result
     //
     //////////////////////////////////////////////////////////////////////////////
-    char* ReadEquationStringFromFile( uint8_t** fileBuffer, const uint32_t adapterId )
+    TCompletionCode ReadEquationStringFromFile( uint8_t*& fileBuffer, const uint8_t* fileBufferBeginOffset, const uint32_t fileSize, const char*& cstring, const uint32_t adapterId )
     {
-        if( fileBuffer == nullptr || *fileBuffer == nullptr )
-        {
-            MD_ASSERT_A( adapterId, fileBuffer != nullptr );
-            MD_ASSERT_A( adapterId, *fileBuffer != nullptr );
-            return (char*) "";
-        }
+        TCompletionCode ret = CC_OK;
 
-        char* ret = nullptr;
+        MD_CHECK_PTR_RET_A( adapterId, fileBuffer, CC_ERROR_INVALID_PARAMETER );
+        MD_CHECK_PTR_RET_A( adapterId, fileBufferBeginOffset, CC_ERROR_INVALID_PARAMETER );
 
-        if( ( **fileBuffer ) == 0xFF )
+        cstring = nullptr;
+
+        if( ( *fileBuffer ) == 0xFF )
         {
-            ret = (char*) "";
-            ( *fileBuffer )++;
+            MD_CHECK_BUFFER_A( adapterId, fileBuffer, fileBufferBeginOffset, sizeof( char ), fileSize );
+            cstring = (char*) "";
+            fileBuffer++;
         }
         else
         {
-            ret = ReadCStringFromFileBuffer( fileBuffer, adapterId );
+            ret = ReadCStringFromFileBuffer( fileBuffer, fileBufferBeginOffset, fileSize, cstring, adapterId );
+            MD_CHECK_CC_RET_A( adapterId, ret );
         }
 
-        return ret;
+        return CC_OK;
     }
 
     //////////////////////////////////////////////////////////////////////////////
@@ -1129,7 +1150,7 @@ namespace MetricsDiscoveryInternal
     //     uint32_t          platformMaskLegacy - (optional) platform mask legacy to be set
     //
     // Output:
-    //     TCompletionCode                       - result
+    //     TCompletionCode                      - result
     //
     //////////////////////////////////////////////////////////////////////////////
     TCompletionCode SetAllBitsPlatformMask( const uint32_t adapterId, TByteArrayLatest* platformMask, uint32_t* platformMaskLegacy /*= nullptr*/ )

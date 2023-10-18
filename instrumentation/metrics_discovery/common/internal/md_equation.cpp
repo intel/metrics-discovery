@@ -34,11 +34,36 @@ namespace MetricsDiscoveryInternal
     //
     //////////////////////////////////////////////////////////////////////////////
     CEquationElementInternal::CEquationElementInternal()
+        : SymbolNameInternal{ 0 }
+        , MetricIndexInternal( static_cast<uint32_t>( -1 ) )
     {
-        Element_1_0            = {};
-        SymbolNameInternal[0]  = 0;
-        Element_1_0.SymbolName = SymbolNameInternal;
-        MetricIndexInternal    = -1;
+        Type            = EQUATION_ELEM_LAST_1_0;
+        ImmediateUInt64 = 0ULL;
+        ImmediateFloat  = 0.0f;
+        Mask            = { 0, nullptr };
+        Operation       = EQUATION_OPER_LAST_1_0;
+        ReadParams      = { 0, 0, 0, 0 };
+        SymbolName      = SymbolNameInternal;
+    }
+
+    //////////////////////////////////////////////////////////////////////////////
+    //
+    // Class:
+    //     CEquationElementInternal
+    //
+    // Method:
+    //     CEquationElementInternal destructor
+    //
+    // Description:
+    //     Destructor.
+    //
+    //////////////////////////////////////////////////////////////////////////////
+    CEquationElementInternal::~CEquationElementInternal()
+    {
+        if( Type == EQUATION_ELEM_MASK )
+        {
+            DeleteByteArray( Mask, IU_ADAPTER_ID_UNKNOWN );
+        }
     }
 
     //////////////////////////////////////////////////////////////////////////////
@@ -55,10 +80,10 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     CEquationElementInternal::CEquationElementInternal( const CEquationElementInternal& element )
     {
-        Element_1_0 = element.Element_1_0;
-        iu_memcpy_s( SymbolNameInternal, sizeof( SymbolNameInternal ), element.SymbolNameInternal, sizeof( SymbolNameInternal ) );
-        Element_1_0.SymbolName = SymbolNameInternal;
-        MetricIndexInternal    = element.MetricIndexInternal;
+        if( this != &element )
+        {
+            SetMembers( element );
+        }
     }
 
     //////////////////////////////////////////////////////////////////////////////
@@ -75,11 +100,107 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     CEquationElementInternal& CEquationElementInternal::operator=( const CEquationElementInternal& element )
     {
-        Element_1_0 = element.Element_1_0;
-        iu_memcpy_s( SymbolNameInternal, sizeof( SymbolNameInternal ), element.SymbolNameInternal, sizeof( SymbolNameInternal ) );
-        Element_1_0.SymbolName = SymbolNameInternal;
-        MetricIndexInternal    = element.MetricIndexInternal;
+        if( this != &element )
+        {
+            SetMembers( element );
+        }
+
         return *this;
+    }
+
+    //////////////////////////////////////////////////////////////////////////////
+    //
+    // Class:
+    //     CEquationElementInternal
+    //
+    // Method:
+    //     SetMembers
+    //
+    // Description:
+    //     Sets all members.
+    //
+    //////////////////////////////////////////////////////////////////////////////
+    void CEquationElementInternal::SetMembers( const CEquationElementInternal& element )
+    {
+        SymbolNameInternal[0] = '\0';
+        SymbolName            = SymbolNameInternal;
+        Type                  = element.Type;
+
+        switch( Type )
+        {
+            case EQUATION_ELEM_IMM_UINT64:
+                ImmediateUInt64 = element.ImmediateUInt64;
+                break;
+
+            case EQUATION_ELEM_IMM_FLOAT:
+                ImmediateFloat = element.ImmediateFloat;
+                break;
+
+            case EQUATION_ELEM_MASK:
+                if( const uint32_t byteArraySize = element.Mask.Size;
+                    byteArraySize != 0 )
+                {
+                    if( element.Mask.Data == nullptr )
+                    {
+                        Mask.Size = 0;
+                        Mask.Data = nullptr;
+                        MD_LOG( LOG_WARNING, "Cannot copy null element's mask" );
+                    }
+                    else
+                    {
+                        Mask.Size = byteArraySize;
+                        Mask.Data = new( std::nothrow ) uint8_t[byteArraySize]();
+                    }
+                    if( Mask.Data == nullptr )
+                    {
+                        MD_LOG( LOG_WARNING, "Cannot allocate memory for element's mask" );
+                    }
+                    else
+                    {
+                        iu_memcpy_s( &Mask.Data, byteArraySize, &element.Mask.Data, byteArraySize );
+                    }
+                }
+                else
+                {
+                    MD_LOG( LOG_DEBUG, "Element's mask has size 0" );
+                }
+                break;
+
+            case EQUATION_ELEM_OPERATION:
+                Operation = element.Operation;
+                break;
+
+            case EQUATION_ELEM_RD_BITFIELD:
+            case EQUATION_ELEM_RD_UINT8:
+            case EQUATION_ELEM_RD_UINT16:
+            case EQUATION_ELEM_RD_UINT32:
+            case EQUATION_ELEM_RD_UINT64:
+            case EQUATION_ELEM_RD_FLOAT:
+            case EQUATION_ELEM_RD_40BIT_CNTR:
+                ReadParams = element.ReadParams;
+                break;
+
+            case EQUATION_ELEM_GLOBAL_SYMBOL:
+            case EQUATION_ELEM_LOCAL_COUNTER_SYMBOL:
+            case EQUATION_ELEM_OTHER_SET_COUNTER_SYMBOL:
+            case EQUATION_ELEM_LOCAL_METRIC_SYMBOL:
+            case EQUATION_ELEM_OTHER_SET_METRIC_SYMBOL:
+            case EQUATION_ELEM_INFORMATION_SYMBOL:
+                iu_strcpy_s( SymbolNameInternal, sizeof( SymbolNameInternal ), element.SymbolNameInternal );
+                SymbolName = SymbolNameInternal;
+                break;
+
+            case EQUATION_ELEM_SELF_COUNTER_VALUE:
+            case EQUATION_ELEM_STD_NORM_GPU_DURATION:
+            case EQUATION_ELEM_STD_NORM_EU_AGGR_DURATION:
+                break;
+
+            default:
+                MD_LOG( LOG_ERROR, "Unrecognized element type: %u", Type );
+                break;
+        }
+
+        MetricIndexInternal = element.MetricIndexInternal;
     }
 
     //////////////////////////////////////////////////////////////////////////////
@@ -184,7 +305,7 @@ namespace MetricsDiscoveryInternal
     {
         if( index < m_elementsVector.size() )
         {
-            return &( m_elementsVector[index].Element_1_0 );
+            return static_cast<TEquationElement_1_0*>( &m_elementsVector[index] );
         }
         return nullptr;
     }
@@ -214,19 +335,19 @@ namespace MetricsDiscoveryInternal
 
         for( uint32_t i = 0; i < m_elementsVector.size(); ++i )
         {
-            auto element = &( m_elementsVector[i].Element_1_0 );
-            switch( element->Type )
+            const auto& element = m_elementsVector[i];
+            switch( element.Type )
             {
                 case EQUATION_ELEM_IMM_UINT64:
-                    equationStack.push_back( element->ImmediateUInt64 );
+                    equationStack.push_back( element.ImmediateUInt64 );
                     algorithmCheck++;
                     break;
 
                 case EQUATION_ELEM_LOCAL_COUNTER_SYMBOL:
                     // Push 0 to stack for unavailable unpacked mask symbol.
-                    if( element->SymbolName != nullptr &&
-                        strstr( element->SymbolName, "GtSlice" ) != nullptr &&
-                        strstr( element->SymbolName, "Mask" ) == nullptr )
+                    if( element.SymbolName != nullptr &&
+                        strstr( element.SymbolName, "GtSlice" ) != nullptr &&
+                        strstr( element.SymbolName, "Mask" ) == nullptr )
                     {
                         qwordValue = 0;
                         equationStack.push_back( qwordValue );
@@ -234,7 +355,7 @@ namespace MetricsDiscoveryInternal
                     }
                     else
                     {
-                        MD_LOG_A( adapterId, LOG_DEBUG, "Not allowed equation element type in availability equation: %u", element->Type );
+                        MD_LOG_A( adapterId, LOG_DEBUG, "Not allowed equation element type in availability equation: %u", element.Type );
                         MD_ASSERT_A( adapterId, false );
                         ClearList( equationStack );
                         return false;
@@ -243,7 +364,7 @@ namespace MetricsDiscoveryInternal
 
                 case EQUATION_ELEM_GLOBAL_SYMBOL:
                 {
-                    auto pValue = m_device.GetGlobalSymbolValueByName( element->SymbolName );
+                    const auto pValue = m_device.GetGlobalSymbolValueByName( element.SymbolName );
                     if( pValue && ( pValue->ValueType == VALUE_TYPE_UINT64 ) )
                     {
                         qwordValue = static_cast<uint64_t>( pValue->ValueUInt64 );
@@ -287,7 +408,7 @@ namespace MetricsDiscoveryInternal
                     equationStack.pop_back();
                     algorithmCheck--;
 
-                    switch( element->Operation )
+                    switch( element.Operation )
                     {
                         case EQUATION_OPER_AND:
                             qwordValue = valuePrev & valueLast;
@@ -354,7 +475,7 @@ namespace MetricsDiscoveryInternal
                             break;
 
                         default:
-                            MD_LOG_A( adapterId, LOG_DEBUG, "Not allowed equation element operation in availability equation: %u", element->Operation );
+                            MD_LOG_A( adapterId, LOG_DEBUG, "Not allowed equation element operation in availability equation: %u", element.Operation );
                             MD_ASSERT_A( adapterId, false );
                             ClearList( equationStack );
                             return false;
@@ -365,7 +486,7 @@ namespace MetricsDiscoveryInternal
                 }
 
                 default:
-                    MD_LOG_A( adapterId, LOG_DEBUG, "Not allowed equation element type in availability equation: %u", element->Type );
+                    MD_LOG_A( adapterId, LOG_DEBUG, "Not allowed equation element type in availability equation: %u", element.Type );
                     MD_ASSERT_A( adapterId, false );
                     ClearList( equationStack );
                     return false;
@@ -472,18 +593,20 @@ namespace MetricsDiscoveryInternal
     //     Parses and adds the element to the equation list.
     //
     // Input:
-    //     const char* element    - equation element string to parse;
-    //                              expected to be nullptr-terminated
+    //     const char* equationString - equation element string to parse;
+    //                                  expected to be nullptr-terminated
     //
     // Output:
-    //     bool                   - result of the operation
+    //     bool                       - result of the operation
     //
     //////////////////////////////////////////////////////////////////////////////
-    bool CEquation::ParseEquationElement( const char* element )
+    bool CEquation::ParseEquationElement( const char* equationString )
     {
         const uint32_t adapterId = m_device.GetAdapter().GetAdapterId();
 
-        if( strcmp( element, "EuAggrDurationSlice" ) == 0 )
+        CEquationElementInternal element = {};
+
+        if( strcmp( equationString, "EuAggrDurationSlice" ) == 0 )
         {
             const uint32_t platformIndex = m_device.GetPlatformIndex();
 
@@ -498,352 +621,261 @@ namespace MetricsDiscoveryInternal
                     ? "$Self $GpuSliceClocksCount $VectorEngineTotalCount UMUL FDIV 100 FMUL"
                     : "$Self $GpuSliceClocksCount $EuCoresTotalCount UMUL FDIV 100 FMUL" );
         }
-        else if( strcmp( element, "EuAggrDuration" ) == 0 )
+        else if( strcmp( equationString, "EuAggrDuration" ) == 0 )
         {
-            CEquationElementInternal anElement;
-            anElement.Element_1_0.Type = EQUATION_ELEM_STD_NORM_EU_AGGR_DURATION;
-            return AddEquationElement( anElement );
+            element.Type = EQUATION_ELEM_STD_NORM_EU_AGGR_DURATION;
         }
-        else if( strcmp( element, "GpuDurationSlice" ) == 0 )
+        else if( strcmp( equationString, "GpuDurationSlice" ) == 0 )
         {
             return ParseEquationString( "$Self $GpuSliceClocksCount FDIV 100 FMUL" );
         }
-        else if( strcmp( element, "GpuDuration" ) == 0 )
+        else if( strcmp( equationString, "GpuDuration" ) == 0 )
         {
-            CEquationElementInternal anElement;
-            anElement.Element_1_0.Type = EQUATION_ELEM_STD_NORM_GPU_DURATION;
-            return AddEquationElement( anElement );
+            element.Type = EQUATION_ELEM_STD_NORM_GPU_DURATION;
         }
-        else if( strcmp( element, "UADD" ) == 0 )
+        else if( strcmp( equationString, "UADD" ) == 0 )
         {
-            CEquationElementInternal anElement;
-            anElement.Element_1_0.Type      = EQUATION_ELEM_OPERATION;
-            anElement.Element_1_0.Operation = EQUATION_OPER_UADD;
-            return AddEquationElement( anElement );
+            element.Type      = EQUATION_ELEM_OPERATION;
+            element.Operation = EQUATION_OPER_UADD;
         }
-        else if( strcmp( element, "USUB" ) == 0 )
+        else if( strcmp( equationString, "USUB" ) == 0 )
         {
-            CEquationElementInternal anElement;
-            anElement.Element_1_0.Type      = EQUATION_ELEM_OPERATION;
-            anElement.Element_1_0.Operation = EQUATION_OPER_USUB;
-            return AddEquationElement( anElement );
+            element.Type      = EQUATION_ELEM_OPERATION;
+            element.Operation = EQUATION_OPER_USUB;
         }
-        else if( strcmp( element, "UMUL" ) == 0 )
+        else if( strcmp( equationString, "UMUL" ) == 0 )
         {
-            CEquationElementInternal anElement;
-            anElement.Element_1_0.Type      = EQUATION_ELEM_OPERATION;
-            anElement.Element_1_0.Operation = EQUATION_OPER_UMUL;
-            return AddEquationElement( anElement );
+            element.Type      = EQUATION_ELEM_OPERATION;
+            element.Operation = EQUATION_OPER_UMUL;
         }
-        else if( strcmp( element, "UDIV" ) == 0 )
+        else if( strcmp( equationString, "UDIV" ) == 0 )
         {
-            CEquationElementInternal anElement;
-            anElement.Element_1_0.Type      = EQUATION_ELEM_OPERATION;
-            anElement.Element_1_0.Operation = EQUATION_OPER_UDIV;
-            return AddEquationElement( anElement );
+            element.Type      = EQUATION_ELEM_OPERATION;
+            element.Operation = EQUATION_OPER_UDIV;
         }
-        else if( strcmp( element, "AND" ) == 0 )
+        else if( strcmp( equationString, "AND" ) == 0 )
         {
-            CEquationElementInternal anElement;
-            anElement.Element_1_0.Type      = EQUATION_ELEM_OPERATION;
-            anElement.Element_1_0.Operation = EQUATION_OPER_AND;
-            return AddEquationElement( anElement );
+            element.Type      = EQUATION_ELEM_OPERATION;
+            element.Operation = EQUATION_OPER_AND;
         }
-        else if( strcmp( element, "OR" ) == 0 )
+        else if( strcmp( equationString, "OR" ) == 0 )
         {
-            CEquationElementInternal anElement;
-            anElement.Element_1_0.Type      = EQUATION_ELEM_OPERATION;
-            anElement.Element_1_0.Operation = EQUATION_OPER_OR;
-            return AddEquationElement( anElement );
+            element.Type      = EQUATION_ELEM_OPERATION;
+            element.Operation = EQUATION_OPER_OR;
         }
-        else if( strcmp( element, "XNOR" ) == 0 )
+        else if( strcmp( equationString, "XNOR" ) == 0 )
         {
-            CEquationElementInternal anElement;
-            anElement.Element_1_0.Type      = EQUATION_ELEM_OPERATION;
-            anElement.Element_1_0.Operation = EQUATION_OPER_XNOR;
-            return AddEquationElement( anElement );
+            element.Type      = EQUATION_ELEM_OPERATION;
+            element.Operation = EQUATION_OPER_XNOR;
         }
-        else if( strcmp( element, "XOR" ) == 0 )
+        else if( strcmp( equationString, "XOR" ) == 0 )
         {
-            CEquationElementInternal anElement;
-            anElement.Element_1_0.Type      = EQUATION_ELEM_OPERATION;
-            anElement.Element_1_0.Operation = EQUATION_OPER_XOR;
-            return AddEquationElement( anElement );
+            element.Type      = EQUATION_ELEM_OPERATION;
+            element.Operation = EQUATION_OPER_XOR;
         }
-        else if( strcmp( element, "==" ) == 0 )
+        else if( strcmp( equationString, "==" ) == 0 )
         {
-            CEquationElementInternal anElement;
-            anElement.Element_1_0.Type      = EQUATION_ELEM_OPERATION;
-            anElement.Element_1_0.Operation = EQUATION_OPER_EQUALS;
-            return AddEquationElement( anElement );
+            element.Type      = EQUATION_ELEM_OPERATION;
+            element.Operation = EQUATION_OPER_EQUALS;
         }
-        else if( strcmp( element, "&&" ) == 0 )
+        else if( strcmp( equationString, "&&" ) == 0 )
         {
-            CEquationElementInternal anElement;
-            anElement.Element_1_0.Type      = EQUATION_ELEM_OPERATION;
-            anElement.Element_1_0.Operation = EQUATION_OPER_AND_L;
-            return AddEquationElement( anElement );
+            element.Type      = EQUATION_ELEM_OPERATION;
+            element.Operation = EQUATION_OPER_AND_L;
         }
-        else if( strcmp( element, "<<" ) == 0 )
+        else if( strcmp( equationString, "<<" ) == 0 )
         {
-            CEquationElementInternal anElement;
-            anElement.Element_1_0.Type      = EQUATION_ELEM_OPERATION;
-            anElement.Element_1_0.Operation = EQUATION_OPER_LSHIFT;
-            return AddEquationElement( anElement );
+            element.Type      = EQUATION_ELEM_OPERATION;
+            element.Operation = EQUATION_OPER_LSHIFT;
         }
-        else if( strcmp( element, ">>" ) == 0 )
+        else if( strcmp( equationString, ">>" ) == 0 )
         {
-            CEquationElementInternal anElement;
-            anElement.Element_1_0.Type      = EQUATION_ELEM_OPERATION;
-            anElement.Element_1_0.Operation = EQUATION_OPER_RSHIFT;
-            return AddEquationElement( anElement );
+            element.Type      = EQUATION_ELEM_OPERATION;
+            element.Operation = EQUATION_OPER_RSHIFT;
         }
-        else if( strcmp( element, "FADD" ) == 0 )
+        else if( strcmp( equationString, "FADD" ) == 0 )
         {
-            CEquationElementInternal anElement;
-            anElement.Element_1_0.Type      = EQUATION_ELEM_OPERATION;
-            anElement.Element_1_0.Operation = EQUATION_OPER_FADD;
-            return AddEquationElement( anElement );
+            element.Type      = EQUATION_ELEM_OPERATION;
+            element.Operation = EQUATION_OPER_FADD;
         }
-        else if( strcmp( element, "FSUB" ) == 0 )
+        else if( strcmp( equationString, "FSUB" ) == 0 )
         {
-            CEquationElementInternal anElement;
-            anElement.Element_1_0.Type      = EQUATION_ELEM_OPERATION;
-            anElement.Element_1_0.Operation = EQUATION_OPER_FSUB;
-            return AddEquationElement( anElement );
+            element.Type      = EQUATION_ELEM_OPERATION;
+            element.Operation = EQUATION_OPER_FSUB;
         }
-        else if( strcmp( element, "FMUL" ) == 0 )
+        else if( strcmp( equationString, "FMUL" ) == 0 )
         {
-            CEquationElementInternal anElement;
-            anElement.Element_1_0.Type      = EQUATION_ELEM_OPERATION;
-            anElement.Element_1_0.Operation = EQUATION_OPER_FMUL;
-            return AddEquationElement( anElement );
+            element.Type      = EQUATION_ELEM_OPERATION;
+            element.Operation = EQUATION_OPER_FMUL;
         }
-        else if( strcmp( element, "FDIV" ) == 0 )
+        else if( strcmp( equationString, "FDIV" ) == 0 )
         {
-            CEquationElementInternal anElement;
-            anElement.Element_1_0.Type      = EQUATION_ELEM_OPERATION;
-            anElement.Element_1_0.Operation = EQUATION_OPER_FDIV;
-            return AddEquationElement( anElement );
+            element.Type      = EQUATION_ELEM_OPERATION;
+            element.Operation = EQUATION_OPER_FDIV;
         }
-        else if( strcmp( element, "UGTE" ) == 0 )
+        else if( strcmp( equationString, "UGTE" ) == 0 )
         {
-            CEquationElementInternal anElement;
-            anElement.Element_1_0.Type      = EQUATION_ELEM_OPERATION;
-            anElement.Element_1_0.Operation = EQUATION_OPER_UGTE;
-            return AddEquationElement( anElement );
+            element.Type      = EQUATION_ELEM_OPERATION;
+            element.Operation = EQUATION_OPER_UGTE;
         }
-        else if( strcmp( element, "ULTE" ) == 0 )
+        else if( strcmp( equationString, "ULTE" ) == 0 )
         {
-            CEquationElementInternal anElement;
-            anElement.Element_1_0.Type      = EQUATION_ELEM_OPERATION;
-            anElement.Element_1_0.Operation = EQUATION_OPER_ULTE;
-            return AddEquationElement( anElement );
+            element.Type      = EQUATION_ELEM_OPERATION;
+            element.Operation = EQUATION_OPER_ULTE;
         }
-        else if( strcmp( element, "UGT" ) == 0 )
+        else if( strcmp( equationString, "UGT" ) == 0 )
         {
-            CEquationElementInternal anElement;
-            anElement.Element_1_0.Type      = EQUATION_ELEM_OPERATION;
-            anElement.Element_1_0.Operation = EQUATION_OPER_UGT;
-            return AddEquationElement( anElement );
+            element.Type      = EQUATION_ELEM_OPERATION;
+            element.Operation = EQUATION_OPER_UGT;
         }
-        else if( strcmp( element, "ULT" ) == 0 )
+        else if( strcmp( equationString, "ULT" ) == 0 )
         {
-            CEquationElementInternal anElement;
-            anElement.Element_1_0.Type      = EQUATION_ELEM_OPERATION;
-            anElement.Element_1_0.Operation = EQUATION_OPER_ULT;
-            return AddEquationElement( anElement );
+            element.Type      = EQUATION_ELEM_OPERATION;
+            element.Operation = EQUATION_OPER_ULT;
         }
-        else if( strcmp( element, "FGTE" ) == 0 )
+        else if( strcmp( equationString, "FGTE" ) == 0 )
         {
-            CEquationElementInternal anElement;
-            anElement.Element_1_0.Type      = EQUATION_ELEM_OPERATION;
-            anElement.Element_1_0.Operation = EQUATION_OPER_FGTE;
-            return AddEquationElement( anElement );
+            element.Type      = EQUATION_ELEM_OPERATION;
+            element.Operation = EQUATION_OPER_FGTE;
         }
-        else if( strcmp( element, "FLTE" ) == 0 )
+        else if( strcmp( equationString, "FLTE" ) == 0 )
         {
-            CEquationElementInternal anElement;
-            anElement.Element_1_0.Type      = EQUATION_ELEM_OPERATION;
-            anElement.Element_1_0.Operation = EQUATION_OPER_FLTE;
-            return AddEquationElement( anElement );
+            element.Type      = EQUATION_ELEM_OPERATION;
+            element.Operation = EQUATION_OPER_FLTE;
         }
-        else if( strcmp( element, "FGT" ) == 0 )
+        else if( strcmp( equationString, "FGT" ) == 0 )
         {
-            CEquationElementInternal anElement;
-            anElement.Element_1_0.Type      = EQUATION_ELEM_OPERATION;
-            anElement.Element_1_0.Operation = EQUATION_OPER_FGT;
-            return AddEquationElement( anElement );
+            element.Type      = EQUATION_ELEM_OPERATION;
+            element.Operation = EQUATION_OPER_FGT;
         }
-        else if( strcmp( element, "FLT" ) == 0 )
+        else if( strcmp( equationString, "FLT" ) == 0 )
         {
-            CEquationElementInternal anElement;
-            anElement.Element_1_0.Type      = EQUATION_ELEM_OPERATION;
-            anElement.Element_1_0.Operation = EQUATION_OPER_FLT;
-            return AddEquationElement( anElement );
+            element.Type      = EQUATION_ELEM_OPERATION;
+            element.Operation = EQUATION_OPER_FLT;
         }
-        else if( strcmp( element, "UMIN" ) == 0 )
+        else if( strcmp( equationString, "UMIN" ) == 0 )
         {
-            CEquationElementInternal anElement;
-            anElement.Element_1_0.Type      = EQUATION_ELEM_OPERATION;
-            anElement.Element_1_0.Operation = EQUATION_OPER_UMIN;
-            return AddEquationElement( anElement );
+            element.Type      = EQUATION_ELEM_OPERATION;
+            element.Operation = EQUATION_OPER_UMIN;
         }
-        else if( strcmp( element, "UMAX" ) == 0 )
+        else if( strcmp( equationString, "UMAX" ) == 0 )
         {
-            CEquationElementInternal anElement;
-            anElement.Element_1_0.Type      = EQUATION_ELEM_OPERATION;
-            anElement.Element_1_0.Operation = EQUATION_OPER_UMAX;
-            return AddEquationElement( anElement );
+            element.Type      = EQUATION_ELEM_OPERATION;
+            element.Operation = EQUATION_OPER_UMAX;
         }
-        else if( strcmp( element, "FMIN" ) == 0 )
+        else if( strcmp( equationString, "FMIN" ) == 0 )
         {
-            CEquationElementInternal anElement;
-            anElement.Element_1_0.Type      = EQUATION_ELEM_OPERATION;
-            anElement.Element_1_0.Operation = EQUATION_OPER_FMIN;
-            return AddEquationElement( anElement );
+            element.Type      = EQUATION_ELEM_OPERATION;
+            element.Operation = EQUATION_OPER_FMIN;
         }
-        else if( strcmp( element, "FMAX" ) == 0 )
+        else if( strcmp( equationString, "FMAX" ) == 0 )
         {
-            CEquationElementInternal anElement;
-            anElement.Element_1_0.Type      = EQUATION_ELEM_OPERATION;
-            anElement.Element_1_0.Operation = EQUATION_OPER_FMAX;
-            return AddEquationElement( anElement );
+            element.Type      = EQUATION_ELEM_OPERATION;
+            element.Operation = EQUATION_OPER_FMAX;
         }
-        else if( strncmp( element, "dw@", sizeof( "dw@" ) - 1 ) == 0 )
+        else if( strncmp( equationString, "dw@", sizeof( "dw@" ) - 1 ) == 0 )
         {
-            CEquationElementInternal anElement;
-            anElement.Element_1_0.Type                  = EQUATION_ELEM_RD_UINT32;
-            anElement.Element_1_0.ReadParams.ByteOffset = strtoul( &element[3], nullptr, 0 );
-            return AddEquationElement( anElement );
+            element.Type                  = EQUATION_ELEM_RD_UINT32;
+            element.ReadParams.ByteOffset = strtoul( &equationString[3], nullptr, 0 );
         }
-        else if( strncmp( element, "fl@", sizeof( "fl@" ) - 1 ) == 0 )
+        else if( strncmp( equationString, "fl@", sizeof( "fl@" ) - 1 ) == 0 )
         {
-            CEquationElementInternal anElement;
-            anElement.Element_1_0.Type                  = EQUATION_ELEM_RD_FLOAT;
-            anElement.Element_1_0.ReadParams.ByteOffset = strtoul( &element[3], nullptr, 0 );
-            return AddEquationElement( anElement );
+            element.Type = EQUATION_ELEM_RD_FLOAT;
         }
-        else if( strncmp( element, "qw@", sizeof( "qw@" ) - 1 ) == 0 )
+        else if( strncmp( equationString, "qw@", sizeof( "qw@" ) - 1 ) == 0 )
         {
-            CEquationElementInternal anElement;
-            anElement.Element_1_0.Type                  = EQUATION_ELEM_RD_UINT64;
-            anElement.Element_1_0.ReadParams.ByteOffset = strtoul( &element[3], nullptr, 0 );
-            return AddEquationElement( anElement );
+            element.Type                  = EQUATION_ELEM_RD_UINT64;
+            element.ReadParams.ByteOffset = strtoul( &equationString[3], nullptr, 0 );
         }
-        else if( strncmp( element, "rd40@", sizeof( "rd40@" ) - 1 ) == 0 )
+        else if( strncmp( equationString, "rd40@", sizeof( "rd40@" ) - 1 ) == 0 )
         {
-            char*                    pEnd = (char*) &element[5];
-            CEquationElementInternal anElement;
-            anElement.Element_1_0.Type                  = EQUATION_ELEM_RD_40BIT_CNTR;
-            anElement.Element_1_0.ReadParams.ByteOffset = strtoul( pEnd, &pEnd, 0 );
-            if( pEnd )
+            char* pEnd                    = (char*) &equationString[5];
+            element.Type                  = EQUATION_ELEM_RD_40BIT_CNTR;
+            element.ReadParams.ByteOffset = strtoul( pEnd, &pEnd, 0 );
+            if( pEnd == nullptr )
             {
-                anElement.Element_1_0.ReadParams.ByteOffsetExt = strtoul( ++pEnd, &pEnd, 0 );
-                return AddEquationElement( anElement );
+                return false;
             }
-            return false;
+            element.ReadParams.ByteOffsetExt = strtoul( ++pEnd, &pEnd, 0 );
         }
-        else if( strncmp( element, "bm@", sizeof( "bm@" ) - 1 ) == 0 )
+        else if( strncmp( equationString, "bm@", sizeof( "bm@" ) - 1 ) == 0 )
         {
-            char*                    pEnd = (char*) &element[3];
-            CEquationElementInternal anElement;
-            anElement.Element_1_0.Type                  = EQUATION_ELEM_RD_BITFIELD;
-            anElement.Element_1_0.ReadParams.ByteOffset = strtoul( pEnd, &pEnd, 0 );
-            if( pEnd )
+            char* pEnd                    = (char*) &equationString[3];
+            element.Type                  = EQUATION_ELEM_RD_BITFIELD;
+            element.ReadParams.ByteOffset = strtoul( pEnd, &pEnd, 0 );
+            if( pEnd == nullptr )
             {
-                anElement.Element_1_0.ReadParams.BitOffset = strtoul( ++pEnd, &pEnd, 0 );
-                if( pEnd )
-                {
-                    anElement.Element_1_0.ReadParams.BitsCount = strtoul( ++pEnd, &pEnd, 10 );
-                    return AddEquationElement( anElement );
-                }
+                return false;
             }
-            return false;
+            element.ReadParams.BitOffset = strtoul( ++pEnd, &pEnd, 0 );
+            if( pEnd == nullptr )
+            {
+                return false;
+            }
+            element.ReadParams.BitsCount = strtoul( ++pEnd, &pEnd, 10 );
         }
-        else if( strcmp( element, "$Self" ) == 0 )
+        else if( strcmp( equationString, "$Self" ) == 0 )
         {
-            CEquationElementInternal anElement;
-
-            anElement.Element_1_0.Type = EQUATION_ELEM_SELF_COUNTER_VALUE;
-            return AddEquationElement( anElement );
+            element.Type = EQUATION_ELEM_SELF_COUNTER_VALUE;
         }
-        else if( strncmp( element, "$$", sizeof( "$$" ) - 1 ) == 0 )
+        else if( strncmp( equationString, "$$", sizeof( "$$" ) - 1 ) == 0 )
         {
-            // Add element
-            CEquationElementInternal anElement;
-
-            iu_strncpy_s( anElement.SymbolNameInternal, sizeof( anElement.SymbolNameInternal ), &element[2], sizeof( anElement.SymbolNameInternal ) - 1 );
-            // finish element
-            anElement.Element_1_0.SymbolName = anElement.SymbolNameInternal;
-            anElement.Element_1_0.Type       = EQUATION_ELEM_LOCAL_METRIC_SYMBOL;
-
-            return AddEquationElement( anElement );
+            iu_strncpy_s( element.SymbolNameInternal, sizeof( element.SymbolNameInternal ), &equationString[2], sizeof( element.SymbolNameInternal ) - 1 );
+            element.SymbolName = element.SymbolNameInternal;
+            element.Type       = EQUATION_ELEM_LOCAL_METRIC_SYMBOL;
         }
-        else if( ( element[0] == '$' ) && ( element[1] != 0 ) )
+        else if( ( equationString[0] == '$' ) && ( equationString[1] != 0 ) )
         {
-            CEquationElementInternal anElement;
-            auto                     value = m_device.GetGlobalSymbolValueByName( &element[1] );
+            auto value = m_device.GetGlobalSymbolValueByName( &equationString[1] );
 
-            iu_strncpy_s( anElement.SymbolNameInternal, sizeof( anElement.SymbolNameInternal ), &element[1], sizeof( anElement.SymbolNameInternal ) - 1 );
-            anElement.Element_1_0.SymbolName = anElement.SymbolNameInternal;
+            iu_strncpy_s( element.SymbolNameInternal, sizeof( element.SymbolNameInternal ), &equationString[1], sizeof( element.SymbolNameInternal ) - 1 );
+            element.SymbolName = element.SymbolNameInternal;
 
             if( value == nullptr )
             {
                 // Finish element as local counter symbol
-                anElement.Element_1_0.Type = EQUATION_ELEM_LOCAL_COUNTER_SYMBOL;
+                element.Type = EQUATION_ELEM_LOCAL_COUNTER_SYMBOL;
             }
             else
             {
                 // Finish element as global symbol
-                anElement.Element_1_0.Type = EQUATION_ELEM_GLOBAL_SYMBOL;
+                element.Type = EQUATION_ELEM_GLOBAL_SYMBOL;
             }
-            return AddEquationElement( anElement );
         }
-        else if( strncmp( element, "i$", sizeof( "i$" ) - 1 ) == 0 )
+        else if( strncmp( equationString, "i$", sizeof( "i$" ) - 1 ) == 0 )
         {
-            // Add element
-            CEquationElementInternal anElement;
-
-            iu_strncpy_s( anElement.SymbolNameInternal, sizeof( anElement.SymbolNameInternal ), &element[2], sizeof( anElement.SymbolNameInternal ) - 1 );
-            // finish element
-            anElement.Element_1_0.SymbolName = anElement.SymbolNameInternal;
-            anElement.Element_1_0.Type       = EQUATION_ELEM_INFORMATION_SYMBOL;
-
-            return AddEquationElement( anElement );
+            iu_strncpy_s( element.SymbolNameInternal, sizeof( element.SymbolNameInternal ), &equationString[2], sizeof( element.SymbolNameInternal ) - 1 );
+            element.SymbolName = element.SymbolNameInternal;
+            element.Type       = EQUATION_ELEM_INFORMATION_SYMBOL;
         }
-        else if( strchr( element, '.' ) != nullptr ) // assume float number
+        else if( strchr( equationString, '.' ) != nullptr ) // assume float number
         {
-            CEquationElementInternal anElement;
-            anElement.Element_1_0.Type           = EQUATION_ELEM_IMM_FLOAT;
-            anElement.Element_1_0.ImmediateFloat = (float) atof( element );
-            return AddEquationElement( anElement );
+            element.Type           = EQUATION_ELEM_IMM_FLOAT;
+            element.ImmediateFloat = static_cast<float>( atof( equationString ) );
         }
-        else if( strncmp( element, "0x", sizeof( "0x" ) - 1 ) == 0 ) // assume hex integer 64
+        else if( strncmp( equationString, "0x", sizeof( "0x" ) - 1 ) == 0 ) // assume hex integer 64
         {
-            CEquationElementInternal anElement;
-            anElement.Element_1_0.Type            = EQUATION_ELEM_IMM_UINT64;
-            anElement.Element_1_0.ImmediateUInt64 = strtoull( element, nullptr, 0 );
-            return AddEquationElement( anElement );
+            element.Type            = EQUATION_ELEM_IMM_UINT64;
+            element.ImmediateUInt64 = strtoull( equationString, nullptr, 0 );
         }
-        else if( element[0] >= '0' && element[0] <= '9' ) // assume decimal integer 64
+        else if( equationString[0] >= '0' && equationString[0] <= '9' ) // assume decimal integer 64
         {
-            CEquationElementInternal anElement;
-            anElement.Element_1_0.Type            = EQUATION_ELEM_IMM_UINT64;
-            anElement.Element_1_0.ImmediateUInt64 = strtoull( element, nullptr, 10 );
-            return AddEquationElement( anElement );
+            element.Type            = EQUATION_ELEM_IMM_UINT64;
+            element.ImmediateUInt64 = strtoull( equationString, nullptr, 10 );
         }
-        else if( strncmp( element, "mask$", sizeof( "mask$" ) - 1 ) == 0 ) // assume hex integer 64
+        else if( strncmp( equationString, "mask$", sizeof( "mask$" ) - 1 ) == 0 ) // assume hex integer 64
         {
-            CEquationElementInternal anElement;
-            anElement.Element_1_0.Type = EQUATION_ELEM_MASK;
-            anElement.Element_1_0.Mask = GetByteArrayFromCStringMask( element + sizeof( "mask$" ) - 1, adapterId );
-            MD_CHECK_PTR_RET_A( adapterId, anElement.Element_1_0.Mask.Data, false )
-            return AddEquationElement( anElement );
+            element.Type = EQUATION_ELEM_MASK;
+            element.Mask = GetByteArrayFromCStringMask( equationString + sizeof( "mask$" ) - 1, adapterId );
+            MD_CHECK_PTR_RET_A( adapterId, element.Mask.Data, false )
+        }
+        else
+        {
+            MD_LOG_A( adapterId, LOG_ERROR, "Unknown equation element: %s", equationString );
+            return false;
         }
 
-        MD_LOG_A( adapterId, LOG_ERROR, "Unknown equation element: %s", element );
-        return false;
+        return AddEquationElement( element );
     }
 
     //////////////////////////////////////////////////////////////////////////////

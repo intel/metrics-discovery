@@ -125,6 +125,38 @@ TCompletionCode CreateMetricTreeMTL_GT2_OA( CMetricsDevice* metricsDevice, CConc
             GPU_RENDER | GPU_COMPUTE | GPU_MEDIA | GPU_GENERIC, 256, 688, OA_REPORT_TYPE_256B_A45_NOA16, &platformMask, nullptr, GT_TYPE_GT2 );
         MD_CHECK_PTR( metricSet );
 
+        metricSet = concurrentGroup->AddMetricSetExplicit<MetricSets_MTL_GT2_OA::CComputeOverviewMetricSet>( "ComputeOverview", "ComputeOverview", API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+            GPU_RENDER | GPU_COMPUTE | GPU_GENERIC, 256, 688, OA_REPORT_TYPE_256B_A45_NOA16, &platformMask, nullptr, GT_TYPE_GT2 );
+        MD_CHECK_PTR( metricSet );
+
+        metricSet = concurrentGroup->AddMetricSetExplicit<MetricSets_MTL_GT2_OA::CDataportReadsMetricSet>( "DataportReads", "DataportReads", API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+            GPU_RENDER | GPU_COMPUTE | GPU_GENERIC, 256, 688, OA_REPORT_TYPE_256B_A45_NOA16, &platformMask, nullptr, GT_TYPE_GT2 );
+        MD_CHECK_PTR( metricSet );
+
+        metricSet = concurrentGroup->AddMetricSetExplicit<MetricSets_MTL_GT2_OA::CDataportWritesMetricSet>( "DataportWrites", "DataportWrites", API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+            GPU_RENDER | GPU_COMPUTE | GPU_GENERIC, 256, 688, OA_REPORT_TYPE_256B_A45_NOA16, &platformMask, nullptr, GT_TYPE_GT2 );
+        MD_CHECK_PTR( metricSet );
+
+        metricSet = concurrentGroup->AddMetricSetExplicit<MetricSets_MTL_GT2_OA::CL1ProfileSlmBankConflictsMetricSet>( "L1ProfileSlmBankConflicts", "L1ProfileSlmBankConflicts", API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+            GPU_RENDER | GPU_COMPUTE | GPU_GENERIC, 256, 688, OA_REPORT_TYPE_256B_A45_NOA16, &platformMask, nullptr, GT_TYPE_GT2 );
+        MD_CHECK_PTR( metricSet );
+
+        metricSet = concurrentGroup->AddMetricSetExplicit<MetricSets_MTL_GT2_OA::CLoadStoreCacheProfileMetricSet_XeCore0>( "LoadStoreCacheProfile", "LoadStoreCacheProfile", API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+            GPU_RENDER | GPU_COMPUTE | GPU_GENERIC, 256, 688, OA_REPORT_TYPE_256B_A45_NOA16, &platformMask, "$GtSlice0XeCore0 $GtSlice0XeCore3 UGTE", GT_TYPE_GT2 );
+        MD_CHECK_PTR( metricSet );
+
+        metricSet = concurrentGroup->AddMetricSetExplicit<MetricSets_MTL_GT2_OA::CLoadStoreCacheProfileMetricSet_XeCore3>( "LoadStoreCacheProfile", "LoadStoreCacheProfile", API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+            GPU_RENDER | GPU_COMPUTE | GPU_GENERIC, 256, 688, OA_REPORT_TYPE_256B_A45_NOA16, &platformMask, "$GtSlice0XeCore0 $GtSlice0XeCore3 ULT", GT_TYPE_GT2 );
+        MD_CHECK_PTR( metricSet );
+
+        metricSet = concurrentGroup->AddMetricSetExplicit<MetricSets_MTL_GT2_OA::CSLMProfileMetricSet_XeCore0>( "SLMProfile", "SLMProfile", API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+            GPU_RENDER | GPU_COMPUTE | GPU_GENERIC, 256, 688, OA_REPORT_TYPE_256B_A45_NOA16, &platformMask, "$GtSlice0XeCore0 $GtSlice0XeCore3 UGTE", GT_TYPE_GT2 );
+        MD_CHECK_PTR( metricSet );
+
+        metricSet = concurrentGroup->AddMetricSetExplicit<MetricSets_MTL_GT2_OA::CSLMProfileMetricSet_XeCore3>( "SLMProfile", "SLMProfile", API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+            GPU_RENDER | GPU_COMPUTE | GPU_GENERIC, 256, 688, OA_REPORT_TYPE_256B_A45_NOA16, &platformMask, "$GtSlice0XeCore0 $GtSlice0XeCore3 ULT", GT_TYPE_GT2 );
+        MD_CHECK_PTR( metricSet );
+
         metricSet = concurrentGroup->AddMetricSetExplicit<MetricSets_MTL_GT2_OA::CExt1MetricSet>( "Ext1", "Ext1", API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
             GPU_RENDER | GPU_COMPUTE | GPU_GENERIC, 256, 688, OA_REPORT_TYPE_256B_A45_NOA16, &platformMask, nullptr, GT_TYPE_GT2 );
         MD_CHECK_PTR( metricSet );

@@ -56,7 +56,7 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     CAdapterGroup::~CAdapterGroup()
     {
-        ClearVector( m_adapterVector );
+        CleanupAdapters();
     }
 
     //////////////////////////////////////////////////////////////////////////////
@@ -136,27 +136,28 @@ namespace MetricsDiscoveryInternal
             return retVal;
         }
 
-        if( retVal == CC_OK )
+        if( m_agRefCounter > 1 )
         {
-            if( m_agRefCounter > 1 )
-            {
-                m_agRefCounter--;
-                retVal = CC_STILL_INITIALIZED;
-            }
-            else if( m_agRefCounter == 1 )
-            {
-                // Important: 'this' (current object) is deleted here
-                MD_SAFE_DELETE( m_adapterGroup );
-                m_agRefCounter = 0;
-                retVal         = CC_OK;
-            }
-            else
-            {
-                retVal = CC_ERROR_GENERAL;
-            }
+            m_agRefCounter--;
+            retVal = CC_STILL_INITIALIZED;
+        }
+        else if( m_agRefCounter == 1 )
+        {
+            m_agRefCounter = 0;
+            retVal         = CC_OK;
+        }
+        else
+        {
+            retVal = CC_ERROR_GENERAL;
         }
 
         ReleaseOpenCloseSemaphore();
+
+        if( m_agRefCounter == 0 )
+        {
+            // Important: 'this' (current object) is deleted here
+            MD_SAFE_DELETE( m_adapterGroup );
+        }
 
         MD_LOG_EXIT();
         return retVal;
@@ -470,6 +471,8 @@ namespace MetricsDiscoveryInternal
         m_params.AdapterCount = 0;
 
         ClearVector( m_adapterVector );
+
+        CDriverInterface::ReleaseResources();
     }
 
     //////////////////////////////////////////////////////////////////////////////

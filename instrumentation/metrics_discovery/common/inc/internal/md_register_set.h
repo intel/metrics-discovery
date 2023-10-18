@@ -46,6 +46,9 @@ namespace MetricsDiscoveryInternal
         CRegisterSet( CMetricsDevice& device, uint32_t configId, uint32_t configPriority, TConfigType configType );
         virtual ~CRegisterSet();
 
+        CRegisterSet( const CRegisterSet& )            = delete; // Delete copy-constructor
+        CRegisterSet& operator=( const CRegisterSet& ) = delete; // Delete assignment operator
+
         // Non-API:
         TRegisterSetParams* GetParams();
         TCompletionCode     SetAvailabilityEquation( const char* equationString );

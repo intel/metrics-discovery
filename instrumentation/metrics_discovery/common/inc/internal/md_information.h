@@ -56,6 +56,8 @@ namespace MetricsDiscoveryInternal
         explicit CInformation( const CInformation& other );
         virtual ~CInformation();
 
+        CInformation& operator=( const CInformation& ) = delete; // Delete assignment operator
+
         // Non-API:
         TCompletionCode SetSnapshotReportReadEquation( const char* equationString );
         TCompletionCode SetDeltaReportReadEquation( const char* equationString );

@@ -53,6 +53,9 @@ namespace MetricsDiscoveryInternal
         COverrideCommon( void );
         virtual ~COverrideCommon();
 
+        COverrideCommon( const COverrideCommon& )            = delete; // Delete copy-constructor
+        COverrideCommon& operator=( const COverrideCommon& ) = delete; // Delete assignment operator
+
     protected:
         // Variables:
         TOverrideInternalParams m_internalParams;

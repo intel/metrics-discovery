@@ -22,6 +22,7 @@ SPDX-License-Identifier: MIT
 #include "md_types.h"
 
 #include <cstring>
+#include <limits>
 #include <stack>
 
 namespace MetricsDiscoveryInternal
@@ -84,6 +85,34 @@ namespace MetricsDiscoveryInternal
         {
             MD_SAFE_DELETE_ARRAY( m_savedReport );
         }
+
+        //////////////////////////////////////////////////////////////////////////////
+        //
+        // Class:
+        //     CMetricsCalculator
+        //
+        // Method:
+        //     CMetricsCalculator
+        //
+        // Description:
+        //     CMetricsCalculator Delete copy-constructor.
+        //
+        //////////////////////////////////////////////////////////////////////////////
+        inline CMetricsCalculator( const CMetricsCalculator& ) = delete; // Delete copy-constructor
+
+        //////////////////////////////////////////////////////////////////////////////
+        //
+        // Class:
+        //     CMetricsCalculator
+        //
+        // Method:
+        //     operator=
+        //
+        // Description:
+        //     Delete assignment operator.
+        //
+        //////////////////////////////////////////////////////////////////////////////
+        inline CMetricsCalculator& operator=( const CMetricsCalculator& ) = delete; // Delete assignment operator
 
         //////////////////////////////////////////////////////////////////////////////
         //
@@ -963,9 +992,17 @@ namespace MetricsDiscoveryInternal
                     {
                         if( previousValue.ValueUInt64 > lastValue.ValueUInt64 )
                         {
-                            uint64_t value         = lastValue.ValueUInt64 | ( 1LL << deltaFunction.BitsCount );
-                            typedValue.ValueUInt64 = value - previousValue.ValueUInt64;
-                            typedValue.ValueType   = VALUE_TYPE_UINT64;
+                            if( deltaFunction.BitsCount < 64 )
+                            {
+                                const uint64_t value   = lastValue.ValueUInt64 | ( 1ULL << deltaFunction.BitsCount );
+                                typedValue.ValueUInt64 = value - previousValue.ValueUInt64;
+                            }
+                            else
+                            {
+                                typedValue.ValueUInt64 = ( std::numeric_limits<uint64_t>::max )() - previousValue.ValueUInt64 + lastValue.ValueUInt64;
+                            }
+
+                            typedValue.ValueType = VALUE_TYPE_UINT64;
                             return typedValue;
                         }
                         else
@@ -1052,7 +1089,7 @@ namespace MetricsDiscoveryInternal
             const auto& equationElements = equation.GetElementsVector();
             for( uint32_t i = 0; i < equationElements.size() && isValid; ++i )
             {
-                const auto& element = equationElements[i].Element_1_0;
+                const auto& element = equationElements[i];
                 switch( element.Type )
                 {
                     case EQUATION_ELEM_RD_BITFIELD:
@@ -1256,7 +1293,7 @@ namespace MetricsDiscoveryInternal
             const auto& equationElements = equation.GetElementsVector();
             for( uint32_t i = 0; i < equationElements.size() && isValid; ++i )
             {
-                const auto& element = equationElements[i].Element_1_0;
+                const auto& element = equationElements[i];
                 switch( element.Type )
                 {
                     case EQUATION_ELEM_RD_BITFIELD:
@@ -1466,7 +1503,7 @@ namespace MetricsDiscoveryInternal
             const auto& equationElements = equation.GetElementsVector();
             for( uint32_t i = 0; i < equationElements.size() && isValid; ++i )
             {
-                const auto& element = equationElements[i].Element_1_0;
+                const auto& element = equationElements[i];
                 switch( element.Type )
                 {
                     case EQUATION_ELEM_RD_BITFIELD:

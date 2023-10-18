@@ -18,151 +18,6 @@ SPDX-License-Identifier: MIT
 
 #if MD_INCLUDE_XEHP_SDV_GT1_GT2_METRICS
 
-namespace MetricsDiscoveryInternal::MetricSets_XEHP_SDV_GT1_GT2_PipelineStatistics
-{
-    CPipelineStatsMetricSet::CPipelineStatsMetricSet( CMetricsDevice& device, CConcurrentGroup* concurrentGroup, const char* symbolicName, const char* shortName, uint32_t apiMask, uint32_t category, uint32_t snapshotReportSize, uint32_t deltaReportSize, TReportType reportType, TByteArrayLatest* platformMask, uint32_t gtMask /*= GT_TYPE_ALL*/, bool isCustom /*= false*/ )
-        : CMetricSet( device, concurrentGroup, symbolicName, shortName, apiMask, category, snapshotReportSize, deltaReportSize, reportType, platformMask, gtMask, isCustom )
-    {
-    }
-
-    TCompletionCode CPipelineStatsMetricSet::Initialize()
-    {
-        TCompletionCode ret                  = CC_OK;
-        CMetric*        metric               = nullptr;
-        CInformation*   information          = nullptr;
-        const char*     availabilityEquation = nullptr;
-        m_params_1_0.InformationCount        = m_concurrentGroup->GetInformationCount();
-        MD_CHECK_CC( SetApiSpecificId( "", 0, 0, 0x80000206, 0, 0, "", 0, "Intel_Raw_Pipeline_Statistics_Query", 0 ) );
-
-        availabilityEquation = nullptr;
-        metric               = AddMetric( "IAVertices", "Input vertices",
-                          "The total number of vertices that entered the 3D Pipeline.",
-                          "3D Pipe/Input Assembler", ( METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_IA * 0x10000 ), USAGE_FLAG_TIER_2 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_OGL | API_TYPE_OGL4_X,
-                          METRIC_TYPE_EVENT, RESULT_UINT64, "vertices", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 0 );
-        if( metric )
-        {
-            MD_CHECK_CC( ( metric->SetDeltaReportReadEquation( "qw@0x00" ) ) );
-        }
-
-        availabilityEquation = nullptr;
-        metric               = AddMetric( "IAPrimitives", "Input primitives",
-                          "The total number of rendering primitives assembled and put into the input assembly stage of the 3D Pipeline.",
-                          "3D Pipe/Input Assembler", ( METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_IA * 0x10000 ), USAGE_FLAG_TIER_2 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_OGL | API_TYPE_OGL4_X,
-                          METRIC_TYPE_EVENT, RESULT_UINT64, "triangles", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 1 );
-        if( metric )
-        {
-            MD_CHECK_CC( ( metric->SetDeltaReportReadEquation( "qw@0x08" ) ) );
-        }
-
-        availabilityEquation = nullptr;
-        metric               = AddMetric( "VsInvocations", "VS per vertex invocations",
-                          "The total number of times a vertex shader was invoked. 3D rendering invokes the vertex shader once per vertex.",
-                          "3D Pipe/Vertex Shader", ( METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_VS * 0x10000 ), USAGE_FLAG_TIER_2 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_OGL | API_TYPE_OGL4_X,
-                          METRIC_TYPE_EVENT, RESULT_UINT64, "invocations", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 2 );
-        if( metric )
-        {
-            MD_CHECK_CC( ( metric->SetDeltaReportReadEquation( "qw@0x10" ) ) );
-        }
-
-        availabilityEquation = nullptr;
-        metric               = AddMetric( "HsInvocations", "HS invocations",
-                          "The total number of times a hull shader was invoked.",
-                          "3D Pipe/Hull Shader", ( METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_HS * 0x10000 ), USAGE_FLAG_TIER_2 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_OGL | API_TYPE_OGL4_X,
-                          METRIC_TYPE_EVENT, RESULT_UINT64, "invocations", 0, 0, HW_UNIT_GPU, availabilityEquation, "Hull|Control,hull|control,HS|TCS", nullptr, 3 );
-        if( metric )
-        {
-            MD_CHECK_CC( ( metric->SetDeltaReportReadEquation( "qw@0x40" ) ) );
-        }
-
-        availabilityEquation = nullptr;
-        metric               = AddMetric( "DsInvocations", "DS invocations",
-                          "The total number of times a domain shader was invoked.",
-                          "3D Pipe/Domain Shader", ( METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_DS * 0x10000 ), USAGE_FLAG_TIER_2 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_OGL | API_TYPE_OGL4_X,
-                          METRIC_TYPE_EVENT, RESULT_UINT64, "invocations", 0, 0, HW_UNIT_GPU, availabilityEquation, "Domain|Evaluation,domain|evaluation,DS|TES", nullptr, 4 );
-        if( metric )
-        {
-            MD_CHECK_CC( ( metric->SetDeltaReportReadEquation( "qw@0x48" ) ) );
-        }
-
-        availabilityEquation = nullptr;
-        metric               = AddMetric( "GsInvocations", "GS per triangle invocations",
-                          "The total number of times a geometry shader was invoked per triangle.",
-                          "3D Pipe/Geometry Shader", ( METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_GS * 0x10000 ), USAGE_FLAG_TIER_2 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_OGL | API_TYPE_OGL4_X,
-                          METRIC_TYPE_EVENT, RESULT_UINT64, "invocations", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 5 );
-        if( metric )
-        {
-            MD_CHECK_CC( ( metric->SetDeltaReportReadEquation( "qw@0x18" ) ) );
-        }
-
-        availabilityEquation = nullptr;
-        metric               = AddMetric( "GsPrimitives", "Post-GS primitives",
-                          "The total number of primitives that flowed through from GS to the clipper if GS was enabled.",
-                          "3D Pipe/Geometry Shader", ( METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_GS * 0x10000 ), USAGE_FLAG_TIER_2 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_OGL | API_TYPE_OGL4_X,
-                          METRIC_TYPE_EVENT, RESULT_UINT64, "triangles", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 6 );
-        if( metric )
-        {
-            MD_CHECK_CC( ( metric->SetDeltaReportReadEquation( "qw@0x20" ) ) );
-        }
-
-        availabilityEquation = nullptr;
-        metric               = AddMetric( "ClipperInvocations", "Clipper invocations",
-                          "The total number of primitives sent to the Clipper.",
-                          "3D Pipe/Clipper", ( METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_CL * 0x10000 ), USAGE_FLAG_TIER_2 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_OGL | API_TYPE_OGL4_X,
-                          METRIC_TYPE_EVENT, RESULT_UINT64, "triangles", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 7 );
-        if( metric )
-        {
-            MD_CHECK_CC( ( metric->SetDeltaReportReadEquation( "qw@0x28" ) ) );
-        }
-
-        availabilityEquation = nullptr;
-        metric               = AddMetric( "ClipperPrimitives", "Clipper primitives",
-                          "The total number of primitives that flowed out of the Clipper.",
-                          "3D Pipe/Clipper", ( METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_CL * 0x10000 ), USAGE_FLAG_TIER_2 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_OGL | API_TYPE_OGL4_X,
-                          METRIC_TYPE_EVENT, RESULT_UINT64, "triangles", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 8 );
-        if( metric )
-        {
-            MD_CHECK_CC( ( metric->SetDeltaReportReadEquation( "qw@0x30" ) ) );
-        }
-
-        availabilityEquation = nullptr;
-        metric               = AddMetric( "PsInvocations", "PS invocations",
-                          "The total number of times a pixel shader was invoked. 3D rendering invokes a pixel shader once per pixel or subsample.",
-                          "3D Pipe/Pixel Shader", ( METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_PS * 0x10000 ), USAGE_FLAG_TIER_2 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_OGL | API_TYPE_OGL4_X,
-                          METRIC_TYPE_EVENT, RESULT_UINT64, "invocations", 0, 0, HW_UNIT_GPU, availabilityEquation, "Pixel|Fragment,PS|FS,pixel|fragment", nullptr, 9 );
-        if( metric )
-        {
-            MD_CHECK_CC( ( metric->SetDeltaReportReadEquation( "qw@0x38" ) ) );
-        }
-
-        availabilityEquation = nullptr;
-        metric               = AddMetric( "CsInvocations", "CS invocations",
-                          "The total number of times a compute shader was invoked.",
-                          "3D Pipe/Compute Shader", ( METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_CS * 0x10000 ), USAGE_FLAG_TIER_2 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_OGL | API_TYPE_OGL4_X,
-                          METRIC_TYPE_EVENT, RESULT_UINT64, "invocations", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 10 );
-        if( metric )
-        {
-            MD_CHECK_CC( ( metric->SetDeltaReportReadEquation( "qw@0x50" ) ) );
-        }
-
-        availabilityEquation = nullptr;
-        metric               = AddMetric( "CpsInvocations", "CPS invocations",
-                          "The total number of times a coarse shader was invoked.",
-                          "3D Pipe/Compute Shader", ( METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_CS * 0x10000 ), USAGE_FLAG_TIER_2 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_OGL | API_TYPE_OGL4_X,
-                          METRIC_TYPE_EVENT, RESULT_UINT64, "invocations", 0, 0, HW_UNIT_GPU, availabilityEquation, "PS|FS", nullptr, 11 );
-        if( metric )
-        {
-            MD_CHECK_CC( ( metric->SetDeltaReportReadEquation( "qw@0x58" ) ) );
-        }
-
-        RefreshConfigRegisters();
-        return CC_OK;
-
-    exception:
-        return ret;
-    }
-
-} // namespace MetricsDiscoveryInternal::MetricSets_XEHP_SDV_GT1_GT2_PipelineStatistics
-
 namespace MetricsDiscoveryInternal::MetricSets_XEHP_SDV_GT1_GT2_OA
 {
     CHDCAndSF_Slice01MetricSet::CHDCAndSF_Slice01MetricSet( CMetricsDevice& device, CConcurrentGroup* concurrentGroup, const char* symbolicName, const char* shortName, uint32_t apiMask, uint32_t category, uint32_t snapshotReportSize, uint32_t deltaReportSize, TReportType reportType, TByteArrayLatest* platformMask, uint32_t gtMask /*= GT_TYPE_ALL*/, bool isCustom /*= false*/ )
@@ -176,7 +31,7 @@ namespace MetricsDiscoveryInternal::MetricSets_XEHP_SDV_GT1_GT2_OA
         CMetric*        metric               = nullptr;
         CInformation*   information          = nullptr;
         const char*     availabilityEquation = nullptr;
-        m_params_1_0.InformationCount        = m_concurrentGroup->GetInformationCount();
+        m_params.InformationCount            = m_concurrentGroup->GetInformationCount();
         MD_CHECK_CC( SetApiSpecificId( "GPAV", 0, 0x40000000, 0x80000203, 0, 0, "Intel Performance Counters for GT Set Dynamic", 0, "Intel_Raw_Hardware_Counters_Set_0_Query", 0 ) );
 
         availabilityEquation = nullptr;
@@ -478,7 +333,7 @@ namespace MetricsDiscoveryInternal::MetricSets_XEHP_SDV_GT1_GT2_OA
         CMetric*        metric               = nullptr;
         CInformation*   information          = nullptr;
         const char*     availabilityEquation = nullptr;
-        m_params_1_0.InformationCount        = m_concurrentGroup->GetInformationCount();
+        m_params.InformationCount            = m_concurrentGroup->GetInformationCount();
         MD_CHECK_CC( SetApiSpecificId( "GPAV", 0, 0x40000000, 0x80000203, 0, 0, "Intel Performance Counters for GT Set Dynamic", 0, "Intel_Raw_Hardware_Counters_Set_0_Query", 0 ) );
 
         availabilityEquation = nullptr;
@@ -780,7 +635,7 @@ namespace MetricsDiscoveryInternal::MetricSets_XEHP_SDV_GT1_GT2_OA
         CMetric*        metric               = nullptr;
         CInformation*   information          = nullptr;
         const char*     availabilityEquation = nullptr;
-        m_params_1_0.InformationCount        = m_concurrentGroup->GetInformationCount();
+        m_params.InformationCount            = m_concurrentGroup->GetInformationCount();
         MD_CHECK_CC( SetApiSpecificId( "GPAV", 0, 0x40000000, 0x80000203, 0, 0, "Intel Performance Counters for GT Set Dynamic", 0, "Intel_Raw_Hardware_Counters_Set_0_Query", 0 ) );
 
         availabilityEquation = nullptr;
@@ -1083,7 +938,7 @@ namespace MetricsDiscoveryInternal::MetricSets_XEHP_SDV_GT1_GT2_OA
         CMetric*        metric               = nullptr;
         CInformation*   information          = nullptr;
         const char*     availabilityEquation = nullptr;
-        m_params_1_0.InformationCount        = m_concurrentGroup->GetInformationCount();
+        m_params.InformationCount            = m_concurrentGroup->GetInformationCount();
         MD_CHECK_CC( SetApiSpecificId( "GPAV", 0, 0x40000000, 0x80000203, 0, 0, "Intel Performance Counters for GT Set Dynamic", 0, "Intel_Raw_Hardware_Counters_Set_0_Query", 0 ) );
 
         availabilityEquation = nullptr;
@@ -1385,7 +1240,7 @@ namespace MetricsDiscoveryInternal::MetricSets_XEHP_SDV_GT1_GT2_OA
         CMetric*        metric               = nullptr;
         CInformation*   information          = nullptr;
         const char*     availabilityEquation = nullptr;
-        m_params_1_0.InformationCount        = m_concurrentGroup->GetInformationCount();
+        m_params.InformationCount            = m_concurrentGroup->GetInformationCount();
         MD_CHECK_CC( SetApiSpecificId( "GPAV", 0, 0x40000000, 0x80000203, 0, 0, "Intel Performance Counters for GT Set Dynamic", 0, "Intel_Raw_Hardware_Counters_Set_0_Query", 0 ) );
 
         availabilityEquation = nullptr;
@@ -1855,7 +1710,7 @@ namespace MetricsDiscoveryInternal::MetricSets_XEHP_SDV_GT1_GT2_OA
         CMetric*        metric               = nullptr;
         CInformation*   information          = nullptr;
         const char*     availabilityEquation = nullptr;
-        m_params_1_0.InformationCount        = m_concurrentGroup->GetInformationCount();
+        m_params.InformationCount            = m_concurrentGroup->GetInformationCount();
         MD_CHECK_CC( SetApiSpecificId( "GPAV", 0, 0x40000000, 0x80000203, 0, 0, "Intel Performance Counters for GT Set Dynamic", 0, "Intel_Raw_Hardware_Counters_Set_0_Query", 0 ) );
 
         availabilityEquation = nullptr;
@@ -2239,7 +2094,7 @@ namespace MetricsDiscoveryInternal::MetricSets_XEHP_SDV_GT1_GT2_OA
         CMetric*        metric               = nullptr;
         CInformation*   information          = nullptr;
         const char*     availabilityEquation = nullptr;
-        m_params_1_0.InformationCount        = m_concurrentGroup->GetInformationCount();
+        m_params.InformationCount            = m_concurrentGroup->GetInformationCount();
         MD_CHECK_CC( SetApiSpecificId( "GPAV", 0, 0x40000000, 0x80000203, 0, 0, "Intel Performance Counters for GT Set Dynamic", 0, "Intel_Raw_Hardware_Counters_Set_0_Query", 0 ) );
 
         availabilityEquation = nullptr;
@@ -2623,7 +2478,7 @@ namespace MetricsDiscoveryInternal::MetricSets_XEHP_SDV_GT1_GT2_OA
         CMetric*        metric               = nullptr;
         CInformation*   information          = nullptr;
         const char*     availabilityEquation = nullptr;
-        m_params_1_0.InformationCount        = m_concurrentGroup->GetInformationCount();
+        m_params.InformationCount            = m_concurrentGroup->GetInformationCount();
         MD_CHECK_CC( SetApiSpecificId( "GPAV", 0, 0x40000000, 0x80000203, 0, 0, "Intel Performance Counters for GT Set Dynamic", 0, "Intel_Raw_Hardware_Counters_Set_0_Query", 0 ) );
 
         availabilityEquation = nullptr;
@@ -3008,7 +2863,7 @@ namespace MetricsDiscoveryInternal::MetricSets_XEHP_SDV_GT1_GT2_OA
         CMetric*        metric               = nullptr;
         CInformation*   information          = nullptr;
         const char*     availabilityEquation = nullptr;
-        m_params_1_0.InformationCount        = m_concurrentGroup->GetInformationCount();
+        m_params.InformationCount            = m_concurrentGroup->GetInformationCount();
         MD_CHECK_CC( SetApiSpecificId( "GPAV", 0, 0x40000000, 0x80000203, 0, 0, "Intel Performance Counters for GT Set Dynamic", 0, "Intel_Raw_Hardware_Counters_Set_0_Query", 0 ) );
 
         availabilityEquation = nullptr;
@@ -3392,7 +3247,7 @@ namespace MetricsDiscoveryInternal::MetricSets_XEHP_SDV_GT1_GT2_OA
         CMetric*        metric               = nullptr;
         CInformation*   information          = nullptr;
         const char*     availabilityEquation = nullptr;
-        m_params_1_0.InformationCount        = m_concurrentGroup->GetInformationCount();
+        m_params.InformationCount            = m_concurrentGroup->GetInformationCount();
         MD_CHECK_CC( SetApiSpecificId( "GPAV", 0, 0x40000000, 0x80000203, 0, 0, "Intel Performance Counters for GT Set Dynamic", 0, "Intel_Raw_Hardware_Counters_Set_0_Query", 0 ) );
 
         availabilityEquation = nullptr;
@@ -3706,7 +3561,7 @@ namespace MetricsDiscoveryInternal::MetricSets_XEHP_SDV_GT1_GT2_OA
         CMetric*        metric               = nullptr;
         CInformation*   information          = nullptr;
         const char*     availabilityEquation = nullptr;
-        m_params_1_0.InformationCount        = m_concurrentGroup->GetInformationCount();
+        m_params.InformationCount            = m_concurrentGroup->GetInformationCount();
         MD_CHECK_CC( SetApiSpecificId( "GPAV", 0, 0x40000000, 0x80000203, 0, 0, "Intel Performance Counters for GT Set Dynamic", 0, "Intel_Raw_Hardware_Counters_Set_0_Query", 0 ) );
 
         availabilityEquation = nullptr;
@@ -4027,7 +3882,7 @@ namespace MetricsDiscoveryInternal::MetricSets_XEHP_SDV_GT1_GT2_OA
         CMetric*        metric               = nullptr;
         CInformation*   information          = nullptr;
         const char*     availabilityEquation = nullptr;
-        m_params_1_0.InformationCount        = m_concurrentGroup->GetInformationCount();
+        m_params.InformationCount            = m_concurrentGroup->GetInformationCount();
         MD_CHECK_CC( SetApiSpecificId( "GPAV", 0, 0x40000000, 0x80000203, 0, 0, "Intel Performance Counters for GT Set Dynamic", 0, "Intel_Raw_Hardware_Counters_Set_0_Query", 0 ) );
 
         availabilityEquation = nullptr;
@@ -4342,7 +4197,7 @@ namespace MetricsDiscoveryInternal::MetricSets_XEHP_SDV_GT1_GT2_OA
         CMetric*        metric               = nullptr;
         CInformation*   information          = nullptr;
         const char*     availabilityEquation = nullptr;
-        m_params_1_0.InformationCount        = m_concurrentGroup->GetInformationCount();
+        m_params.InformationCount            = m_concurrentGroup->GetInformationCount();
         MD_CHECK_CC( SetApiSpecificId( "GPAV", 0, 0x40000000, 0x80000203, 0, 0, "Intel Performance Counters for GT Set Dynamic", 0, "Intel_Raw_Hardware_Counters_Set_0_Query", 0 ) );
 
         availabilityEquation = nullptr;
@@ -4664,7 +4519,7 @@ namespace MetricsDiscoveryInternal::MetricSets_XEHP_SDV_GT1_GT2_OA
         CMetric*        metric               = nullptr;
         CInformation*   information          = nullptr;
         const char*     availabilityEquation = nullptr;
-        m_params_1_0.InformationCount        = m_concurrentGroup->GetInformationCount();
+        m_params.InformationCount            = m_concurrentGroup->GetInformationCount();
         MD_CHECK_CC( SetApiSpecificId( "GPAV", 0, 0x40000000, 0x80000203, 0, 0, "Intel Performance Counters for GT Set Dynamic", 0, "Intel_Raw_Hardware_Counters_Set_0_Query", 0 ) );
 
         availabilityEquation = nullptr;
@@ -5096,7 +4951,7 @@ namespace MetricsDiscoveryInternal::MetricSets_XEHP_SDV_GT1_GT2_OA
         CMetric*        metric               = nullptr;
         CInformation*   information          = nullptr;
         const char*     availabilityEquation = nullptr;
-        m_params_1_0.InformationCount        = m_concurrentGroup->GetInformationCount();
+        m_params.InformationCount            = m_concurrentGroup->GetInformationCount();
         MD_CHECK_CC( SetApiSpecificId( "GPAV", 0, 0x40000000, 0x80000203, 0, 0, "Intel Performance Counters for GT Set Dynamic", 0, "Intel_Raw_Hardware_Counters_Set_0_Query", 0 ) );
 
         availabilityEquation = nullptr;
@@ -5470,7 +5325,7 @@ namespace MetricsDiscoveryInternal::MetricSets_XEHP_SDV_GT1_GT2_OA
         CMetric*        metric               = nullptr;
         CInformation*   information          = nullptr;
         const char*     availabilityEquation = nullptr;
-        m_params_1_0.InformationCount        = m_concurrentGroup->GetInformationCount();
+        m_params.InformationCount            = m_concurrentGroup->GetInformationCount();
         MD_CHECK_CC( SetApiSpecificId( "GPAV", 0, 0x40000000, 0x80000203, 0, 0, "Intel Performance Counters for GT Set Dynamic", 0, "Intel_Raw_Hardware_Counters_Set_0_Query", 0 ) );
 
         availabilityEquation = nullptr;
@@ -5854,7 +5709,7 @@ namespace MetricsDiscoveryInternal::MetricSets_XEHP_SDV_GT1_GT2_OA
         CMetric*        metric               = nullptr;
         CInformation*   information          = nullptr;
         const char*     availabilityEquation = nullptr;
-        m_params_1_0.InformationCount        = m_concurrentGroup->GetInformationCount();
+        m_params.InformationCount            = m_concurrentGroup->GetInformationCount();
         MD_CHECK_CC( SetApiSpecificId( "GPAV", 0, 0x40000000, 0x80000203, 0, 0, "Intel Performance Counters for GT Set Dynamic", 0, "Intel_Raw_Hardware_Counters_Set_0_Query", 0 ) );
 
         availabilityEquation = nullptr;
@@ -6228,7 +6083,7 @@ namespace MetricsDiscoveryInternal::MetricSets_XEHP_SDV_GT1_GT2_OA
         CMetric*        metric               = nullptr;
         CInformation*   information          = nullptr;
         const char*     availabilityEquation = nullptr;
-        m_params_1_0.InformationCount        = m_concurrentGroup->GetInformationCount();
+        m_params.InformationCount            = m_concurrentGroup->GetInformationCount();
         MD_CHECK_CC( SetApiSpecificId( "GPAV", 0, 0x40000000, 0x80000203, 0, 0, "Intel Performance Counters for GT Set Dynamic", 0, "Intel_Raw_Hardware_Counters_Set_0_Query", 0 ) );
 
         availabilityEquation = nullptr;
@@ -6612,7 +6467,7 @@ namespace MetricsDiscoveryInternal::MetricSets_XEHP_SDV_GT1_GT2_OA
         CMetric*        metric               = nullptr;
         CInformation*   information          = nullptr;
         const char*     availabilityEquation = nullptr;
-        m_params_1_0.InformationCount        = m_concurrentGroup->GetInformationCount();
+        m_params.InformationCount            = m_concurrentGroup->GetInformationCount();
         MD_CHECK_CC( SetApiSpecificId( "GPAV", 0, 0x40000000, 0x80000203, 0, 0, "Intel Performance Counters for GT Set Dynamic", 0, "Intel_Raw_Hardware_Counters_Set_0_Query", 0 ) );
 
         availabilityEquation = nullptr;
@@ -6987,7 +6842,7 @@ namespace MetricsDiscoveryInternal::MetricSets_XEHP_SDV_GT1_GT2_OA
         CMetric*        metric               = nullptr;
         CInformation*   information          = nullptr;
         const char*     availabilityEquation = nullptr;
-        m_params_1_0.InformationCount        = m_concurrentGroup->GetInformationCount();
+        m_params.InformationCount            = m_concurrentGroup->GetInformationCount();
         MD_CHECK_CC( SetApiSpecificId( "GPAV", 0, 0x40000000, 0x80000203, 0, 0, "Intel Performance Counters for GT Set Dynamic", 0, "Intel_Raw_Hardware_Counters_Set_0_Query", 0 ) );
 
         availabilityEquation = nullptr;
@@ -7372,7 +7227,7 @@ namespace MetricsDiscoveryInternal::MetricSets_XEHP_SDV_GT1_GT2_OA
         CMetric*        metric               = nullptr;
         CInformation*   information          = nullptr;
         const char*     availabilityEquation = nullptr;
-        m_params_1_0.InformationCount        = m_concurrentGroup->GetInformationCount();
+        m_params.InformationCount            = m_concurrentGroup->GetInformationCount();
         MD_CHECK_CC( SetApiSpecificId( "GPAV", 0, 0x40000000, 0x80000203, 0, 0, "Intel Performance Counters for GT Set Dynamic", 0, "Intel_Raw_Hardware_Counters_Set_0_Query", 0 ) );
 
         availabilityEquation = nullptr;
@@ -7746,7 +7601,7 @@ namespace MetricsDiscoveryInternal::MetricSets_XEHP_SDV_GT1_GT2_OA
         CMetric*        metric               = nullptr;
         CInformation*   information          = nullptr;
         const char*     availabilityEquation = nullptr;
-        m_params_1_0.InformationCount        = m_concurrentGroup->GetInformationCount();
+        m_params.InformationCount            = m_concurrentGroup->GetInformationCount();
         MD_CHECK_CC( SetApiSpecificId( "GPAV", 0, 0x40000000, 0x80000203, 0, 0, "Intel Performance Counters for GT Set Dynamic", 0, "Intel_Raw_Hardware_Counters_Set_0_Query", 0 ) );
 
         availabilityEquation = nullptr;
@@ -8130,7 +7985,7 @@ namespace MetricsDiscoveryInternal::MetricSets_XEHP_SDV_GT1_GT2_OA
         CMetric*        metric               = nullptr;
         CInformation*   information          = nullptr;
         const char*     availabilityEquation = nullptr;
-        m_params_1_0.InformationCount        = m_concurrentGroup->GetInformationCount();
+        m_params.InformationCount            = m_concurrentGroup->GetInformationCount();
         MD_CHECK_CC( SetApiSpecificId( "GPAV", 0, 0x40000000, 0x80000203, 0, 0, "Intel Performance Counters for GT Set Dynamic", 0, "Intel_Raw_Hardware_Counters_Set_0_Query", 0 ) );
 
         availabilityEquation = nullptr;
@@ -8619,7 +8474,7 @@ namespace MetricsDiscoveryInternal::MetricSets_XEHP_SDV_GT1_GT2_OA
         CMetric*        metric               = nullptr;
         CInformation*   information          = nullptr;
         const char*     availabilityEquation = nullptr;
-        m_params_1_0.InformationCount        = m_concurrentGroup->GetInformationCount();
+        m_params.InformationCount            = m_concurrentGroup->GetInformationCount();
         MD_CHECK_CC( SetApiSpecificId( "GPAV", 0, 0x40000000, 0x80000203, 0, 0, "Intel Performance Counters for GT Set Dynamic", 0, "Intel_Raw_Hardware_Counters_Set_0_Query", 0 ) );
 
         availabilityEquation = nullptr;
@@ -9109,7 +8964,7 @@ namespace MetricsDiscoveryInternal::MetricSets_XEHP_SDV_GT1_GT2_OA
         CMetric*        metric               = nullptr;
         CInformation*   information          = nullptr;
         const char*     availabilityEquation = nullptr;
-        m_params_1_0.InformationCount        = m_concurrentGroup->GetInformationCount();
+        m_params.InformationCount            = m_concurrentGroup->GetInformationCount();
         MD_CHECK_CC( SetApiSpecificId( "GPAV", 0, 0x40000000, 0x80000203, 0, 0, "Intel Performance Counters for GT Set Dynamic", 0, "Intel_Raw_Hardware_Counters_Set_0_Query", 0 ) );
 
         availabilityEquation = nullptr;
@@ -9421,7 +9276,7 @@ namespace MetricsDiscoveryInternal::MetricSets_XEHP_SDV_GT1_GT2_OA
         CMetric*        metric               = nullptr;
         CInformation*   information          = nullptr;
         const char*     availabilityEquation = nullptr;
-        m_params_1_0.InformationCount        = m_concurrentGroup->GetInformationCount();
+        m_params.InformationCount            = m_concurrentGroup->GetInformationCount();
         MD_CHECK_CC( SetApiSpecificId( "GPAV", 0, 0x40000000, 0x80000203, 0, 0, "Intel Performance Counters for GT Set Dynamic", 0, "Intel_Raw_Hardware_Counters_Set_0_Query", 0 ) );
 
         availabilityEquation = nullptr;
@@ -9733,7 +9588,7 @@ namespace MetricsDiscoveryInternal::MetricSets_XEHP_SDV_GT1_GT2_OA
         CMetric*        metric               = nullptr;
         CInformation*   information          = nullptr;
         const char*     availabilityEquation = nullptr;
-        m_params_1_0.InformationCount        = m_concurrentGroup->GetInformationCount();
+        m_params.InformationCount            = m_concurrentGroup->GetInformationCount();
         MD_CHECK_CC( SetApiSpecificId( "GPAV", 0, 0x40000000, 0x80000203, 0, 0, "Intel Performance Counters for GT Set Dynamic", 0, "Intel_Raw_Hardware_Counters_Set_0_Query", 0 ) );
 
         availabilityEquation = nullptr;
@@ -10046,7 +9901,7 @@ namespace MetricsDiscoveryInternal::MetricSets_XEHP_SDV_GT1_GT2_OA
         CMetric*        metric               = nullptr;
         CInformation*   information          = nullptr;
         const char*     availabilityEquation = nullptr;
-        m_params_1_0.InformationCount        = m_concurrentGroup->GetInformationCount();
+        m_params.InformationCount            = m_concurrentGroup->GetInformationCount();
         MD_CHECK_CC( SetApiSpecificId( "GPAV", 0, 0x40000000, 0x80000203, 0, 0, "Intel Performance Counters for GT Set Dynamic", 0, "Intel_Raw_Hardware_Counters_Set_0_Query", 0 ) );
 
         availabilityEquation = nullptr;
@@ -10358,7 +10213,7 @@ namespace MetricsDiscoveryInternal::MetricSets_XEHP_SDV_GT1_GT2_OA
         CMetric*        metric               = nullptr;
         CInformation*   information          = nullptr;
         const char*     availabilityEquation = nullptr;
-        m_params_1_0.InformationCount        = m_concurrentGroup->GetInformationCount();
+        m_params.InformationCount            = m_concurrentGroup->GetInformationCount();
         MD_CHECK_CC( SetApiSpecificId( "GPAV", 0, 0x40000000, 0x80000203, 0, 0, "Intel Performance Counters for GT Set Dynamic", 0, "Intel_Raw_Hardware_Counters_Set_0_Query", 0 ) );
 
         availabilityEquation = nullptr;
@@ -10779,7 +10634,7 @@ namespace MetricsDiscoveryInternal::MetricSets_XEHP_SDV_GT1_GT2_OA
         CMetric*        metric               = nullptr;
         CInformation*   information          = nullptr;
         const char*     availabilityEquation = nullptr;
-        m_params_1_0.InformationCount        = m_concurrentGroup->GetInformationCount();
+        m_params.InformationCount            = m_concurrentGroup->GetInformationCount();
         MD_CHECK_CC( SetApiSpecificId( "GPAV", 0, 0x40000000, 0x80000203, 0, 0, "Intel Performance Counters for GT Set Dynamic", 0, "Intel_Raw_Hardware_Counters_Set_0_Query", 0 ) );
 
         availabilityEquation = nullptr;
@@ -11210,7 +11065,7 @@ namespace MetricsDiscoveryInternal::MetricSets_XEHP_SDV_GT1_GT2_OA
         CMetric*        metric               = nullptr;
         CInformation*   information          = nullptr;
         const char*     availabilityEquation = nullptr;
-        m_params_1_0.InformationCount        = m_concurrentGroup->GetInformationCount();
+        m_params.InformationCount            = m_concurrentGroup->GetInformationCount();
         MD_CHECK_CC( SetApiSpecificId( "GPAV", 0, 0x40000000, 0x80000203, 0, 0, "Intel Performance Counters for GT Set Dynamic", 0, "Intel_Raw_Hardware_Counters_Set_0_Query", 0 ) );
 
         availabilityEquation = nullptr;
@@ -11631,7 +11486,7 @@ namespace MetricsDiscoveryInternal::MetricSets_XEHP_SDV_GT1_GT2_OA
         CMetric*        metric               = nullptr;
         CInformation*   information          = nullptr;
         const char*     availabilityEquation = nullptr;
-        m_params_1_0.InformationCount        = m_concurrentGroup->GetInformationCount();
+        m_params.InformationCount            = m_concurrentGroup->GetInformationCount();
         MD_CHECK_CC( SetApiSpecificId( "GPAV", 0, 0x40000000, 0x80000203, 0, 0, "Intel Performance Counters for GT Set Dynamic", 0, "Intel_Raw_Hardware_Counters_Set_0_Query", 0 ) );
 
         availabilityEquation = nullptr;
@@ -12062,7 +11917,7 @@ namespace MetricsDiscoveryInternal::MetricSets_XEHP_SDV_GT1_GT2_OA
         CMetric*        metric               = nullptr;
         CInformation*   information          = nullptr;
         const char*     availabilityEquation = nullptr;
-        m_params_1_0.InformationCount        = m_concurrentGroup->GetInformationCount();
+        m_params.InformationCount            = m_concurrentGroup->GetInformationCount();
         MD_CHECK_CC( SetApiSpecificId( "GPAV", 0, 0x40000000, 0x80000203, 0, 0, "Intel Performance Counters for GT Set Dynamic", 0, "Intel_Raw_Hardware_Counters_Set_0_Query", 0 ) );
 
         availabilityEquation = nullptr;
@@ -12484,7 +12339,7 @@ namespace MetricsDiscoveryInternal::MetricSets_XEHP_SDV_GT1_GT2_OA
         CMetric*        metric               = nullptr;
         CInformation*   information          = nullptr;
         const char*     availabilityEquation = nullptr;
-        m_params_1_0.InformationCount        = m_concurrentGroup->GetInformationCount();
+        m_params.InformationCount            = m_concurrentGroup->GetInformationCount();
         MD_CHECK_CC( SetApiSpecificId( "GPAV", 0, 0x40000000, 0x80000203, 0, 0, "Intel Performance Counters for GT Set Dynamic", 0, "Intel_Raw_Hardware_Counters_Set_0_Query", 0 ) );
 
         availabilityEquation = nullptr;
@@ -12916,7 +12771,7 @@ namespace MetricsDiscoveryInternal::MetricSets_XEHP_SDV_GT1_GT2_OA
         CMetric*        metric               = nullptr;
         CInformation*   information          = nullptr;
         const char*     availabilityEquation = nullptr;
-        m_params_1_0.InformationCount        = m_concurrentGroup->GetInformationCount();
+        m_params.InformationCount            = m_concurrentGroup->GetInformationCount();
         MD_CHECK_CC( SetApiSpecificId( "GPAV", 0, 0x40000000, 0x80000203, 0, 0, "Intel Performance Counters for GT Set Dynamic", 0, "Intel_Raw_Hardware_Counters_Set_0_Query", 0 ) );
 
         availabilityEquation = nullptr;
@@ -13337,7 +13192,7 @@ namespace MetricsDiscoveryInternal::MetricSets_XEHP_SDV_GT1_GT2_OA
         CMetric*        metric               = nullptr;
         CInformation*   information          = nullptr;
         const char*     availabilityEquation = nullptr;
-        m_params_1_0.InformationCount        = m_concurrentGroup->GetInformationCount();
+        m_params.InformationCount            = m_concurrentGroup->GetInformationCount();
         MD_CHECK_CC( SetApiSpecificId( "GPAV", 0, 0x40000000, 0x80000203, 0, 0, "Intel Performance Counters for GT Set Dynamic", 0, "Intel_Raw_Hardware_Counters_Set_0_Query", 0 ) );
 
         availabilityEquation = nullptr;
@@ -13768,7 +13623,7 @@ namespace MetricsDiscoveryInternal::MetricSets_XEHP_SDV_GT1_GT2_OA
         CMetric*        metric               = nullptr;
         CInformation*   information          = nullptr;
         const char*     availabilityEquation = nullptr;
-        m_params_1_0.InformationCount        = m_concurrentGroup->GetInformationCount();
+        m_params.InformationCount            = m_concurrentGroup->GetInformationCount();
         MD_CHECK_CC( SetApiSpecificId( "GPAV", 0, 0x40000000, 0x80000203, 0, 0, "Intel Performance Counters for GT Set Dynamic", 0, "Intel_Raw_Hardware_Counters_Set_0_Query", 0 ) );
 
         availabilityEquation = nullptr;
@@ -14255,7 +14110,7 @@ namespace MetricsDiscoveryInternal::MetricSets_XEHP_SDV_GT1_GT2_OA
         CMetric*        metric               = nullptr;
         CInformation*   information          = nullptr;
         const char*     availabilityEquation = nullptr;
-        m_params_1_0.InformationCount        = m_concurrentGroup->GetInformationCount();
+        m_params.InformationCount            = m_concurrentGroup->GetInformationCount();
         MD_CHECK_CC( SetApiSpecificId( "GPAV", 0, 0x40000000, 0x80000203, 0, 0, "Intel Performance Counters for GT Set Dynamic", 0, "Intel_Raw_Hardware_Counters_Set_0_Query", 0 ) );
 
         availabilityEquation = nullptr;
@@ -14742,7 +14597,7 @@ namespace MetricsDiscoveryInternal::MetricSets_XEHP_SDV_GT1_GT2_OA
         CMetric*        metric               = nullptr;
         CInformation*   information          = nullptr;
         const char*     availabilityEquation = nullptr;
-        m_params_1_0.InformationCount        = m_concurrentGroup->GetInformationCount();
+        m_params.InformationCount            = m_concurrentGroup->GetInformationCount();
         MD_CHECK_CC( SetApiSpecificId( "GPAV", 0, 0x40000000, 0x80000203, 0, 0, "Intel Performance Counters for GT Set Dynamic", 0, "Intel_Raw_Hardware_Counters_Set_0_Query", 0 ) );
 
         availabilityEquation = nullptr;
@@ -15230,7 +15085,7 @@ namespace MetricsDiscoveryInternal::MetricSets_XEHP_SDV_GT1_GT2_OA
         CMetric*        metric               = nullptr;
         CInformation*   information          = nullptr;
         const char*     availabilityEquation = nullptr;
-        m_params_1_0.InformationCount        = m_concurrentGroup->GetInformationCount();
+        m_params.InformationCount            = m_concurrentGroup->GetInformationCount();
         MD_CHECK_CC( SetApiSpecificId( "GPAV", 0, 0x40000000, 0x80000203, 0, 0, "Intel Performance Counters for GT Set Dynamic", 0, "Intel_Raw_Hardware_Counters_Set_0_Query", 0 ) );
 
         availabilityEquation = nullptr;
@@ -15717,7 +15572,7 @@ namespace MetricsDiscoveryInternal::MetricSets_XEHP_SDV_GT1_GT2_OA
         CMetric*        metric               = nullptr;
         CInformation*   information          = nullptr;
         const char*     availabilityEquation = nullptr;
-        m_params_1_0.InformationCount        = m_concurrentGroup->GetInformationCount();
+        m_params.InformationCount            = m_concurrentGroup->GetInformationCount();
         MD_CHECK_CC( SetApiSpecificId( "GPAV", 0, 0x40000000, 0x80000203, 0, 0, "Intel Performance Counters for GT Set Dynamic", 0, "Intel_Raw_Hardware_Counters_Set_0_Query", 0 ) );
 
         availabilityEquation = nullptr;
@@ -16046,7 +15901,7 @@ namespace MetricsDiscoveryInternal::MetricSets_XEHP_SDV_GT1_GT2_OA
         CMetric*        metric               = nullptr;
         CInformation*   information          = nullptr;
         const char*     availabilityEquation = nullptr;
-        m_params_1_0.InformationCount        = m_concurrentGroup->GetInformationCount();
+        m_params.InformationCount            = m_concurrentGroup->GetInformationCount();
         MD_CHECK_CC( SetApiSpecificId( "GPAV", 0, 0x40000000, 0x80000203, 0, 0, "Intel Performance Counters for GT Set Dynamic", 0, "Intel_Raw_Hardware_Counters_Set_0_Query", 0 ) );
 
         availabilityEquation = nullptr;
@@ -16375,7 +16230,7 @@ namespace MetricsDiscoveryInternal::MetricSets_XEHP_SDV_GT1_GT2_OA
         CMetric*        metric               = nullptr;
         CInformation*   information          = nullptr;
         const char*     availabilityEquation = nullptr;
-        m_params_1_0.InformationCount        = m_concurrentGroup->GetInformationCount();
+        m_params.InformationCount            = m_concurrentGroup->GetInformationCount();
         MD_CHECK_CC( SetApiSpecificId( "GPAV", 0, 0x40000000, 0x80000203, 0, 0, "Intel Performance Counters for GT Set Dynamic", 0, "Intel_Raw_Hardware_Counters_Set_0_Query", 0 ) );
 
         availabilityEquation = nullptr;
@@ -16705,7 +16560,7 @@ namespace MetricsDiscoveryInternal::MetricSets_XEHP_SDV_GT1_GT2_OA
         CMetric*        metric               = nullptr;
         CInformation*   information          = nullptr;
         const char*     availabilityEquation = nullptr;
-        m_params_1_0.InformationCount        = m_concurrentGroup->GetInformationCount();
+        m_params.InformationCount            = m_concurrentGroup->GetInformationCount();
         MD_CHECK_CC( SetApiSpecificId( "GPAV", 0, 0x40000000, 0x80000203, 0, 0, "Intel Performance Counters for GT Set Dynamic", 0, "Intel_Raw_Hardware_Counters_Set_0_Query", 0 ) );
 
         availabilityEquation = nullptr;
@@ -17034,7 +16889,7 @@ namespace MetricsDiscoveryInternal::MetricSets_XEHP_SDV_GT1_GT2_OA
         CMetric*        metric               = nullptr;
         CInformation*   information          = nullptr;
         const char*     availabilityEquation = nullptr;
-        m_params_1_0.InformationCount        = m_concurrentGroup->GetInformationCount();
+        m_params.InformationCount            = m_concurrentGroup->GetInformationCount();
         MD_CHECK_CC( SetApiSpecificId( "GPAV", 0, 0x40000000, 0x80000203, 0, 0, "Intel Performance Counters for GT Set Dynamic", 0, "Intel_Raw_Hardware_Counters_Set_0_Query", 0 ) );
 
         availabilityEquation = nullptr;
@@ -17265,7 +17120,7 @@ namespace MetricsDiscoveryInternal::MetricSets_XEHP_SDV_GT1_GT2_OA
         CMetric*        metric               = nullptr;
         CInformation*   information          = nullptr;
         const char*     availabilityEquation = nullptr;
-        m_params_1_0.InformationCount        = m_concurrentGroup->GetInformationCount();
+        m_params.InformationCount            = m_concurrentGroup->GetInformationCount();
         MD_CHECK_CC( SetApiSpecificId( "GPAV", 0, 0x40000000, 0x80000203, 0, 0, "Intel Performance Counters for GT Set Dynamic", 0, "Intel_Raw_Hardware_Counters_Set_0_Query", 0 ) );
 
         availabilityEquation = nullptr;
@@ -17506,7 +17361,7 @@ namespace MetricsDiscoveryInternal::MetricSets_XEHP_SDV_GT1_GT2_OA
         CMetric*        metric               = nullptr;
         CInformation*   information          = nullptr;
         const char*     availabilityEquation = nullptr;
-        m_params_1_0.InformationCount        = m_concurrentGroup->GetInformationCount();
+        m_params.InformationCount            = m_concurrentGroup->GetInformationCount();
         MD_CHECK_CC( SetApiSpecificId( "GPAV", 0, 0x40000000, 0x80000203, 0, 0, "Intel Performance Counters for GT Set Dynamic", 0, "Intel_Raw_Hardware_Counters_Set_0_Query", 0 ) );
 
         availabilityEquation = nullptr;
@@ -17737,7 +17592,7 @@ namespace MetricsDiscoveryInternal::MetricSets_XEHP_SDV_GT1_GT2_OA
         CMetric*        metric               = nullptr;
         CInformation*   information          = nullptr;
         const char*     availabilityEquation = nullptr;
-        m_params_1_0.InformationCount        = m_concurrentGroup->GetInformationCount();
+        m_params.InformationCount            = m_concurrentGroup->GetInformationCount();
         MD_CHECK_CC( SetApiSpecificId( "GPAV", 0, 0x40000000, 0x80000203, 0, 0, "Intel Performance Counters for GT Set Dynamic", 0, "Intel_Raw_Hardware_Counters_Set_0_Query", 0 ) );
 
         availabilityEquation = nullptr;
@@ -17978,7 +17833,7 @@ namespace MetricsDiscoveryInternal::MetricSets_XEHP_SDV_GT1_GT2_OA
         CMetric*        metric               = nullptr;
         CInformation*   information          = nullptr;
         const char*     availabilityEquation = nullptr;
-        m_params_1_0.InformationCount        = m_concurrentGroup->GetInformationCount();
+        m_params.InformationCount            = m_concurrentGroup->GetInformationCount();
         MD_CHECK_CC( SetApiSpecificId( "GPAV", 0, 0x40000000, 0x80000203, 0, 0, "Intel Performance Counters for GT Set Dynamic", 0, "Intel_Raw_Hardware_Counters_Set_0_Query", 0 ) );
 
         availabilityEquation = nullptr;
@@ -18210,7 +18065,7 @@ namespace MetricsDiscoveryInternal::MetricSets_XEHP_SDV_GT1_GT2_OA
         CMetric*        metric               = nullptr;
         CInformation*   information          = nullptr;
         const char*     availabilityEquation = nullptr;
-        m_params_1_0.InformationCount        = m_concurrentGroup->GetInformationCount();
+        m_params.InformationCount            = m_concurrentGroup->GetInformationCount();
         MD_CHECK_CC( SetApiSpecificId( "GPAV", 0, 0x40000000, 0x80000203, 0, 0, "Intel Performance Counters for GT Set Dynamic", 0, "Intel_Raw_Hardware_Counters_Set_0_Query", 0 ) );
 
         availabilityEquation = nullptr;
@@ -18452,7 +18307,7 @@ namespace MetricsDiscoveryInternal::MetricSets_XEHP_SDV_GT1_GT2_OA
         CMetric*        metric               = nullptr;
         CInformation*   information          = nullptr;
         const char*     availabilityEquation = nullptr;
-        m_params_1_0.InformationCount        = m_concurrentGroup->GetInformationCount();
+        m_params.InformationCount            = m_concurrentGroup->GetInformationCount();
         MD_CHECK_CC( SetApiSpecificId( "GPAV", 0, 0x40000000, 0x80000203, 0, 0, "Intel Performance Counters for GT Set Dynamic", 0, "Intel_Raw_Hardware_Counters_Set_0_Query", 0 ) );
 
         availabilityEquation = nullptr;
@@ -18683,7 +18538,7 @@ namespace MetricsDiscoveryInternal::MetricSets_XEHP_SDV_GT1_GT2_OA
         CMetric*        metric               = nullptr;
         CInformation*   information          = nullptr;
         const char*     availabilityEquation = nullptr;
-        m_params_1_0.InformationCount        = m_concurrentGroup->GetInformationCount();
+        m_params.InformationCount            = m_concurrentGroup->GetInformationCount();
         MD_CHECK_CC( SetApiSpecificId( "GPAV", 0, 0x40000000, 0x80000203, 0, 0, "Intel Performance Counters for GT Set Dynamic", 0, "Intel_Raw_Hardware_Counters_Set_0_Query", 0 ) );
 
         availabilityEquation = nullptr;

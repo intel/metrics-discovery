@@ -304,7 +304,7 @@ namespace MetricsDiscoveryInternal
                 uint32_t euCoresTotalCount = out.ValueUint32;
 
                 ret = m_driverInterface.SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_DUALSUBSLICES_TOTAL_COUNT, &out, &m_metricsDevice );
-                if( ret != CC_OK )
+                if( ret != CC_OK || out.ValueUint32 == 0 )
                 {
                     ret = m_driverInterface.SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_SUBSLICES_TOTAL_COUNT, &out, &m_metricsDevice );
                 }
@@ -542,8 +542,13 @@ namespace MetricsDiscoveryInternal
         }
         else if( name == "MaxTimestamp" )
         {
-            ret                    = m_driverInterface.SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_GPU_TIMESTAMP_FREQUENCY, &out );
+            ret = m_driverInterface.SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_GPU_TIMESTAMP_FREQUENCY, &out );
+
             typedValue.ValueUInt64 = m_metricsDevice.ConvertGpuTimestampToNs( ( std::numeric_limits<uint64_t>::max )(), out.ValueUint64 );
+            if( typedValue.ValueUInt64 == 0 )
+            {
+                ret = CC_ERROR_GENERAL;
+            }
         }
         else if( name == "L3BankTotalCount" )
         {
@@ -586,6 +591,7 @@ namespace MetricsDiscoveryInternal
         {
             return ret;
         }
+
         MD_CHECK_CC_RET_A( adapterId, ret );
 
         return CC_OK;
@@ -1082,6 +1088,8 @@ namespace MetricsDiscoveryInternal
         else if( const bool isXeCoreSymbol = strcmp( name, "GtXeCoreMask" ) == 0;
                  ( strcmp( name, "GtSubsliceMask" ) == 0 ) || ( !useDualSubslice && isXeCoreSymbol ) )
         {
+            const char* subSliceString = ( isXeCoreSymbol ) ? "XeCore" : "Subslice";
+
             for( uint32_t i = 0; i < m_maxSlice; i++ )
             {
                 for( uint32_t j = 0; j < m_maxSubslicePerSlice; j++ )
@@ -1091,7 +1099,7 @@ namespace MetricsDiscoveryInternal
 
                     if( mask[currentByte] & MD_BIT( currentBit ) )
                     {
-                        std::string dynamicSymbolName = "GtSlice" + std::to_string( i ) + ( ( isXeCoreSymbol ) ? "XeCore" : "Subslice" ) + std::to_string( j );
+                        std::string dynamicSymbolName = "GtSlice" + std::to_string( i ) + subSliceString + std::to_string( j );
                         AddSymbol( dynamicSymbolName.c_str(), boolValue, SYMBOL_TYPE_IMMEDIATE );
                     }
                 }
@@ -1105,6 +1113,8 @@ namespace MetricsDiscoveryInternal
             activeDualSubsliceForFirst4Slices.ValueType          = VALUE_TYPE_UINT32;
             activeDualSubsliceForFirst4Slices.ValueUInt32        = 0;
 
+            const char* dualSubSliceString = ( isXeCoreSymbol ) ? "XeCore" : "DualSubslice";
+
             for( uint32_t i = 0; i < m_maxSlice; i++ )
             {
                 for( uint32_t j = 0; j < m_maxDualSubslicePerSlice; j++ )
@@ -1114,7 +1124,7 @@ namespace MetricsDiscoveryInternal
 
                     if( mask[currentByte] & MD_BIT( currentBit ) )
                     {
-                        std::string dynamicSymbolName = "GtSlice" + std::to_string( i ) + ( ( isXeCoreSymbol ) ? "XeCore" : "DualSubslice" ) + std::to_string( j );
+                        std::string dynamicSymbolName = "GtSlice" + std::to_string( i ) + dualSubSliceString + std::to_string( j );
                         AddSymbol( dynamicSymbolName.c_str(), boolValue, SYMBOL_TYPE_IMMEDIATE );
 
                         // Count active dual subslices for first four slices

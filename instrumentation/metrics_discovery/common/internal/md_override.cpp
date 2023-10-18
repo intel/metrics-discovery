@@ -120,6 +120,7 @@ namespace MetricsDiscoveryInternal
         m_params.Description      = "Overrides device GPU frequency with a static value.";
         m_params.ApiMask          = (uint32_t) API_TYPE_ALL;
         m_params.OverrideModeMask = OVERRIDE_MODE_GLOBAL;
+        m_params.PlatformMask     = PLATFORM_UNKNOWN;
 
         m_internalParams.QueryOverrideId = OVERRIDE_ID_NOT_AVAILABLE;
 
@@ -155,6 +156,7 @@ namespace MetricsDiscoveryInternal
         m_params.Description      = "Do not send primitives to the hardware rasterizer.";
         m_params.ApiMask          = API_TYPE_DX12 | API_TYPE_VULKAN;
         m_params.OverrideModeMask = OVERRIDE_MODE_LOCAL;
+        m_params.PlatformMask     = PLATFORM_UNKNOWN;
 
         m_internalParams.QueryOverrideId = OVERRIDE_ID_NULL_HARDWARE;
 
@@ -190,6 +192,7 @@ namespace MetricsDiscoveryInternal
         m_params.Description      = "Flushes all GPU caches.";
         m_params.ApiMask          = API_TYPE_DX12 | API_TYPE_VULKAN;
         m_params.OverrideModeMask = OVERRIDE_MODE_LOCAL;
+        m_params.PlatformMask     = PLATFORM_UNKNOWN;
 
         m_internalParams.QueryOverrideId = OVERRIDE_ID_FLUSH_GPU_CACHES;
 
@@ -225,6 +228,7 @@ namespace MetricsDiscoveryInternal
         m_params.Description      = "Enables extended query mode.";
         m_params.ApiMask          = API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_OGL | API_TYPE_DX12 | API_TYPE_VULKAN;
         m_params.OverrideModeMask = OVERRIDE_MODE_GLOBAL;
+        m_params.PlatformMask     = PLATFORM_UNKNOWN;
 
         m_internalParams.QueryOverrideId = OVERRIDE_ID_NOT_AVAILABLE;
 
@@ -260,6 +264,7 @@ namespace MetricsDiscoveryInternal
         m_params.Description      = "Enables multisampled query mode.";
         m_params.ApiMask          = API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_OGL | API_TYPE_DX12 | API_TYPE_VULKAN;
         m_params.OverrideModeMask = OVERRIDE_MODE_GLOBAL;
+        m_params.PlatformMask     = PLATFORM_UNKNOWN;
 
         m_internalParams.QueryOverrideId = OVERRIDE_ID_NOT_AVAILABLE;
 
@@ -295,6 +300,7 @@ namespace MetricsDiscoveryInternal
         m_params.Description      = "Allows to toggle frequency change reports.";
         m_params.ApiMask          = (uint32_t) API_TYPE_IOSTREAM;
         m_params.OverrideModeMask = OVERRIDE_MODE_GLOBAL;
+        m_params.PlatformMask     = PLATFORM_UNKNOWN;
 
         m_internalParams.QueryOverrideId = OVERRIDE_ID_NOT_AVAILABLE;
 

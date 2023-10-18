@@ -43,6 +43,9 @@ namespace MetricsDiscoveryInternal
         CSymbolSet( CMetricsDevice& metricsDevice, CDriverInterface& driverInterface );
         ~CSymbolSet();
 
+        CSymbolSet( const CSymbolSet& )            = delete; // Delete copy-constructor
+        CSymbolSet& operator=( const CSymbolSet& ) = delete; // Delete assignment operator
+
         // Non-API:
         uint32_t             GetSymbolCount();
         TGlobalSymbolLatest* GetSymbol( uint32_t index );

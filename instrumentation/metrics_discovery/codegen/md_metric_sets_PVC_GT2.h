@@ -21,18 +21,6 @@ SPDX-License-Identifier: MIT
 
 #if MD_INCLUDE_PVC_GT2_METRICS
 
-namespace MetricsDiscoveryInternal::MetricSets_PVC_GT2_PipelineStatistics
-{
-    class CPipelineStatsMetricSet final : public CMetricSet
-    {
-    public:
-        CPipelineStatsMetricSet( CMetricsDevice& device, CConcurrentGroup* concurrentGroup, const char* symbolicName, const char* shortName, uint32_t apiMask, uint32_t category, uint32_t snapshotReportSize, uint32_t deltaReportSize, TReportType reportType, TByteArrayLatest* platformMask, uint32_t gtMask = GT_TYPE_ALL, bool isCustom = false );
-
-        TCompletionCode Initialize();
-    };
-
-} // namespace MetricsDiscoveryInternal::MetricSets_PVC_GT2_PipelineStatistics
-
 namespace MetricsDiscoveryInternal::MetricSets_PVC_GT2_OA
 {
     void AddInformationSet( CConcurrentGroup* concurrentGroup );

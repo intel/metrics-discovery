@@ -206,6 +206,9 @@ namespace MetricsDiscoveryInternal
             bool              isCustom = false );
         virtual ~CMetricSet();
 
+        CMetricSet( const CMetricSet& )            = delete; // Delete copy-constructor
+        CMetricSet& operator=( const CMetricSet& ) = delete; // Delete assignment operator
+
         virtual TCompletionCode Initialize();
 
         // Non-API:
@@ -259,7 +262,7 @@ namespace MetricsDiscoveryInternal
 
     protected:
         CConcurrentGroup*      m_concurrentGroup;
-        TMetricSetParamsLatest m_params_1_0;
+        TMetricSetParamsLatest m_params;
         CMetricsDevice&        m_device;
 
     private:
@@ -275,6 +278,7 @@ namespace MetricsDiscoveryInternal
         TCompletionCode InitializeCalculationContext( TCalculationContext& context, CCalculationManager* calculationManager, TMeasurementType measurementType, TTypedValue_1_0* out, TTypedValue_1_0* outMaxValues, const uint8_t* rawData, uint32_t rawReportCount, bool init );
 
         bool AreMetricParamsValid( const char* symbolName, const char* shortName, const char* description, const char* groupName, TMetricType metricType, TMetricResultType resultType, const char* units, THwUnitType hwType, const char* alias );
+        bool IsCustomApiMaskValid( const uint32_t apiMask );
 
         uint32_t MetricGroupNameToId( const char* groupName );
         uint32_t GetPartialGroupId( char* groupName, uint32_t tokenNo );

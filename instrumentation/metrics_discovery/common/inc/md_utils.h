@@ -75,6 +75,14 @@ SPDX-License-Identifier: MIT
         return ( object );                                                 \
     }
 
+#define MD_CHECK_BUFFER_A( adapterId, fileBufferPtr, fileBufferBeginOffset, valueSize, fileSize )                                                           \
+    if( const bool bufferOverflow = ( ( static_cast<uint32_t>( fileBufferPtr - fileBufferBeginOffset ) + static_cast<uint32_t>( valueSize ) ) > fileSize ); \
+        bufferOverflow )                                                                                                                                    \
+    {                                                                                                                                                       \
+        MD_ASSERT_A( adapterId, !bufferOverflow );                                                                                                          \
+        return CC_ERROR_GENERAL;                                                                                                                            \
+    }
+
 #define MD_CHECK_CC_RET( object ) MD_CHECK_CC_RET_A( IU_ADAPTER_ID_UNKNOWN, object )
 
 #define MD_CHECK_CC_MSG_A( adapterId, object, FORMAT, ... )    \
@@ -85,7 +93,7 @@ SPDX-License-Identifier: MIT
 
 #define MD_CHECK_CC_MSG( object, FORMAT, ... ) MD_CHECK_CC_MSG_A( IU_ADAPTER_ID_UNKNOWN, object, FORMAT, __VA_ARGS__ )
 
-#define MD_BIT( i )                          ( 1 << ( i ) )
+#define MD_BIT( i )                          ( 1ull << ( i ) )
 #define MD_BITMASK( n )                      ( ~( (uint64_t) ( -1 ) << ( n ) ) )
 #define MD_BITMASK_RANGE( startbit, endbit ) ( MD_BITMASK( ( endbit ) + 1 ) & ~MD_BITMASK( startbit ) )
 #define MD_BITS_PER_BYTE                     ( 8 )
@@ -127,12 +135,12 @@ namespace MetricsDiscoveryInternal
     void WriteCStringToFile( const char* cstring, FILE* pFile, const uint32_t adapterId );
     void WriteTTypedValueToFile( TTypedValue_1_0* typedValue, FILE* pFile, const uint32_t adapterId );
 
-    TByteArrayLatest* ReadByteArrayFromFileBuffer( uint8_t** fileBuffer, const uint32_t adapterId );
-    char*             ReadCStringFromFileBuffer( uint8_t** fileBuffer, const uint32_t adapterId );
-    uint32_t          ReadUInt32FromFileBuffer( uint8_t** fileBuffer, const uint32_t adapterId );
-    int64_t           ReadInt64FromFileBuffer( uint8_t** fileBuffer, const uint32_t adapterId );
-    TTypedValue_1_0   ReadTTypedValueFromFileBuffer( uint8_t** fileBuffer, const uint32_t adapterId );
-    char*             ReadEquationStringFromFile( uint8_t** fileBuffer, const uint32_t adapterId );
+    TCompletionCode ReadByteArrayFromFileBuffer( uint8_t*& fileBuffer, const uint8_t* fileBufferBeginOffset, const uint32_t fileSize, TByteArrayLatest*& byteArray, const uint32_t adapterId );
+    TCompletionCode ReadCStringFromFileBuffer( uint8_t*& fileBuffer, const uint8_t* fileBufferBeginOffset, const uint32_t fileSize, const char*& cstring, const uint32_t adapterId );
+    TCompletionCode ReadUInt32FromFileBuffer( uint8_t*& fileBuffer, const uint8_t* fileBufferBeginOffset, const uint32_t fileSize, uint32_t& value, const uint32_t adapterId );
+    TCompletionCode ReadInt64FromFileBuffer( uint8_t*& fileBuffer, const uint8_t* fileBufferBeginOffset, const uint32_t fileSize, int64_t& value, const uint32_t adapterId );
+    TCompletionCode ReadTTypedValueFromFileBuffer( uint8_t*& fileBuffer, const uint8_t* fileBufferBeginOffset, const uint32_t fileSize, TTypedValue_1_0& typedValue, const uint32_t adapterId );
+    TCompletionCode ReadEquationStringFromFile( uint8_t*& fileBuffer, const uint8_t* fileBufferBeginOffset, const uint32_t fileSize, const char*& cstring, const uint32_t adapterId );
 
     TCompletionCode SetBitInByteArray( TByteArrayLatest* byteArray, const uint32_t bitIndex, const uint32_t adapterId );
 

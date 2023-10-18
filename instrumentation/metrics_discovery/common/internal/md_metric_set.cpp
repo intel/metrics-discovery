@@ -63,7 +63,7 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     CMetricSet::CMetricSet( CMetricsDevice& device, CConcurrentGroup* concurrentGroup, const char* symbolicName, const char* shortName, uint32_t apiMask, uint32_t categoryMask, uint32_t snapshotReportSize, uint32_t deltaReportSize, TReportType reportType, TByteArrayLatest* platformMask, uint32_t gtMask /*= GT_TYPE_ALL*/, bool isCustom /*= false*/ )
         : m_concurrentGroup( concurrentGroup )
-        , m_params_1_0{}
+        , m_params{}
         , m_device( device )
         , m_reportType( reportType )
         , m_metricsVector()
@@ -84,19 +84,19 @@ namespace MetricsDiscoveryInternal
     {
         const uint32_t adapterId = m_device.GetAdapter().GetAdapterId();
 
-        m_params_1_0.SymbolName             = GetCopiedCString( symbolicName, adapterId );
-        m_params_1_0.ShortName              = GetCopiedCString( shortName, adapterId );
-        m_params_1_0.ApiMask                = apiMask;
-        m_params_1_0.CategoryMask           = categoryMask;
-        m_params_1_0.RawReportSize          = snapshotReportSize; // as in HW
-        m_params_1_0.QueryReportSize        = deltaReportSize;    // as in Query API
-        m_params_1_0.MetricsCount           = 0;
-        m_params_1_0.InformationCount       = concurrentGroup->GetInformationCount();
-        m_params_1_0.ComplementarySetsCount = 0;
-        m_params_1_0.ApiSpecificId          = {};
-        m_params_1_0.PlatformMask           = GetPlatformTypeFromByteArray( platformMask, adapterId );
-        m_params_1_0.GtMask                 = gtMask;
-        m_params_1_0.AvailabilityEquation   = "";
+        m_params.SymbolName             = GetCopiedCString( symbolicName, adapterId );
+        m_params.ShortName              = GetCopiedCString( shortName, adapterId );
+        m_params.ApiMask                = apiMask;
+        m_params.CategoryMask           = categoryMask;
+        m_params.RawReportSize          = snapshotReportSize; // as in HW
+        m_params.QueryReportSize        = deltaReportSize;    // as in Query API
+        m_params.MetricsCount           = 0;
+        m_params.InformationCount       = concurrentGroup->GetInformationCount();
+        m_params.ComplementarySetsCount = 0;
+        m_params.ApiSpecificId          = {};
+        m_params.PlatformMask           = GetPlatformTypeFromByteArray( platformMask, adapterId );
+        m_params.GtMask                 = gtMask;
+        m_params.AvailabilityEquation   = "";
 
         m_pmRegsConfigInfo.IsQueryConfig  = false;
         m_pmRegsConfigInfo.OaConfigHandle = 0;
@@ -141,11 +141,11 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     CMetricSet::~CMetricSet()
     {
-        MD_SAFE_DELETE_ARRAY( m_params_1_0.SymbolName );
-        MD_SAFE_DELETE_ARRAY( m_params_1_0.ShortName );
-        MD_SAFE_DELETE_ARRAY( m_params_1_0.ApiSpecificId.D3D1XDevDependentName );
-        MD_SAFE_DELETE_ARRAY( m_params_1_0.ApiSpecificId.OGLQueryIntelName );
-        MD_SAFE_DELETE_ARRAY( m_params_1_0.AvailabilityEquation );
+        MD_SAFE_DELETE_ARRAY( m_params.SymbolName );
+        MD_SAFE_DELETE_ARRAY( m_params.ShortName );
+        MD_SAFE_DELETE_ARRAY( m_params.ApiSpecificId.D3D1XDevDependentName );
+        MD_SAFE_DELETE_ARRAY( m_params.ApiSpecificId.OGLQueryIntelName );
+        MD_SAFE_DELETE_ARRAY( m_params.AvailabilityEquation );
 
         ClearCachedMetricsAndInformation();
 
@@ -378,7 +378,7 @@ namespace MetricsDiscoveryInternal
             if( ret == CC_OK )
             {
                 // Update PmRegsHandles and reset rrSet flag
-                driverInterface.GetPmRegsConfigHandles( m_params_1_0.ApiSpecificId.HwConfigId, &m_pmRegsConfigInfo.OaConfigHandle, &m_pmRegsConfigInfo.GpConfigHandle, &m_pmRegsConfigInfo.RrConfigHandle );
+                driverInterface.GetPmRegsConfigHandles( m_params.ApiSpecificId.HwConfigId, &m_pmRegsConfigInfo.OaConfigHandle, &m_pmRegsConfigInfo.GpConfigHandle, &m_pmRegsConfigInfo.RrConfigHandle );
                 m_isReadRegsCfgSet = false;
             }
         }
@@ -551,9 +551,19 @@ namespace MetricsDiscoveryInternal
             MD_LOG_A( adapterId, LOG_ERROR, "invalid custom metric parameters" );
             return nullptr;
         }
+        if( !IsCustomApiMaskValid( apiMask ) )
+        {
+            MD_LOG_A( adapterId, LOG_ERROR, "wrong apiMask: %x", apiMask );
+            return nullptr;
+        }
         if( IsMetricAlreadyAdded( symbolName ) )
         {
             MD_LOG_A( adapterId, LOG_ERROR, "metric already added: %s", symbolName );
+            return nullptr;
+        }
+        if( usageFlagsMask == 0 || usageFlagsMask > USAGE_FLAG_ALL )
+        {
+            MD_LOG_A( adapterId, LOG_ERROR, "wrong usageFlagsMask: %x", usageFlagsMask );
             return nullptr;
         }
 
@@ -570,8 +580,8 @@ namespace MetricsDiscoveryInternal
         }
 
         m_metricsVector.push_back( metric );
-        m_params_1_0.MetricsCount = m_metricsVector.size();
-        m_isCustom                = true;
+        m_params.MetricsCount = m_metricsVector.size();
+        m_isCustom            = true;
 
         // Refresh cached filtered metrics
         RefreshCachedMetricsAndInformation();
@@ -672,16 +682,16 @@ namespace MetricsDiscoveryInternal
     {
         const uint32_t adapterId = m_device.GetAdapter().GetAdapterId();
 
-        m_params_1_0.ApiSpecificId.D3D9QueryId           = dx9QueryId;
-        m_params_1_0.ApiSpecificId.D3D9Fourcc            = dx9Fourcc ? ( dx9Fourcc[0] ) + ( dx9Fourcc[1] << 8 ) + ( dx9Fourcc[2] << 16 ) + ( dx9Fourcc[3] << 24 ) : 0;
-        m_params_1_0.ApiSpecificId.D3D1XQueryId          = dx10QueryId;
-        m_params_1_0.ApiSpecificId.D3D1XDevDependentId   = dx10Counter;
-        m_params_1_0.ApiSpecificId.D3D1XDevDependentName = GetCopiedCString( dx10CounterName, adapterId );
-        m_params_1_0.ApiSpecificId.OGLQueryIntelId       = oglQuery;
-        m_params_1_0.ApiSpecificId.OGLQueryIntelName     = GetCopiedCString( oglQueryName, adapterId );
-        m_params_1_0.ApiSpecificId.OGLQueryARBTargetId   = oglQueryARB;
-        m_params_1_0.ApiSpecificId.OCL                   = ocl;
-        m_params_1_0.ApiSpecificId.HwConfigId            = hwConfig;
+        m_params.ApiSpecificId.D3D9QueryId           = dx9QueryId;
+        m_params.ApiSpecificId.D3D9Fourcc            = dx9Fourcc ? ( dx9Fourcc[0] ) + ( dx9Fourcc[1] << 8 ) + ( dx9Fourcc[2] << 16 ) + ( dx9Fourcc[3] << 24 ) : 0;
+        m_params.ApiSpecificId.D3D1XQueryId          = dx10QueryId;
+        m_params.ApiSpecificId.D3D1XDevDependentId   = dx10Counter;
+        m_params.ApiSpecificId.D3D1XDevDependentName = GetCopiedCString( dx10CounterName, adapterId );
+        m_params.ApiSpecificId.OGLQueryIntelId       = oglQuery;
+        m_params.ApiSpecificId.OGLQueryIntelName     = GetCopiedCString( oglQueryName, adapterId );
+        m_params.ApiSpecificId.OGLQueryARBTargetId   = oglQueryARB;
+        m_params.ApiSpecificId.OCL                   = ocl;
+        m_params.ApiSpecificId.HwConfigId            = hwConfig;
 
         return CC_OK;
     }
@@ -708,9 +718,9 @@ namespace MetricsDiscoveryInternal
     {
         const uint32_t adapterId = m_device.GetAdapter().GetAdapterId();
 
-        m_params_1_0.ApiSpecificId                       = apiSpecificId;
-        m_params_1_0.ApiSpecificId.D3D1XDevDependentName = GetCopiedCString( apiSpecificId.D3D1XDevDependentName, adapterId );
-        m_params_1_0.ApiSpecificId.OGLQueryIntelName     = GetCopiedCString( apiSpecificId.OGLQueryIntelName, adapterId );
+        m_params.ApiSpecificId                       = apiSpecificId;
+        m_params.ApiSpecificId.D3D1XDevDependentName = GetCopiedCString( apiSpecificId.D3D1XDevDependentName, adapterId );
+        m_params.ApiSpecificId.OGLQueryIntelName     = GetCopiedCString( apiSpecificId.OGLQueryIntelName, adapterId );
 
         return CC_OK;
     }
@@ -780,7 +790,7 @@ namespace MetricsDiscoveryInternal
                 uint32_t count = m_metricsVector.size();
                 metric->SetIdInSetParam( count );
                 m_metricsVector.push_back( metric );
-                m_params_1_0.MetricsCount = count + 1;
+                m_params.MetricsCount = count + 1;
             }
         }
         else
@@ -827,7 +837,7 @@ namespace MetricsDiscoveryInternal
         else
         {
             m_metricsVector.push_back( metric );
-            m_params_1_0.MetricsCount = m_metricsVector.size();
+            m_params.MetricsCount = m_metricsVector.size();
         }
 
         return metric;
@@ -876,7 +886,7 @@ namespace MetricsDiscoveryInternal
         {
             information->SetIdInSetParam( m_informationVector.size() );
             m_informationVector.push_back( information );
-            m_params_1_0.InformationCount = m_informationVector.size() + m_concurrentGroup->GetInformationCount();
+            m_params.InformationCount = m_informationVector.size() + m_concurrentGroup->GetInformationCount();
         }
         else
         {
@@ -909,7 +919,7 @@ namespace MetricsDiscoveryInternal
         MD_CHECK_PTR_RET_A( m_device.GetAdapter().GetAdapterId(), information, nullptr );
 
         m_informationVector.push_back( information );
-        m_params_1_0.InformationCount = m_informationVector.size() + m_concurrentGroup->GetInformationCount();
+        m_params.InformationCount = m_informationVector.size() + m_concurrentGroup->GetInformationCount();
 
         return information;
     }
@@ -946,7 +956,7 @@ namespace MetricsDiscoveryInternal
         char* metricSetName = GetCopiedCString( complementaryMetricSetSymbolicName, adapterId );
 
         m_complementarySetsVector.push_back( metricSetName );
-        m_params_1_0.ComplementarySetsCount = m_complementarySetsVector.size();
+        m_params.ComplementarySetsCount = m_complementarySetsVector.size();
 
         return CC_OK;
     }
@@ -1284,7 +1294,7 @@ namespace MetricsDiscoveryInternal
                     m_isReadRegsCfgSet = readRegs.size() > 0;
 
                     m_pmRegsConfigInfo.IsQueryConfig = sendQueryConfigFlag;
-                    driverInterface.GetPmRegsConfigHandles( m_params_1_0.ApiSpecificId.HwConfigId, &m_pmRegsConfigInfo.OaConfigHandle, &m_pmRegsConfigInfo.GpConfigHandle, &m_pmRegsConfigInfo.RrConfigHandle );
+                    driverInterface.GetPmRegsConfigHandles( m_params.ApiSpecificId.HwConfigId, &m_pmRegsConfigInfo.OaConfigHandle, &m_pmRegsConfigInfo.GpConfigHandle, &m_pmRegsConfigInfo.RrConfigHandle );
                 }
             }
             else
@@ -1362,7 +1372,7 @@ namespace MetricsDiscoveryInternal
             uint32_t        rrCfgHandle = 0;
             TCompletionCode retCode     = CC_OK;
 
-            retCode = driverInterface.GetPmRegsConfigHandles( m_params_1_0.ApiSpecificId.HwConfigId, &oaCfgHandle, &gpCfgHandle, &rrCfgHandle );
+            retCode = driverInterface.GetPmRegsConfigHandles( m_params.ApiSpecificId.HwConfigId, &oaCfgHandle, &gpCfgHandle, &rrCfgHandle );
 
             if( retCode == CC_OK && oaCfgHandle == m_pmRegsConfigInfo.OaConfigHandle && gpCfgHandle == m_pmRegsConfigInfo.GpConfigHandle && rrCfgHandle == m_pmRegsConfigInfo.RrConfigHandle )
             {
@@ -1428,29 +1438,29 @@ namespace MetricsDiscoveryInternal
             return CC_ERROR_INVALID_PARAMETER;
         }
 
-        // m_params_1_0
-        WriteCStringToFile( m_params_1_0.SymbolName, metricFile, adapterId );
-        WriteCStringToFile( m_params_1_0.ShortName, metricFile, adapterId );
-        fwrite( &m_params_1_0.ApiMask, sizeof( m_params_1_0.ApiMask ), 1, metricFile );
-        fwrite( &m_params_1_0.CategoryMask, sizeof( m_params_1_0.CategoryMask ), 1, metricFile );
-        fwrite( &m_params_1_0.RawReportSize, sizeof( m_params_1_0.RawReportSize ), 1, metricFile );
-        fwrite( &m_params_1_0.QueryReportSize, sizeof( m_params_1_0.QueryReportSize ), 1, metricFile );
-        fwrite( &m_params_1_0.PlatformMask, sizeof( m_params_1_0.PlatformMask ), 1, metricFile );
-        fwrite( &m_params_1_0.GtMask, sizeof( m_params_1_0.GtMask ), 1, metricFile );
+        // m_params
+        WriteCStringToFile( m_params.SymbolName, metricFile, adapterId );
+        WriteCStringToFile( m_params.ShortName, metricFile, adapterId );
+        fwrite( &m_params.ApiMask, sizeof( m_params.ApiMask ), 1, metricFile );
+        fwrite( &m_params.CategoryMask, sizeof( m_params.CategoryMask ), 1, metricFile );
+        fwrite( &m_params.RawReportSize, sizeof( m_params.RawReportSize ), 1, metricFile );
+        fwrite( &m_params.QueryReportSize, sizeof( m_params.QueryReportSize ), 1, metricFile );
+        fwrite( &m_params.PlatformMask, sizeof( m_params.PlatformMask ), 1, metricFile );
+        fwrite( &m_params.GtMask, sizeof( m_params.GtMask ), 1, metricFile );
         WriteEquationToFile( m_availabilityEquation, metricFile, adapterId );
         fwrite( &m_reportType, sizeof( m_reportType ), 1, metricFile );
         WriteByteArrayToFile( m_platformMask, metricFile, adapterId );
-        // m_params_1_0.ApiSpecificId (placeholder is not saved!)
-        fwrite( &m_params_1_0.ApiSpecificId.D3D9QueryId, sizeof( m_params_1_0.ApiSpecificId.D3D9QueryId ), 1, metricFile );
-        fwrite( &m_params_1_0.ApiSpecificId.D3D9Fourcc, sizeof( m_params_1_0.ApiSpecificId.D3D9Fourcc ), 1, metricFile );
-        fwrite( &m_params_1_0.ApiSpecificId.D3D1XQueryId, sizeof( m_params_1_0.ApiSpecificId.D3D1XQueryId ), 1, metricFile );
-        fwrite( &m_params_1_0.ApiSpecificId.D3D1XDevDependentId, sizeof( m_params_1_0.ApiSpecificId.D3D1XDevDependentId ), 1, metricFile );
-        WriteCStringToFile( m_params_1_0.ApiSpecificId.D3D1XDevDependentName, metricFile, adapterId );
-        fwrite( &m_params_1_0.ApiSpecificId.OGLQueryIntelId, sizeof( m_params_1_0.ApiSpecificId.OGLQueryIntelId ), 1, metricFile );
-        WriteCStringToFile( m_params_1_0.ApiSpecificId.OGLQueryIntelName, metricFile, adapterId );
-        fwrite( &m_params_1_0.ApiSpecificId.OGLQueryARBTargetId, sizeof( m_params_1_0.ApiSpecificId.OGLQueryARBTargetId ), 1, metricFile );
-        fwrite( &m_params_1_0.ApiSpecificId.OCL, sizeof( m_params_1_0.ApiSpecificId.OCL ), 1, metricFile );
-        fwrite( &m_params_1_0.ApiSpecificId.HwConfigId, sizeof( m_params_1_0.ApiSpecificId.HwConfigId ), 1, metricFile );
+        // m_params.ApiSpecificId (placeholder is not saved!)
+        fwrite( &m_params.ApiSpecificId.D3D9QueryId, sizeof( m_params.ApiSpecificId.D3D9QueryId ), 1, metricFile );
+        fwrite( &m_params.ApiSpecificId.D3D9Fourcc, sizeof( m_params.ApiSpecificId.D3D9Fourcc ), 1, metricFile );
+        fwrite( &m_params.ApiSpecificId.D3D1XQueryId, sizeof( m_params.ApiSpecificId.D3D1XQueryId ), 1, metricFile );
+        fwrite( &m_params.ApiSpecificId.D3D1XDevDependentId, sizeof( m_params.ApiSpecificId.D3D1XDevDependentId ), 1, metricFile );
+        WriteCStringToFile( m_params.ApiSpecificId.D3D1XDevDependentName, metricFile, adapterId );
+        fwrite( &m_params.ApiSpecificId.OGLQueryIntelId, sizeof( m_params.ApiSpecificId.OGLQueryIntelId ), 1, metricFile );
+        WriteCStringToFile( m_params.ApiSpecificId.OGLQueryIntelName, metricFile, adapterId );
+        fwrite( &m_params.ApiSpecificId.OGLQueryARBTargetId, sizeof( m_params.ApiSpecificId.OGLQueryARBTargetId ), 1, metricFile );
+        fwrite( &m_params.ApiSpecificId.OCL, sizeof( m_params.ApiSpecificId.OCL ), 1, metricFile );
+        fwrite( &m_params.ApiSpecificId.HwConfigId, sizeof( m_params.ApiSpecificId.HwConfigId ), 1, metricFile );
 
         // m_metricsVector & m_otherMetricsVector
         count = m_metricsVector.size() + m_otherMetricsVector.size();
@@ -1778,21 +1788,27 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     bool CMetricSet::IsApiFilteringMaskValid( const uint32_t apiMask )
     {
-        constexpr uint32_t streamMask = API_TYPE_IOSTREAM;
-        bool               ret        = true;
-
-        if( apiMask == 0 || apiMask == API_TYPE_ALL )
+        if( apiMask != 0 && apiMask != API_TYPE_ALL )
         {
-            ret = true;
-        }
-        // Do not allow mixing stream and query metrics
-        else if( ( apiMask & streamMask ) && ( apiMask & ~streamMask ) )
-        {
-            MD_LOG_A( m_device.GetAdapter().GetAdapterId(), LOG_DEBUG, "error: IoStream and Query api mask mixed, apiMask: %u", apiMask );
-            ret = false;
+            const uint32_t adapterId = m_device.GetAdapter().GetAdapterId();
+            const bool     isStream  = ( apiMask & API_TYPE_IOSTREAM );
+            const bool     isQuery   = ( apiMask & MD_QUERY_API_MASK );
+
+            if( !isStream && !isQuery )
+            {
+                MD_LOG_A( adapterId, LOG_DEBUG, "ERROR: Wrong apiMask!, apiMask: %x", apiMask );
+                return false;
+            }
+
+            // Do not allow mixing stream and query metrics
+            if( isStream && isQuery )
+            {
+                MD_LOG_A( adapterId, LOG_DEBUG, "ERROR: IoStream and Query api mask mixed, apiMask: %x", apiMask );
+                return false;
+            }
         }
 
-        return ret;
+        return true;
     }
 
     //////////////////////////////////////////////////////////////////////////////
@@ -1827,12 +1843,12 @@ namespace MetricsDiscoveryInternal
             // Used cached metrics if possible
             if( apiMask == m_filteredParams.ApiMask )
             {
-                MD_LOG_A( adapterId, LOG_DEBUG, "using cached metrics for API filtering, apiMask: %u", apiMask );
+                MD_LOG_A( adapterId, LOG_DEBUG, "Using cached metrics for API filtering, apiMask: %x", apiMask );
             }
             else
             {
                 // Copy (shallow) params, then modify apiMask
-                iu_memcpy_s( &m_filteredParams, sizeof( m_filteredParams ), &m_params_1_0, sizeof( m_params_1_0 ) );
+                iu_memcpy_s( &m_filteredParams, sizeof( m_filteredParams ), &m_params, sizeof( m_params ) );
                 m_filteredParams.ApiMask = apiMask;
 
                 // Cache and modify counts in params
@@ -1864,31 +1880,33 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     void CMetricSet::UpdateMetricIndicesInEquations()
     {
-        std::unordered_map<std::string, uint32_t> metricsIndexMap( GetParams()->MetricsCount );
+        std::unordered_map<std::string, uint32_t> metricsIndexMap( m_params.MetricsCount );
 
         // Update metric indices
-        for( uint32_t i = 0; i < GetParams()->MetricsCount; i++ )
+        for( uint32_t i = 0; i < m_params.MetricsCount; ++i )
         {
             CMetric* metric = GetMetricExplicit( i );
 
-            if( metric )
+            if( metric != nullptr )
             {
-                metricsIndexMap[metric->GetParams()->SymbolName] = i;
+                const auto metricParams = metric->GetParams();
 
-                if( metric->GetParams()->NormEquation )
+                metricsIndexMap[metricParams->SymbolName] = i;
+
+                if( metricParams->NormEquation != nullptr )
                 {
                     // Get an equation
-                    IEquation_1_0* equation = metric->GetParams()->NormEquation;
+                    IEquation_1_0* equation = metricParams->NormEquation;
 
                     // Metrics equation can use only preceding metrics' values
-                    for( uint32_t j = 0; j < equation->GetEquationElementsCount(); j++ )
+                    for( uint32_t j = 0; j < equation->GetEquationElementsCount(); ++j )
                     {
-                        CEquationElementInternal* internalElement = (CEquationElementInternal*) equation->GetEquationElement( j );
+                        const auto internalElement = static_cast<CEquationElementInternal*>( equation->GetEquationElement( j ) );
 
-                        if( internalElement->Element_1_0.Type == EQUATION_ELEM_LOCAL_COUNTER_SYMBOL || internalElement->Element_1_0.Type == EQUATION_ELEM_LOCAL_METRIC_SYMBOL )
+                        if( internalElement->Type == EQUATION_ELEM_LOCAL_COUNTER_SYMBOL || internalElement->Type == EQUATION_ELEM_LOCAL_METRIC_SYMBOL )
                         {
                             // Find if symbol name is in the index map
-                            const auto foundMetric = metricsIndexMap.find( internalElement->Element_1_0.SymbolName );
+                            const auto foundMetric = metricsIndexMap.find( internalElement->SymbolName );
 
                             // Check for the results
                             if( foundMetric != metricsIndexMap.end() )
@@ -1934,13 +1952,13 @@ namespace MetricsDiscoveryInternal
         }
         else
         {
-            m_currentParams            = &m_params_1_0;
+            m_currentParams            = &m_params;
             m_currentMetricsVector     = &m_metricsVector;
             m_currentInformationVector = &m_informationVector;
             m_isFiltered               = false;
         }
 
-        MD_LOG_A( m_device.GetAdapter().GetAdapterId(), LOG_DEBUG, "use API filtered variables: %s", enable ? "TRUE" : "FALSE" );
+        MD_LOG_A( m_device.GetAdapter().GetAdapterId(), LOG_DEBUG, "Use API filtered variables: %s", enable ? "TRUE" : "FALSE" );
     }
 
     //////////////////////////////////////////////////////////////////////////////
@@ -1974,28 +1992,26 @@ namespace MetricsDiscoveryInternal
         ClearCachedMetricsAndInformation();
 
         // Cache metrics
-        for( uint32_t i = 0, j = 0; i < m_params_1_0.MetricsCount; i++ )
+        for( uint32_t i = 0, j = 0; i < m_params.MetricsCount; ++i )
         {
-            CMetric* metric = GetMetricExplicit( i );
-            if( metric && ( metric->GetParams()->ApiMask & m_filteredParams.ApiMask ) > 0 )
+            auto metric = GetMetricExplicit( i );
+            if( metric && ( metric->GetParams()->ApiMask & m_filteredParams.ApiMask ) != 0 )
             {
-                CMetric* filteredMetric = metric;
-                filteredMetric->SetIdInSetParam( j++ );
+                metric->SetIdInSetParam( j++ );
 
-                m_filteredMetricsVector.push_back( filteredMetric );
+                m_filteredMetricsVector.push_back( metric );
             }
         }
 
         // Cache information
-        for( uint32_t i = 0, j = 0; i < m_params_1_0.InformationCount; i++ )
+        for( uint32_t i = 0, j = 0; i < m_params.InformationCount; ++i )
         {
-            IInformation_1_0* information = GetInformation( i );
-            if( information && ( information->GetParams()->ApiMask & m_filteredParams.ApiMask ) > 0 )
+            auto information = static_cast<CInformation*>( GetInformation( i ) );
+            if( information && ( information->GetParams()->ApiMask & m_filteredParams.ApiMask ) != 0 )
             {
-                CInformation* filteredInformation = static_cast<CInformation*>( information );
-                filteredInformation->SetIdInSetParam( j++ );
+                information->SetIdInSetParam( j++ );
 
-                m_filteredInformationVector.push_back( filteredInformation );
+                m_filteredInformationVector.push_back( information );
             }
         }
 
@@ -2512,6 +2528,43 @@ namespace MetricsDiscoveryInternal
     //     CMetricSet
     //
     // Method:
+    //     IsCustomApiMaskValid
+    //
+    // Description:
+    //     Validates API mask used in IsCustomApiMaskValid method.
+    //     IoStream and Query measurements can be mixed.
+    //
+    // Input:
+    //    const uint32_t apiMask - api mask
+    //
+    // Output:
+    //     bool                  - true if valid, false otherwise
+    //
+    //////////////////////////////////////////////////////////////////////////////
+    bool CMetricSet::IsCustomApiMaskValid( const uint32_t apiMask )
+    {
+        if( apiMask != 0 && apiMask != API_TYPE_ALL )
+        {
+            const uint32_t adapterId = m_device.GetAdapter().GetAdapterId();
+            const bool     isStream  = ( apiMask & API_TYPE_IOSTREAM );
+            const bool     isQuery   = ( apiMask & MD_QUERY_API_MASK );
+
+            if( !isStream && !isQuery )
+            {
+                MD_LOG_A( adapterId, LOG_DEBUG, "ERROR: Wrong apiMask!, apiMask: %x", apiMask );
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    //////////////////////////////////////////////////////////////////////////////
+    //
+    // Class:
+    //     CMetricSet
+    //
+    // Method:
     //     HasInformation
     //
     // Description:
@@ -2529,7 +2582,7 @@ namespace MetricsDiscoveryInternal
     {
         MD_CHECK_PTR_RET_A( m_device.GetAdapter().GetAdapterId(), symbolName, false );
 
-        for( uint32_t i = 0; i < m_params_1_0.InformationCount; ++i )
+        for( uint32_t i = 0; i < m_params.InformationCount; ++i )
         {
             auto information = GetInformation( i );
             if( information && information->GetParams()->SymbolName != nullptr && strcmp( information->GetParams()->SymbolName, symbolName ) == 0 )
@@ -2627,7 +2680,7 @@ namespace MetricsDiscoveryInternal
 
         if( ret == CC_OK )
         {
-            m_params_1_0.AvailabilityEquation = GetCopiedCString( equationString, adapterId );
+            m_params.AvailabilityEquation = GetCopiedCString( equationString, adapterId );
         }
 
         return ret;

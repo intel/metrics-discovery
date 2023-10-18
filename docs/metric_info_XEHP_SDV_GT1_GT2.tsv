@@ -1,16 +1,4 @@
 MetricSet	SymbolName	ShortName	Group	LongName
-PipelineStats	IAVertices	Input vertices	3D Pipe/Input Assembler	The total number of vertices that entered the 3D Pipeline.
-PipelineStats	IAPrimitives	Input primitives	3D Pipe/Input Assembler	The total number of rendering primitives assembled and put into the input assembly stage of the 3D Pipeline.
-PipelineStats	VsInvocations	VS per vertex invocations	3D Pipe/Vertex Shader	The total number of times a vertex shader was invoked. 3D rendering invokes the vertex shader once per vertex.
-PipelineStats	HsInvocations	HS invocations	3D Pipe/Hull Shader	The total number of times a hull shader was invoked.
-PipelineStats	DsInvocations	DS invocations	3D Pipe/Domain Shader	The total number of times a domain shader was invoked.
-PipelineStats	GsInvocations	GS per triangle invocations	3D Pipe/Geometry Shader	The total number of times a geometry shader was invoked per triangle.
-PipelineStats	GsPrimitives	Post-GS primitives	3D Pipe/Geometry Shader	The total number of primitives that flowed through from GS to the clipper if GS was enabled.
-PipelineStats	ClipperInvocations	Clipper invocations	3D Pipe/Clipper	The total number of primitives sent to the Clipper.
-PipelineStats	ClipperPrimitives	Clipper primitives	3D Pipe/Clipper	The total number of primitives that flowed out of the Clipper.
-PipelineStats	PsInvocations	PS invocations	3D Pipe/Pixel Shader	The total number of times a pixel shader was invoked. 3D rendering invokes a pixel shader once per pixel or subsample.
-PipelineStats	CsInvocations	CS invocations	3D Pipe/Compute Shader	The total number of times a compute shader was invoked.
-PipelineStats	CpsInvocations	CPS invocations	3D Pipe/Compute Shader	The total number of times a coarse shader was invoked.
 HDCAndSF_Slice01	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
 HDCAndSF_Slice01	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
 HDCAndSF_Slice01	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.

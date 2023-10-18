@@ -28,6 +28,8 @@ SPDX-License-Identifier: MIT
 
 #define MD_ROOT_DEVICE_INDEX 0
 
+constexpr uint32_t MD_QUERY_API_MASK = ( API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_DX12 | API_TYPE_VULKAN );
+
 using namespace MetricsDiscovery;
 
 namespace MetricsDiscoveryInternal

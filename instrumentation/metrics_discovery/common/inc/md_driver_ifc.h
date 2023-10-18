@@ -96,8 +96,9 @@ namespace MetricsDiscoveryInternal
         virtual ~CDriverInterface(){};
 
     public:
-        // Creation and debug settings static:
+        // Creation, destruction and debug settings static:
         static CDriverInterface* CreateInstance( CAdapterHandle& adapterHandle );
+        static void              ReleaseResources();
         static void              ReadDebugLogSettings();
         static bool              IsSupportEnableRequired();
 

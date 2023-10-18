@@ -35,16 +35,19 @@ namespace MetricsDiscoveryInternal
     //     Class which represents equation element.
     //
     //////////////////////////////////////////////////////////////////////////////
-    class CEquationElementInternal
+    class CEquationElementInternal : public TEquationElementLatest
     {
     public:
         CEquationElementInternal();
         CEquationElementInternal( const CEquationElementInternal& element );
         CEquationElementInternal& operator=( const CEquationElementInternal& element );
+        virtual ~CEquationElementInternal();
 
-        TEquationElement_1_0 Element_1_0;
-        char                 SymbolNameInternal[32];
-        int32_t              MetricIndexInternal;
+        char    SymbolNameInternal[32];
+        int32_t MetricIndexInternal;
+
+    private:
+        void SetMembers( const CEquationElementInternal& element );
     };
 
     //////////////////////////////////////////////////////////////////////////////
@@ -58,7 +61,6 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     class CEquation : public IEquationLatest
     {
-    private:
     public:
         // API 1.0:
         virtual uint32_t              GetEquationElementsCount();
@@ -70,11 +72,13 @@ namespace MetricsDiscoveryInternal
         explicit CEquation( const CEquation& other );
         virtual ~CEquation();
 
+        CEquation& operator=( const CEquation& ) = delete; // Delete assignment operator
+
         // Non-API:
         bool SolveBooleanEquation( void ); // Used only for availability equations
         bool ParseEquationString( const char* equationString );
         bool AddEquationElement( const CEquationElementInternal& element );
-        bool ParseEquationElement( const char* element );
+        bool ParseEquationElement( const char* equationString );
 
         TCompletionCode WriteCEquationToFile( FILE* metricFile );
 

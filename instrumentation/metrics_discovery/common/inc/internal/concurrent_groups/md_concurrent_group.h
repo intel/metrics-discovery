@@ -61,6 +61,9 @@ namespace MetricsDiscoveryInternal
         CConcurrentGroup( CMetricsDevice& device, const char* name, const char* longName, const uint32_t measurementTypeMask );
         virtual ~CConcurrentGroup();
 
+        CConcurrentGroup( const CConcurrentGroup& )            = delete; // Delete copy-constructor
+        CConcurrentGroup& operator=( const CConcurrentGroup& ) = delete; // Delete assignment operator
+
         // Non-API:
         CMetricSet* AddMetricSet( const char* symbolicName, const char* shortName, uint32_t apiMask, uint32_t categoryMask, uint32_t snapshotReportSize, uint32_t deltaReportSize, TReportType reportType, TByteArrayLatest* platformMask, const char* availabilityEquation = nullptr, uint32_t gtMask = GT_TYPE_ALL, bool isCustom = false );
         CMetricSet* GetMatchingMetricSet( const char* symbolName, TByteArrayLatest* platformMask, uint32_t gtMask, bool findWithTrueAvailabilityEquation = false );

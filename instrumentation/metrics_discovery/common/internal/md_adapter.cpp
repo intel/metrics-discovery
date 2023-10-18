@@ -51,11 +51,13 @@ namespace MetricsDiscoveryInternal
         , m_engineParams{}
         , m_adapterGroup( adapterGroup )
     {
-        // Initialize sub device information.
-        m_subDevices.Enumerate();
-        m_subDevices.GetAdapterParams( m_params );
-
-        if( CreateDriverInterface() != CC_OK )
+        if( CreateDriverInterface() == CC_OK )
+        {
+            // Initialize sub device information.
+            m_subDevices.Enumerate();
+            m_subDevices.GetAdapterParams( m_params );
+        }
+        else
         {
             MD_LOG( LOG_ERROR, "Failed to create driver interface for an adapter" );
         }
@@ -1027,10 +1029,13 @@ namespace MetricsDiscoveryInternal
         }
 
         // 3. Save metrics device object to a file
-        retVal = m_metricsDevice->SaveToFile( fileName, minMajorApiVersion, minMinorApiVersion );
-        if( retVal != CC_OK )
+        if( retVal == CC_OK )
         {
-            MD_LOG_A( m_adapterId, LOG_ERROR, "Saving to file failed" );
+            retVal = m_metricsDevice->SaveToFile( fileName, minMajorApiVersion, minMinorApiVersion );
+            if( retVal != CC_OK )
+            {
+                MD_LOG_A( m_adapterId, LOG_ERROR, "Saving to file failed" );
+            }
         }
 
         // 4. Release semaphore

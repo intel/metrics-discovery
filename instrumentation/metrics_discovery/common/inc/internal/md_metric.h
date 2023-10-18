@@ -64,6 +64,8 @@ namespace MetricsDiscoveryInternal
         explicit CMetric( const CMetric& other );
         virtual ~CMetric();
 
+        CMetric& operator=( const CMetric& ) = delete; // Delete assignment operator
+
         // Non-API:
         TCompletionCode SetSnapshotReportReadEquation( const char* equationString );
         TCompletionCode SetDeltaReportReadEquation( const char* equationString );

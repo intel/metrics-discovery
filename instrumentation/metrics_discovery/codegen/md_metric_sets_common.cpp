@@ -27,7 +27,7 @@ namespace MetricsDiscoveryInternal::MetricSets_OcclusionQueryStats
         CMetric*        metric               = nullptr;
         CInformation*   information          = nullptr;
         const char*     availabilityEquation = nullptr;
-        m_params_1_0.InformationCount        = m_concurrentGroup->GetInformationCount();
+        m_params.InformationCount            = m_concurrentGroup->GetInformationCount();
         MD_CHECK_CC( SetApiSpecificId( "", 9, 0, 0, 0, 0, "", 1, "", 0 ) );
 
         availabilityEquation = nullptr;
@@ -58,7 +58,7 @@ namespace MetricsDiscoveryInternal::MetricSets_OcclusionQueryStats
         CMetric*        metric               = nullptr;
         CInformation*   information          = nullptr;
         const char*     availabilityEquation = nullptr;
-        m_params_1_0.InformationCount        = m_concurrentGroup->GetInformationCount();
+        m_params.InformationCount            = m_concurrentGroup->GetInformationCount();
         MD_CHECK_CC( SetApiSpecificId( "", 0, 0, 0, 0, 0, "", 0, "", 0x8C2F ) );
 
         availabilityEquation = nullptr;
@@ -93,7 +93,7 @@ namespace MetricsDiscoveryInternal::MetricSets_TimestampQuery
         CMetric*        metric               = nullptr;
         CInformation*   information          = nullptr;
         const char*     availabilityEquation = nullptr;
-        m_params_1_0.InformationCount        = m_concurrentGroup->GetInformationCount();
+        m_params.InformationCount            = m_concurrentGroup->GetInformationCount();
         MD_CHECK_CC( SetApiSpecificId( "", 10, 0, 0, 0, 0, "", 2, "", 0x88BF ) );
 
         availabilityEquation = nullptr;

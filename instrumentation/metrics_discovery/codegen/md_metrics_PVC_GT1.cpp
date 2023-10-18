@@ -17,40 +17,6 @@ SPDX-License-Identifier: MIT
 
 using namespace MetricsDiscoveryInternal;
 
-TCompletionCode CreateMetricTreePVC_GT1_PipelineStatistics( CMetricsDevice* metricsDevice, CConcurrentGroup* concurrentGroup )
-{
-    const uint32_t adapterId = OBTAIN_ADAPTER_ID( metricsDevice );
-
-    MD_LOG_ENTER_A( adapterId );
-    MD_CHECK_PTR_RET_A( adapterId, metricsDevice, CC_ERROR_INVALID_PARAMETER );
-    MD_CHECK_PTR_RET_A( adapterId, concurrentGroup, CC_ERROR_INVALID_PARAMETER );
-
-    CMetricSet*      metricSet                                               = nullptr;
-    uint8_t          platformMaskByteArray[MD_PLATFORM_MASK_BYTE_ARRAY_SIZE] = {};
-    TByteArrayLatest platformMask                                            = { MD_PLATFORM_MASK_BYTE_ARRAY_SIZE, platformMaskByteArray };
-
-    MD_CHECK_CC( SetPlatformMask( adapterId, &platformMask, nullptr, false, GENERATION_PVC ) );
-
-    if( metricsDevice->IsPlatformTypeOf( &platformMask, GT_TYPE_GT1 ) )
-    {
-        metricSet = concurrentGroup->AddMetricSetExplicit<MetricSets_PVC_GT1_PipelineStatistics::CPipelineStatsMetricSet>( "PipelineStats", "Pipeline Statistics for OGL4", API_TYPE_OGL | API_TYPE_OGL4_X,
-            GPU_RENDER | GPU_COMPUTE, 0, 96, OA_REPORT_TYPE_256B_A45_NOA16, &platformMask, nullptr, GT_TYPE_GT1 );
-        MD_CHECK_PTR( metricSet );
-    }
-
-    MD_LOG_EXIT_A( adapterId );
-    return CC_OK;
-
-exception:
-    MD_LOG_EXIT_A( adapterId );
-    return CC_ERROR_NO_MEMORY;
-}
-#endif
-
-#if( ( !defined( MD_INCLUDE_PVC_GT1_METRICS ) && MD_INCLUDE_ALL_METRICS ) || MD_INCLUDE_PVC_GT1_METRICS )
-
-using namespace MetricsDiscoveryInternal;
-
 TCompletionCode CreateMetricTreePVC_GT1_OA( CMetricsDevice* metricsDevice, CConcurrentGroup* concurrentGroup )
 {
     const uint32_t adapterId = OBTAIN_ADAPTER_ID( metricsDevice );

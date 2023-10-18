@@ -6,7 +6,7 @@ SPDX-License-Identifier: MIT
 
 ============================= end_copyright_notice ===========================*/
 
-//     File Name:  md_metric.h
+//     File Name:  md_metrics_device.h
 
 //     Abstract:   C++ Metrics Discovery internal metrics device header
 
@@ -80,8 +80,11 @@ namespace MetricsDiscoveryInternal
         CMetricsDevice( CAdapter& adapter, CDriverInterface& driverInterface, const uint32_t subDeviceIndex = 0 );
         virtual ~CMetricsDevice();
 
+        CMetricsDevice( const CMetricsDevice& )            = delete; // Delete copy-constructor
+        CMetricsDevice& operator=( const CMetricsDevice& ) = delete; // Delete assignment operator
+
         // Non-API:
-        CConcurrentGroup* AddConcurrentGroup( const char* symbolicName, const char* shortName, const uint32_t measurementTypeMask, bool& isSupported );
+        CConcurrentGroup* AddConcurrentGroup( const char* symbolicName, const char* shortName, const uint32_t measurementTypeMask, TByteArrayLatest* platformMask, bool& isSupported );
 
         TCompletionCode AddOverrides();
         bool            IsPlatformTypeOf( TByteArrayLatest* platformMask, uint32_t gtMask = GT_TYPE_ALL );
@@ -115,12 +118,12 @@ namespace MetricsDiscoveryInternal
 
     private:
         // Methods to read from file must be used in correct order
-        TCompletionCode ReadGlobalSymbolsFromFileBuffer( uint8_t** bufferPtr );
-        TCompletionCode ReadConcurrentGroupsFromFileBuffer( uint8_t** bufferPtr, TApiVersion_1_0* apiVersion, uint32_t fileVersion );
-        TCompletionCode ReadMetricSetsFromFileBuffer( uint8_t** bufferPtr, CConcurrentGroup* group, TApiVersion_1_0* apiVersion, uint32_t fileVersion );
-        TCompletionCode ReadMetricsFromFileBuffer( uint8_t** bufferPtr, CMetricSet* set, bool isSetNew );
-        TCompletionCode ReadInformationFromFileBuffer( uint8_t** bufferPtr, CMetricSet* set );
-        TCompletionCode ReadRegistersFromFileBuffer( uint8_t** bufferPtr, CMetricSet* set );
+        TCompletionCode ReadGlobalSymbolsFromFileBuffer( uint8_t*& bufferPtr, const uint8_t* fileBufferBeginOffset, const uint32_t fileSize );
+        TCompletionCode ReadConcurrentGroupsFromFileBuffer( uint8_t*& bufferPtr, const uint8_t* fileBufferBeginOffset, const uint32_t fileSize, TApiVersion_1_0* apiVersion, const uint32_t fileVersion );
+        TCompletionCode ReadMetricSetsFromFileBuffer( uint8_t*& bufferPtr, const uint8_t* fileBufferBeginOffset, const uint32_t fileSize, CConcurrentGroup* group, TApiVersion_1_0* apiVersion, const uint32_t fileVersion );
+        TCompletionCode ReadMetricsFromFileBuffer( uint8_t*& bufferPtr, const uint8_t* fileBufferBeginOffset, const uint32_t fileSize, CMetricSet* set, const bool isSetNew );
+        TCompletionCode ReadInformationFromFileBuffer( uint8_t*& bufferPtr, const uint8_t* fileBufferBeginOffset, const uint32_t fileSize, CMetricSet* set );
+        TCompletionCode ReadRegistersFromFileBuffer( uint8_t*& bufferPtr, const uint8_t* fileBufferBeginOffset, const uint32_t fileSize, CMetricSet* set );
 
         IOverrideLatest* AddOverride( TOverrideType overrideType );
         bool             IsMetricsFileInPlainTextFormat( FILE* metricFile, uint32_t& fileVersion );

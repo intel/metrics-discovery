@@ -55,6 +55,9 @@ namespace MetricsDiscoveryInternal
         COAConcurrentGroup( CMetricsDevice& device, const char* name, const char* longName, const uint32_t measurementTypeMask );
         virtual ~COAConcurrentGroup();
 
+        COAConcurrentGroup( const COAConcurrentGroup& )            = delete; // Delete copy-constructor
+        COAConcurrentGroup& operator=( const COAConcurrentGroup& ) = delete; // Delete assignment operator
+
         CMetricSet*               GetIoMetricSet();
         const TStreamType         GetStreamType() const;
         const GTDI_OA_BUFFER_TYPE GetOaBufferType() const;
