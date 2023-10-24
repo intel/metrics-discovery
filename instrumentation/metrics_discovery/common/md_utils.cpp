@@ -1,6 +1,6 @@
 /*========================== begin_copyright_notice ============================
 
-Copyright (C) 2019-2021 Intel Corporation
+Copyright (C) 2019-2023 Intel Corporation
 
 SPDX-License-Identifier: MIT
 
@@ -635,29 +635,6 @@ namespace MetricsDiscoveryInternal
         iu_wstrtombs_s( copiedCString, wstrLength + 1, wcstring, wstrLength );
 
         return copiedCString;
-    }
-
-    //////////////////////////////////////////////////////////////////////////////
-    //
-    // Group:
-    //     Metrics Discovery Utils
-    //
-    // Function:
-    //     GetCStringFromStringView
-    //
-    // Description:
-    //     Safety converts string_view to const char*.
-    //
-    // Input:
-    //     std::string_view stringView - string view to be converted
-    //
-    // Output:
-    //     const char*                 - converted string view
-    //
-    //////////////////////////////////////////////////////////////////////////////
-    const char* GetCStringFromStringView( std::string_view stringView )
-    {
-        return ( "%.*s", stringView.length(), stringView.data() );
     }
 
     //////////////////////////////////////////////////////////////////////////////

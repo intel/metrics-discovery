@@ -1,30 +1,18 @@
 https://github.com/intel-gpu/drm-uapi-helper/tree/master/drm-uapi
 
 Base commit:
-https://github.com/intel-gpu/drm-uapi-helper/commit/6884ac0ac534e716e12dff0afd2062830e6bb87b
+https://github.com/intel-gpu/drm-uapi-helper/commit/cd92fec1d046abaac7e095d21d525e2edbd86bfc
 
 Author: Ashutosh Dixit <ashutosh.dixit@intel.com>
-Date:   01 Dec 2022 23:20:21 +01:00
+Date:   25 May 2023 20:09:41 +02:00
 
 Description:
+	  prelim v2.0-rc18
+        * No compatibility breakage in PRELIM uapi
+        * Other changes below
 
-	prelim v2.0-rc16
-	* Possible backward compatability break in return codes associated with the
-	  PXP feature PRELIM_I915_CONTEXT_PARAM_PROTECTED_CONTENT
-	* Other benign changes shown below
+        i915_drm_prelim.h:
+        * Support for GEM BO chunked-based granularity (and VM_ADVISE hints)
+        * mmap offset support for PCI memory barrier
 
-	i915_drm.h:
-	* OA backports
-			I915_PARAM_OA_TIMESTAMP_FREQUENCY getparam
-			DG2 OAG formats
-	* PXP backports
-			I915_CONTEXT_PARAM_PROTECTED_CONTENT
-			I915_GEM_CREATE_EXT_PROTECTED_CONTENT
-
-	i915_drm_prelim.h:
-	* PXP
-			PRELIM_I915_CONTEXT_PARAM_PROTECTED_CONTENT
-	* SVM
-			New field vm_id in prelim_drm_i915_gem_vm_prefetch
-
-	Signed-off-by: Ashutosh Dixit <ashutosh.dixit@intel.com>
+        Signed-off-by: Ashutosh Dixit <ashutosh.dixit@intel.com>

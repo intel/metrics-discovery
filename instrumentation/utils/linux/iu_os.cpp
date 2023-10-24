@@ -1,6 +1,6 @@
 /*========================== begin_copyright_notice ============================
 
-Copyright (C) 2019-2022 Intel Corporation
+Copyright (C) 2019-2023 Intel Corporation
 
 SPDX-License-Identifier: MIT
 
@@ -9,7 +9,7 @@ SPDX-License-Identifier: MIT
 //     File Name:  iu_os.cpp
 
 //     Abstract:   Instrumentation Utils implementation with OS specific non-standard
-//                 functions for Linux / Android.
+//                 functions for Linux.
 
 #include "iu_os.h"
 #include "iu_debug.h"
@@ -158,7 +158,9 @@ extern "C"
         }
 
         // Remove an executable filename from the path.
-        uint32_t filePathSize = (uint32_t) iu_strnlen_s( filePath, IU_CONFIG_FILE_PATH_SIZE_MAX );
+        const uint32_t filePathSize                = (uint32_t) iu_strnlen_s( filePath, IU_CONFIG_FILE_PATH_SIZE_MAX );
+        filePath[IU_CONFIG_FILE_PATH_SIZE_MAX - 1] = '\0';
+
         for( uint32_t i = filePathSize; i > 0; --i )
         {
             if( filePath[i] == '/' )

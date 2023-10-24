@@ -2057,7 +2057,7 @@ namespace MetricsDiscoveryInternal
     std::string CDriverInterfaceLinuxCommon::GenerateQueryGuid( const uint32_t subDeviceIndex )
     {
         const std::string valueToReplace    = "42a7";
-        const uint32_t    maxSubDeviceIndex = std::pow( 2, valueToReplace.size() * 4 ) - 1;
+        const uint32_t    maxSubDeviceIndex = std::pow( 2, valueToReplace.length() * 4 ) - 1;
 
         if( subDeviceIndex > maxSubDeviceIndex )
         {
@@ -2073,7 +2073,7 @@ namespace MetricsDiscoveryInternal
         }
 
         std::stringstream stream;
-        stream << std::setfill( '0' ) << std::setw( valueToReplace.size() ) << std::hex << subDeviceIndex;
+        stream << std::setfill( '0' ) << std::setw( valueToReplace.length() ) << std::hex << subDeviceIndex;
         std::string subDeviceIndexHexString( stream.str() );
 
         return std::regex_replace( defaultGuid, std::regex( valueToReplace ), subDeviceIndexHexString.c_str() );

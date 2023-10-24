@@ -1,6 +1,6 @@
 /*========================== begin_copyright_notice ============================
 
-Copyright (C) 2019-2022 Intel Corporation
+Copyright (C) 2019-2023 Intel Corporation
 
 SPDX-License-Identifier: MIT
 
@@ -129,7 +129,6 @@ namespace MetricsDiscoveryInternal
     std::string       GetStringFromByteArray( const TByteArrayLatest* byteArray, const uint32_t adapterId );
     char*             GetCopiedCString( const char* cstring, const uint32_t adapterId );
     char*             GetCopiedCStringFromWcString( const wchar_t* wcstring, const uint32_t adapterId );
-    const char*       GetCStringFromStringView( std::string_view stringView );
 
     void WriteByteArrayToFile( const TByteArrayLatest* byteArray, FILE* pFile, const uint32_t adapterId );
     void WriteCStringToFile( const char* cstring, FILE* pFile, const uint32_t adapterId );

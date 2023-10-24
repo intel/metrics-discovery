@@ -2153,8 +2153,13 @@ namespace MetricsDiscoveryInternal
         ret                        = GetGpuTimestampTicks( &gpuTimestampTicks );
         MD_CHECK_CC_RET_A( m_adapterId, ret );
 
-        // 3. Convert GpuTimestamp to ns
-        *gpuTimestampNs = metricsDevice.ConvertGpuTimestampToNs( gpuTimestampTicks, gpuTimestampFrequency );
+        // 3. Convert GpuTimestampTicks to OA domain
+        uint64_t oaGpuTimestampTicks = 0;
+        ret                          = GetOaTimestamp( gpuTimestampTicks, oaGpuTimestampTicks );
+        MD_CHECK_CC_RET_A( m_adapterId, ret );
+
+        // 4. Convert GpuTimestampTicks to ns
+        *gpuTimestampNs = metricsDevice.ConvertGpuTimestampToNs( oaGpuTimestampTicks, gpuTimestampFrequency );
 
         return CC_OK;
     }

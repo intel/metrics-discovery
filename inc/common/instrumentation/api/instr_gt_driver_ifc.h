@@ -379,7 +379,7 @@ typedef enum
     GTDI_GS,
     GTDI_WIZ,
     GTDI_TS,
-    GTDI_CPS, // CNL+ only -> TODO: to be verified...
+    GTDI_CPS, // CNL+ only
     GTDI_MAX_PIPELINE_STAGES,
     GTDI_PIPELINE_STAGE_MAX = 0xFFFFFFFF
 } GTDI_PIPELINE_STAGE;

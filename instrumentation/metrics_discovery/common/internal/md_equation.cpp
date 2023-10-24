@@ -380,7 +380,7 @@ namespace MetricsDiscoveryInternal
                     else if( pValue && ( pValue->ValueType == VALUE_TYPE_BYTEARRAY ) )
                     {
                         // TODO: should be improved (the array can be bigger than 64bits)
-                        qwordValue = static_cast<uint64_t>( *( pValue->ValueByteArray->Data ) );
+                        qwordValue = *reinterpret_cast<uint64_t*>( pValue->ValueByteArray->Data );
                     }
                     else
                     {

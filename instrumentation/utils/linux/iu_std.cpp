@@ -8,7 +8,7 @@ SPDX-License-Identifier: MIT
 
 //     File Name:  iu_std.cpp
 
-//     Abstract:   Instrumentation Utils implementation with Linux/Android specific functions
+//     Abstract:   Instrumentation Utils implementation with Linux specific functions
 
 //  Note:          Some functions from the header may be unimplemented - they weren't
 //                 needed in Linux version at the moment.
@@ -21,10 +21,8 @@ SPDX-License-Identifier: MIT
 #include <string.h>
 #include <wchar.h>
 
-#if defined( __linux__ )
-    #include <memory.h>
-    #include <syslog.h>
-#endif
+#include <memory.h>
+#include <syslog.h>
 
 extern "C"
 {
@@ -667,9 +665,31 @@ extern "C"
     ///////////////////////////////////////////////////////////////////////////////
     void iu_log( const char* msg )
     {
-#if defined( __linux__ )
         syslog( LOG_USER | LOG_ERR, "%s", msg );
-#endif
+    }
+
+    ///////////////////////////////////////////////////////////////////////////////
+    //
+    // Group:
+    //     Instrumentation Utils Standard OS Specific Functions
+    //
+    // Function:
+    //     iu_log_file
+    //
+    // Description:
+    //     Dump debug log to file.
+    //
+    // Input:
+    //     const char* msg - message to write
+    //
+    // Output:
+    //     bool - always false
+    //
+    ///////////////////////////////////////////////////////////////////////////////
+    bool iu_log_file( const char* msg )
+    {
+        // Not supported
+        return false;
     }
 
     ///////////////////////////////////////////////////////////////////////////////
@@ -699,6 +719,7 @@ extern "C"
         {
             printf( "%s", msg );
         }
+
         if( flush )
         {
             fflush( stdout );
@@ -790,7 +811,7 @@ extern "C"
     //     const char* varName - environment variable name
     //
     // Output:
-    //     Pointer to allocated env variable duplicate, or nullptr if not found
+    //     const char* - pointer to allocated env variable duplicate, or nullptr if not found
     //
     ///////////////////////////////////////////////////////////////////////////////
     const char* iu_dupenv_s( const char* varName )
@@ -802,6 +823,26 @@ extern "C"
         }
 
         return strdup( var );
+    }
+
+    ///////////////////////////////////////////////////////////////////////////////
+    //
+    // Group:
+    //     Instrumentation Utils Standard OS Specific Functions
+    //
+    // Function:
+    //     iu_get_thread_id
+    //
+    // Description:
+    //     Return current thread id.
+    //
+    // Output:
+    //     uint32_t - current thread id.
+    //
+    ///////////////////////////////////////////////////////////////////////////////
+    uint32_t iu_get_thread_id()
+    {
+        return 0;
     }
 
 } // extern "C"

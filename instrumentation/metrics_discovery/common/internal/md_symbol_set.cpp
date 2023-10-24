@@ -427,7 +427,7 @@ namespace MetricsDiscoveryInternal
             if( ret != CC_OK )
             {
                 // Possibly caused by disabled Turbo
-                MD_LOG_A( adapterId, LOG_WARNING, "%s not available, GpuCurrentFrequencyMHz used instead", GetCStringFromStringView( name ) );
+                MD_LOG_A( adapterId, LOG_WARNING, "%.*s not available, GpuCurrentFrequencyMHz used instead", static_cast<uint32_t>( name.length() ), name.data() );
                 ret                    = m_driverInterface.SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_GPU_CORE_FREQUENCY, &out );
                 typedValue.ValueUInt32 = out.ValueUint32 / MD_MHERTZ;
             }
@@ -443,7 +443,7 @@ namespace MetricsDiscoveryInternal
             if( ret != CC_OK )
             {
                 // Possibly caused by disabled Turbo
-                MD_LOG_A( adapterId, LOG_WARNING, "%s not available, GpuCurrentFrequencyMHz used instead", GetCStringFromStringView( name ) );
+                MD_LOG_A( adapterId, LOG_WARNING, "%.*s not available, GpuCurrentFrequencyMHz used instead", static_cast<uint32_t>( name.length() ), name.data() );
                 ret                    = m_driverInterface.SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_GPU_CORE_FREQUENCY, &out );
                 typedValue.ValueUInt32 = out.ValueUint32 / MD_MHERTZ;
             }
@@ -583,7 +583,7 @@ namespace MetricsDiscoveryInternal
         }
         else
         {
-            MD_LOG_A( adapterId, LOG_ERROR, "Unknown global symbol name: %s", GetCStringFromStringView( name ) );
+            MD_LOG_A( adapterId, LOG_ERROR, "Unknown global symbol name: %.*s", static_cast<uint32_t>( name.length() ), name.data() );
             return CC_ERROR_INVALID_PARAMETER;
         }
 
@@ -617,9 +617,8 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     bool CSymbolSet::IsSymbolNameSupported( std::string_view name )
     {
-        const uint32_t adapterId        = m_metricsDevice.GetAdapter().GetAdapterId();
-        const uint32_t platformIndex    = m_metricsDevice.GetPlatformIndex();
-        const char*    globalSymbolName = GetCStringFromStringView( name );
+        const uint32_t adapterId     = m_metricsDevice.GetAdapter().GetAdapterId();
+        const uint32_t platformIndex = m_metricsDevice.GetPlatformIndex();
 
         if( name == "PlatformVersion" )
         {
@@ -652,7 +651,7 @@ namespace MetricsDiscoveryInternal
                 GENERATION_MTL,
                 GENERATION_ACM );
 
-            MD_LOG_A( adapterId, LOG_DEBUG, "Media symbol name is%s supported: %s", oamSupported ? "" : " not", globalSymbolName );
+            MD_LOG_A( adapterId, LOG_DEBUG, "Media symbol name is%s supported: %.*s", oamSupported ? "" : " not", static_cast<uint32_t>( name.length() ), name.data() );
 
             return oamSupported;
         }
@@ -692,7 +691,7 @@ namespace MetricsDiscoveryInternal
         {
             if( globalSymbolMap.find( name ) != globalSymbolMap.end() )
             {
-                MD_LOG_A( adapterId, LOG_DEBUG, "Not supported symbol names or old ones: %s", globalSymbolName );
+                MD_LOG_A( adapterId, LOG_DEBUG, "Not supported symbol names or old ones: %.*s", static_cast<uint32_t>( name.length() ), name.data() );
                 return false;
             }
         }
@@ -703,20 +702,20 @@ namespace MetricsDiscoveryInternal
                 // Xe symbol but platform is not Xe
                 if( iterator->second == name )
                 {
-                    MD_LOG_A( adapterId, LOG_DEBUG, "Xe symbol but platform is not Xe: %s", globalSymbolName );
+                    MD_LOG_A( adapterId, LOG_DEBUG, "Xe symbol but platform is not Xe: %.*s", static_cast<uint32_t>( name.length() ), name.data() );
                     return false;
                 }
 
                 // Dual subslice/subslice support
                 if( ( iterator->first == name ) && ( iterator->second == "" ) )
                 {
-                    MD_LOG_A( adapterId, LOG_DEBUG, "%s symbol is not supported because platform %s dual subslices", globalSymbolName, useDualSubslice ? "supports" : "does not support" );
+                    MD_LOG_A( adapterId, LOG_DEBUG, "%.*s symbol is not supported because platform %s dual subslices", static_cast<uint32_t>( name.length() ), name.data(), useDualSubslice ? "supports" : "does not support" );
                     return false;
                 }
             }
         }
 
-        MD_LOG_A( adapterId, LOG_DEBUG, "Symbol name supported: %s", globalSymbolName ); // but it doesn't mean that global symbol will be added, for example some symbols are not supported on Linux.
+        MD_LOG_A( adapterId, LOG_DEBUG, "Symbol name supported: %.*s", static_cast<uint32_t>( name.length() ), name.data() ); // but it doesn't mean that global symbol will be added, for example some symbols are not supported on Linux.
         return true;
     }
 
@@ -1011,7 +1010,7 @@ namespace MetricsDiscoveryInternal
         TTypedValue_1_0* symbolValue = GetSymbolValueByName( symbolName );
         if( !symbolValue )
         {
-            MD_LOG_A( m_metricsDevice.GetAdapter().GetAdapterId(), LOG_DEBUG, "Symbol doesn't exist, name: %s", GetCStringFromStringView( symbolName ) );
+            MD_LOG_A( m_metricsDevice.GetAdapter().GetAdapterId(), LOG_DEBUG, "Symbol doesn't exist, name: %.*s", static_cast<uint32_t>( symbolName.length() ), symbolName.data() );
             return CC_ERROR_INVALID_PARAMETER;
         }
 

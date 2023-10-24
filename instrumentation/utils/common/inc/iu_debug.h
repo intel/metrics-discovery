@@ -1,6 +1,6 @@
 /*========================== begin_copyright_notice ============================
 
-Copyright (C) 2019-2022 Intel Corporation
+Copyright (C) 2019-2023 Intel Corporation
 
 SPDX-License-Identifier: MIT
 
@@ -35,7 +35,7 @@ extern "C"
 #else
 // Uncomment following line to compile debug & info logs also in release build
 // Note, that it is not needed for critical & error logs - they are always included
-//#define IU_DEBUG_LOGS 1
+// #define IU_DEBUG_LOGS 1
 #endif
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -84,7 +84,7 @@ extern "C"
     ///////////////////////////////////////////////////////////////////////////////
     // FUNCTION: __IuLogPrint (for internal use only)
     ///////////////////////////////////////////////////////////////////////////////
-    void __IuLogPrint( const uint32_t adapterId, const char* sevTag, const uint32_t level, const char* layerTag, const char* fncName, const char* formatString, ... );
+    void __IuLogPrint( const uint32_t adapterId, const char sevTag, const char* layerTag, const char* fncName, const char* formatString, ... );
 
     ///////////////////////////////////////////////////////////////////////////////
     // STRUCT: IU_LOGS_CONTROL
@@ -131,10 +131,11 @@ extern "C"
 #define IU_DBG_ALIGNED 0x08000000
 
 // shown fields
-#define IU_DBG_SHOW_TAG      0x04000000
-#define IU_DBG_SHOW_MODULE   0x02000000
-#define IU_DBG_SHOW_FUNCTION 0x01000000
-#define IU_DBG_SHOW_ALL      ( IU_DBG_SHOW_TAG | IU_DBG_SHOW_MODULE | IU_DBG_SHOW_FUNCTION )
+#define IU_DBG_SHOW_TAG       0x04000000
+#define IU_DBG_SHOW_MODULE    0x02000000
+#define IU_DBG_SHOW_FUNCTION  0x01000000
+#define IU_DBG_SHOW_THREAD_ID 0x00800000 // Thread id is not shown in case of IU_DBG_SHOW_ALL
+#define IU_DBG_SHOW_ALL       ( IU_DBG_SHOW_TAG | IU_DBG_SHOW_MODULE | IU_DBG_SHOW_FUNCTION )
 
 // if following flag is set, logs will be additionally printed on console
 #define IU_DBG_CONSOLE_DUMP 0x80000000
@@ -144,6 +145,9 @@ extern "C"
 
 // if following flag is set, each debug log will be flushed
 #define IU_DBG_CONSOLE_FLUSH 0x20000000
+
+// if following flag is set, each debug log will be saved in the file
+#define IU_DBG_FILE_DUMP 0x10000000
 
 // layers
 #define IU_DBG_LAYER_INSTR 0x00000001
@@ -159,36 +163,36 @@ extern "C"
 // error & warning logs are available in any driver
 #define F_IU_DBG_SEV_CRITICAL( adapter, level, layer, ... ) \
     if( IuLogCheckLevel( level, layer ) )                   \
-    __IuLogPrint( adapter, "C", level, __VA_ARGS__ )
+    __IuLogPrint( adapter, 'C', __VA_ARGS__ )
 #define F_IU_DBG_SEV_ERROR( adapter, level, layer, ... ) \
     if( IuLogCheckLevel( level, layer ) )                \
-    __IuLogPrint( adapter, "E", level, __VA_ARGS__ )
+    __IuLogPrint( adapter, 'E', __VA_ARGS__ )
 #define F_IU_DBG_SEV_WARNING( adapter, level, layer, ... ) \
     if( IuLogCheckLevel( level, layer ) )                  \
-    __IuLogPrint( adapter, "W", level, __VA_ARGS__ )
+    __IuLogPrint( adapter, 'W', __VA_ARGS__ )
 // debug logs are not available in release driver
 #if IU_DEBUG_LOGS
     #define F_IU_DBG_SEV_INFO( adapter, level, layer, ... ) \
         if( IuLogCheckLevel( level, layer ) )               \
-        __IuLogPrint( adapter, "I", level, __VA_ARGS__ )
+        __IuLogPrint( adapter, 'I', __VA_ARGS__ )
     #define F_IU_DBG_SEV_DEBUG( adapter, level, layer, ... ) \
         if( IuLogCheckLevel( level, layer ) )                \
-        __IuLogPrint( adapter, "D", level, __VA_ARGS__ )
+        __IuLogPrint( adapter, 'D', __VA_ARGS__ )
     #define F_IU_DBG_SEV_TRAITS( adapter, level, layer, ... ) \
         if( IuLogCheckLevel( level, layer ) )                 \
-        __IuLogPrint( adapter, "T", level, __VA_ARGS__ )
+        __IuLogPrint( adapter, 'T', __VA_ARGS__ )
     #define F_IU_DBG_SEV_ENTERED( adapter, level, layer, ... ) \
         if( IuLogCheckLevel( level, layer ) )                  \
-        __IuLogPrint( adapter, ">", level, __VA_ARGS__ )
+        __IuLogPrint( adapter, '>', __VA_ARGS__ )
     #define F_IU_DBG_SEV_EXITING( adapter, level, layer, ... ) \
         if( IuLogCheckLevel( level, layer ) )                  \
-        __IuLogPrint( adapter, "<", level, __VA_ARGS__ )
+        __IuLogPrint( adapter, '<', __VA_ARGS__ )
     #define F_IU_DBG_SEV_INPUT( adapter, level, layer, ... ) \
         if( IuLogCheckLevel( level, layer ) )                \
-        __IuLogPrint( adapter, ">", level, __VA_ARGS__ )
+        __IuLogPrint( adapter, '>', __VA_ARGS__ )
     #define F_IU_DBG_SEV_OUTPUT( adapter, level, layer, ... ) \
         if( IuLogCheckLevel( level, layer ) )                 \
-        __IuLogPrint( adapter, "<", level, __VA_ARGS__ )
+        __IuLogPrint( adapter, '<', __VA_ARGS__ )
 #else
     #define F_IU_DBG_SEV_INFO( adapter, level, layer, ... )
     #define F_IU_DBG_SEV_DEBUG( adapter, level, layer, ... )
@@ -255,9 +259,8 @@ extern "C"
     #define IU_LOG_TAG "[IU]"
 #endif
 
-#define IU_ASSERT( expr )          IU_ASSERT_TAGGED( IU_ADAPTER_ID_UNKNOWN, expr, IU_DBG_LAYER_IU, IU_LOG_TAG )
-#define IU_DBG_PRINT( level, ... ) IU_DBG_PRINT_TAGGED( IU_ADAPTER_ID_UNKNOWN, _##level, IU_DBG_LAYER_IU, IU_LOG_TAG, __FUNCTION__, __VA_ARGS__ )
-//#define IU_DBG_PRINTA( adapter, level, ... ) IU_DBG_PRINT_TAGGED( adapter, _##level, IU_DBG_LAYER_IU, IU_LOG_TAG, __FUNCTION__, __VA_ARGS__ )
+#define IU_ASSERT( expr )                    IU_ASSERT_TAGGED( IU_ADAPTER_ID_UNKNOWN, expr, IU_DBG_LAYER_IU, IU_LOG_TAG )
+#define IU_DBG_PRINT( level, ... )           IU_DBG_PRINT_TAGGED( IU_ADAPTER_ID_UNKNOWN, _##level, IU_DBG_LAYER_IU, IU_LOG_TAG, __FUNCTION__, __VA_ARGS__ )
 #define IU_DBG_FUNCTION_ENTER( level )       IU_DBG_FUNCTION_ENTER_TAGGED( IU_ADAPTER_ID_UNKNOWN, _##level, IU_DBG_LAYER_IU, IU_LOG_TAG );
 #define IU_DBG_FUNCTION_EXIT( level )        IU_DBG_FUNCTION_EXIT_TAGGED( IU_ADAPTER_ID_UNKNOWN, _##level, IU_DBG_LAYER_IU, IU_LOG_TAG );
 #define IU_DBG_FUNCTION_INPUT( level, x )    IU_DBG_PRINT( _##level, "IN: %s = %#010x = %u", #x, x, x );

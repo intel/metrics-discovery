@@ -150,6 +150,23 @@ struct prelim_i915_user_extension {
 	(PRELIM_I915_PVC_PMU_SOC_ERROR_FATAL_MDFI_SOUTH + 0x1 + (ss) * 0x10 + (n))
 
 /* 108 is the last ID used by SOC errors */
+#define PRELIM_I915_PMU_GSC_ERROR_CORRECTABLE_SRAM_ECC          (109)
+#define PRELIM_I915_PMU_GSC_ERROR_NONFATAL_MIA_SHUTDOWN         (110)
+#define PRELIM_I915_PMU_GSC_ERROR_NONFATAL_MIA_INT              (111)
+#define PRELIM_I915_PMU_GSC_ERROR_NONFATAL_SRAM_ECC             (112)
+#define PRELIM_I915_PMU_GSC_ERROR_NONFATAL_WDG_TIMEOUT          (113)
+#define PRELIM_I915_PMU_GSC_ERROR_NONFATAL_ROM_PARITY           (114)
+#define PRELIM_I915_PMU_GSC_ERROR_NONFATAL_UCODE_PARITY         (115)
+#define PRELIM_I915_PMU_GSC_ERROR_NONFATAL_GLITCH_DET           (116)
+#define PRELIM_I915_PMU_GSC_ERROR_NONFATAL_FUSE_PULL            (117)
+#define PRELIM_I915_PMU_GSC_ERROR_NONFATAL_FUSE_CRC_CHECK       (118)
+#define PRELIM_I915_PMU_GSC_ERROR_NONFATAL_FUSE_SELFMBIST       (119)
+#define PRELIM_I915_PMU_GSC_ERROR_NONFATAL_AON_PARITY           (120)
+#define PRELIM_I915_PMU_GT_ERROR_CORRECTABLE_SUBSLICE           (121)
+#define PRELIM_I915_PMU_GT_ERROR_CORRECTABLE_L3BANK             (122)
+#define PRELIM_I915_PMU_GT_ERROR_FATAL_SUBSLICE                 (123)
+#define PRELIM_I915_PMU_GT_ERROR_FATAL_L3BANK                   (124)
+
 #define PRELIM_I915_PMU_HW_ERROR(gt, id) \
 	((__PRELIM_I915_PMU_HW_ERROR_EVENT_ID_OFFSET + (id)) | \
 	((__u64)(gt) << __PRELIM_I915_PMU_GT_SHIFT))
@@ -242,6 +259,12 @@ struct prelim_i915_user_extension {
 
 /* Implicit scale support */
 #define PRELIM_I915_PARAM_HAS_SET_PAIR	(PRELIM_I915_PARAM | 8)
+
+/* EU Debugger support */
+#define PRELIM_I915_PARAM_EU_DEBUGGER_VERSION  (PRELIM_I915_PARAM | 9)
+
+/* BO chunk granularity support */
+#define PRELIM_I915_PARAM_HAS_CHUNK_SIZE	(PRELIM_I915_PARAM | 10)
 /* End getparam */
 
 struct prelim_drm_i915_gem_create_ext {
@@ -305,6 +328,18 @@ struct prelim_drm_i915_gem_object_param {
  * use two buffer objects with a single exported dma-buf file descriptor
  */
 #define PRELIM_I915_PARAM_SET_PAIR ((1 << 17) | 0x1)
+
+/*
+ * PRELIM_I915_PARAM_SET_CHUNK_SIZE:
+ *
+ * Specifies that this buffer object should support 'chunking' and chunk
+ * granularity. Allows internal KMD paging/migration/eviction handling to
+ * operate on a single chunk instead of the whole buffer object.
+ * Size specified in bytes and must be non-zero and a power of 2.
+ * KMD will return error (-ENOSPC) if CHUNK_SIZE is deemed to be too small
+ * to be supported.
+ */
+#define PRELIM_I915_PARAM_SET_CHUNK_SIZE ((1 << 18) | 1)
 	__u64 param;
 
 	/* Data value or pointer */
@@ -356,6 +391,11 @@ struct prelim_drm_i915_perf_oa_buffer_info {
 	__u64 size;   /* out */
 	__u64 offset; /* out */
 	__u64 rsvd;   /* mbz */
+};
+
+struct prelim_drm_i915_gem_mmap_offset {
+	/* Specific MMAP offset for PCI memory barrier */
+#define PRELIM_I915_PCI_BARRIER_MMAP_OFFSET (0x50 << PAGE_SHIFT)
 };
 
 enum prelim_drm_i915_eu_stall_property_id {
@@ -451,6 +491,8 @@ struct prelim_drm_i915_query_item {
 #define PRELIM_DRM_I915_QUERY_FABRIC_INFO		(PRELIM_DRM_I915_QUERY | 11)
 #define PRELIM_DRM_I915_QUERY_HW_IP_VERSION		(PRELIM_DRM_I915_QUERY | 12)
 #define PRELIM_DRM_I915_QUERY_ENGINE_INFO		(PRELIM_DRM_I915_QUERY | 13)
+#define PRELIM_DRM_I915_QUERY_L3BANK_COUNT		(PRELIM_DRM_I915_QUERY | 14)
+#define PRELIM_DRM_I915_QUERY_LMEM_MEMORY_REGIONS	(PRELIM_DRM_I915_QUERY | 15)
 };
 
 /*
@@ -758,12 +800,21 @@ struct prelim_drm_i915_debug_event_context {
 	__u64 handle;
 } __attribute__((packed));
 
+/*
+ * Debugger ABI (ioctl and events) Version History:
+ * 0 - No debugger available
+ * 1 - Initial version
+ * 2 - Events sent from a small fifo queue
+ * 3 - VM_BIND ioctl is non-blocking wrt to the debugger ack
+ */
+#define PRELIM_DRM_I915_DEBUG_VERSION 3
+
 struct prelim_drm_i915_debugger_open_param {
 	__u64 pid; /* input: Target process ID */
 	__u32 flags;
 #define PRELIM_DRM_I915_DEBUG_FLAG_FD_NONBLOCK	(1u << 31)
 
-	__u32 version;
+	__u32 version; /* output: current ABI (ioctl / events) version */
 	__u64 events;  /* input: event types to subscribe to */
 	__u64 extensions; /* MBZ */
 };
@@ -943,6 +994,43 @@ struct prelim_drm_i915_query_memory_regions {
 
 	/* Info about each supported region */
 	struct prelim_drm_i915_memory_region_info regions[];
+};
+
+/**
+ * struct prelim_drm_i915_lmem_memory_region_info
+ *
+ * Expose the available lmem region size in bytes as per the limit's
+ * set in prelim_sharedmem_alloc_limit, prelim_lmem_alloc_limit
+ */
+struct prelim_drm_i915_lmem_memory_region_info {
+	/** class:instance pair encoding */
+	struct prelim_drm_i915_gem_memory_class_instance region;
+
+	/** MBZ */
+	__u32 rsvd0;
+
+	/** Estimate of memory remaining  */
+	__u64 unallocated_usr_lmem_size;
+
+	/** Estimate of memory remaining */
+	__u64 unallocated_usr_shared_size;
+};
+
+/**
+ * struct prelim_drm_i915_query_lmem_memory_regions
+ *
+ * Region info query enumerates all lmem regions known to the driver by filling
+ * in an array of struct prelim_drm_i915_lmem_memory_region_info structures.
+ */
+struct prelim_drm_i915_query_lmem_memory_regions {
+	/** Number of supported regions */
+	__u32 num_lmem_regions;
+
+	/** MBZ */
+	__u32 rsvd[3];
+
+	/** Info about each supported region */
+	struct prelim_drm_i915_lmem_memory_region_info regions[];
 };
 
 /**
@@ -1131,7 +1219,7 @@ struct prelim_drm_i915_gem_vm_bind {
 	/** vm to [un]bind **/
 	__u32 vm_id;
 
-	/** BO handle or file descriptor. Set 'fd' to -1 for system pages **/
+	/** BO handle or file descriptor **/
 	union {
 		__u32 handle; /* For unbind, it is reserved and must be 0 */
 		__s32 fd;
@@ -1160,10 +1248,20 @@ struct prelim_drm_i915_gem_vm_bind {
 /**
  * struct prelim_drm_i915_gem_vm_advise
  *
- * Set attribute (hint) for an address range or whole buffer object.
+ * Set attribute (hint) for an address range, whole buffer object, or
+ * part of buffer object.
  *
  * To apply attribute to whole buffer object, specify:  handle
+ *
+ * To apply attribute to part of buffer object (chunk granularity), specify:
+ *   handle, start, and length.
+ * Start and length must be exactly aligned to chunk boundaries of object.
+ * Above requires object to have been created during GEM_CREATE with:
+ * PRELIM_I915_PARAM_SET_CHUNK_SIZE.
+ *
  * To apply attribute to address range, specify:  vm_id, start, and length.
+ *
+ * On error, any applied hints are reverted before returning.
  */
 struct prelim_drm_i915_gem_vm_advise {
 	/** vm that contains address range (specified with start, length) */
@@ -1172,7 +1270,10 @@ struct prelim_drm_i915_gem_vm_advise {
 	/** BO handle to apply hint */
 	__u32 handle;
 
-	/** VA start of address range to apply hint */
+	/**
+	 * chunk granular hints: offset from beginning of object to apply hint
+	 * address range hints: VA start of address range to apply hint
+	 */
 	__u64 start;
 
 	/** Length of range to apply attribute */

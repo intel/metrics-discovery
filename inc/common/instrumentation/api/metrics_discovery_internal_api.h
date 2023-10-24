@@ -24,7 +24,7 @@ namespace MetricsDiscovery
     typedef enum EPlatformType
     {
         PLATFORM_UNKNOWN = 0,
-        // 4 reserved
+        // 0-4 reserved
         PLATFORM_HSW      = 1 << 5 /*GENERATION_HSW*/,
         PLATFORM_BDW      = 1 << 6 /*GENERATION_BDW*/,
         PLATFORM_SKL      = 1 << 7 /*GENERATION_SKL*/,
@@ -45,7 +45,8 @@ namespace MetricsDiscovery
         PLATFORM_ACM      = 1 << 24 /*GENERATION_ACM*/,
         PLATFORM_PVC      = 1 << 25 /*GENERATION_PVC*/,
         PLATFORM_ADLP     = 1 << 26 /*GENERATION_ADLP*/,
-        // 27-28 reserved
+        PLATFORM_MTL      = 1 << 27 /*GENERATION_MTL*/,
+        // 28 reserved
         PLATFORM_ADLS     = 1 << 29 /*GENERATION_ADLS*/,
         PLATFORM_ADLN     = 1 << 30 /*GENERATION_ADLN*/,
         PLATFORM_FUTURE   = 0x80000000,
