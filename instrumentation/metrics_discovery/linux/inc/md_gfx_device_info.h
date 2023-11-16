@@ -331,6 +331,7 @@ namespace MetricsDiscoveryInternal
         { 0x0BDA, TPlatformIndexGt( GENERATION_PVC, GFX_GTTYPE_UNDEFINED ) },
         { 0x0BDB, TPlatformIndexGt( GENERATION_PVC, GFX_GTTYPE_UNDEFINED ) },
         { 0x0B69, TPlatformIndexGt( GENERATION_PVC, GFX_GTTYPE_UNDEFINED ) },
+        { 0x0B6E, TPlatformIndexGt( GENERATION_PVC, GFX_GTTYPE_UNDEFINED ) },
 
         { 0x4f80, TPlatformIndexGt( GENERATION_ACM, GFX_GTTYPE_GT3 ) },
         { 0x4f81, TPlatformIndexGt( GENERATION_ACM, GFX_GTTYPE_GT3 ) },
@@ -360,6 +361,10 @@ namespace MetricsDiscoveryInternal
         { 0x56b1, TPlatformIndexGt( GENERATION_ACM, GFX_GTTYPE_GT1 ) },
         { 0x56b2, TPlatformIndexGt( GENERATION_ACM, GFX_GTTYPE_GT2 ) },
         { 0x56b3, TPlatformIndexGt( GENERATION_ACM, GFX_GTTYPE_GT2 ) },
+        { 0x56ba, TPlatformIndexGt( GENERATION_ACM, GFX_GTTYPE_GT1 ) },
+        { 0x56bb, TPlatformIndexGt( GENERATION_ACM, GFX_GTTYPE_GT1 ) },
+        { 0x56bc, TPlatformIndexGt( GENERATION_ACM, GFX_GTTYPE_GT1 ) },
+        { 0x56bd, TPlatformIndexGt( GENERATION_ACM, GFX_GTTYPE_GT1 ) },
         { 0x56c0, TPlatformIndexGt( GENERATION_ACM, GFX_GTTYPE_GT3 ) },
         { 0x56c1, TPlatformIndexGt( GENERATION_ACM, GFX_GTTYPE_GT1 ) },
 
