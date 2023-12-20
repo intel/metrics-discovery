@@ -1,18 +1,17 @@
 https://github.com/intel-gpu/drm-uapi-helper/tree/master/drm-uapi
 
 Base commit:
-https://github.com/intel-gpu/drm-uapi-helper/commit/cd92fec1d046abaac7e095d21d525e2edbd86bfc
+https://github.com/intel-gpu/drm-uapi-helper/commit/6cc4a98623a075db68c57adc3c5e48010f7ddc76
 
 Author: Ashutosh Dixit <ashutosh.dixit@intel.com>
-Date:   25 May 2023 20:09:41 +02:00
+Date:   12 Dec 2023 05:16:41 +01:00
 
 Description:
-	  prelim v2.0-rc18
+	  prelim v2.0-rc22
         * No compatibility breakage in PRELIM uapi
         * Other changes below
 
         i915_drm_prelim.h:
-        * Support for GEM BO chunked-based granularity (and VM_ADVISE hints)
-        * mmap offset support for PCI memory barrier
+        * PMU: Group busyness counters in VF
 
         Signed-off-by: Ashutosh Dixit <ashutosh.dixit@intel.com>

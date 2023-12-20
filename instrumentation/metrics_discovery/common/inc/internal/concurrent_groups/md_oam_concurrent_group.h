@@ -39,6 +39,9 @@ namespace MetricsDiscoveryInternal
         // Constructor:
         COAMConcurrentGroup( CMetricsDevice& device, const char* name, const char* description, const uint32_t measurementTypeMask );
 
+        COAMConcurrentGroup( const COAMConcurrentGroup& )            = delete; // Delete copy-constructor
+        COAMConcurrentGroup& operator=( const COAMConcurrentGroup& ) = delete; // Delete assignment operator
+
     protected:
         virtual TCompletionCode GetStreamTypeFromSamplingType( const TSamplingType samplingType, TStreamType& streamType ) const override;
 

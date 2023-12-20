@@ -52,8 +52,12 @@ SPDX-License-Identifier: MIT
 //     units calculation. Based on Intel driver instrumentation files.
 //
 //////////////////////////////////////////////////////////////////////////////
-#define MD_NUM_PIXELS_OUT_PER_CLOCK 4
-#define MD_EU_SIMD_SIZE_PER_CLOCK   4
+#define MD_NUM_PIXELS_OUT_PER_CLOCK         ( 4 )
+#define MD_EU_SIMD_SIZE_PER_CLOCK           ( 4 )
+#define MD_L3_BANK_COUNT_PER_L3_NODE        ( 4 )
+#define MD_L3_NODE_COUNT_PER_COPY_ENGINE    ( 2 )
+#define MD_L3_NODE_COUNT_PER_PAIR_OF_SLICES ( 2 )
+#define MD_OLD_EU_COUNT_PER_NEW_EU_COUNT    ( 2 )
 
 //////////////////////////////////////////////////////////////////////////////
 //
@@ -143,6 +147,30 @@ namespace MetricsDiscoveryInternal
         // ...
         DRM_VERSION_UNDEFINED,
     } TDrmVersion;
+
+    //////////////////////////////////////////////////////////////////////////////
+    //
+    // Enum:
+    //     TSysFsType
+    //
+    // Description:
+    //     SysFs types.
+    //     Min/Max frequency files return the min/max frequency that can be set on the HW.
+    //     Min/Max/Boost frequency override files return currently set frequency. Setting
+    //     static frequency requires writing to all of these 3 files.
+    //
+    //////////////////////////////////////////////////////////////////////////////
+    typedef enum ESysFsType
+    {
+        SYS_FS_ACT_FREQ      = 0,
+        SYS_FS_MAX_FREQ      = 1,
+        SYS_FS_MIN_FREQ      = 2,
+        SYS_FS_MAX_FREQ_OV   = 3,
+        SYS_FS_MIN_FREQ_OV   = 4,
+        SYS_FS_BOOST_FREQ_OV = 5,
+        // ...
+        SYS_FS_UNDEFINED,
+    } TSysFsType;
 
     //////////////////////////////////////////////////////////////////////////////
     //
@@ -263,25 +291,25 @@ namespace MetricsDiscoveryInternal
         static TDrmVersion     GetDrmVersion( int32_t drmFd );
 
         // Read global symbols per tile.
-        virtual TCompletionCode GetEuCoresTotalCount( GTDIDeviceInfoParamExtOut* out, CMetricsDevice* metricsDevice )       = 0;
-        virtual TCompletionCode GetEuCoresPerSubsliceCount( GTDIDeviceInfoParamExtOut* out, CMetricsDevice* metricsDevice ) = 0;
-        virtual TCompletionCode GetSliceMask( int32_t* sliceMask, CMetricsDevice* metricsDevice )                           = 0;
-        virtual TCompletionCode GetSubsliceMask( int64_t* subsliceMask, CMetricsDevice* metricsDevice )                     = 0;
+        virtual TCompletionCode GetEuCoresTotalCount( GTDIDeviceInfoParamExtOut& out, CMetricsDevice& metricsDevice )       = 0;
+        virtual TCompletionCode GetEuCoresPerSubsliceCount( GTDIDeviceInfoParamExtOut& out, CMetricsDevice& metricsDevice ) = 0;
+        virtual TCompletionCode GetSliceMask( int32_t& sliceMask, CMetricsDevice& metricsDevice )                           = 0;
+        virtual TCompletionCode GetSubsliceMask( int64_t& subsliceMask, CMetricsDevice& metricsDevice )                     = 0;
 
         // General
         virtual TCompletionCode ForceSupportDisable();
         virtual TCompletionCode SendSupportEnableEscape( bool enable );
-        virtual TCompletionCode SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM param, GTDIDeviceInfoParamExtOut* out, CMetricsDevice* metricsDevice = nullptr );
-        virtual TCompletionCode GetMaxMinOaBufferSize( const GTDI_OA_BUFFER_TYPE oaBufferType, const GTDI_DEVICE_PARAM param, GTDIDeviceInfoParamExtOut& out );
-        virtual TCompletionCode SendPmRegsConfig( TRegister** regVector, const uint32_t regCount, const uint32_t apiMask, const uint32_t subDeviceIndex, const GTDI_OA_BUFFER_TYPE oaBufferType );
-        virtual TCompletionCode SendReadRegsConfig( TRegister** regVector, uint32_t regCount, uint32_t apiMask );
+        virtual TCompletionCode SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM param, GTDIDeviceInfoParamExtOut& out, CMetricsDevice& metricsDevice );
+        virtual TCompletionCode GetMaxMinOaBufferSize( const GTDI_OA_BUFFER_TYPE oaBufferType, const GTDI_DEVICE_PARAM param, GTDIDeviceInfoParamExtOut& out, CMetricsDevice& metricsDevice );
+        virtual TCompletionCode SendPmRegsConfig( TRegister** regVector, const uint32_t regCount, const uint32_t subDeviceIndex, const GTDI_OA_BUFFER_TYPE oaBufferType );
+        virtual TCompletionCode SendReadRegsConfig( TRegister** regVector, uint32_t regCount );
         virtual TCompletionCode GetPmRegsConfigHandles( uint32_t configId, uint32_t* oaConfigHandle, uint32_t* gpConfigHandle, uint32_t* rrConfigHandle );
         virtual TCompletionCode ValidatePmRegsConfig( TRegister* regVector, uint32_t regCount, uint32_t platformId );
-        virtual TCompletionCode GetGpuCpuTimestamps( CMetricsDevice& device, uint64_t* gpuTimestamp, uint64_t* cpuTimestamp, uint32_t* cpuId, uint64_t* correlationIndicator ) = 0;
+        virtual TCompletionCode GetGpuCpuTimestamps( CMetricsDevice& device, uint64_t& gpuTimestamp, uint64_t& cpuTimestamp, uint32_t& cpuId, uint64_t& correlationIndicator ) = 0;
         virtual bool            IsTbsEngineValid( const TEngineParams_1_9& engineParams, const uint32_t requestedInstance = -1, const bool isOam = false ) const               = 0;
         virtual TCompletionCode SendGetCtxIdTagsEscape( TGetCtxTagsIdParams* params );
         virtual uint32_t        GetAdapterId();
-        virtual bool            IsOaBufferSupported( const GTDI_OA_BUFFER_TYPE oaBufferType, CMetricsDevice* metricsDevice = nullptr );
+        virtual bool            IsOaBufferSupported( const GTDI_OA_BUFFER_TYPE oaBufferType, CMetricsDevice& metricsDevice );
         TCompletionCode         GetOaTimestamp( const uint64_t csTimestamp, uint64_t& oaTimestamp );
 
         // Synchronization
@@ -290,7 +318,7 @@ namespace MetricsDiscoveryInternal
 
         // Stream
         virtual TCompletionCode OpenIoStream( COAConcurrentGroup& oaConcurrentGroup, const uint32_t processId, uint32_t& nsTimerPeriod, uint32_t& bufferSize );
-        virtual TCompletionCode ReadIoStream( COAConcurrentGroup& oaConcurrentGroup, const uint32_t readFlags, char* reportData, uint32_t& reportsCount, uint32_t& frequency, GTDIReadCounterStreamExceptions& exceptions );
+        virtual TCompletionCode ReadIoStream( COAConcurrentGroup& oaConcurrentGroup, char* reportData, uint32_t& reportsCount, uint32_t& frequency, GTDIReadCounterStreamExceptions& exceptions );
         virtual TCompletionCode CloseIoStream( COAConcurrentGroup& oaConcurrentGroup );
         virtual TCompletionCode HandleIoStreamExceptions( COAConcurrentGroup& oaConcurrentGroup, const uint32_t processId, uint32_t& reportCount, const GTDIReadCounterStreamExceptions exceptions );
         virtual TCompletionCode WaitForIoStreamReports( COAConcurrentGroup& oaConcurrentGroup, const uint32_t milliseconds );
@@ -298,8 +326,8 @@ namespace MetricsDiscoveryInternal
         virtual bool            IsStreamTypeSupported( const TStreamType streamType );
 
         // Overrides
-        virtual TCompletionCode SetFrequencyOverride( const TSetFrequencyOverrideParams_1_2* params );
-        virtual TCompletionCode SetQueryOverride( TOverrideType overrideType, uint32_t oaBufferSize, const TSetQueryOverrideParams_1_2* params );
+        virtual TCompletionCode SetFrequencyOverride( CMetricsDevice& device, const TSetFrequencyOverrideParams_1_2& params );
+        virtual TCompletionCode SetQueryOverride( TOverrideType overrideType, uint32_t oaBufferSize, const TSetQueryOverrideParams_1_2& params );
         virtual TCompletionCode SetFreqChangeReportsOverride( bool enable );
         virtual bool            IsOverrideAvailable( TOverrideType overrideType );
         virtual bool            IsSubDeviceSupported()                         = 0;
@@ -324,7 +352,6 @@ namespace MetricsDiscoveryInternal
         virtual uint32_t        GetOaReportType( const TReportType reportType ) = 0;
         virtual TCompletionCode GetOaTimestampFrequency( uint64_t& frequency )  = 0;
         virtual TCompletionCode GetCsTimestampFrequency( uint64_t& frequency )  = 0;
-        bool                    IsOamSupported();
 
         // DRM
         bool            InitializeIntelDrm();
@@ -333,8 +360,9 @@ namespace MetricsDiscoveryInternal
         TCompletionCode AcquireAdapterId();
 
         // SysFs
-        TCompletionCode ReadSysFsFile( const char* fileName, uint64_t* readValue );
-        TCompletionCode WriteSysFsFile( const char* fileName, uint64_t value );
+        virtual void    GetSysFsPath( CMetricsDevice& device, const TSysFsType fileType, char* filePath, const uint32_t filePathLength ) = 0;
+        TCompletionCode ReadSysFsFile( CMetricsDevice& device, const TSysFsType fileType, uint64_t* readValue );
+        TCompletionCode WriteSysFsFile( CMetricsDevice& device, const TSysFsType fileType, uint64_t value );
         TCompletionCode ReadUInt64FromFile( const char* filePath, uint64_t* readValue );
         TCompletionCode WriteUInt64ToFile( const char* filePath, uint64_t value );
 
@@ -345,24 +373,24 @@ namespace MetricsDiscoveryInternal
         TCompletionCode         GetGfxDeviceInfo( const TGfxDeviceInfo*& gfxDeviceInfo );
         virtual TCompletionCode GetDeviceId( int32_t& deviceId )    = 0;
         virtual TCompletionCode GetRevisionId( int32_t& evisionId ) = 0;
-        TCompletionCode         GetGpuFrequencyInfo( uint64_t* minFrequency, uint64_t* maxFrequency, uint64_t* actFrequency, uint64_t* boostFrequency );
-        TCompletionCode         GetGpuTimestampFrequency( uint64_t* gpuTimestampFrequency );
-        TCompletionCode         GetGpuTimestampPeriodNs( uint64_t* gpuTimestampPeriodNs );
-        TCompletionCode         GetCpuTimestampNs( uint64_t* cpuTimestampNs );
+        TCompletionCode         GetGpuFrequencyInfo( CMetricsDevice& device, uint64_t* minFrequency, uint64_t* maxFrequency, uint64_t* actFrequency, uint64_t* boostFrequency );
+        TCompletionCode         GetGpuTimestampFrequency( uint64_t& gpuTimestampFrequency );
+        TCompletionCode         GetGpuTimestampPeriodNs( uint64_t& gpuTimestampPeriodNs );
         virtual TCompletionCode GetOaBufferSupportedSizes( const uint32_t platformId, uint32_t& minSize, uint32_t& maxSize ) = 0;
         virtual TCompletionCode GetOaBufferCount( CMetricsDevice& metricsDevice, uint32_t& oaBufferCount )                   = 0;
+        virtual TCompletionCode GetL3NodeTotalCount( CMetricsDevice& metricsDevice, uint32_t& l3NodeCount )                  = 0;
+        virtual TCompletionCode GetComputeEngineTotalCount( CMetricsDevice& metricsDevice, uint32_t& computeEngineCount )    = 0;
 
         // Device info utils
         uint32_t   GetGtMaxSubslicePerSlice();
         uint32_t   GetGtMaxDualSubslicePerSlice();
         bool       IsDualSubsliceSupported();
-        TGfxGtType MapDeviceInfoToInstrGtTypeGfxVer12( const TGfxDeviceInfo* gfxDeviceInfo, CMetricsDevice* metricsDevice );
+        TGfxGtType MapDeviceInfoToInstrGtTypeGfxVer12( const TGfxDeviceInfo& gfxDeviceInfo, CMetricsDevice& metricsDevice );
 
         // General utils
-        uint32_t CalculateEnabledBits( uint64_t value, uint64_t mask = UINT64_MAX );
         uint32_t GetTimerPeriodExponent( uint32_t nsTimerPeriod );
         uint32_t GetNsTimerPeriod( uint32_t timerPeriodExponent );
-        uint32_t CalculateOaBufferSize( const uint32_t requestedBufferSize );
+        uint32_t CalculateOaBufferSize( const uint32_t requestedBufferSize, CMetricsDevice& metricsDevice );
 
     protected:
         // Variables

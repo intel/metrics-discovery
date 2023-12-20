@@ -374,7 +374,7 @@ namespace MetricsDiscoveryInternal
             TRegister  emptyRrConfig    = { 0, 0, REGISTER_TYPE_MMIO };
             TRegister* emptyRrConfigPtr = &emptyRrConfig; // Because we will need 'array of pointers'
 
-            ret = driverInterface.SendReadRegsConfig( &emptyRrConfigPtr, 1, m_currentParams->ApiMask );
+            ret = driverInterface.SendReadRegsConfig( &emptyRrConfigPtr, 1 );
             if( ret == CC_OK )
             {
                 // Update PmRegsHandles and reset rrSet flag
@@ -569,7 +569,7 @@ namespace MetricsDiscoveryInternal
 
         uint32_t groupId = MetricGroupNameToId( groupName );
 
-        CMetric* metric = new( std::nothrow ) CMetric( m_device, m_metricsVector.size(), symbolName, shortName, longName, groupName, groupId, usageFlagsMask, apiMask, metricType, resultType, resultUnits, loWatermark, hiWatermark, hwType, dxToOglAlias, signalName, true );
+        CMetric* metric = new( std::nothrow ) CMetric( m_device, static_cast<uint32_t>( m_metricsVector.size() ), symbolName, shortName, longName, groupName, groupId, usageFlagsMask, apiMask, metricType, resultType, resultUnits, loWatermark, hiWatermark, hwType, dxToOglAlias, signalName, true );
         MD_CHECK_PTR_RET_A( adapterId, metric, nullptr );
 
         if( metric->SetAvailabilityEquation( availabilityEquation ) != CC_OK || metric->SetSnapshotReportReadEquation( ioReadEquation ) != CC_OK || metric->SetDeltaReportReadEquation( queryReadEquation ) != CC_OK || metric->SetNormalizationEquation( normalizationEquation ) != CC_OK || metric->SetSnapshotReportDeltaFunction( deltaFunction ) != CC_OK || metric->SetMaxValueEquation( maxValueEquation ) != CC_OK )
@@ -580,7 +580,7 @@ namespace MetricsDiscoveryInternal
         }
 
         m_metricsVector.push_back( metric );
-        m_params.MetricsCount = m_metricsVector.size();
+        m_params.MetricsCount = static_cast<uint32_t>( m_metricsVector.size() );
         m_isCustom            = true;
 
         // Refresh cached filtered metrics
@@ -629,9 +629,8 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     IMetric_1_0* CMetricSet::AddCustomMetric( const char* symbolName, const char* shortName, const char* groupName, const char* longName, const char* dxToOglAlias, uint32_t usageFlagsMask, uint32_t apiMask, TMetricResultType resultType, const char* resultUnits, TMetricType metricType, int64_t loWatermark, int64_t hiWatermark, THwUnitType hwType, const char* ioReadEquation, const char* deltaFunction, const char* queryReadEquation, const char* normalizationEquation, const char* maxValueEquation, const char* signalName )
     {
-        TAddCustomMetricParams params = {
-            METRIC_CUSTOM_PARAMS_1_0,
-        };
+        TAddCustomMetricParams params                      = {};
+        params.Type                                        = METRIC_CUSTOM_PARAMS_1_0;
         params.CustomMetricParams_1_0.SymbolName           = symbolName;
         params.CustomMetricParams_1_0.ShortName            = shortName;
         params.CustomMetricParams_1_0.GroupName            = groupName;
@@ -787,7 +786,7 @@ namespace MetricsDiscoveryInternal
             }
             else
             {
-                uint32_t count = m_metricsVector.size();
+                uint32_t count = static_cast<uint32_t>( m_metricsVector.size() );
                 metric->SetIdInSetParam( count );
                 m_metricsVector.push_back( metric );
                 m_params.MetricsCount = count + 1;
@@ -837,7 +836,7 @@ namespace MetricsDiscoveryInternal
         else
         {
             m_metricsVector.push_back( metric );
-            m_params.MetricsCount = m_metricsVector.size();
+            m_params.MetricsCount = static_cast<uint32_t>( m_metricsVector.size() );
         }
 
         return metric;
@@ -884,9 +883,9 @@ namespace MetricsDiscoveryInternal
 
         if( information->IsAvailabilityEquationTrue() )
         {
-            information->SetIdInSetParam( m_informationVector.size() );
+            information->SetIdInSetParam( static_cast<uint32_t>( m_informationVector.size() ) );
             m_informationVector.push_back( information );
-            m_params.InformationCount = m_informationVector.size() + m_concurrentGroup->GetInformationCount();
+            m_params.InformationCount = static_cast<uint32_t>( m_informationVector.size() ) + m_concurrentGroup->GetInformationCount();
         }
         else
         {
@@ -919,7 +918,7 @@ namespace MetricsDiscoveryInternal
         MD_CHECK_PTR_RET_A( m_device.GetAdapter().GetAdapterId(), information, nullptr );
 
         m_informationVector.push_back( information );
-        m_params.InformationCount = m_informationVector.size() + m_concurrentGroup->GetInformationCount();
+        m_params.InformationCount = static_cast<uint32_t>( m_informationVector.size() ) + m_concurrentGroup->GetInformationCount();
 
         return information;
     }
@@ -956,7 +955,7 @@ namespace MetricsDiscoveryInternal
         char* metricSetName = GetCopiedCString( complementaryMetricSetSymbolicName, adapterId );
 
         m_complementarySetsVector.push_back( metricSetName );
-        m_params.ComplementarySetsCount = m_complementarySetsVector.size();
+        m_params.ComplementarySetsCount = static_cast<uint32_t>( m_complementarySetsVector.size() );
 
         return CC_OK;
     }
@@ -1198,16 +1197,16 @@ namespace MetricsDiscoveryInternal
         CRegisterSet* set             = nullptr;
         uint32_t      highestPriority = 0xFFFFFFFF; // Lower is more important
 
-        for( auto& registerSet : m_startRegisterSetList )
+        for( auto& startRegisterSet : m_startRegisterSetList )
         {
-            TRegisterSetParams* params = registerSet->GetParams();
+            TRegisterSetParams* params = startRegisterSet->GetParams();
             if( params->ConfigId >= id )
             {
                 ret = true;
-                if( params->ConfigId == id && registerSet->IsAvailable() && params->ConfigPriority < highestPriority )
+                if( params->ConfigId == id && startRegisterSet->IsAvailable() && params->ConfigPriority < highestPriority )
                 {
                     highestPriority = params->ConfigPriority;
-                    set             = registerSet;
+                    set             = startRegisterSet;
                 }
             }
         }
@@ -1236,7 +1235,7 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     TRegister** CMetricSet::GetStartConfiguration( uint32_t& count )
     {
-        count = m_startRegsVector.size();
+        count = static_cast<uint32_t>( m_startRegsVector.size() );
         return m_startRegsVector.data();
     }
 
@@ -1262,6 +1261,7 @@ namespace MetricsDiscoveryInternal
     {
         auto&           driverInterface   = m_device.GetDriverInterface();
         auto&           oaConcurrentGroup = static_cast<COAConcurrentGroup&>( *m_concurrentGroup );
+        const uint32_t  adapterId         = m_device.GetAdapter().GetAdapterId();
         TCompletionCode ret               = CC_OK;
 
         if( CheckSendConfigRequired( sendQueryConfigFlag ) )
@@ -1282,11 +1282,17 @@ namespace MetricsDiscoveryInternal
             // "m_startRegisterSetList may be empty for e.g. PipelineStatistics"
             if( ( pmRegs.size() > 0 || readRegs.size() > 0 ) || m_startRegisterSetList.size() == 0 )
             {
+                if( sendQueryConfigFlag && ( m_currentParams->ApiMask & API_TYPE_IOSTREAM ) )
+                {
+                    // Api mask cannot include iostream if query config is being sent
+                    MD_LOG_A( adapterId, LOG_DEBUG, "SetApiFiltering wasn't used" );
+                }
+
                 // Send configurations
-                ret = driverInterface.SendPmRegsConfig( pmRegs.data(), pmRegs.size(), m_currentParams->ApiMask, m_device.GetSubDeviceIndex(), oaConcurrentGroup.GetOaBufferType() );
+                ret = driverInterface.SendPmRegsConfig( pmRegs.data(), static_cast<uint32_t>( pmRegs.size() ), m_device.GetSubDeviceIndex(), oaConcurrentGroup.GetOaBufferType() );
                 if( ret == CC_OK && readRegs.size() )
                 {
-                    ret = driverInterface.SendReadRegsConfig( readRegs.data(), readRegs.size(), m_currentParams->ApiMask );
+                    ret = driverInterface.SendReadRegsConfig( readRegs.data(), static_cast<uint32_t>( readRegs.size() ) );
                 }
 
                 if( ret == CC_OK )
@@ -1299,7 +1305,7 @@ namespace MetricsDiscoveryInternal
             }
             else
             {
-                MD_LOG_A( m_device.GetAdapter().GetAdapterId(), LOG_ERROR, "Programming missing" );
+                MD_LOG_A( adapterId, LOG_ERROR, "Programming missing" );
                 ret = CC_ERROR_NOT_SUPPORTED;
             }
 
@@ -1463,7 +1469,7 @@ namespace MetricsDiscoveryInternal
         fwrite( &m_params.ApiSpecificId.HwConfigId, sizeof( m_params.ApiSpecificId.HwConfigId ), 1, metricFile );
 
         // m_metricsVector & m_otherMetricsVector
-        count = m_metricsVector.size() + m_otherMetricsVector.size();
+        count = static_cast<uint32_t>( m_metricsVector.size() + m_otherMetricsVector.size() );
         fwrite( &count, sizeof( uint32_t ), 1, metricFile );
         uint32_t i = 0;
         uint32_t j = 0;
@@ -1499,7 +1505,7 @@ namespace MetricsDiscoveryInternal
         }
 
         // m_informationVector & m_otherInformationVector
-        count = m_informationVector.size() + m_otherInformationVector.size();
+        count = static_cast<uint32_t>( m_informationVector.size() + m_otherInformationVector.size() );
         fwrite( &count, sizeof( uint32_t ), 1, metricFile );
         i = 0;
         j = 0;
@@ -1535,7 +1541,7 @@ namespace MetricsDiscoveryInternal
         }
 
         // m_startRegisterSetList
-        count = m_startRegisterSetList.size();
+        count = static_cast<uint32_t>( m_startRegisterSetList.size() );
         fwrite( &count, sizeof( uint32_t ), 1, metricFile );
         for( auto& registerSet : m_startRegisterSetList )
         {
@@ -1547,7 +1553,7 @@ namespace MetricsDiscoveryInternal
         fwrite( &count, sizeof( uint32_t ), 1, metricFile );
 
         // m_complementarySetsVector
-        count = m_complementarySetsVector.size();
+        count = static_cast<uint32_t>( m_complementarySetsVector.size() );
         fwrite( &count, sizeof( uint32_t ), 1, metricFile );
         for( i = 0; i < count; ++i )
         {
@@ -2016,8 +2022,8 @@ namespace MetricsDiscoveryInternal
         }
 
         // Modify counts
-        m_filteredParams.MetricsCount     = m_filteredMetricsVector.size();
-        m_filteredParams.InformationCount = m_filteredInformationVector.size();
+        m_filteredParams.MetricsCount     = static_cast<uint32_t>( m_filteredMetricsVector.size() );
+        m_filteredParams.InformationCount = static_cast<uint32_t>( m_filteredInformationVector.size() );
 
         if( filteringEnabled )
         {
@@ -2041,12 +2047,12 @@ namespace MetricsDiscoveryInternal
     void CMetricSet::ClearCachedMetricsAndInformation()
     {
         // To prevent double memory freeing, original instances are in m_metrics/informationVector
-        uint32_t count = m_filteredMetricsVector.size();
+        uint32_t count = static_cast<uint32_t>( m_filteredMetricsVector.size() );
         for( uint32_t i = 0; i < count; i++ )
         {
             m_filteredMetricsVector[i] = nullptr;
         }
-        count = m_filteredInformationVector.size();
+        count = static_cast<uint32_t>( m_filteredInformationVector.size() );
         for( uint32_t i = 0; i < count; i++ )
         {
             m_filteredInformationVector[i] = nullptr;

@@ -134,7 +134,6 @@ namespace MetricsDiscoveryInternal::MetricSets_BDW_PipelineStatistics
     {
         TCompletionCode ret                  = CC_OK;
         CMetric*        metric               = nullptr;
-        CInformation*   information          = nullptr;
         const char*     availabilityEquation = nullptr;
         m_params.InformationCount            = m_concurrentGroup->GetInformationCount();
         MD_CHECK_CC( SetApiSpecificId( "", 0, 0, 0x80000206, 0, 0, "", 0, "Intel_Raw_Pipeline_Statistics_Query", 0 ) );

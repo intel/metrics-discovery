@@ -194,13 +194,20 @@ extern "C"
         if( IuLogCheckLevel( level, layer ) )                 \
         __IuLogPrint( adapter, '<', __VA_ARGS__ )
 #else
-    #define F_IU_DBG_SEV_INFO( adapter, level, layer, ... )
-    #define F_IU_DBG_SEV_DEBUG( adapter, level, layer, ... )
-    #define F_IU_DBG_SEV_TRAITS( adapter, level, layer, ... )
-    #define F_IU_DBG_SEV_ENTERED( adapter, level, layer, ... )
-    #define F_IU_DBG_SEV_EXITING( adapter, level, layer, ... )
-    #define F_IU_DBG_SEV_INPUT( adapter, level, layer, ... )
-    #define F_IU_DBG_SEV_OUTPUT( adapter, level, layer, ... )
+    #define F_IU_DBG_SEV_INFO( adapter, level, layer, ... ) \
+        (void) adapter;
+    #define F_IU_DBG_SEV_DEBUG( adapter, level, layer, ... ) \
+        (void) adapter;
+    #define F_IU_DBG_SEV_TRAITS( adapter, level, layer, ... ) \
+        (void) adapter;
+    #define F_IU_DBG_SEV_ENTERED( adapter, level, layer, ... ) \
+        (void) adapter;
+    #define F_IU_DBG_SEV_EXITING( adapter, level, layer, ... ) \
+        (void) adapter;
+    #define F_IU_DBG_SEV_INPUT( adapter, level, layer, ... ) \
+        (void) adapter;
+    #define F_IU_DBG_SEV_OUTPUT( adapter, level, layer, ... ) \
+        (void) adapter;
 #endif
 
 // generic

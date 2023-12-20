@@ -112,17 +112,17 @@ extern "C"
     //     Reads system-wide instrumentation log settings.
     //
     // Input:
-    //     void*     deviceContext  - device context
-    //     bool*     assertEnable   - (OUT) read AssertEnable value
-    //     uint32_t* logLayerEnable - (OUT) read LogLayerEnable value
-    //     uint32_t* logLevel       - (OUT) read LogLevel value
+    //     void*       deviceContext  - device context
+    //     bool*       assertEnable   - (OUT) read AssertEnable value
+    //     uint32_t*   logLayerEnable - (OUT) read LogLayerEnable value
+    //     uint32_t*   logLevel       - (OUT) read LogLevel value
     //
     ///////////////////////////////////////////////////////////////////////////////
     void IuOsLogGetSystemSettings(
-        void*     deviceContext,
-        bool*     assertEnable,
-        uint32_t* logLayerEnable,
-        uint32_t* logLevel )
+        [[maybe_unused]] void*     deviceContext,
+        [[maybe_unused]] bool*     assertEnable,
+        [[maybe_unused]] uint32_t* logLayerEnable,
+        [[maybe_unused]] uint32_t* logLevel )
     {
         // To be implemented.
     }

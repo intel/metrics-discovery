@@ -92,8 +92,8 @@ namespace MetricsDiscoveryInternal
         m_params.MetricType        = metricType;
         m_params.ResultType        = resultType;
         m_params.MetricResultUnits = GetCopiedCString( units, adapterId );
-        m_params.LowWatermark      = loWatermark;
-        m_params.HighWatermark     = hiWatermark;
+        m_params.LowWatermark      = static_cast<uint64_t>( loWatermark );
+        m_params.HighWatermark     = static_cast<uint64_t>( hiWatermark );
         m_params.HwUnitType        = hwType;
         m_signalName               = GetCopiedCString( signalName, adapterId );
 

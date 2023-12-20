@@ -32,8 +32,11 @@ SPDX-License-Identifier: MIT
     object = nullptr;
 
 #define MD_SAFE_DELETE_ARRAY( object ) \
-    delete[] object;                   \
-    object = nullptr;
+    if( ( object ) != nullptr )        \
+    {                                  \
+        delete[] object;               \
+        object = nullptr;              \
+    }
 
 #define MD_CHECK_PTR( object )  \
     if( ( object ) == nullptr ) \
@@ -147,6 +150,8 @@ namespace MetricsDiscoveryInternal
     bool            ComparePlatforms( const TByteArrayLatest* firstPlatformMask, const uint32_t firstGtMask, const TByteArrayLatest* secondPlatformMask, const uint32_t secondGtMask, const uint32_t adapterId );
     bool            IsPlatformPresentInMask( const TByteArrayLatest* platformMask, const uint32_t platformIndex, const uint32_t adapterId );
 
+    uint32_t CalculateEnabledBits( uint64_t value, uint64_t mask = UINT64_MAX );
+
     //////////////////////////////////////////////////////////////////////////////
     //
     // Group:
@@ -181,7 +186,7 @@ namespace MetricsDiscoveryInternal
         auto setPlatformMaskLegacy = [&]( const uint32_t platformIndex )
         {
             *platformMaskLegacy |= ( platformIndex > GENERATION_ADLN )
-                ? PLATFORM_FUTURE
+                ? static_cast<uint32_t>( PLATFORM_FUTURE )
                 : MD_BIT( platformIndex );
         };
 
@@ -229,7 +234,7 @@ namespace MetricsDiscoveryInternal
     inline bool IsPlatformMatch( const uint32_t platformIndex, PlatformIndices... platformIndices )
     {
         bool match = false;
-        return ( ( match |= ( platformIndex == platformIndices ) ), ... );
+        return ( ( match |= ( platformIndex == static_cast<uint32_t>( platformIndices ) ) ), ... );
     }
 
     //////////////////////////////////////////////////////////////////////////////

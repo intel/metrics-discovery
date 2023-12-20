@@ -1003,6 +1003,7 @@ DataportWrites	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core cl
 DataportWrites	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
 DataportWrites	DATAPORT_BYTE_WRITE	Dataport Byte Write	Dataport	Number of bytes written through the Dataport
 DataportWrites	SAMPLER_L3_READ	Sampler L3 Read	L3Cache	Number of L3 read requests resulting from sampler local cache miss
+DataportWrites	SAMPLER_L3_BYTE_READ	Sampler L3 Byte Read	L3Cache	Number of L3 read bytes resulting from Sampler local cache miss
 DataportWrites	SYSMEM_BYTE_READ	SysMem Byte Read	Memory	Number of system memory bytes read (upstream)
 DataportWrites	SYSMEM_BYTE_WRITE	SysMem Byte Write	Memory	Number of system memory bytes written (upstream)
 DataportWrites	GPU_MEMORY_BYTE_READ	GPU Memory Byte Read	Memory	Number of device local memory (HBM, GDDR, LPDDR, etc.) read bytes

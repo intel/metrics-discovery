@@ -14,23 +14,23 @@ PipelineStats	CpsInvocations	CPS invocations	3D Pipe/Compute Shader	The total nu
 RenderBasic	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
 RenderBasic	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
 RenderBasic	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
-RenderBasic	VsThreads	VS Threads Dispatched	EU Array/Vertex Shader	The total number of vertex shader hardware threads dispatched.
-RenderBasic	HsThreads	HS Threads Dispatched	EU Array/Hull Shader	The total number of hull shader hardware threads dispatched.
-RenderBasic	DsThreads	DS Threads Dispatched	EU Array/Domain Shader	The total number of domain shader hardware threads dispatched.
-RenderBasic	GsThreads	GS Threads Dispatched	EU Array/Geometry Shader	The total number of geometry shader hardware threads dispatched.
-RenderBasic	PsThreads	PS Threads Dispatched	EU Array/Pixel Shader	The total number of pixel shader hardware threads dispatched.
-RenderBasic	CsThreads	CS Threads Dispatched	EU Array/Compute Shader	The total number of compute shader hardware threads dispatched.
+RenderBasic	VsThreads	VS Threads Dispatched	VectorEngine	The total number of vertex shader hardware threads dispatched.
+RenderBasic	HsThreads	HS Threads Dispatched	VectorEngine	The total number of hull shader hardware threads dispatched.
+RenderBasic	DsThreads	DS Threads Dispatched	VectorEngine	The total number of domain shader hardware threads dispatched.
+RenderBasic	GsThreads	GS Threads Dispatched	VectorEngine	The total number of geometry shader hardware threads dispatched.
+RenderBasic	PsThreads	PS Threads Dispatched	VectorEngine	The total number of pixel shader hardware threads dispatched.
+RenderBasic	CsThreads	CS Threads Dispatched	VectorEngine	The total number of compute shader hardware threads dispatched.
 RenderBasic	GpuBusy	GPU Busy	GPU	The percentage of time in which the GPU has been processing GPU commands.
-RenderBasic	XveActive	XVE Active	EU Array	The percentage of time in which the Execution Units were actively processing.
-RenderBasic	XveStall	XVE Stall	EU Array	The percentage of time in which the Execution Units were stalled.
-RenderBasic	XveThreadOccupancy	XVE Thread Occupancy	EU Array	The percentage of time in which hardware threads occupied XVEs.
-RenderBasic	XveFpuEmActive	EM And FPU Pipes Active	EU Array/Pipes	The percentage of time in which XVE EM INT and FPU INT64 pipelines were actively processing.
-RenderBasic	VsFpuActive	VS FPU Pipe Active	EU Array/Vertex Shader	The percentage of time in which XVE FPU INT64 pipeline was actively processing a vertex shader instruction.
-RenderBasic	VsEmActive	VS EM Pipe Active	EU Array/Vertex Shader	The percentage of time in which XVE EM INT pipeline was actively processing a vertex shader instruction.
-RenderBasic	VsSendActive	VS Send Pipe Active	EU Array/Vertex Shader	The percentage of time in which XVE send pipeline was actively processing a vertex shader instruction.
-RenderBasic	PsFpuActive	PS FPU Pipe Active	EU Array/Pixel Shader	The percentage of time in which XVE FPU INT64 pipeline was actively processing a pixel shader instruction.
-RenderBasic	PsEmActive	PS EM Pipe Active	EU Array/Pixel Shader	The percentage of time in which XVE EM INT pipeline was actively processing a pixel shader instruction.
-RenderBasic	PsSendActive	PS Send Pipe Active	EU Array/Pixel Shader	The percentage of time in which XVE send pipeline was actively processing a pixel shader instruction.
+RenderBasic	XveActive	XVE Active	VectorEngine	The percentage of time in which the Execution Units were actively processing.
+RenderBasic	XveStall	XVE Stall	VectorEngine	The percentage of time in which the Execution Units were stalled.
+RenderBasic	XveThreadOccupancy	XVE Thread Occupancy	VectorEngine	The percentage of time in which hardware threads occupied XVEs.
+RenderBasic	XveFpuEmActive	EM And FPU Pipes Active	VectorEngine	The percentage of time in which XVE EM INT and FPU INT64 pipelines were actively processing.
+RenderBasic	VsFpuActive	VS FPU Pipe Active	VectorEngine	The percentage of time in which XVE FPU INT64 pipeline was actively processing a vertex shader instruction.
+RenderBasic	VsEmActive	VS EM Pipe Active	VectorEngine	The percentage of time in which XVE EM INT pipeline was actively processing a vertex shader instruction.
+RenderBasic	VsSendActive	VS Send Pipe Active	VectorEngine	The percentage of time in which XVE send pipeline was actively processing a vertex shader instruction.
+RenderBasic	PsFpuActive	PS FPU Pipe Active	VectorEngine	The percentage of time in which XVE FPU INT64 pipeline was actively processing a pixel shader instruction.
+RenderBasic	PsEmActive	PS EM Pipe Active	VectorEngine	The percentage of time in which XVE EM INT pipeline was actively processing a pixel shader instruction.
+RenderBasic	PsSendActive	PS Send Pipe Active	VectorEngine	The percentage of time in which XVE send pipeline was actively processing a pixel shader instruction.
 RenderBasic	RasterizedPixels	Rasterized Pixels	3D Pipe/Rasterizer	The total number of rasterized pixels.
 RenderBasic	HiDepthTestFails	Early Hi-Depth Test Fails	3D Pipe/Rasterizer/Hi-Depth Test	The total number of pixels dropped on early hierarchical depth test.
 RenderBasic	EarlyDepthTestFails	Early Depth Test Fails	3D Pipe/Rasterizer/Early Depth Test	The total number of pixels dropped on early depth test.
@@ -44,7 +44,7 @@ RenderBasic	SlmReads	SLM Bytes Read	L3/Data Port/SLM	The total number of reads f
 RenderBasic	SlmWrites	SLM Writes	L3/Data Port/SLM	The total number of writes into shared local memory.
 RenderBasic	ShaderMemoryAccesses	Shader Memory Accesses	L3/Data Port	The total number of shader memory accesses to L3.
 RenderBasic	ShaderAtomics	Shader Atomic Memory Accesses	L3/Data Port/Atomics	The total number of shader atomic memory accesses.
-RenderBasic	ShaderBarriers	Shader Barrier Messages	EU Array/Barrier	The total number of shader barrier messages.
+RenderBasic	ShaderBarriers	Shader Barrier Messages	VectorEngine	The total number of shader barrier messages.
 RenderBasic	GtiReadThroughput	GTI Read Throughput	GTI	The total number of GPU memory bytes read from GTI.
 RenderBasic	GtiWriteThroughput	GTI Write Throughput	GTI	The total number of GPU memory bytes written to GTI.
 RenderBasic	SamplersBusy	Samplers Busy	Sampler	The percentage of time in which samplers or L1 cache are not idle.
@@ -53,25 +53,25 @@ ComputeBasic	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the mea
 ComputeBasic	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
 ComputeBasic	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
 ComputeBasic	GpuBusy	GPU Busy	GPU	The percentage of time in which the GPU has been processing GPU commands.
-ComputeBasic	VsThreads	VS Threads Dispatched	EU Array/Vertex Shader	The total number of vertex shader hardware threads dispatched.
-ComputeBasic	HsThreads	HS Threads Dispatched	EU Array/Hull Shader	The total number of hull shader hardware threads dispatched.
-ComputeBasic	DsThreads	DS Threads Dispatched	EU Array/Domain Shader	The total number of domain shader hardware threads dispatched.
-ComputeBasic	GsThreads	GS Threads Dispatched	EU Array/Geometry Shader	The total number of geometry shader hardware threads dispatched.
-ComputeBasic	PsThreads	PS Threads Dispatched	EU Array/Pixel Shader	The total number of pixel shader hardware threads dispatched.
-ComputeBasic	CsThreads	CS Threads Dispatched	EU Array/Compute Shader	The total number of compute shader hardware threads dispatched.
-ComputeBasic	XveActive	XVE Active	EU Array	The percentage of time in which the Execution Units were actively processing.
-ComputeBasic	XveStall	XVE Stall	EU Array	The percentage of time in which the Execution Units were stalled.
-ComputeBasic	FpuActive	XVE FPU Pipe Active	EU Array/Pipes	The percentage of time in which XVE FPU INT64 pipeline was actively processing.
-ComputeBasic	EmActive	EM Pipe Active	EU Array/Pipes	The percentage of time in which XVE EM INT pipeline was actively processing.
-ComputeBasic	XmxActive	XMX Pipe Active	EU Array/Pipes	The percentage of time in which XVE XMX pipeline was actively processing.
-ComputeBasic	XveFpuEmActive	EM And FPU Pipes Active	EU Array/Pipes	The percentage of time in which XVE EM INT and FPU INT64 pipelines were actively processing.
-ComputeBasic	XveFpuXmxActive	XMX And FPU Pipes Active	EU Array/Pipes	The percentage of time in which XVE XMX and FPU INT64 pipelines were actively processing.
-ComputeBasic	XveAvgIpcRate	XVE AVG IPC Rate	EU Array	The average rate of IPC calculated for 2 FPU pipelines.
-ComputeBasic	SendActive	Send Pipe Active	EU Array/Pipes	The percentage of time in which XVE send pipeline was actively processing.
-ComputeBasic	XveThreadOccupancy	XVE Thread Occupancy	EU Array	The percentage of time in which hardware threads occupied XVEs.
-ComputeBasic	XveFpuFlt16	FPU FLT16 Instruction	EU Array	The percentage of time in which FLT16 instruction were processed actively on FPU INT64 pipeline.
-ComputeBasic	XveFpuFlt32	FPU FLT32 Instruction	EU Array	The percentage of time in which FLT32 instruction were processed actively on FPU INT64 pipeline.
-ComputeBasic	XveFpuFlt64	FPU FLT64 Instruction	EU Array	The percentage of time in which FLT64 instruction were processed actively on FPU INT64 pipeline.
+ComputeBasic	VsThreads	VS Threads Dispatched	VectorEngine	The total number of vertex shader hardware threads dispatched.
+ComputeBasic	HsThreads	HS Threads Dispatched	VectorEngine	The total number of hull shader hardware threads dispatched.
+ComputeBasic	DsThreads	DS Threads Dispatched	VectorEngine	The total number of domain shader hardware threads dispatched.
+ComputeBasic	GsThreads	GS Threads Dispatched	VectorEngine	The total number of geometry shader hardware threads dispatched.
+ComputeBasic	PsThreads	PS Threads Dispatched	VectorEngine	The total number of pixel shader hardware threads dispatched.
+ComputeBasic	CsThreads	CS Threads Dispatched	VectorEngine	The total number of compute shader hardware threads dispatched.
+ComputeBasic	XveActive	XVE Active	VectorEngine	The percentage of time in which the Execution Units were actively processing.
+ComputeBasic	XveStall	XVE Stall	VectorEngine	The percentage of time in which the Execution Units were stalled.
+ComputeBasic	FpuActive	XVE FPU Pipe Active	VectorEngine	The percentage of time in which XVE FPU INT64 pipeline was actively processing.
+ComputeBasic	EmActive	EM Pipe Active	VectorEngine	The percentage of time in which XVE EM INT pipeline was actively processing.
+ComputeBasic	XmxActive	XMX Pipe Active	VectorEngine	The percentage of time in which XVE XMX pipeline was actively processing.
+ComputeBasic	XveFpuEmActive	EM And FPU Pipes Active	VectorEngine	The percentage of time in which XVE EM INT and FPU INT64 pipelines were actively processing.
+ComputeBasic	XveFpuXmxActive	XMX And FPU Pipes Active	VectorEngine	The percentage of time in which XVE XMX and FPU INT64 pipelines were actively processing.
+ComputeBasic	XveAvgIpcRate	XVE AVG IPC Rate	VectorEngine	The average rate of IPC calculated for 2 FPU pipelines.
+ComputeBasic	SendActive	Send Pipe Active	VectorEngine	The percentage of time in which XVE send pipeline was actively processing.
+ComputeBasic	XveThreadOccupancy	XVE Thread Occupancy	VectorEngine	The percentage of time in which hardware threads occupied XVEs.
+ComputeBasic	XveFpuFlt16	FPU FLT16 Instruction	VectorEngine	The percentage of time in which FLT16 instruction were processed actively on FPU INT64 pipeline.
+ComputeBasic	XveFpuFlt32	FPU FLT32 Instruction	VectorEngine	The percentage of time in which FLT32 instruction were processed actively on FPU INT64 pipeline.
+ComputeBasic	XveFpuFlt64	FPU FLT64 Instruction	VectorEngine	The percentage of time in which FLT64 instruction were processed actively on FPU INT64 pipeline.
 ComputeBasic	RasterizedPixels	Rasterized Pixels	3D Pipe/Rasterizer	The total number of rasterized pixels.
 ComputeBasic	HiDepthTestFails	Early Hi-Depth Test Fails	3D Pipe/Rasterizer/Hi-Depth Test	The total number of pixels dropped on early hierarchical depth test.
 ComputeBasic	EarlyDepthTestFails	Early Depth Test Fails	3D Pipe/Rasterizer/Early Depth Test	The total number of pixels dropped on early depth test.
@@ -85,65 +85,65 @@ ComputeBasic	SlmReads	SLM Bytes Read	L3/Data Port/SLM	The total number of reads 
 ComputeBasic	SlmWrites	SLM Writes	L3/Data Port/SLM	The total number of writes into shared local memory.
 ComputeBasic	ShaderMemoryAccesses	Shader Memory Accesses	L3/Data Port	The total number of shader memory accesses to L3.
 ComputeBasic	ShaderAtomics	Shader Atomic Memory Accesses	L3/Data Port/Atomics	The total number of shader atomic memory accesses.
-ComputeBasic	ShaderBarriers	Shader Barrier Messages	EU Array/Barrier	The total number of shader barrier messages.
+ComputeBasic	ShaderBarriers	Shader Barrier Messages	VectorEngine	The total number of shader barrier messages.
 ComputeBasic	GtiReadThroughput	GTI Read Throughput	GTI	The total number of GPU memory bytes read from GTI.
 ComputeBasic	GtiWriteThroughput	GTI Write Throughput	GTI	The total number of GPU memory bytes written to GTI.
 AsyncCompute	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
 AsyncCompute	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
 AsyncCompute	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
 AsyncCompute	GpuBusy	GPU Busy	GPU	The percentage of time in which the GPU has been processing GPU commands.
-AsyncCompute	VsThreads	VS Threads Dispatched	EU Array/Vertex Shader	The total number of vertex shader hardware threads dispatched.
-AsyncCompute	HsThreads	HS Threads Dispatched	EU Array/Hull Shader	The total number of hull shader hardware threads dispatched.
-AsyncCompute	DsThreads	DS Threads Dispatched	EU Array/Domain Shader	The total number of domain shader hardware threads dispatched.
-AsyncCompute	GsThreads	GS Threads Dispatched	EU Array/Geometry Shader	The total number of geometry shader hardware threads dispatched.
-AsyncCompute	PsThreads	PS Threads Dispatched	EU Array/Pixel Shader	The total number of pixel shader hardware threads dispatched.
-AsyncCompute	CsThreads	CS Threads Dispatched	EU Array/Compute Shader	The total number of compute shader hardware threads dispatched.
-AsyncCompute	FpuActive	XVE FPU Pipe Active	EU Array/Pipes	The percentage of time in which XVE FPU INT64 pipeline was actively processing.
-AsyncCompute	VsFpuActive	VS FPU Pipe Active	EU Array/Vertex Shader	The percentage of time in which XVE FPU INT64 pipeline was actively processing a vertex shader instruction.
-AsyncCompute	PsFpuActive	PS FPU Pipe Active	EU Array/Pixel Shader	The percentage of time in which XVE FPU INT64 pipeline was actively processing a pixel shader instruction.
-AsyncCompute	CsFpuActive	CS FPU Pipe Active	EU Array/Compute Shader	The percentage of time in which XVE FPU INT64 pipeline was actively processing a compute shader instruction.
-AsyncCompute	AsyncCsFpuActive	ASYNC CS FPU Pipe Active	EU Array/Compute Shader	The percentage of time in which XVE FPU INT64 pipeline was actively processing a compute shader instruction.
-AsyncCompute	EmActive	EM Pipe Active	EU Array/Pipes	The percentage of time in which XVE EM INT pipeline was actively processing.
-AsyncCompute	VsEmActive	VS EM Pipe Active	EU Array/Vertex Shader	The percentage of time in which XVE EM INT pipeline was actively processing a vertex shader instruction.
-AsyncCompute	PsEmActive	PS EM Pipe Active	EU Array/Pixel Shader	The percentage of time in which XVE EM INT pipeline was actively processing a pixel shader instruction.
-AsyncCompute	CsEmActive	CS EM Pipe Active	EU Array/Compute Shader	The percentage of time in which XVE EM INT pipeline was actively processing a compute shader instruction.
-AsyncCompute	AsyncCsEmActive	ASYNC CS EM Pipe Active	EU Array/Compute Shader	The percentage of time in which XVE EM INT pipeline was actively processing a compute shader instruction.
-AsyncCompute	XveThreadOccupancy	XVE Thread Occupancy	EU Array	The percentage of time in which hardware threads occupied XVEs.
-AsyncCompute	XveActive	XVE Active	EU Array	The percentage of time in which the Execution Units were actively processing.
-AsyncCompute	XveStall	XVE Stall	EU Array	The percentage of time in which the Execution Units were stalled.
+AsyncCompute	VsThreads	VS Threads Dispatched	VectorEngine	The total number of vertex shader hardware threads dispatched.
+AsyncCompute	HsThreads	HS Threads Dispatched	VectorEngine	The total number of hull shader hardware threads dispatched.
+AsyncCompute	DsThreads	DS Threads Dispatched	VectorEngine	The total number of domain shader hardware threads dispatched.
+AsyncCompute	GsThreads	GS Threads Dispatched	VectorEngine	The total number of geometry shader hardware threads dispatched.
+AsyncCompute	PsThreads	PS Threads Dispatched	VectorEngine	The total number of pixel shader hardware threads dispatched.
+AsyncCompute	CsThreads	CS Threads Dispatched	VectorEngine	The total number of compute shader hardware threads dispatched.
+AsyncCompute	FpuActive	XVE FPU Pipe Active	VectorEngine	The percentage of time in which XVE FPU INT64 pipeline was actively processing.
+AsyncCompute	VsFpuActive	VS FPU Pipe Active	VectorEngine	The percentage of time in which XVE FPU INT64 pipeline was actively processing a vertex shader instruction.
+AsyncCompute	PsFpuActive	PS FPU Pipe Active	VectorEngine	The percentage of time in which XVE FPU INT64 pipeline was actively processing a pixel shader instruction.
+AsyncCompute	CsFpuActive	CS FPU Pipe Active	VectorEngine	The percentage of time in which XVE FPU INT64 pipeline was actively processing a compute shader instruction.
+AsyncCompute	AsyncCsFpuActive	ASYNC CS FPU Pipe Active	VectorEngine	The percentage of time in which XVE FPU INT64 pipeline was actively processing a compute shader instruction.
+AsyncCompute	EmActive	EM Pipe Active	VectorEngine	The percentage of time in which XVE EM INT pipeline was actively processing.
+AsyncCompute	VsEmActive	VS EM Pipe Active	VectorEngine	The percentage of time in which XVE EM INT pipeline was actively processing a vertex shader instruction.
+AsyncCompute	PsEmActive	PS EM Pipe Active	VectorEngine	The percentage of time in which XVE EM INT pipeline was actively processing a pixel shader instruction.
+AsyncCompute	CsEmActive	CS EM Pipe Active	VectorEngine	The percentage of time in which XVE EM INT pipeline was actively processing a compute shader instruction.
+AsyncCompute	AsyncCsEmActive	ASYNC CS EM Pipe Active	VectorEngine	The percentage of time in which XVE EM INT pipeline was actively processing a compute shader instruction.
+AsyncCompute	XveThreadOccupancy	XVE Thread Occupancy	VectorEngine	The percentage of time in which hardware threads occupied XVEs.
+AsyncCompute	XveActive	XVE Active	VectorEngine	The percentage of time in which the Execution Units were actively processing.
+AsyncCompute	XveStall	XVE Stall	VectorEngine	The percentage of time in which the Execution Units were stalled.
 XveActivity	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
 XveActivity	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
 XveActivity	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
 XveActivity	GpuBusy	GPU Busy	GPU	The percentage of time in which the GPU has been processing GPU commands.
-XveActivity	VsThreads	VS Threads Dispatched	EU Array/Vertex Shader	The total number of vertex shader hardware threads dispatched.
-XveActivity	HsThreads	HS Threads Dispatched	EU Array/Hull Shader	The total number of hull shader hardware threads dispatched.
-XveActivity	DsThreads	DS Threads Dispatched	EU Array/Domain Shader	The total number of domain shader hardware threads dispatched.
-XveActivity	GsThreads	GS Threads Dispatched	EU Array/Geometry Shader	The total number of geometry shader hardware threads dispatched.
-XveActivity	PsThreads	PS Threads Dispatched	EU Array/Pixel Shader	The total number of pixel shader hardware threads dispatched.
-XveActivity	CsThreads	CS Threads Dispatched	EU Array/Compute Shader	The total number of compute shader hardware threads dispatched.
-XveActivity	HsFpuActive	HS FPU Pipe Active	EU Array/Hull Shader	The percentage of time in which XVE FPU INT64 pipeline was actively processing a hull shader instruction.
-XveActivity	DsFpuActive	DS FPU Pipe Active	EU Array/Domain Shader	The percentage of time in which XVE FPU INT64 pipeline was actively processing a domain shader instruction.
-XveActivity	GsFpuActive	GS FPU Pipe Active	EU Array/Geometry Shader	The percentage of time in which XVE FPU INT64 pipeline was actively processing a geometry shader instruction.
-XveActivity	HsEmActive	HS EM Pipe Active	EU Array/Hull Shader	The percentage of time in which XVE EM INT pipeline was actively processing a hull shader instruction.
-XveActivity	DsEmActive	DS EM Pipe Active	EU Array/Domain Shader	The percentage of time in which XVE EM INT pipeline was actively processing a domain shader instruction.
-XveActivity	GsEmActive	GS EM Pipe Active	EU Array/Geometry Shader	The percentage of time in which XVE EM INT pipeline was actively processing a geometry shader instruction.
-XveActivity	HsSendActive	HS Send Pipe Active	EU Array/Hull Shader	The percentage of time in which XVE send pipeline was actively processing a hull shader instruction.
-XveActivity	DsSendActive	DS Send Pipe Active	EU Array/Domain Shader	The percentage of time in which XVE send pipeline was actively processing a domain shader instruction.
-XveActivity	GsSendActive	GS Send Pipe Active	EU Array/Geometry Shader	The percentage of time in which XVE send pipeline was actively processing a geometry shader instruction.
-XveActivity	CsSendActive	CS Send Pipe Active	EU Array/Compute Shader	The percentage of time in which XVE send pipeline was actively processing a compute shader instruction.
+XveActivity	VsThreads	VS Threads Dispatched	VectorEngine	The total number of vertex shader hardware threads dispatched.
+XveActivity	HsThreads	HS Threads Dispatched	VectorEngine	The total number of hull shader hardware threads dispatched.
+XveActivity	DsThreads	DS Threads Dispatched	VectorEngine	The total number of domain shader hardware threads dispatched.
+XveActivity	GsThreads	GS Threads Dispatched	VectorEngine	The total number of geometry shader hardware threads dispatched.
+XveActivity	PsThreads	PS Threads Dispatched	VectorEngine	The total number of pixel shader hardware threads dispatched.
+XveActivity	CsThreads	CS Threads Dispatched	VectorEngine	The total number of compute shader hardware threads dispatched.
+XveActivity	HsFpuActive	HS FPU Pipe Active	VectorEngine	The percentage of time in which XVE FPU INT64 pipeline was actively processing a hull shader instruction.
+XveActivity	DsFpuActive	DS FPU Pipe Active	VectorEngine	The percentage of time in which XVE FPU INT64 pipeline was actively processing a domain shader instruction.
+XveActivity	GsFpuActive	GS FPU Pipe Active	VectorEngine	The percentage of time in which XVE FPU INT64 pipeline was actively processing a geometry shader instruction.
+XveActivity	HsEmActive	HS EM Pipe Active	VectorEngine	The percentage of time in which XVE EM INT pipeline was actively processing a hull shader instruction.
+XveActivity	DsEmActive	DS EM Pipe Active	VectorEngine	The percentage of time in which XVE EM INT pipeline was actively processing a domain shader instruction.
+XveActivity	GsEmActive	GS EM Pipe Active	VectorEngine	The percentage of time in which XVE EM INT pipeline was actively processing a geometry shader instruction.
+XveActivity	HsSendActive	HS Send Pipe Active	VectorEngine	The percentage of time in which XVE send pipeline was actively processing a hull shader instruction.
+XveActivity	DsSendActive	DS Send Pipe Active	VectorEngine	The percentage of time in which XVE send pipeline was actively processing a domain shader instruction.
+XveActivity	GsSendActive	GS Send Pipe Active	VectorEngine	The percentage of time in which XVE send pipeline was actively processing a geometry shader instruction.
+XveActivity	CsSendActive	CS Send Pipe Active	VectorEngine	The percentage of time in which XVE send pipeline was actively processing a compute shader instruction.
 GpuBusyness	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
 GpuBusyness	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
 GpuBusyness	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
 GpuBusyness	GpuBusy	GPU Busy	GPU	The percentage of time in which the GPU has been processing GPU commands.
-GpuBusyness	XveActive	XVE Active	EU Array	The percentage of time in which the Execution Units were actively processing.
-GpuBusyness	XveStall	XVE Stall	EU Array	The percentage of time in which the Execution Units were stalled.
-GpuBusyness	XveThreadOccupancy	XVE Thread Occupancy	EU Array	The percentage of time in which hardware threads occupied XVEs.
-GpuBusyness	VsThreads	VS Threads Dispatched	EU Array/Vertex Shader	The total number of vertex shader hardware threads dispatched.
-GpuBusyness	HsThreads	HS Threads Dispatched	EU Array/Hull Shader	The total number of hull shader hardware threads dispatched.
-GpuBusyness	DsThreads	DS Threads Dispatched	EU Array/Domain Shader	The total number of domain shader hardware threads dispatched.
-GpuBusyness	GsThreads	GS Threads Dispatched	EU Array/Geometry Shader	The total number of geometry shader hardware threads dispatched.
-GpuBusyness	PsThreads	PS Threads Dispatched	EU Array/Pixel Shader	The total number of pixel shader hardware threads dispatched.
-GpuBusyness	CsThreads	CS Threads Dispatched	EU Array/Compute Shader	The total number of compute shader hardware threads dispatched.
+GpuBusyness	XveActive	XVE Active	VectorEngine	The percentage of time in which the Execution Units were actively processing.
+GpuBusyness	XveStall	XVE Stall	VectorEngine	The percentage of time in which the Execution Units were stalled.
+GpuBusyness	XveThreadOccupancy	XVE Thread Occupancy	VectorEngine	The percentage of time in which hardware threads occupied XVEs.
+GpuBusyness	VsThreads	VS Threads Dispatched	VectorEngine	The total number of vertex shader hardware threads dispatched.
+GpuBusyness	HsThreads	HS Threads Dispatched	VectorEngine	The total number of hull shader hardware threads dispatched.
+GpuBusyness	DsThreads	DS Threads Dispatched	VectorEngine	The total number of domain shader hardware threads dispatched.
+GpuBusyness	GsThreads	GS Threads Dispatched	VectorEngine	The total number of geometry shader hardware threads dispatched.
+GpuBusyness	PsThreads	PS Threads Dispatched	VectorEngine	The total number of pixel shader hardware threads dispatched.
+GpuBusyness	CsThreads	CS Threads Dispatched	VectorEngine	The total number of compute shader hardware threads dispatched.
 GpuBusyness	RenderBusy	Render Ring Busy	GPU	The percentage of time when render command streamer was busy.
 GpuBusyness	ComputeEngine0Busy	ComputeEngine0 Ring Busy	GPU	The percentage of time when compute command streamer 0 was busy.
 GpuBusyness	BlitterBusy	Blitter Ring Busy	GPU	The percentage of time when blitter command streamer was busy.
@@ -357,36 +357,37 @@ ComputeOverview	L3_BYTE_READ	L3 Byte Read	L3Cache	Number of bytes read from L3
 ComputeOverview	L3_BYTE_WRITE	L3 Byte Write	L3Cache	Number of bytes written to L3
 ComputeOverview	GPU_MEMORY_BYTE_READ	GPU Memory Byte Read	Memory	Number of device local memory (HBM, GDDR, LPDDR, etc.) read bytes
 ComputeOverview	GPU_MEMORY_BYTE_WRITE	GPU Memory Byte Write	Memory	Number of device local memory (HBM, GDDR, LPDDR, etc.) write bytes
-ComputeOverview	XVE_ACTIVE	XVE Active	EU Array	Percentage of time in which at least one pipe is active in XVE
-ComputeOverview	XVE_STALL	XVE Stall	EU Array	Percentage of time in which any threads are loaded but not even a single pipe is active in XVE
+ComputeOverview	XVE_ACTIVE	XVE Active	VectorEngine	Percentage of time in which at least one pipe is active in XVE
+ComputeOverview	XVE_STALL	XVE Stall	VectorEngine	Percentage of time in which any threads are loaded but not even a single pipe is active in XVE
 ComputeOverview	XVE_BUSY	XVE Busy	VectorEngine	Any XVE thread loaded.
-ComputeOverview	XVE_THREADS_OCCUPANCY_ALL	XVE Threads Occupancy All	EU Array	Percentage of thread slots occupied
+ComputeOverview	XVE_THREADS_OCCUPANCY_ALL	XVE Threads Occupancy All	VectorEngine	Percentage of thread slots occupied
 ComputeOverview	XVE_COMPUTE_THREAD_COUNT	XVE Compute Thread Count	VectorEngine	Number of compute shader hardware threads dispatched
 ComputeOverview	XVE_ATOMIC_ACCESS_COUNT	XVE Atomic Access Count	VectorEngine	Number of shader atomic memory accesses
 ComputeOverview	XVE_BARRIER_MESSAGE_COUNT	XVE Barrier Message Count	VectorEngine	Number of shader barrier messages
-ComputeOverview	XVE_INST_EXECUTED_ALU0_ALL	XVE Inst Executed ALU0 All	EU Array/Pipes	Number of execution slots taken by instructions executed on ALU0 pipe
-ComputeOverview	XVE_INST_EXECUTED_ALU1_ALL	XVE Inst Executed ALU1 All	EU Array/Pipes	Number of execution slots taken by instructions executed on ALU1 pipe
-ComputeOverview	XVE_INST_EXECUTED_XMX_ALL	XVE Inst Executed XMX All	EU Array/Pipes	Number of execution slots taken by instructions executed in XMX pipe
-ComputeOverview	XVE_INST_EXECUTED_SEND_ALL	XVE Inst Executed Send All	EU Array/Pipes	Number of instructions executed on SEND pipe
-ComputeOverview	XVE_INST_EXECUTED_CONTROL_ALL	XVE Inst Executed Control All	EU Array	Number of instructions executed on Jump Pipe
-ComputeOverview	XVE_PIPE_ALU0_AND_ALU1_ACTIVE	XVE Pipe ALU0 And ALU1 Active	EU Array/Pipes	Percentage of time in which ALU0 and ALU1 pipes are both actively executing a Gen ISA instruction
-ComputeOverview	XVE_PIPE_ALU0_AND_XMX_ACTIVE	XVE Pipe ALU0 And XMX Active	EU Array/Pipes	Percentage of time in which ALU0 and XMX pipes are both actively executing a Gen ISA instruction
-ComputeOverview	XVE_INST_EXECUTED_ALU0_ALL_UTILIZATION	XVE Inst Executed ALU0 All Utilization	EU Array/Pipes	Percentage of execution slots taken by instructions executed on ALU0 pipe
-ComputeOverview	XVE_INST_EXECUTED_ALU1_ALL_UTILIZATION	XVE Inst Executed ALU1 All Utilization	EU Array/Pipes	Percentage of execution slots taken by instructions executed on ALU1 pipe
-ComputeOverview	XVE_INST_EXECUTED_SEND_ALL_UTILIZATION	XVE Inst Executed Send All Utilization	EU Array/Pipes	Percentage of time taken by instructions executed on SEND pipe
-ComputeOverview	XVE_INST_EXECUTED_CONTROL_ALL_UTILIZATION	XVE Inst Executed Control All Utilization	EU Array	Percentage of time taken by instructions executed on Jump Pipe
-ComputeOverview	XVE_INST_EXECUTED_XMX_ALL_UTILIZATION	XVE Inst Executed XMX All Utilization	EU Array/Pipes	Percentage of execution slots taken by instructions executed in XMX pipe
+ComputeOverview	XVE_INST_EXECUTED_ALU0_ALL	XVE Inst Executed ALU0 All	VectorEngine	Number of execution slots taken by instructions executed on ALU0 pipe
+ComputeOverview	XVE_INST_EXECUTED_ALU1_ALL	XVE Inst Executed ALU1 All	VectorEngine	Number of execution slots taken by instructions executed on ALU1 pipe
+ComputeOverview	XVE_INST_EXECUTED_XMX_ALL	XVE Inst Executed XMX All	VectorEngine	Number of execution slots taken by instructions executed in XMX pipe
+ComputeOverview	XVE_INST_EXECUTED_SEND_ALL	XVE Inst Executed Send All	VectorEngine	Number of instructions executed on SEND pipe
+ComputeOverview	XVE_INST_EXECUTED_CONTROL_ALL	XVE Inst Executed Control All	VectorEngine	Number of instructions executed on Jump Pipe
+ComputeOverview	XVE_PIPE_ALU0_AND_ALU1_ACTIVE	XVE Pipe ALU0 And ALU1 Active	VectorEngine	Percentage of time in which ALU0 and ALU1 pipes are both actively executing a Gen ISA instruction
+ComputeOverview	XVE_PIPE_ALU0_AND_XMX_ACTIVE	XVE Pipe ALU0 And XMX Active	VectorEngine	Percentage of time in which ALU0 and XMX pipes are both actively executing a Gen ISA instruction
+ComputeOverview	XVE_INST_EXECUTED_ALU0_ALL_UTILIZATION	XVE Inst Executed ALU0 All Utilization	VectorEngine	Percentage of execution slots taken by instructions executed on ALU0 pipe
+ComputeOverview	XVE_INST_EXECUTED_ALU1_ALL_UTILIZATION	XVE Inst Executed ALU1 All Utilization	VectorEngine	Percentage of execution slots taken by instructions executed on ALU1 pipe
+ComputeOverview	XVE_INST_EXECUTED_SEND_ALL_UTILIZATION	XVE Inst Executed Send All Utilization	VectorEngine	Percentage of time taken by instructions executed on SEND pipe
+ComputeOverview	XVE_INST_EXECUTED_CONTROL_ALL_UTILIZATION	XVE Inst Executed Control All Utilization	VectorEngine	Percentage of time taken by instructions executed on Jump Pipe
+ComputeOverview	XVE_INST_EXECUTED_XMX_ALL_UTILIZATION	XVE Inst Executed XMX All Utilization	VectorEngine	Percentage of execution slots taken by instructions executed in XMX pipe
 DataportWrites	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
 DataportWrites	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
 DataportWrites	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
-DataportWrites	SAMPLER_L3_READ	Sampler L3 Read	GTI/L3	Number of L3 read requests resulting from Sampler local cache miss
-DataportWrites	DATAPORT_BYTE_WRITE	Dataport Byte Write	GPU	Number of bytes written through the Dataport
+DataportWrites	SAMPLER_L3_READ	Sampler L3 Read	L3Cache	Number of L3 read requests resulting from Sampler local cache miss
+DataportWrites	SAMPLER_L3_BYTE_READ	Sampler L3 Byte Read	L3Cache	Number of L3 read bytes resulting from Sampler local cache miss
+DataportWrites	DATAPORT_BYTE_WRITE	Dataport Byte Write	Dataport	Number of bytes written through the Dataport
 DataportWrites	GPU_MEMORY_BYTE_READ	GPU Memory Byte Read	Memory	Number of device local memory (HBM, GDDR, LPDDR, etc.) read bytes
 DataportWrites	GPU_MEMORY_BYTE_WRITE	GPU Memory Byte Write	Memory	Number of device local memory (HBM, GDDR, LPDDR, etc.) write bytes
-DataportWrites	XVE_ACTIVE	XVE Active	EU Array	Percentage of time in which at least one pipe is active in XVE
-DataportWrites	XVE_STALL	XVE Stall	EU Array	Percentage of time in which any threads are loaded but not even a single pipe is active in XVE
+DataportWrites	XVE_ACTIVE	XVE Active	VectorEngine	Percentage of time in which at least one pipe is active in XVE
+DataportWrites	XVE_STALL	XVE Stall	VectorEngine	Percentage of time in which any threads are loaded but not even a single pipe is active in XVE
 DataportWrites	XVE_BUSY	XVE Busy	VectorEngine	Any XVE thread loaded.
-DataportWrites	XVE_THREADS_OCCUPANCY_ALL	XVE Threads Occupancy All	EU Array	Percentage of thread slots occupied
+DataportWrites	XVE_THREADS_OCCUPANCY_ALL	XVE Threads Occupancy All	VectorEngine	Percentage of thread slots occupied
 DataportWrites	XVE_COMPUTE_THREAD_COUNT	XVE Compute Thread Count	VectorEngine	Number of compute shader hardware threads dispatched
 DataportReads	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
 DataportReads	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
@@ -394,54 +395,46 @@ DataportReads	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core
 DataportReads	DATAPORT_BYTE_READ	Dataport Byte Read	Dataport	Number of bytes read through the Dataport
 DataportReads	GPU_MEMORY_BYTE_READ	GPU Memory Byte Read	Memory	Number of device local memory (HBM, GDDR, LPDDR, etc.) read bytes
 DataportReads	GPU_MEMORY_BYTE_WRITE	GPU Memory Byte Write	Memory	Number of device local memory (HBM, GDDR, LPDDR, etc.) write bytes
-DataportReads	XVE_ACTIVE	XVE Active	EU Array	Percentage of time in which at least one pipe is active in XVE
-DataportReads	XVE_STALL	XVE Stall	EU Array	Percentage of time in which any threads are loaded but not even a single pipe is active in XVE
+DataportReads	XVE_ACTIVE	XVE Active	VectorEngine	Percentage of time in which at least one pipe is active in XVE
+DataportReads	XVE_STALL	XVE Stall	VectorEngine	Percentage of time in which any threads are loaded but not even a single pipe is active in XVE
 DataportReads	XVE_BUSY	XVE Busy	VectorEngine	Any XVE thread loaded.
-DataportReads	XVE_THREADS_OCCUPANCY_ALL	XVE Threads Occupancy All	EU Array	Percentage of thread slots occupied
+DataportReads	XVE_THREADS_OCCUPANCY_ALL	XVE Threads Occupancy All	VectorEngine	Percentage of thread slots occupied
 DataportReads	XVE_COMPUTE_THREAD_COUNT	XVE Compute Thread Count	VectorEngine	Number of compute shader hardware threads dispatched
 L1ProfileSlmBankConflicts	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
 L1ProfileSlmBankConflicts	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
 L1ProfileSlmBankConflicts	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
-L1ProfileSlmBankConflicts	SLM_BANK_CONFLICT_COUNT	SLM Bank Conflict Count	GPU	Number of SLM accesses resulting in a bank conflict.
+L1ProfileSlmBankConflicts	SLM_BANK_CONFLICT_COUNT	SLM Bank Conflict Count	L1Cache	Number of SLM accesses resulting in a bank conflict.
 L1ProfileSlmBankConflicts	GPU_MEMORY_BYTE_READ	GPU Memory Byte Read	Memory	Number of device local memory (HBM, GDDR, LPDDR, etc.) read bytes
 L1ProfileSlmBankConflicts	GPU_MEMORY_BYTE_WRITE	GPU Memory Byte Write	Memory	Number of device local memory (HBM, GDDR, LPDDR, etc.) write bytes
-L1ProfileSlmBankConflicts	XVE_ACTIVE	XVE Active	EU Array	Percentage of time in which at least one pipe is active in XVE
-L1ProfileSlmBankConflicts	XVE_STALL	XVE Stall	EU Array	Percentage of time in which any threads are loaded but not even a single pipe is active in XVE
-L1ProfileSlmBankConflicts	XVE_THREADS_OCCUPANCY_ALL	XVE Threads Occupancy All	EU Array	Percentage of thread slots occupied
+L1ProfileSlmBankConflicts	XVE_ACTIVE	XVE Active	VectorEngine	Percentage of time in which at least one pipe is active in XVE
+L1ProfileSlmBankConflicts	XVE_STALL	XVE Stall	VectorEngine	Percentage of time in which any threads are loaded but not even a single pipe is active in XVE
+L1ProfileSlmBankConflicts	XVE_THREADS_OCCUPANCY_ALL	XVE Threads Occupancy All	VectorEngine	Percentage of thread slots occupied
 L1ProfileSlmBankConflicts	XVE_BUSY	XVE Busy	VectorEngine	Any XVE thread loaded.
+L1ProfileSlmBankConflicts	XVE_COMPUTE_THREAD_COUNT	XVE Compute Thread Count	VectorEngine	Number of compute shader hardware threads dispatched
 LoadStoreCacheProfile	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
 LoadStoreCacheProfile	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
 LoadStoreCacheProfile	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
-LoadStoreCacheProfile	LOAD_STORE_CACHE_BYTE_READ	Load Store Cache Byte Read	GPU	Number of bytes read out of the Load Store Cache, excluding SLM accesses.
-LoadStoreCacheProfile	LOAD_STORE_CACHE_BYTE_WRITE	Load Store Cache Byte Write	GPU	Number of bytes written to the Load Store Cache, excluding SLM accesses.
+LoadStoreCacheProfile	LOAD_STORE_CACHE_BYTE_READ	Load Store Cache Byte Read	L1Cache	Number of bytes read out of the Load Store Cache, excluding SLM accesses.
+LoadStoreCacheProfile	LOAD_STORE_CACHE_BYTE_WRITE	Load Store Cache Byte Write	L1Cache	Number of bytes written to the Load Store Cache, excluding SLM accesses.
 LoadStoreCacheProfile	GPU_MEMORY_BYTE_READ	GPU Memory Byte Read	Memory	Number of device local memory (HBM, GDDR, LPDDR, etc.) read bytes
 LoadStoreCacheProfile	GPU_MEMORY_BYTE_WRITE	GPU Memory Byte Write	Memory	Number of device local memory (HBM, GDDR, LPDDR, etc.) write bytes
-LoadStoreCacheProfile	XVE_ACTIVE	XVE Active	EU Array	Percentage of time in which at least one pipe is active in XVE
-LoadStoreCacheProfile	XVE_STALL	XVE Stall	EU Array	Percentage of time in which any threads are loaded but not even a single pipe is active in XVE
-LoadStoreCacheProfile	XVE_THREADS_OCCUPANCY_ALL	XVE Threads Occupancy All	EU Array	Percentage of thread slots occupied
+LoadStoreCacheProfile	XVE_ACTIVE	XVE Active	VectorEngine	Percentage of time in which at least one pipe is active in XVE
+LoadStoreCacheProfile	XVE_STALL	XVE Stall	VectorEngine	Percentage of time in which any threads are loaded but not even a single pipe is active in XVE
+LoadStoreCacheProfile	XVE_THREADS_OCCUPANCY_ALL	XVE Threads Occupancy All	VectorEngine	Percentage of thread slots occupied
 LoadStoreCacheProfile	XVE_BUSY	XVE Busy	VectorEngine	Any XVE thread loaded.
+LoadStoreCacheProfile	XVE_COMPUTE_THREAD_COUNT	XVE Compute Thread Count	VectorEngine	Number of compute shader hardware threads dispatched
 LoadStoreCacheProfile	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
 LoadStoreCacheProfile	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
 LoadStoreCacheProfile	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
-LoadStoreCacheProfile	LOAD_STORE_CACHE_BYTE_READ	Load Store Cache Byte Read	GPU	Number of bytes read out of the Load Store Cache, excluding SLM accesses.
-LoadStoreCacheProfile	LOAD_STORE_CACHE_BYTE_WRITE	Load Store Cache Byte Write	GPU	Number of bytes written to the Load Store Cache, excluding SLM accesses.
+LoadStoreCacheProfile	LOAD_STORE_CACHE_BYTE_READ	Load Store Cache Byte Read	L1Cache	Number of bytes read out of the Load Store Cache, excluding SLM accesses.
+LoadStoreCacheProfile	LOAD_STORE_CACHE_BYTE_WRITE	Load Store Cache Byte Write	L1Cache	Number of bytes written to the Load Store Cache, excluding SLM accesses.
 LoadStoreCacheProfile	GPU_MEMORY_BYTE_READ	GPU Memory Byte Read	Memory	Number of device local memory (HBM, GDDR, LPDDR, etc.) read bytes
 LoadStoreCacheProfile	GPU_MEMORY_BYTE_WRITE	GPU Memory Byte Write	Memory	Number of device local memory (HBM, GDDR, LPDDR, etc.) write bytes
-LoadStoreCacheProfile	XVE_ACTIVE	XVE Active	EU Array	Percentage of time in which at least one pipe is active in XVE
-LoadStoreCacheProfile	XVE_STALL	XVE Stall	EU Array	Percentage of time in which any threads are loaded but not even a single pipe is active in XVE
-LoadStoreCacheProfile	XVE_THREADS_OCCUPANCY_ALL	XVE Threads Occupancy All	EU Array	Percentage of thread slots occupied
+LoadStoreCacheProfile	XVE_ACTIVE	XVE Active	VectorEngine	Percentage of time in which at least one pipe is active in XVE
+LoadStoreCacheProfile	XVE_STALL	XVE Stall	VectorEngine	Percentage of time in which any threads are loaded but not even a single pipe is active in XVE
+LoadStoreCacheProfile	XVE_THREADS_OCCUPANCY_ALL	XVE Threads Occupancy All	VectorEngine	Percentage of thread slots occupied
 LoadStoreCacheProfile	XVE_BUSY	XVE Busy	VectorEngine	Any XVE thread loaded.
-SLMProfile	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
-SLMProfile	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
-SLMProfile	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
-SLMProfile	SLM_BYTE_READ	SLM Byte Read	GPU	Number of bytes read from SLM
-SLMProfile	SLM_BYTE_WRITE	SLM Byte Write	GPU	Number of bytes written to SLM
-SLMProfile	GPU_MEMORY_BYTE_READ	GPU Memory Byte Read	Memory	Number of device local memory (HBM, GDDR, LPDDR, etc.) read bytes
-SLMProfile	GPU_MEMORY_BYTE_WRITE	GPU Memory Byte Write	Memory	Number of device local memory (HBM, GDDR, LPDDR, etc.) write bytes
-SLMProfile	XVE_ACTIVE	XVE Active	EU Array	Percentage of time in which at least one pipe is active in XVE
-SLMProfile	XVE_STALL	XVE Stall	EU Array	Percentage of time in which any threads are loaded but not even a single pipe is active in XVE
-SLMProfile	XVE_THREADS_OCCUPANCY_ALL	XVE Threads Occupancy All	EU Array	Percentage of thread slots occupied
-SLMProfile	XVE_BUSY	XVE Busy	VectorEngine	Any XVE thread loaded.
+LoadStoreCacheProfile	XVE_COMPUTE_THREAD_COUNT	XVE Compute Thread Count	VectorEngine	Number of compute shader hardware threads dispatched
 SLMProfile	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
 SLMProfile	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
 SLMProfile	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
@@ -449,10 +442,23 @@ SLMProfile	SLM_BYTE_READ	SLM Byte Read	L1Cache	Number of bytes read from SLM
 SLMProfile	SLM_BYTE_WRITE	SLM Byte Write	L1Cache	Number of bytes written to SLM
 SLMProfile	GPU_MEMORY_BYTE_READ	GPU Memory Byte Read	Memory	Number of device local memory (HBM, GDDR, LPDDR, etc.) read bytes
 SLMProfile	GPU_MEMORY_BYTE_WRITE	GPU Memory Byte Write	Memory	Number of device local memory (HBM, GDDR, LPDDR, etc.) write bytes
-SLMProfile	XVE_ACTIVE	XVE Active	EU Array	Percentage of time in which at least one pipe is active in XVE
-SLMProfile	XVE_STALL	XVE Stall	EU Array	Percentage of time in which any threads are loaded but not even a single pipe is active in XVE
-SLMProfile	XVE_THREADS_OCCUPANCY_ALL	XVE Threads Occupancy All	EU Array	Percentage of thread slots occupied
+SLMProfile	XVE_ACTIVE	XVE Active	VectorEngine	Percentage of time in which at least one pipe is active in XVE
+SLMProfile	XVE_STALL	XVE Stall	VectorEngine	Percentage of time in which any threads are loaded but not even a single pipe is active in XVE
+SLMProfile	XVE_THREADS_OCCUPANCY_ALL	XVE Threads Occupancy All	VectorEngine	Percentage of thread slots occupied
 SLMProfile	XVE_BUSY	XVE Busy	VectorEngine	Any XVE thread loaded.
+SLMProfile	XVE_COMPUTE_THREAD_COUNT	XVE Compute Thread Count	VectorEngine	Number of compute shader hardware threads dispatched
+SLMProfile	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
+SLMProfile	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
+SLMProfile	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
+SLMProfile	SLM_BYTE_READ	SLM Byte Read	L1Cache	Number of bytes read from SLM
+SLMProfile	SLM_BYTE_WRITE	SLM Byte Write	L1Cache	Number of bytes written to SLM
+SLMProfile	GPU_MEMORY_BYTE_READ	GPU Memory Byte Read	Memory	Number of device local memory (HBM, GDDR, LPDDR, etc.) read bytes
+SLMProfile	GPU_MEMORY_BYTE_WRITE	GPU Memory Byte Write	Memory	Number of device local memory (HBM, GDDR, LPDDR, etc.) write bytes
+SLMProfile	XVE_ACTIVE	XVE Active	VectorEngine	Percentage of time in which at least one pipe is active in XVE
+SLMProfile	XVE_STALL	XVE Stall	VectorEngine	Percentage of time in which any threads are loaded but not even a single pipe is active in XVE
+SLMProfile	XVE_THREADS_OCCUPANCY_ALL	XVE Threads Occupancy All	VectorEngine	Percentage of thread slots occupied
+SLMProfile	XVE_BUSY	XVE Busy	VectorEngine	Any XVE thread loaded.
+SLMProfile	XVE_COMPUTE_THREAD_COUNT	XVE Compute Thread Count	VectorEngine	Number of compute shader hardware threads dispatched
 Ext1	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
 Ext1	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
 Ext1	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
@@ -1257,8 +1263,8 @@ Ext118	AMFS_CACHE_MISS_SLICE0	AMFS Cache Miss Slice0	GPU	Number of cache misses 
 Ext118	RENDER_CACHE_HIT_L3NODE0	Render Cache Hit L3node0	GPU	Number of Render Cache hits
 Ext118	RENDER_CACHE_READ_L3NODE0	Render Cache Read L3node0	GPU	Number of Render Cache reads
 Ext118	RENDER_CACHE_WRITE_L3NODE0	Render Cache Write L3node0	GPU	Number of Render Cache writes
-Ext118	RENDER_CACHE_INPUT_AVAILABLE_L3NODE0	RENDER CACHE INPUT AVAILABLE _L3NODE0	GPU	Percentage of time when Render Cache input is available
-Ext118	RENDER_CACHE_OUTPUT_READY_L3NODE0	RENDER CACHE OUTPUT READY _L3NODE0	GPU	Percentage of time when Render Cache output is ready
+Ext118	RENDER_CACHE_INPUT_AVAILABLE_L3NODE0	Render Cache Input Available L3node0	GPU	Percentage of time when Render Cache input is available
+Ext118	RENDER_CACHE_OUTPUT_READY_L3NODE0	Render Cache Output Ready L3node0	GPU	Percentage of time when Render Cache output is ready
 Ext119	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
 Ext119	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
 Ext119	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
@@ -1269,8 +1275,8 @@ Ext119	AMFS_CACHE_MISS_SLICE1	AMFS Cache Miss Slice1	GPU	Number of cache misses 
 Ext119	RENDER_CACHE_HIT_L3NODE1	Render Cache Hit L3node1	GPU	Number of Render Cache hits
 Ext119	RENDER_CACHE_READ_L3NODE1	Render Cache Read L3node1	GPU	Number of Render Cache reads
 Ext119	RENDER_CACHE_WRITE_L3NODE1	Render Cache Write L3node1	GPU	Number of Render Cache writes
-Ext119	RENDER_CACHE_INPUT_AVAILABLE_L3NODE1	RENDER CACHE INPUT AVAILABLE _L3NODE1	GPU	Percentage of time when Render Cache input is available
-Ext119	RENDER_CACHE_OUTPUT_READY_L3NODE1	RENDER CACHE OUTPUT READY _L3NODE1	GPU	Percentage of time when Render Cache output is ready
+Ext119	RENDER_CACHE_INPUT_AVAILABLE_L3NODE1	Render Cache Input Available L3node1	GPU	Percentage of time when Render Cache input is available
+Ext119	RENDER_CACHE_OUTPUT_READY_L3NODE1	Render Cache Output Ready L3node1	GPU	Percentage of time when Render Cache output is ready
 Ext120	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
 Ext120	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
 Ext120	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
@@ -1305,14 +1311,14 @@ Ext123	AMFS_L3_ACCESS_SLICE0	AMFS L3 Access Slice0	GPU	Number of AMFS accesses t
 Ext123	AMFS_L3_ATOMIC_SLICE0	AMFS L3 Atomic Slice0	GPU	Number of AMFS atomics to L3
 Ext123	CLIPPER_PRIMITIVE_FAR_NEAR_CLIP_SLICE0	Clipper Primitive Far Near Clip Slice0	GPU	Number of primitives clipped by Clipper due to near/far planes
 Ext123	COLOR_PIPE_CACHE_LATENCY2_STALL_L3NODE0	Color Pipe Cache Latency2 Stall L3node0	GPU	Percentage of time in which Color Pipeline stalled due to Render Cache latency hiding structure full
-Ext123	PIXEL_BACKEND_INPUT_AVAILABLE_L3NODE0	PIXEL BACKEND INPUT AVAILABLE _L3NODE0	GPU	Percentage of time when  the data is available at input of Pixel Backend
-Ext123	PIXEL_BACKEND_OUTPUT_READY_L3NODE0	PIXEL BACKEND OUTPUT READY _L3NODE0	GPU	Percentage of time when  the data at Pixel Backend output is ready
+Ext123	PIXEL_BACKEND_INPUT_AVAILABLE_L3NODE0	Pixel Backend Input Available L3node0	GPU	Percentage of time when  the data is available at input of Pixel Backend
+Ext123	PIXEL_BACKEND_OUTPUT_READY_L3NODE0	Pixel Backend Output Ready L3node0	GPU	Percentage of time when  the data at Pixel Backend output is ready
 Ext123	AMFS_L3_ACCESS_SLICE1	AMFS L3 Access Slice1	GPU	Number of AMFS accesses to L3
 Ext123	AMFS_L3_ATOMIC_SLICE1	AMFS L3 Atomic Slice1	GPU	Number of AMFS atomics to L3
 Ext123	CLIPPER_PRIMITIVE_FAR_NEAR_CLIP_SLICE1	Clipper Primitive Far Near Clip Slice1	GPU	Number of primitives clipped by Clipper due to near/far planes
 Ext123	COLOR_PIPE_CACHE_LATENCY2_STALL_L3NODE1	Color Pipe Cache Latency2 Stall L3node1	GPU	Percentage of time in which Color Pipeline stalled due to Render Cache latency hiding structure full
-Ext123	PIXEL_BACKEND_INPUT_AVAILABLE_L3NODE1	PIXEL BACKEND INPUT AVAILABLE _L3NODE1	GPU	Percentage of time when  the data is available at input of Pixel Backend
-Ext123	PIXEL_BACKEND_OUTPUT_READY_L3NODE1	PIXEL BACKEND OUTPUT READY _L3NODE1	GPU	Percentage of time when  the data at Pixel Backend output is ready
+Ext123	PIXEL_BACKEND_INPUT_AVAILABLE_L3NODE1	Pixel Backend Input Available L3node1	GPU	Percentage of time when  the data is available at input of Pixel Backend
+Ext123	PIXEL_BACKEND_OUTPUT_READY_L3NODE1	Pixel Backend Output Ready L3node1	GPU	Percentage of time when  the data at Pixel Backend output is ready
 Ext124	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
 Ext124	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
 Ext124	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
@@ -2275,14 +2281,14 @@ Ext547	SLM_BYTE_WRITE_BANK1_XECORE7	SLM Byte Write Bank1 Xecore7	GPU	Number of b
 Ext572	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
 Ext572	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
 Ext572	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
-Ext572	XVE_INST_EXECUTED_PREDICATION_XECORE0_XVE0_THREAD0	XVE INST EXECUTED_PREDICATION XECORE0 XVE0 THREAD0	VectorEngine	Number of execution slots taken by instructions with predication mask enabled
-Ext572	XVE_INST_EXECUTED_PREDICATION_XECORE1_XVE0_THREAD0	XVE INST EXECUTED_PREDICATION XECORE1 XVE0 THREAD0	VectorEngine	Number of execution slots taken by instructions with predication mask enabled
-Ext572	XVE_INST_EXECUTED_PREDICATION_XECORE2_XVE0_THREAD0	XVE INST EXECUTED_PREDICATION XECORE2 XVE0 THREAD0	VectorEngine	Number of execution slots taken by instructions with predication mask enabled
-Ext572	XVE_INST_EXECUTED_PREDICATION_XECORE3_XVE0_THREAD0	XVE INST EXECUTED_PREDICATION XECORE3 XVE0 THREAD0	VectorEngine	Number of execution slots taken by instructions with predication mask enabled
-Ext572	XVE_INST_EXECUTED_NONDIVERGENT_XECORE0_XVE0_THREAD0	XVE INST EXECUTED_NONDIVERGENT XECORE0 XVE0 THREAD0	VectorEngine	Number of execution slots taken by nondivergent instructions executed
-Ext572	XVE_INST_EXECUTED_NONDIVERGENT_XECORE1_XVE0_THREAD0	XVE INST EXECUTED_NONDIVERGENT XECORE1 XVE0 THREAD0	VectorEngine	Number of execution slots taken by nondivergent instructions executed
-Ext572	XVE_INST_EXECUTED_NONDIVERGENT_XECORE2_XVE0_THREAD0	XVE INST EXECUTED_NONDIVERGENT XECORE2 XVE0 THREAD0	VectorEngine	Number of execution slots taken by nondivergent instructions executed
-Ext572	XVE_INST_EXECUTED_NONDIVERGENT_XECORE3_XVE0_THREAD0	XVE INST EXECUTED_NONDIVERGENT XECORE3 XVE0 THREAD0	VectorEngine	Number of execution slots taken by nondivergent instructions executed
+Ext572	XVE_INST_EXECUTED_PREDICATION_XECORE0_XVE0_THREAD0	XVE Inst Executed Predication Xecore0 Xve0 Thread0	VectorEngine	Number of execution slots taken by instructions with predication mask enabled
+Ext572	XVE_INST_EXECUTED_PREDICATION_XECORE1_XVE0_THREAD0	XVE Inst Executed Predication Xecore1 Xve0 Thread0	VectorEngine	Number of execution slots taken by instructions with predication mask enabled
+Ext572	XVE_INST_EXECUTED_PREDICATION_XECORE2_XVE0_THREAD0	XVE Inst Executed Predication Xecore2 Xve0 Thread0	VectorEngine	Number of execution slots taken by instructions with predication mask enabled
+Ext572	XVE_INST_EXECUTED_PREDICATION_XECORE3_XVE0_THREAD0	XVE Inst Executed Predication Xecore3 Xve0 Thread0	VectorEngine	Number of execution slots taken by instructions with predication mask enabled
+Ext572	XVE_INST_EXECUTED_NONDIVERGENT_XECORE0_XVE0_THREAD0	XVE Inst Executed Nondivergent Xecore0 Xve0 Thread0	VectorEngine	Number of execution slots taken by nondivergent instructions executed
+Ext572	XVE_INST_EXECUTED_NONDIVERGENT_XECORE1_XVE0_THREAD0	XVE Inst Executed Nondivergent Xecore1 Xve0 Thread0	VectorEngine	Number of execution slots taken by nondivergent instructions executed
+Ext572	XVE_INST_EXECUTED_NONDIVERGENT_XECORE2_XVE0_THREAD0	XVE Inst Executed Nondivergent Xecore2 Xve0 Thread0	VectorEngine	Number of execution slots taken by nondivergent instructions executed
+Ext572	XVE_INST_EXECUTED_NONDIVERGENT_XECORE3_XVE0_THREAD0	XVE Inst Executed Nondivergent Xecore3 Xve0 Thread0	VectorEngine	Number of execution slots taken by nondivergent instructions executed
 Ext572	XVE_INST_EXECUTED_BARRIER_XECORE0_XVE0_THREAD0	XVE Inst Executed Barrier Xecore0 Xve0 Thread0	VectorEngine	Number of execution slots taken by bit manipulation instructions
 Ext572	XVE_INST_EXECUTED_BARRIER_XECORE1_XVE0_THREAD0	XVE Inst Executed Barrier Xecore1 Xve0 Thread0	VectorEngine	Number of execution slots taken by bit manipulation instructions
 Ext572	XVE_INST_EXECUTED_BARRIER_XECORE2_XVE0_THREAD0	XVE Inst Executed Barrier Xecore2 Xve0 Thread0	VectorEngine	Number of execution slots taken by bit manipulation instructions
@@ -2290,14 +2296,14 @@ Ext572	XVE_INST_EXECUTED_BARRIER_XECORE3_XVE0_THREAD0	XVE Inst Executed Barrier 
 Ext573	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
 Ext573	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
 Ext573	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
-Ext573	XVE_INST_EXECUTED_PREDICATION_XECORE4_XVE0_THREAD0	XVE INST EXECUTED_PREDICATION XECORE4 XVE0 THREAD0	VectorEngine	Number of execution slots taken by instructions with predication mask enabled
-Ext573	XVE_INST_EXECUTED_PREDICATION_XECORE5_XVE0_THREAD0	XVE INST EXECUTED_PREDICATION XECORE5 XVE0 THREAD0	VectorEngine	Number of execution slots taken by instructions with predication mask enabled
-Ext573	XVE_INST_EXECUTED_PREDICATION_XECORE6_XVE0_THREAD0	XVE INST EXECUTED_PREDICATION XECORE6 XVE0 THREAD0	VectorEngine	Number of execution slots taken by instructions with predication mask enabled
-Ext573	XVE_INST_EXECUTED_PREDICATION_XECORE7_XVE0_THREAD0	XVE INST EXECUTED_PREDICATION XECORE7 XVE0 THREAD0	VectorEngine	Number of execution slots taken by instructions with predication mask enabled
-Ext573	XVE_INST_EXECUTED_NONDIVERGENT_XECORE4_XVE0_THREAD0	XVE INST EXECUTED_NONDIVERGENT XECORE4 XVE0 THREAD0	VectorEngine	Number of execution slots taken by nondivergent instructions executed
-Ext573	XVE_INST_EXECUTED_NONDIVERGENT_XECORE5_XVE0_THREAD0	XVE INST EXECUTED_NONDIVERGENT XECORE5 XVE0 THREAD0	VectorEngine	Number of execution slots taken by nondivergent instructions executed
-Ext573	XVE_INST_EXECUTED_NONDIVERGENT_XECORE6_XVE0_THREAD0	XVE INST EXECUTED_NONDIVERGENT XECORE6 XVE0 THREAD0	VectorEngine	Number of execution slots taken by nondivergent instructions executed
-Ext573	XVE_INST_EXECUTED_NONDIVERGENT_XECORE7_XVE0_THREAD0	XVE INST EXECUTED_NONDIVERGENT XECORE7 XVE0 THREAD0	VectorEngine	Number of execution slots taken by nondivergent instructions executed
+Ext573	XVE_INST_EXECUTED_PREDICATION_XECORE4_XVE0_THREAD0	XVE Inst Executed Predication Xecore4 Xve0 Thread0	VectorEngine	Number of execution slots taken by instructions with predication mask enabled
+Ext573	XVE_INST_EXECUTED_PREDICATION_XECORE5_XVE0_THREAD0	XVE Inst Executed Predication Xecore5 Xve0 Thread0	VectorEngine	Number of execution slots taken by instructions with predication mask enabled
+Ext573	XVE_INST_EXECUTED_PREDICATION_XECORE6_XVE0_THREAD0	XVE Inst Executed Predication Xecore6 Xve0 Thread0	VectorEngine	Number of execution slots taken by instructions with predication mask enabled
+Ext573	XVE_INST_EXECUTED_PREDICATION_XECORE7_XVE0_THREAD0	XVE Inst Executed Predication Xecore7 Xve0 Thread0	VectorEngine	Number of execution slots taken by instructions with predication mask enabled
+Ext573	XVE_INST_EXECUTED_NONDIVERGENT_XECORE4_XVE0_THREAD0	XVE Inst Executed Nondivergent Xecore4 Xve0 Thread0	VectorEngine	Number of execution slots taken by nondivergent instructions executed
+Ext573	XVE_INST_EXECUTED_NONDIVERGENT_XECORE5_XVE0_THREAD0	XVE Inst Executed Nondivergent Xecore5 Xve0 Thread0	VectorEngine	Number of execution slots taken by nondivergent instructions executed
+Ext573	XVE_INST_EXECUTED_NONDIVERGENT_XECORE6_XVE0_THREAD0	XVE Inst Executed Nondivergent Xecore6 Xve0 Thread0	VectorEngine	Number of execution slots taken by nondivergent instructions executed
+Ext573	XVE_INST_EXECUTED_NONDIVERGENT_XECORE7_XVE0_THREAD0	XVE Inst Executed Nondivergent Xecore7 Xve0 Thread0	VectorEngine	Number of execution slots taken by nondivergent instructions executed
 Ext573	XVE_INST_EXECUTED_BARRIER_XECORE4_XVE0_THREAD0	XVE Inst Executed Barrier Xecore4 Xve0 Thread0	VectorEngine	Number of execution slots taken by bit manipulation instructions
 Ext573	XVE_INST_EXECUTED_BARRIER_XECORE5_XVE0_THREAD0	XVE Inst Executed Barrier Xecore5 Xve0 Thread0	VectorEngine	Number of execution slots taken by bit manipulation instructions
 Ext573	XVE_INST_EXECUTED_BARRIER_XECORE6_XVE0_THREAD0	XVE Inst Executed Barrier Xecore6 Xve0 Thread0	VectorEngine	Number of execution slots taken by bit manipulation instructions
@@ -2324,189 +2330,189 @@ Ext604	THREADGROUP_DISPATCH_QUEUE1_ACTIVE_XECORE7	Threadgroup Dispatch Queue1 Ac
 Ext1000	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
 Ext1000	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
 Ext1000	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
-Ext1000	XVE_ACTIVE	XVE Active	EU Array	Percentage of time in which at least one pipe is active in XVE
-Ext1000	XVE_STALL	XVE Stall	EU Array	Percentage of time in which any threads are loaded but not even a single pipe is active in XVE
-Ext1000	XVE_THREADS_OCCUPANCY_ALL	XVE Threads Occupancy All	EU Array	Percentage of thread slots occupied
-Ext1000	XVE_INST_EXECUTED_ALU0_ALL	XVE Inst Executed ALU0 All	EU Array/Pipes	Number of execution slots taken by instructions executed on ALU0 pipe
-Ext1000	XVE_INST_EXECUTED_ALU1_ALL	XVE Inst Executed ALU1 All	EU Array/Pipes	Number of execution slots taken by instructions executed on ALU1 pipe
-Ext1000	XVE_INST_EXECUTED_XMX_ALL	XVE Inst Executed XMX All	EU Array/Pipes	Number of execution slots taken by instructions executed in XMX pipe
-Ext1000	XVE_INST_EXECUTED_SEND_ALL	XVE Inst Executed Send All	EU Array/Pipes	Number of instructions executed on SEND pipe
-Ext1000	XVE_INST_EXECUTED_CONTROL_ALL	XVE Inst Executed Control All	EU Array	Number of instructions executed on Jump Pipe
-Ext1000	XVE_PIPE_ALU0_AND_ALU1_ACTIVE	XVE Pipe ALU0 And ALU1 Active	EU Array/Pipes	Percentage of time in which ALU0 and ALU1 pipes are both actively executing a Gen ISA instruction
-Ext1000	XVE_PIPE_ALU0_AND_XMX_ACTIVE	XVE Pipe ALU0 And XMX Active	EU Array/Pipes	Percentage of time in which ALU0 and XMX pipes are both actively executing a Gen ISA instruction
-Ext1000	XVE_INST_EXECUTED_ALU0_ALL_UTILIZATION	XVE Inst Executed ALU0 All Utilization	EU Array/Pipes	Percentage of execution slots taken by instructions executed on ALU0 pipe
-Ext1000	XVE_INST_EXECUTED_ALU1_ALL_UTILIZATION	XVE Inst Executed ALU1 All Utilization	EU Array/Pipes	Percentage of execution slots taken by instructions executed on ALU1 pipe
-Ext1000	XVE_INST_EXECUTED_XMX_ALL_UTILIZATION	XVE Inst Executed XMX All Utilization	EU Array/Pipes	Percentage of execution slots taken by instructions executed in XMX pipe
-Ext1000	XVE_INST_EXECUTED_SEND_ALL_UTILIZATION	XVE Inst Executed Send All Utilization	EU Array/Pipes	Percentage of time taken by instructions executed on SEND pipe
-Ext1000	XVE_INST_EXECUTED_CONTROL_ALL_UTILIZATION	XVE Inst Executed Control All Utilization	EU Array	Percentage of time taken by instructions executed on Jump Pipe
-Ext1000	XVE_ACTIVE_CYCLES	XVE Active Cycles	EU Array	Number of cycles at least one pipe is active in XVE
-Ext1000	XVE_STALL_CYCLES	XVE Stall Cycles	EU Array	Number of cycles any threads are loaded but not even a single pipe is active in XVE
-Ext1000	XVE_THREADS_OCCUPANCY_CYCLES_ALL	XVE Threads Occupancy Cycles All	EU Array	Number of thread slots occupied
-Ext1000	XVE_PIPE_ALU0_AND_ALU1_ACTIVE_CYCLES	XVE Pipe ALU0 And ALU1 Active Cycles	EU Array/Pipes	Number of cycles in ALU0 and ALU1 pipes are both actively executing a Gen ISA instruction
-Ext1000	XVE_PIPE_ALU0_AND_XMX_ACTIVE_CYCLES	XVE Pipe ALU0 And XMX Active Cycles	EU Array/Pipes	Number of cycles ALU0 and XMX pipes are both actively executing a Gen ISA instruction
+Ext1000	XVE_ACTIVE	XVE Active	VectorEngine	Percentage of time in which at least one pipe is active in XVE
+Ext1000	XVE_STALL	XVE Stall	VectorEngine	Percentage of time in which any threads are loaded but not even a single pipe is active in XVE
+Ext1000	XVE_THREADS_OCCUPANCY_ALL	XVE Threads Occupancy All	VectorEngine	Percentage of thread slots occupied
+Ext1000	XVE_INST_EXECUTED_ALU0_ALL	XVE Inst Executed ALU0 All	VectorEngine	Number of execution slots taken by instructions executed on ALU0 pipe
+Ext1000	XVE_INST_EXECUTED_ALU1_ALL	XVE Inst Executed ALU1 All	VectorEngine	Number of execution slots taken by instructions executed on ALU1 pipe
+Ext1000	XVE_INST_EXECUTED_XMX_ALL	XVE Inst Executed XMX All	VectorEngine	Number of execution slots taken by instructions executed in XMX pipe
+Ext1000	XVE_INST_EXECUTED_SEND_ALL	XVE Inst Executed Send All	VectorEngine	Number of instructions executed on SEND pipe
+Ext1000	XVE_INST_EXECUTED_CONTROL_ALL	XVE Inst Executed Control All	VectorEngine	Number of instructions executed on Jump Pipe
+Ext1000	XVE_PIPE_ALU0_AND_ALU1_ACTIVE	XVE Pipe ALU0 And ALU1 Active	VectorEngine	Percentage of time in which ALU0 and ALU1 pipes are both actively executing a Gen ISA instruction
+Ext1000	XVE_PIPE_ALU0_AND_XMX_ACTIVE	XVE Pipe ALU0 And XMX Active	VectorEngine	Percentage of time in which ALU0 and XMX pipes are both actively executing a Gen ISA instruction
+Ext1000	XVE_INST_EXECUTED_ALU0_ALL_UTILIZATION	XVE Inst Executed ALU0 All Utilization	VectorEngine	Percentage of execution slots taken by instructions executed on ALU0 pipe
+Ext1000	XVE_INST_EXECUTED_ALU1_ALL_UTILIZATION	XVE Inst Executed ALU1 All Utilization	VectorEngine	Percentage of execution slots taken by instructions executed on ALU1 pipe
+Ext1000	XVE_INST_EXECUTED_XMX_ALL_UTILIZATION	XVE Inst Executed XMX All Utilization	VectorEngine	Percentage of execution slots taken by instructions executed in XMX pipe
+Ext1000	XVE_INST_EXECUTED_SEND_ALL_UTILIZATION	XVE Inst Executed Send All Utilization	VectorEngine	Percentage of time taken by instructions executed on SEND pipe
+Ext1000	XVE_INST_EXECUTED_CONTROL_ALL_UTILIZATION	XVE Inst Executed Control All Utilization	VectorEngine	Percentage of time taken by instructions executed on Jump Pipe
+Ext1000	XVE_ACTIVE_CYCLES	XVE Active Cycles	VectorEngine	Number of cycles at least one pipe is active in XVE
+Ext1000	XVE_STALL_CYCLES	XVE Stall Cycles	VectorEngine	Number of cycles any threads are loaded but not even a single pipe is active in XVE
+Ext1000	XVE_THREADS_OCCUPANCY_CYCLES_ALL	XVE Threads Occupancy Cycles All	VectorEngine	Number of thread slots occupied
+Ext1000	XVE_PIPE_ALU0_AND_ALU1_ACTIVE_CYCLES	XVE Pipe ALU0 And ALU1 Active Cycles	VectorEngine	Number of cycles in ALU0 and ALU1 pipes are both actively executing a Gen ISA instruction
+Ext1000	XVE_PIPE_ALU0_AND_XMX_ACTIVE_CYCLES	XVE Pipe ALU0 And XMX Active Cycles	VectorEngine	Number of cycles ALU0 and XMX pipes are both actively executing a Gen ISA instruction
 Ext1001	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
 Ext1001	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
 Ext1001	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
-Ext1001	XVE_INST_EXECUTED_ALU0_VS	XVE Inst Executed ALU0 VS	EU Array/Vertex Shader	Number of execution slots taken by instructions executed by Vertex Shader on ALU0 pipe
-Ext1001	XVE_INST_EXECUTED_ALU0_HS	XVE Inst Executed ALU0 HS	EU Array/Hull Shader	Number of execution slots taken by instructions executed by Hull Shader on ALU0 pipe
-Ext1001	XVE_INST_EXECUTED_ALU0_DS	XVE Inst Executed ALU0 DS	EU Array/Domain Shader	Number of execution slots taken by instructions executed by Domain Shader on ALU0 pipe
-Ext1001	XVE_INST_EXECUTED_ALU0_PS	XVE Inst Executed ALU0 PS	EU Array/Pixel Shader	Number of execution slots taken by instructions executed by Pixel Shader on ALU0 pipe
-Ext1001	XVE_INST_EXECUTED_ALU0_CS	XVE Inst Executed ALU0 CS	EU Array/Compute Shader	Number of execution slots taken by instructions executed by Compute Shader (from Render Engine) on ALU0 pipe
-Ext1001	XVE_INST_EXECUTED_ALU0_ASYNC_CS	XVE Inst Executed ALU0 Async CS	EU Array/Compute Shader	Number of execution slots taken by instructions executed by Async Compute Shader on ALU0 pipe
-Ext1001	XVE_INST_EXECUTED_ALU1_VS	XVE Inst Executed ALU1 VS	EU Array/Vertex Shader	Number of execution slots taken by instructions executed by Vertex Shader on ALU1 pipe
-Ext1001	XVE_INST_EXECUTED_ALU1_HS	XVE Inst Executed ALU1 HS	EU Array/Hull Shader	Number of execution slots taken by instructions executed by Hull Shader on ALU1 pipe
-Ext1001	XVE_INST_EXECUTED_ALU1_DS	XVE Inst Executed ALU1 DS	EU Array/Domain Shader	Number of execution slots taken by instructions executed by Domain Shader on ALU1 pipe
-Ext1001	XVE_INST_EXECUTED_ALU1_PS	XVE Inst Executed ALU1 PS	EU Array/Pixel Shader	Number of execution slots taken by instructions executed by Pixel Shader on ALU1 pipe
-Ext1001	XVE_INST_EXECUTED_ALU1_CS	XVE Inst Executed ALU1 CS	EU Array/Compute Shader	Number of execution slots taken by instructions executed by Compute Shader (from Render Engine) on ALU1 pipe
-Ext1001	XVE_INST_EXECUTED_ALU1_ASYNC_CS	XVE Inst Executed ALU1 Async CS	EU Array/Compute Shader	Number of execution slots taken by instructions executed by Async Compute Shader on ALU1 pipe
-Ext1001	XVE_INST_EXECUTED_ALU0_VS_UTILIZATION	XVE Inst Executed ALU0 VS Utilization	EU Array/Vertex Shader	Percentage of execution slots taken by instructions executed by Vertex Shader on ALU0 pipe
-Ext1001	XVE_INST_EXECUTED_ALU0_HS_UTILIZATION	XVE Inst Executed ALU0 HS Utilization	EU Array/Hull Shader	Percentage of execution slots taken by instructions executed by Hull Shader on ALU0 pipe
-Ext1001	XVE_INST_EXECUTED_ALU0_DS_UTILIZATION	XVE Inst Executed ALU0 DS Utilization	EU Array/Domain Shader	Percentage of execution slots taken by instructions executed by Domain Shader on ALU0 pipe
-Ext1001	XVE_INST_EXECUTED_ALU0_PS_UTILIZATION	XVE Inst Executed ALU0 PS Utilization	EU Array/Pixel Shader	Percentage of execution slots taken by instructions executed by Pixel Shader on ALU0 pipe
-Ext1001	XVE_INST_EXECUTED_ALU0_CS_UTILIZATION	XVE Inst Executed ALU0 CS Utilization	EU Array/Compute Shader	Percentage of execution slots taken by instructions executed by Compute Shader (from Render Engine) on ALU0 pipe
-Ext1001	XVE_INST_EXECUTED_ALU0_ASYNC_CS_UTILIZATION	XVE Inst Executed ALU0 Async CS Utilization	EU Array/Compute Shader	Percentage of execution slots taken by instructions executed by Async Compute Shader on ALU0 pipe
-Ext1001	XVE_INST_EXECUTED_ALU1_VS_UTILIZATION	XVE Inst Executed ALU1 VS Utilization	EU Array/Vertex Shader	Percentage of execution slots taken by instructions executed by Vertex Shader on ALU1 pipe
-Ext1001	XVE_INST_EXECUTED_ALU1_HS_UTILIZATION	XVE Inst Executed ALU1 HS Utilization	EU Array/Hull Shader	Percentage of execution slots taken by instructions executed by Hull Shader on ALU1 pipe
-Ext1001	XVE_INST_EXECUTED_ALU1_DS_UTILIZATION	XVE Inst Executed ALU1 DS Utilization	EU Array/Domain Shader	Percentage of execution slots taken by instructions executed by Domain Shader on ALU1 pipe
-Ext1001	XVE_INST_EXECUTED_ALU1_PS_UTILIZATION	XVE Inst Executed ALU1 PS Utilization	EU Array/Pixel Shader	Percentage of execution slots taken by instructions executed by Pixel Shader on ALU1 pipe
-Ext1001	XVE_INST_EXECUTED_ALU1_CS_UTILIZATION	XVE Inst Executed ALU1 CS Utilization	EU Array/Compute Shader	Percentage of execution slots taken by instructions executed by Compute Shader (from Render Engine) on ALU1 pipe
-Ext1001	XVE_INST_EXECUTED_ALU1_ASYNC_CS_UTILIZATION	XVE Inst Executed ALU1 Async CS Utilization	EU Array/Compute Shader	Percentage of execution slots taken by instructions executed by Async Compute Shader on ALU1 pipe
+Ext1001	XVE_INST_EXECUTED_ALU0_VS	XVE Inst Executed ALU0 VS	VectorEngine	Number of execution slots taken by instructions executed by Vertex Shader on ALU0 pipe
+Ext1001	XVE_INST_EXECUTED_ALU0_HS	XVE Inst Executed ALU0 HS	VectorEngine	Number of execution slots taken by instructions executed by Hull Shader on ALU0 pipe
+Ext1001	XVE_INST_EXECUTED_ALU0_DS	XVE Inst Executed ALU0 DS	VectorEngine	Number of execution slots taken by instructions executed by Domain Shader on ALU0 pipe
+Ext1001	XVE_INST_EXECUTED_ALU0_PS	XVE Inst Executed ALU0 PS	VectorEngine	Number of execution slots taken by instructions executed by Pixel Shader on ALU0 pipe
+Ext1001	XVE_INST_EXECUTED_ALU0_CS	XVE Inst Executed ALU0 CS	VectorEngine	Number of execution slots taken by instructions executed by Compute Shader (from Render Engine) on ALU0 pipe
+Ext1001	XVE_INST_EXECUTED_ALU0_ASYNC_CS	XVE Inst Executed ALU0 Async CS	VectorEngine	Number of execution slots taken by instructions executed by Async Compute Shader on ALU0 pipe
+Ext1001	XVE_INST_EXECUTED_ALU1_VS	XVE Inst Executed ALU1 VS	VectorEngine	Number of execution slots taken by instructions executed by Vertex Shader on ALU1 pipe
+Ext1001	XVE_INST_EXECUTED_ALU1_HS	XVE Inst Executed ALU1 HS	VectorEngine	Number of execution slots taken by instructions executed by Hull Shader on ALU1 pipe
+Ext1001	XVE_INST_EXECUTED_ALU1_DS	XVE Inst Executed ALU1 DS	VectorEngine	Number of execution slots taken by instructions executed by Domain Shader on ALU1 pipe
+Ext1001	XVE_INST_EXECUTED_ALU1_PS	XVE Inst Executed ALU1 PS	VectorEngine	Number of execution slots taken by instructions executed by Pixel Shader on ALU1 pipe
+Ext1001	XVE_INST_EXECUTED_ALU1_CS	XVE Inst Executed ALU1 CS	VectorEngine	Number of execution slots taken by instructions executed by Compute Shader (from Render Engine) on ALU1 pipe
+Ext1001	XVE_INST_EXECUTED_ALU1_ASYNC_CS	XVE Inst Executed ALU1 Async CS	VectorEngine	Number of execution slots taken by instructions executed by Async Compute Shader on ALU1 pipe
+Ext1001	XVE_INST_EXECUTED_ALU0_VS_UTILIZATION	XVE Inst Executed ALU0 VS Utilization	VectorEngine	Percentage of execution slots taken by instructions executed by Vertex Shader on ALU0 pipe
+Ext1001	XVE_INST_EXECUTED_ALU0_HS_UTILIZATION	XVE Inst Executed ALU0 HS Utilization	VectorEngine	Percentage of execution slots taken by instructions executed by Hull Shader on ALU0 pipe
+Ext1001	XVE_INST_EXECUTED_ALU0_DS_UTILIZATION	XVE Inst Executed ALU0 DS Utilization	VectorEngine	Percentage of execution slots taken by instructions executed by Domain Shader on ALU0 pipe
+Ext1001	XVE_INST_EXECUTED_ALU0_PS_UTILIZATION	XVE Inst Executed ALU0 PS Utilization	VectorEngine	Percentage of execution slots taken by instructions executed by Pixel Shader on ALU0 pipe
+Ext1001	XVE_INST_EXECUTED_ALU0_CS_UTILIZATION	XVE Inst Executed ALU0 CS Utilization	VectorEngine	Percentage of execution slots taken by instructions executed by Compute Shader (from Render Engine) on ALU0 pipe
+Ext1001	XVE_INST_EXECUTED_ALU0_ASYNC_CS_UTILIZATION	XVE Inst Executed ALU0 Async CS Utilization	VectorEngine	Percentage of execution slots taken by instructions executed by Async Compute Shader on ALU0 pipe
+Ext1001	XVE_INST_EXECUTED_ALU1_VS_UTILIZATION	XVE Inst Executed ALU1 VS Utilization	VectorEngine	Percentage of execution slots taken by instructions executed by Vertex Shader on ALU1 pipe
+Ext1001	XVE_INST_EXECUTED_ALU1_HS_UTILIZATION	XVE Inst Executed ALU1 HS Utilization	VectorEngine	Percentage of execution slots taken by instructions executed by Hull Shader on ALU1 pipe
+Ext1001	XVE_INST_EXECUTED_ALU1_DS_UTILIZATION	XVE Inst Executed ALU1 DS Utilization	VectorEngine	Percentage of execution slots taken by instructions executed by Domain Shader on ALU1 pipe
+Ext1001	XVE_INST_EXECUTED_ALU1_PS_UTILIZATION	XVE Inst Executed ALU1 PS Utilization	VectorEngine	Percentage of execution slots taken by instructions executed by Pixel Shader on ALU1 pipe
+Ext1001	XVE_INST_EXECUTED_ALU1_CS_UTILIZATION	XVE Inst Executed ALU1 CS Utilization	VectorEngine	Percentage of execution slots taken by instructions executed by Compute Shader (from Render Engine) on ALU1 pipe
+Ext1001	XVE_INST_EXECUTED_ALU1_ASYNC_CS_UTILIZATION	XVE Inst Executed ALU1 Async CS Utilization	VectorEngine	Percentage of execution slots taken by instructions executed by Async Compute Shader on ALU1 pipe
 Ext1002	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
 Ext1002	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
 Ext1002	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
-Ext1002	XVE_INST_EXECUTED_ALU0_RT_AHS_UTILIZATION	XVE Inst Executed ALU0 RT AHS Utilization	EU Array/Compute Shader	Percentage of execution slots taken by instructions executed by BTD Any Hit Shader on ALU0 pipe
-Ext1002	XVE_INST_EXECUTED_ALU1_RT_AHS_UTILIZATION	XVE Inst Executed ALU1 RT AHS Utilization	EU Array/Compute Shader	Percentage of execution slots taken by instructions executed by BTD Any Hit Shader on ALU1 pipe
-Ext1002	XVE_INST_EXECUTED_SEND_RT_AHS_UTILIZATION	XVE Inst Executed Send RT AHS Utilization	EU Array/Compute Shader	Percentage of time taken by instructions executed by BTD Any Hit Shader threads on SEND pipe
-Ext1002	XVE_INST_EXECUTED_ALU0_RT_CHS_UTILIZATION	XVE Inst Executed ALU0 RT CHS Utilization	EU Array/Compute Shader	Percentage of execution slots taken by instructions executed by BTD Closest Hit Shader on ALU0 pipe
-Ext1002	XVE_INST_EXECUTED_ALU1_RT_CHS_UTILIZATION	XVE Inst Executed ALU1 RT CHS Utilization	EU Array/Compute Shader	Percentage of execution slots taken by instructions executed by BTD Closest Hit Shader on ALU1 pipe
-Ext1002	XVE_INST_EXECUTED_SEND_RT_CHS_UTILIZATION	XVE Inst Executed Send RT CHS Utilization	EU Array/Compute Shader	Percentage of time taken by instructions executed by BTD Closest Hit Shader threads on SEND pipe
-Ext1002	XVE_INST_EXECUTED_ALU0_RT_MS_UTILIZATION	XVE Inst Executed ALU0 RT MS Utilization	EU Array/Compute Shader	Percentage of execution slots taken by instructions executed by BTD Miss Shader on ALU0 pipe
-Ext1002	XVE_INST_EXECUTED_ALU1_RT_MS_UTILIZATION	XVE Inst Executed ALU1 RT MS Utilization	EU Array/Compute Shader	Percentage of execution slots taken by instructions executed by BTD Miss Shader on ALU1 pipe
-Ext1002	XVE_INST_EXECUTED_SEND_RT_MS_UTILIZATION	XVE Inst Executed Send RT MS Utilization	EU Array/Compute Shader	Percentage of time taken by instructions executed by BTD Miss Shader threads on SEND pipe
-Ext1002	XVE_INST_EXECUTED_ALU0_RT_AHS	XVE Inst Executed ALU0 RT AHS	EU Array/Compute Shader	Number of execution slots taken by instructions executed by BTD Any Hit Shader on ALU0 pipe
-Ext1002	XVE_INST_EXECUTED_ALU1_RT_AHS	XVE Inst Executed ALU1 RT AHS	EU Array/Compute Shader	Number of execution slots taken by instructions executed by BTD Any Hit Shader on ALU1 pipe
-Ext1002	XVE_INST_EXECUTED_SEND_RT_AHS	XVE Inst Executed Send RT AHS	EU Array/Compute Shader	Number of instructions executed by BTD Any Hit Shader threads on SEND pipe
-Ext1002	XVE_INST_EXECUTED_ALU0_RT_CHS	XVE Inst Executed ALU0 RT CHS	EU Array/Compute Shader	Number of execution slots taken by instructions executed by BTD Closest Hit Shader on ALU0 pipe
-Ext1002	XVE_INST_EXECUTED_ALU1_RT_CHS	XVE Inst Executed ALU1 RT CHS	EU Array/Compute Shader	Number of execution slots taken by instructions executed by BTD Closest Hit Shader on ALU1 pipe
-Ext1002	XVE_INST_EXECUTED_SEND_RT_CHS	XVE Inst Executed Send RT CHS	EU Array/Compute Shader	Number of instructions executed by BTD Closest Hit Shader threads on SEND pipe
-Ext1002	XVE_INST_EXECUTED_ALU0_RT_MS	XVE Inst Executed ALU0 RT MS	EU Array/Compute Shader	Number of execution slots taken by instructions executed by BTD Miss Shader on ALU0 pipe
-Ext1002	XVE_INST_EXECUTED_ALU1_RT_MS	XVE Inst Executed ALU1 RT MS	EU Array/Compute Shader	Number of execution slots taken by instructions executed by BTD Miss Shader on ALU1 pipe
-Ext1002	XVE_INST_EXECUTED_SEND_RT_MS	XVE Inst Executed Send RT MS	EU Array/Compute Shader	Number of instructions executed by BTD Miss Shader threads on SEND pipe
+Ext1002	XVE_INST_EXECUTED_ALU0_RT_AHS_UTILIZATION	XVE Inst Executed ALU0 RT AHS Utilization	VectorEngine	Percentage of execution slots taken by instructions executed by BTD Any Hit Shader on ALU0 pipe
+Ext1002	XVE_INST_EXECUTED_ALU1_RT_AHS_UTILIZATION	XVE Inst Executed ALU1 RT AHS Utilization	VectorEngine	Percentage of execution slots taken by instructions executed by BTD Any Hit Shader on ALU1 pipe
+Ext1002	XVE_INST_EXECUTED_SEND_RT_AHS_UTILIZATION	XVE Inst Executed Send RT AHS Utilization	VectorEngine	Percentage of time taken by instructions executed by BTD Any Hit Shader threads on SEND pipe
+Ext1002	XVE_INST_EXECUTED_ALU0_RT_CHS_UTILIZATION	XVE Inst Executed ALU0 RT CHS Utilization	VectorEngine	Percentage of execution slots taken by instructions executed by BTD Closest Hit Shader on ALU0 pipe
+Ext1002	XVE_INST_EXECUTED_ALU1_RT_CHS_UTILIZATION	XVE Inst Executed ALU1 RT CHS Utilization	VectorEngine	Percentage of execution slots taken by instructions executed by BTD Closest Hit Shader on ALU1 pipe
+Ext1002	XVE_INST_EXECUTED_SEND_RT_CHS_UTILIZATION	XVE Inst Executed Send RT CHS Utilization	VectorEngine	Percentage of time taken by instructions executed by BTD Closest Hit Shader threads on SEND pipe
+Ext1002	XVE_INST_EXECUTED_ALU0_RT_MS_UTILIZATION	XVE Inst Executed ALU0 RT MS Utilization	VectorEngine	Percentage of execution slots taken by instructions executed by BTD Miss Shader on ALU0 pipe
+Ext1002	XVE_INST_EXECUTED_ALU1_RT_MS_UTILIZATION	XVE Inst Executed ALU1 RT MS Utilization	VectorEngine	Percentage of execution slots taken by instructions executed by BTD Miss Shader on ALU1 pipe
+Ext1002	XVE_INST_EXECUTED_SEND_RT_MS_UTILIZATION	XVE Inst Executed Send RT MS Utilization	VectorEngine	Percentage of time taken by instructions executed by BTD Miss Shader threads on SEND pipe
+Ext1002	XVE_INST_EXECUTED_ALU0_RT_AHS	XVE Inst Executed ALU0 RT AHS	VectorEngine	Number of execution slots taken by instructions executed by BTD Any Hit Shader on ALU0 pipe
+Ext1002	XVE_INST_EXECUTED_ALU1_RT_AHS	XVE Inst Executed ALU1 RT AHS	VectorEngine	Number of execution slots taken by instructions executed by BTD Any Hit Shader on ALU1 pipe
+Ext1002	XVE_INST_EXECUTED_SEND_RT_AHS	XVE Inst Executed Send RT AHS	VectorEngine	Number of instructions executed by BTD Any Hit Shader threads on SEND pipe
+Ext1002	XVE_INST_EXECUTED_ALU0_RT_CHS	XVE Inst Executed ALU0 RT CHS	VectorEngine	Number of execution slots taken by instructions executed by BTD Closest Hit Shader on ALU0 pipe
+Ext1002	XVE_INST_EXECUTED_ALU1_RT_CHS	XVE Inst Executed ALU1 RT CHS	VectorEngine	Number of execution slots taken by instructions executed by BTD Closest Hit Shader on ALU1 pipe
+Ext1002	XVE_INST_EXECUTED_SEND_RT_CHS	XVE Inst Executed Send RT CHS	VectorEngine	Number of instructions executed by BTD Closest Hit Shader threads on SEND pipe
+Ext1002	XVE_INST_EXECUTED_ALU0_RT_MS	XVE Inst Executed ALU0 RT MS	VectorEngine	Number of execution slots taken by instructions executed by BTD Miss Shader on ALU0 pipe
+Ext1002	XVE_INST_EXECUTED_ALU1_RT_MS	XVE Inst Executed ALU1 RT MS	VectorEngine	Number of execution slots taken by instructions executed by BTD Miss Shader on ALU1 pipe
+Ext1002	XVE_INST_EXECUTED_SEND_RT_MS	XVE Inst Executed Send RT MS	VectorEngine	Number of instructions executed by BTD Miss Shader threads on SEND pipe
 Ext1003	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
 Ext1003	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
 Ext1003	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
-Ext1003	XVE_ACTIVE	XVE Active	EU Array	Percentage of time in which at least one pipe is active in XVE
-Ext1003	XVE_ACTIVE_DS	XVE Active DS	EU Array/Domain Shader	Percentage of time in which at least one pipe is active in XVE and there are Domain Shader threads loaded
-Ext1003	XVE_ACTIVE_HS	XVE Active HS	EU Array/Hull Shader	Percentage of time in which at least one pipe is active in XVE and there are Hull Shader threads loaded
-Ext1003	XVE_ACTIVE_PS	XVE Active PS	EU Array/Pixel Shader	Percentage of time in which at least one pipe is active in XVE and there are Pixel Shader threads loaded
-Ext1003	XVE_ACTIVE_VS	XVE Active VS	EU Array/Vertex Shader	Percentage of time in which at least one pipe is active in XVE and there are Vertex Shader threads loaded
-Ext1003	XVE_ACTIVE_ASYNC_CS	XVE Active Async CS	EU Array/Compute Shader	Percentage of time in which at least one pipe is active in XVE and there are Async Compute Shader threads loaded
-Ext1003	XVE_ACTIVE_CS	XVE Active CS	EU Array/Compute Shader	Percentage of time in which at least one pipe is active in XVE and there are Compute Shader (from Render Engine) threads loaded
-Ext1003	XVE_ACTIVE_MS	XVE Active MS	EU Array/Compute Shader	Percentage of time in which at least one pipe is active in XVE and there are Mesh Shader threads loaded
-Ext1003	XVE_ACTIVE_TS	XVE Active TS	EU Array/Compute Shader	Percentage of time in which at least one pipe is active in XVE and there are Task Shader threads loaded
-Ext1003	XVE_ACTIVE_RT	XVE Active RT	EU Array/Compute Shader	Percentage of time in which at least one pipe is active in XVE and there are Ray Tracing Shader threads loaded
-Ext1003	XVE_ACTIVE_CYCLES	XVE Active Cycles	EU Array	Number of cycles at least one pipe is active in XVE
-Ext1003	XVE_ACTIVE_CYCLES_ASYNC_CS	XVE Active Cycles Async CS	EU Array/Compute Shader	Number of cycles at least one pipe is active in XVE and there are Async Compute Shader threads loaded
-Ext1003	XVE_ACTIVE_CYCLES_CS	XVE Active Cycles CS	EU Array/Compute Shader	Number of cycles at least one pipe is active in XVE and there are Compute Shader (from Render Engine) threads loaded
-Ext1003	XVE_ACTIVE_CYCLES_HS	XVE Active Cycles HS	EU Array/Hull Shader	Number of cycles at least one pipe is active in XVE and there are Hull Shader threads loaded
-Ext1003	XVE_ACTIVE_CYCLES_PS	XVE Active Cycles PS	EU Array/Pixel Shader	Number of cycles at least one pipe is active in XVE and there are Pixel Shader threads loaded
-Ext1003	XVE_ACTIVE_CYCLES_VS	XVE Active Cycles VS	EU Array/Vertex Shader	Number of cycles at least one pipe is active in XVE and there are Vertex Shader threads loaded
-Ext1003	XVE_ACTIVE_CYCLES_DS	XVE Active Cycles DS	EU Array/Domain Shader	Number of cycles at least one pipe is active in XVE and there are Domain Shader threads loaded
-Ext1003	XVE_ACTIVE_CYCLES_MS	XVE Active Cycles MS	EU Array/Compute Shader	Number of cycles at least one pipe is active in XVE and there are Mesh Shader threads loaded
-Ext1003	XVE_ACTIVE_CYCLES_TS	XVE Active Cycles TS	EU Array/Compute Shader	Number of cycles at least one pipe is active in XVE and there are Task Shader threads loaded
-Ext1003	XVE_ACTIVE_CYCLES_RT	XVE Active Cycles RT	EU Array/Compute Shader	Number of cycles at least one pipe is active in XVE and there are Ray Tracing Shader threads loaded
+Ext1003	XVE_ACTIVE	XVE Active	VectorEngine	Percentage of time in which at least one pipe is active in XVE
+Ext1003	XVE_ACTIVE_DS	XVE Active DS	VectorEngine	Percentage of time in which at least one pipe is active in XVE and there are Domain Shader threads loaded
+Ext1003	XVE_ACTIVE_HS	XVE Active HS	VectorEngine	Percentage of time in which at least one pipe is active in XVE and there are Hull Shader threads loaded
+Ext1003	XVE_ACTIVE_PS	XVE Active PS	VectorEngine	Percentage of time in which at least one pipe is active in XVE and there are Pixel Shader threads loaded
+Ext1003	XVE_ACTIVE_VS	XVE Active VS	VectorEngine	Percentage of time in which at least one pipe is active in XVE and there are Vertex Shader threads loaded
+Ext1003	XVE_ACTIVE_ASYNC_CS	XVE Active Async CS	VectorEngine	Percentage of time in which at least one pipe is active in XVE and there are Async Compute Shader threads loaded
+Ext1003	XVE_ACTIVE_CS	XVE Active CS	VectorEngine	Percentage of time in which at least one pipe is active in XVE and there are Compute Shader (from Render Engine) threads loaded
+Ext1003	XVE_ACTIVE_MS	XVE Active MS	VectorEngine	Percentage of time in which at least one pipe is active in XVE and there are Mesh Shader threads loaded
+Ext1003	XVE_ACTIVE_TS	XVE Active TS	VectorEngine	Percentage of time in which at least one pipe is active in XVE and there are Task Shader threads loaded
+Ext1003	XVE_ACTIVE_RT	XVE Active RT	VectorEngine	Percentage of time in which at least one pipe is active in XVE and there are Ray Tracing Shader threads loaded
+Ext1003	XVE_ACTIVE_CYCLES	XVE Active Cycles	VectorEngine	Number of cycles at least one pipe is active in XVE
+Ext1003	XVE_ACTIVE_CYCLES_ASYNC_CS	XVE Active Cycles Async CS	VectorEngine	Number of cycles at least one pipe is active in XVE and there are Async Compute Shader threads loaded
+Ext1003	XVE_ACTIVE_CYCLES_CS	XVE Active Cycles CS	VectorEngine	Number of cycles at least one pipe is active in XVE and there are Compute Shader (from Render Engine) threads loaded
+Ext1003	XVE_ACTIVE_CYCLES_HS	XVE Active Cycles HS	VectorEngine	Number of cycles at least one pipe is active in XVE and there are Hull Shader threads loaded
+Ext1003	XVE_ACTIVE_CYCLES_PS	XVE Active Cycles PS	VectorEngine	Number of cycles at least one pipe is active in XVE and there are Pixel Shader threads loaded
+Ext1003	XVE_ACTIVE_CYCLES_VS	XVE Active Cycles VS	VectorEngine	Number of cycles at least one pipe is active in XVE and there are Vertex Shader threads loaded
+Ext1003	XVE_ACTIVE_CYCLES_DS	XVE Active Cycles DS	VectorEngine	Number of cycles at least one pipe is active in XVE and there are Domain Shader threads loaded
+Ext1003	XVE_ACTIVE_CYCLES_MS	XVE Active Cycles MS	VectorEngine	Number of cycles at least one pipe is active in XVE and there are Mesh Shader threads loaded
+Ext1003	XVE_ACTIVE_CYCLES_TS	XVE Active Cycles TS	VectorEngine	Number of cycles at least one pipe is active in XVE and there are Task Shader threads loaded
+Ext1003	XVE_ACTIVE_CYCLES_RT	XVE Active Cycles RT	VectorEngine	Number of cycles at least one pipe is active in XVE and there are Ray Tracing Shader threads loaded
 Ext1004	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
 Ext1004	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
 Ext1004	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
-Ext1004	XVE_STALL	XVE Stall	EU Array	Percentage of time in which any threads are loaded but not even a single pipe is active in XVE
-Ext1004	XVE_STALL_ASYNC_CS	XVE Stall Async CS	EU Array/Compute Shader	Percentage of time in which there are Async Compute Shader threads loaded but not even a single pipe is active in XVE
-Ext1004	XVE_STALL_CS	XVE Stall CS	EU Array/Compute Shader	Percentage of time in which there are Compute Shader (from Render Engine) threads loaded but not even a single pipe is active in XVE
-Ext1004	XVE_STALL_DS	XVE Stall DS	EU Array/Domain Shader	Percentage of time in which there are Domain Shader threads loaded but not even a single pipe is active in XVE
-Ext1004	XVE_STALL_HS	XVE Stall HS	EU Array/Hull Shader	Percentage of time in which there are Hull Shader threads loaded but not even a single pipe is active in XVE
-Ext1004	XVE_STALL_MS	XVE Stall MS	EU Array/Compute Shader	Percentage of time in which there are Mesh Shader threads loaded but not even a single pipe is active in XVE
-Ext1004	XVE_STALL_PS	XVE Stall PS	EU Array/Pixel Shader	Percentage of time in which there are Pixel Shader threads loaded but not even a single pipe is active in XVE
-Ext1004	XVE_STALL_TS	XVE Stall TS	EU Array/Compute Shader	Percentage of time in which there are Task Shader threads loaded but not even a single pipe is active in XVE
-Ext1004	XVE_STALL_VS	XVE Stall VS	EU Array/Vertex Shader	Percentage of time in which there are Vertex Shader threads loaded but not even a single pipe is active in XVE
-Ext1004	XVE_STALL_RT	XVE Stall RT	EU Array/Compute Shader	Percentage of time in which there are Ray Tracing Shader threads loaded but not even a single pipe is active in XVE
-Ext1004	XVE_STALL_CYCLES	XVE Stall Cycles	EU Array	Number of cycles any threads are loaded but not even a single pipe is active in XVE
-Ext1004	XVE_STALL_CYCLES_ASYNC_CS	XVE Stall Cycles Async CS	EU Array/Compute Shader	Number of cycles there are Async Compute Shader threads loaded but not even a single pipe is active in XVE
-Ext1004	XVE_STALL_CYCLES_CS	XVE Stall Cycles CS	EU Array/Compute Shader	Number of cycles there are Compute Shader (from Render Engine) threads loaded but not even a single pipe is active in XVE
-Ext1004	XVE_STALL_CYCLES_DS	XVE Stall Cycles DS	EU Array/Domain Shader	Number of cycles there are Domain Shader threads loaded but not even a single pipe is active in XVE
-Ext1004	XVE_STALL_CYCLES_HS	XVE Stall Cycles HS	EU Array/Hull Shader	Number of cycles there are Hull Shader threads loaded but not even a single pipe is active in XVE
-Ext1004	XVE_STALL_CYCLES_MS	XVE Stall Cycles MS	EU Array/Compute Shader	Number of cycles there are Mesh Shader threads loaded but not even a single pipe is active in XVE
-Ext1004	XVE_STALL_CYCLES_PS	XVE Stall Cycles PS	EU Array/Pixel Shader	Number of cycles there are Pixel Shader threads loaded but not even a single pipe is active in XVE
-Ext1004	XVE_STALL_CYCLES_TS	XVE Stall Cycles TS	EU Array/Compute Shader	Number of cycles there are Task Shader threads loaded but not even a single pipe is active in XVE
-Ext1004	XVE_STALL_CYCLES_VS	XVE Stall Cycles VS	EU Array/Vertex Shader	Number of cycles there are Vertex Shader threads loaded but not even a single pipe is active in XVE
-Ext1004	XVE_STALL_CYCLES_RT	XVE Stall Cycles RT	EU Array/Compute Shader	Number of cycles there are Ray Tracing Shader threads loaded but not even a single pipe is active in XVE
+Ext1004	XVE_STALL	XVE Stall	VectorEngine	Percentage of time in which any threads are loaded but not even a single pipe is active in XVE
+Ext1004	XVE_STALL_ASYNC_CS	XVE Stall Async CS	VectorEngine	Percentage of time in which there are Async Compute Shader threads loaded but not even a single pipe is active in XVE
+Ext1004	XVE_STALL_CS	XVE Stall CS	VectorEngine	Percentage of time in which there are Compute Shader (from Render Engine) threads loaded but not even a single pipe is active in XVE
+Ext1004	XVE_STALL_DS	XVE Stall DS	VectorEngine	Percentage of time in which there are Domain Shader threads loaded but not even a single pipe is active in XVE
+Ext1004	XVE_STALL_HS	XVE Stall HS	VectorEngine	Percentage of time in which there are Hull Shader threads loaded but not even a single pipe is active in XVE
+Ext1004	XVE_STALL_MS	XVE Stall MS	VectorEngine	Percentage of time in which there are Mesh Shader threads loaded but not even a single pipe is active in XVE
+Ext1004	XVE_STALL_PS	XVE Stall PS	VectorEngine	Percentage of time in which there are Pixel Shader threads loaded but not even a single pipe is active in XVE
+Ext1004	XVE_STALL_TS	XVE Stall TS	VectorEngine	Percentage of time in which there are Task Shader threads loaded but not even a single pipe is active in XVE
+Ext1004	XVE_STALL_VS	XVE Stall VS	VectorEngine	Percentage of time in which there are Vertex Shader threads loaded but not even a single pipe is active in XVE
+Ext1004	XVE_STALL_RT	XVE Stall RT	VectorEngine	Percentage of time in which there are Ray Tracing Shader threads loaded but not even a single pipe is active in XVE
+Ext1004	XVE_STALL_CYCLES	XVE Stall Cycles	VectorEngine	Number of cycles any threads are loaded but not even a single pipe is active in XVE
+Ext1004	XVE_STALL_CYCLES_ASYNC_CS	XVE Stall Cycles Async CS	VectorEngine	Number of cycles there are Async Compute Shader threads loaded but not even a single pipe is active in XVE
+Ext1004	XVE_STALL_CYCLES_CS	XVE Stall Cycles CS	VectorEngine	Number of cycles there are Compute Shader (from Render Engine) threads loaded but not even a single pipe is active in XVE
+Ext1004	XVE_STALL_CYCLES_DS	XVE Stall Cycles DS	VectorEngine	Number of cycles there are Domain Shader threads loaded but not even a single pipe is active in XVE
+Ext1004	XVE_STALL_CYCLES_HS	XVE Stall Cycles HS	VectorEngine	Number of cycles there are Hull Shader threads loaded but not even a single pipe is active in XVE
+Ext1004	XVE_STALL_CYCLES_MS	XVE Stall Cycles MS	VectorEngine	Number of cycles there are Mesh Shader threads loaded but not even a single pipe is active in XVE
+Ext1004	XVE_STALL_CYCLES_PS	XVE Stall Cycles PS	VectorEngine	Number of cycles there are Pixel Shader threads loaded but not even a single pipe is active in XVE
+Ext1004	XVE_STALL_CYCLES_TS	XVE Stall Cycles TS	VectorEngine	Number of cycles there are Task Shader threads loaded but not even a single pipe is active in XVE
+Ext1004	XVE_STALL_CYCLES_VS	XVE Stall Cycles VS	VectorEngine	Number of cycles there are Vertex Shader threads loaded but not even a single pipe is active in XVE
+Ext1004	XVE_STALL_CYCLES_RT	XVE Stall Cycles RT	VectorEngine	Number of cycles there are Ray Tracing Shader threads loaded but not even a single pipe is active in XVE
 Ext1005	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
 Ext1005	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
 Ext1005	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
-Ext1005	XVE_INST_EXECUTED_ALU0_ALL	XVE Inst Executed ALU0 All	EU Array/Pipes	Number of execution slots taken by instructions executed on ALU0 pipe
-Ext1005	XVE_INST_EXECUTED_FP16	XVE Inst Executed Fp16	EU Array	Number of execution slots taken by FP16 ALU instructions
-Ext1005	XVE_INST_EXECUTED_FP32	XVE Inst Executed Fp32	EU Array	Number of execution slots taken by FP32 ALU instructions
-Ext1005	XVE_INST_EXECUTED_FP64	XVE Inst Executed Fp64	EU Array	The number of FLT64 instructions executed in ALU0 INT64 pipeline.
-Ext1005	XVE_INST_EXECUTED_ALU1_ALL	XVE Inst Executed ALU1 All	EU Array/Pipes	Number of execution slots taken by instructions executed on ALU1 pipe
-Ext1005	XVE_INST_EXECUTED_INT16	XVE Inst Executed Int16	EU Array	Number of execution slots taken by INT16 ALU instructions
-Ext1005	XVE_INST_EXECUTED_INT32	XVE Inst Executed Int32	EU Array	Number of execution slots taken by INT32 ALU instructions
-Ext1005	XVE_INST_EXECUTED_MATH	XVE Inst Executed Math	EU Array	Number of execution slots taken by extended math instructions
-Ext1005	XVE_INST_EXECUTED_XMX_ALL	XVE Inst Executed XMX All	EU Array/Pipes	Number of execution slots taken by instructions executed in XMX pipe
-Ext1005	XVE_INST_EXECUTED_XMX_BF16	XVE Inst Executed XMX Bf16	EU Array	Number of execution slots taken by BF16 XMX instructions
-Ext1005	XVE_INST_EXECUTED_XMX_FP16	XVE Inst Executed XMX Fp16	EU Array	Number of execution slots taken by FP16 XMX instructions
-Ext1005	XVE_INST_EXECUTED_XMX_INT8	XVE Inst Executed XMX Int8	EU Array	Number of execution slots taken by INT8 XMX instructions
-Ext1005	XVE_INST_EXECUTED_ALU0_ALL_UTILIZATION	XVE Inst Executed ALU0 All Utilization	EU Array/Pipes	Percentage of execution slots taken by instructions executed on ALU0 pipe
-Ext1005	XVE_INST_EXECUTED_FP16_UTILIZATION	XVE Inst Executed Fp16 Utilization	EU Array	Percentage of execution slots taken by FP16 ALU instructions
-Ext1005	XVE_INST_EXECUTED_FP32_UTILIZATION	XVE Inst Executed Fp32 Utilization	EU Array	Percentage of execution slots taken by FP32 ALU instructions
-Ext1005	XVE_INST_EXECUTED_FP64_UTILIZATION	XVE Inst Executed Fp64 Utilization	EU Array	The percentage of time in which FLT64 instruction were processed actively on FPU INT64 pipeline.
-Ext1005	XVE_INST_EXECUTED_ALU1_ALL_UTILIZATION	XVE Inst Executed ALU1 All Utilization	EU Array/Pipes	Percentage of execution slots taken by instructions executed on ALU1 pipe
-Ext1005	XVE_INST_EXECUTED_INT16_UTILIZATION	XVE Inst Executed Int16 Utilization	EU Array	Percentage of execution slots taken by INT16 ALU instructions
-Ext1005	XVE_INST_EXECUTED_INT32_UTILIZATION	XVE Inst Executed Int32 Utilization	EU Array	Percentage of execution slots taken by INT32 ALU instructions
-Ext1005	XVE_INST_EXECUTED_MATH_UTILIZATION	XVE Inst Executed Math Utilization	EU Array	Percentage of execution slots taken by extended math instructions
-Ext1005	XVE_INST_EXECUTED_XMX_ALL_UTILIZATION	XVE Inst Executed XMX All Utilization	EU Array/Pipes	Percentage of execution slots taken by instructions executed in XMX pipe
-Ext1005	XVE_INST_EXECUTED_XMX_BF16_UTILIZATION	XVE Inst Executed XMX Bf16 Utilization	EU Array	Percentage of execution slots taken by BF16 XMX instructions
-Ext1005	XVE_INST_EXECUTED_XMX_FP16_UTILIZATION	XVE Inst Executed XMX Fp16 Utilization	EU Array	Percentage of execution slots taken by FP16 XMX instructions
-Ext1005	XVE_INST_EXECUTED_XMX_INT8_UTILIZATION	XVE Inst Executed XMX Int8 Utilization	EU Array	Percentage of execution slots taken by INT8 XMX instructions
+Ext1005	XVE_INST_EXECUTED_ALU0_ALL	XVE Inst Executed ALU0 All	VectorEngine	Number of execution slots taken by instructions executed on ALU0 pipe
+Ext1005	XVE_INST_EXECUTED_FP16	XVE Inst Executed Fp16	VectorEngine	Number of execution slots taken by FP16 ALU instructions
+Ext1005	XVE_INST_EXECUTED_FP32	XVE Inst Executed Fp32	VectorEngine	Number of execution slots taken by FP32 ALU instructions
+Ext1005	XVE_INST_EXECUTED_FP64	XVE Inst Executed Fp64	VectorEngine	The number of FLT64 instructions executed in ALU0 INT64 pipeline.
+Ext1005	XVE_INST_EXECUTED_ALU1_ALL	XVE Inst Executed ALU1 All	VectorEngine	Number of execution slots taken by instructions executed on ALU1 pipe
+Ext1005	XVE_INST_EXECUTED_INT16	XVE Inst Executed Int16	VectorEngine	Number of execution slots taken by INT16 ALU instructions
+Ext1005	XVE_INST_EXECUTED_INT32	XVE Inst Executed Int32	VectorEngine	Number of execution slots taken by INT32 ALU instructions
+Ext1005	XVE_INST_EXECUTED_MATH	XVE Inst Executed Math	VectorEngine	Number of execution slots taken by extended math instructions
+Ext1005	XVE_INST_EXECUTED_XMX_ALL	XVE Inst Executed XMX All	VectorEngine	Number of execution slots taken by instructions executed in XMX pipe
+Ext1005	XVE_INST_EXECUTED_XMX_BF16	XVE Inst Executed XMX Bf16	VectorEngine	Number of execution slots taken by BF16 XMX instructions
+Ext1005	XVE_INST_EXECUTED_XMX_FP16	XVE Inst Executed XMX Fp16	VectorEngine	Number of execution slots taken by FP16 XMX instructions
+Ext1005	XVE_INST_EXECUTED_XMX_INT8	XVE Inst Executed XMX Int8	VectorEngine	Number of execution slots taken by INT8 XMX instructions
+Ext1005	XVE_INST_EXECUTED_ALU0_ALL_UTILIZATION	XVE Inst Executed ALU0 All Utilization	VectorEngine	Percentage of execution slots taken by instructions executed on ALU0 pipe
+Ext1005	XVE_INST_EXECUTED_FP16_UTILIZATION	XVE Inst Executed Fp16 Utilization	VectorEngine	Percentage of execution slots taken by FP16 ALU instructions
+Ext1005	XVE_INST_EXECUTED_FP32_UTILIZATION	XVE Inst Executed Fp32 Utilization	VectorEngine	Percentage of execution slots taken by FP32 ALU instructions
+Ext1005	XVE_INST_EXECUTED_FP64_UTILIZATION	XVE Inst Executed Fp64 Utilization	VectorEngine	The percentage of time in which FLT64 instruction were processed actively on FPU INT64 pipeline.
+Ext1005	XVE_INST_EXECUTED_ALU1_ALL_UTILIZATION	XVE Inst Executed ALU1 All Utilization	VectorEngine	Percentage of execution slots taken by instructions executed on ALU1 pipe
+Ext1005	XVE_INST_EXECUTED_INT16_UTILIZATION	XVE Inst Executed Int16 Utilization	VectorEngine	Percentage of execution slots taken by INT16 ALU instructions
+Ext1005	XVE_INST_EXECUTED_INT32_UTILIZATION	XVE Inst Executed Int32 Utilization	VectorEngine	Percentage of execution slots taken by INT32 ALU instructions
+Ext1005	XVE_INST_EXECUTED_MATH_UTILIZATION	XVE Inst Executed Math Utilization	VectorEngine	Percentage of execution slots taken by extended math instructions
+Ext1005	XVE_INST_EXECUTED_XMX_ALL_UTILIZATION	XVE Inst Executed XMX All Utilization	VectorEngine	Percentage of execution slots taken by instructions executed in XMX pipe
+Ext1005	XVE_INST_EXECUTED_XMX_BF16_UTILIZATION	XVE Inst Executed XMX Bf16 Utilization	VectorEngine	Percentage of execution slots taken by BF16 XMX instructions
+Ext1005	XVE_INST_EXECUTED_XMX_FP16_UTILIZATION	XVE Inst Executed XMX Fp16 Utilization	VectorEngine	Percentage of execution slots taken by FP16 XMX instructions
+Ext1005	XVE_INST_EXECUTED_XMX_INT8_UTILIZATION	XVE Inst Executed XMX Int8 Utilization	VectorEngine	Percentage of execution slots taken by INT8 XMX instructions
 Ext1006	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
 Ext1006	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
 Ext1006	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
-Ext1006	XVE_INST_EXECUTED_SEND_ALL	XVE Inst Executed Send All	EU Array/Pipes	Number of instructions executed on SEND pipe
-Ext1006	XVE_INST_EXECUTED_SEND_ASYNC_CS	XVE Inst Executed Send Async CS	EU Array/Compute Shader	Number of instructions executed by Async Compute Shader threads on SEND pipe
-Ext1006	XVE_INST_EXECUTED_SEND_CS	XVE Inst Executed Send CS	EU Array/Compute Shader	Number of instructions executed by Compute Shader (from Render Engine) threads on SEND pipe
-Ext1006	XVE_INST_EXECUTED_SEND_DS	XVE Inst Executed Send DS	EU Array/Domain Shader	Number of instructions executed by Domain Shader threads on SEND pipe
-Ext1006	XVE_INST_EXECUTED_SEND_GS	XVE Inst Executed Send GS	EU Array/Geometry Shader	Number of instructions executed by Geometry Shader threads on SEND pipe
-Ext1006	XVE_INST_EXECUTED_SEND_HS	XVE Inst Executed Send HS	EU Array/Hull Shader	Number of instructions executed by Hull Shader threads on SEND pipe
-Ext1006	XVE_INST_EXECUTED_SEND_MS	XVE Inst Executed Send MS	EU Array/Compute Shader	Number of instructions executed by Mesh Shader threads on SEND pipe
-Ext1006	XVE_INST_EXECUTED_SEND_PS	XVE Inst Executed Send PS	EU Array/Pixel Shader	Number of instructions executed by Pixel Shader threads on SEND pipe
-Ext1006	XVE_INST_EXECUTED_SEND_TS	XVE Inst Executed Send TS	EU Array/Compute Shader	Number of instructions executed by Task Shader threads on SEND pipe
-Ext1006	XVE_INST_EXECUTED_SEND_VS	XVE Inst Executed Send VS	EU Array/Vertex Shader	Number of instructions executed by Vertex Shader threads on SEND pipe
-Ext1006	XVE_INST_EXECUTED_SEND_ALL_UTILIZATION	XVE Inst Executed Send All Utilization	EU Array/Pipes	Percentage of time taken by instructions executed on SEND pipe
-Ext1006	XVE_INST_EXECUTED_SEND_ASYNC_CS_UTILIZATION	XVE Inst Executed Send Async CS Utilization	EU Array/Compute Shader	Percentage of time taken by instructions executed by Async Compute Shader threads on SEND pipe
-Ext1006	XVE_INST_EXECUTED_SEND_CS_UTILIZATION	XVE Inst Executed Send CS Utilization	EU Array/Compute Shader	Percentage of time taken by instructions executed by Compute Shader (from Render Engine) threads on SEND pipe
-Ext1006	XVE_INST_EXECUTED_SEND_DS_UTILIZATION	XVE Inst Executed Send DS Utilization	EU Array/Domain Shader	Percentage of time taken by instructions executed by Domain Shader threads on SEND pipe
-Ext1006	XVE_INST_EXECUTED_SEND_GS_UTILIZATION	XVE Inst Executed Send GS Utilization	EU Array/Geometry Shader	Percentage of time taken by instructions executed by Geometry Shader threads on SEND pipe
-Ext1006	XVE_INST_EXECUTED_SEND_HS_UTILIZATION	XVE Inst Executed Send HS Utilization	EU Array/Hull Shader	Percentage of time taken by instructions executed by Hull Shader threads on SEND pipe
-Ext1006	XVE_INST_EXECUTED_SEND_MS_UTILIZATION	XVE Inst Executed Send MS Utilization	EU Array/Compute Shader	Percentage of time taken by instructions executed by Mesh Shader threads on SEND pipe
-Ext1006	XVE_INST_EXECUTED_SEND_PS_UTILIZATION	XVE Inst Executed Send PS Utilization	EU Array/Pixel Shader	Percentage of time taken by instructions executed by Pixel Shader threads on SEND pipe
-Ext1006	XVE_INST_EXECUTED_SEND_TS_UTILIZATION	XVE Inst Executed Send TS Utilization	EU Array/Compute Shader	Percentage of time taken by instructions executed by Task Shader threads on SEND pipe
-Ext1006	XVE_INST_EXECUTED_SEND_VS_UTILIZATION	XVE Inst Executed Send VS Utilization	EU Array/Vertex Shader	Percentage of time taken by instructions executed by Vertex Shader threads on SEND pipe
+Ext1006	XVE_INST_EXECUTED_SEND_ALL	XVE Inst Executed Send All	VectorEngine	Number of instructions executed on SEND pipe
+Ext1006	XVE_INST_EXECUTED_SEND_ASYNC_CS	XVE Inst Executed Send Async CS	VectorEngine	Number of instructions executed by Async Compute Shader threads on SEND pipe
+Ext1006	XVE_INST_EXECUTED_SEND_CS	XVE Inst Executed Send CS	VectorEngine	Number of instructions executed by Compute Shader (from Render Engine) threads on SEND pipe
+Ext1006	XVE_INST_EXECUTED_SEND_DS	XVE Inst Executed Send DS	VectorEngine	Number of instructions executed by Domain Shader threads on SEND pipe
+Ext1006	XVE_INST_EXECUTED_SEND_GS	XVE Inst Executed Send GS	VectorEngine	Number of instructions executed by Geometry Shader threads on SEND pipe
+Ext1006	XVE_INST_EXECUTED_SEND_HS	XVE Inst Executed Send HS	VectorEngine	Number of instructions executed by Hull Shader threads on SEND pipe
+Ext1006	XVE_INST_EXECUTED_SEND_MS	XVE Inst Executed Send MS	VectorEngine	Number of instructions executed by Mesh Shader threads on SEND pipe
+Ext1006	XVE_INST_EXECUTED_SEND_PS	XVE Inst Executed Send PS	VectorEngine	Number of instructions executed by Pixel Shader threads on SEND pipe
+Ext1006	XVE_INST_EXECUTED_SEND_TS	XVE Inst Executed Send TS	VectorEngine	Number of instructions executed by Task Shader threads on SEND pipe
+Ext1006	XVE_INST_EXECUTED_SEND_VS	XVE Inst Executed Send VS	VectorEngine	Number of instructions executed by Vertex Shader threads on SEND pipe
+Ext1006	XVE_INST_EXECUTED_SEND_ALL_UTILIZATION	XVE Inst Executed Send All Utilization	VectorEngine	Percentage of time taken by instructions executed on SEND pipe
+Ext1006	XVE_INST_EXECUTED_SEND_ASYNC_CS_UTILIZATION	XVE Inst Executed Send Async CS Utilization	VectorEngine	Percentage of time taken by instructions executed by Async Compute Shader threads on SEND pipe
+Ext1006	XVE_INST_EXECUTED_SEND_CS_UTILIZATION	XVE Inst Executed Send CS Utilization	VectorEngine	Percentage of time taken by instructions executed by Compute Shader (from Render Engine) threads on SEND pipe
+Ext1006	XVE_INST_EXECUTED_SEND_DS_UTILIZATION	XVE Inst Executed Send DS Utilization	VectorEngine	Percentage of time taken by instructions executed by Domain Shader threads on SEND pipe
+Ext1006	XVE_INST_EXECUTED_SEND_GS_UTILIZATION	XVE Inst Executed Send GS Utilization	VectorEngine	Percentage of time taken by instructions executed by Geometry Shader threads on SEND pipe
+Ext1006	XVE_INST_EXECUTED_SEND_HS_UTILIZATION	XVE Inst Executed Send HS Utilization	VectorEngine	Percentage of time taken by instructions executed by Hull Shader threads on SEND pipe
+Ext1006	XVE_INST_EXECUTED_SEND_MS_UTILIZATION	XVE Inst Executed Send MS Utilization	VectorEngine	Percentage of time taken by instructions executed by Mesh Shader threads on SEND pipe
+Ext1006	XVE_INST_EXECUTED_SEND_PS_UTILIZATION	XVE Inst Executed Send PS Utilization	VectorEngine	Percentage of time taken by instructions executed by Pixel Shader threads on SEND pipe
+Ext1006	XVE_INST_EXECUTED_SEND_TS_UTILIZATION	XVE Inst Executed Send TS Utilization	VectorEngine	Percentage of time taken by instructions executed by Task Shader threads on SEND pipe
+Ext1006	XVE_INST_EXECUTED_SEND_VS_UTILIZATION	XVE Inst Executed Send VS Utilization	VectorEngine	Percentage of time taken by instructions executed by Vertex Shader threads on SEND pipe
 Ext1007	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
 Ext1007	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
 Ext1007	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
-Ext1007	XVE_ACTIVE_GS	XVE Active GS	EU Array/Geometry Shader	Percentage of time in which at least one pipe is active in XVE and there are Geometry Shader threads loaded
-Ext1007	XVE_STALL_GS	XVE Stall GS	EU Array/Geometry Shader	Percentage of time in which there are Geometry Shader threads loaded but not even a single pipe is active in XVE
-Ext1007	XVE_INST_EXECUTED_ALU0_GS	XVE Inst Executed ALU0 GS	EU Array/Geometry Shader	Number of execution slots taken by instructions executed by Geometry Shader on ALU0 pipe
-Ext1007	XVE_INST_EXECUTED_ALU1_GS	XVE Inst Executed ALU1 GS	EU Array/Geometry Shader	Number of execution slots taken by instructions executed by Geometry Shader on ALU1 pipe
-Ext1007	XVE_ACTIVE_CYCLES_GS	XVE Active Cycles GS	EU Array/Geometry Shader	Number of cycles at least one pipe is active in XVE and there are Geometry Shader threads loaded
-Ext1007	XVE_STALL_CYCLES_GS	XVE Stall Cycles GS	EU Array/Geometry Shader	Number of cycles there are Geometry Shader threads loaded but not even a single pipe is active in XVE
-Ext1007	XVE_INST_EXECUTED_ALU0_MS	XVE Inst Executed ALU0 MS	EU Array/Compute Shader	Number of execution slots taken by instructions executed by Mesh Shader on ALU0 pipe
-Ext1007	XVE_INST_EXECUTED_ALU0_TS	XVE Inst Executed ALU0 TS	EU Array/Compute Shader	Number of execution slots taken by instructions executed by Task Shader on ALU0 pipe
-Ext1007	XVE_INST_EXECUTED_ALU1_MS	XVE Inst Executed ALU1 MS	EU Array/Compute Shader	Number of execution slots taken by instructions executed by Mesh Shader on ALU1 pipe
-Ext1007	XVE_INST_EXECUTED_ALU1_TS	XVE Inst Executed ALU1 TS	EU Array/Compute Shader	Number of execution slots taken by instructions executed by Task Shader on ALU1 pipe
-Ext1007	XVE_INST_EXECUTED_ALU0_GS_UTILIZATION	XVE Inst Executed ALU0 GS Utilization	EU Array/Geometry Shader	Percentage of execution slots taken by instructions executed by Geometry Shader on ALU0 pipe
-Ext1007	XVE_INST_EXECUTED_ALU1_GS_UTILIZATION	XVE Inst Executed ALU1 GS Utilization	EU Array/Geometry Shader	Percentage of execution slots taken by instructions executed by Geometry Shader on ALU1 pipe
-Ext1007	XVE_INST_EXECUTED_ALU0_MS_UTILIZATION	XVE Inst Executed ALU0 MS Utilization	EU Array/Compute Shader	Percentage of execution slots taken by instructions executed by Mesh Shader on ALU0 pipe
-Ext1007	XVE_INST_EXECUTED_ALU0_TS_UTILIZATION	XVE Inst Executed ALU0 TS Utilization	EU Array/Compute Shader	Percentage of execution slots taken by instructions executed by Task Shader on ALU0 pipe
-Ext1007	XVE_INST_EXECUTED_ALU1_MS_UTILIZATION	XVE Inst Executed ALU1 MS Utilization	EU Array/Compute Shader	Percentage of execution slots taken by instructions executed by Mesh Shader on ALU1 pipe
-Ext1007	XVE_INST_EXECUTED_ALU1_TS_UTILIZATION	XVE Inst Executed ALU1 TS Utilization	EU Array/Compute Shader	Percentage of execution slots taken by instructions executed by Task Shader on ALU1 pipe
+Ext1007	XVE_ACTIVE_GS	XVE Active GS	VectorEngine	Percentage of time in which at least one pipe is active in XVE and there are Geometry Shader threads loaded
+Ext1007	XVE_STALL_GS	XVE Stall GS	VectorEngine	Percentage of time in which there are Geometry Shader threads loaded but not even a single pipe is active in XVE
+Ext1007	XVE_INST_EXECUTED_ALU0_GS	XVE Inst Executed ALU0 GS	VectorEngine	Number of execution slots taken by instructions executed by Geometry Shader on ALU0 pipe
+Ext1007	XVE_INST_EXECUTED_ALU1_GS	XVE Inst Executed ALU1 GS	VectorEngine	Number of execution slots taken by instructions executed by Geometry Shader on ALU1 pipe
+Ext1007	XVE_ACTIVE_CYCLES_GS	XVE Active Cycles GS	VectorEngine	Number of cycles at least one pipe is active in XVE and there are Geometry Shader threads loaded
+Ext1007	XVE_STALL_CYCLES_GS	XVE Stall Cycles GS	VectorEngine	Number of cycles there are Geometry Shader threads loaded but not even a single pipe is active in XVE
+Ext1007	XVE_INST_EXECUTED_ALU0_MS	XVE Inst Executed ALU0 MS	VectorEngine	Number of execution slots taken by instructions executed by Mesh Shader on ALU0 pipe
+Ext1007	XVE_INST_EXECUTED_ALU0_TS	XVE Inst Executed ALU0 TS	VectorEngine	Number of execution slots taken by instructions executed by Task Shader on ALU0 pipe
+Ext1007	XVE_INST_EXECUTED_ALU1_MS	XVE Inst Executed ALU1 MS	VectorEngine	Number of execution slots taken by instructions executed by Mesh Shader on ALU1 pipe
+Ext1007	XVE_INST_EXECUTED_ALU1_TS	XVE Inst Executed ALU1 TS	VectorEngine	Number of execution slots taken by instructions executed by Task Shader on ALU1 pipe
+Ext1007	XVE_INST_EXECUTED_ALU0_GS_UTILIZATION	XVE Inst Executed ALU0 GS Utilization	VectorEngine	Percentage of execution slots taken by instructions executed by Geometry Shader on ALU0 pipe
+Ext1007	XVE_INST_EXECUTED_ALU1_GS_UTILIZATION	XVE Inst Executed ALU1 GS Utilization	VectorEngine	Percentage of execution slots taken by instructions executed by Geometry Shader on ALU1 pipe
+Ext1007	XVE_INST_EXECUTED_ALU0_MS_UTILIZATION	XVE Inst Executed ALU0 MS Utilization	VectorEngine	Percentage of execution slots taken by instructions executed by Mesh Shader on ALU0 pipe
+Ext1007	XVE_INST_EXECUTED_ALU0_TS_UTILIZATION	XVE Inst Executed ALU0 TS Utilization	VectorEngine	Percentage of execution slots taken by instructions executed by Task Shader on ALU0 pipe
+Ext1007	XVE_INST_EXECUTED_ALU1_MS_UTILIZATION	XVE Inst Executed ALU1 MS Utilization	VectorEngine	Percentage of execution slots taken by instructions executed by Mesh Shader on ALU1 pipe
+Ext1007	XVE_INST_EXECUTED_ALU1_TS_UTILIZATION	XVE Inst Executed ALU1 TS Utilization	VectorEngine	Percentage of execution slots taken by instructions executed by Task Shader on ALU1 pipe
 Ext1010	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
 Ext1010	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
 Ext1010	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.

@@ -66,10 +66,27 @@ struct prelim_i915_user_extension {
 #define PRELIM_UAPI_MINOR	1
 
 /*
- * Top 8 bits of every non-engine counter are GT id.
- * FIXME: __PRELIM_I915_PMU_GT_SHIFT will be changed to 56
+ * Top 4 bits of every non-engine counter are GT id.
  */
 #define __PRELIM_I915_PMU_GT_SHIFT (60)
+#define __PRELIM_I915_PMU_GT_MASK (0xfull << 60)
+#define __PRELIM_I915_PMU_FN_SHIFT (44)
+#define __PRELIM_I915_PMU_FN_MASK (0xffffull << 44)
+
+/*
+ * bits[59:44] are used to specify the function number for the event. Only a PF
+ * is allowed to specify function numbers. If there are N functions ranging from
+ * 0 through N - 1, the following definitions are used for the function numbers:
+ *
+ * 0 : PF
+ * 1 through (N - 1) : VFs
+ *
+ * Below macro can be used to convert an existing event config to a function
+ * event config.
+ */
+#define ___PRELIM_I915_PMU_FN_EVENT(event, function) \
+	(((event) & ~__PRELIM_I915_PMU_FN_MASK) | \
+	 ((function + 1) << __PRELIM_I915_PMU_FN_SHIFT))
 
 #define ___PRELIM_I915_PMU_OTHER(gt, x) \
 	(((__u64)__I915_PMU_ENGINE(0xff, 0xff, 0xf) + 1 + (x)) | \
@@ -88,16 +105,37 @@ struct prelim_i915_user_extension {
 #define __PRELIM_I915_PMU_COPY_GROUP_BUSY(gt)		___PRELIM_I915_PMU_OTHER(gt, 8)
 #define __PRELIM_I915_PMU_MEDIA_GROUP_BUSY(gt)		___PRELIM_I915_PMU_OTHER(gt, 9)
 #define __PRELIM_I915_PMU_ANY_ENGINE_GROUP_BUSY(gt)	___PRELIM_I915_PMU_OTHER(gt, 10)
+#define __PRELIM_I915_PMU_TOTAL_ACTIVE_TICKS(gt)	___PRELIM_I915_PMU_OTHER(gt, 11)
+#define __PRELIM_I915_PMU_RENDER_GROUP_BUSY_TICKS(gt)		___PRELIM_I915_PMU_OTHER(gt, 12)
+#define __PRELIM_I915_PMU_COPY_GROUP_BUSY_TICKS(gt)		___PRELIM_I915_PMU_OTHER(gt, 13)
+#define __PRELIM_I915_PMU_MEDIA_GROUP_BUSY_TICKS(gt)		___PRELIM_I915_PMU_OTHER(gt, 14)
+#define __PRELIM_I915_PMU_ANY_ENGINE_GROUP_BUSY_TICKS(gt)	___PRELIM_I915_PMU_OTHER(gt, 15)
 
 
 #define __PRELIM_I915_PMU_HW_ERROR_EVENT_ID_OFFSET	(__I915_PMU_OTHER(0) + 1000)
 
 #define PRELIM_I915_PMU_ENGINE_RESET_COUNT	__PRELIM_I915_PMU_ENGINE_RESET_COUNT(0)
 #define PRELIM_I915_PMU_EU_ATTENTION_COUNT	__PRELIM_I915_PMU_EU_ATTENTION_COUNT(0)
-#define PRELIM_I915_PMU_RENDER_GROUP_BUSY              __PRELIM_I915_PMU_RENDER_GROUP_BUSY(0)
-#define PRELIM_I915_PMU_COPY_GROUP_BUSY                __PRELIM_I915_PMU_COPY_GROUP_BUSY(0)
-#define PRELIM_I915_PMU_MEDIA_GROUP_BUSY               __PRELIM_I915_PMU_MEDIA_GROUP_BUSY(0)
-#define PRELIM_I915_PMU_ANY_ENGINE_GROUP_BUSY          __PRELIM_I915_PMU_ANY_ENGINE_GROUP_BUSY(0)
+#define PRELIM_I915_PMU_RENDER_GROUP_BUSY		__PRELIM_I915_PMU_RENDER_GROUP_BUSY(0)
+#define PRELIM_I915_PMU_COPY_GROUP_BUSY			__PRELIM_I915_PMU_COPY_GROUP_BUSY(0)
+#define PRELIM_I915_PMU_MEDIA_GROUP_BUSY		__PRELIM_I915_PMU_MEDIA_GROUP_BUSY(0)
+#define PRELIM_I915_PMU_ANY_ENGINE_GROUP_BUSY		__PRELIM_I915_PMU_ANY_ENGINE_GROUP_BUSY(0)
+#define PRELIM_I915_PMU_TOTAL_ACTIVE_TICKS		__PRELIM_I915_PMU_TOTAL_ACTIVE_TICKS(0)
+#define PRELIM_I915_PMU_RENDER_GROUP_BUSY_TICKS		__PRELIM_I915_PMU_RENDER_GROUP_BUSY_TICKS(0)
+#define PRELIM_I915_PMU_COPY_GROUP_BUSY_TICKS		__PRELIM_I915_PMU_COPY_GROUP_BUSY_TICKS(0)
+#define PRELIM_I915_PMU_MEDIA_GROUP_BUSY_TICKS		__PRELIM_I915_PMU_MEDIA_GROUP_BUSY_TICKS(0)
+#define PRELIM_I915_PMU_ANY_ENGINE_GROUP_BUSY_TICKS	__PRELIM_I915_PMU_ANY_ENGINE_GROUP_BUSY_TICKS(0)
+
+/*
+ * Note that I915_PMU_SAMPLE_BITS is 4 so a max of 16 events can be sampled for
+ * an engine. For the PRELIM version start at half of that value.
+ */
+#define PRELIM_I915_SAMPLE_BUSY_TICKS 8
+
+#define PRELIM_I915_PMU_ENGINE_BUSY_TICKS(class, instance) \
+	__I915_PMU_ENGINE(class, instance, PRELIM_I915_SAMPLE_BUSY_TICKS)
+
+#define  PRELIM_I915_SCHEDULER_CAP_ENGINE_BUSY_TICKS_STATS	(1ul << 16)
 
 /*
  * HW error counters.
@@ -166,6 +204,9 @@ struct prelim_i915_user_extension {
 #define PRELIM_I915_PMU_GT_ERROR_CORRECTABLE_L3BANK             (122)
 #define PRELIM_I915_PMU_GT_ERROR_FATAL_SUBSLICE                 (123)
 #define PRELIM_I915_PMU_GT_ERROR_FATAL_L3BANK                   (124)
+#define PRELIM_I915_PVC_PMU_SOC_ERROR_NONFATAL_CD0_MDFI         (125)
+#define PRELIM_I915_PVC_PMU_SOC_ERROR_NONFATAL_MDFI_EAST        (126)
+#define PRELIM_I915_PVC_PMU_SOC_ERROR_NONFATAL_MDFI_SOUTH       (127)
 
 #define PRELIM_I915_PMU_HW_ERROR(gt, id) \
 	((__PRELIM_I915_PMU_HW_ERROR_EVENT_ID_OFFSET + (id)) | \
@@ -208,6 +249,7 @@ struct prelim_i915_user_extension {
 #define PRELIM_DRM_I915_GEM_CACHE_RESERVE	0x53
 #define PRELIM_DRM_I915_GEM_VM_GETPARAM		DRM_I915_GEM_CONTEXT_GETPARAM
 #define PRELIM_DRM_I915_GEM_VM_SETPARAM		DRM_I915_GEM_CONTEXT_SETPARAM
+#define PRELIM_DRM_I915_GEM_OBJECT_SETPARAM	DRM_I915_GEM_CONTEXT_SETPARAM
 
 
 #define PRELIM_DRM_IOCTL_I915_GEM_CREATE_EXT		DRM_IOWR(DRM_COMMAND_BASE + DRM_I915_GEM_CREATE, struct prelim_drm_i915_gem_create_ext)
@@ -224,6 +266,8 @@ struct prelim_i915_user_extension {
 #define PRELIM_DRM_IOCTL_I915_GEM_CACHE_RESERVE		DRM_IOWR(DRM_COMMAND_BASE + PRELIM_DRM_I915_GEM_CACHE_RESERVE, struct prelim_drm_i915_gem_cache_reserve)
 #define PRELIM_DRM_IOCTL_I915_GEM_VM_GETPARAM		DRM_IOWR(DRM_COMMAND_BASE + PRELIM_DRM_I915_GEM_VM_GETPARAM, struct prelim_drm_i915_gem_vm_param)
 #define PRELIM_DRM_IOCTL_I915_GEM_VM_SETPARAM		DRM_IOWR(DRM_COMMAND_BASE + PRELIM_DRM_I915_GEM_VM_SETPARAM, struct prelim_drm_i915_gem_vm_param)
+#define PRELIM_DRM_IOCTL_I915_GEM_OBJECT_SETPARAM	DRM_IOWR(DRM_COMMAND_BASE + PRELIM_DRM_I915_GEM_OBJECT_SETPARAM, struct prelim_drm_i915_gem_object_param)
+
 /* End PRELIM ioctl's */
 
 /* getparam */
@@ -267,6 +311,73 @@ struct prelim_i915_user_extension {
 #define PRELIM_I915_PARAM_HAS_CHUNK_SIZE	(PRELIM_I915_PARAM | 10)
 /* End getparam */
 
+/*
+ * On large systems, there may be different classes of memory available (NUMA),
+ * each with different performance characteristics and distances from the
+ * individual cores or devices. Using a precise NUMA node for a particular
+ * system buffer can have a significant performance advantage, and which
+ * memory region to use depends on the use case. For example, infrequently used
+ * objects can be stored in DDR whereas the frequently used objects should be
+ * in HBM, and in both cases want to be in a memory node closed to the core or
+ * device predominating generating the most accesses (at least with respect to
+ * the latency sensitive critical path of the workload).
+ *
+ * To accommodate the varying requirements of buffer placement in NUMA system
+ * memory, we allow passing both preferred node and allowed nodes in a similar
+ * manner to the NUMA mempolicy (numactl --membind), see mbind(2), used to
+ * govern memory allocation within a process. This policy only applies to
+ * system memory placements.
+ *
+ * If no user mempolicy is supplied, by default we will allocate from the memory
+ * node closest to the device (likely DDR). This is the same as using
+ * MPOL_DEFAULT.
+ *
+ * If the policy is set to MPOL_PREFERRED, an attempt is made to allocate
+ * from the specified nodes, before trying the default node associated with
+ * the GPU device.
+ *
+ * If the policy is set to MPOL_BIND, similar to MPOL_PREFFERED, the nodemask
+ * is used to pick which nodes to allocate from, but instead of allowing a
+ * fallback to the default node, it will fail.
+ *
+ * If the policy is set to MPOL_LOCAL, allocation will be performed local to
+ * the CPU, using the closest memory, rather than placing the memory close to
+ * the GPU device.
+ *
+ * If we fail to allocate from the preferred node, the sysfs error_counter
+ * numa%d_allocation is incremented.
+ *
+ * The policy is only applied for the first access of the object in system
+ * memory. If the object is evicted from its preferred node, due to swapping,
+ * subsequent access to that object will use the system's default allocation
+ * strategy.
+ */
+struct prelim_drm_i915_gem_create_ext_memory_policy {
+	/* .name = PRELIM_I915_GEM_CREATE_EXT_MEMORY_POLICY */
+	struct i915_user_extension base;
+
+	/* Memory policy; how to pick which numa node for individual chunk allocations */
+	__u32 mode;
+#define I915_GEM_CREATE_MPOL_DEFAULT		0
+#define I915_GEM_CREATE_MPOL_PREFERRED		1
+#define I915_GEM_CREATE_MPOL_BIND		2
+#define I915_GEM_CREATE_MPOL_INTERLEAVED	3
+#define I915_GEM_CREATE_MPOL_LOCAL		4
+#define I915_GEM_CREATE_MPOL_PREFERRED_MANY	5 /* not implemented */
+
+	/* Placehoder for future flags; must be zero */
+	__u32 flags;
+
+	/* Exclusive maximum of the node ids; the limit of the nodemask */
+	__u32 nodemask_max;
+
+	/*
+	 * Pointer to a bitmask of the numa nodes to use for allocation.
+	 * Size is derived from [0, nodemask_max).
+	 */
+	__u64 nodemask_ptr;
+};
+
 struct prelim_drm_i915_gem_create_ext {
 
 	/**
@@ -283,13 +394,10 @@ struct prelim_drm_i915_gem_create_ext {
 	__u32 handle;
 	__u32 pad;
 
-#define PRELIM_I915_GEM_CREATE_EXT_SETPARAM	(PRELIM_I915_USER_EXT | 1)
+#define PRELIM_I915_GEM_CREATE_EXT_SETPARAM		(PRELIM_I915_USER_EXT | 1)
 #define PRELIM_I915_GEM_CREATE_EXT_PROTECTED_CONTENT   (PRELIM_I915_USER_EXT | 2)
-#define PRELIM_I915_GEM_CREATE_EXT_VM_PRIVATE	(PRELIM_I915_USER_EXT | 3)
-#define PRELIM_I915_GEM_CREATE_EXT_FLAGS_UNKNOWN			\
-	(~(PRELIM_I915_GEM_CREATE_EXT_SETPARAM |			\
-	   PRELIM_I915_GEM_CREATE_EXT_PROTECTED_CONTENT |		\
-	   PRELIM_I915_GEM_CREATE_EXT_VM_PRIVATE))
+#define PRELIM_I915_GEM_CREATE_EXT_VM_PRIVATE		(PRELIM_I915_USER_EXT | 3)
+#define PRELIM_I915_GEM_CREATE_EXT_MEMORY_POLICY	(PRELIM_I915_USER_EXT | 4)
 	__u64 extensions;
 };
 
@@ -334,10 +442,9 @@ struct prelim_drm_i915_gem_object_param {
  *
  * Specifies that this buffer object should support 'chunking' and chunk
  * granularity. Allows internal KMD paging/migration/eviction handling to
- * operate on a single chunk instead of the whole buffer object.
- * Size specified in bytes and must be non-zero and a power of 2.
- * KMD will return error (-ENOSPC) if CHUNK_SIZE is deemed to be too small
- * to be supported.
+ * operate on a single chunk instead of the whole buffer object. Size is
+ * specified in bytes. KMD will return error (-ENOSPC) if CHUNK_SIZE is
+ * smaller than 64 KiB or (-EINVAL) if not aligned to 64 KiB.
  */
 #define PRELIM_I915_PARAM_SET_CHUNK_SIZE ((1 << 18) | 1)
 	__u64 param;
@@ -703,6 +810,15 @@ enum prelim_drm_i915_perf_property_id {
 	 */
 	PRELIM_DRM_I915_PERF_PROP_OA_ENGINE_INSTANCE = (PRELIM_DRM_I915_PERF_PROP | 3),
 
+	/**
+	 * Specify the number of reports that the driver will wait for before
+	 * returning data to the user. This value must be less than the number
+	 * of reports that the OA buffer can hold.
+	 *
+	 * This property is available in perf revision 1008.
+	 */
+	PRELIM_DRM_I915_PERF_PROP_OA_NOTIFY_NUM_REPORTS = (PRELIM_DRM_I915_PERF_PROP | 4),
+
 	PRELIM_DRM_I915_PERF_PROP_LAST,
 
 	PRELIM_DRM_I915_PERF_PROP_MAX = DRM_I915_PERF_PROP_MAX - 1 + \
@@ -776,7 +892,8 @@ struct prelim_drm_i915_debug_event {
 #define PRELIM_DRM_I915_DEBUG_EVENT_CONTEXT_PARAM 7
 #define PRELIM_DRM_I915_DEBUG_EVENT_EU_ATTENTION 8
 #define PRELIM_DRM_I915_DEBUG_EVENT_ENGINES 9
-#define PRELIM_DRM_I915_DEBUG_EVENT_MAX_EVENT PRELIM_DRM_I915_DEBUG_EVENT_ENGINES
+#define PRELIM_DRM_I915_DEBUG_EVENT_PAGE_FAULT 10
+#define PRELIM_DRM_I915_DEBUG_EVENT_MAX_EVENT PRELIM_DRM_I915_DEBUG_EVENT_PAGE_FAULT
 
 	__u32 flags;
 #define PRELIM_DRM_I915_DEBUG_EVENT_CREATE	(1 << 31)
@@ -869,6 +986,34 @@ struct prelim_drm_i915_debug_event_eu_attention {
 	 * the bitmask includu only half of logical EU count
 	 * provided by topology query as we only control the
 	 * 'pair' instead of individual EUs.
+	 */
+
+	__u8 bitmask[0];
+} __attribute__((packed));
+
+struct prelim_drm_i915_debug_event_page_fault {
+	struct prelim_drm_i915_debug_event base;
+	__u64 client_handle;
+	__u64 ctx_handle;
+	__u64 lrc_handle;
+
+	__u32 flags;
+
+	struct i915_engine_class_instance ci;
+
+	__u64 page_fault_address;
+
+	/**
+	 * Size of one bitmask: sum of size before/after/resolved att bits.
+	 * It has three times the size of prelim_drm_i915_debug_event_eu_attention.bitmask_size.
+	 */
+	__u32 bitmask_size;
+
+	/**
+	 * Bitmask of thread attentions starting from natural
+	 * hardware order of slice=0,subslice=0,eu=0, 8 attention
+	 * bits per eu.
+	 * The order of the bitmask array is before, after, resolved.
 	 */
 
 	__u8 bitmask[0];
@@ -1239,6 +1384,29 @@ struct prelim_drm_i915_gem_vm_bind {
 #define PRELIM_I915_GEM_VM_BIND_IMMEDIATE	(1ull << 63)
 #define PRELIM_I915_GEM_VM_BIND_READONLY	(1ull << 62)
 #define PRELIM_I915_GEM_VM_BIND_CAPTURE		(1ull << 61)
+
+/*
+ * PRELIM_I915_GEM_VM_BIND_MAKE_RESIDENT
+ *
+ * The legacy behaviour of a VM_BIND is that it is resident whenever the
+ * context/vm is active on the GPU. That is when the user is executing their
+ * batch, all current VM_BIND objects are accessible via their defined user
+ * virtual addresses. This is relaxed for pagefaultable vm, where the virtual
+ * address may be faulted and loaded upon demand, thus not all the user objects
+ * are bound at the time of user execution.
+ *
+ * PRELIM_I915_GEM_VM_BIND_MAKE_RESIDENT changes the behaviour of the faultable
+ * VM_BIND such that is resident in memory and bound to that virtual address
+ * for the duration of the binding (until the equivalent VM_UNBIND). Like with
+ * the non-faultable vm, a resident object is always accessible by user
+ * execution without generating pagefaults. The exception being that if the
+ * object is marked for atomic access, the buffer has to be faulted in and out
+ * of device memory for CPU access. It is also possible for the buffer to be
+ * migrated via its preferred placement hint.
+ *
+ * If the entire resident set cannot fit within memory, an out of memory error
+ * is immediately reported from the ioctl.
+ */
 #define PRELIM_I915_GEM_VM_BIND_MAKE_RESIDENT	(1ull << 60)
 #define PRELIM_I915_GEM_VM_BIND_FD		(1ull << 59)
 
@@ -1282,15 +1450,22 @@ struct prelim_drm_i915_gem_vm_advise {
 	/**
 	 * Attributes to apply to address range or buffer object
 	 *
-	 * ATOMIC_SYSTEM
+	 * For object hints, hints may not be set on imported (prime_import)
+	 * objects and will return error (-EPERM). Hints may only be set against
+	 * the exported object,
+	 *
+	 * ADVISE_ATOMIC_SYSTEM
 	 *      inform that atomic access is enabled for both CPU and GPU.
 	 *      For some platforms, this may be required for correctness
 	 *      and this hint will influence migration policy.
-	 * ATOMIC_DEVICE
+	 *      This hint is not allowed unless placement list includes SMEM,
+	 *      and is not allowed for exported buffer objects (prime_export)
+	 *	with placement list of LMEM + SMEM and returns error (-EPERM).
+	 * ADVISE_ATOMIC_DEVICE
 	 *      inform that atomic access is enabled for GPU devices. For
 	 *      some platforms, this may be required for correctness and
 	 *      this hint will influence migration policy.
-	 * ATOMIC_NONE
+	 * ADVISE_ATOMIC_NONE
 	 *	clears above ATOMIC_SYSTEM / ATOMIC_DEVICE hint.
 	 * PREFERRED_LOCATION
 	 *	sets the preferred memory class and instance for this object's
@@ -1308,6 +1483,20 @@ struct prelim_drm_i915_gem_vm_advise {
 #define PRELIM_I915_VM_ADVISE_ATOMIC_NONE		(PRELIM_I915_VM_ADVISE | 0)
 #define PRELIM_I915_VM_ADVISE_ATOMIC_SYSTEM		(PRELIM_I915_VM_ADVISE | 1)
 #define PRELIM_I915_VM_ADVISE_ATOMIC_DEVICE		(PRELIM_I915_VM_ADVISE | 2)
+	/**
+	 * Attributes to apply to address range or buffer object. Different from
+	 * above ADVISE_ATOMIC, SET_ATOMIC guarantees the correctness of atomic
+	 * operation instead of just a hint/advise. This is mainly to fix the
+	 * naming problem of above API: atomics should be a guarantee, not a
+	 * hint/advise.
+	 *
+	 * Since currently driver already implements ADVISE_ATOMIC APIs as a
+	 * guarantee, so just define SET_ATOMIC APIs the same behavior as
+	 * ADVISE_ATOMIC APIs.
+	 */
+#define PRELIM_I915_VM_SET_ATOMIC_NONE		PRELIM_I915_VM_ADVISE_ATOMIC_NONE
+#define PRELIM_I915_VM_SET_ATOMIC_SYSTEM	PRELIM_I915_VM_ADVISE_ATOMIC_SYSTEM
+#define PRELIM_I915_VM_SET_ATOMIC_DEVICE	PRELIM_I915_VM_ADVISE_ATOMIC_DEVICE
 #define PRELIM_I915_VM_ADVISE_PREFERRED_LOCATION	(PRELIM_I915_VM_ADVISE | 3)
 
 	/** Preferred location (memory region) for object backing */

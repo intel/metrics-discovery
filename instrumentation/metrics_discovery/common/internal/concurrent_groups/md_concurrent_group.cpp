@@ -78,16 +78,16 @@ namespace MetricsDiscoveryInternal
     //     Wrapper function for adding custom metric sets with the given parameters.
     //
     // Input:
-    //     TAddCustomMetricSetParams*  params               - params
-    //     IMetricSetLatest*           referenceMetricSet   - (optional) metric set from which copy metrics and information
-    //                                                         *IGNORED IN CConcurrentGroup*
-    //     bool                        copyInformationOnly  - Copy information without metrics from reference set
+    //     TAddCustomMetricSetParams*   params                - params
+    //     IMetricSetLatest*            referenceMetricSet    - (optional) metric set from which copy metrics and information
+    //                                                        *IGNORED IN CConcurrentGroup*
+    //     bool                         copyInformationOnly   - Copy information without metrics from reference set
     //
     // Output:
-    //     IMetricSetLatest* - added metric set
+    //     IMetricSetLatest*                                  - added metric set
     //
     //////////////////////////////////////////////////////////////////////////////
-    IMetricSetLatest* CConcurrentGroup::AddCustomMetricSet( TAddCustomMetricSetParams* params, IMetricSetLatest* referenceMetricSet, bool copyInformationOnly /*= false*/ )
+    IMetricSetLatest* CConcurrentGroup::AddCustomMetricSet( TAddCustomMetricSetParams* params, [[maybe_unused]] IMetricSetLatest* referenceMetricSet, bool copyInformationOnly /*= false*/ )
     {
         const uint32_t adapterId = m_device.GetAdapter().GetAdapterId();
 
@@ -409,7 +409,7 @@ namespace MetricsDiscoveryInternal
 
         if( information->IsAvailabilityEquationTrue() )
         {
-            uint32_t count = m_informationVector.size();
+            uint32_t count = static_cast<uint32_t>( m_informationVector.size() );
             information->SetIdInSetParam( count );
             m_informationVector.push_back( information );
             m_informationCount = count + 1;
@@ -443,7 +443,7 @@ namespace MetricsDiscoveryInternal
     CInformation* CConcurrentGroup::AddInformation( CInformation* information )
     {
         m_informationVector.push_back( information );
-        m_informationCount = m_informationVector.size();
+        m_informationCount = static_cast<uint32_t>( m_informationVector.size() );
 
         return information;
     }
@@ -748,7 +748,7 @@ namespace MetricsDiscoveryInternal
         if( m_device.IsPlatformTypeOf( platformMask, gtMask ) && set->IsAvailabilityEquationTrue() )
         {
             m_setsVector.push_back( set );
-            m_params.MetricSetsCount = m_setsVector.size();
+            m_params.MetricSetsCount = static_cast<uint32_t>( m_setsVector.size() );
         }
         else
         {

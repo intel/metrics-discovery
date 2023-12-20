@@ -45,33 +45,6 @@ namespace MetricsDiscoveryInternal
 {
     //////////////////////////////////////////////////////////////////////////////
     //
-    // Global variables:
-    //     Frequency SysFs file names.
-    //
-    // Description:
-    //     Min/Max frequency files return the min/max frequency that can be set on the HW.
-    //     Min/Max/Boost frequency override files return currently set frequency. Setting
-    //     static frequency requires writing to all of these 3 files.
-    //
-    //////////////////////////////////////////////////////////////////////////////
-    static constexpr char ACT_FREQ_FILE_NAME_I915[] = "gt_act_freq_mhz";
-    static constexpr char MAX_FREQ_FILE_NAME_I915[] = "gt_RP0_freq_mhz";
-    static constexpr char MIN_FREQ_FILE_NAME_I915[] = "gt_RPn_freq_mhz";
-
-    static constexpr char MAX_FREQ_OV_FILE_NAME_I915[]   = "gt_max_freq_mhz";
-    static constexpr char MIN_FREQ_OV_FILE_NAME_I915[]   = "gt_min_freq_mhz";
-    static constexpr char BOOST_FREQ_OV_FILE_NAME_I915[] = "gt_boost_freq_mhz";
-
-    static constexpr char ACT_FREQ_FILE_NAME_XE[] = "device/tile0/gt0/freq_cur";
-    static constexpr char MAX_FREQ_FILE_NAME_XE[] = "device/tile0/gt0/freq_rp0";
-    static constexpr char MIN_FREQ_FILE_NAME_XE[] = "device/tile0/gt0/freq_rpn";
-
-    static constexpr char MAX_FREQ_OV_FILE_NAME_XE[]   = "device/tile0/gt0/freq_max";
-    static constexpr char MIN_FREQ_OV_FILE_NAME_XE[]   = "device/tile0/gt0/freq_min";
-    static constexpr char BOOST_FREQ_OV_FILE_NAME_XE[] = "device/tile0/gt0/freq_max";
-
-    //////////////////////////////////////////////////////////////////////////////
-    //
     // Class:
     //     CSemaphore
     //
@@ -600,16 +573,14 @@ namespace MetricsDiscoveryInternal
     // Input:
     //     GTDI_DEVICE_PARAM         param         - chosen param
     //     GTDIDeviceInfoParamExtOut out           - (out) escape result
-    //     CMetricsDevice*           metricsDevice - pointer to device
+    //     CMetricsDevice&           metricsDevice - a reference to device
     //
     // Output:
     //     TCompletionCode                         - *CC_OK* means succeess
     //
     //////////////////////////////////////////////////////////////////////////////
-    TCompletionCode CDriverInterfaceLinuxCommon::SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM param, GTDIDeviceInfoParamExtOut* out, CMetricsDevice* metricsDevice /* = nullptr */ )
+    TCompletionCode CDriverInterfaceLinuxCommon::SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM param, GTDIDeviceInfoParamExtOut& out, CMetricsDevice& metricsDevice )
     {
-        MD_CHECK_PTR_RET_A( m_adapterId, out, CC_ERROR_INVALID_PARAMETER );
-
         TCompletionCode       ret           = CC_OK;
         GTDI_PLATFORM_INDEX   platformId    = GTDI_PLATFORM_MAX;
         const TGfxDeviceInfo* gfxDeviceInfo = nullptr;
@@ -636,18 +607,18 @@ namespace MetricsDiscoveryInternal
 
             case GTDI_DEVICE_PARAM_DUALSUBSLICES_TOTAL_COUNT:
             {
-                out->ValueType   = GTDI_DEVICE_PARAM_VALUE_TYPE_UINT32;
-                out->ValueUint32 = 0;
+                out.ValueType   = GTDI_DEVICE_PARAM_VALUE_TYPE_UINT32;
+                out.ValueUint32 = 0;
 
                 if( IsDualSubsliceSupported() )
                 {
                     int64_t dualSubsliceMask = 0;
 
-                    ret = GetSubsliceMask( &dualSubsliceMask, metricsDevice );
+                    ret = GetSubsliceMask( dualSubsliceMask, metricsDevice );
                     MD_CHECK_CC_RET_A( m_adapterId, ret );
 
-                    out->ValueType   = GTDI_DEVICE_PARAM_VALUE_TYPE_UINT32;
-                    out->ValueUint32 = CalculateEnabledBits( dualSubsliceMask );
+                    out.ValueType   = GTDI_DEVICE_PARAM_VALUE_TYPE_UINT32;
+                    out.ValueUint32 = CalculateEnabledBits( dualSubsliceMask );
                 }
                 else
                 {
@@ -661,15 +632,15 @@ namespace MetricsDiscoveryInternal
             {
                 int64_t subsliceMask = 0;
 
-                ret = GetSubsliceMask( &subsliceMask, metricsDevice );
+                ret = GetSubsliceMask( subsliceMask, metricsDevice );
                 MD_CHECK_CC_RET_A( m_adapterId, ret );
 
-                out->ValueType   = GTDI_DEVICE_PARAM_VALUE_TYPE_UINT32;
-                out->ValueUint32 = CalculateEnabledBits( subsliceMask );
+                out.ValueType   = GTDI_DEVICE_PARAM_VALUE_TYPE_UINT32;
+                out.ValueUint32 = CalculateEnabledBits( subsliceMask );
 
                 if( IsDualSubsliceSupported() && param != GTDI_DEVICE_PARAM_SAMPLERS_COUNT )
                 {
-                    out->ValueUint32 *= MD_MAX_SUBSLICE_PER_DSS;
+                    out.ValueUint32 *= MD_MAX_SUBSLICE_PER_DSS;
                 }
                 break;
             }
@@ -678,33 +649,33 @@ namespace MetricsDiscoveryInternal
             {
                 int32_t sliceMask = 0;
 
-                ret = GetSliceMask( &sliceMask, metricsDevice );
+                ret = GetSliceMask( sliceMask, metricsDevice );
                 MD_CHECK_CC_RET_A( m_adapterId, ret );
 
-                out->ValueType   = GTDI_DEVICE_PARAM_VALUE_TYPE_UINT32;
-                out->ValueUint32 = CalculateEnabledBits( static_cast<uint64_t>( sliceMask ), static_cast<uint64_t>( 0xFFFFFFFF ) );
-                MD_ASSERT_A( m_adapterId, out->ValueUint32 <= MD_MAX_SLICE );
+                out.ValueType   = GTDI_DEVICE_PARAM_VALUE_TYPE_UINT32;
+                out.ValueUint32 = CalculateEnabledBits( static_cast<uint64_t>( sliceMask ), static_cast<uint64_t>( 0xFFFFFFFF ) );
+                MD_ASSERT_A( m_adapterId, out.ValueUint32 <= MD_MAX_SLICE );
                 break;
             }
 
             case GTDI_DEVICE_PARAM_MAX_SLICE:
             {
-                out->ValueType   = GTDI_DEVICE_PARAM_VALUE_TYPE_UINT32;
-                out->ValueUint32 = MD_MAX_SLICE;
+                out.ValueType   = GTDI_DEVICE_PARAM_VALUE_TYPE_UINT32;
+                out.ValueUint32 = MD_MAX_SLICE;
                 break;
             }
 
             case GTDI_DEVICE_PARAM_MAX_SUBSLICE_PER_SLICE:
             {
-                out->ValueType   = GTDI_DEVICE_PARAM_VALUE_TYPE_UINT32;
-                out->ValueUint32 = GetGtMaxSubslicePerSlice();
+                out.ValueType   = GTDI_DEVICE_PARAM_VALUE_TYPE_UINT32;
+                out.ValueUint32 = GetGtMaxSubslicePerSlice();
                 break;
             }
 
             case GTDI_DEVICE_PARAM_MAX_DUALSUBSLICE_PER_SLICE:
             {
-                out->ValueType   = GTDI_DEVICE_PARAM_VALUE_TYPE_UINT32;
-                out->ValueUint32 = GetGtMaxDualSubslicePerSlice();
+                out.ValueType   = GTDI_DEVICE_PARAM_VALUE_TYPE_UINT32;
+                out.ValueUint32 = GetGtMaxDualSubslicePerSlice();
                 break;
             }
 
@@ -712,32 +683,32 @@ namespace MetricsDiscoveryInternal
             {
                 int32_t sliceMask = 0;
 
-                ret = GetSliceMask( &sliceMask, metricsDevice );
+                ret = GetSliceMask( sliceMask, metricsDevice );
                 MD_CHECK_CC_RET_A( m_adapterId, ret );
 
-                out->ValueType   = GTDI_DEVICE_PARAM_VALUE_TYPE_UINT32;
-                out->ValueUint32 = MD_NUM_PIXELS_OUT_PER_CLOCK * CalculateEnabledBits( static_cast<uint64_t>( sliceMask ) ); // pixels_out_per_clock * sliceCount
+                out.ValueType   = GTDI_DEVICE_PARAM_VALUE_TYPE_UINT32;
+                out.ValueUint32 = MD_NUM_PIXELS_OUT_PER_CLOCK * CalculateEnabledBits( static_cast<uint64_t>( sliceMask ) ); // pixels_out_per_clock * sliceCount
                 break;
             }
 
             case GTDI_DEVICE_PARAM_EU_THREADS_COUNT:
             {
-                out->ValueType   = GTDI_DEVICE_PARAM_VALUE_TYPE_UINT32;
-                out->ValueUint32 = gfxDeviceInfo->ThreadsPerEu;
+                out.ValueType   = GTDI_DEVICE_PARAM_VALUE_TYPE_UINT32;
+                out.ValueUint32 = gfxDeviceInfo->ThreadsPerEu;
                 break;
             }
 
             case GTDI_DEVICE_PARAM_NUMBER_OF_SHADING_UNITS:
             {
-                out->ValueType   = GTDI_DEVICE_PARAM_VALUE_TYPE_UINT32;
-                out->ValueUint32 = MD_EU_SIMD_SIZE_PER_CLOCK * gfxDeviceInfo->ThreadsPerEu; // eu_simd_size_per_clock * euThreadCount
+                out.ValueType   = GTDI_DEVICE_PARAM_VALUE_TYPE_UINT32;
+                out.ValueUint32 = MD_EU_SIMD_SIZE_PER_CLOCK * gfxDeviceInfo->ThreadsPerEu; // eu_simd_size_per_clock * euThreadCount
                 break;
             }
 
             case GTDI_DEVICE_PARAM_SUBSLICES_MASK:
             {
-                out->ValueType   = GTDI_DEVICE_PARAM_VALUE_TYPE_UINT64;
-                out->ValueUint64 = 0;
+                out.ValueType   = GTDI_DEVICE_PARAM_VALUE_TYPE_UINT64;
+                out.ValueUint64 = 0;
 
                 if( IsDualSubsliceSupported() )
                 {
@@ -746,10 +717,10 @@ namespace MetricsDiscoveryInternal
                 else
                 {
                     int64_t subSliceMask = 0;
-                    ret                  = GetSubsliceMask( &subSliceMask, metricsDevice );
+                    ret                  = GetSubsliceMask( subSliceMask, metricsDevice );
                     MD_CHECK_CC_RET( ret );
 
-                    out->ValueUint64 = static_cast<uint64_t>( subSliceMask );
+                    out.ValueUint64 = static_cast<uint64_t>( subSliceMask );
                 }
 
                 break;
@@ -757,17 +728,17 @@ namespace MetricsDiscoveryInternal
 
             case GTDI_DEVICE_PARAM_DUALSUBSLICES_MASK:
             {
-                out->ValueType   = GTDI_DEVICE_PARAM_VALUE_TYPE_UINT64;
-                out->ValueUint64 = 0;
+                out.ValueType   = GTDI_DEVICE_PARAM_VALUE_TYPE_UINT64;
+                out.ValueUint64 = 0;
 
                 if( IsDualSubsliceSupported() )
                 {
                     // Return value is a mask of enabled dual subslices
                     int64_t dualSubsliceMask = 0;
-                    ret                      = GetSubsliceMask( &dualSubsliceMask, metricsDevice );
+                    ret                      = GetSubsliceMask( dualSubsliceMask, metricsDevice );
                     MD_CHECK_CC_RET_A( m_adapterId, ret );
 
-                    out->ValueUint64 = static_cast<uint64_t>( dualSubsliceMask );
+                    out.ValueUint64 = static_cast<uint64_t>( dualSubsliceMask );
                 }
                 else
                 {
@@ -780,11 +751,11 @@ namespace MetricsDiscoveryInternal
             {
                 int32_t sliceMask = 0;
 
-                ret = GetSliceMask( &sliceMask, metricsDevice );
+                ret = GetSliceMask( sliceMask, metricsDevice );
                 MD_CHECK_CC_RET_A( m_adapterId, ret );
 
-                out->ValueType   = GTDI_DEVICE_PARAM_VALUE_TYPE_UINT32;
-                out->ValueUint32 = sliceMask;
+                out.ValueType   = GTDI_DEVICE_PARAM_VALUE_TYPE_UINT32;
+                out.ValueUint32 = sliceMask;
 
                 break;
             }
@@ -801,14 +772,14 @@ namespace MetricsDiscoveryInternal
             case GTDI_DEVICE_PARAM_GPU_CORE_MAX_FREQUENCY:
             case GTDI_DEVICE_PARAM_GPU_CORE_FREQUENCY:
             {
-                uint64_t* minFrequency = ( param == GTDI_DEVICE_PARAM_GPU_CORE_MIN_FREQUENCY ) ? &out->ValueUint64 : nullptr;
-                uint64_t* maxFrequency = ( param == GTDI_DEVICE_PARAM_GPU_CORE_MAX_FREQUENCY ) ? &out->ValueUint64 : nullptr;
-                uint64_t* actFrequency = ( param == GTDI_DEVICE_PARAM_GPU_CORE_FREQUENCY ) ? &out->ValueUint64 : nullptr;
+                uint64_t* minFrequency = ( param == GTDI_DEVICE_PARAM_GPU_CORE_MIN_FREQUENCY ) ? &out.ValueUint64 : nullptr;
+                uint64_t* maxFrequency = ( param == GTDI_DEVICE_PARAM_GPU_CORE_MAX_FREQUENCY ) ? &out.ValueUint64 : nullptr;
+                uint64_t* actFrequency = ( param == GTDI_DEVICE_PARAM_GPU_CORE_FREQUENCY ) ? &out.ValueUint64 : nullptr;
 
-                ret = GetGpuFrequencyInfo( minFrequency, maxFrequency, actFrequency, nullptr );
+                ret = GetGpuFrequencyInfo( metricsDevice, minFrequency, maxFrequency, actFrequency, nullptr );
                 MD_CHECK_CC_RET_A( m_adapterId, ret );
 
-                out->ValueType = GTDI_DEVICE_PARAM_VALUE_TYPE_UINT64;
+                out.ValueType = GTDI_DEVICE_PARAM_VALUE_TYPE_UINT64;
                 break;
             }
 
@@ -819,8 +790,8 @@ namespace MetricsDiscoveryInternal
                 ret = GetDeviceId( deviceId );
                 MD_CHECK_CC_RET_A( m_adapterId, ret );
 
-                out->ValueUint32 = (uint32_t) deviceId;
-                out->ValueType   = GTDI_DEVICE_PARAM_VALUE_TYPE_UINT32;
+                out.ValueUint32 = (uint32_t) deviceId;
+                out.ValueType   = GTDI_DEVICE_PARAM_VALUE_TYPE_UINT32;
                 break;
             }
 
@@ -831,30 +802,30 @@ namespace MetricsDiscoveryInternal
                 ret = GetRevisionId( revisionId );
                 MD_CHECK_CC_RET_A( m_adapterId, ret );
 
-                out->ValueUint32 = (uint32_t) revisionId;
-                out->ValueType   = GTDI_DEVICE_PARAM_VALUE_TYPE_UINT32;
+                out.ValueUint32 = (uint32_t) revisionId;
+                out.ValueType   = GTDI_DEVICE_PARAM_VALUE_TYPE_UINT32;
                 break;
             }
 
             case GTDI_DEVICE_PARAM_PLATFORM_INDEX:
             {
-                out->ValueUint32 = static_cast<uint32_t>( platformId );
-                out->ValueType   = GTDI_DEVICE_PARAM_VALUE_TYPE_UINT32;
+                out.ValueUint32 = static_cast<uint32_t>( platformId );
+                out.ValueType   = GTDI_DEVICE_PARAM_VALUE_TYPE_UINT32;
                 break;
             }
 
             case GTDI_DEVICE_PARAM_GT_TYPE:
             {
                 // Returning mapped GtType for compatibility reasons
-                out->ValueType = GTDI_DEVICE_PARAM_VALUE_TYPE_UINT32;
+                out.ValueType = GTDI_DEVICE_PARAM_VALUE_TYPE_UINT32;
                 // GfxVer12 gt values is based of revId and slicesMask
                 if( IsPlatformMatch( platformId, GENERATION_XEHP_SDV, GENERATION_PVC ) )
                 {
-                    out->ValueUint32 = static_cast<uint32_t>( MapDeviceInfoToInstrGtTypeGfxVer12( gfxDeviceInfo, metricsDevice ) );
+                    out.ValueUint32 = static_cast<uint32_t>( MapDeviceInfoToInstrGtTypeGfxVer12( *gfxDeviceInfo, metricsDevice ) );
                 }
                 else
                 {
-                    out->ValueUint32 = static_cast<uint32_t>( gfxDeviceInfo->GtType );
+                    out.ValueUint32 = static_cast<uint32_t>( gfxDeviceInfo->GtType );
                 }
                 break;
             }
@@ -875,8 +846,8 @@ namespace MetricsDiscoveryInternal
 
                 ret = GetOaBufferSupportedSizes( platformId, oaBufferSizeMin, oaBufferSizeMax );
 
-                out->ValueType   = GTDI_DEVICE_PARAM_VALUE_TYPE_UINT32;
-                out->ValueUint32 = ( param == GTDI_DEVICE_PARAM_OA_BUFFER_SIZE_MIN ) ? oaBufferSizeMin : oaBufferSizeMax;
+                out.ValueType   = GTDI_DEVICE_PARAM_VALUE_TYPE_UINT32;
+                out.ValueUint32 = ( param == GTDI_DEVICE_PARAM_OA_BUFFER_SIZE_MIN ) ? oaBufferSizeMin : oaBufferSizeMax;
                 break;
             }
 
@@ -884,11 +855,11 @@ namespace MetricsDiscoveryInternal
             {
                 uint64_t gpuTimestampFrequency = 0;
 
-                ret = GetGpuTimestampFrequency( &gpuTimestampFrequency );
+                ret = GetGpuTimestampFrequency( gpuTimestampFrequency );
                 MD_CHECK_CC_RET_A( m_adapterId, ret );
 
-                out->ValueType   = GTDI_DEVICE_PARAM_VALUE_TYPE_UINT64;
-                out->ValueUint64 = gpuTimestampFrequency;
+                out.ValueType   = GTDI_DEVICE_PARAM_VALUE_TYPE_UINT64;
+                out.ValueUint64 = gpuTimestampFrequency;
                 break;
             }
 
@@ -911,41 +882,69 @@ namespace MetricsDiscoveryInternal
 
             case GTDI_DEVICE_PARAM_OA_BUFFERS_COUNT:
             {
-                MD_CHECK_PTR_RET_A( m_adapterId, metricsDevice, CC_ERROR_INVALID_PARAMETER );
                 uint32_t oaBufferCount = 0;
 
-                ret = GetOaBufferCount( *metricsDevice, oaBufferCount );
+                ret = GetOaBufferCount( metricsDevice, oaBufferCount );
                 MD_CHECK_CC_RET_A( m_adapterId, ret );
 
-                out->ValueType   = GTDI_DEVICE_PARAM_VALUE_TYPE_UINT32;
-                out->ValueUint32 = oaBufferCount;
+                out.ValueType   = GTDI_DEVICE_PARAM_VALUE_TYPE_UINT32;
+                out.ValueUint32 = oaBufferCount;
                 break;
             }
 
             case GTDI_DEVICE_PARAM_L3_BANK_TOTAL_COUNT:
-                ret = CC_ERROR_NOT_SUPPORTED;
+            {
+                uint32_t l3NodeCount = 0;
+
+                ret = GetL3NodeTotalCount( metricsDevice, l3NodeCount );
+                MD_CHECK_CC_RET_A( m_adapterId, ret );
+
+                out.ValueType   = GTDI_DEVICE_PARAM_VALUE_TYPE_UINT32;
+                out.ValueUint32 = l3NodeCount * MD_L3_BANK_COUNT_PER_L3_NODE;
                 break;
+            }
 
             case GTDI_DEVICE_PARAM_L3_NODE_TOTAL_COUNT:
-                ret = CC_ERROR_NOT_SUPPORTED;
-                break;
-
             case GTDI_DEVICE_PARAM_SQIDI_TOTAL_COUNT:
-                ret = CC_ERROR_NOT_SUPPORTED;
+            {
+                uint32_t l3NodeCount = 0;
+
+                ret = GetL3NodeTotalCount( metricsDevice, l3NodeCount );
+                MD_CHECK_CC_RET_A( m_adapterId, ret );
+
+                out.ValueType   = GTDI_DEVICE_PARAM_VALUE_TYPE_UINT32;
+                out.ValueUint32 = l3NodeCount;
                 break;
+            }
 
             case GTDI_DEVICE_PARAM_COMPUTE_ENGINE_TOTAL_COUNT:
-                ret = CC_ERROR_NOT_SUPPORTED;
+            {
+                uint32_t computeEngineCount = 0;
+
+                ret = GetComputeEngineTotalCount( metricsDevice, computeEngineCount );
+                MD_CHECK_CC_RET_A( m_adapterId, ret );
+
+                out.ValueType   = GTDI_DEVICE_PARAM_VALUE_TYPE_UINT32;
+                out.ValueUint32 = computeEngineCount;
                 break;
+            }
 
             case GTDI_DEVICE_PARAM_COPY_ENGINE_TOTAL_COUNT:
-                ret = CC_ERROR_NOT_SUPPORTED;
+            {
+                uint32_t l3NodeCount = 0;
+
+                ret = GetL3NodeTotalCount( metricsDevice, l3NodeCount );
+                MD_CHECK_CC_RET_A( m_adapterId, ret );
+
+                out.ValueType   = GTDI_DEVICE_PARAM_VALUE_TYPE_UINT32;
+                out.ValueUint32 = l3NodeCount / MD_L3_NODE_COUNT_PER_COPY_ENGINE;
                 break;
+            }
 
             case GTDI_DEVICE_PARAM_PLATFORM_VERSION:
             {
-                out->ValueType   = GTDI_DEVICE_PARAM_VALUE_TYPE_UINT32;
-                out->ValueUint32 = 0;
+                out.ValueType   = GTDI_DEVICE_PARAM_VALUE_TYPE_UINT32;
+                out.ValueUint32 = 0;
                 break;
             }
 
@@ -971,12 +970,13 @@ namespace MetricsDiscoveryInternal
     //     const GTDI_OA_BUFFER_TYPE  oaBufferType - oa buffer type
     //     const GTDI_DEVICE_PARAM    param        - chosen param
     //     GTDIDeviceInfoParamExtOut& out          - (out) escape result
+    //     CMetricsDevice&            device       - a reference to device
     //
     // Output:
     //     TCompletionCode                         - *CC_OK* means succeess
     //
     //////////////////////////////////////////////////////////////////////////////
-    TCompletionCode CDriverInterfaceLinuxCommon::GetMaxMinOaBufferSize( const GTDI_OA_BUFFER_TYPE oaBufferType, const GTDI_DEVICE_PARAM param, GTDIDeviceInfoParamExtOut& out )
+    TCompletionCode CDriverInterfaceLinuxCommon::GetMaxMinOaBufferSize( const GTDI_OA_BUFFER_TYPE oaBufferType, const GTDI_DEVICE_PARAM param, GTDIDeviceInfoParamExtOut& out, CMetricsDevice& device )
     {
         switch( param )
         {
@@ -988,7 +988,7 @@ namespace MetricsDiscoveryInternal
                 return CC_ERROR_INVALID_PARAMETER;
         }
 
-        return SendDeviceInfoParamEscape( param, &out );
+        return SendDeviceInfoParamEscape( param, out, device );
     }
 
     //////////////////////////////////////////////////////////////////////////////
@@ -1011,7 +1011,6 @@ namespace MetricsDiscoveryInternal
     // Input:
     //     TRegister**                 regVector      - array of pointers to registers to program
     //     const uint32_t              regCount       - register count
-    //     const uint32_t              apiMask        - API mask
     //     const uint32_t              subDeviceIndex - sub device index
     //     const GTDI_OA_BUFFER_TYPE   oaBufferType   - oa buffer type
     //
@@ -1019,14 +1018,10 @@ namespace MetricsDiscoveryInternal
     //     TCompletionCode                            - *CC_OK* means success
     //
     //////////////////////////////////////////////////////////////////////////////
-    TCompletionCode CDriverInterfaceLinuxCommon::SendPmRegsConfig( TRegister** regVector, const uint32_t regCount, const uint32_t apiMask, const uint32_t subDeviceIndex, const GTDI_OA_BUFFER_TYPE oaBufferType )
+    TCompletionCode CDriverInterfaceLinuxCommon::SendPmRegsConfig( TRegister** regVector, const uint32_t regCount, const uint32_t subDeviceIndex, const GTDI_OA_BUFFER_TYPE oaBufferType )
     {
         MD_LOG_ENTER_A( m_adapterId );
         MD_CHECK_PTR_RET_A( m_adapterId, regVector, CC_ERROR_INVALID_PARAMETER );
-        if( apiMask & API_TYPE_IOSTREAM )
-        {
-            MD_LOG_A( m_adapterId, LOG_DEBUG, "SetApiFiltering wasn't used" );
-        }
 
         TCompletionCode ret = CC_OK;
 
@@ -1087,13 +1082,12 @@ namespace MetricsDiscoveryInternal
     // Input:
     //     TRegister** regVector - array of pointers to registers to program
     //     uint32_t    regCount  - register count
-    //     uint32_t    apiMask   - API mask
     //
     // Output:
     //     TCompletionCode       - *CC_OK* means succeess
     //
     //////////////////////////////////////////////////////////////////////////////
-    TCompletionCode CDriverInterfaceLinuxCommon::SendReadRegsConfig( TRegister** regVector, uint32_t regCount, uint32_t apiMask )
+    TCompletionCode CDriverInterfaceLinuxCommon::SendReadRegsConfig( TRegister** regVector, uint32_t regCount )
     {
         return CC_ERROR_NOT_SUPPORTED;
     }
@@ -1191,16 +1185,16 @@ namespace MetricsDiscoveryInternal
     //
     // Input:
     //     const GTDI_OA_BUFFER_TYPE oaBufferType  - oa buffer type
-    //     CMetricsDevice*           metricsDevice - metrics device
+    //     CMetricsDevice&           metricsDevice - metrics device
     //
     // Output:
     //     bool                                    - true if supported
     //
     //////////////////////////////////////////////////////////////////////////////
-    bool CDriverInterfaceLinuxCommon::IsOaBufferSupported( const GTDI_OA_BUFFER_TYPE oaBufferType, CMetricsDevice* metricsDevice /* = nullptr */ )
+    bool CDriverInterfaceLinuxCommon::IsOaBufferSupported( const GTDI_OA_BUFFER_TYPE oaBufferType, CMetricsDevice& metricsDevice )
     {
         GTDIDeviceInfoParamExtOut out = {};
-        auto                      ret = SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_OA_BUFFERS_COUNT, &out, metricsDevice );
+        auto                      ret = SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_OA_BUFFERS_COUNT, out, metricsDevice );
         if( ret != CC_OK )
         {
             MD_LOG_A( m_adapterId, LOG_ERROR, "Error: Cannot send GTDI_DEVICE_PARAM_OA_BUFFERS_COUNT escape" );
@@ -1546,7 +1540,6 @@ namespace MetricsDiscoveryInternal
     //
     // Input:
     //     COAConcurrentGroup&              oaConcurrentGroup - oa concurrent group
-    //     uint32_t                         readFlags         - read flags
     //     char*                            reportData        - (out) pointer to the read data
     //     uint32_t&                        reportsCount      - (in/out) reports read/to read from the stream
     //     uint32_t&                        frequency         - (out) frequency from GTDIReadCounterStreamExtOut
@@ -1556,14 +1549,15 @@ namespace MetricsDiscoveryInternal
     //     TCompletionCode                                    - *CC_OK* means succeess
     //
     //////////////////////////////////////////////////////////////////////////////
-    TCompletionCode CDriverInterfaceLinuxCommon::ReadIoStream( COAConcurrentGroup& oaConcurrentGroup, const uint32_t readFlags, char* reportData, uint32_t& reportsCount, uint32_t& frequency, GTDIReadCounterStreamExceptions& exceptions )
+    TCompletionCode CDriverInterfaceLinuxCommon::ReadIoStream( COAConcurrentGroup& oaConcurrentGroup, char* reportData, uint32_t& reportsCount, uint32_t& frequency, GTDIReadCounterStreamExceptions& exceptions )
     {
         if( !IsStreamTypeSupported( oaConcurrentGroup.GetStreamType() ) )
         {
             return CC_ERROR_NOT_SUPPORTED;
         }
 
-        auto metricSet = oaConcurrentGroup.GetIoMetricSet();
+        auto& device    = oaConcurrentGroup.GetMetricsDevice();
+        auto  metricSet = oaConcurrentGroup.GetIoMetricSet();
 
         MD_CHECK_PTR_RET_A( m_adapterId, metricSet, CC_ERROR_INVALID_PARAMETER );
         MD_CHECK_PTR_RET_A( m_adapterId, reportData, CC_ERROR_INVALID_PARAMETER );
@@ -1573,7 +1567,7 @@ namespace MetricsDiscoveryInternal
         uint32_t       readBytes   = 0;
 
         // Read flags are ignored for Linux
-        TCompletionCode ret = ReadOaStream( oaConcurrentGroup.GetMetricsDevice(), reportSize, reportsCount, reportData, readBytes, exceptions );
+        TCompletionCode ret = ReadOaStream( device, reportSize, reportsCount, reportData, readBytes, exceptions );
         if( ret == CC_OK )
         {
             MD_ASSERT_A( m_adapterId, ( readBytes % reportSize ) == 0 );
@@ -1586,7 +1580,7 @@ namespace MetricsDiscoveryInternal
 
             // Read gpu frequency
             uint64_t currentFrequency = 0;
-            if( GetGpuFrequencyInfo( nullptr, nullptr, &currentFrequency, nullptr ) == CC_OK )
+            if( GetGpuFrequencyInfo( device, nullptr, nullptr, &currentFrequency, nullptr ) == CC_OK )
             {
                 frequency = static_cast<uint32_t>( currentFrequency / MD_MHERTZ );
             }
@@ -1771,16 +1765,16 @@ namespace MetricsDiscoveryInternal
     //     Enables / disables frequency override using CoreU function.
     //
     // Input:
-    //     const TSetFrequencyOverrideParams_1_2* params - frequency override params
+    //     CMetricsDevice&                        device - a reference to device
+    //     const TSetFrequencyOverrideParams_1_2& params - frequency override params
     //
     // Output:
     //     TCompletionCode                               - *CC_OK* means succeess
     //
     //////////////////////////////////////////////////////////////////////////////
-    TCompletionCode CDriverInterfaceLinuxCommon::SetFrequencyOverride( const TSetFrequencyOverrideParams_1_2* params )
+    TCompletionCode CDriverInterfaceLinuxCommon::SetFrequencyOverride( CMetricsDevice& device, const TSetFrequencyOverrideParams_1_2& params )
     {
-        MD_CHECK_PTR_RET_A( m_adapterId, params, CC_ERROR_INVALID_PARAMETER );
-        if( params->Pid != 0 )
+        if( params.Pid != 0 )
         {
             MD_LOG_A( m_adapterId, LOG_WARNING, "Pid ignored, frequency override supported only in global mode (Pid = 0)" );
         }
@@ -1795,31 +1789,31 @@ namespace MetricsDiscoveryInternal
         uint64_t* boostFrequencyPtr = ( m_CachedBoostFrequency ) ? nullptr : &m_CachedBoostFrequency;
 
         // 1. Read Min/Max and optional Boost frequency
-        TCompletionCode ret = GetGpuFrequencyInfo( &minFrequency, &maxFrequency, nullptr, boostFrequencyPtr );
+        TCompletionCode ret = GetGpuFrequencyInfo( device, &minFrequency, &maxFrequency, nullptr, boostFrequencyPtr );
         MD_CHECK_CC_RET_A( m_adapterId, ret );
 
         MD_LOG_A( m_adapterId, LOG_DEBUG, "MinFreq: %llu, MaxFreq: %llu, BoostFreq: %llu MHz", minFrequency, maxFrequency, m_CachedBoostFrequency );
 
         // 2. Decide frequency values to be set (e.g. check range)
-        if( params->Enable )
+        if( params.Enable )
         {
-            if( params->FrequencyMhz == 0 )
+            if( params.FrequencyMhz == 0 )
             {
                 MD_LOG_A( m_adapterId, LOG_DEBUG, "Using MaxFrequency as a default value (%llu MHz)", maxFrequency );
                 maxFrequencyToSet   = maxFrequency;
                 minFrequencyToSet   = maxFrequency;
                 boostFrequencyToSet = maxFrequency;
             }
-            else if( params->FrequencyMhz >= minFrequency && params->FrequencyMhz <= maxFrequency )
+            else if( params.FrequencyMhz >= minFrequency && params.FrequencyMhz <= maxFrequency )
             {
-                MD_LOG_A( m_adapterId, LOG_DEBUG, "Setting frequency to %u MHz", params->FrequencyMhz );
-                maxFrequencyToSet   = params->FrequencyMhz;
-                minFrequencyToSet   = params->FrequencyMhz;
-                boostFrequencyToSet = params->FrequencyMhz;
+                MD_LOG_A( m_adapterId, LOG_DEBUG, "Setting frequency to %u MHz", params.FrequencyMhz );
+                maxFrequencyToSet   = params.FrequencyMhz;
+                minFrequencyToSet   = params.FrequencyMhz;
+                boostFrequencyToSet = params.FrequencyMhz;
             }
             else
             {
-                MD_LOG_A( m_adapterId, LOG_ERROR, "ERROR: Invalid frequency (%u MHz), should be in range [%llu, %llu]", params->FrequencyMhz, minFrequency, maxFrequency );
+                MD_LOG_A( m_adapterId, LOG_ERROR, "ERROR: Invalid frequency (%u MHz), should be in range [%llu, %llu]", params.FrequencyMhz, minFrequency, maxFrequency );
                 ret = CC_ERROR_INVALID_PARAMETER;
             }
         }
@@ -1834,39 +1828,16 @@ namespace MetricsDiscoveryInternal
         // 3. Request frequency change (set frequency override)
         if( ret == CC_OK )
         {
-            const char* minFreqOvFileName   = nullptr;
-            const char* maxFreqOvFileName   = nullptr;
-            const char* boostFreqOvFileName = nullptr;
-
-            switch( m_DrmVersion )
-            {
-                case DRM_VERSION_I915:
-                    minFreqOvFileName   = MIN_FREQ_OV_FILE_NAME_I915;
-                    maxFreqOvFileName   = MAX_FREQ_OV_FILE_NAME_I915;
-                    boostFreqOvFileName = BOOST_FREQ_OV_FILE_NAME_I915;
-                    break;
-
-                case DRM_VERSION_XE:
-                    minFreqOvFileName   = MIN_FREQ_OV_FILE_NAME_XE;
-                    maxFreqOvFileName   = MAX_FREQ_OV_FILE_NAME_XE;
-                    boostFreqOvFileName = BOOST_FREQ_OV_FILE_NAME_XE;
-                    break;
-
-                default:
-                    MD_ASSERT_A( m_adapterId, false );
-                    break;
-            }
-
-            ret = WriteSysFsFile( minFreqOvFileName, minFrequencyToSet );
+            ret = WriteSysFsFile( device, SYS_FS_MIN_FREQ_OV, minFrequencyToSet );
             MD_CHECK_CC_RET_A( m_adapterId, ret );
 
-            ret = WriteSysFsFile( maxFreqOvFileName, maxFrequencyToSet );
+            ret = WriteSysFsFile( device, SYS_FS_MAX_FREQ_OV, maxFrequencyToSet );
             MD_CHECK_CC_RET_A( m_adapterId, ret );
 
             // If boost frequency file available
             if( m_CachedBoostFrequency )
             {
-                ret = WriteSysFsFile( boostFreqOvFileName, boostFrequencyToSet );
+                ret = WriteSysFsFile( device, SYS_FS_BOOST_FREQ_OV, boostFrequencyToSet );
                 MD_CHECK_CC_RET_A( m_adapterId, ret );
             }
         }
@@ -1935,15 +1906,14 @@ namespace MetricsDiscoveryInternal
     // Input:
     //     TOverrideType                        overrideType   - override type: extended/multisampled
     //     uint32_t                             oaBufferSize   - default Oa buffer size
-    //     const TSetQueryOverrideParams_1_2*   params         - query override params
+    //     const TSetQueryOverrideParams_1_2&   params         - query override params
     //
     // Output:
     //     TCompletionCode                                     - *CC_OK* means success
     //
     //////////////////////////////////////////////////////////////////////////////
-    TCompletionCode CDriverInterfaceLinuxCommon::SetQueryOverride( TOverrideType overrideType, uint32_t oaBufferSize, const TSetQueryOverrideParams_1_2* params )
+    TCompletionCode CDriverInterfaceLinuxCommon::SetQueryOverride( TOverrideType overrideType, uint32_t oaBufferSize, const TSetQueryOverrideParams_1_2& params )
     {
-        MD_CHECK_PTR_RET_A( m_adapterId, params, CC_ERROR_INVALID_PARAMETER );
         return CC_ERROR_NOT_SUPPORTED;
     }
 
@@ -2349,20 +2319,21 @@ namespace MetricsDiscoveryInternal
     //     based on DRM card number.
     //
     // Input:
-    //     const char* fileName  - name of SysFs file to read
-    //     uint64_t*   readValue - (OUT) read value (content of the file)
+    //     CMetricsDevice&  device   - a reference to device
+    //     const TSysFsType fileType - type of SysFs file to write
+    //     uint64_t         value    - value to write
     //
     // Output:
-    //     TCompletionCode       - *CC_OK* means success
+    //     TCompletionCode           - *CC_OK* means success
     //
     //////////////////////////////////////////////////////////////////////////////
-    TCompletionCode CDriverInterfaceLinuxCommon::ReadSysFsFile( const char* fileName, uint64_t* readValue )
+    TCompletionCode CDriverInterfaceLinuxCommon::ReadSysFsFile( CMetricsDevice& device, const TSysFsType fileType, uint64_t* readValue )
     {
-        MD_CHECK_PTR_RET_A( m_adapterId, fileName, CC_ERROR_INVALID_PARAMETER );
         MD_ASSERT_A( m_adapterId, m_DrmCardNumber >= 0 );
 
         char filePath[MD_MAX_PATH_LENGTH] = { 0 };
-        snprintf( filePath, sizeof( filePath ), "/sys/class/drm/card%d/%s", m_DrmCardNumber, fileName );
+
+        GetSysFsPath( device, fileType, filePath, MD_MAX_PATH_LENGTH );
 
         return ReadUInt64FromFile( filePath, readValue );
     }
@@ -2380,20 +2351,21 @@ namespace MetricsDiscoveryInternal
     //     based on DRM card number.
     //
     // Input:
-    //     const char* fileName - name of SysFs file to write
-    //     uint64_t    value    - value to write
+    //     CMetricsDevice&  device   - a reference to device
+    //     const TSysFsType fileType - type of SysFs file to write
+    //     uint64_t         value    - value to write
     //
     // Output:
-    //     TCompletionCode      - *CC_OK* means success
+    //     TCompletionCode           - *CC_OK* means success
     //
     //////////////////////////////////////////////////////////////////////////////
-    TCompletionCode CDriverInterfaceLinuxCommon::WriteSysFsFile( const char* fileName, uint64_t value )
+    TCompletionCode CDriverInterfaceLinuxCommon::WriteSysFsFile( CMetricsDevice& device, const TSysFsType fileType, uint64_t value )
     {
-        MD_CHECK_PTR_RET_A( m_adapterId, fileName, CC_ERROR_INVALID_PARAMETER );
         MD_ASSERT_A( m_adapterId, m_DrmCardNumber >= 0 );
 
         char filePath[MD_MAX_PATH_LENGTH] = { 0 };
-        snprintf( filePath, sizeof( filePath ), "/sys/class/drm/card%d/%s", m_DrmCardNumber, fileName );
+
+        GetSysFsPath( device, fileType, filePath, MD_MAX_PATH_LENGTH );
 
         return WriteUInt64ToFile( filePath, value );
     }
@@ -2692,51 +2664,26 @@ namespace MetricsDiscoveryInternal
     //     are cached (they don't change).
     //
     // Input:
-    //     uint64_t* minFrequency   - (OUT) in MHz
-    //     uint64_t* maxFrequency   - (OUT) in MHz
-    //     uint64_t* actFrequency   - (OUT) in Hz to preserve compatibility with other MDAPI driver interfaces
-    //     uint64_t* boostFrequency - (OUT) in Mhz
+    //     CMetricsDevice& device         - a reference to device
+    //     uint64_t*       minFrequency   - (OUT) in MHz
+    //     uint64_t*       maxFrequency   - (OUT) in MHz
+    //     uint64_t*       actFrequency   - (OUT) in Hz to preserve compatibility with other MDAPI driver interfaces
+    //     uint64_t*       boostFrequency - (OUT) in Mhz
     //
     // Output:
     //     TCompletionCode          - *CC_OK* means success
     //
     //////////////////////////////////////////////////////////////////////////////
-    TCompletionCode CDriverInterfaceLinuxCommon::GetGpuFrequencyInfo( uint64_t* minFrequency, uint64_t* maxFrequency, uint64_t* actFrequency, uint64_t* boostFrequency )
+    TCompletionCode CDriverInterfaceLinuxCommon::GetGpuFrequencyInfo( CMetricsDevice& device, uint64_t* minFrequency, uint64_t* maxFrequency, uint64_t* actFrequency, uint64_t* boostFrequency )
     {
         TCompletionCode ret = CC_ERROR_GENERAL; // Error if all parameters nullptr
-
-        const char* minFreqFileName   = nullptr;
-        const char* maxFreqFileName   = nullptr;
-        const char* actFreqFileName   = nullptr;
-        const char* boostFreqFileName = nullptr;
-
-        switch( m_DrmVersion )
-        {
-            case DRM_VERSION_I915:
-                minFreqFileName   = MIN_FREQ_FILE_NAME_I915;
-                maxFreqFileName   = MAX_FREQ_FILE_NAME_I915;
-                actFreqFileName   = ACT_FREQ_FILE_NAME_I915;
-                boostFreqFileName = BOOST_FREQ_OV_FILE_NAME_I915;
-                break;
-
-            case DRM_VERSION_XE:
-                minFreqFileName   = MIN_FREQ_FILE_NAME_XE;
-                maxFreqFileName   = MAX_FREQ_FILE_NAME_XE;
-                actFreqFileName   = ACT_FREQ_FILE_NAME_XE;
-                boostFreqFileName = BOOST_FREQ_OV_FILE_NAME_XE;
-                break;
-
-            default:
-                MD_ASSERT_A( m_adapterId, false );
-                break;
-        }
 
         // Read minimum frequency
         if( minFrequency )
         {
             if( !m_CachedMinFrequency )
             {
-                ret = ReadSysFsFile( minFreqFileName, &m_CachedMinFrequency );
+                ret = ReadSysFsFile( device, SYS_FS_MIN_FREQ, &m_CachedMinFrequency );
                 MD_CHECK_CC_RET_A( m_adapterId, ret );
             }
 
@@ -2749,7 +2696,7 @@ namespace MetricsDiscoveryInternal
         {
             if( !m_CachedMaxFrequency )
             {
-                ret = ReadSysFsFile( maxFreqFileName, &m_CachedMaxFrequency );
+                ret = ReadSysFsFile( device, SYS_FS_MAX_FREQ, &m_CachedMaxFrequency );
                 MD_CHECK_CC_RET_A( m_adapterId, ret );
             }
 
@@ -2764,7 +2711,7 @@ namespace MetricsDiscoveryInternal
 
             // Using act ('actual') frequency file, curr ('current') freq file may show
             // frequency requested by the driver not the actual GPU frequency.
-            ret = ReadSysFsFile( actFreqFileName, &actFrequencyMhz );
+            ret = ReadSysFsFile( device, SYS_FS_ACT_FREQ, &actFrequencyMhz );
             MD_CHECK_CC_RET_A( m_adapterId, ret );
 
             // Convert reading to Hz (for compatibility with the other MDAPI driver interfaces)
@@ -2776,7 +2723,7 @@ namespace MetricsDiscoveryInternal
         {
             uint64_t boostFrequencyMhz = 0;
 
-            TCompletionCode readBoostFreqRet = ReadSysFsFile( boostFreqFileName, &boostFrequencyMhz );
+            TCompletionCode readBoostFreqRet = ReadSysFsFile( device, SYS_FS_BOOST_FREQ_OV, &boostFrequencyMhz );
             if( readBoostFreqRet != CC_OK )
             {
                 // No error return on purpose, it's expected on older kernels
@@ -2790,40 +2737,6 @@ namespace MetricsDiscoveryInternal
         }
 
         return ret;
-    }
-
-    //////////////////////////////////////////////////////////////////////////////
-    //
-    // Class:
-    //     CDriverInterfaceLinuxCommon
-    //
-    // Method:
-    //     IsOamSupported
-    //
-    // Description:
-    //     Returns information if oam supported for given platform.
-    //
-    // Output:
-    //     bool - true if supported
-    //
-    //////////////////////////////////////////////////////////////////////////////
-    bool CDriverInterfaceLinuxCommon::IsOamSupported()
-    {
-        const TGfxDeviceInfo* gfxDeviceInfo = nullptr;
-        auto                  ret           = GetGfxDeviceInfo( gfxDeviceInfo );
-        if( ret != CC_OK )
-        {
-            return false;
-        }
-
-        switch( gfxDeviceInfo->PlatformIndex )
-        {
-            case GENERATION_ACM:
-            case GENERATION_MTL:
-                return true;
-            default:
-                return false;
-        }
     }
 
     //////////////////////////////////////////////////////////////////////////////
@@ -2897,16 +2810,14 @@ namespace MetricsDiscoveryInternal
     //     Returns GPU oa timestamp frequency.
     //
     // Input:
-    //     uint64_t* gpuTimestampFrequency - (OUT) GPU Timestamp frequency in Hz
+    //     uint64_t& gpuTimestampFrequency - (OUT) GPU Timestamp frequency in Hz
     //
     // Output:
     //     TCompletionCode                 - *CC_OK* means success
     //
     //////////////////////////////////////////////////////////////////////////////
-    TCompletionCode CDriverInterfaceLinuxCommon::GetGpuTimestampFrequency( uint64_t* gpuTimestampFrequency )
+    TCompletionCode CDriverInterfaceLinuxCommon::GetGpuTimestampFrequency( uint64_t& gpuTimestampFrequency )
     {
-        MD_CHECK_PTR_RET_A( m_adapterId, gpuTimestampFrequency, CC_ERROR_INVALID_PARAMETER );
-
         const TGfxDeviceInfo* gfxDeviceInfo = nullptr;
         auto                  result        = GetGfxDeviceInfo( gfxDeviceInfo );
         MD_CHECK_CC_RET_A( m_adapterId, result );
@@ -2916,11 +2827,11 @@ namespace MetricsDiscoveryInternal
             case GENERATION_ACM:
             case GENERATION_PVC:
             case GENERATION_MTL:
-                result = GetOaTimestampFrequency( *gpuTimestampFrequency );
+                result = GetOaTimestampFrequency( gpuTimestampFrequency );
                 break;
 
             default:
-                result = GetCsTimestampFrequency( *gpuTimestampFrequency );
+                result = GetCsTimestampFrequency( gpuTimestampFrequency );
                 break;
         }
 
@@ -2941,66 +2852,30 @@ namespace MetricsDiscoveryInternal
     //     frequency.
     //
     // Input:
-    //     uint64_t* gpuTimestampPeriodNs - (OUT) GPU timestamp period in ns
+    //     uint64_t& gpuTimestampPeriodNs - (OUT) GPU timestamp period in ns
     //
     // Output:
     //     TCompletionCode                - *CC_OK* means success
     //
     //////////////////////////////////////////////////////////////////////////////
-    TCompletionCode CDriverInterfaceLinuxCommon::GetGpuTimestampPeriodNs( uint64_t* gpuTimestampPeriodNs )
+    TCompletionCode CDriverInterfaceLinuxCommon::GetGpuTimestampPeriodNs( uint64_t& gpuTimestampPeriodNs )
     {
-        MD_CHECK_PTR_RET_A( m_adapterId, gpuTimestampPeriodNs, CC_ERROR_INVALID_PARAMETER );
-
         // 1. Get GpuTimestamFrequency
         uint64_t        gpuTimestampFrequency = 0;
-        TCompletionCode ret                   = GetGpuTimestampFrequency( &gpuTimestampFrequency );
+        TCompletionCode ret                   = GetGpuTimestampFrequency( gpuTimestampFrequency );
         MD_CHECK_CC_RET_A( m_adapterId, ret );
 
         MD_ASSERT_A( m_adapterId, gpuTimestampFrequency != 0 );
 
         if( gpuTimestampFrequency == 0 )
         {
-            *gpuTimestampPeriodNs = 0;
+            gpuTimestampPeriodNs = 0;
             MD_LOG( LOG_DEBUG, "gpuTimestampFrequency = 0" );
             return CC_ERROR_GENERAL;
         }
 
         // 2. Transform Hz to period (ns)
-        *gpuTimestampPeriodNs = MD_NSEC_PER_SEC / gpuTimestampFrequency;
-
-        return CC_OK;
-    }
-
-    //////////////////////////////////////////////////////////////////////////////
-    //
-    // Class:
-    //     CDriverInterfaceLinuxCommon
-    //
-    // Method:
-    //     GetCpuTimestampNs
-    //
-    // Description:
-    //     Returns the CPU timestamp in nanoseconds, based on clock monotonic or
-    //     std::chrono (depending on OS).
-    //     Based on iStdLib's GetTimestampCounter().
-    //
-    // Input:
-    //     uint64_t* cpuTimestampNs - (OUT) CPU timestamp in nanoseconds
-    //
-    // Output:
-    //     TCompletionCode          - *CC_OK* means success
-    //
-    //////////////////////////////////////////////////////////////////////////////
-    TCompletionCode CDriverInterfaceLinuxCommon::GetCpuTimestampNs( uint64_t* cpuTimestampNs )
-    {
-        MD_CHECK_PTR_RET_A( m_adapterId, cpuTimestampNs, CC_ERROR_INVALID_PARAMETER );
-
-        struct timespec time;
-        if( clock_gettime( CLOCK_MONOTONIC, &time ) )
-        {
-            return CC_ERROR_GENERAL;
-        }
-        *cpuTimestampNs = (uint64_t) time.tv_nsec + (uint64_t) time.tv_sec * (uint64_t) MD_NSEC_PER_SEC;
+        gpuTimestampPeriodNs = MD_NSEC_PER_SEC / gpuTimestampFrequency;
 
         return CC_OK;
     }
@@ -3169,26 +3044,25 @@ namespace MetricsDiscoveryInternal
     //     device id and PCI revision id.
     //
     // Input:
-    //     const TGfxDeviceInfo* gfxDeviceInfo - basic device information.
-    //     CMetricsDevice* metricsDevice       - metrics device.
+    //     const TGfxDeviceInfo& gfxDeviceInfo - basic device information.
+    //     CMetricsDevice&       metricsDevice - metrics device.
     //
     // Output:
     //     TGfxGtType                          - graphics GT type, used by Intel driver
     //
     //////////////////////////////////////////////////////////////////////////////
-    TGfxGtType CDriverInterfaceLinuxCommon::MapDeviceInfoToInstrGtTypeGfxVer12( const TGfxDeviceInfo* gfxDeviceInfo, CMetricsDevice* metricsDevice )
+    TGfxGtType CDriverInterfaceLinuxCommon::MapDeviceInfoToInstrGtTypeGfxVer12( const TGfxDeviceInfo& gfxDeviceInfo, CMetricsDevice& metricsDevice )
     {
         TGfxGtType gtType = GFX_GTTYPE_UNDEFINED;
 
-        if( IsPlatformMatch( gfxDeviceInfo->PlatformIndex, GENERATION_XEHP_SDV ) )
+        if( IsPlatformMatch( gfxDeviceInfo.PlatformIndex, GENERATION_XEHP_SDV ) )
         {
             bool            isAdderWorkaroundValid = false;
             bool            isAdderWaNeeded        = false;
             TCompletionCode ret                    = CC_OK;
             int64_t         sliceMask              = 0;
 
-            MD_CHECK_PTR_RET_A( m_adapterId, metricsDevice, gtType );
-            ret = GetSubsliceMask( &sliceMask, metricsDevice );
+            ret = GetSubsliceMask( sliceMask, metricsDevice );
             if( ret != CC_OK )
             {
                 MD_LOG_A( m_adapterId, LOG_ERROR, "Unable to obtain dual-subslice/subslice mask while defining GT type" );
@@ -3210,7 +3084,7 @@ namespace MetricsDiscoveryInternal
                 gtType = isAdderWaNeeded ? GFX_GTTYPE_GT1 : GFX_GTTYPE_GT2;
             }
         }
-        else if( IsPlatformMatch( gfxDeviceInfo->PlatformIndex, GENERATION_PVC ) )
+        else if( IsPlatformMatch( gfxDeviceInfo.PlatformIndex, GENERATION_PVC ) )
         {
             drmDevicePtr drmDevice = nullptr;
 
@@ -3239,38 +3113,6 @@ namespace MetricsDiscoveryInternal
 
     //////////////////////////////////////////////////////////////////////////////
     //
-    // Function:
-    //     CalcEnabledBits
-    //
-    // Description:
-    //     Helper function to get number of ENABLED bits on given bitmask value
-    //     Based on __InstrCalcEnabledBits.
-    //
-    // Input:
-    //     uint64_t value - input value
-    //     uint64_t mask  - valid bits
-    //
-    // Output:
-    //     uint32_t       - number of enabled bits
-    //
-    //////////////////////////////////////////////////////////////////////////////
-    uint32_t CDriverInterfaceLinuxCommon::CalculateEnabledBits( uint64_t value, uint64_t mask /* = UINT64_MAX */ )
-    {
-        uint32_t count = 0;
-
-        value &= mask;
-        while( mask )
-        {
-            count += ( value & 1 );
-            value >>= 1;
-            mask >>= 1;
-        }
-
-        return count;
-    }
-
-    //////////////////////////////////////////////////////////////////////////////
-    //
     // Class:
     //     CDriverInterfaceLinuxCommon
     //
@@ -3293,7 +3135,7 @@ namespace MetricsDiscoveryInternal
     {
         // 1. Get minimum GPU timestamp period
         uint64_t timestampPeriodNs = 0;
-        GetGpuTimestampPeriodNs( &timestampPeriodNs );
+        GetGpuTimestampPeriodNs( timestampPeriodNs );
         if( timestampPeriodNs == 0 )
         {
             MD_LOG_A( m_adapterId, LOG_ERROR, "ERROR: Invalid GPU Timestamp Period" );
@@ -3326,7 +3168,7 @@ namespace MetricsDiscoveryInternal
     {
         // 1. Get minimum GPU timestamp period
         uint64_t timestampPeriodNs = 0;
-        GetGpuTimestampPeriodNs( &timestampPeriodNs );
+        GetGpuTimestampPeriodNs( timestampPeriodNs );
         if( timestampPeriodNs == 0 )
         {
             MD_LOG_A( m_adapterId, LOG_ERROR, "ERROR: Invalid GPU Timestamp Period" );
@@ -3350,20 +3192,21 @@ namespace MetricsDiscoveryInternal
     //     Size is rounded down.
     //
     // Input:
-    //     const uint32_t requestedBufferSize - requested oa buffer size in bytes
+    //     const uint32_t  requestedBufferSize - requested oa buffer size in bytes
+    //     CMetricsDevice& metricsDevice       - a reference to device
     //
     // Output:
     //     uint32_t                           - power of 2 oa buffer size in bytes
     //
     //////////////////////////////////////////////////////////////////////////////
-    uint32_t CDriverInterfaceLinuxCommon::CalculateOaBufferSize( const uint32_t requestedBufferSize )
+    uint32_t CDriverInterfaceLinuxCommon::CalculateOaBufferSize( const uint32_t requestedBufferSize, CMetricsDevice& metricsDevice )
     {
         auto     ret             = CC_OK;
         auto     out             = GTDIDeviceInfoParamExtOut();
         uint32_t maxOaBufferSize = MD_OA_BUFFER_SIZE_MAX;
         uint32_t minOaBufferSize = MD_OA_BUFFER_SIZE_MAX; // default 16 mb value
 
-        ret = SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_OA_BUFFER_SIZE_MAX, &out );
+        ret = SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_OA_BUFFER_SIZE_MAX, out, metricsDevice );
         if( ret != CC_OK )
         {
             MD_LOG_A( m_adapterId, LOG_ERROR, "ERROR: Cannot calculate oa buffer size. Using default value: %u", maxOaBufferSize );
@@ -3371,7 +3214,7 @@ namespace MetricsDiscoveryInternal
         }
         maxOaBufferSize = out.ValueUint32;
 
-        ret = SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_OA_BUFFER_SIZE_MIN, &out );
+        ret = SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_OA_BUFFER_SIZE_MIN, out, metricsDevice );
         if( ret != CC_OK )
         {
             MD_LOG_A( m_adapterId, LOG_ERROR, "ERROR: Cannot calculate oa buffer size. Using default value: %u", minOaBufferSize );

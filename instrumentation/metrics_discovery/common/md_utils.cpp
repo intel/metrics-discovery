@@ -161,8 +161,7 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     TCompletionCode SetEquation( CMetricsDevice& device, CEquation*& equation, const char* equationString )
     {
-        const uint32_t  adapterId = device.GetAdapter().GetAdapterId();
-        TCompletionCode ret       = CC_OK;
+        TCompletionCode ret = CC_OK;
 
         // Delete previous equation if any
         MD_SAFE_DELETE( equation );
@@ -404,7 +403,7 @@ namespace MetricsDiscoveryInternal
 
         byteArray.Data = new( std::nothrow ) uint8_t[strLength / 2](); // Initialize all to 0
         MD_CHECK_PTR_RET_A( adapterId, byteArray.Data, byteArray );
-        byteArray.Size = strLength / 2;
+        byteArray.Size = static_cast<uint32_t>( strLength / 2 );
 
         char           strChar[3]; // container for two characters (one byte) + '/0'
         const uint32_t strCharLength = sizeof( strChar );
@@ -1145,7 +1144,7 @@ namespace MetricsDiscoveryInternal
 
         if( platformMaskLegacy )
         {
-            *platformMaskLegacy = PLATFORM_ALL;
+            *platformMaskLegacy = static_cast<uint32_t>( PLATFORM_ALL );
         }
 
         return ret;
@@ -1240,6 +1239,38 @@ namespace MetricsDiscoveryInternal
 
         return false;
     }
+
+    //////////////////////////////////////////////////////////////////////////////
+    //
+    // Function:
+    //     CalculateEnabledBits
+    //
+    // Description:
+    //     Helper function to get number of ENABLED bits on given bitmask value
+    //
+    // Input:
+    //     uint64_t value - input value
+    //     uint64_t mask  - valid bits
+    //
+    // Output:
+    //     uint32_t       - number of enabled bits
+    //
+    //////////////////////////////////////////////////////////////////////////////
+    uint32_t CalculateEnabledBits( uint64_t value, uint64_t mask /* = UINT64_MAX */ )
+    {
+        uint32_t count = 0;
+
+        value &= mask;
+        while( mask )
+        {
+            count += ( value & 1 );
+            value >>= 1;
+            mask >>= 1;
+        }
+
+        return count;
+    }
+
     //////////////////////////////////////////////////////////////////////////////
     //
     // Group:

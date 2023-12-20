@@ -80,9 +80,8 @@ namespace MetricsDiscoveryInternal
         {
             const uint32_t adapterId = m_device.GetAdapter().GetAdapterId();
 
-            TCompletionCode ret             = CC_OK;
-            CMetricSet*     alreadyAddedSet = nullptr;
-            TMetricSet*     set             = new( std::nothrow ) TMetricSet( m_device, this, symbolicName, shortName, apiMask, categoryMask, snapshotReportSize, deltaReportSize, reportType, platformMask, gtMask, isCustom );
+            CMetricSet* alreadyAddedSet = nullptr;
+            TMetricSet* set             = new( std::nothrow ) TMetricSet( m_device, this, symbolicName, shortName, apiMask, categoryMask, snapshotReportSize, deltaReportSize, reportType, platformMask, gtMask, isCustom );
             MD_CHECK_PTR_RET_A( adapterId, set, nullptr );
 
             if( set->Initialize() != CC_OK )
@@ -114,7 +113,7 @@ namespace MetricsDiscoveryInternal
                         MD_LOG_A( adapterId, LOG_WARNING, "Attempt to add metric set [%s] with the same name and true availability equation.", alreadyAddedSet->GetParams()->SymbolName );
 
                         m_setsVector.erase( iterator );
-                        m_params.MetricSetsCount = m_setsVector.size();
+                        m_params.MetricSetsCount = static_cast<uint32_t>( m_setsVector.size() );
 
                         m_otherSetsList.push_back( alreadyAddedSet );
                     }
@@ -124,7 +123,7 @@ namespace MetricsDiscoveryInternal
             if( isSuitablePlatform && alreadyAddedSet == nullptr )
             {
                 m_setsVector.push_back( set );
-                m_params.MetricSetsCount = m_setsVector.size();
+                m_params.MetricSetsCount = static_cast<uint32_t>( m_setsVector.size() );
                 MD_LOG_A( adapterId, LOG_INFO, "%s - added", set->GetParams()->SymbolName );
             }
             else

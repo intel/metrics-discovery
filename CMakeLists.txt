@@ -416,6 +416,12 @@ if ("${PLATFORM}" STREQUAL Windows) # windows
         USERMODE_DRIVER
         STD_CALL
         )
+    if (NOT "${BUILD_TYPE}" STREQUAL "debug")
+        add_definitions(-W4)     # display warnings level 4
+        add_definitions(-WX)     # treat warnings as errors
+        add_definitions(-wd4189) # 'adapterId': local variable is initialized but not referenced
+        add_definitions(-wd4100) # 'adapterId': unreferenced formal parameter
+    endif ()
 
     # set DISABLED_METRICS
     set_property (TARGET ${PROJECT_NAME} APPEND PROPERTY COMPILE_DEFINITIONS
@@ -446,10 +452,12 @@ elseif ("${PLATFORM}" STREQUAL "linux") # linux
         add_definitions(-D_DEBUG)
     endif ()
 
-    add_definitions(-Wall)
+    add_definitions(-Wall)                    # enables all compiler's warning messages
+    add_definitions(-Wextra)                  # enables a comprehensive set of warning options, providing a high level of warning coverage for potential issues
+    add_definitions(-Wformat)                 # enables format string checking warnings during compilation
+    add_definitions(-Wformat-security)        # warns about potentially insecure format string usages
     add_definitions(-fdiagnostics-color=auto) # color=auto only to colorize compiler output
     add_definitions(-fstack-protector)
-    add_definitions(-fvisibility=hidden)      # to disable exporting internal symbols (by default gcc exports all symbols)
     add_definitions(-Wno-unused)
     add_definitions(-Wno-strict-aliasing)
     add_definitions(-Wno-unknown-pragmas)
@@ -458,7 +466,13 @@ elseif ("${PLATFORM}" STREQUAL "linux") # linux
     if ("${BUILD_TYPE}" STREQUAL "release" OR
         "${BUILD_TYPE}" STREQUAL "release-internal" OR
         "${BUILD_TYPE}" STREQUAL "releaseinternal")
-        add_definitions(-Wformat-security)
+        add_definitions(-Werror=format-security) # treat format string security warnings as errors
+        add_definitions(-Werror)                 # treat warning as errors
+        add_definitions(-fvisibility=hidden)     # to disable exporting internal symbols (by default gcc exports all symbols)
+        add_definitions(-flto)                   # enables Link-Time Optimization (LTO)
+        add_definitions(-fPIC)                   # generates position-independent code during the compilation phase
+        add_definitions(-fPIE)                   # generates position-independent executables during the compilation phase
+        add_definitions(-pie)                    # produces position-independent executables during the linking phase
     elseif ("${BUILD_TYPE}" STREQUAL "debug")
         add_definitions(-g)
     endif ()

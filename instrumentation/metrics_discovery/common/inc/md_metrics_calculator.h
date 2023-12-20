@@ -425,7 +425,7 @@ namespace MetricsDiscoveryInternal
             }
 
             TTypedValue_1_0   outValue    = {};
-            IInformation_1_0* information = metricSet.GetInformation( contextIdIdx );
+            IInformation_1_0* information = metricSet.GetInformation( static_cast<uint32_t>( contextIdIdx ) );
             const uint32_t    apiMask     = metricSet.GetParams()->ApiMask;
 
             ReadSingleInformation( rawData, information, apiMask, &outValue );
@@ -461,7 +461,7 @@ namespace MetricsDiscoveryInternal
             }
 
             TTypedValue_1_0   outValue    = {};
-            IInformation_1_0* information = metricSet.GetInformation( informationIndex );
+            IInformation_1_0* information = metricSet.GetInformation( static_cast<uint32_t>( informationIndex ) );
             const uint32_t    apiMask     = metricSet.GetParams()->ApiMask;
 
             ReadSingleInformation( rawData, information, apiMask, &outValue );
@@ -779,7 +779,7 @@ namespace MetricsDiscoveryInternal
             switch( value.ValueType )
             {
                 case VALUE_TYPE_BOOL:
-                    return ( value.ValueBool ) ? 1LL : 0LL;
+                    return ( value.ValueBool ) ? 1ULL : 0ULL;
 
                 case VALUE_TYPE_UINT32:
                     return static_cast<uint64_t>( value.ValueUInt32 );
@@ -911,9 +911,9 @@ namespace MetricsDiscoveryInternal
             uint32_t mask = MD_BITMASK_RANGE( bitOffset, bitOffset + bitCount );
 
             // Get integer in the way in is alignment safe
-            uint32_t data = ( *rawReport ) | ( ( *( rawReport + 1 ) ) << 8 ) | ( ( *( rawReport + 2 ) ) << 16 ) | ( ( *( rawReport + 3 ) ) << 24 );
+            uint32_t data = *reinterpret_cast<const uint32_t*>( rawReport );
 
-            return (uint64_t) ( ( data & mask ) >> bitOffset );
+            return static_cast<uint64_t>( ( data & mask ) >> bitOffset );
         }
 
         //////////////////////////////////////////////////////////////////////////////
@@ -967,12 +967,12 @@ namespace MetricsDiscoveryInternal
             switch( deltaFunction.FunctionType )
             {
                 case DELTA_BOOL_OR:
-                    typedValue.ValueUInt64 = ( ( lastValue.ValueUInt64 | previousValue.ValueUInt64 ) != 0 ) ? 1LL : 0LL;
+                    typedValue.ValueUInt64 = ( ( lastValue.ValueUInt64 | previousValue.ValueUInt64 ) != 0 ) ? 1ULL : 0ULL;
                     typedValue.ValueType   = VALUE_TYPE_UINT64;
                     return typedValue;
 
                 case DELTA_BOOL_XOR:
-                    typedValue.ValueUInt64 = ( ( lastValue.ValueUInt64 ^ previousValue.ValueUInt64 ) != 0 ) ? 1LL : 0LL;
+                    typedValue.ValueUInt64 = ( ( lastValue.ValueUInt64 ^ previousValue.ValueUInt64 ) != 0 ) ? 1ULL : 0ULL;
                     typedValue.ValueType   = VALUE_TYPE_UINT64;
                     return typedValue;
 
@@ -1141,8 +1141,8 @@ namespace MetricsDiscoveryInternal
                     {
                         TLargeInteger largeValue;
                         largeValue.u.LowPart   = *( (const uint32_t*) ( rawReport + element.ReadParams.ByteOffset ) );
-                        largeValue.u.HighPart  = ( uint32_t ) * ( (const uint8_t*) ( rawReport + element.ReadParams.ByteOffsetExt ) );
-                        typedValue.ValueUInt64 = largeValue.QuadPart;
+                        largeValue.u.HighPart  = ( int32_t ) * ( (const uint8_t*) ( rawReport + element.ReadParams.ByteOffsetExt ) );
+                        typedValue.ValueUInt64 = static_cast<uint64_t>( largeValue.QuadPart );
                         typedValue.ValueType   = VALUE_TYPE_UINT64;
                         isValid                = EquationStackPush( m_readEquationStack, typedValue, algorithmCheck );
                         break;
@@ -1373,13 +1373,13 @@ namespace MetricsDiscoveryInternal
                     {
                         TLargeInteger largeValue;
                         largeValue.u.LowPart       = *( (const uint32_t*) ( pRawReportPrev + element.ReadParams.ByteOffset ) );
-                        largeValue.u.HighPart      = ( uint32_t ) * ( (const uint8_t*) ( pRawReportPrev + element.ReadParams.ByteOffsetExt ) );
-                        typedValuePrev.ValueUInt64 = largeValue.QuadPart;
+                        largeValue.u.HighPart      = ( int32_t ) * ( (const uint8_t*) ( pRawReportPrev + element.ReadParams.ByteOffsetExt ) );
+                        typedValuePrev.ValueUInt64 = static_cast<uint64_t>( largeValue.QuadPart );
                         typedValuePrev.ValueType   = VALUE_TYPE_UINT64;
 
                         largeValue.u.LowPart       = *( (const uint32_t*) ( pRawReportLast + element.ReadParams.ByteOffset ) );
-                        largeValue.u.HighPart      = ( uint32_t ) * ( (const uint8_t*) ( pRawReportLast + element.ReadParams.ByteOffsetExt ) );
-                        typedValueLast.ValueUInt64 = largeValue.QuadPart;
+                        largeValue.u.HighPart      = ( int32_t ) * ( (const uint8_t*) ( pRawReportLast + element.ReadParams.ByteOffsetExt ) );
+                        typedValueLast.ValueUInt64 = static_cast<uint64_t>( largeValue.QuadPart );
                         typedValueLast.ValueType   = VALUE_TYPE_UINT64;
 
                         typedValue = CalculateDeltaFunction( readDeltaFunction, typedValueLast, typedValuePrev );
@@ -1906,12 +1906,12 @@ namespace MetricsDiscoveryInternal
         std::stack<TTypedValue_1_0> m_readEquationStack;
         std::stack<TTypedValue_1_0> m_readEquationAndDeltaStack;
         std::stack<TTypedValue_1_0> m_normalizationEquationStack;
+        CMetricsDevice&             m_device;
         uint64_t                    m_gpuCoreClocks;
         uint32_t                    m_euCoresCount;
-        uint32_t                    m_savedReportSize;
         uint8_t*                    m_savedReport;
-        bool                        m_savedReportPresent;
+        uint32_t                    m_savedReportSize;
         uint64_t                    m_contextIdPrev;
-        CMetricsDevice&             m_device;
+        bool                        m_savedReportPresent;
     };
 } // namespace MetricsDiscoveryInternal

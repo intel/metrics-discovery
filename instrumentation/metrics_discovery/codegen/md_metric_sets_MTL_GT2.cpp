@@ -27,7 +27,6 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_PipelineStatistics
     {
         TCompletionCode ret                  = CC_OK;
         CMetric*        metric               = nullptr;
-        CInformation*   information          = nullptr;
         const char*     availabilityEquation = nullptr;
         m_params.InformationCount            = m_concurrentGroup->GetInformationCount();
         MD_CHECK_CC( SetApiSpecificId( "", 0, 0, 0x80000206, 0, 0, "", 0, "Intel_Raw_Pipeline_Statistics_Query", 0 ) );
@@ -324,6 +323,12 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         {
             information->SetDeltaReportReadEquation( "dw@0x2ac 0x20 AND" );
         }
+
+        information = concurrentGroup->AddInformation( "ReportQueryNotExecuted", "Query report not executed", "Begin or end query report was not executed.", "Report Meta Data", API_TYPE_DX12 | API_TYPE_VULKAN, INFORMATION_TYPE_FLAG, nullptr, nullptr, 26 );
+        if( information )
+        {
+            information->SetDeltaReportReadEquation( "dw@0x2ac 0x04 AND" );
+        }
     }
 
     CRenderBasicMetricSet::CRenderBasicMetricSet( CMetricsDevice& device, CConcurrentGroup* concurrentGroup, const char* symbolicName, const char* shortName, uint32_t apiMask, uint32_t category, uint32_t snapshotReportSize, uint32_t deltaReportSize, TReportType reportType, TByteArrayLatest* platformMask, uint32_t gtMask /*= GT_TYPE_ALL*/, bool isCustom /*= false*/ )
@@ -335,7 +340,6 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
     {
         TCompletionCode ret                  = CC_OK;
         CMetric*        metric               = nullptr;
-        CInformation*   information          = nullptr;
         const char*     availabilityEquation = nullptr;
         m_params.InformationCount            = m_concurrentGroup->GetInformationCount();
         MD_CHECK_CC( SetApiSpecificId( "GPAV", 0, 0x40000000, 0x80000203, 0, 0, "Intel Performance Counters for GT Set Dynamic", 0, "Intel_Raw_Hardware_Counters_Set_0_Query", 0 ) );
@@ -377,7 +381,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "VsThreads", "VS Threads Dispatched",
                           "The total number of vertex shader hardware threads dispatched.",
-                          "EU Array/Vertex Shader", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_VS * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
                           METRIC_TYPE_EVENT, RESULT_UINT64, "threads", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, "oa.fixed", 3 );
         if( metric )
         {
@@ -389,8 +393,8 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "HsThreads", "HS Threads Dispatched",
                           "The total number of hull shader hardware threads dispatched.",
-                          "EU Array/Hull Shader", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_HS * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
-                          METRIC_TYPE_EVENT, RESULT_UINT64, "threads", 0, 0, HW_UNIT_GPU, availabilityEquation, "Hull|Control,hull|control,HS|TCS", "oa.fixed", 4 );
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          METRIC_TYPE_EVENT, RESULT_UINT64, "threads", 0, 0, HW_UNIT_GPU, availabilityEquation, "hull|control,HS|TCS", "oa.fixed", 4 );
         if( metric )
         {
             MD_CHECK_CC( ( metric->SetSnapshotReportReadEquation( "dw@0x18" ) ) );
@@ -401,8 +405,8 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "DsThreads", "DS Threads Dispatched",
                           "The total number of domain shader hardware threads dispatched.",
-                          "EU Array/Domain Shader", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_DS * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
-                          METRIC_TYPE_EVENT, RESULT_UINT64, "threads", 0, 0, HW_UNIT_GPU, availabilityEquation, "Domain|Evaluation,domain|evaluation,DS|TES", "oa.fixed", 5 );
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          METRIC_TYPE_EVENT, RESULT_UINT64, "threads", 0, 0, HW_UNIT_GPU, availabilityEquation, "domain|evaluation,DS|TES", "oa.fixed", 5 );
         if( metric )
         {
             MD_CHECK_CC( ( metric->SetSnapshotReportReadEquation( "dw@0x1c" ) ) );
@@ -413,7 +417,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "GsThreads", "GS Threads Dispatched",
                           "The total number of geometry shader hardware threads dispatched.",
-                          "EU Array/Geometry Shader", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_GS * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
                           METRIC_TYPE_EVENT, RESULT_UINT64, "threads", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, "oa.fixed", 6 );
         if( metric )
         {
@@ -425,8 +429,8 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "PsThreads", "PS Threads Dispatched",
                           "The total number of pixel shader hardware threads dispatched.",
-                          "EU Array/Pixel Shader", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_PS * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
-                          METRIC_TYPE_EVENT, RESULT_UINT64, "threads", 0, 0, HW_UNIT_GPU, availabilityEquation, "Pixel|Fragment,PS|FS,pixel|fragment", "oa.fixed", 7 );
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          METRIC_TYPE_EVENT, RESULT_UINT64, "threads", 0, 0, HW_UNIT_GPU, availabilityEquation, "PS|FS,pixel|fragment", "oa.fixed", 7 );
         if( metric )
         {
             MD_CHECK_CC( ( metric->SetSnapshotReportReadEquation( "rd40@0x28:0xa6" ) ) );
@@ -437,7 +441,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "CsThreads", "CS Threads Dispatched",
                           "The total number of compute shader hardware threads dispatched.",
-                          "EU Array/Compute Shader", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_CS * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
                           METRIC_TYPE_EVENT, RESULT_UINT64, "threads", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, "oa.fixed", 8 );
         if( metric )
         {
@@ -463,7 +467,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "XveActive", "XVE Active",
                           "The percentage of time in which the Execution Units were actively processing.",
-                          "EU Array", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ), USAGE_FLAG_TIER_2 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_2 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
                           METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 10 );
         if( metric )
         {
@@ -477,7 +481,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "XveStall", "XVE Stall",
                           "The percentage of time in which the Execution Units were stalled.",
-                          "EU Array", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ), USAGE_FLAG_TIER_2 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_2 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
                           METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 11 );
         if( metric )
         {
@@ -491,7 +495,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "XveThreadOccupancy", "XVE Thread Occupancy",
                           "The percentage of time in which hardware threads occupied XVEs.",
-                          "EU Array", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ), USAGE_FLAG_TIER_2 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_2 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
                           METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 12 );
         if( metric )
         {
@@ -505,7 +509,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "XveFpuEmActive", "EM And FPU Pipes Active",
                           "The percentage of time in which XVE EM INT and FPU INT64 pipelines were actively processing.",
-                          "EU Array/Pipes", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_EU_PIPES * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
                           METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 13 );
         if( metric )
         {
@@ -519,7 +523,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "VsFpuActive", "VS FPU Pipe Active",
                           "The percentage of time in which XVE FPU INT64 pipeline was actively processing a vertex shader instruction.",
-                          "EU Array/Vertex Shader", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_VS * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
                           METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 14 );
         if( metric )
         {
@@ -533,7 +537,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "VsEmActive", "VS EM Pipe Active",
                           "The percentage of time in which XVE EM INT pipeline was actively processing a vertex shader instruction.",
-                          "EU Array/Vertex Shader", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_VS * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
                           METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 15 );
         if( metric )
         {
@@ -547,7 +551,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "VsSendActive", "VS Send Pipe Active",
                           "The percentage of time in which XVE send pipeline was actively processing a vertex shader instruction.",
-                          "EU Array/Vertex Shader", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_VS * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
                           METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 16 );
         if( metric )
         {
@@ -561,8 +565,8 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "PsFpuActive", "PS FPU Pipe Active",
                           "The percentage of time in which XVE FPU INT64 pipeline was actively processing a pixel shader instruction.",
-                          "EU Array/Pixel Shader", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_PS * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
-                          METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, "Pixel|Fragment,PS|FS,pixel|fragment", nullptr, 17 );
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, "PS|FS,pixel|fragment", nullptr, 17 );
         if( metric )
         {
             MD_CHECK_CC( ( metric->SetSnapshotReportReadEquation( "rd40@0x48:0xae" ) ) );
@@ -575,8 +579,8 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "PsEmActive", "PS EM Pipe Active",
                           "The percentage of time in which XVE EM INT pipeline was actively processing a pixel shader instruction.",
-                          "EU Array/Pixel Shader", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_PS * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
-                          METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, "Pixel|Fragment,PS|FS,pixel|fragment", nullptr, 18 );
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, "PS|FS,pixel|fragment", nullptr, 18 );
         if( metric )
         {
             MD_CHECK_CC( ( metric->SetSnapshotReportReadEquation( "rd40@0x4c:0xaf" ) ) );
@@ -589,8 +593,8 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "PsSendActive", "PS Send Pipe Active",
                           "The percentage of time in which XVE send pipeline was actively processing a pixel shader instruction.",
-                          "EU Array/Pixel Shader", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_PS * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
-                          METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, "Pixel|Fragment,PS|FS,pixel|fragment", nullptr, 19 );
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, "PS|FS,pixel|fragment", nullptr, 19 );
         if( metric )
         {
             MD_CHECK_CC( ( metric->SetSnapshotReportReadEquation( "rd40@0x50:0xb0" ) ) );
@@ -770,7 +774,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "ShaderBarriers", "Shader Barrier Messages",
                           "The total number of shader barrier messages.",
-                          "EU Array/Barrier", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_EU_BARRIER * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
                           METRIC_TYPE_EVENT, RESULT_UINT64, "messages", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, "oa.fixed", 33 );
         if( metric )
         {
@@ -884,7 +888,6 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
     {
         TCompletionCode ret                  = CC_OK;
         CMetric*        metric               = nullptr;
-        CInformation*   information          = nullptr;
         const char*     availabilityEquation = nullptr;
         m_params.InformationCount            = m_concurrentGroup->GetInformationCount();
         MD_CHECK_CC( SetApiSpecificId( "GPAV", 0, 0x40000000, 0x80000203, 0, 0, "Intel Performance Counters for GT Set Dynamic", 0, "Intel_Raw_Hardware_Counters_Set_0_Query", 0 ) );
@@ -940,7 +943,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "VsThreads", "VS Threads Dispatched",
                           "The total number of vertex shader hardware threads dispatched.",
-                          "EU Array/Vertex Shader", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_VS * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
                           METRIC_TYPE_EVENT, RESULT_UINT64, "threads", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, "oa.fixed", 4 );
         if( metric )
         {
@@ -952,8 +955,8 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "HsThreads", "HS Threads Dispatched",
                           "The total number of hull shader hardware threads dispatched.",
-                          "EU Array/Hull Shader", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_HS * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
-                          METRIC_TYPE_EVENT, RESULT_UINT64, "threads", 0, 0, HW_UNIT_GPU, availabilityEquation, "Hull|Control,hull|control,HS|TCS", "oa.fixed", 5 );
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          METRIC_TYPE_EVENT, RESULT_UINT64, "threads", 0, 0, HW_UNIT_GPU, availabilityEquation, "hull|control,HS|TCS", "oa.fixed", 5 );
         if( metric )
         {
             MD_CHECK_CC( ( metric->SetSnapshotReportReadEquation( "dw@0x18" ) ) );
@@ -964,8 +967,8 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "DsThreads", "DS Threads Dispatched",
                           "The total number of domain shader hardware threads dispatched.",
-                          "EU Array/Domain Shader", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_DS * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
-                          METRIC_TYPE_EVENT, RESULT_UINT64, "threads", 0, 0, HW_UNIT_GPU, availabilityEquation, "Domain|Evaluation,domain|evaluation,DS|TES", "oa.fixed", 6 );
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          METRIC_TYPE_EVENT, RESULT_UINT64, "threads", 0, 0, HW_UNIT_GPU, availabilityEquation, "domain|evaluation,DS|TES", "oa.fixed", 6 );
         if( metric )
         {
             MD_CHECK_CC( ( metric->SetSnapshotReportReadEquation( "dw@0x1c" ) ) );
@@ -976,7 +979,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "GsThreads", "GS Threads Dispatched",
                           "The total number of geometry shader hardware threads dispatched.",
-                          "EU Array/Geometry Shader", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_GS * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
                           METRIC_TYPE_EVENT, RESULT_UINT64, "threads", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, "oa.fixed", 7 );
         if( metric )
         {
@@ -988,8 +991,8 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "PsThreads", "PS Threads Dispatched",
                           "The total number of pixel shader hardware threads dispatched.",
-                          "EU Array/Pixel Shader", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_PS * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
-                          METRIC_TYPE_EVENT, RESULT_UINT64, "threads", 0, 0, HW_UNIT_GPU, availabilityEquation, "Pixel|Fragment,PS|FS,pixel|fragment", "oa.fixed", 8 );
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          METRIC_TYPE_EVENT, RESULT_UINT64, "threads", 0, 0, HW_UNIT_GPU, availabilityEquation, "PS|FS,pixel|fragment", "oa.fixed", 8 );
         if( metric )
         {
             MD_CHECK_CC( ( metric->SetSnapshotReportReadEquation( "rd40@0x28:0xa6" ) ) );
@@ -1000,7 +1003,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "CsThreads", "CS Threads Dispatched",
                           "The total number of compute shader hardware threads dispatched.",
-                          "EU Array/Compute Shader", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_CS * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
                           METRIC_TYPE_EVENT, RESULT_UINT64, "threads", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, "oa.fixed", 9 );
         if( metric )
         {
@@ -1012,7 +1015,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "XveActive", "XVE Active",
                           "The percentage of time in which the Execution Units were actively processing.",
-                          "EU Array", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ), USAGE_FLAG_TIER_2 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_2 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
                           METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 10 );
         if( metric )
         {
@@ -1026,7 +1029,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "XveStall", "XVE Stall",
                           "The percentage of time in which the Execution Units were stalled.",
-                          "EU Array", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ), USAGE_FLAG_TIER_2 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_2 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
                           METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 11 );
         if( metric )
         {
@@ -1040,7 +1043,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "FpuActive", "XVE FPU Pipe Active",
                           "The percentage of time in which XVE FPU INT64 pipeline was actively processing.",
-                          "EU Array/Pipes", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_EU_PIPES * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
                           METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 12 );
         if( metric )
         {
@@ -1054,7 +1057,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "EmActive", "EM Pipe Active",
                           "The percentage of time in which XVE EM INT pipeline was actively processing.",
-                          "EU Array/Pipes", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_EU_PIPES * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
                           METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 13 );
         if( metric )
         {
@@ -1068,7 +1071,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "XmxActive", "XMX Pipe Active",
                           "The percentage of time in which XVE XMX pipeline was actively processing.",
-                          "EU Array/Pipes", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_EU_PIPES * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
                           METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 14 );
         if( metric )
         {
@@ -1082,7 +1085,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "XveFpuEmActive", "EM And FPU Pipes Active",
                           "The percentage of time in which XVE EM INT and FPU INT64 pipelines were actively processing.",
-                          "EU Array/Pipes", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_EU_PIPES * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
                           METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 15 );
         if( metric )
         {
@@ -1096,7 +1099,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "XveFpuXmxActive", "XMX And FPU Pipes Active",
                           "The percentage of time in which XVE XMX and FPU INT64 pipelines were actively processing.",
-                          "EU Array/Pipes", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_EU_PIPES * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
                           METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 16 );
         if( metric )
         {
@@ -1110,7 +1113,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "XveAvgIpcRate", "XVE AVG IPC Rate",
                           "The average rate of IPC calculated for 2 FPU pipelines.",
-                          "EU Array", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ), USAGE_FLAG_TIER_4 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_4 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
                           METRIC_TYPE_RATIO, RESULT_FLOAT, "number", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 17 );
         if( metric )
         {
@@ -1121,7 +1124,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "SendActive", "Send Pipe Active",
                           "The percentage of time in which XVE send pipeline was actively processing.",
-                          "EU Array/Pipes", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_EU_PIPES * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
                           METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 18 );
         if( metric )
         {
@@ -1135,7 +1138,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "XveThreadOccupancy", "XVE Thread Occupancy",
                           "The percentage of time in which hardware threads occupied XVEs.",
-                          "EU Array", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ), USAGE_FLAG_TIER_2 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_2 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
                           METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 19 );
         if( metric )
         {
@@ -1149,7 +1152,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "XveFpuFlt16", "FPU FLT16 Instruction",
                           "The percentage of time in which FLT16 instruction were processed actively on FPU INT64 pipeline.",
-                          "EU Array", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ), USAGE_FLAG_TIER_4 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_4 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
                           METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 20 );
         if( metric )
         {
@@ -1163,7 +1166,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "XveFpuFlt32", "FPU FLT32 Instruction",
                           "The percentage of time in which FLT32 instruction were processed actively on FPU INT64 pipeline.",
-                          "EU Array", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ), USAGE_FLAG_TIER_4 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_4 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
                           METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 21 );
         if( metric )
         {
@@ -1177,7 +1180,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "XveFpuFlt64", "FPU FLT64 Instruction",
                           "The percentage of time in which FLT64 instruction were processed actively on FPU INT64 pipeline.",
-                          "EU Array", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ), USAGE_FLAG_TIER_4 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_4 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
                           METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 22 );
         if( metric )
         {
@@ -1358,7 +1361,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "ShaderBarriers", "Shader Barrier Messages",
                           "The total number of shader barrier messages.",
-                          "EU Array/Barrier", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_EU_BARRIER * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
                           METRIC_TYPE_EVENT, RESULT_UINT64, "messages", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, "oa.fixed", 36 );
         if( metric )
         {
@@ -1429,7 +1432,6 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
     {
         TCompletionCode ret                  = CC_OK;
         CMetric*        metric               = nullptr;
-        CInformation*   information          = nullptr;
         const char*     availabilityEquation = nullptr;
         m_params.InformationCount            = m_concurrentGroup->GetInformationCount();
         MD_CHECK_CC( SetApiSpecificId( "GPAV", 0, 0x40000000, 0x80000203, 0, 0, "Intel Performance Counters for GT Set Dynamic", 0, "Intel_Raw_Hardware_Counters_Set_0_Query", 0 ) );
@@ -1485,7 +1487,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "VsThreads", "VS Threads Dispatched",
                           "The total number of vertex shader hardware threads dispatched.",
-                          "EU Array/Vertex Shader", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_VS * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_MEDIA | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_MEDIA | API_TYPE_IOSTREAM,
                           METRIC_TYPE_EVENT, RESULT_UINT64, "threads", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, "oa.fixed", 4 );
         if( metric )
         {
@@ -1497,8 +1499,8 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "HsThreads", "HS Threads Dispatched",
                           "The total number of hull shader hardware threads dispatched.",
-                          "EU Array/Hull Shader", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_HS * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_MEDIA | API_TYPE_IOSTREAM,
-                          METRIC_TYPE_EVENT, RESULT_UINT64, "threads", 0, 0, HW_UNIT_GPU, availabilityEquation, "Hull|Control,hull|control,HS|TCS", "oa.fixed", 5 );
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_MEDIA | API_TYPE_IOSTREAM,
+                          METRIC_TYPE_EVENT, RESULT_UINT64, "threads", 0, 0, HW_UNIT_GPU, availabilityEquation, "hull|control,HS|TCS", "oa.fixed", 5 );
         if( metric )
         {
             MD_CHECK_CC( ( metric->SetSnapshotReportReadEquation( "dw@0x18" ) ) );
@@ -1509,8 +1511,8 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "DsThreads", "DS Threads Dispatched",
                           "The total number of domain shader hardware threads dispatched.",
-                          "EU Array/Domain Shader", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_DS * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_MEDIA | API_TYPE_IOSTREAM,
-                          METRIC_TYPE_EVENT, RESULT_UINT64, "threads", 0, 0, HW_UNIT_GPU, availabilityEquation, "Domain|Evaluation,domain|evaluation,DS|TES", "oa.fixed", 6 );
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_MEDIA | API_TYPE_IOSTREAM,
+                          METRIC_TYPE_EVENT, RESULT_UINT64, "threads", 0, 0, HW_UNIT_GPU, availabilityEquation, "domain|evaluation,DS|TES", "oa.fixed", 6 );
         if( metric )
         {
             MD_CHECK_CC( ( metric->SetSnapshotReportReadEquation( "dw@0x1c" ) ) );
@@ -1521,7 +1523,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "GsThreads", "GS Threads Dispatched",
                           "The total number of geometry shader hardware threads dispatched.",
-                          "EU Array/Geometry Shader", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_GS * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_MEDIA | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_MEDIA | API_TYPE_IOSTREAM,
                           METRIC_TYPE_EVENT, RESULT_UINT64, "threads", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, "oa.fixed", 7 );
         if( metric )
         {
@@ -1533,8 +1535,8 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "PsThreads", "PS Threads Dispatched",
                           "The total number of pixel shader hardware threads dispatched.",
-                          "EU Array/Pixel Shader", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_PS * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_MEDIA | API_TYPE_IOSTREAM,
-                          METRIC_TYPE_EVENT, RESULT_UINT64, "threads", 0, 0, HW_UNIT_GPU, availabilityEquation, "Pixel|Fragment,PS|FS,pixel|fragment", "oa.fixed", 8 );
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_MEDIA | API_TYPE_IOSTREAM,
+                          METRIC_TYPE_EVENT, RESULT_UINT64, "threads", 0, 0, HW_UNIT_GPU, availabilityEquation, "PS|FS,pixel|fragment", "oa.fixed", 8 );
         if( metric )
         {
             MD_CHECK_CC( ( metric->SetSnapshotReportReadEquation( "rd40@0x28:0xa6" ) ) );
@@ -1545,7 +1547,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "CsThreads", "CS Threads Dispatched",
                           "The total number of compute shader hardware threads dispatched.",
-                          "EU Array/Compute Shader", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_CS * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_MEDIA | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_MEDIA | API_TYPE_IOSTREAM,
                           METRIC_TYPE_EVENT, RESULT_UINT64, "threads", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, "oa.fixed", 9 );
         if( metric )
         {
@@ -1557,7 +1559,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "FpuActive", "XVE FPU Pipe Active",
                           "The percentage of time in which XVE FPU INT64 pipeline was actively processing.",
-                          "EU Array/Pipes", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_EU_PIPES * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_MEDIA | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_MEDIA | API_TYPE_IOSTREAM,
                           METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 10 );
         if( metric )
         {
@@ -1571,7 +1573,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "VsFpuActive", "VS FPU Pipe Active",
                           "The percentage of time in which XVE FPU INT64 pipeline was actively processing a vertex shader instruction.",
-                          "EU Array/Vertex Shader", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_VS * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_MEDIA | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_MEDIA | API_TYPE_IOSTREAM,
                           METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 11 );
         if( metric )
         {
@@ -1585,8 +1587,8 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "PsFpuActive", "PS FPU Pipe Active",
                           "The percentage of time in which XVE FPU INT64 pipeline was actively processing a pixel shader instruction.",
-                          "EU Array/Pixel Shader", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_PS * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_MEDIA | API_TYPE_IOSTREAM,
-                          METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, "Pixel|Fragment,PS|FS,pixel|fragment", nullptr, 12 );
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_MEDIA | API_TYPE_IOSTREAM,
+                          METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, "PS|FS,pixel|fragment", nullptr, 12 );
         if( metric )
         {
             MD_CHECK_CC( ( metric->SetSnapshotReportReadEquation( "rd40@0x34:0xa9" ) ) );
@@ -1599,7 +1601,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "CsFpuActive", "CS FPU Pipe Active",
                           "The percentage of time in which XVE FPU INT64 pipeline was actively processing a compute shader instruction.",
-                          "EU Array/Compute Shader", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_CS * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_MEDIA | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_MEDIA | API_TYPE_IOSTREAM,
                           METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 13 );
         if( metric )
         {
@@ -1613,7 +1615,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "AsyncCsFpuActive", "ASYNC CS FPU Pipe Active",
                           "The percentage of time in which XVE FPU INT64 pipeline was actively processing a compute shader instruction.",
-                          "EU Array/Compute Shader", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_CS * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_MEDIA | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_MEDIA | API_TYPE_IOSTREAM,
                           METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 14 );
         if( metric )
         {
@@ -1627,7 +1629,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "EmActive", "EM Pipe Active",
                           "The percentage of time in which XVE EM INT pipeline was actively processing.",
-                          "EU Array/Pipes", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_EU_PIPES * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_MEDIA | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_MEDIA | API_TYPE_IOSTREAM,
                           METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 15 );
         if( metric )
         {
@@ -1641,7 +1643,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "VsEmActive", "VS EM Pipe Active",
                           "The percentage of time in which XVE EM INT pipeline was actively processing a vertex shader instruction.",
-                          "EU Array/Vertex Shader", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_VS * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_MEDIA | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_MEDIA | API_TYPE_IOSTREAM,
                           METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 16 );
         if( metric )
         {
@@ -1655,8 +1657,8 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "PsEmActive", "PS EM Pipe Active",
                           "The percentage of time in which XVE EM INT pipeline was actively processing a pixel shader instruction.",
-                          "EU Array/Pixel Shader", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_PS * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_MEDIA | API_TYPE_IOSTREAM,
-                          METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, "Pixel|Fragment,PS|FS,pixel|fragment", nullptr, 17 );
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_MEDIA | API_TYPE_IOSTREAM,
+                          METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, "PS|FS,pixel|fragment", nullptr, 17 );
         if( metric )
         {
             MD_CHECK_CC( ( metric->SetSnapshotReportReadEquation( "rd40@0x48:0xae" ) ) );
@@ -1669,7 +1671,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "CsEmActive", "CS EM Pipe Active",
                           "The percentage of time in which XVE EM INT pipeline was actively processing a compute shader instruction.",
-                          "EU Array/Compute Shader", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_CS * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_MEDIA | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_MEDIA | API_TYPE_IOSTREAM,
                           METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 18 );
         if( metric )
         {
@@ -1683,7 +1685,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "AsyncCsEmActive", "ASYNC CS EM Pipe Active",
                           "The percentage of time in which XVE EM INT pipeline was actively processing a compute shader instruction.",
-                          "EU Array/Compute Shader", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_CS * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_MEDIA | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_MEDIA | API_TYPE_IOSTREAM,
                           METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 19 );
         if( metric )
         {
@@ -1697,7 +1699,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "XveThreadOccupancy", "XVE Thread Occupancy",
                           "The percentage of time in which hardware threads occupied XVEs.",
-                          "EU Array", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ), USAGE_FLAG_TIER_2 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_MEDIA | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_2 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_MEDIA | API_TYPE_IOSTREAM,
                           METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 20 );
         if( metric )
         {
@@ -1711,7 +1713,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "XveActive", "XVE Active",
                           "The percentage of time in which the Execution Units were actively processing.",
-                          "EU Array", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ), USAGE_FLAG_TIER_2 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_MEDIA | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_2 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_MEDIA | API_TYPE_IOSTREAM,
                           METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 21 );
         if( metric )
         {
@@ -1725,7 +1727,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "XveStall", "XVE Stall",
                           "The percentage of time in which the Execution Units were stalled.",
-                          "EU Array", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ), USAGE_FLAG_TIER_2 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_MEDIA | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_2 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_MEDIA | API_TYPE_IOSTREAM,
                           METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 22 );
         if( metric )
         {
@@ -1771,7 +1773,6 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
     {
         TCompletionCode ret                  = CC_OK;
         CMetric*        metric               = nullptr;
-        CInformation*   information          = nullptr;
         const char*     availabilityEquation = nullptr;
         m_params.InformationCount            = m_concurrentGroup->GetInformationCount();
         MD_CHECK_CC( SetApiSpecificId( "GPAV", 0, 0x40000000, 0x80000203, 0, 0, "Intel Performance Counters for GT Set Dynamic", 0, "Intel_Raw_Hardware_Counters_Set_0_Query", 0 ) );
@@ -1827,7 +1828,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "VsThreads", "VS Threads Dispatched",
                           "The total number of vertex shader hardware threads dispatched.",
-                          "EU Array/Vertex Shader", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_VS * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_MEDIA | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_MEDIA | API_TYPE_IOSTREAM,
                           METRIC_TYPE_EVENT, RESULT_UINT64, "threads", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, "oa.fixed", 4 );
         if( metric )
         {
@@ -1839,8 +1840,8 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "HsThreads", "HS Threads Dispatched",
                           "The total number of hull shader hardware threads dispatched.",
-                          "EU Array/Hull Shader", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_HS * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_MEDIA | API_TYPE_IOSTREAM,
-                          METRIC_TYPE_EVENT, RESULT_UINT64, "threads", 0, 0, HW_UNIT_GPU, availabilityEquation, "Hull|Control,hull|control,HS|TCS", "oa.fixed", 5 );
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_MEDIA | API_TYPE_IOSTREAM,
+                          METRIC_TYPE_EVENT, RESULT_UINT64, "threads", 0, 0, HW_UNIT_GPU, availabilityEquation, "hull|control,HS|TCS", "oa.fixed", 5 );
         if( metric )
         {
             MD_CHECK_CC( ( metric->SetSnapshotReportReadEquation( "dw@0x18" ) ) );
@@ -1851,8 +1852,8 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "DsThreads", "DS Threads Dispatched",
                           "The total number of domain shader hardware threads dispatched.",
-                          "EU Array/Domain Shader", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_DS * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_MEDIA | API_TYPE_IOSTREAM,
-                          METRIC_TYPE_EVENT, RESULT_UINT64, "threads", 0, 0, HW_UNIT_GPU, availabilityEquation, "Domain|Evaluation,domain|evaluation,DS|TES", "oa.fixed", 6 );
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_MEDIA | API_TYPE_IOSTREAM,
+                          METRIC_TYPE_EVENT, RESULT_UINT64, "threads", 0, 0, HW_UNIT_GPU, availabilityEquation, "domain|evaluation,DS|TES", "oa.fixed", 6 );
         if( metric )
         {
             MD_CHECK_CC( ( metric->SetSnapshotReportReadEquation( "dw@0x1c" ) ) );
@@ -1863,7 +1864,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "GsThreads", "GS Threads Dispatched",
                           "The total number of geometry shader hardware threads dispatched.",
-                          "EU Array/Geometry Shader", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_GS * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_MEDIA | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_MEDIA | API_TYPE_IOSTREAM,
                           METRIC_TYPE_EVENT, RESULT_UINT64, "threads", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, "oa.fixed", 7 );
         if( metric )
         {
@@ -1875,8 +1876,8 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "PsThreads", "PS Threads Dispatched",
                           "The total number of pixel shader hardware threads dispatched.",
-                          "EU Array/Pixel Shader", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_PS * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_MEDIA | API_TYPE_IOSTREAM,
-                          METRIC_TYPE_EVENT, RESULT_UINT64, "threads", 0, 0, HW_UNIT_GPU, availabilityEquation, "Pixel|Fragment,PS|FS,pixel|fragment", "oa.fixed", 8 );
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_MEDIA | API_TYPE_IOSTREAM,
+                          METRIC_TYPE_EVENT, RESULT_UINT64, "threads", 0, 0, HW_UNIT_GPU, availabilityEquation, "PS|FS,pixel|fragment", "oa.fixed", 8 );
         if( metric )
         {
             MD_CHECK_CC( ( metric->SetSnapshotReportReadEquation( "rd40@0x28:0xa6" ) ) );
@@ -1887,7 +1888,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "CsThreads", "CS Threads Dispatched",
                           "The total number of compute shader hardware threads dispatched.",
-                          "EU Array/Compute Shader", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_CS * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_MEDIA | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_MEDIA | API_TYPE_IOSTREAM,
                           METRIC_TYPE_EVENT, RESULT_UINT64, "threads", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, "oa.fixed", 9 );
         if( metric )
         {
@@ -1899,8 +1900,8 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "HsFpuActive", "HS FPU Pipe Active",
                           "The percentage of time in which XVE FPU INT64 pipeline was actively processing a hull shader instruction.",
-                          "EU Array/Hull Shader", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_HS * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_MEDIA | API_TYPE_IOSTREAM,
-                          METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, "Hull|Control,hull|control,HS|TCS", nullptr, 10 );
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_MEDIA | API_TYPE_IOSTREAM,
+                          METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, "hull|control,HS|TCS", nullptr, 10 );
         if( metric )
         {
             MD_CHECK_CC( ( metric->SetSnapshotReportReadEquation( "rd40@0x2c:0xa7" ) ) );
@@ -1913,8 +1914,8 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "DsFpuActive", "DS FPU Pipe Active",
                           "The percentage of time in which XVE FPU INT64 pipeline was actively processing a domain shader instruction.",
-                          "EU Array/Domain Shader", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_DS * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_MEDIA | API_TYPE_IOSTREAM,
-                          METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, "Domain|Evaluation,domain|evaluation,DS|TES", nullptr, 11 );
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_MEDIA | API_TYPE_IOSTREAM,
+                          METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, "domain|evaluation,DS|TES", nullptr, 11 );
         if( metric )
         {
             MD_CHECK_CC( ( metric->SetSnapshotReportReadEquation( "rd40@0x30:0xa8" ) ) );
@@ -1927,7 +1928,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "GsFpuActive", "GS FPU Pipe Active",
                           "The percentage of time in which XVE FPU INT64 pipeline was actively processing a geometry shader instruction.",
-                          "EU Array/Geometry Shader", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_GS * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_MEDIA | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_MEDIA | API_TYPE_IOSTREAM,
                           METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 12 );
         if( metric )
         {
@@ -1941,8 +1942,8 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "HsEmActive", "HS EM Pipe Active",
                           "The percentage of time in which XVE EM INT pipeline was actively processing a hull shader instruction.",
-                          "EU Array/Hull Shader", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_HS * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_MEDIA | API_TYPE_IOSTREAM,
-                          METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, "Hull|Control,hull|control,HS|TCS", nullptr, 13 );
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_MEDIA | API_TYPE_IOSTREAM,
+                          METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, "hull|control,HS|TCS", nullptr, 13 );
         if( metric )
         {
             MD_CHECK_CC( ( metric->SetSnapshotReportReadEquation( "rd40@0x38:0xaa" ) ) );
@@ -1955,8 +1956,8 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "DsEmActive", "DS EM Pipe Active",
                           "The percentage of time in which XVE EM INT pipeline was actively processing a domain shader instruction.",
-                          "EU Array/Domain Shader", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_DS * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_MEDIA | API_TYPE_IOSTREAM,
-                          METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, "Domain|Evaluation,domain|evaluation,DS|TES", nullptr, 14 );
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_MEDIA | API_TYPE_IOSTREAM,
+                          METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, "domain|evaluation,DS|TES", nullptr, 14 );
         if( metric )
         {
             MD_CHECK_CC( ( metric->SetSnapshotReportReadEquation( "rd40@0x3c:0xab" ) ) );
@@ -1969,7 +1970,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "GsEmActive", "GS EM Pipe Active",
                           "The percentage of time in which XVE EM INT pipeline was actively processing a geometry shader instruction.",
-                          "EU Array/Geometry Shader", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_GS * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_MEDIA | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_MEDIA | API_TYPE_IOSTREAM,
                           METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 15 );
         if( metric )
         {
@@ -1983,8 +1984,8 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "HsSendActive", "HS Send Pipe Active",
                           "The percentage of time in which XVE send pipeline was actively processing a hull shader instruction.",
-                          "EU Array/Hull Shader", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_HS * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_MEDIA | API_TYPE_IOSTREAM,
-                          METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, "Hull|Control,hull|control,HS|TCS", nullptr, 16 );
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_MEDIA | API_TYPE_IOSTREAM,
+                          METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, "hull|control,HS|TCS", nullptr, 16 );
         if( metric )
         {
             MD_CHECK_CC( ( metric->SetSnapshotReportReadEquation( "rd40@0x44:0xad" ) ) );
@@ -1997,8 +1998,8 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "DsSendActive", "DS Send Pipe Active",
                           "The percentage of time in which XVE send pipeline was actively processing a domain shader instruction.",
-                          "EU Array/Domain Shader", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_DS * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_MEDIA | API_TYPE_IOSTREAM,
-                          METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, "Domain|Evaluation,domain|evaluation,DS|TES", nullptr, 17 );
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_MEDIA | API_TYPE_IOSTREAM,
+                          METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, "domain|evaluation,DS|TES", nullptr, 17 );
         if( metric )
         {
             MD_CHECK_CC( ( metric->SetSnapshotReportReadEquation( "rd40@0x48:0xae" ) ) );
@@ -2011,7 +2012,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "GsSendActive", "GS Send Pipe Active",
                           "The percentage of time in which XVE send pipeline was actively processing a geometry shader instruction.",
-                          "EU Array/Geometry Shader", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_GS * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_MEDIA | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_MEDIA | API_TYPE_IOSTREAM,
                           METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 18 );
         if( metric )
         {
@@ -2025,7 +2026,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "CsSendActive", "CS Send Pipe Active",
                           "The percentage of time in which XVE send pipeline was actively processing a compute shader instruction.",
-                          "EU Array/Compute Shader", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_CS * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_MEDIA | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_MEDIA | API_TYPE_IOSTREAM,
                           METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 19 );
         if( metric )
         {
@@ -2069,7 +2070,6 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
     {
         TCompletionCode ret                  = CC_OK;
         CMetric*        metric               = nullptr;
-        CInformation*   information          = nullptr;
         const char*     availabilityEquation = nullptr;
         m_params.InformationCount            = m_concurrentGroup->GetInformationCount();
         MD_CHECK_CC( SetApiSpecificId( "GPAV", 0, 0x40000000, 0x80000203, 0, 0, "Intel Performance Counters for GT Set Dynamic", 0, "Intel_Raw_Hardware_Counters_Set_0_Query", 0 ) );
@@ -2125,7 +2125,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "XveActive", "XVE Active",
                           "The percentage of time in which the Execution Units were actively processing.",
-                          "EU Array", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ), USAGE_FLAG_TIER_2 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_MEDIA | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_2 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_MEDIA | API_TYPE_IOSTREAM,
                           METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 4 );
         if( metric )
         {
@@ -2139,7 +2139,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "XveStall", "XVE Stall",
                           "The percentage of time in which the Execution Units were stalled.",
-                          "EU Array", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ), USAGE_FLAG_TIER_2 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_MEDIA | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_2 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_MEDIA | API_TYPE_IOSTREAM,
                           METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 5 );
         if( metric )
         {
@@ -2153,7 +2153,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "XveThreadOccupancy", "XVE Thread Occupancy",
                           "The percentage of time in which hardware threads occupied XVEs.",
-                          "EU Array", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ), USAGE_FLAG_TIER_2 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_MEDIA | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_2 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_MEDIA | API_TYPE_IOSTREAM,
                           METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 6 );
         if( metric )
         {
@@ -2167,7 +2167,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "VsThreads", "VS Threads Dispatched",
                           "The total number of vertex shader hardware threads dispatched.",
-                          "EU Array/Vertex Shader", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_VS * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_MEDIA | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_MEDIA | API_TYPE_IOSTREAM,
                           METRIC_TYPE_EVENT, RESULT_UINT64, "threads", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, "oa.fixed", 7 );
         if( metric )
         {
@@ -2179,8 +2179,8 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "HsThreads", "HS Threads Dispatched",
                           "The total number of hull shader hardware threads dispatched.",
-                          "EU Array/Hull Shader", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_HS * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_MEDIA | API_TYPE_IOSTREAM,
-                          METRIC_TYPE_EVENT, RESULT_UINT64, "threads", 0, 0, HW_UNIT_GPU, availabilityEquation, "Hull|Control,hull|control,HS|TCS", "oa.fixed", 8 );
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_MEDIA | API_TYPE_IOSTREAM,
+                          METRIC_TYPE_EVENT, RESULT_UINT64, "threads", 0, 0, HW_UNIT_GPU, availabilityEquation, "hull|control,HS|TCS", "oa.fixed", 8 );
         if( metric )
         {
             MD_CHECK_CC( ( metric->SetSnapshotReportReadEquation( "dw@0x18" ) ) );
@@ -2191,8 +2191,8 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "DsThreads", "DS Threads Dispatched",
                           "The total number of domain shader hardware threads dispatched.",
-                          "EU Array/Domain Shader", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_DS * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_MEDIA | API_TYPE_IOSTREAM,
-                          METRIC_TYPE_EVENT, RESULT_UINT64, "threads", 0, 0, HW_UNIT_GPU, availabilityEquation, "Domain|Evaluation,domain|evaluation,DS|TES", "oa.fixed", 9 );
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_MEDIA | API_TYPE_IOSTREAM,
+                          METRIC_TYPE_EVENT, RESULT_UINT64, "threads", 0, 0, HW_UNIT_GPU, availabilityEquation, "domain|evaluation,DS|TES", "oa.fixed", 9 );
         if( metric )
         {
             MD_CHECK_CC( ( metric->SetSnapshotReportReadEquation( "dw@0x1c" ) ) );
@@ -2203,7 +2203,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "GsThreads", "GS Threads Dispatched",
                           "The total number of geometry shader hardware threads dispatched.",
-                          "EU Array/Geometry Shader", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_GS * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_MEDIA | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_MEDIA | API_TYPE_IOSTREAM,
                           METRIC_TYPE_EVENT, RESULT_UINT64, "threads", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, "oa.fixed", 10 );
         if( metric )
         {
@@ -2215,8 +2215,8 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "PsThreads", "PS Threads Dispatched",
                           "The total number of pixel shader hardware threads dispatched.",
-                          "EU Array/Pixel Shader", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_PS * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_MEDIA | API_TYPE_IOSTREAM,
-                          METRIC_TYPE_EVENT, RESULT_UINT64, "threads", 0, 0, HW_UNIT_GPU, availabilityEquation, "Pixel|Fragment,PS|FS,pixel|fragment", "oa.fixed", 11 );
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_MEDIA | API_TYPE_IOSTREAM,
+                          METRIC_TYPE_EVENT, RESULT_UINT64, "threads", 0, 0, HW_UNIT_GPU, availabilityEquation, "PS|FS,pixel|fragment", "oa.fixed", 11 );
         if( metric )
         {
             MD_CHECK_CC( ( metric->SetSnapshotReportReadEquation( "rd40@0x28:0xa6" ) ) );
@@ -2227,7 +2227,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "CsThreads", "CS Threads Dispatched",
                           "The total number of compute shader hardware threads dispatched.",
-                          "EU Array/Compute Shader", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_CS * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_MEDIA | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_MEDIA | API_TYPE_IOSTREAM,
                           METRIC_TYPE_EVENT, RESULT_UINT64, "threads", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, "oa.fixed", 12 );
         if( metric )
         {
@@ -2326,7 +2326,6 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
     {
         TCompletionCode ret                  = CC_OK;
         CMetric*        metric               = nullptr;
-        CInformation*   information          = nullptr;
         const char*     availabilityEquation = nullptr;
         m_params.InformationCount            = m_concurrentGroup->GetInformationCount();
         MD_CHECK_CC( SetApiSpecificId( "GPAV", 0, 0x40000000, 0x80000203, 0, 0, "Intel Performance Counters for GT Set Dynamic", 0, "Intel_Raw_Hardware_Counters_Set_0_Query", 0 ) );
@@ -2609,7 +2608,6 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
     {
         TCompletionCode ret                  = CC_OK;
         CMetric*        metric               = nullptr;
-        CInformation*   information          = nullptr;
         const char*     availabilityEquation = nullptr;
         m_params.InformationCount            = m_concurrentGroup->GetInformationCount();
         MD_CHECK_CC( SetApiSpecificId( "GPAV", 0, 0x40000000, 0x80000203, 0, 0, "Intel Performance Counters for GT Set Dynamic", 0, "Intel_Raw_Hardware_Counters_Set_0_Query", 0 ) );
@@ -2846,7 +2844,6 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
     {
         TCompletionCode ret                  = CC_OK;
         CMetric*        metric               = nullptr;
-        CInformation*   information          = nullptr;
         const char*     availabilityEquation = nullptr;
         m_params.InformationCount            = m_concurrentGroup->GetInformationCount();
         MD_CHECK_CC( SetApiSpecificId( "GPAV", 0, 0x40000000, 0x80000203, 0, 0, "Intel Performance Counters for GT Set Dynamic", 0, "Intel_Raw_Hardware_Counters_Set_0_Query", 0 ) );
@@ -3043,7 +3040,6 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
     {
         TCompletionCode ret                  = CC_OK;
         CMetric*        metric               = nullptr;
-        CInformation*   information          = nullptr;
         const char*     availabilityEquation = nullptr;
         m_params.InformationCount            = m_concurrentGroup->GetInformationCount();
         MD_CHECK_CC( SetApiSpecificId( "GPAV", 0, 0x40000000, 0x80000203, 0, 0, "Intel Performance Counters for GT Set Dynamic", 0, "Intel_Raw_Hardware_Counters_Set_0_Query", 0 ) );
@@ -3246,7 +3242,6 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
     {
         TCompletionCode ret                  = CC_OK;
         CMetric*        metric               = nullptr;
-        CInformation*   information          = nullptr;
         const char*     availabilityEquation = nullptr;
         m_params.InformationCount            = m_concurrentGroup->GetInformationCount();
         MD_CHECK_CC( SetApiSpecificId( "GPAV", 0, 0x40000000, 0x80000203, 0, 0, "Intel Performance Counters for GT Set Dynamic", 0, "Intel_Raw_Hardware_Counters_Set_0_Query", 0 ) );
@@ -3624,7 +3619,6 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
     {
         TCompletionCode ret                  = CC_OK;
         CMetric*        metric               = nullptr;
-        CInformation*   information          = nullptr;
         const char*     availabilityEquation = nullptr;
         m_params.InformationCount            = m_concurrentGroup->GetInformationCount();
         MD_CHECK_CC( SetApiSpecificId( "GPAV", 0, 0x40000000, 0x80000203, 0, 0, "Intel Performance Counters for GT Set Dynamic", 0, "Intel_Raw_Hardware_Counters_Set_0_Query", 0 ) );
@@ -3885,7 +3879,6 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
     {
         TCompletionCode ret                  = CC_OK;
         CMetric*        metric               = nullptr;
-        CInformation*   information          = nullptr;
         const char*     availabilityEquation = nullptr;
         m_params.InformationCount            = m_concurrentGroup->GetInformationCount();
         MD_CHECK_CC( SetApiSpecificId( "GPAV", 0, 0x40000000, 0x80000203, 0, 0, "Intel Performance Counters for GT Set Dynamic", 0, "Intel_Raw_Hardware_Counters_Set_0_Query", 0 ) );
@@ -4221,7 +4214,6 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
     {
         TCompletionCode ret                  = CC_OK;
         CMetric*        metric               = nullptr;
-        CInformation*   information          = nullptr;
         const char*     availabilityEquation = nullptr;
         m_params.InformationCount            = m_concurrentGroup->GetInformationCount();
         MD_CHECK_CC( SetApiSpecificId( "GPAV", 0, 0x40000000, 0x80000203, 0, 0, "Intel Performance Counters for GT Set Dynamic", 0, "Intel_Raw_Hardware_Counters_Set_0_Query", 0 ) );
@@ -4573,7 +4565,6 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
     {
         TCompletionCode ret                  = CC_OK;
         CMetric*        metric               = nullptr;
-        CInformation*   information          = nullptr;
         const char*     availabilityEquation = nullptr;
         m_params.InformationCount            = m_concurrentGroup->GetInformationCount();
         MD_CHECK_CC( SetApiSpecificId( "GPAV", 0, 0x40000000, 0x80000203, 0, 0, "Intel Performance Counters for GT Set Dynamic", 0, "Intel_Raw_Hardware_Counters_Set_0_Query", 0 ) );
@@ -4793,7 +4784,6 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
     {
         TCompletionCode ret                  = CC_OK;
         CMetric*        metric               = nullptr;
-        CInformation*   information          = nullptr;
         const char*     availabilityEquation = nullptr;
         m_params.InformationCount            = m_concurrentGroup->GetInformationCount();
         MD_CHECK_CC( SetApiSpecificId( "GPAV", 0, 0x40000000, 0x80000203, 0, 0, "Intel Performance Counters for GT Set Dynamic", 0, "Intel_Raw_Hardware_Counters_Set_0_Query", 0 ) );
@@ -4836,7 +4826,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         metric               = AddMetric( "L3_BYTE_READ", "L3 Byte Read",
                           "Number of bytes read from L3",
                           "L3Cache", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
-                          METRIC_TYPE_THROUGHPUT, RESULT_UINT64, "bytes", 0, 0, HW_UNIT_SUBSLICE_BANK, availabilityEquation, nullptr, nullptr, 3 );
+                          METRIC_TYPE_THROUGHPUT, RESULT_UINT64, "bytes", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 3 );
         if( metric )
         {
             MD_CHECK_CC( ( metric->SetSnapshotReportReadEquation( "dw@0xfc dw@0xf8 UADD dw@0xf4 UADD dw@0xf0 UADD" ) ) );
@@ -4850,7 +4840,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         metric               = AddMetric( "L3_BYTE_WRITE", "L3 Byte Write",
                           "Number of bytes written to L3",
                           "L3Cache", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
-                          METRIC_TYPE_THROUGHPUT, RESULT_UINT64, "bytes", 0, 0, HW_UNIT_SUBSLICE_BANK, availabilityEquation, nullptr, nullptr, 4 );
+                          METRIC_TYPE_THROUGHPUT, RESULT_UINT64, "bytes", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 4 );
         if( metric )
         {
             MD_CHECK_CC( ( metric->SetSnapshotReportReadEquation( "dw@0xec dw@0xe8 UADD dw@0xe4 UADD dw@0xe0 UADD" ) ) );
@@ -4891,7 +4881,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "XVE_ACTIVE", "XVE Active",
                           "Percentage of time in which at least one pipe is active in XVE",
-                          "EU Array", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ), USAGE_FLAG_TIER_2 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_2 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
                           METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 7 );
         if( metric )
         {
@@ -4905,7 +4895,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "XVE_STALL", "XVE Stall",
                           "Percentage of time in which any threads are loaded but not even a single pipe is active in XVE",
-                          "EU Array", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ), USAGE_FLAG_TIER_2 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_2 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
                           METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 8 );
         if( metric )
         {
@@ -4933,7 +4923,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "XVE_THREADS_OCCUPANCY_ALL", "XVE Threads Occupancy All",
                           "Percentage of thread slots occupied",
-                          "EU Array", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ), USAGE_FLAG_TIER_2 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_2 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
                           METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 10 );
         if( metric )
         {
@@ -4983,7 +4973,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "XVE_INST_EXECUTED_ALU0_ALL", "XVE Inst Executed ALU0 All",
                           "Number of execution slots taken by instructions executed on ALU0 pipe",
-                          "EU Array/Pipes", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_EU_PIPES * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
                           METRIC_TYPE_EVENT, RESULT_UINT64, "events", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 14 );
         if( metric )
         {
@@ -4997,7 +4987,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "XVE_INST_EXECUTED_ALU1_ALL", "XVE Inst Executed ALU1 All",
                           "Number of execution slots taken by instructions executed on ALU1 pipe",
-                          "EU Array/Pipes", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_EU_PIPES * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
                           METRIC_TYPE_EVENT, RESULT_UINT64, "events", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 15 );
         if( metric )
         {
@@ -5011,7 +5001,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "XVE_INST_EXECUTED_XMX_ALL", "XVE Inst Executed XMX All",
                           "Number of execution slots taken by instructions executed in XMX pipe",
-                          "EU Array/Pipes", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_EU_PIPES * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
                           METRIC_TYPE_EVENT, RESULT_UINT64, "events", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 16 );
         if( metric )
         {
@@ -5025,7 +5015,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "XVE_INST_EXECUTED_SEND_ALL", "XVE Inst Executed Send All",
                           "Number of instructions executed on SEND pipe",
-                          "EU Array/Pipes", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_EU_PIPES * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
                           METRIC_TYPE_EVENT, RESULT_UINT64, "events", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 17 );
         if( metric )
         {
@@ -5039,7 +5029,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "XVE_INST_EXECUTED_CONTROL_ALL", "XVE Inst Executed Control All",
                           "Number of instructions executed on Jump Pipe",
-                          "EU Array", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
                           METRIC_TYPE_EVENT, RESULT_UINT64, "events", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 18 );
         if( metric )
         {
@@ -5053,7 +5043,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "XVE_PIPE_ALU0_AND_ALU1_ACTIVE", "XVE Pipe ALU0 And ALU1 Active",
                           "Percentage of time in which ALU0 and ALU1 pipes are both actively executing a Gen ISA instruction",
-                          "EU Array/Pipes", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_EU_PIPES * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
                           METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 19 );
         if( metric )
         {
@@ -5067,7 +5057,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "XVE_PIPE_ALU0_AND_XMX_ACTIVE", "XVE Pipe ALU0 And XMX Active",
                           "Percentage of time in which ALU0 and XMX pipes are both actively executing a Gen ISA instruction",
-                          "EU Array/Pipes", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_EU_PIPES * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
                           METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 20 );
         if( metric )
         {
@@ -5081,7 +5071,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "XVE_INST_EXECUTED_ALU0_ALL_UTILIZATION", "XVE Inst Executed ALU0 All Utilization",
                           "Percentage of execution slots taken by instructions executed on ALU0 pipe",
-                          "EU Array/Pipes", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_EU_PIPES * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
                           METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 21 );
         if( metric )
         {
@@ -5095,7 +5085,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "XVE_INST_EXECUTED_ALU1_ALL_UTILIZATION", "XVE Inst Executed ALU1 All Utilization",
                           "Percentage of execution slots taken by instructions executed on ALU1 pipe",
-                          "EU Array/Pipes", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_EU_PIPES * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
                           METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 22 );
         if( metric )
         {
@@ -5109,7 +5099,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "XVE_INST_EXECUTED_SEND_ALL_UTILIZATION", "XVE Inst Executed Send All Utilization",
                           "Percentage of time taken by instructions executed on SEND pipe",
-                          "EU Array/Pipes", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_EU_PIPES * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
                           METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 23 );
         if( metric )
         {
@@ -5123,7 +5113,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "XVE_INST_EXECUTED_CONTROL_ALL_UTILIZATION", "XVE Inst Executed Control All Utilization",
                           "Percentage of time taken by instructions executed on Jump Pipe",
-                          "EU Array", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
                           METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 24 );
         if( metric )
         {
@@ -5137,7 +5127,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "XVE_INST_EXECUTED_XMX_ALL_UTILIZATION", "XVE Inst Executed XMX All Utilization",
                           "Percentage of execution slots taken by instructions executed in XMX pipe",
-                          "EU Array/Pipes", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_EU_PIPES * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
                           METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 25 );
         if( metric )
         {
@@ -5229,7 +5219,6 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
     {
         TCompletionCode ret                  = CC_OK;
         CMetric*        metric               = nullptr;
-        CInformation*   information          = nullptr;
         const char*     availabilityEquation = nullptr;
         m_params.InformationCount            = m_concurrentGroup->GetInformationCount();
         MD_CHECK_CC( SetApiSpecificId( "GPAV", 0, 0x40000000, 0x80000203, 0, 0, "Intel Performance Counters for GT Set Dynamic", 0, "Intel_Raw_Hardware_Counters_Set_0_Query", 0 ) );
@@ -5312,7 +5301,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "XVE_ACTIVE", "XVE Active",
                           "Percentage of time in which at least one pipe is active in XVE",
-                          "EU Array", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ), USAGE_FLAG_TIER_2 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_2 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
                           METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 6 );
         if( metric )
         {
@@ -5326,7 +5315,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "XVE_STALL", "XVE Stall",
                           "Percentage of time in which any threads are loaded but not even a single pipe is active in XVE",
-                          "EU Array", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ), USAGE_FLAG_TIER_2 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_2 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
                           METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 7 );
         if( metric )
         {
@@ -5354,7 +5343,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "XVE_THREADS_OCCUPANCY_ALL", "XVE Threads Occupancy All",
                           "Percentage of thread slots occupied",
-                          "EU Array", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ), USAGE_FLAG_TIER_2 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_2 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
                           METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 9 );
         if( metric )
         {
@@ -5505,7 +5494,6 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
     {
         TCompletionCode ret                  = CC_OK;
         CMetric*        metric               = nullptr;
-        CInformation*   information          = nullptr;
         const char*     availabilityEquation = nullptr;
         m_params.InformationCount            = m_concurrentGroup->GetInformationCount();
         MD_CHECK_CC( SetApiSpecificId( "GPAV", 0, 0x40000000, 0x80000203, 0, 0, "Intel Performance Counters for GT Set Dynamic", 0, "Intel_Raw_Hardware_Counters_Set_0_Query", 0 ) );
@@ -5547,20 +5535,34 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "SAMPLER_L3_READ", "Sampler L3 Read",
                           "Number of L3 read requests resulting from Sampler local cache miss",
-                          "GTI/L3", ( METRIC_GROUP_NAME_ID_GTI * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_L3 * 0x10000 ), USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
-                          METRIC_TYPE_EVENT, RESULT_UINT64, "events", 0, 0, HW_UNIT_SUBSLICE_BANK, availabilityEquation, nullptr, nullptr, 3 );
+                          "L3Cache", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          METRIC_TYPE_EVENT, RESULT_UINT64, "events", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 3 );
         if( metric )
         {
             MD_CHECK_CC( ( metric->SetSnapshotReportReadEquation( "dw@0xe0 dw@0xe4 UADD dw@0xe8 UADD dw@0xec UADD" ) ) );
             MD_CHECK_CC( ( metric->SetDeltaReportReadEquation( "qw@0x180 qw@0x188 UADD qw@0x190 UADD qw@0x198 UADD" ) ) );
             MD_CHECK_CC( ( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ) ) );
+            MD_CHECK_CC( ( metric->SetMaxValueEquation( "4 $GpuCoreClocks UMUL" ) ) );
+        }
+
+        availabilityEquation = nullptr;
+        metric               = AddMetric( "SAMPLER_L3_BYTE_READ", "Sampler L3 Byte Read",
+                          "Number of L3 read bytes resulting from Sampler local cache miss",
+                          "L3Cache", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          METRIC_TYPE_THROUGHPUT, RESULT_UINT64, "bytes", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 4 );
+        if( metric )
+        {
+            MD_CHECK_CC( ( metric->SetSnapshotReportReadEquation( "dw@0xe0 dw@0xe4 UADD dw@0xe8 UADD dw@0xec UADD 64 UMUL" ) ) );
+            MD_CHECK_CC( ( metric->SetDeltaReportReadEquation( "qw@0x180 qw@0x188 UADD qw@0x190 UADD qw@0x198 UADD 64 UMUL" ) ) );
+            MD_CHECK_CC( ( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ) ) );
+            MD_CHECK_CC( ( metric->SetMaxValueEquation( "64 4 UMUL $GpuCoreClocks UMUL" ) ) );
         }
 
         availabilityEquation = nullptr;
         metric               = AddMetric( "GPU_MEMORY_BYTE_READ", "GPU Memory Byte Read",
                           "Number of device local memory (HBM, GDDR, LPDDR, etc.) read bytes",
                           "Memory", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
-                          METRIC_TYPE_THROUGHPUT, RESULT_UINT64, "bytes", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 4 );
+                          METRIC_TYPE_THROUGHPUT, RESULT_UINT64, "bytes", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 5 );
         if( metric )
         {
             MD_CHECK_CC( ( metric->SetSnapshotReportReadEquation( "dw@0xa0" ) ) );
@@ -5574,7 +5576,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         metric               = AddMetric( "GPU_MEMORY_BYTE_WRITE", "GPU Memory Byte Write",
                           "Number of device local memory (HBM, GDDR, LPDDR, etc.) write bytes",
                           "Memory", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
-                          METRIC_TYPE_THROUGHPUT, RESULT_UINT64, "bytes", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 5 );
+                          METRIC_TYPE_THROUGHPUT, RESULT_UINT64, "bytes", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 6 );
         if( metric )
         {
             MD_CHECK_CC( ( metric->SetSnapshotReportReadEquation( "dw@0xb8" ) ) );
@@ -5587,8 +5589,8 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "XVE_ACTIVE", "XVE Active",
                           "Percentage of time in which at least one pipe is active in XVE",
-                          "EU Array", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ), USAGE_FLAG_TIER_2 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
-                          METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 6 );
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_2 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 7 );
         if( metric )
         {
             MD_CHECK_CC( ( metric->SetSnapshotReportReadEquation( "rd40@0x2c:0xa7" ) ) );
@@ -5601,8 +5603,8 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "XVE_STALL", "XVE Stall",
                           "Percentage of time in which any threads are loaded but not even a single pipe is active in XVE",
-                          "EU Array", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ), USAGE_FLAG_TIER_2 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
-                          METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 7 );
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_2 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 8 );
         if( metric )
         {
             MD_CHECK_CC( ( metric->SetSnapshotReportReadEquation( "rd40@0x30:0xa8" ) ) );
@@ -5616,7 +5618,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         metric               = AddMetric( "XVE_BUSY", "XVE Busy",
                           "Any XVE thread loaded.",
                           "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_2 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
-                          METRIC_TYPE_EVENT, RESULT_UINT64, "events", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 8 );
+                          METRIC_TYPE_EVENT, RESULT_UINT64, "events", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 9 );
         if( metric )
         {
             MD_CHECK_CC( ( metric->SetSnapshotReportReadEquation( "rd40@0x34:0xa9" ) ) );
@@ -5629,8 +5631,8 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "XVE_THREADS_OCCUPANCY_ALL", "XVE Threads Occupancy All",
                           "Percentage of thread slots occupied",
-                          "EU Array", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ), USAGE_FLAG_TIER_2 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
-                          METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 9 );
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_2 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 10 );
         if( metric )
         {
             MD_CHECK_CC( ( metric->SetSnapshotReportReadEquation( "8 rd40@0x34:0xa9 FMUL $VectorEngineThreadsCount FDIV" ) ) );
@@ -5644,7 +5646,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         metric               = AddMetric( "XVE_COMPUTE_THREAD_COUNT", "XVE Compute Thread Count",
                           "Number of compute shader hardware threads dispatched",
                           "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
-                          METRIC_TYPE_EVENT, RESULT_UINT64, "threads", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, "oa.fixed", 10 );
+                          METRIC_TYPE_EVENT, RESULT_UINT64, "threads", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, "oa.fixed", 11 );
         if( metric )
         {
             MD_CHECK_CC( ( metric->SetSnapshotReportReadEquation( "rd40@0x20:0xa4" ) ) );
@@ -5656,12 +5658,13 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         metric               = AddMetric( "DATAPORT_BYTE_WRITE", "Dataport Byte Write",
                           "Number of bytes written through the Dataport",
                           "Dataport", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
-                          METRIC_TYPE_EVENT, RESULT_UINT64, "bytes", 0, 0, HW_UNIT_DUALSUBSLICE, availabilityEquation, nullptr, nullptr, 11 );
+                          METRIC_TYPE_THROUGHPUT, RESULT_UINT64, "bytes", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 12 );
         if( metric )
         {
             MD_CHECK_CC( ( metric->SetSnapshotReportReadEquation( "32 dw@0xf0 dw@0xf4 UADD dw@0xf8 UADD dw@0xfc UADD UMUL" ) ) );
             MD_CHECK_CC( ( metric->SetDeltaReportReadEquation( "32 qw@0x1a0 qw@0x1a8 UADD qw@0x1b0 UADD qw@0x1b8 UADD UMUL" ) ) );
             MD_CHECK_CC( ( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ) ) );
+            MD_CHECK_CC( ( metric->SetMaxValueEquation( "64  $XeCoreTotalCount UMUL $GpuCoreClocks UMUL" ) ) );
         }
 
         availabilityEquation = nullptr;
@@ -5762,7 +5765,6 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
     {
         TCompletionCode ret                  = CC_OK;
         CMetric*        metric               = nullptr;
-        CInformation*   information          = nullptr;
         const char*     availabilityEquation = nullptr;
         m_params.InformationCount            = m_concurrentGroup->GetInformationCount();
         MD_CHECK_CC( SetApiSpecificId( "GPAV", 0, 0x40000000, 0x80000203, 0, 0, "Intel Performance Counters for GT Set Dynamic", 0, "Intel_Raw_Hardware_Counters_Set_0_Query", 0 ) );
@@ -5804,7 +5806,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "SLM_BANK_CONFLICT_COUNT", "SLM Bank Conflict Count",
                           "Number of SLM accesses resulting in a bank conflict.",
-                          "GPU", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          "L1Cache", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
                           METRIC_TYPE_EVENT, RESULT_UINT64, "events", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 3 );
         if( metric )
         {
@@ -5844,7 +5846,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "XVE_ACTIVE", "XVE Active",
                           "Percentage of time in which at least one pipe is active in XVE",
-                          "EU Array", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ), USAGE_FLAG_TIER_2 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_2 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
                           METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 6 );
         if( metric )
         {
@@ -5858,7 +5860,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "XVE_STALL", "XVE Stall",
                           "Percentage of time in which any threads are loaded but not even a single pipe is active in XVE",
-                          "EU Array", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ), USAGE_FLAG_TIER_2 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_2 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
                           METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 7 );
         if( metric )
         {
@@ -5872,7 +5874,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "XVE_THREADS_OCCUPANCY_ALL", "XVE Threads Occupancy All",
                           "Percentage of thread slots occupied",
-                          "EU Array", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ), USAGE_FLAG_TIER_2 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_2 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
                           METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 8 );
         if( metric )
         {
@@ -5895,6 +5897,18 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
             MD_CHECK_CC( ( metric->SetNormalizationEquation( "$Self 0 UGT" ) ) );
             MD_CHECK_CC( ( metric->SetSnapshotReportDeltaFunction( "DELTA 40" ) ) );
             MD_CHECK_CC( ( metric->SetMaxValueEquation( "1" ) ) );
+        }
+
+        availabilityEquation = nullptr;
+        metric               = AddMetric( "XVE_COMPUTE_THREAD_COUNT", "XVE Compute Thread Count",
+                          "Number of compute shader hardware threads dispatched",
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          METRIC_TYPE_EVENT, RESULT_UINT64, "threads", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, "oa.fixed", 10 );
+        if( metric )
+        {
+            MD_CHECK_CC( ( metric->SetSnapshotReportReadEquation( "rd40@0x20:0xa4" ) ) );
+            MD_CHECK_CC( ( metric->SetDeltaReportReadEquation( "qw@0x30" ) ) );
+            MD_CHECK_CC( ( metric->SetSnapshotReportDeltaFunction( "DELTA 40" ) ) );
         }
 
         availabilityEquation = nullptr;
@@ -5989,7 +6003,6 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
     {
         TCompletionCode ret                  = CC_OK;
         CMetric*        metric               = nullptr;
-        CInformation*   information          = nullptr;
         const char*     availabilityEquation = nullptr;
         m_params.InformationCount            = m_concurrentGroup->GetInformationCount();
         MD_CHECK_CC( SetApiSpecificId( "GPAV", 0, 0x40000000, 0x80000203, 0, 0, "Intel Performance Counters for GT Set Dynamic", 0, "Intel_Raw_Hardware_Counters_Set_0_Query", 0 ) );
@@ -6085,7 +6098,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "XVE_ACTIVE", "XVE Active",
                           "Percentage of time in which at least one pipe is active in XVE",
-                          "EU Array", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ), USAGE_FLAG_TIER_2 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_2 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
                           METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 7 );
         if( metric )
         {
@@ -6099,7 +6112,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "XVE_STALL", "XVE Stall",
                           "Percentage of time in which any threads are loaded but not even a single pipe is active in XVE",
-                          "EU Array", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ), USAGE_FLAG_TIER_2 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_2 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
                           METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 8 );
         if( metric )
         {
@@ -6113,7 +6126,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "XVE_THREADS_OCCUPANCY_ALL", "XVE Threads Occupancy All",
                           "Percentage of thread slots occupied",
-                          "EU Array", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ), USAGE_FLAG_TIER_2 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_2 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
                           METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 9 );
         if( metric )
         {
@@ -6136,6 +6149,18 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
             MD_CHECK_CC( ( metric->SetNormalizationEquation( "$Self 0 UGT" ) ) );
             MD_CHECK_CC( ( metric->SetSnapshotReportDeltaFunction( "DELTA 40" ) ) );
             MD_CHECK_CC( ( metric->SetMaxValueEquation( "1" ) ) );
+        }
+
+        availabilityEquation = nullptr;
+        metric               = AddMetric( "XVE_COMPUTE_THREAD_COUNT", "XVE Compute Thread Count",
+                          "Number of compute shader hardware threads dispatched",
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          METRIC_TYPE_EVENT, RESULT_UINT64, "threads", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, "oa.fixed", 11 );
+        if( metric )
+        {
+            MD_CHECK_CC( ( metric->SetSnapshotReportReadEquation( "rd40@0x20:0xa4" ) ) );
+            MD_CHECK_CC( ( metric->SetDeltaReportReadEquation( "qw@0x30" ) ) );
+            MD_CHECK_CC( ( metric->SetSnapshotReportDeltaFunction( "DELTA 40" ) ) );
         }
 
         availabilityEquation = nullptr;
@@ -6203,7 +6228,6 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
     {
         TCompletionCode ret                  = CC_OK;
         CMetric*        metric               = nullptr;
-        CInformation*   information          = nullptr;
         const char*     availabilityEquation = nullptr;
         m_params.InformationCount            = m_concurrentGroup->GetInformationCount();
         MD_CHECK_CC( SetApiSpecificId( "GPAV", 0, 0x40000000, 0x80000203, 0, 0, "Intel Performance Counters for GT Set Dynamic", 0, "Intel_Raw_Hardware_Counters_Set_0_Query", 0 ) );
@@ -6245,7 +6269,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "LOAD_STORE_CACHE_BYTE_READ", "Load Store Cache Byte Read",
                           "Number of bytes read out of the Load Store Cache, excluding SLM accesses.",
-                          "GPU", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          "L1Cache", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
                           METRIC_TYPE_THROUGHPUT, RESULT_UINT64, "bytes", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 3 );
         if( metric )
         {
@@ -6258,7 +6282,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "LOAD_STORE_CACHE_BYTE_WRITE", "Load Store Cache Byte Write",
                           "Number of bytes written to the Load Store Cache, excluding SLM accesses.",
-                          "GPU", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          "L1Cache", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
                           METRIC_TYPE_THROUGHPUT, RESULT_UINT64, "bytes", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 4 );
         if( metric )
         {
@@ -6299,7 +6323,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "XVE_ACTIVE", "XVE Active",
                           "Percentage of time in which at least one pipe is active in XVE",
-                          "EU Array", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ), USAGE_FLAG_TIER_2 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_2 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
                           METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 7 );
         if( metric )
         {
@@ -6313,7 +6337,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "XVE_STALL", "XVE Stall",
                           "Percentage of time in which any threads are loaded but not even a single pipe is active in XVE",
-                          "EU Array", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ), USAGE_FLAG_TIER_2 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_2 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
                           METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 8 );
         if( metric )
         {
@@ -6327,7 +6351,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "XVE_THREADS_OCCUPANCY_ALL", "XVE Threads Occupancy All",
                           "Percentage of thread slots occupied",
-                          "EU Array", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ), USAGE_FLAG_TIER_2 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_2 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
                           METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 9 );
         if( metric )
         {
@@ -6350,6 +6374,18 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
             MD_CHECK_CC( ( metric->SetNormalizationEquation( "$Self 0 UGT" ) ) );
             MD_CHECK_CC( ( metric->SetSnapshotReportDeltaFunction( "DELTA 40" ) ) );
             MD_CHECK_CC( ( metric->SetMaxValueEquation( "1" ) ) );
+        }
+
+        availabilityEquation = nullptr;
+        metric               = AddMetric( "XVE_COMPUTE_THREAD_COUNT", "XVE Compute Thread Count",
+                          "Number of compute shader hardware threads dispatched",
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          METRIC_TYPE_EVENT, RESULT_UINT64, "threads", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, "oa.fixed", 11 );
+        if( metric )
+        {
+            MD_CHECK_CC( ( metric->SetSnapshotReportReadEquation( "rd40@0x20:0xa4" ) ) );
+            MD_CHECK_CC( ( metric->SetDeltaReportReadEquation( "qw@0x30" ) ) );
+            MD_CHECK_CC( ( metric->SetSnapshotReportDeltaFunction( "DELTA 40" ) ) );
         }
 
         availabilityEquation = nullptr;
@@ -6440,7 +6476,6 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
     {
         TCompletionCode ret                  = CC_OK;
         CMetric*        metric               = nullptr;
-        CInformation*   information          = nullptr;
         const char*     availabilityEquation = nullptr;
         m_params.InformationCount            = m_concurrentGroup->GetInformationCount();
         MD_CHECK_CC( SetApiSpecificId( "GPAV", 0, 0x40000000, 0x80000203, 0, 0, "Intel Performance Counters for GT Set Dynamic", 0, "Intel_Raw_Hardware_Counters_Set_0_Query", 0 ) );
@@ -6536,7 +6571,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "XVE_ACTIVE", "XVE Active",
                           "Percentage of time in which at least one pipe is active in XVE",
-                          "EU Array", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ), USAGE_FLAG_TIER_2 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_2 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
                           METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 7 );
         if( metric )
         {
@@ -6550,7 +6585,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "XVE_STALL", "XVE Stall",
                           "Percentage of time in which any threads are loaded but not even a single pipe is active in XVE",
-                          "EU Array", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ), USAGE_FLAG_TIER_2 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_2 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
                           METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 8 );
         if( metric )
         {
@@ -6564,7 +6599,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "XVE_THREADS_OCCUPANCY_ALL", "XVE Threads Occupancy All",
                           "Percentage of thread slots occupied",
-                          "EU Array", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ), USAGE_FLAG_TIER_2 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_2 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
                           METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 9 );
         if( metric )
         {
@@ -6587,6 +6622,18 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
             MD_CHECK_CC( ( metric->SetNormalizationEquation( "$Self 0 UGT" ) ) );
             MD_CHECK_CC( ( metric->SetSnapshotReportDeltaFunction( "DELTA 40" ) ) );
             MD_CHECK_CC( ( metric->SetMaxValueEquation( "1" ) ) );
+        }
+
+        availabilityEquation = nullptr;
+        metric               = AddMetric( "XVE_COMPUTE_THREAD_COUNT", "XVE Compute Thread Count",
+                          "Number of compute shader hardware threads dispatched",
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          METRIC_TYPE_EVENT, RESULT_UINT64, "threads", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, "oa.fixed", 11 );
+        if( metric )
+        {
+            MD_CHECK_CC( ( metric->SetSnapshotReportReadEquation( "rd40@0x20:0xa4" ) ) );
+            MD_CHECK_CC( ( metric->SetDeltaReportReadEquation( "qw@0x30" ) ) );
+            MD_CHECK_CC( ( metric->SetSnapshotReportDeltaFunction( "DELTA 40" ) ) );
         }
 
         availabilityEquation = nullptr;
@@ -6654,7 +6701,6 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
     {
         TCompletionCode ret                  = CC_OK;
         CMetric*        metric               = nullptr;
-        CInformation*   information          = nullptr;
         const char*     availabilityEquation = nullptr;
         m_params.InformationCount            = m_concurrentGroup->GetInformationCount();
         MD_CHECK_CC( SetApiSpecificId( "GPAV", 0, 0x40000000, 0x80000203, 0, 0, "Intel Performance Counters for GT Set Dynamic", 0, "Intel_Raw_Hardware_Counters_Set_0_Query", 0 ) );
@@ -6750,7 +6796,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "XVE_ACTIVE", "XVE Active",
                           "Percentage of time in which at least one pipe is active in XVE",
-                          "EU Array", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ), USAGE_FLAG_TIER_2 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_2 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
                           METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 7 );
         if( metric )
         {
@@ -6764,7 +6810,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "XVE_STALL", "XVE Stall",
                           "Percentage of time in which any threads are loaded but not even a single pipe is active in XVE",
-                          "EU Array", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ), USAGE_FLAG_TIER_2 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_2 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
                           METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 8 );
         if( metric )
         {
@@ -6778,7 +6824,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "XVE_THREADS_OCCUPANCY_ALL", "XVE Threads Occupancy All",
                           "Percentage of thread slots occupied",
-                          "EU Array", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ), USAGE_FLAG_TIER_2 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_2 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
                           METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 9 );
         if( metric )
         {
@@ -6801,6 +6847,18 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
             MD_CHECK_CC( ( metric->SetNormalizationEquation( "$Self 0 UGT" ) ) );
             MD_CHECK_CC( ( metric->SetSnapshotReportDeltaFunction( "DELTA 40" ) ) );
             MD_CHECK_CC( ( metric->SetMaxValueEquation( "1" ) ) );
+        }
+
+        availabilityEquation = nullptr;
+        metric               = AddMetric( "XVE_COMPUTE_THREAD_COUNT", "XVE Compute Thread Count",
+                          "Number of compute shader hardware threads dispatched",
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          METRIC_TYPE_EVENT, RESULT_UINT64, "threads", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, "oa.fixed", 11 );
+        if( metric )
+        {
+            MD_CHECK_CC( ( metric->SetSnapshotReportReadEquation( "rd40@0x20:0xa4" ) ) );
+            MD_CHECK_CC( ( metric->SetDeltaReportReadEquation( "qw@0x30" ) ) );
+            MD_CHECK_CC( ( metric->SetSnapshotReportDeltaFunction( "DELTA 40" ) ) );
         }
 
         availabilityEquation = nullptr;
@@ -6891,7 +6949,6 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
     {
         TCompletionCode ret                  = CC_OK;
         CMetric*        metric               = nullptr;
-        CInformation*   information          = nullptr;
         const char*     availabilityEquation = nullptr;
         m_params.InformationCount            = m_concurrentGroup->GetInformationCount();
         MD_CHECK_CC( SetApiSpecificId( "GPAV", 0, 0x40000000, 0x80000203, 0, 0, "Intel Performance Counters for GT Set Dynamic", 0, "Intel_Raw_Hardware_Counters_Set_0_Query", 0 ) );
@@ -7183,7 +7240,6 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
     {
         TCompletionCode ret                  = CC_OK;
         CMetric*        metric               = nullptr;
-        CInformation*   information          = nullptr;
         const char*     availabilityEquation = nullptr;
         m_params.InformationCount            = m_concurrentGroup->GetInformationCount();
         MD_CHECK_CC( SetApiSpecificId( "GPAV", 0, 0x40000000, 0x80000203, 0, 0, "Intel Performance Counters for GT Set Dynamic", 0, "Intel_Raw_Hardware_Counters_Set_0_Query", 0 ) );
@@ -7394,7 +7450,6 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
     {
         TCompletionCode ret                  = CC_OK;
         CMetric*        metric               = nullptr;
-        CInformation*   information          = nullptr;
         const char*     availabilityEquation = nullptr;
         m_params.InformationCount            = m_concurrentGroup->GetInformationCount();
         MD_CHECK_CC( SetApiSpecificId( "GPAV", 0, 0x40000000, 0x80000203, 0, 0, "Intel Performance Counters for GT Set Dynamic", 0, "Intel_Raw_Hardware_Counters_Set_0_Query", 0 ) );
@@ -7669,7 +7724,6 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
     {
         TCompletionCode ret                  = CC_OK;
         CMetric*        metric               = nullptr;
-        CInformation*   information          = nullptr;
         const char*     availabilityEquation = nullptr;
         m_params.InformationCount            = m_concurrentGroup->GetInformationCount();
         MD_CHECK_CC( SetApiSpecificId( "GPAV", 0, 0x40000000, 0x80000203, 0, 0, "Intel Performance Counters for GT Set Dynamic", 0, "Intel_Raw_Hardware_Counters_Set_0_Query", 0 ) );
@@ -7976,7 +8030,6 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
     {
         TCompletionCode ret                  = CC_OK;
         CMetric*        metric               = nullptr;
-        CInformation*   information          = nullptr;
         const char*     availabilityEquation = nullptr;
         m_params.InformationCount            = m_concurrentGroup->GetInformationCount();
         MD_CHECK_CC( SetApiSpecificId( "GPAV", 0, 0x40000000, 0x80000203, 0, 0, "Intel Performance Counters for GT Set Dynamic", 0, "Intel_Raw_Hardware_Counters_Set_0_Query", 0 ) );
@@ -8185,7 +8238,6 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
     {
         TCompletionCode ret                  = CC_OK;
         CMetric*        metric               = nullptr;
-        CInformation*   information          = nullptr;
         const char*     availabilityEquation = nullptr;
         m_params.InformationCount            = m_concurrentGroup->GetInformationCount();
         MD_CHECK_CC( SetApiSpecificId( "GPAV", 0, 0x40000000, 0x80000203, 0, 0, "Intel Performance Counters for GT Set Dynamic", 0, "Intel_Raw_Hardware_Counters_Set_0_Query", 0 ) );
@@ -8456,7 +8508,6 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
     {
         TCompletionCode ret                  = CC_OK;
         CMetric*        metric               = nullptr;
-        CInformation*   information          = nullptr;
         const char*     availabilityEquation = nullptr;
         m_params.InformationCount            = m_concurrentGroup->GetInformationCount();
         MD_CHECK_CC( SetApiSpecificId( "GPAV", 0, 0x40000000, 0x80000203, 0, 0, "Intel Performance Counters for GT Set Dynamic", 0, "Intel_Raw_Hardware_Counters_Set_0_Query", 0 ) );
@@ -8665,7 +8716,6 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
     {
         TCompletionCode ret                  = CC_OK;
         CMetric*        metric               = nullptr;
-        CInformation*   information          = nullptr;
         const char*     availabilityEquation = nullptr;
         m_params.InformationCount            = m_concurrentGroup->GetInformationCount();
         MD_CHECK_CC( SetApiSpecificId( "GPAV", 0, 0x40000000, 0x80000203, 0, 0, "Intel Performance Counters for GT Set Dynamic", 0, "Intel_Raw_Hardware_Counters_Set_0_Query", 0 ) );
@@ -8888,7 +8938,6 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
     {
         TCompletionCode ret                  = CC_OK;
         CMetric*        metric               = nullptr;
-        CInformation*   information          = nullptr;
         const char*     availabilityEquation = nullptr;
         m_params.InformationCount            = m_concurrentGroup->GetInformationCount();
         MD_CHECK_CC( SetApiSpecificId( "GPAV", 0, 0x40000000, 0x80000203, 0, 0, "Intel Performance Counters for GT Set Dynamic", 0, "Intel_Raw_Hardware_Counters_Set_0_Query", 0 ) );
@@ -9123,7 +9172,6 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
     {
         TCompletionCode ret                  = CC_OK;
         CMetric*        metric               = nullptr;
-        CInformation*   information          = nullptr;
         const char*     availabilityEquation = nullptr;
         m_params.InformationCount            = m_concurrentGroup->GetInformationCount();
         MD_CHECK_CC( SetApiSpecificId( "GPAV", 0, 0x40000000, 0x80000203, 0, 0, "Intel Performance Counters for GT Set Dynamic", 0, "Intel_Raw_Hardware_Counters_Set_0_Query", 0 ) );
@@ -9370,7 +9418,6 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
     {
         TCompletionCode ret                  = CC_OK;
         CMetric*        metric               = nullptr;
-        CInformation*   information          = nullptr;
         const char*     availabilityEquation = nullptr;
         m_params.InformationCount            = m_concurrentGroup->GetInformationCount();
         MD_CHECK_CC( SetApiSpecificId( "GPAV", 0, 0x40000000, 0x80000203, 0, 0, "Intel Performance Counters for GT Set Dynamic", 0, "Intel_Raw_Hardware_Counters_Set_0_Query", 0 ) );
@@ -9638,7 +9685,6 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
     {
         TCompletionCode ret                  = CC_OK;
         CMetric*        metric               = nullptr;
-        CInformation*   information          = nullptr;
         const char*     availabilityEquation = nullptr;
         m_params.InformationCount            = m_concurrentGroup->GetInformationCount();
         MD_CHECK_CC( SetApiSpecificId( "GPAV", 0, 0x40000000, 0x80000203, 0, 0, "Intel Performance Counters for GT Set Dynamic", 0, "Intel_Raw_Hardware_Counters_Set_0_Query", 0 ) );
@@ -9890,7 +9936,6 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
     {
         TCompletionCode ret                  = CC_OK;
         CMetric*        metric               = nullptr;
-        CInformation*   information          = nullptr;
         const char*     availabilityEquation = nullptr;
         m_params.InformationCount            = m_concurrentGroup->GetInformationCount();
         MD_CHECK_CC( SetApiSpecificId( "GPAV", 0, 0x40000000, 0x80000203, 0, 0, "Intel Performance Counters for GT Set Dynamic", 0, "Intel_Raw_Hardware_Counters_Set_0_Query", 0 ) );
@@ -10087,7 +10132,6 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
     {
         TCompletionCode ret                  = CC_OK;
         CMetric*        metric               = nullptr;
-        CInformation*   information          = nullptr;
         const char*     availabilityEquation = nullptr;
         m_params.InformationCount            = m_concurrentGroup->GetInformationCount();
         MD_CHECK_CC( SetApiSpecificId( "GPAV", 0, 0x40000000, 0x80000203, 0, 0, "Intel Performance Counters for GT Set Dynamic", 0, "Intel_Raw_Hardware_Counters_Set_0_Query", 0 ) );
@@ -10339,7 +10383,6 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
     {
         TCompletionCode ret                  = CC_OK;
         CMetric*        metric               = nullptr;
-        CInformation*   information          = nullptr;
         const char*     availabilityEquation = nullptr;
         m_params.InformationCount            = m_concurrentGroup->GetInformationCount();
         MD_CHECK_CC( SetApiSpecificId( "GPAV", 0, 0x40000000, 0x80000203, 0, 0, "Intel Performance Counters for GT Set Dynamic", 0, "Intel_Raw_Hardware_Counters_Set_0_Query", 0 ) );
@@ -10536,7 +10579,6 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
     {
         TCompletionCode ret                  = CC_OK;
         CMetric*        metric               = nullptr;
-        CInformation*   information          = nullptr;
         const char*     availabilityEquation = nullptr;
         m_params.InformationCount            = m_concurrentGroup->GetInformationCount();
         MD_CHECK_CC( SetApiSpecificId( "GPAV", 0, 0x40000000, 0x80000203, 0, 0, "Intel Performance Counters for GT Set Dynamic", 0, "Intel_Raw_Hardware_Counters_Set_0_Query", 0 ) );
@@ -10733,7 +10775,6 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
     {
         TCompletionCode ret                  = CC_OK;
         CMetric*        metric               = nullptr;
-        CInformation*   information          = nullptr;
         const char*     availabilityEquation = nullptr;
         m_params.InformationCount            = m_concurrentGroup->GetInformationCount();
         MD_CHECK_CC( SetApiSpecificId( "GPAV", 0, 0x40000000, 0x80000203, 0, 0, "Intel Performance Counters for GT Set Dynamic", 0, "Intel_Raw_Hardware_Counters_Set_0_Query", 0 ) );
@@ -10934,7 +10975,6 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
     {
         TCompletionCode ret                  = CC_OK;
         CMetric*        metric               = nullptr;
-        CInformation*   information          = nullptr;
         const char*     availabilityEquation = nullptr;
         m_params.InformationCount            = m_concurrentGroup->GetInformationCount();
         MD_CHECK_CC( SetApiSpecificId( "GPAV", 0, 0x40000000, 0x80000203, 0, 0, "Intel Performance Counters for GT Set Dynamic", 0, "Intel_Raw_Hardware_Counters_Set_0_Query", 0 ) );
@@ -11106,7 +11146,6 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
     {
         TCompletionCode ret                  = CC_OK;
         CMetric*        metric               = nullptr;
-        CInformation*   information          = nullptr;
         const char*     availabilityEquation = nullptr;
         m_params.InformationCount            = m_concurrentGroup->GetInformationCount();
         MD_CHECK_CC( SetApiSpecificId( "GPAV", 0, 0x40000000, 0x80000203, 0, 0, "Intel Performance Counters for GT Set Dynamic", 0, "Intel_Raw_Hardware_Counters_Set_0_Query", 0 ) );
@@ -11294,7 +11333,6 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
     {
         TCompletionCode ret                  = CC_OK;
         CMetric*        metric               = nullptr;
-        CInformation*   information          = nullptr;
         const char*     availabilityEquation = nullptr;
         m_params.InformationCount            = m_concurrentGroup->GetInformationCount();
         MD_CHECK_CC( SetApiSpecificId( "GPAV", 0, 0x40000000, 0x80000203, 0, 0, "Intel Performance Counters for GT Set Dynamic", 0, "Intel_Raw_Hardware_Counters_Set_0_Query", 0 ) );
@@ -11467,7 +11505,6 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
     {
         TCompletionCode ret                  = CC_OK;
         CMetric*        metric               = nullptr;
-        CInformation*   information          = nullptr;
         const char*     availabilityEquation = nullptr;
         m_params.InformationCount            = m_concurrentGroup->GetInformationCount();
         MD_CHECK_CC( SetApiSpecificId( "GPAV", 0, 0x40000000, 0x80000203, 0, 0, "Intel Performance Counters for GT Set Dynamic", 0, "Intel_Raw_Hardware_Counters_Set_0_Query", 0 ) );
@@ -11664,7 +11701,6 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
     {
         TCompletionCode ret                  = CC_OK;
         CMetric*        metric               = nullptr;
-        CInformation*   information          = nullptr;
         const char*     availabilityEquation = nullptr;
         m_params.InformationCount            = m_concurrentGroup->GetInformationCount();
         MD_CHECK_CC( SetApiSpecificId( "GPAV", 0, 0x40000000, 0x80000203, 0, 0, "Intel Performance Counters for GT Set Dynamic", 0, "Intel_Raw_Hardware_Counters_Set_0_Query", 0 ) );
@@ -11861,7 +11897,6 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
     {
         TCompletionCode ret                  = CC_OK;
         CMetric*        metric               = nullptr;
-        CInformation*   information          = nullptr;
         const char*     availabilityEquation = nullptr;
         m_params.InformationCount            = m_concurrentGroup->GetInformationCount();
         MD_CHECK_CC( SetApiSpecificId( "GPAV", 0, 0x40000000, 0x80000203, 0, 0, "Intel Performance Counters for GT Set Dynamic", 0, "Intel_Raw_Hardware_Counters_Set_0_Query", 0 ) );
@@ -12062,7 +12097,6 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
     {
         TCompletionCode ret                  = CC_OK;
         CMetric*        metric               = nullptr;
-        CInformation*   information          = nullptr;
         const char*     availabilityEquation = nullptr;
         m_params.InformationCount            = m_concurrentGroup->GetInformationCount();
         MD_CHECK_CC( SetApiSpecificId( "GPAV", 0, 0x40000000, 0x80000203, 0, 0, "Intel Performance Counters for GT Set Dynamic", 0, "Intel_Raw_Hardware_Counters_Set_0_Query", 0 ) );
@@ -12206,7 +12240,6 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
     {
         TCompletionCode ret                  = CC_OK;
         CMetric*        metric               = nullptr;
-        CInformation*   information          = nullptr;
         const char*     availabilityEquation = nullptr;
         m_params.InformationCount            = m_concurrentGroup->GetInformationCount();
         MD_CHECK_CC( SetApiSpecificId( "GPAV", 0, 0x40000000, 0x80000203, 0, 0, "Intel Performance Counters for GT Set Dynamic", 0, "Intel_Raw_Hardware_Counters_Set_0_Query", 0 ) );
@@ -12366,7 +12399,6 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
     {
         TCompletionCode ret                  = CC_OK;
         CMetric*        metric               = nullptr;
-        CInformation*   information          = nullptr;
         const char*     availabilityEquation = nullptr;
         m_params.InformationCount            = m_concurrentGroup->GetInformationCount();
         MD_CHECK_CC( SetApiSpecificId( "GPAV", 0, 0x40000000, 0x80000203, 0, 0, "Intel Performance Counters for GT Set Dynamic", 0, "Intel_Raw_Hardware_Counters_Set_0_Query", 0 ) );
@@ -12505,7 +12537,6 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
     {
         TCompletionCode ret                  = CC_OK;
         CMetric*        metric               = nullptr;
-        CInformation*   information          = nullptr;
         const char*     availabilityEquation = nullptr;
         m_params.InformationCount            = m_concurrentGroup->GetInformationCount();
         MD_CHECK_CC( SetApiSpecificId( "GPAV", 0, 0x40000000, 0x80000203, 0, 0, "Intel Performance Counters for GT Set Dynamic", 0, "Intel_Raw_Hardware_Counters_Set_0_Query", 0 ) );
@@ -12660,7 +12691,6 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
     {
         TCompletionCode ret                  = CC_OK;
         CMetric*        metric               = nullptr;
-        CInformation*   information          = nullptr;
         const char*     availabilityEquation = nullptr;
         m_params.InformationCount            = m_concurrentGroup->GetInformationCount();
         MD_CHECK_CC( SetApiSpecificId( "GPAV", 0, 0x40000000, 0x80000203, 0, 0, "Intel Performance Counters for GT Set Dynamic", 0, "Intel_Raw_Hardware_Counters_Set_0_Query", 0 ) );
@@ -12851,7 +12881,6 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
     {
         TCompletionCode ret                  = CC_OK;
         CMetric*        metric               = nullptr;
-        CInformation*   information          = nullptr;
         const char*     availabilityEquation = nullptr;
         m_params.InformationCount            = m_concurrentGroup->GetInformationCount();
         MD_CHECK_CC( SetApiSpecificId( "GPAV", 0, 0x40000000, 0x80000203, 0, 0, "Intel Performance Counters for GT Set Dynamic", 0, "Intel_Raw_Hardware_Counters_Set_0_Query", 0 ) );
@@ -12998,7 +13027,6 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
     {
         TCompletionCode ret                  = CC_OK;
         CMetric*        metric               = nullptr;
-        CInformation*   information          = nullptr;
         const char*     availabilityEquation = nullptr;
         m_params.InformationCount            = m_concurrentGroup->GetInformationCount();
         MD_CHECK_CC( SetApiSpecificId( "GPAV", 0, 0x40000000, 0x80000203, 0, 0, "Intel Performance Counters for GT Set Dynamic", 0, "Intel_Raw_Hardware_Counters_Set_0_Query", 0 ) );
@@ -13161,7 +13189,6 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
     {
         TCompletionCode ret                  = CC_OK;
         CMetric*        metric               = nullptr;
-        CInformation*   information          = nullptr;
         const char*     availabilityEquation = nullptr;
         m_params.InformationCount            = m_concurrentGroup->GetInformationCount();
         MD_CHECK_CC( SetApiSpecificId( "GPAV", 0, 0x40000000, 0x80000203, 0, 0, "Intel Performance Counters for GT Set Dynamic", 0, "Intel_Raw_Hardware_Counters_Set_0_Query", 0 ) );
@@ -13388,7 +13415,6 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
     {
         TCompletionCode ret                  = CC_OK;
         CMetric*        metric               = nullptr;
-        CInformation*   information          = nullptr;
         const char*     availabilityEquation = nullptr;
         m_params.InformationCount            = m_concurrentGroup->GetInformationCount();
         MD_CHECK_CC( SetApiSpecificId( "GPAV", 0, 0x40000000, 0x80000203, 0, 0, "Intel Performance Counters for GT Set Dynamic", 0, "Intel_Raw_Hardware_Counters_Set_0_Query", 0 ) );
@@ -13637,7 +13663,6 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
     {
         TCompletionCode ret                  = CC_OK;
         CMetric*        metric               = nullptr;
-        CInformation*   information          = nullptr;
         const char*     availabilityEquation = nullptr;
         m_params.InformationCount            = m_concurrentGroup->GetInformationCount();
         MD_CHECK_CC( SetApiSpecificId( "GPAV", 0, 0x40000000, 0x80000203, 0, 0, "Intel Performance Counters for GT Set Dynamic", 0, "Intel_Raw_Hardware_Counters_Set_0_Query", 0 ) );
@@ -13824,7 +13849,6 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
     {
         TCompletionCode ret                  = CC_OK;
         CMetric*        metric               = nullptr;
-        CInformation*   information          = nullptr;
         const char*     availabilityEquation = nullptr;
         m_params.InformationCount            = m_concurrentGroup->GetInformationCount();
         MD_CHECK_CC( SetApiSpecificId( "GPAV", 0, 0x40000000, 0x80000203, 0, 0, "Intel Performance Counters for GT Set Dynamic", 0, "Intel_Raw_Hardware_Counters_Set_0_Query", 0 ) );
@@ -14011,7 +14035,6 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
     {
         TCompletionCode ret                  = CC_OK;
         CMetric*        metric               = nullptr;
-        CInformation*   information          = nullptr;
         const char*     availabilityEquation = nullptr;
         m_params.InformationCount            = m_concurrentGroup->GetInformationCount();
         MD_CHECK_CC( SetApiSpecificId( "GPAV", 0, 0x40000000, 0x80000203, 0, 0, "Intel Performance Counters for GT Set Dynamic", 0, "Intel_Raw_Hardware_Counters_Set_0_Query", 0 ) );
@@ -14158,7 +14181,6 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
     {
         TCompletionCode ret                  = CC_OK;
         CMetric*        metric               = nullptr;
-        CInformation*   information          = nullptr;
         const char*     availabilityEquation = nullptr;
         m_params.InformationCount            = m_concurrentGroup->GetInformationCount();
         MD_CHECK_CC( SetApiSpecificId( "GPAV", 0, 0x40000000, 0x80000203, 0, 0, "Intel Performance Counters for GT Set Dynamic", 0, "Intel_Raw_Hardware_Counters_Set_0_Query", 0 ) );
@@ -14321,7 +14343,6 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
     {
         TCompletionCode ret                  = CC_OK;
         CMetric*        metric               = nullptr;
-        CInformation*   information          = nullptr;
         const char*     availabilityEquation = nullptr;
         m_params.InformationCount            = m_concurrentGroup->GetInformationCount();
         MD_CHECK_CC( SetApiSpecificId( "GPAV", 0, 0x40000000, 0x80000203, 0, 0, "Intel Performance Counters for GT Set Dynamic", 0, "Intel_Raw_Hardware_Counters_Set_0_Query", 0 ) );
@@ -14487,7 +14508,6 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
     {
         TCompletionCode ret                  = CC_OK;
         CMetric*        metric               = nullptr;
-        CInformation*   information          = nullptr;
         const char*     availabilityEquation = nullptr;
         m_params.InformationCount            = m_concurrentGroup->GetInformationCount();
         MD_CHECK_CC( SetApiSpecificId( "GPAV", 0, 0x40000000, 0x80000203, 0, 0, "Intel Performance Counters for GT Set Dynamic", 0, "Intel_Raw_Hardware_Counters_Set_0_Query", 0 ) );
@@ -14676,7 +14696,6 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
     {
         TCompletionCode ret                  = CC_OK;
         CMetric*        metric               = nullptr;
-        CInformation*   information          = nullptr;
         const char*     availabilityEquation = nullptr;
         m_params.InformationCount            = m_concurrentGroup->GetInformationCount();
         MD_CHECK_CC( SetApiSpecificId( "GPAV", 0, 0x40000000, 0x80000203, 0, 0, "Intel Performance Counters for GT Set Dynamic", 0, "Intel_Raw_Hardware_Counters_Set_0_Query", 0 ) );
@@ -14946,7 +14965,6 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
     {
         TCompletionCode ret                  = CC_OK;
         CMetric*        metric               = nullptr;
-        CInformation*   information          = nullptr;
         const char*     availabilityEquation = nullptr;
         m_params.InformationCount            = m_concurrentGroup->GetInformationCount();
         MD_CHECK_CC( SetApiSpecificId( "GPAV", 0, 0x40000000, 0x80000203, 0, 0, "Intel Performance Counters for GT Set Dynamic", 0, "Intel_Raw_Hardware_Counters_Set_0_Query", 0 ) );
@@ -15183,7 +15201,6 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
     {
         TCompletionCode ret                  = CC_OK;
         CMetric*        metric               = nullptr;
-        CInformation*   information          = nullptr;
         const char*     availabilityEquation = nullptr;
         m_params.InformationCount            = m_concurrentGroup->GetInformationCount();
         MD_CHECK_CC( SetApiSpecificId( "GPAV", 0, 0x40000000, 0x80000203, 0, 0, "Intel Performance Counters for GT Set Dynamic", 0, "Intel_Raw_Hardware_Counters_Set_0_Query", 0 ) );
@@ -15400,7 +15417,6 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
     {
         TCompletionCode ret                  = CC_OK;
         CMetric*        metric               = nullptr;
-        CInformation*   information          = nullptr;
         const char*     availabilityEquation = nullptr;
         m_params.InformationCount            = m_concurrentGroup->GetInformationCount();
         MD_CHECK_CC( SetApiSpecificId( "GPAV", 0, 0x40000000, 0x80000203, 0, 0, "Intel Performance Counters for GT Set Dynamic", 0, "Intel_Raw_Hardware_Counters_Set_0_Query", 0 ) );
@@ -15574,7 +15590,6 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
     {
         TCompletionCode ret                  = CC_OK;
         CMetric*        metric               = nullptr;
-        CInformation*   information          = nullptr;
         const char*     availabilityEquation = nullptr;
         m_params.InformationCount            = m_concurrentGroup->GetInformationCount();
         MD_CHECK_CC( SetApiSpecificId( "GPAV", 0, 0x40000000, 0x80000203, 0, 0, "Intel Performance Counters for GT Set Dynamic", 0, "Intel_Raw_Hardware_Counters_Set_0_Query", 0 ) );
@@ -15759,7 +15774,6 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
     {
         TCompletionCode ret                  = CC_OK;
         CMetric*        metric               = nullptr;
-        CInformation*   information          = nullptr;
         const char*     availabilityEquation = nullptr;
         m_params.InformationCount            = m_concurrentGroup->GetInformationCount();
         MD_CHECK_CC( SetApiSpecificId( "GPAV", 0, 0x40000000, 0x80000203, 0, 0, "Intel Performance Counters for GT Set Dynamic", 0, "Intel_Raw_Hardware_Counters_Set_0_Query", 0 ) );
@@ -15926,7 +15940,6 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
     {
         TCompletionCode ret                  = CC_OK;
         CMetric*        metric               = nullptr;
-        CInformation*   information          = nullptr;
         const char*     availabilityEquation = nullptr;
         m_params.InformationCount            = m_concurrentGroup->GetInformationCount();
         MD_CHECK_CC( SetApiSpecificId( "GPAV", 0, 0x40000000, 0x80000203, 0, 0, "Intel Performance Counters for GT Set Dynamic", 0, "Intel_Raw_Hardware_Counters_Set_0_Query", 0 ) );
@@ -16104,7 +16117,6 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
     {
         TCompletionCode ret                  = CC_OK;
         CMetric*        metric               = nullptr;
-        CInformation*   information          = nullptr;
         const char*     availabilityEquation = nullptr;
         m_params.InformationCount            = m_concurrentGroup->GetInformationCount();
         MD_CHECK_CC( SetApiSpecificId( "GPAV", 0, 0x40000000, 0x80000203, 0, 0, "Intel Performance Counters for GT Set Dynamic", 0, "Intel_Raw_Hardware_Counters_Set_0_Query", 0 ) );
@@ -16432,7 +16444,6 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
     {
         TCompletionCode ret                  = CC_OK;
         CMetric*        metric               = nullptr;
-        CInformation*   information          = nullptr;
         const char*     availabilityEquation = nullptr;
         m_params.InformationCount            = m_concurrentGroup->GetInformationCount();
         MD_CHECK_CC( SetApiSpecificId( "GPAV", 0, 0x40000000, 0x80000203, 0, 0, "Intel Performance Counters for GT Set Dynamic", 0, "Intel_Raw_Hardware_Counters_Set_0_Query", 0 ) );
@@ -16625,7 +16636,6 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
     {
         TCompletionCode ret                  = CC_OK;
         CMetric*        metric               = nullptr;
-        CInformation*   information          = nullptr;
         const char*     availabilityEquation = nullptr;
         m_params.InformationCount            = m_concurrentGroup->GetInformationCount();
         MD_CHECK_CC( SetApiSpecificId( "GPAV", 0, 0x40000000, 0x80000203, 0, 0, "Intel Performance Counters for GT Set Dynamic", 0, "Intel_Raw_Hardware_Counters_Set_0_Query", 0 ) );
@@ -16753,7 +16763,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         }
 
         availabilityEquation = "$SliceMask 3 0 2 UMUL << AND";
-        metric               = AddMetric( "RENDER_CACHE_INPUT_AVAILABLE_L3NODE0", "RENDER CACHE INPUT AVAILABLE _L3NODE0",
+        metric               = AddMetric( "RENDER_CACHE_INPUT_AVAILABLE_L3NODE0", "Render Cache Input Available L3node0",
                           "Percentage of time when Render Cache input is available",
                           "GPU", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
                           METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 10 );
@@ -16767,7 +16777,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         }
 
         availabilityEquation = "$SliceMask 3 0 2 UMUL << AND";
-        metric               = AddMetric( "RENDER_CACHE_OUTPUT_READY_L3NODE0", "RENDER CACHE OUTPUT READY _L3NODE0",
+        metric               = AddMetric( "RENDER_CACHE_OUTPUT_READY_L3NODE0", "Render Cache Output Ready L3node0",
                           "Percentage of time when Render Cache output is ready",
                           "GPU", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
                           METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 11 );
@@ -16862,7 +16872,6 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
     {
         TCompletionCode ret                  = CC_OK;
         CMetric*        metric               = nullptr;
-        CInformation*   information          = nullptr;
         const char*     availabilityEquation = nullptr;
         m_params.InformationCount            = m_concurrentGroup->GetInformationCount();
         MD_CHECK_CC( SetApiSpecificId( "GPAV", 0, 0x40000000, 0x80000203, 0, 0, "Intel Performance Counters for GT Set Dynamic", 0, "Intel_Raw_Hardware_Counters_Set_0_Query", 0 ) );
@@ -17057,7 +17066,6 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
     {
         TCompletionCode ret                  = CC_OK;
         CMetric*        metric               = nullptr;
-        CInformation*   information          = nullptr;
         const char*     availabilityEquation = nullptr;
         m_params.InformationCount            = m_concurrentGroup->GetInformationCount();
         MD_CHECK_CC( SetApiSpecificId( "GPAV", 0, 0x40000000, 0x80000203, 0, 0, "Intel Performance Counters for GT Set Dynamic", 0, "Intel_Raw_Hardware_Counters_Set_0_Query", 0 ) );
@@ -17179,7 +17187,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         }
 
         availabilityEquation = "$SliceMask 3 0 2 UMUL << AND";
-        metric               = AddMetric( "PIXEL_BACKEND_INPUT_AVAILABLE_L3NODE0", "PIXEL BACKEND INPUT AVAILABLE _L3NODE0",
+        metric               = AddMetric( "PIXEL_BACKEND_INPUT_AVAILABLE_L3NODE0", "Pixel Backend Input Available L3node0",
                           "Percentage of time when  the data is available at input of Pixel Backend",
                           "GPU", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
                           METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, "Pixel|Fragment", nullptr, 9 );
@@ -17193,7 +17201,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         }
 
         availabilityEquation = "$SliceMask 3 0 2 UMUL << AND";
-        metric               = AddMetric( "PIXEL_BACKEND_OUTPUT_READY_L3NODE0", "PIXEL BACKEND OUTPUT READY _L3NODE0",
+        metric               = AddMetric( "PIXEL_BACKEND_OUTPUT_READY_L3NODE0", "Pixel Backend Output Ready L3node0",
                           "Percentage of time when  the data at Pixel Backend output is ready",
                           "GPU", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
                           METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, "Pixel|Fragment", nullptr, 10 );
@@ -17294,7 +17302,6 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
     {
         TCompletionCode ret                  = CC_OK;
         CMetric*        metric               = nullptr;
-        CInformation*   information          = nullptr;
         const char*     availabilityEquation = nullptr;
         m_params.InformationCount            = m_concurrentGroup->GetInformationCount();
         MD_CHECK_CC( SetApiSpecificId( "GPAV", 0, 0x40000000, 0x80000203, 0, 0, "Intel Performance Counters for GT Set Dynamic", 0, "Intel_Raw_Hardware_Counters_Set_0_Query", 0 ) );
@@ -17477,7 +17484,6 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
     {
         TCompletionCode ret                  = CC_OK;
         CMetric*        metric               = nullptr;
-        CInformation*   information          = nullptr;
         const char*     availabilityEquation = nullptr;
         m_params.InformationCount            = m_concurrentGroup->GetInformationCount();
         MD_CHECK_CC( SetApiSpecificId( "GPAV", 0, 0x40000000, 0x80000203, 0, 0, "Intel Performance Counters for GT Set Dynamic", 0, "Intel_Raw_Hardware_Counters_Set_0_Query", 0 ) );
@@ -17712,7 +17718,6 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
     {
         TCompletionCode ret                  = CC_OK;
         CMetric*        metric               = nullptr;
-        CInformation*   information          = nullptr;
         const char*     availabilityEquation = nullptr;
         m_params.InformationCount            = m_concurrentGroup->GetInformationCount();
         MD_CHECK_CC( SetApiSpecificId( "GPAV", 0, 0x40000000, 0x80000203, 0, 0, "Intel Performance Counters for GT Set Dynamic", 0, "Intel_Raw_Hardware_Counters_Set_0_Query", 0 ) );
@@ -17925,7 +17930,6 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
     {
         TCompletionCode ret                  = CC_OK;
         CMetric*        metric               = nullptr;
-        CInformation*   information          = nullptr;
         const char*     availabilityEquation = nullptr;
         m_params.InformationCount            = m_concurrentGroup->GetInformationCount();
         MD_CHECK_CC( SetApiSpecificId( "GPAV", 0, 0x40000000, 0x80000203, 0, 0, "Intel Performance Counters for GT Set Dynamic", 0, "Intel_Raw_Hardware_Counters_Set_0_Query", 0 ) );
@@ -18073,7 +18077,6 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
     {
         TCompletionCode ret                  = CC_OK;
         CMetric*        metric               = nullptr;
-        CInformation*   information          = nullptr;
         const char*     availabilityEquation = nullptr;
         m_params.InformationCount            = m_concurrentGroup->GetInformationCount();
         MD_CHECK_CC( SetApiSpecificId( "GPAV", 0, 0x40000000, 0x80000203, 0, 0, "Intel Performance Counters for GT Set Dynamic", 0, "Intel_Raw_Hardware_Counters_Set_0_Query", 0 ) );
@@ -18196,7 +18199,6 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
     {
         TCompletionCode ret                  = CC_OK;
         CMetric*        metric               = nullptr;
-        CInformation*   information          = nullptr;
         const char*     availabilityEquation = nullptr;
         m_params.InformationCount            = m_concurrentGroup->GetInformationCount();
         MD_CHECK_CC( SetApiSpecificId( "GPAV", 0, 0x40000000, 0x80000203, 0, 0, "Intel Performance Counters for GT Set Dynamic", 0, "Intel_Raw_Hardware_Counters_Set_0_Query", 0 ) );
@@ -18331,7 +18333,6 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
     {
         TCompletionCode ret                  = CC_OK;
         CMetric*        metric               = nullptr;
-        CInformation*   information          = nullptr;
         const char*     availabilityEquation = nullptr;
         m_params.InformationCount            = m_concurrentGroup->GetInformationCount();
         MD_CHECK_CC( SetApiSpecificId( "GPAV", 0, 0x40000000, 0x80000203, 0, 0, "Intel Performance Counters for GT Set Dynamic", 0, "Intel_Raw_Hardware_Counters_Set_0_Query", 0 ) );
@@ -18440,7 +18441,6 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
     {
         TCompletionCode ret                  = CC_OK;
         CMetric*        metric               = nullptr;
-        CInformation*   information          = nullptr;
         const char*     availabilityEquation = nullptr;
         m_params.InformationCount            = m_concurrentGroup->GetInformationCount();
         MD_CHECK_CC( SetApiSpecificId( "GPAV", 0, 0x40000000, 0x80000203, 0, 0, "Intel Performance Counters for GT Set Dynamic", 0, "Intel_Raw_Hardware_Counters_Set_0_Query", 0 ) );
@@ -18561,7 +18561,6 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
     {
         TCompletionCode ret                  = CC_OK;
         CMetric*        metric               = nullptr;
-        CInformation*   information          = nullptr;
         const char*     availabilityEquation = nullptr;
         m_params.InformationCount            = m_concurrentGroup->GetInformationCount();
         MD_CHECK_CC( SetApiSpecificId( "GPAV", 0, 0x40000000, 0x80000203, 0, 0, "Intel Performance Counters for GT Set Dynamic", 0, "Intel_Raw_Hardware_Counters_Set_0_Query", 0 ) );
@@ -18670,7 +18669,6 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
     {
         TCompletionCode ret                  = CC_OK;
         CMetric*        metric               = nullptr;
-        CInformation*   information          = nullptr;
         const char*     availabilityEquation = nullptr;
         m_params.InformationCount            = m_concurrentGroup->GetInformationCount();
         MD_CHECK_CC( SetApiSpecificId( "GPAV", 0, 0x40000000, 0x80000203, 0, 0, "Intel Performance Counters for GT Set Dynamic", 0, "Intel_Raw_Hardware_Counters_Set_0_Query", 0 ) );
@@ -18791,7 +18789,6 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
     {
         TCompletionCode ret                  = CC_OK;
         CMetric*        metric               = nullptr;
-        CInformation*   information          = nullptr;
         const char*     availabilityEquation = nullptr;
         m_params.InformationCount            = m_concurrentGroup->GetInformationCount();
         MD_CHECK_CC( SetApiSpecificId( "GPAV", 0, 0x40000000, 0x80000203, 0, 0, "Intel Performance Counters for GT Set Dynamic", 0, "Intel_Raw_Hardware_Counters_Set_0_Query", 0 ) );
@@ -18900,7 +18897,6 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
     {
         TCompletionCode ret                  = CC_OK;
         CMetric*        metric               = nullptr;
-        CInformation*   information          = nullptr;
         const char*     availabilityEquation = nullptr;
         m_params.InformationCount            = m_concurrentGroup->GetInformationCount();
         MD_CHECK_CC( SetApiSpecificId( "GPAV", 0, 0x40000000, 0x80000203, 0, 0, "Intel Performance Counters for GT Set Dynamic", 0, "Intel_Raw_Hardware_Counters_Set_0_Query", 0 ) );
@@ -19021,7 +19017,6 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
     {
         TCompletionCode ret                  = CC_OK;
         CMetric*        metric               = nullptr;
-        CInformation*   information          = nullptr;
         const char*     availabilityEquation = nullptr;
         m_params.InformationCount            = m_concurrentGroup->GetInformationCount();
         MD_CHECK_CC( SetApiSpecificId( "GPAV", 0, 0x40000000, 0x80000203, 0, 0, "Intel Performance Counters for GT Set Dynamic", 0, "Intel_Raw_Hardware_Counters_Set_0_Query", 0 ) );
@@ -19130,7 +19125,6 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
     {
         TCompletionCode ret                  = CC_OK;
         CMetric*        metric               = nullptr;
-        CInformation*   information          = nullptr;
         const char*     availabilityEquation = nullptr;
         m_params.InformationCount            = m_concurrentGroup->GetInformationCount();
         MD_CHECK_CC( SetApiSpecificId( "GPAV", 0, 0x40000000, 0x80000203, 0, 0, "Intel Performance Counters for GT Set Dynamic", 0, "Intel_Raw_Hardware_Counters_Set_0_Query", 0 ) );
@@ -19251,7 +19245,6 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
     {
         TCompletionCode ret                  = CC_OK;
         CMetric*        metric               = nullptr;
-        CInformation*   information          = nullptr;
         const char*     availabilityEquation = nullptr;
         m_params.InformationCount            = m_concurrentGroup->GetInformationCount();
         MD_CHECK_CC( SetApiSpecificId( "GPAV", 0, 0x40000000, 0x80000203, 0, 0, "Intel Performance Counters for GT Set Dynamic", 0, "Intel_Raw_Hardware_Counters_Set_0_Query", 0 ) );
@@ -19358,7 +19351,6 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
     {
         TCompletionCode ret                  = CC_OK;
         CMetric*        metric               = nullptr;
-        CInformation*   information          = nullptr;
         const char*     availabilityEquation = nullptr;
         m_params.InformationCount            = m_concurrentGroup->GetInformationCount();
         MD_CHECK_CC( SetApiSpecificId( "GPAV", 0, 0x40000000, 0x80000203, 0, 0, "Intel Performance Counters for GT Set Dynamic", 0, "Intel_Raw_Hardware_Counters_Set_0_Query", 0 ) );
@@ -19477,7 +19469,6 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
     {
         TCompletionCode ret                  = CC_OK;
         CMetric*        metric               = nullptr;
-        CInformation*   information          = nullptr;
         const char*     availabilityEquation = nullptr;
         m_params.InformationCount            = m_concurrentGroup->GetInformationCount();
         MD_CHECK_CC( SetApiSpecificId( "GPAV", 0, 0x40000000, 0x80000203, 0, 0, "Intel Performance Counters for GT Set Dynamic", 0, "Intel_Raw_Hardware_Counters_Set_0_Query", 0 ) );
@@ -19662,7 +19653,6 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
     {
         TCompletionCode ret                  = CC_OK;
         CMetric*        metric               = nullptr;
-        CInformation*   information          = nullptr;
         const char*     availabilityEquation = nullptr;
         m_params.InformationCount            = m_concurrentGroup->GetInformationCount();
         MD_CHECK_CC( SetApiSpecificId( "GPAV", 0, 0x40000000, 0x80000203, 0, 0, "Intel Performance Counters for GT Set Dynamic", 0, "Intel_Raw_Hardware_Counters_Set_0_Query", 0 ) );
@@ -19849,7 +19839,6 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
     {
         TCompletionCode ret                  = CC_OK;
         CMetric*        metric               = nullptr;
-        CInformation*   information          = nullptr;
         const char*     availabilityEquation = nullptr;
         m_params.InformationCount            = m_concurrentGroup->GetInformationCount();
         MD_CHECK_CC( SetApiSpecificId( "GPAV", 0, 0x40000000, 0x80000203, 0, 0, "Intel Performance Counters for GT Set Dynamic", 0, "Intel_Raw_Hardware_Counters_Set_0_Query", 0 ) );
@@ -20070,7 +20059,6 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
     {
         TCompletionCode ret                  = CC_OK;
         CMetric*        metric               = nullptr;
-        CInformation*   information          = nullptr;
         const char*     availabilityEquation = nullptr;
         m_params.InformationCount            = m_concurrentGroup->GetInformationCount();
         MD_CHECK_CC( SetApiSpecificId( "GPAV", 0, 0x40000000, 0x80000203, 0, 0, "Intel Performance Counters for GT Set Dynamic", 0, "Intel_Raw_Hardware_Counters_Set_0_Query", 0 ) );
@@ -20271,7 +20259,6 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
     {
         TCompletionCode ret                  = CC_OK;
         CMetric*        metric               = nullptr;
-        CInformation*   information          = nullptr;
         const char*     availabilityEquation = nullptr;
         m_params.InformationCount            = m_concurrentGroup->GetInformationCount();
         MD_CHECK_CC( SetApiSpecificId( "GPAV", 0, 0x40000000, 0x80000203, 0, 0, "Intel Performance Counters for GT Set Dynamic", 0, "Intel_Raw_Hardware_Counters_Set_0_Query", 0 ) );
@@ -20472,7 +20459,6 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
     {
         TCompletionCode ret                  = CC_OK;
         CMetric*        metric               = nullptr;
-        CInformation*   information          = nullptr;
         const char*     availabilityEquation = nullptr;
         m_params.InformationCount            = m_concurrentGroup->GetInformationCount();
         MD_CHECK_CC( SetApiSpecificId( "GPAV", 0, 0x40000000, 0x80000203, 0, 0, "Intel Performance Counters for GT Set Dynamic", 0, "Intel_Raw_Hardware_Counters_Set_0_Query", 0 ) );
@@ -20673,7 +20659,6 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
     {
         TCompletionCode ret                  = CC_OK;
         CMetric*        metric               = nullptr;
-        CInformation*   information          = nullptr;
         const char*     availabilityEquation = nullptr;
         m_params.InformationCount            = m_concurrentGroup->GetInformationCount();
         MD_CHECK_CC( SetApiSpecificId( "GPAV", 0, 0x40000000, 0x80000203, 0, 0, "Intel Performance Counters for GT Set Dynamic", 0, "Intel_Raw_Hardware_Counters_Set_0_Query", 0 ) );
@@ -20874,7 +20859,6 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
     {
         TCompletionCode ret                  = CC_OK;
         CMetric*        metric               = nullptr;
-        CInformation*   information          = nullptr;
         const char*     availabilityEquation = nullptr;
         m_params.InformationCount            = m_concurrentGroup->GetInformationCount();
         MD_CHECK_CC( SetApiSpecificId( "GPAV", 0, 0x40000000, 0x80000203, 0, 0, "Intel Performance Counters for GT Set Dynamic", 0, "Intel_Raw_Hardware_Counters_Set_0_Query", 0 ) );
@@ -21075,7 +21059,6 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
     {
         TCompletionCode ret                  = CC_OK;
         CMetric*        metric               = nullptr;
-        CInformation*   information          = nullptr;
         const char*     availabilityEquation = nullptr;
         m_params.InformationCount            = m_concurrentGroup->GetInformationCount();
         MD_CHECK_CC( SetApiSpecificId( "GPAV", 0, 0x40000000, 0x80000203, 0, 0, "Intel Performance Counters for GT Set Dynamic", 0, "Intel_Raw_Hardware_Counters_Set_0_Query", 0 ) );
@@ -21276,7 +21259,6 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
     {
         TCompletionCode ret                  = CC_OK;
         CMetric*        metric               = nullptr;
-        CInformation*   information          = nullptr;
         const char*     availabilityEquation = nullptr;
         m_params.InformationCount            = m_concurrentGroup->GetInformationCount();
         MD_CHECK_CC( SetApiSpecificId( "GPAV", 0, 0x40000000, 0x80000203, 0, 0, "Intel Performance Counters for GT Set Dynamic", 0, "Intel_Raw_Hardware_Counters_Set_0_Query", 0 ) );
@@ -21637,7 +21619,6 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
     {
         TCompletionCode ret                  = CC_OK;
         CMetric*        metric               = nullptr;
-        CInformation*   information          = nullptr;
         const char*     availabilityEquation = nullptr;
         m_params.InformationCount            = m_concurrentGroup->GetInformationCount();
         MD_CHECK_CC( SetApiSpecificId( "GPAV", 0, 0x40000000, 0x80000203, 0, 0, "Intel Performance Counters for GT Set Dynamic", 0, "Intel_Raw_Hardware_Counters_Set_0_Query", 0 ) );
@@ -21856,7 +21837,6 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
     {
         TCompletionCode ret                  = CC_OK;
         CMetric*        metric               = nullptr;
-        CInformation*   information          = nullptr;
         const char*     availabilityEquation = nullptr;
         m_params.InformationCount            = m_concurrentGroup->GetInformationCount();
         MD_CHECK_CC( SetApiSpecificId( "GPAV", 0, 0x40000000, 0x80000203, 0, 0, "Intel Performance Counters for GT Set Dynamic", 0, "Intel_Raw_Hardware_Counters_Set_0_Query", 0 ) );
@@ -22082,7 +22062,6 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
     {
         TCompletionCode ret                  = CC_OK;
         CMetric*        metric               = nullptr;
-        CInformation*   information          = nullptr;
         const char*     availabilityEquation = nullptr;
         m_params.InformationCount            = m_concurrentGroup->GetInformationCount();
         MD_CHECK_CC( SetApiSpecificId( "GPAV", 0, 0x40000000, 0x80000203, 0, 0, "Intel Performance Counters for GT Set Dynamic", 0, "Intel_Raw_Hardware_Counters_Set_0_Query", 0 ) );
@@ -22317,7 +22296,6 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
     {
         TCompletionCode ret                  = CC_OK;
         CMetric*        metric               = nullptr;
-        CInformation*   information          = nullptr;
         const char*     availabilityEquation = nullptr;
         m_params.InformationCount            = m_concurrentGroup->GetInformationCount();
         MD_CHECK_CC( SetApiSpecificId( "GPAV", 0, 0x40000000, 0x80000203, 0, 0, "Intel Performance Counters for GT Set Dynamic", 0, "Intel_Raw_Hardware_Counters_Set_0_Query", 0 ) );
@@ -22559,7 +22537,6 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
     {
         TCompletionCode ret                  = CC_OK;
         CMetric*        metric               = nullptr;
-        CInformation*   information          = nullptr;
         const char*     availabilityEquation = nullptr;
         m_params.InformationCount            = m_concurrentGroup->GetInformationCount();
         MD_CHECK_CC( SetApiSpecificId( "GPAV", 0, 0x40000000, 0x80000203, 0, 0, "Intel Performance Counters for GT Set Dynamic", 0, "Intel_Raw_Hardware_Counters_Set_0_Query", 0 ) );
@@ -22605,8 +22582,8 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
                           METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_DUALSUBSLICE, availabilityEquation, nullptr, nullptr, 3 );
         if( metric )
         {
-            MD_CHECK_CC( ( metric->SetSnapshotReportReadEquation( "dw@0xfc" ) ) );
-            MD_CHECK_CC( ( metric->SetDeltaReportReadEquation( "qw@0x1b8" ) ) );
+            MD_CHECK_CC( ( metric->SetSnapshotReportReadEquation( "dw@0xdc" ) ) );
+            MD_CHECK_CC( ( metric->SetDeltaReportReadEquation( "qw@0x178" ) ) );
             MD_CHECK_CC( ( metric->SetNormalizationEquation( "GpuDuration" ) ) );
             MD_CHECK_CC( ( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ) ) );
             MD_CHECK_CC( ( metric->SetMaxValueEquation( "100" ) ) );
@@ -22619,8 +22596,8 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
                           METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_DUALSUBSLICE, availabilityEquation, nullptr, nullptr, 4 );
         if( metric )
         {
-            MD_CHECK_CC( ( metric->SetSnapshotReportReadEquation( "dw@0xf8" ) ) );
-            MD_CHECK_CC( ( metric->SetDeltaReportReadEquation( "qw@0x1b0" ) ) );
+            MD_CHECK_CC( ( metric->SetSnapshotReportReadEquation( "dw@0xe0" ) ) );
+            MD_CHECK_CC( ( metric->SetDeltaReportReadEquation( "qw@0x180" ) ) );
             MD_CHECK_CC( ( metric->SetNormalizationEquation( "GpuDuration" ) ) );
             MD_CHECK_CC( ( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ) ) );
             MD_CHECK_CC( ( metric->SetMaxValueEquation( "100" ) ) );
@@ -22633,8 +22610,8 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
                           METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_DUALSUBSLICE, availabilityEquation, nullptr, nullptr, 5 );
         if( metric )
         {
-            MD_CHECK_CC( ( metric->SetSnapshotReportReadEquation( "dw@0xf4" ) ) );
-            MD_CHECK_CC( ( metric->SetDeltaReportReadEquation( "qw@0x1a8" ) ) );
+            MD_CHECK_CC( ( metric->SetSnapshotReportReadEquation( "dw@0xe4" ) ) );
+            MD_CHECK_CC( ( metric->SetDeltaReportReadEquation( "qw@0x188" ) ) );
             MD_CHECK_CC( ( metric->SetNormalizationEquation( "GpuDuration" ) ) );
             MD_CHECK_CC( ( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ) ) );
             MD_CHECK_CC( ( metric->SetMaxValueEquation( "100" ) ) );
@@ -22647,8 +22624,8 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
                           METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_DUALSUBSLICE, availabilityEquation, nullptr, nullptr, 6 );
         if( metric )
         {
-            MD_CHECK_CC( ( metric->SetSnapshotReportReadEquation( "dw@0xf0" ) ) );
-            MD_CHECK_CC( ( metric->SetDeltaReportReadEquation( "qw@0x1a0" ) ) );
+            MD_CHECK_CC( ( metric->SetSnapshotReportReadEquation( "dw@0xe8" ) ) );
+            MD_CHECK_CC( ( metric->SetDeltaReportReadEquation( "qw@0x190" ) ) );
             MD_CHECK_CC( ( metric->SetNormalizationEquation( "GpuDuration" ) ) );
             MD_CHECK_CC( ( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ) ) );
             MD_CHECK_CC( ( metric->SetMaxValueEquation( "100" ) ) );
@@ -22661,8 +22638,8 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
                           METRIC_TYPE_EVENT, RESULT_UINT64, "events", 0, 0, HW_UNIT_DUALSUBSLICE, availabilityEquation, nullptr, nullptr, 7 );
         if( metric )
         {
-            MD_CHECK_CC( ( metric->SetSnapshotReportReadEquation( "dw@0xc0" ) ) );
-            MD_CHECK_CC( ( metric->SetDeltaReportReadEquation( "qw@0x140" ) ) );
+            MD_CHECK_CC( ( metric->SetSnapshotReportReadEquation( "dw@0xfc dw@0xf8 UADD dw@0xf4 UADD dw@0xf0 UADD dw@0xec UADD" ) ) );
+            MD_CHECK_CC( ( metric->SetDeltaReportReadEquation( "qw@0x1b8 qw@0x1b0 UADD qw@0x1a8 UADD qw@0x1a0 UADD qw@0x198 UADD" ) ) );
             MD_CHECK_CC( ( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ) ) );
         }
 
@@ -22673,8 +22650,8 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
                           METRIC_TYPE_EVENT, RESULT_UINT64, "events", 0, 0, HW_UNIT_SLICE, availabilityEquation, nullptr, nullptr, 8 );
         if( metric )
         {
-            MD_CHECK_CC( ( metric->SetSnapshotReportReadEquation( "dw@0xc4" ) ) );
-            MD_CHECK_CC( ( metric->SetDeltaReportReadEquation( "qw@0x148" ) ) );
+            MD_CHECK_CC( ( metric->SetSnapshotReportReadEquation( "dw@0xc0" ) ) );
+            MD_CHECK_CC( ( metric->SetDeltaReportReadEquation( "qw@0x140" ) ) );
             MD_CHECK_CC( ( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ) ) );
         }
 
@@ -22684,86 +22661,78 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
             AddStartConfigRegister( 0x0d04, 0x00000200, REGISTER_TYPE_NOA );
             AddStartConfigRegister( 0x9884, 0x00000008, REGISTER_TYPE_NOA );
             AddStartConfigRegister( 0x9888, 0x0c200006, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x0a200016, REGISTER_TYPE_NOA );
+            AddStartConfigRegister( 0x9888, 0x042002c0, REGISTER_TYPE_NOA );
             AddStartConfigRegister( 0x9888, 0x00200000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x0202f000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x02045000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x0208b000, REGISTER_TYPE_NOA );
+            AddStartConfigRegister( 0x9888, 0x0002c000, REGISTER_TYPE_NOA );
+            AddStartConfigRegister( 0x9888, 0x02020003, REGISTER_TYPE_NOA );
+            AddStartConfigRegister( 0x9888, 0x00044000, REGISTER_TYPE_NOA );
+            AddStartConfigRegister( 0x9888, 0x02040001, REGISTER_TYPE_NOA );
+            AddStartConfigRegister( 0x9888, 0x00088000, REGISTER_TYPE_NOA );
+            AddStartConfigRegister( 0x9888, 0x02080003, REGISTER_TYPE_NOA );
             AddStartConfigRegister( 0x9884, 0x00000009, REGISTER_TYPE_NOA );
             AddStartConfigRegister( 0x9888, 0x0c200006, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x08205800, REGISTER_TYPE_NOA );
+            AddStartConfigRegister( 0x9888, 0x04205800, REGISTER_TYPE_NOA );
             AddStartConfigRegister( 0x9888, 0x00200000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x02023000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x02041000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x02082000, REGISTER_TYPE_NOA );
+            AddStartConfigRegister( 0x9888, 0x02020003, REGISTER_TYPE_NOA );
+            AddStartConfigRegister( 0x9888, 0x02040001, REGISTER_TYPE_NOA );
+            AddStartConfigRegister( 0x9888, 0x02080002, REGISTER_TYPE_NOA );
             AddStartConfigRegister( 0x9884, 0x0000000a, REGISTER_TYPE_NOA );
             AddStartConfigRegister( 0x9888, 0x0c200006, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x082002c0, REGISTER_TYPE_NOA );
+            AddStartConfigRegister( 0x9888, 0x06200016, REGISTER_TYPE_NOA );
             AddStartConfigRegister( 0x9888, 0x00200000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x000203ff, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x02020f00, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x00040155, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x02040500, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x000803ff, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x02080b00, REGISTER_TYPE_NOA );
+            AddStartConfigRegister( 0x9888, 0x0202fffc, REGISTER_TYPE_NOA );
+            AddStartConfigRegister( 0x9888, 0x02045554, REGISTER_TYPE_NOA );
+            AddStartConfigRegister( 0x9888, 0x0208fff8, REGISTER_TYPE_NOA );
             AddStartConfigRegister( 0x9884, 0x0000000b, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x0a206f40, REGISTER_TYPE_NOA );
+            AddStartConfigRegister( 0x9888, 0x0a206b75, REGISTER_TYPE_NOA );
             AddStartConfigRegister( 0x9888, 0x0c200006, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x00204eb4, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x02200166, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x08200016, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x000203ff, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x02020300, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x00040155, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x02040100, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x000802aa, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x02080200, REGISTER_TYPE_NOA );
+            AddStartConfigRegister( 0x9888, 0x06200ec0, REGISTER_TYPE_NOA );
+            AddStartConfigRegister( 0x9888, 0x082051d3, REGISTER_TYPE_NOA );
+            AddStartConfigRegister( 0x9888, 0x00200000, REGISTER_TYPE_NOA );
+            AddStartConfigRegister( 0x9888, 0x0202fff0, REGISTER_TYPE_NOA );
+            AddStartConfigRegister( 0x9888, 0x02045550, REGISTER_TYPE_NOA );
+            AddStartConfigRegister( 0x9888, 0x0208aaa0, REGISTER_TYPE_NOA );
             AddStartConfigRegister( 0x9884, 0x00000000, REGISTER_TYPE_NOA );
             AddStartConfigRegister( 0x9888, 0x16120120, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x08120c70, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x02120000, REGISTER_TYPE_NOA );
+            AddStartConfigRegister( 0x9888, 0x02120c00, REGISTER_TYPE_NOA );
+            AddStartConfigRegister( 0x9888, 0x04120031, REGISTER_TYPE_NOA );
             AddStartConfigRegister( 0x9888, 0x00120000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x00133eaa, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x02130a00, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x00140155, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x02140500, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x00150155, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x02150500, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x00161555, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x02160500, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x001702aa, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x02170a00, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x000c307f, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x000e307f, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x000d02aa, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x020d0a00, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x00062aaa, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x02060a00, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x00012aaa, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x0201fa00, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x4e010000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x56010011, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x58010000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x5a010000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x5c011200, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x5e010090, REGISTER_TYPE_NOA );
+            AddStartConfigRegister( 0x9888, 0x0013000f, REGISTER_TYPE_NOA );
+            AddStartConfigRegister( 0x9888, 0x0213aaa8, REGISTER_TYPE_NOA );
+            AddStartConfigRegister( 0x9888, 0x02145554, REGISTER_TYPE_NOA );
+            AddStartConfigRegister( 0x9888, 0x02155554, REGISTER_TYPE_NOA );
+            AddStartConfigRegister( 0x9888, 0x00160005, REGISTER_TYPE_NOA );
+            AddStartConfigRegister( 0x9888, 0x02165554, REGISTER_TYPE_NOA );
+            AddStartConfigRegister( 0x9888, 0x0217aaa8, REGISTER_TYPE_NOA );
+            AddStartConfigRegister( 0x9888, 0x000cfe03, REGISTER_TYPE_NOA );
+            AddStartConfigRegister( 0x9888, 0x000efe03, REGISTER_TYPE_NOA );
+            AddStartConfigRegister( 0x9888, 0x020daaa8, REGISTER_TYPE_NOA );
+            AddStartConfigRegister( 0x9888, 0x0006000a, REGISTER_TYPE_NOA );
+            AddStartConfigRegister( 0x9888, 0x0206aaa8, REGISTER_TYPE_NOA );
+            AddStartConfigRegister( 0x9888, 0x0001c00a, REGISTER_TYPE_NOA );
+            AddStartConfigRegister( 0x9888, 0x0201aaab, REGISTER_TYPE_NOA );
+            AddStartConfigRegister( 0x9888, 0x4e010090, REGISTER_TYPE_NOA );
+            AddStartConfigRegister( 0x9888, 0x56010000, REGISTER_TYPE_NOA );
+            AddStartConfigRegister( 0x9888, 0x58010009, REGISTER_TYPE_NOA );
+            AddStartConfigRegister( 0x9888, 0x5e010200, REGISTER_TYPE_NOA );
+            AddStartConfigRegister( 0x9888, 0x60011201, REGISTER_TYPE_NOA );
             AddStartConfigRegister( 0x9888, 0x06010000, REGISTER_TYPE_NOA );
+            AddStartConfigRegister( 0x9888, 0x62010030, REGISTER_TYPE_NOA );
+            AddStartConfigRegister( 0x9888, 0x50010000, REGISTER_TYPE_NOA );
             AddStartConfigRegister( 0x9888, 0x52010000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x54011203, REGISTER_TYPE_NOA );
+            AddStartConfigRegister( 0x9888, 0x54010000, REGISTER_TYPE_NOA );
             AddStartConfigRegister( 0x9884, 0x00000000, REGISTER_TYPE_NOA );
             AddStartConfigRegister( 0x9888, 0x74010002, REGISTER_TYPE_NOA );
             AddStartConfigRegister( 0xd900, 0x00000000, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0xd904, 0x30800000, REGISTER_TYPE_OA );
+            AddStartConfigRegister( 0xd904, 0x10800000, REGISTER_TYPE_OA );
             AddStartConfigRegister( 0xd910, 0x00000000, REGISTER_TYPE_OA );
             AddStartConfigRegister( 0xd914, 0x00800000, REGISTER_TYPE_OA );
             AddStartConfigRegister( 0xd920, 0x00000000, REGISTER_TYPE_OA );
             AddStartConfigRegister( 0xdc40, 0x00000000, REGISTER_TYPE_OA );
             AddStartConfigRegister( 0xdd40, 0x00000000, REGISTER_TYPE_OA );
             AddStartConfigRegister( 0x2b2c, 0x00000000, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0xd940, 0x000000f8, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0xd944, 0x0000ffe0, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0xd948, 0x00000102, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0xd94c, 0x0000ff9f, REGISTER_TYPE_OA );
+            AddStartConfigRegister( 0xd940, 0x0000000a, REGISTER_TYPE_OA );
+            AddStartConfigRegister( 0xd944, 0x0000fffc, REGISTER_TYPE_OA );
         }
         RefreshConfigRegisters();
         return CC_OK;
@@ -22781,7 +22750,6 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
     {
         TCompletionCode ret                  = CC_OK;
         CMetric*        metric               = nullptr;
-        CInformation*   information          = nullptr;
         const char*     availabilityEquation = nullptr;
         m_params.InformationCount            = m_concurrentGroup->GetInformationCount();
         MD_CHECK_CC( SetApiSpecificId( "GPAV", 0, 0x40000000, 0x80000203, 0, 0, "Intel Performance Counters for GT Set Dynamic", 0, "Intel_Raw_Hardware_Counters_Set_0_Query", 0 ) );
@@ -22827,8 +22795,8 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
                           METRIC_TYPE_EVENT, RESULT_UINT64, "events", 0, 0, HW_UNIT_DUALSUBSLICE, availabilityEquation, nullptr, nullptr, 3 );
         if( metric )
         {
-            MD_CHECK_CC( ( metric->SetSnapshotReportReadEquation( "dw@0xc8 dw@0xcc UADD dw@0xd0 UADD dw@0xd4 UADD dw@0xd8 UADD" ) ) );
-            MD_CHECK_CC( ( metric->SetDeltaReportReadEquation( "qw@0x150 qw@0x158 UADD qw@0x160 UADD qw@0x168 UADD qw@0x170 UADD" ) ) );
+            MD_CHECK_CC( ( metric->SetSnapshotReportReadEquation( "dw@0xe8 dw@0xe4 UADD dw@0xe0 UADD dw@0xdc UADD dw@0xd8 UADD" ) ) );
+            MD_CHECK_CC( ( metric->SetDeltaReportReadEquation( "qw@0x190 qw@0x188 UADD qw@0x180 UADD qw@0x178 UADD qw@0x170 UADD" ) ) );
             MD_CHECK_CC( ( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ) ) );
         }
 
@@ -22839,8 +22807,8 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
                           METRIC_TYPE_EVENT, RESULT_UINT64, "events", 0, 0, HW_UNIT_DUALSUBSLICE, availabilityEquation, nullptr, nullptr, 4 );
         if( metric )
         {
-            MD_CHECK_CC( ( metric->SetSnapshotReportReadEquation( "dw@0xdc dw@0xe0 UADD dw@0xe4 UADD dw@0xe8 UADD dw@0xec UADD" ) ) );
-            MD_CHECK_CC( ( metric->SetDeltaReportReadEquation( "qw@0x178 qw@0x180 UADD qw@0x188 UADD qw@0x190 UADD qw@0x198 UADD" ) ) );
+            MD_CHECK_CC( ( metric->SetSnapshotReportReadEquation( "dw@0xfc dw@0xf8 UADD dw@0xf4 UADD dw@0xf0 UADD dw@0xec UADD" ) ) );
+            MD_CHECK_CC( ( metric->SetDeltaReportReadEquation( "qw@0x1b8 qw@0x1b0 UADD qw@0x1a8 UADD qw@0x1a0 UADD qw@0x198 UADD" ) ) );
             MD_CHECK_CC( ( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ) ) );
         }
 
@@ -22851,8 +22819,8 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
                           METRIC_TYPE_EVENT, RESULT_UINT64, "events", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 5 );
         if( metric )
         {
-            MD_CHECK_CC( ( metric->SetSnapshotReportReadEquation( "dw@0xf8" ) ) );
-            MD_CHECK_CC( ( metric->SetDeltaReportReadEquation( "qw@0x1b0" ) ) );
+            MD_CHECK_CC( ( metric->SetSnapshotReportReadEquation( "dw@0xc0" ) ) );
+            MD_CHECK_CC( ( metric->SetDeltaReportReadEquation( "qw@0x140" ) ) );
             MD_CHECK_CC( ( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ) ) );
         }
 
@@ -22863,56 +22831,56 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
                           METRIC_TYPE_EVENT, RESULT_UINT64, "events", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 6 );
         if( metric )
         {
-            MD_CHECK_CC( ( metric->SetSnapshotReportReadEquation( "dw@0xfc" ) ) );
-            MD_CHECK_CC( ( metric->SetDeltaReportReadEquation( "qw@0x1b8" ) ) );
+            MD_CHECK_CC( ( metric->SetSnapshotReportReadEquation( "dw@0xc4" ) ) );
+            MD_CHECK_CC( ( metric->SetDeltaReportReadEquation( "qw@0x148" ) ) );
             MD_CHECK_CC( ( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ) ) );
         }
 
         availabilityEquation = "$GtSlice0XeCore0";
-        metric               = AddMetric( "XVE_INST_EXECUTED_NONDIVERGENT_XECORE0_XVE0_THREAD0", "XVE INST EXECUTED_NONDIVERGENT XECORE0 XVE0 THREAD0",
+        metric               = AddMetric( "XVE_INST_EXECUTED_NONDIVERGENT_XECORE0_XVE0_THREAD0", "XVE Inst Executed Nondivergent Xecore0 Xve0 Thread0",
                           "Number of execution slots taken by nondivergent instructions executed",
                           "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
                           METRIC_TYPE_EVENT, RESULT_UINT64, "events", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 7 );
         if( metric )
         {
-            MD_CHECK_CC( ( metric->SetSnapshotReportReadEquation( "dw@0xf0" ) ) );
-            MD_CHECK_CC( ( metric->SetDeltaReportReadEquation( "qw@0x1a0" ) ) );
+            MD_CHECK_CC( ( metric->SetSnapshotReportReadEquation( "dw@0xc8" ) ) );
+            MD_CHECK_CC( ( metric->SetDeltaReportReadEquation( "qw@0x150" ) ) );
             MD_CHECK_CC( ( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ) ) );
         }
 
         availabilityEquation = "$GtSlice0XeCore1";
-        metric               = AddMetric( "XVE_INST_EXECUTED_NONDIVERGENT_XECORE1_XVE0_THREAD0", "XVE INST EXECUTED_NONDIVERGENT XECORE1 XVE0 THREAD0",
+        metric               = AddMetric( "XVE_INST_EXECUTED_NONDIVERGENT_XECORE1_XVE0_THREAD0", "XVE Inst Executed Nondivergent Xecore1 Xve0 Thread0",
                           "Number of execution slots taken by nondivergent instructions executed",
                           "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
                           METRIC_TYPE_EVENT, RESULT_UINT64, "events", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 8 );
         if( metric )
         {
-            MD_CHECK_CC( ( metric->SetSnapshotReportReadEquation( "dw@0xf4" ) ) );
-            MD_CHECK_CC( ( metric->SetDeltaReportReadEquation( "qw@0x1a8" ) ) );
+            MD_CHECK_CC( ( metric->SetSnapshotReportReadEquation( "dw@0xcc" ) ) );
+            MD_CHECK_CC( ( metric->SetDeltaReportReadEquation( "qw@0x158" ) ) );
             MD_CHECK_CC( ( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ) ) );
         }
 
         availabilityEquation = "$GtSlice0XeCore0";
-        metric               = AddMetric( "XVE_INST_EXECUTED_PREDICATION_XECORE0_XVE0_THREAD0", "XVE INST EXECUTED_PREDICATION XECORE0 XVE0 THREAD0",
+        metric               = AddMetric( "XVE_INST_EXECUTED_PREDICATION_XECORE0_XVE0_THREAD0", "XVE Inst Executed Predication Xecore0 Xve0 Thread0",
                           "Number of execution slots taken by instructions with predication mask enabled",
                           "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
                           METRIC_TYPE_EVENT, RESULT_UINT64, "events", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 9 );
         if( metric )
         {
-            MD_CHECK_CC( ( metric->SetSnapshotReportReadEquation( "dw@0xc0" ) ) );
-            MD_CHECK_CC( ( metric->SetDeltaReportReadEquation( "qw@0x140" ) ) );
+            MD_CHECK_CC( ( metric->SetSnapshotReportReadEquation( "dw@0xd4" ) ) );
+            MD_CHECK_CC( ( metric->SetDeltaReportReadEquation( "qw@0x168" ) ) );
             MD_CHECK_CC( ( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ) ) );
         }
 
         availabilityEquation = "$GtSlice0XeCore1";
-        metric               = AddMetric( "XVE_INST_EXECUTED_PREDICATION_XECORE1_XVE0_THREAD0", "XVE INST EXECUTED_PREDICATION XECORE1 XVE0 THREAD0",
+        metric               = AddMetric( "XVE_INST_EXECUTED_PREDICATION_XECORE1_XVE0_THREAD0", "XVE Inst Executed Predication Xecore1 Xve0 Thread0",
                           "Number of execution slots taken by instructions with predication mask enabled",
                           "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
                           METRIC_TYPE_EVENT, RESULT_UINT64, "events", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 10 );
         if( metric )
         {
-            MD_CHECK_CC( ( metric->SetSnapshotReportReadEquation( "dw@0xc4" ) ) );
-            MD_CHECK_CC( ( metric->SetDeltaReportReadEquation( "qw@0x148" ) ) );
+            MD_CHECK_CC( ( metric->SetSnapshotReportReadEquation( "dw@0xd0" ) ) );
+            MD_CHECK_CC( ( metric->SetDeltaReportReadEquation( "qw@0x160" ) ) );
             MD_CHECK_CC( ( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ) ) );
         }
 
@@ -22921,46 +22889,46 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         {
             AddStartConfigRegister( 0x0d04, 0x00000200, REGISTER_TYPE_NOA );
             AddStartConfigRegister( 0x9884, 0x00000008, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x0a206f40, REGISTER_TYPE_NOA );
+            AddStartConfigRegister( 0x9888, 0x0a206b60, REGISTER_TYPE_NOA );
             AddStartConfigRegister( 0x9888, 0x0c2000cb, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x00207017, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x02206cdd, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x0420000b, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x08204815, REGISTER_TYPE_NOA );
+            AddStartConfigRegister( 0x9888, 0x00205412, REGISTER_TYPE_NOA );
+            AddStartConfigRegister( 0x9888, 0x02205c00, REGISTER_TYPE_NOA );
+            AddStartConfigRegister( 0x9888, 0x04203b63, REGISTER_TYPE_NOA );
+            AddStartConfigRegister( 0x9888, 0x062003bc, REGISTER_TYPE_NOA );
             AddStartConfigRegister( 0x9888, 0x0002ffff, REGISTER_TYPE_NOA );
             AddStartConfigRegister( 0x9888, 0x0202ffff, REGISTER_TYPE_NOA );
             AddStartConfigRegister( 0x9888, 0x00045555, REGISTER_TYPE_NOA );
             AddStartConfigRegister( 0x9888, 0x02045555, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x0008eaae, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x0208eeff, REGISTER_TYPE_NOA );
+            AddStartConfigRegister( 0x9888, 0x0008abee, REGISTER_TYPE_NOA );
+            AddStartConfigRegister( 0x9888, 0x0208ffea, REGISTER_TYPE_NOA );
             AddStartConfigRegister( 0x9884, 0x00000009, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x0a206f52, REGISTER_TYPE_NOA );
+            AddStartConfigRegister( 0x9888, 0x0a206b7d, REGISTER_TYPE_NOA );
             AddStartConfigRegister( 0x9888, 0x0c2000cb, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x002002e0, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x04207780, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x06202f66, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x082002a0, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x0002c00c, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x0202ccff, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x00044004, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x02044455, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x00088008, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x020888aa, REGISTER_TYPE_NOA );
+            AddStartConfigRegister( 0x9888, 0x00200240, REGISTER_TYPE_NOA );
+            AddStartConfigRegister( 0x9888, 0x022002f5, REGISTER_TYPE_NOA );
+            AddStartConfigRegister( 0x9888, 0x06200c00, REGISTER_TYPE_NOA );
+            AddStartConfigRegister( 0x9888, 0x082071db, REGISTER_TYPE_NOA );
+            AddStartConfigRegister( 0x9888, 0x000203cc, REGISTER_TYPE_NOA );
+            AddStartConfigRegister( 0x9888, 0x0202ffc0, REGISTER_TYPE_NOA );
+            AddStartConfigRegister( 0x9888, 0x00040144, REGISTER_TYPE_NOA );
+            AddStartConfigRegister( 0x9888, 0x02045540, REGISTER_TYPE_NOA );
+            AddStartConfigRegister( 0x9888, 0x00080288, REGISTER_TYPE_NOA );
+            AddStartConfigRegister( 0x9888, 0x0208aa80, REGISTER_TYPE_NOA );
             AddStartConfigRegister( 0x9884, 0x00000000, REGISTER_TYPE_NOA );
             AddStartConfigRegister( 0x9888, 0x0001ffff, REGISTER_TYPE_NOA );
             AddStartConfigRegister( 0x9888, 0x0201ffff, REGISTER_TYPE_NOA );
             AddStartConfigRegister( 0x9888, 0x4e010030, REGISTER_TYPE_NOA );
             AddStartConfigRegister( 0x9888, 0x56010000, REGISTER_TYPE_NOA );
             AddStartConfigRegister( 0x9888, 0x58010600, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x5a010030, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x5c010603, REGISTER_TYPE_NOA );
+            AddStartConfigRegister( 0x9888, 0x5a010000, REGISTER_TYPE_NOA );
+            AddStartConfigRegister( 0x9888, 0x5c010600, REGISTER_TYPE_NOA );
             AddStartConfigRegister( 0x9888, 0x5e010030, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x60010000, REGISTER_TYPE_NOA );
+            AddStartConfigRegister( 0x9888, 0x60010603, REGISTER_TYPE_NOA );
             AddStartConfigRegister( 0x9888, 0x06010000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x62010000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x50010000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x52010030, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x54010600, REGISTER_TYPE_NOA );
+            AddStartConfigRegister( 0x9888, 0x62010030, REGISTER_TYPE_NOA );
+            AddStartConfigRegister( 0x9888, 0x50010003, REGISTER_TYPE_NOA );
+            AddStartConfigRegister( 0x9888, 0x52010000, REGISTER_TYPE_NOA );
+            AddStartConfigRegister( 0x9888, 0x54010000, REGISTER_TYPE_NOA );
             AddStartConfigRegister( 0x9884, 0x00000000, REGISTER_TYPE_NOA );
             AddStartConfigRegister( 0x9888, 0x74010002, REGISTER_TYPE_NOA );
             AddStartConfigRegister( 0xd900, 0x00000000, REGISTER_TYPE_OA );
@@ -22988,7 +22956,6 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
     {
         TCompletionCode ret                  = CC_OK;
         CMetric*        metric               = nullptr;
-        CInformation*   information          = nullptr;
         const char*     availabilityEquation = nullptr;
         m_params.InformationCount            = m_concurrentGroup->GetInformationCount();
         MD_CHECK_CC( SetApiSpecificId( "GPAV", 0, 0x40000000, 0x80000203, 0, 0, "Intel Performance Counters for GT Set Dynamic", 0, "Intel_Raw_Hardware_Counters_Set_0_Query", 0 ) );
@@ -23034,8 +23001,8 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
                           METRIC_TYPE_EVENT, RESULT_UINT64, "events", 0, 0, HW_UNIT_DUALSUBSLICE, availabilityEquation, nullptr, nullptr, 3 );
         if( metric )
         {
-            MD_CHECK_CC( ( metric->SetSnapshotReportReadEquation( "dw@0xe8 dw@0xe4 UADD dw@0xe0 UADD dw@0xdc UADD dw@0xd8 UADD" ) ) );
-            MD_CHECK_CC( ( metric->SetDeltaReportReadEquation( "qw@0x190 qw@0x188 UADD qw@0x180 UADD qw@0x178 UADD qw@0x170 UADD" ) ) );
+            MD_CHECK_CC( ( metric->SetSnapshotReportReadEquation( "dw@0xfc dw@0xf8 UADD dw@0xf4 UADD dw@0xf0 UADD dw@0xec UADD" ) ) );
+            MD_CHECK_CC( ( metric->SetDeltaReportReadEquation( "qw@0x1b8 qw@0x1b0 UADD qw@0x1a8 UADD qw@0x1a0 UADD qw@0x198 UADD" ) ) );
             MD_CHECK_CC( ( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ) ) );
         }
 
@@ -23046,8 +23013,8 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
                           METRIC_TYPE_EVENT, RESULT_UINT64, "events", 0, 0, HW_UNIT_DUALSUBSLICE, availabilityEquation, nullptr, nullptr, 4 );
         if( metric )
         {
-            MD_CHECK_CC( ( metric->SetSnapshotReportReadEquation( "dw@0xfc dw@0xf8 UADD dw@0xf4 UADD dw@0xf0 UADD dw@0xec UADD" ) ) );
-            MD_CHECK_CC( ( metric->SetDeltaReportReadEquation( "qw@0x1b8 qw@0x1b0 UADD qw@0x1a8 UADD qw@0x1a0 UADD qw@0x198 UADD" ) ) );
+            MD_CHECK_CC( ( metric->SetSnapshotReportReadEquation( "dw@0xe8 dw@0xe4 UADD dw@0xe0 UADD dw@0xdc UADD dw@0xd8 UADD" ) ) );
+            MD_CHECK_CC( ( metric->SetDeltaReportReadEquation( "qw@0x190 qw@0x188 UADD qw@0x180 UADD qw@0x178 UADD qw@0x170 UADD" ) ) );
             MD_CHECK_CC( ( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ) ) );
         }
 
@@ -23058,8 +23025,8 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
                           METRIC_TYPE_EVENT, RESULT_UINT64, "events", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 5 );
         if( metric )
         {
-            MD_CHECK_CC( ( metric->SetSnapshotReportReadEquation( "dw@0xd0" ) ) );
-            MD_CHECK_CC( ( metric->SetDeltaReportReadEquation( "qw@0x160" ) ) );
+            MD_CHECK_CC( ( metric->SetSnapshotReportReadEquation( "dw@0xd4" ) ) );
+            MD_CHECK_CC( ( metric->SetDeltaReportReadEquation( "qw@0x168" ) ) );
             MD_CHECK_CC( ( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ) ) );
         }
 
@@ -23070,28 +23037,16 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
                           METRIC_TYPE_EVENT, RESULT_UINT64, "events", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 6 );
         if( metric )
         {
-            MD_CHECK_CC( ( metric->SetSnapshotReportReadEquation( "dw@0xd4" ) ) );
-            MD_CHECK_CC( ( metric->SetDeltaReportReadEquation( "qw@0x168" ) ) );
+            MD_CHECK_CC( ( metric->SetSnapshotReportReadEquation( "dw@0xd0" ) ) );
+            MD_CHECK_CC( ( metric->SetDeltaReportReadEquation( "qw@0x160" ) ) );
             MD_CHECK_CC( ( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ) ) );
         }
 
         availabilityEquation = "$GtSlice0XeCore2";
-        metric               = AddMetric( "XVE_INST_EXECUTED_NONDIVERGENT_XECORE2_XVE0_THREAD0", "XVE INST EXECUTED_NONDIVERGENT XECORE2 XVE0 THREAD0",
+        metric               = AddMetric( "XVE_INST_EXECUTED_NONDIVERGENT_XECORE2_XVE0_THREAD0", "XVE Inst Executed Nondivergent Xecore2 Xve0 Thread0",
                           "Number of execution slots taken by nondivergent instructions executed",
                           "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
                           METRIC_TYPE_EVENT, RESULT_UINT64, "events", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 7 );
-        if( metric )
-        {
-            MD_CHECK_CC( ( metric->SetSnapshotReportReadEquation( "dw@0xc8" ) ) );
-            MD_CHECK_CC( ( metric->SetDeltaReportReadEquation( "qw@0x150" ) ) );
-            MD_CHECK_CC( ( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ) ) );
-        }
-
-        availabilityEquation = "$GtSlice0XeCore3";
-        metric               = AddMetric( "XVE_INST_EXECUTED_NONDIVERGENT_XECORE3_XVE0_THREAD0", "XVE INST EXECUTED_NONDIVERGENT XECORE3 XVE0 THREAD0",
-                          "Number of execution slots taken by nondivergent instructions executed",
-                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
-                          METRIC_TYPE_EVENT, RESULT_UINT64, "events", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 8 );
         if( metric )
         {
             MD_CHECK_CC( ( metric->SetSnapshotReportReadEquation( "dw@0xcc" ) ) );
@@ -23099,27 +23054,39 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
             MD_CHECK_CC( ( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ) ) );
         }
 
+        availabilityEquation = "$GtSlice0XeCore3";
+        metric               = AddMetric( "XVE_INST_EXECUTED_NONDIVERGENT_XECORE3_XVE0_THREAD0", "XVE Inst Executed Nondivergent Xecore3 Xve0 Thread0",
+                          "Number of execution slots taken by nondivergent instructions executed",
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          METRIC_TYPE_EVENT, RESULT_UINT64, "events", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 8 );
+        if( metric )
+        {
+            MD_CHECK_CC( ( metric->SetSnapshotReportReadEquation( "dw@0xc8" ) ) );
+            MD_CHECK_CC( ( metric->SetDeltaReportReadEquation( "qw@0x150" ) ) );
+            MD_CHECK_CC( ( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ) ) );
+        }
+
         availabilityEquation = "$GtSlice0XeCore2";
-        metric               = AddMetric( "XVE_INST_EXECUTED_PREDICATION_XECORE2_XVE0_THREAD0", "XVE INST EXECUTED_PREDICATION XECORE2 XVE0 THREAD0",
+        metric               = AddMetric( "XVE_INST_EXECUTED_PREDICATION_XECORE2_XVE0_THREAD0", "XVE Inst Executed Predication Xecore2 Xve0 Thread0",
                           "Number of execution slots taken by instructions with predication mask enabled",
                           "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
                           METRIC_TYPE_EVENT, RESULT_UINT64, "events", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 9 );
         if( metric )
         {
-            MD_CHECK_CC( ( metric->SetSnapshotReportReadEquation( "dw@0xc0" ) ) );
-            MD_CHECK_CC( ( metric->SetDeltaReportReadEquation( "qw@0x140" ) ) );
+            MD_CHECK_CC( ( metric->SetSnapshotReportReadEquation( "dw@0xc4" ) ) );
+            MD_CHECK_CC( ( metric->SetDeltaReportReadEquation( "qw@0x148" ) ) );
             MD_CHECK_CC( ( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ) ) );
         }
 
         availabilityEquation = "$GtSlice0XeCore3";
-        metric               = AddMetric( "XVE_INST_EXECUTED_PREDICATION_XECORE3_XVE0_THREAD0", "XVE INST EXECUTED_PREDICATION XECORE3 XVE0 THREAD0",
+        metric               = AddMetric( "XVE_INST_EXECUTED_PREDICATION_XECORE3_XVE0_THREAD0", "XVE Inst Executed Predication Xecore3 Xve0 Thread0",
                           "Number of execution slots taken by instructions with predication mask enabled",
                           "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
                           METRIC_TYPE_EVENT, RESULT_UINT64, "events", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 10 );
         if( metric )
         {
-            MD_CHECK_CC( ( metric->SetSnapshotReportReadEquation( "dw@0xc4" ) ) );
-            MD_CHECK_CC( ( metric->SetDeltaReportReadEquation( "qw@0x148" ) ) );
+            MD_CHECK_CC( ( metric->SetSnapshotReportReadEquation( "dw@0xc0" ) ) );
+            MD_CHECK_CC( ( metric->SetDeltaReportReadEquation( "qw@0x140" ) ) );
             MD_CHECK_CC( ( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ) ) );
         }
 
@@ -23128,31 +23095,31 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         {
             AddStartConfigRegister( 0x0d04, 0x00000200, REGISTER_TYPE_NOA );
             AddStartConfigRegister( 0x9884, 0x0000000a, REGISTER_TYPE_NOA );
+            AddStartConfigRegister( 0x9888, 0x0a206b7d, REGISTER_TYPE_NOA );
+            AddStartConfigRegister( 0x9888, 0x0c2000cb, REGISTER_TYPE_NOA );
+            AddStartConfigRegister( 0x9888, 0x002002e0, REGISTER_TYPE_NOA );
+            AddStartConfigRegister( 0x9888, 0x02204815, REGISTER_TYPE_NOA );
+            AddStartConfigRegister( 0x9888, 0x06200c00, REGISTER_TYPE_NOA );
+            AddStartConfigRegister( 0x9888, 0x082071db, REGISTER_TYPE_NOA );
+            AddStartConfigRegister( 0x9888, 0x0002ffff, REGISTER_TYPE_NOA );
+            AddStartConfigRegister( 0x9888, 0x0202ffff, REGISTER_TYPE_NOA );
+            AddStartConfigRegister( 0x9888, 0x00045555, REGISTER_TYPE_NOA );
+            AddStartConfigRegister( 0x9888, 0x02045555, REGISTER_TYPE_NOA );
+            AddStartConfigRegister( 0x9888, 0x0008fbbb, REGISTER_TYPE_NOA );
+            AddStartConfigRegister( 0x9888, 0x0208aabf, REGISTER_TYPE_NOA );
+            AddStartConfigRegister( 0x9884, 0x0000000b, REGISTER_TYPE_NOA );
             AddStartConfigRegister( 0x9888, 0x0a206b60, REGISTER_TYPE_NOA );
             AddStartConfigRegister( 0x9888, 0x0c2000cb, REGISTER_TYPE_NOA );
             AddStartConfigRegister( 0x9888, 0x00205417, REGISTER_TYPE_NOA );
             AddStartConfigRegister( 0x9888, 0x02200240, REGISTER_TYPE_NOA );
             AddStartConfigRegister( 0x9888, 0x04203b63, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x0620039d, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x0002ffff, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x0202ffff, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x00045555, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x02045555, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x0008aeee, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x0208ffea, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9884, 0x0000000b, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x0a206b7c, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x0c2000cb, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x002002e0, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x02204815, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x06200c00, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x082075db, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x00020ccc, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x0202ffc0, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x00040444, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x02045540, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x00080888, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x0208aa80, REGISTER_TYPE_NOA );
+            AddStartConfigRegister( 0x9888, 0x062003bc, REGISTER_TYPE_NOA );
+            AddStartConfigRegister( 0x9888, 0x0002f333, REGISTER_TYPE_NOA );
+            AddStartConfigRegister( 0x9888, 0x0202003f, REGISTER_TYPE_NOA );
+            AddStartConfigRegister( 0x9888, 0x00045111, REGISTER_TYPE_NOA );
+            AddStartConfigRegister( 0x9888, 0x02040015, REGISTER_TYPE_NOA );
+            AddStartConfigRegister( 0x9888, 0x0008a222, REGISTER_TYPE_NOA );
+            AddStartConfigRegister( 0x9888, 0x0208002a, REGISTER_TYPE_NOA );
             AddStartConfigRegister( 0x9884, 0x00000000, REGISTER_TYPE_NOA );
             AddStartConfigRegister( 0x9888, 0x0013aaaa, REGISTER_TYPE_NOA );
             AddStartConfigRegister( 0x9888, 0x0213aaaa, REGISTER_TYPE_NOA );
@@ -23172,18 +23139,18 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
             AddStartConfigRegister( 0x9888, 0x0206aaaa, REGISTER_TYPE_NOA );
             AddStartConfigRegister( 0x9888, 0x0001aaaa, REGISTER_TYPE_NOA );
             AddStartConfigRegister( 0x9888, 0x0201aaaa, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x4e010030, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x56010000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x58010600, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x5a010000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x5c010003, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x5e010030, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x60010603, REGISTER_TYPE_NOA );
+            AddStartConfigRegister( 0x9888, 0x4e010000, REGISTER_TYPE_NOA );
+            AddStartConfigRegister( 0x9888, 0x56010030, REGISTER_TYPE_NOA );
+            AddStartConfigRegister( 0x9888, 0x58010003, REGISTER_TYPE_NOA );
+            AddStartConfigRegister( 0x9888, 0x5a010030, REGISTER_TYPE_NOA );
+            AddStartConfigRegister( 0x9888, 0x5c010600, REGISTER_TYPE_NOA );
+            AddStartConfigRegister( 0x9888, 0x5e010000, REGISTER_TYPE_NOA );
+            AddStartConfigRegister( 0x9888, 0x60010000, REGISTER_TYPE_NOA );
             AddStartConfigRegister( 0x9888, 0x06010000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x62010030, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x50010003, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x52010000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x54010000, REGISTER_TYPE_NOA );
+            AddStartConfigRegister( 0x9888, 0x62010000, REGISTER_TYPE_NOA );
+            AddStartConfigRegister( 0x9888, 0x50010600, REGISTER_TYPE_NOA );
+            AddStartConfigRegister( 0x9888, 0x52010030, REGISTER_TYPE_NOA );
+            AddStartConfigRegister( 0x9888, 0x54010603, REGISTER_TYPE_NOA );
             AddStartConfigRegister( 0x9884, 0x00000000, REGISTER_TYPE_NOA );
             AddStartConfigRegister( 0x9888, 0x74010002, REGISTER_TYPE_NOA );
             AddStartConfigRegister( 0xd900, 0x00000000, REGISTER_TYPE_OA );
@@ -23211,7 +23178,6 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
     {
         TCompletionCode ret                  = CC_OK;
         CMetric*        metric               = nullptr;
-        CInformation*   information          = nullptr;
         const char*     availabilityEquation = nullptr;
         m_params.InformationCount            = m_concurrentGroup->GetInformationCount();
         MD_CHECK_CC( SetApiSpecificId( "GPAV", 0, 0x40000000, 0x80000203, 0, 0, "Intel Performance Counters for GT Set Dynamic", 0, "Intel_Raw_Hardware_Counters_Set_0_Query", 0 ) );
@@ -23408,7 +23374,6 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
     {
         TCompletionCode ret                  = CC_OK;
         CMetric*        metric               = nullptr;
-        CInformation*   information          = nullptr;
         const char*     availabilityEquation = nullptr;
         m_params.InformationCount            = m_concurrentGroup->GetInformationCount();
         MD_CHECK_CC( SetApiSpecificId( "GPAV", 0, 0x40000000, 0x80000203, 0, 0, "Intel Performance Counters for GT Set Dynamic", 0, "Intel_Raw_Hardware_Counters_Set_0_Query", 0 ) );
@@ -23605,7 +23570,6 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
     {
         TCompletionCode ret                  = CC_OK;
         CMetric*        metric               = nullptr;
-        CInformation*   information          = nullptr;
         const char*     availabilityEquation = nullptr;
         m_params.InformationCount            = m_concurrentGroup->GetInformationCount();
         MD_CHECK_CC( SetApiSpecificId( "GPAV", 0, 0x40000000, 0x80000203, 0, 0, "Intel Performance Counters for GT Set Dynamic", 0, "Intel_Raw_Hardware_Counters_Set_0_Query", 0 ) );
@@ -23768,7 +23732,6 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
     {
         TCompletionCode ret                  = CC_OK;
         CMetric*        metric               = nullptr;
-        CInformation*   information          = nullptr;
         const char*     availabilityEquation = nullptr;
         m_params.InformationCount            = m_concurrentGroup->GetInformationCount();
         MD_CHECK_CC( SetApiSpecificId( "GPAV", 0, 0x40000000, 0x80000203, 0, 0, "Intel Performance Counters for GT Set Dynamic", 0, "Intel_Raw_Hardware_Counters_Set_0_Query", 0 ) );
@@ -24036,7 +23999,6 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
     {
         TCompletionCode ret                  = CC_OK;
         CMetric*        metric               = nullptr;
-        CInformation*   information          = nullptr;
         const char*     availabilityEquation = nullptr;
         m_params.InformationCount            = m_concurrentGroup->GetInformationCount();
         MD_CHECK_CC( SetApiSpecificId( "GPAV", 0, 0x40000000, 0x80000203, 0, 0, "Intel Performance Counters for GT Set Dynamic", 0, "Intel_Raw_Hardware_Counters_Set_0_Query", 0 ) );
@@ -24311,7 +24273,6 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
     {
         TCompletionCode ret                  = CC_OK;
         CMetric*        metric               = nullptr;
-        CInformation*   information          = nullptr;
         const char*     availabilityEquation = nullptr;
         m_params.InformationCount            = m_concurrentGroup->GetInformationCount();
         MD_CHECK_CC( SetApiSpecificId( "GPAV", 0, 0x40000000, 0x80000203, 0, 0, "Intel Performance Counters for GT Set Dynamic", 0, "Intel_Raw_Hardware_Counters_Set_0_Query", 0 ) );
@@ -24504,7 +24465,6 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
     {
         TCompletionCode ret                  = CC_OK;
         CMetric*        metric               = nullptr;
-        CInformation*   information          = nullptr;
         const char*     availabilityEquation = nullptr;
         m_params.InformationCount            = m_concurrentGroup->GetInformationCount();
         MD_CHECK_CC( SetApiSpecificId( "GPAV", 0, 0x40000000, 0x80000203, 0, 0, "Intel Performance Counters for GT Set Dynamic", 0, "Intel_Raw_Hardware_Counters_Set_0_Query", 0 ) );
@@ -24701,7 +24661,6 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
     {
         TCompletionCode ret                  = CC_OK;
         CMetric*        metric               = nullptr;
-        CInformation*   information          = nullptr;
         const char*     availabilityEquation = nullptr;
         m_params.InformationCount            = m_concurrentGroup->GetInformationCount();
         MD_CHECK_CC( SetApiSpecificId( "GPAV", 0, 0x40000000, 0x80000203, 0, 0, "Intel Performance Counters for GT Set Dynamic", 0, "Intel_Raw_Hardware_Counters_Set_0_Query", 0 ) );
@@ -24807,7 +24766,6 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
     {
         TCompletionCode ret                  = CC_OK;
         CMetric*        metric               = nullptr;
-        CInformation*   information          = nullptr;
         const char*     availabilityEquation = nullptr;
         m_params.InformationCount            = m_concurrentGroup->GetInformationCount();
         MD_CHECK_CC( SetApiSpecificId( "GPAV", 0, 0x40000000, 0x80000203, 0, 0, "Intel Performance Counters for GT Set Dynamic", 0, "Intel_Raw_Hardware_Counters_Set_0_Query", 0 ) );
@@ -24913,7 +24871,6 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
     {
         TCompletionCode ret                  = CC_OK;
         CMetric*        metric               = nullptr;
-        CInformation*   information          = nullptr;
         const char*     availabilityEquation = nullptr;
         m_params.InformationCount            = m_concurrentGroup->GetInformationCount();
         MD_CHECK_CC( SetApiSpecificId( "GPAV", 0, 0x40000000, 0x80000203, 0, 0, "Intel Performance Counters for GT Set Dynamic", 0, "Intel_Raw_Hardware_Counters_Set_0_Query", 0 ) );
@@ -25110,7 +25067,6 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
     {
         TCompletionCode ret                  = CC_OK;
         CMetric*        metric               = nullptr;
-        CInformation*   information          = nullptr;
         const char*     availabilityEquation = nullptr;
         m_params.InformationCount            = m_concurrentGroup->GetInformationCount();
         MD_CHECK_CC( SetApiSpecificId( "GPAV", 0, 0x40000000, 0x80000203, 0, 0, "Intel Performance Counters for GT Set Dynamic", 0, "Intel_Raw_Hardware_Counters_Set_0_Query", 0 ) );
@@ -25307,7 +25263,6 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
     {
         TCompletionCode ret                  = CC_OK;
         CMetric*        metric               = nullptr;
-        CInformation*   information          = nullptr;
         const char*     availabilityEquation = nullptr;
         m_params.InformationCount            = m_concurrentGroup->GetInformationCount();
         MD_CHECK_CC( SetApiSpecificId( "GPAV", 0, 0x40000000, 0x80000203, 0, 0, "Intel Performance Counters for GT Set Dynamic", 0, "Intel_Raw_Hardware_Counters_Set_0_Query", 0 ) );
@@ -25482,7 +25437,6 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
     {
         TCompletionCode ret                  = CC_OK;
         CMetric*        metric               = nullptr;
-        CInformation*   information          = nullptr;
         const char*     availabilityEquation = nullptr;
         m_params.InformationCount            = m_concurrentGroup->GetInformationCount();
         MD_CHECK_CC( SetApiSpecificId( "GPAV", 0, 0x40000000, 0x80000203, 0, 0, "Intel Performance Counters for GT Set Dynamic", 0, "Intel_Raw_Hardware_Counters_Set_0_Query", 0 ) );
@@ -25673,7 +25627,6 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
     {
         TCompletionCode ret                  = CC_OK;
         CMetric*        metric               = nullptr;
-        CInformation*   information          = nullptr;
         const char*     availabilityEquation = nullptr;
         m_params.InformationCount            = m_concurrentGroup->GetInformationCount();
         MD_CHECK_CC( SetApiSpecificId( "GPAV", 0, 0x40000000, 0x80000203, 0, 0, "Intel Performance Counters for GT Set Dynamic", 0, "Intel_Raw_Hardware_Counters_Set_0_Query", 0 ) );
@@ -25846,7 +25799,6 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
     {
         TCompletionCode ret                  = CC_OK;
         CMetric*        metric               = nullptr;
-        CInformation*   information          = nullptr;
         const char*     availabilityEquation = nullptr;
         m_params.InformationCount            = m_concurrentGroup->GetInformationCount();
         MD_CHECK_CC( SetApiSpecificId( "GPAV", 0, 0x40000000, 0x80000203, 0, 0, "Intel Performance Counters for GT Set Dynamic", 0, "Intel_Raw_Hardware_Counters_Set_0_Query", 0 ) );
@@ -26019,7 +25971,6 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
     {
         TCompletionCode ret                  = CC_OK;
         CMetric*        metric               = nullptr;
-        CInformation*   information          = nullptr;
         const char*     availabilityEquation = nullptr;
         m_params.InformationCount            = m_concurrentGroup->GetInformationCount();
         MD_CHECK_CC( SetApiSpecificId( "GPAV", 0, 0x40000000, 0x80000203, 0, 0, "Intel Performance Counters for GT Set Dynamic", 0, "Intel_Raw_Hardware_Counters_Set_0_Query", 0 ) );
@@ -26153,7 +26104,6 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
     {
         TCompletionCode ret                  = CC_OK;
         CMetric*        metric               = nullptr;
-        CInformation*   information          = nullptr;
         const char*     availabilityEquation = nullptr;
         m_params.InformationCount            = m_concurrentGroup->GetInformationCount();
         MD_CHECK_CC( SetApiSpecificId( "GPAV", 0, 0x40000000, 0x80000203, 0, 0, "Intel Performance Counters for GT Set Dynamic", 0, "Intel_Raw_Hardware_Counters_Set_0_Query", 0 ) );
@@ -26287,7 +26237,6 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
     {
         TCompletionCode ret                  = CC_OK;
         CMetric*        metric               = nullptr;
-        CInformation*   information          = nullptr;
         const char*     availabilityEquation = nullptr;
         m_params.InformationCount            = m_concurrentGroup->GetInformationCount();
         MD_CHECK_CC( SetApiSpecificId( "GPAV", 0, 0x40000000, 0x80000203, 0, 0, "Intel Performance Counters for GT Set Dynamic", 0, "Intel_Raw_Hardware_Counters_Set_0_Query", 0 ) );
@@ -26422,7 +26371,6 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
     {
         TCompletionCode ret                  = CC_OK;
         CMetric*        metric               = nullptr;
-        CInformation*   information          = nullptr;
         const char*     availabilityEquation = nullptr;
         m_params.InformationCount            = m_concurrentGroup->GetInformationCount();
         MD_CHECK_CC( SetApiSpecificId( "GPAV", 0, 0x40000000, 0x80000203, 0, 0, "Intel Performance Counters for GT Set Dynamic", 0, "Intel_Raw_Hardware_Counters_Set_0_Query", 0 ) );
@@ -26573,7 +26521,6 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
     {
         TCompletionCode ret                  = CC_OK;
         CMetric*        metric               = nullptr;
-        CInformation*   information          = nullptr;
         const char*     availabilityEquation = nullptr;
         m_params.InformationCount            = m_concurrentGroup->GetInformationCount();
         MD_CHECK_CC( SetApiSpecificId( "GPAV", 0, 0x40000000, 0x80000203, 0, 0, "Intel Performance Counters for GT Set Dynamic", 0, "Intel_Raw_Hardware_Counters_Set_0_Query", 0 ) );
@@ -26724,7 +26671,6 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
     {
         TCompletionCode ret                  = CC_OK;
         CMetric*        metric               = nullptr;
-        CInformation*   information          = nullptr;
         const char*     availabilityEquation = nullptr;
         m_params.InformationCount            = m_concurrentGroup->GetInformationCount();
         MD_CHECK_CC( SetApiSpecificId( "GPAV", 0, 0x40000000, 0x80000203, 0, 0, "Intel Performance Counters for GT Set Dynamic", 0, "Intel_Raw_Hardware_Counters_Set_0_Query", 0 ) );
@@ -26907,7 +26853,6 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
     {
         TCompletionCode ret                  = CC_OK;
         CMetric*        metric               = nullptr;
-        CInformation*   information          = nullptr;
         const char*     availabilityEquation = nullptr;
         m_params.InformationCount            = m_concurrentGroup->GetInformationCount();
         MD_CHECK_CC( SetApiSpecificId( "GPAV", 0, 0x40000000, 0x80000203, 0, 0, "Intel Performance Counters for GT Set Dynamic", 0, "Intel_Raw_Hardware_Counters_Set_0_Query", 0 ) );
@@ -27025,7 +26970,6 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
     {
         TCompletionCode ret                  = CC_OK;
         CMetric*        metric               = nullptr;
-        CInformation*   information          = nullptr;
         const char*     availabilityEquation = nullptr;
         m_params.InformationCount            = m_concurrentGroup->GetInformationCount();
         MD_CHECK_CC( SetApiSpecificId( "GPAV", 0, 0x40000000, 0x80000203, 0, 0, "Intel Performance Counters for GT Set Dynamic", 0, "Intel_Raw_Hardware_Counters_Set_0_Query", 0 ) );
@@ -27143,7 +27087,6 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
     {
         TCompletionCode ret                  = CC_OK;
         CMetric*        metric               = nullptr;
-        CInformation*   information          = nullptr;
         const char*     availabilityEquation = nullptr;
         m_params.InformationCount            = m_concurrentGroup->GetInformationCount();
         MD_CHECK_CC( SetApiSpecificId( "GPAV", 0, 0x40000000, 0x80000203, 0, 0, "Intel Performance Counters for GT Set Dynamic", 0, "Intel_Raw_Hardware_Counters_Set_0_Query", 0 ) );
@@ -27312,7 +27255,6 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
     {
         TCompletionCode ret                  = CC_OK;
         CMetric*        metric               = nullptr;
-        CInformation*   information          = nullptr;
         const char*     availabilityEquation = nullptr;
         m_params.InformationCount            = m_concurrentGroup->GetInformationCount();
         MD_CHECK_CC( SetApiSpecificId( "GPAV", 0, 0x40000000, 0x80000203, 0, 0, "Intel Performance Counters for GT Set Dynamic", 0, "Intel_Raw_Hardware_Counters_Set_0_Query", 0 ) );
@@ -27415,7 +27357,6 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
     {
         TCompletionCode ret                  = CC_OK;
         CMetric*        metric               = nullptr;
-        CInformation*   information          = nullptr;
         const char*     availabilityEquation = nullptr;
         m_params.InformationCount            = m_concurrentGroup->GetInformationCount();
         MD_CHECK_CC( SetApiSpecificId( "GPAV", 0, 0x40000000, 0x80000203, 0, 0, "Intel Performance Counters for GT Set Dynamic", 0, "Intel_Raw_Hardware_Counters_Set_0_Query", 0 ) );
@@ -27655,7 +27596,6 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
     {
         TCompletionCode ret                  = CC_OK;
         CMetric*        metric               = nullptr;
-        CInformation*   information          = nullptr;
         const char*     availabilityEquation = nullptr;
         m_params.InformationCount            = m_concurrentGroup->GetInformationCount();
         MD_CHECK_CC( SetApiSpecificId( "GPAV", 0, 0x40000000, 0x80000203, 0, 0, "Intel Performance Counters for GT Set Dynamic", 0, "Intel_Raw_Hardware_Counters_Set_0_Query", 0 ) );
@@ -27895,7 +27835,6 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
     {
         TCompletionCode ret                  = CC_OK;
         CMetric*        metric               = nullptr;
-        CInformation*   information          = nullptr;
         const char*     availabilityEquation = nullptr;
         m_params.InformationCount            = m_concurrentGroup->GetInformationCount();
         MD_CHECK_CC( SetApiSpecificId( "GPAV", 0, 0x40000000, 0x80000203, 0, 0, "Intel Performance Counters for GT Set Dynamic", 0, "Intel_Raw_Hardware_Counters_Set_0_Query", 0 ) );
@@ -28135,7 +28074,6 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
     {
         TCompletionCode ret                  = CC_OK;
         CMetric*        metric               = nullptr;
-        CInformation*   information          = nullptr;
         const char*     availabilityEquation = nullptr;
         m_params.InformationCount            = m_concurrentGroup->GetInformationCount();
         MD_CHECK_CC( SetApiSpecificId( "GPAV", 0, 0x40000000, 0x80000203, 0, 0, "Intel Performance Counters for GT Set Dynamic", 0, "Intel_Raw_Hardware_Counters_Set_0_Query", 0 ) );
@@ -28375,7 +28313,6 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
     {
         TCompletionCode ret                  = CC_OK;
         CMetric*        metric               = nullptr;
-        CInformation*   information          = nullptr;
         const char*     availabilityEquation = nullptr;
         m_params.InformationCount            = m_concurrentGroup->GetInformationCount();
         MD_CHECK_CC( SetApiSpecificId( "GPAV", 0, 0x40000000, 0x80000203, 0, 0, "Intel Performance Counters for GT Set Dynamic", 0, "Intel_Raw_Hardware_Counters_Set_0_Query", 0 ) );
@@ -28512,7 +28449,6 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
     {
         TCompletionCode ret                  = CC_OK;
         CMetric*        metric               = nullptr;
-        CInformation*   information          = nullptr;
         const char*     availabilityEquation = nullptr;
         m_params.InformationCount            = m_concurrentGroup->GetInformationCount();
         MD_CHECK_CC( SetApiSpecificId( "GPAV", 0, 0x40000000, 0x80000203, 0, 0, "Intel Performance Counters for GT Set Dynamic", 0, "Intel_Raw_Hardware_Counters_Set_0_Query", 0 ) );
@@ -28651,7 +28587,6 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
     {
         TCompletionCode ret                  = CC_OK;
         CMetric*        metric               = nullptr;
-        CInformation*   information          = nullptr;
         const char*     availabilityEquation = nullptr;
         m_params.InformationCount            = m_concurrentGroup->GetInformationCount();
         MD_CHECK_CC( SetApiSpecificId( "GPAV", 0, 0x40000000, 0x80000203, 0, 0, "Intel Performance Counters for GT Set Dynamic", 0, "Intel_Raw_Hardware_Counters_Set_0_Query", 0 ) );
@@ -28804,7 +28739,6 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
     {
         TCompletionCode ret                  = CC_OK;
         CMetric*        metric               = nullptr;
-        CInformation*   information          = nullptr;
         const char*     availabilityEquation = nullptr;
         m_params.InformationCount            = m_concurrentGroup->GetInformationCount();
         MD_CHECK_CC( SetApiSpecificId( "GPAV", 0, 0x40000000, 0x80000203, 0, 0, "Intel Performance Counters for GT Set Dynamic", 0, "Intel_Raw_Hardware_Counters_Set_0_Query", 0 ) );
@@ -28959,7 +28893,6 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
     {
         TCompletionCode ret                  = CC_OK;
         CMetric*        metric               = nullptr;
-        CInformation*   information          = nullptr;
         const char*     availabilityEquation = nullptr;
         m_params.InformationCount            = m_concurrentGroup->GetInformationCount();
         MD_CHECK_CC( SetApiSpecificId( "GPAV", 0, 0x40000000, 0x80000203, 0, 0, "Intel Performance Counters for GT Set Dynamic", 0, "Intel_Raw_Hardware_Counters_Set_0_Query", 0 ) );
@@ -29086,7 +29019,6 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
     {
         TCompletionCode ret                  = CC_OK;
         CMetric*        metric               = nullptr;
-        CInformation*   information          = nullptr;
         const char*     availabilityEquation = nullptr;
         m_params.InformationCount            = m_concurrentGroup->GetInformationCount();
         MD_CHECK_CC( SetApiSpecificId( "GPAV", 0, 0x40000000, 0x80000203, 0, 0, "Intel Performance Counters for GT Set Dynamic", 0, "Intel_Raw_Hardware_Counters_Set_0_Query", 0 ) );
@@ -29213,7 +29145,6 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
     {
         TCompletionCode ret                  = CC_OK;
         CMetric*        metric               = nullptr;
-        CInformation*   information          = nullptr;
         const char*     availabilityEquation = nullptr;
         m_params.InformationCount            = m_concurrentGroup->GetInformationCount();
         MD_CHECK_CC( SetApiSpecificId( "GPAV", 0, 0x40000000, 0x80000203, 0, 0, "Intel Performance Counters for GT Set Dynamic", 0, "Intel_Raw_Hardware_Counters_Set_0_Query", 0 ) );
@@ -29347,7 +29278,6 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
     {
         TCompletionCode ret                  = CC_OK;
         CMetric*        metric               = nullptr;
-        CInformation*   information          = nullptr;
         const char*     availabilityEquation = nullptr;
         m_params.InformationCount            = m_concurrentGroup->GetInformationCount();
         MD_CHECK_CC( SetApiSpecificId( "GPAV", 0, 0x40000000, 0x80000203, 0, 0, "Intel Performance Counters for GT Set Dynamic", 0, "Intel_Raw_Hardware_Counters_Set_0_Query", 0 ) );
@@ -29481,7 +29411,6 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
     {
         TCompletionCode ret                  = CC_OK;
         CMetric*        metric               = nullptr;
-        CInformation*   information          = nullptr;
         const char*     availabilityEquation = nullptr;
         m_params.InformationCount            = m_concurrentGroup->GetInformationCount();
         MD_CHECK_CC( SetApiSpecificId( "GPAV", 0, 0x40000000, 0x80000203, 0, 0, "Intel Performance Counters for GT Set Dynamic", 0, "Intel_Raw_Hardware_Counters_Set_0_Query", 0 ) );
@@ -29624,7 +29553,6 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
     {
         TCompletionCode ret                  = CC_OK;
         CMetric*        metric               = nullptr;
-        CInformation*   information          = nullptr;
         const char*     availabilityEquation = nullptr;
         m_params.InformationCount            = m_concurrentGroup->GetInformationCount();
         MD_CHECK_CC( SetApiSpecificId( "GPAV", 0, 0x40000000, 0x80000203, 0, 0, "Intel Performance Counters for GT Set Dynamic", 0, "Intel_Raw_Hardware_Counters_Set_0_Query", 0 ) );
@@ -29767,7 +29695,6 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
     {
         TCompletionCode ret                  = CC_OK;
         CMetric*        metric               = nullptr;
-        CInformation*   information          = nullptr;
         const char*     availabilityEquation = nullptr;
         m_params.InformationCount            = m_concurrentGroup->GetInformationCount();
         MD_CHECK_CC( SetApiSpecificId( "GPAV", 0, 0x40000000, 0x80000203, 0, 0, "Intel Performance Counters for GT Set Dynamic", 0, "Intel_Raw_Hardware_Counters_Set_0_Query", 0 ) );
@@ -29917,7 +29844,6 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
     {
         TCompletionCode ret                  = CC_OK;
         CMetric*        metric               = nullptr;
-        CInformation*   information          = nullptr;
         const char*     availabilityEquation = nullptr;
         m_params.InformationCount            = m_concurrentGroup->GetInformationCount();
         MD_CHECK_CC( SetApiSpecificId( "GPAV", 0, 0x40000000, 0x80000203, 0, 0, "Intel Performance Counters for GT Set Dynamic", 0, "Intel_Raw_Hardware_Counters_Set_0_Query", 0 ) );
@@ -30067,7 +29993,6 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
     {
         TCompletionCode ret                  = CC_OK;
         CMetric*        metric               = nullptr;
-        CInformation*   information          = nullptr;
         const char*     availabilityEquation = nullptr;
         m_params.InformationCount            = m_concurrentGroup->GetInformationCount();
         MD_CHECK_CC( SetApiSpecificId( "GPAV", 0, 0x40000000, 0x80000203, 0, 0, "Intel Performance Counters for GT Set Dynamic", 0, "Intel_Raw_Hardware_Counters_Set_0_Query", 0 ) );
@@ -30194,7 +30119,6 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
     {
         TCompletionCode ret                  = CC_OK;
         CMetric*        metric               = nullptr;
-        CInformation*   information          = nullptr;
         const char*     availabilityEquation = nullptr;
         m_params.InformationCount            = m_concurrentGroup->GetInformationCount();
         MD_CHECK_CC( SetApiSpecificId( "GPAV", 0, 0x40000000, 0x80000203, 0, 0, "Intel Performance Counters for GT Set Dynamic", 0, "Intel_Raw_Hardware_Counters_Set_0_Query", 0 ) );
@@ -30328,7 +30252,6 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
     {
         TCompletionCode ret                  = CC_OK;
         CMetric*        metric               = nullptr;
-        CInformation*   information          = nullptr;
         const char*     availabilityEquation = nullptr;
         m_params.InformationCount            = m_concurrentGroup->GetInformationCount();
         MD_CHECK_CC( SetApiSpecificId( "GPAV", 0, 0x40000000, 0x80000203, 0, 0, "Intel Performance Counters for GT Set Dynamic", 0, "Intel_Raw_Hardware_Counters_Set_0_Query", 0 ) );
@@ -30471,7 +30394,6 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
     {
         TCompletionCode ret                  = CC_OK;
         CMetric*        metric               = nullptr;
-        CInformation*   information          = nullptr;
         const char*     availabilityEquation = nullptr;
         m_params.InformationCount            = m_concurrentGroup->GetInformationCount();
         MD_CHECK_CC( SetApiSpecificId( "GPAV", 0, 0x40000000, 0x80000203, 0, 0, "Intel Performance Counters for GT Set Dynamic", 0, "Intel_Raw_Hardware_Counters_Set_0_Query", 0 ) );
@@ -30621,7 +30543,6 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
     {
         TCompletionCode ret                  = CC_OK;
         CMetric*        metric               = nullptr;
-        CInformation*   information          = nullptr;
         const char*     availabilityEquation = nullptr;
         m_params.InformationCount            = m_concurrentGroup->GetInformationCount();
         MD_CHECK_CC( SetApiSpecificId( "GPAV", 0, 0x40000000, 0x80000203, 0, 0, "Intel Performance Counters for GT Set Dynamic", 0, "Intel_Raw_Hardware_Counters_Set_0_Query", 0 ) );
@@ -30667,8 +30588,8 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
                           METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, "PS|FS", nullptr, 3 );
         if( metric )
         {
-            MD_CHECK_CC( ( metric->SetSnapshotReportReadEquation( "dw@0xfc" ) ) );
-            MD_CHECK_CC( ( metric->SetDeltaReportReadEquation( "qw@0x1b8" ) ) );
+            MD_CHECK_CC( ( metric->SetSnapshotReportReadEquation( "dw@0xf0" ) ) );
+            MD_CHECK_CC( ( metric->SetDeltaReportReadEquation( "qw@0x1a0" ) ) );
             MD_CHECK_CC( ( metric->SetNormalizationEquation( "GpuDuration" ) ) );
             MD_CHECK_CC( ( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ) ) );
             MD_CHECK_CC( ( metric->SetMaxValueEquation( "100" ) ) );
@@ -30681,8 +30602,8 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
                           METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, "PS|FS", nullptr, 4 );
         if( metric )
         {
-            MD_CHECK_CC( ( metric->SetSnapshotReportReadEquation( "dw@0xf8" ) ) );
-            MD_CHECK_CC( ( metric->SetDeltaReportReadEquation( "qw@0x1b0" ) ) );
+            MD_CHECK_CC( ( metric->SetSnapshotReportReadEquation( "dw@0xf4" ) ) );
+            MD_CHECK_CC( ( metric->SetDeltaReportReadEquation( "qw@0x1a8" ) ) );
             MD_CHECK_CC( ( metric->SetNormalizationEquation( "GpuDuration" ) ) );
             MD_CHECK_CC( ( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ) ) );
             MD_CHECK_CC( ( metric->SetMaxValueEquation( "100" ) ) );
@@ -30695,8 +30616,8 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
                           METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, "PS|FS", nullptr, 5 );
         if( metric )
         {
-            MD_CHECK_CC( ( metric->SetSnapshotReportReadEquation( "dw@0xf4" ) ) );
-            MD_CHECK_CC( ( metric->SetDeltaReportReadEquation( "qw@0x1a8" ) ) );
+            MD_CHECK_CC( ( metric->SetSnapshotReportReadEquation( "dw@0xf8" ) ) );
+            MD_CHECK_CC( ( metric->SetDeltaReportReadEquation( "qw@0x1b0" ) ) );
             MD_CHECK_CC( ( metric->SetNormalizationEquation( "GpuDuration" ) ) );
             MD_CHECK_CC( ( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ) ) );
             MD_CHECK_CC( ( metric->SetMaxValueEquation( "100" ) ) );
@@ -30709,8 +30630,8 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
                           METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, "PS|FS", nullptr, 6 );
         if( metric )
         {
-            MD_CHECK_CC( ( metric->SetSnapshotReportReadEquation( "dw@0xf0" ) ) );
-            MD_CHECK_CC( ( metric->SetDeltaReportReadEquation( "qw@0x1a0" ) ) );
+            MD_CHECK_CC( ( metric->SetSnapshotReportReadEquation( "dw@0xfc" ) ) );
+            MD_CHECK_CC( ( metric->SetDeltaReportReadEquation( "qw@0x1b8" ) ) );
             MD_CHECK_CC( ( metric->SetNormalizationEquation( "GpuDuration" ) ) );
             MD_CHECK_CC( ( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ) ) );
             MD_CHECK_CC( ( metric->SetMaxValueEquation( "100" ) ) );
@@ -30723,8 +30644,8 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
                           METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, "PS|FS", nullptr, 7 );
         if( metric )
         {
-            MD_CHECK_CC( ( metric->SetSnapshotReportReadEquation( "dw@0xec" ) ) );
-            MD_CHECK_CC( ( metric->SetDeltaReportReadEquation( "qw@0x198" ) ) );
+            MD_CHECK_CC( ( metric->SetSnapshotReportReadEquation( "dw@0xe0" ) ) );
+            MD_CHECK_CC( ( metric->SetDeltaReportReadEquation( "qw@0x180" ) ) );
             MD_CHECK_CC( ( metric->SetNormalizationEquation( "GpuDuration" ) ) );
             MD_CHECK_CC( ( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ) ) );
             MD_CHECK_CC( ( metric->SetMaxValueEquation( "100" ) ) );
@@ -30737,8 +30658,8 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
                           METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, "PS|FS", nullptr, 8 );
         if( metric )
         {
-            MD_CHECK_CC( ( metric->SetSnapshotReportReadEquation( "dw@0xe8" ) ) );
-            MD_CHECK_CC( ( metric->SetDeltaReportReadEquation( "qw@0x190" ) ) );
+            MD_CHECK_CC( ( metric->SetSnapshotReportReadEquation( "dw@0xe4" ) ) );
+            MD_CHECK_CC( ( metric->SetDeltaReportReadEquation( "qw@0x188" ) ) );
             MD_CHECK_CC( ( metric->SetNormalizationEquation( "GpuDuration" ) ) );
             MD_CHECK_CC( ( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ) ) );
             MD_CHECK_CC( ( metric->SetMaxValueEquation( "100" ) ) );
@@ -30751,8 +30672,8 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
                           METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, "PS|FS", nullptr, 9 );
         if( metric )
         {
-            MD_CHECK_CC( ( metric->SetSnapshotReportReadEquation( "dw@0xe4" ) ) );
-            MD_CHECK_CC( ( metric->SetDeltaReportReadEquation( "qw@0x188" ) ) );
+            MD_CHECK_CC( ( metric->SetSnapshotReportReadEquation( "dw@0xe8" ) ) );
+            MD_CHECK_CC( ( metric->SetDeltaReportReadEquation( "qw@0x190" ) ) );
             MD_CHECK_CC( ( metric->SetNormalizationEquation( "GpuDuration" ) ) );
             MD_CHECK_CC( ( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ) ) );
             MD_CHECK_CC( ( metric->SetMaxValueEquation( "100" ) ) );
@@ -30765,8 +30686,8 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
                           METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, "PS|FS", nullptr, 10 );
         if( metric )
         {
-            MD_CHECK_CC( ( metric->SetSnapshotReportReadEquation( "dw@0xe0" ) ) );
-            MD_CHECK_CC( ( metric->SetDeltaReportReadEquation( "qw@0x180" ) ) );
+            MD_CHECK_CC( ( metric->SetSnapshotReportReadEquation( "dw@0xec" ) ) );
+            MD_CHECK_CC( ( metric->SetDeltaReportReadEquation( "qw@0x198" ) ) );
             MD_CHECK_CC( ( metric->SetNormalizationEquation( "GpuDuration" ) ) );
             MD_CHECK_CC( ( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ) ) );
             MD_CHECK_CC( ( metric->SetMaxValueEquation( "100" ) ) );
@@ -30778,59 +30699,59 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
             AddStartConfigRegister( 0x0d04, 0x00000200, REGISTER_TYPE_NOA );
             AddStartConfigRegister( 0x9884, 0x00000008, REGISTER_TYPE_NOA );
             AddStartConfigRegister( 0x9888, 0x2a070000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x02023030, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x0204d0d0, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x06070006, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x120708c0, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x16070880, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x08070000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x02070000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x02083030, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9884, 0x00000009, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x2a070000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x02043030, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x06070006, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x12070023, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x16070022, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x08070000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x02070000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9884, 0x0000000a, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x2a070000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x02020303, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x02040d0d, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x06070006, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x100708c0, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x14070880, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x08070000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x02070000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x02080303, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9884, 0x0000000b, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x2a070000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x02040303, REGISTER_TYPE_NOA );
+            AddStartConfigRegister( 0x9888, 0x02020c0c, REGISTER_TYPE_NOA );
+            AddStartConfigRegister( 0x9888, 0x02040707, REGISTER_TYPE_NOA );
             AddStartConfigRegister( 0x9888, 0x06070006, REGISTER_TYPE_NOA );
             AddStartConfigRegister( 0x9888, 0x10070023, REGISTER_TYPE_NOA );
             AddStartConfigRegister( 0x9888, 0x14070022, REGISTER_TYPE_NOA );
             AddStartConfigRegister( 0x9888, 0x08070000, REGISTER_TYPE_NOA );
             AddStartConfigRegister( 0x9888, 0x02070000, REGISTER_TYPE_NOA );
+            AddStartConfigRegister( 0x9888, 0x02080c0c, REGISTER_TYPE_NOA );
+            AddStartConfigRegister( 0x9884, 0x00000009, REGISTER_TYPE_NOA );
+            AddStartConfigRegister( 0x9888, 0x2a070000, REGISTER_TYPE_NOA );
+            AddStartConfigRegister( 0x9888, 0x02040c0c, REGISTER_TYPE_NOA );
+            AddStartConfigRegister( 0x9888, 0x06070006, REGISTER_TYPE_NOA );
+            AddStartConfigRegister( 0x9888, 0x100708c0, REGISTER_TYPE_NOA );
+            AddStartConfigRegister( 0x9888, 0x14070880, REGISTER_TYPE_NOA );
+            AddStartConfigRegister( 0x9888, 0x08070000, REGISTER_TYPE_NOA );
+            AddStartConfigRegister( 0x9888, 0x02070000, REGISTER_TYPE_NOA );
+            AddStartConfigRegister( 0x9884, 0x0000000a, REGISTER_TYPE_NOA );
+            AddStartConfigRegister( 0x9888, 0x2a070000, REGISTER_TYPE_NOA );
+            AddStartConfigRegister( 0x9888, 0x0202c0c0, REGISTER_TYPE_NOA );
+            AddStartConfigRegister( 0x9888, 0x02047070, REGISTER_TYPE_NOA );
+            AddStartConfigRegister( 0x9888, 0x06070006, REGISTER_TYPE_NOA );
+            AddStartConfigRegister( 0x9888, 0x12070023, REGISTER_TYPE_NOA );
+            AddStartConfigRegister( 0x9888, 0x16070022, REGISTER_TYPE_NOA );
+            AddStartConfigRegister( 0x9888, 0x08070000, REGISTER_TYPE_NOA );
+            AddStartConfigRegister( 0x9888, 0x02070000, REGISTER_TYPE_NOA );
+            AddStartConfigRegister( 0x9888, 0x0208c0c0, REGISTER_TYPE_NOA );
+            AddStartConfigRegister( 0x9884, 0x0000000b, REGISTER_TYPE_NOA );
+            AddStartConfigRegister( 0x9888, 0x2a070000, REGISTER_TYPE_NOA );
+            AddStartConfigRegister( 0x9888, 0x0204c0c0, REGISTER_TYPE_NOA );
+            AddStartConfigRegister( 0x9888, 0x06070006, REGISTER_TYPE_NOA );
+            AddStartConfigRegister( 0x9888, 0x120708c0, REGISTER_TYPE_NOA );
+            AddStartConfigRegister( 0x9888, 0x16070880, REGISTER_TYPE_NOA );
+            AddStartConfigRegister( 0x9888, 0x08070000, REGISTER_TYPE_NOA );
+            AddStartConfigRegister( 0x9888, 0x02070000, REGISTER_TYPE_NOA );
             AddStartConfigRegister( 0x9884, 0x00000000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x02130a0a, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x02140505, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x02150505, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x02160505, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x02170a0a, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x000c3300, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x000e3300, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x020d0a0a, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x02060a0a, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x0201fafa, REGISTER_TYPE_NOA );
+            AddStartConfigRegister( 0x9888, 0x0213a0a0, REGISTER_TYPE_NOA );
+            AddStartConfigRegister( 0x9888, 0x02145050, REGISTER_TYPE_NOA );
+            AddStartConfigRegister( 0x9888, 0x02155050, REGISTER_TYPE_NOA );
+            AddStartConfigRegister( 0x9888, 0x02165050, REGISTER_TYPE_NOA );
+            AddStartConfigRegister( 0x9888, 0x0217a0a0, REGISTER_TYPE_NOA );
+            AddStartConfigRegister( 0x9888, 0x000ccc00, REGISTER_TYPE_NOA );
+            AddStartConfigRegister( 0x9888, 0x000ecc00, REGISTER_TYPE_NOA );
+            AddStartConfigRegister( 0x9888, 0x020da0a0, REGISTER_TYPE_NOA );
+            AddStartConfigRegister( 0x9888, 0x0206a0a0, REGISTER_TYPE_NOA );
+            AddStartConfigRegister( 0x9888, 0x0201afaf, REGISTER_TYPE_NOA );
             AddStartConfigRegister( 0x9888, 0x06010000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x60010000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x62010030, REGISTER_TYPE_NOA );
+            AddStartConfigRegister( 0x9888, 0x60010220, REGISTER_TYPE_NOA );
+            AddStartConfigRegister( 0x9888, 0x62010090, REGISTER_TYPE_NOA );
             AddStartConfigRegister( 0x9888, 0x4e010000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x50010229, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x52010000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x54011203, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x56010011, REGISTER_TYPE_NOA );
+            AddStartConfigRegister( 0x9888, 0x50010003, REGISTER_TYPE_NOA );
+            AddStartConfigRegister( 0x9888, 0x52010011, REGISTER_TYPE_NOA );
+            AddStartConfigRegister( 0x9888, 0x54010609, REGISTER_TYPE_NOA );
+            AddStartConfigRegister( 0x9888, 0x56010000, REGISTER_TYPE_NOA );
             AddStartConfigRegister( 0x9884, 0x00000000, REGISTER_TYPE_NOA );
             AddStartConfigRegister( 0x9888, 0x74010002, REGISTER_TYPE_NOA );
             AddStartConfigRegister( 0xd900, 0x00000000, REGISTER_TYPE_OA );
@@ -30858,7 +30779,6 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
     {
         TCompletionCode ret                  = CC_OK;
         CMetric*        metric               = nullptr;
-        CInformation*   information          = nullptr;
         const char*     availabilityEquation = nullptr;
         m_params.InformationCount            = m_concurrentGroup->GetInformationCount();
         MD_CHECK_CC( SetApiSpecificId( "GPAV", 0, 0x40000000, 0x80000203, 0, 0, "Intel Performance Counters for GT Set Dynamic", 0, "Intel_Raw_Hardware_Counters_Set_0_Query", 0 ) );
@@ -30900,7 +30820,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "XVE_ACTIVE", "XVE Active",
                           "Percentage of time in which at least one pipe is active in XVE",
-                          "EU Array", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ), USAGE_FLAG_TIER_2 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_2 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
                           METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 3 );
         if( metric )
         {
@@ -30914,7 +30834,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "XVE_STALL", "XVE Stall",
                           "Percentage of time in which any threads are loaded but not even a single pipe is active in XVE",
-                          "EU Array", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ), USAGE_FLAG_TIER_2 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_2 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
                           METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 4 );
         if( metric )
         {
@@ -30928,7 +30848,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "XVE_THREADS_OCCUPANCY_ALL", "XVE Threads Occupancy All",
                           "Percentage of thread slots occupied",
-                          "EU Array", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ), USAGE_FLAG_TIER_2 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_2 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
                           METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 5 );
         if( metric )
         {
@@ -30942,7 +30862,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "XVE_INST_EXECUTED_ALU0_ALL", "XVE Inst Executed ALU0 All",
                           "Number of execution slots taken by instructions executed on ALU0 pipe",
-                          "EU Array/Pipes", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_EU_PIPES * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
                           METRIC_TYPE_EVENT, RESULT_UINT64, "events", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 6 );
         if( metric )
         {
@@ -30956,7 +30876,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "XVE_INST_EXECUTED_ALU1_ALL", "XVE Inst Executed ALU1 All",
                           "Number of execution slots taken by instructions executed on ALU1 pipe",
-                          "EU Array/Pipes", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_EU_PIPES * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
                           METRIC_TYPE_EVENT, RESULT_UINT64, "events", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 7 );
         if( metric )
         {
@@ -30970,7 +30890,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "XVE_INST_EXECUTED_XMX_ALL", "XVE Inst Executed XMX All",
                           "Number of execution slots taken by instructions executed in XMX pipe",
-                          "EU Array/Pipes", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_EU_PIPES * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
                           METRIC_TYPE_EVENT, RESULT_UINT64, "events", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 8 );
         if( metric )
         {
@@ -30984,7 +30904,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "XVE_INST_EXECUTED_SEND_ALL", "XVE Inst Executed Send All",
                           "Number of instructions executed on SEND pipe",
-                          "EU Array/Pipes", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_EU_PIPES * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
                           METRIC_TYPE_EVENT, RESULT_UINT64, "events", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 9 );
         if( metric )
         {
@@ -30998,7 +30918,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "XVE_INST_EXECUTED_CONTROL_ALL", "XVE Inst Executed Control All",
                           "Number of instructions executed on Jump Pipe",
-                          "EU Array", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
                           METRIC_TYPE_EVENT, RESULT_UINT64, "events", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 10 );
         if( metric )
         {
@@ -31012,7 +30932,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "XVE_PIPE_ALU0_AND_ALU1_ACTIVE", "XVE Pipe ALU0 And ALU1 Active",
                           "Percentage of time in which ALU0 and ALU1 pipes are both actively executing a Gen ISA instruction",
-                          "EU Array/Pipes", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_EU_PIPES * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
                           METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 11 );
         if( metric )
         {
@@ -31026,7 +30946,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "XVE_PIPE_ALU0_AND_XMX_ACTIVE", "XVE Pipe ALU0 And XMX Active",
                           "Percentage of time in which ALU0 and XMX pipes are both actively executing a Gen ISA instruction",
-                          "EU Array/Pipes", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_EU_PIPES * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
                           METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 12 );
         if( metric )
         {
@@ -31040,7 +30960,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "XVE_INST_EXECUTED_ALU0_ALL_UTILIZATION", "XVE Inst Executed ALU0 All Utilization",
                           "Percentage of execution slots taken by instructions executed on ALU0 pipe",
-                          "EU Array/Pipes", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_EU_PIPES * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
                           METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 13 );
         if( metric )
         {
@@ -31054,7 +30974,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "XVE_INST_EXECUTED_ALU1_ALL_UTILIZATION", "XVE Inst Executed ALU1 All Utilization",
                           "Percentage of execution slots taken by instructions executed on ALU1 pipe",
-                          "EU Array/Pipes", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_EU_PIPES * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
                           METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 14 );
         if( metric )
         {
@@ -31068,7 +30988,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "XVE_INST_EXECUTED_XMX_ALL_UTILIZATION", "XVE Inst Executed XMX All Utilization",
                           "Percentage of execution slots taken by instructions executed in XMX pipe",
-                          "EU Array/Pipes", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_EU_PIPES * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
                           METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 15 );
         if( metric )
         {
@@ -31082,7 +31002,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "XVE_INST_EXECUTED_SEND_ALL_UTILIZATION", "XVE Inst Executed Send All Utilization",
                           "Percentage of time taken by instructions executed on SEND pipe",
-                          "EU Array/Pipes", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_EU_PIPES * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
                           METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 16 );
         if( metric )
         {
@@ -31096,7 +31016,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "XVE_INST_EXECUTED_CONTROL_ALL_UTILIZATION", "XVE Inst Executed Control All Utilization",
                           "Percentage of time taken by instructions executed on Jump Pipe",
-                          "EU Array", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
                           METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 17 );
         if( metric )
         {
@@ -31110,7 +31030,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "XVE_ACTIVE_CYCLES", "XVE Active Cycles",
                           "Number of cycles at least one pipe is active in XVE",
-                          "EU Array", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ), USAGE_FLAG_TIER_2 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_2 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
                           METRIC_TYPE_EVENT, RESULT_UINT64, "events", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 18 );
         if( metric )
         {
@@ -31121,7 +31041,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "XVE_STALL_CYCLES", "XVE Stall Cycles",
                           "Number of cycles any threads are loaded but not even a single pipe is active in XVE",
-                          "EU Array", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ), USAGE_FLAG_TIER_2 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_2 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
                           METRIC_TYPE_EVENT, RESULT_UINT64, "events", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 19 );
         if( metric )
         {
@@ -31132,7 +31052,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "XVE_THREADS_OCCUPANCY_CYCLES_ALL", "XVE Threads Occupancy Cycles All",
                           "Number of thread slots occupied",
-                          "EU Array", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ), USAGE_FLAG_TIER_2 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_2 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
                           METRIC_TYPE_EVENT, RESULT_UINT64, "events", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 20 );
         if( metric )
         {
@@ -31146,7 +31066,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "XVE_PIPE_ALU0_AND_ALU1_ACTIVE_CYCLES", "XVE Pipe ALU0 And ALU1 Active Cycles",
                           "Number of cycles in ALU0 and ALU1 pipes are both actively executing a Gen ISA instruction",
-                          "EU Array/Pipes", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_EU_PIPES * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
                           METRIC_TYPE_EVENT, RESULT_UINT64, "events", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 21 );
         if( metric )
         {
@@ -31157,7 +31077,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "XVE_PIPE_ALU0_AND_XMX_ACTIVE_CYCLES", "XVE Pipe ALU0 And XMX Active Cycles",
                           "Number of cycles ALU0 and XMX pipes are both actively executing a Gen ISA instruction",
-                          "EU Array/Pipes", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_EU_PIPES * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
                           METRIC_TYPE_EVENT, RESULT_UINT64, "events", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 22 );
         if( metric )
         {
@@ -31198,7 +31118,6 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
     {
         TCompletionCode ret                  = CC_OK;
         CMetric*        metric               = nullptr;
-        CInformation*   information          = nullptr;
         const char*     availabilityEquation = nullptr;
         m_params.InformationCount            = m_concurrentGroup->GetInformationCount();
         MD_CHECK_CC( SetApiSpecificId( "GPAV", 0, 0x40000000, 0x80000203, 0, 0, "Intel Performance Counters for GT Set Dynamic", 0, "Intel_Raw_Hardware_Counters_Set_0_Query", 0 ) );
@@ -31240,7 +31159,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "XVE_INST_EXECUTED_ALU0_VS", "XVE Inst Executed ALU0 VS",
                           "Number of execution slots taken by instructions executed by Vertex Shader on ALU0 pipe",
-                          "EU Array/Vertex Shader", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_VS * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
                           METRIC_TYPE_EVENT, RESULT_UINT64, "events", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 3 );
         if( metric )
         {
@@ -31254,7 +31173,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "XVE_INST_EXECUTED_ALU0_HS", "XVE Inst Executed ALU0 HS",
                           "Number of execution slots taken by instructions executed by Hull Shader on ALU0 pipe",
-                          "EU Array/Hull Shader", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_HS * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
                           METRIC_TYPE_EVENT, RESULT_UINT64, "events", 0, 0, HW_UNIT_GPU, availabilityEquation, "Hull|Control,HS|TCS", nullptr, 4 );
         if( metric )
         {
@@ -31268,7 +31187,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "XVE_INST_EXECUTED_ALU0_DS", "XVE Inst Executed ALU0 DS",
                           "Number of execution slots taken by instructions executed by Domain Shader on ALU0 pipe",
-                          "EU Array/Domain Shader", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_DS * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
                           METRIC_TYPE_EVENT, RESULT_UINT64, "events", 0, 0, HW_UNIT_GPU, availabilityEquation, "Domain|Evaluation,DS|TES", nullptr, 5 );
         if( metric )
         {
@@ -31282,7 +31201,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "XVE_INST_EXECUTED_ALU0_PS", "XVE Inst Executed ALU0 PS",
                           "Number of execution slots taken by instructions executed by Pixel Shader on ALU0 pipe",
-                          "EU Array/Pixel Shader", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_PS * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
                           METRIC_TYPE_EVENT, RESULT_UINT64, "events", 0, 0, HW_UNIT_GPU, availabilityEquation, "Pixel|Fragment,PS|FS", nullptr, 6 );
         if( metric )
         {
@@ -31296,7 +31215,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "XVE_INST_EXECUTED_ALU0_CS", "XVE Inst Executed ALU0 CS",
                           "Number of execution slots taken by instructions executed by Compute Shader (from Render Engine) on ALU0 pipe",
-                          "EU Array/Compute Shader", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_CS * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
                           METRIC_TYPE_EVENT, RESULT_UINT64, "events", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 7 );
         if( metric )
         {
@@ -31310,7 +31229,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "XVE_INST_EXECUTED_ALU0_ASYNC_CS", "XVE Inst Executed ALU0 Async CS",
                           "Number of execution slots taken by instructions executed by Async Compute Shader on ALU0 pipe",
-                          "EU Array/Compute Shader", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_CS * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
                           METRIC_TYPE_EVENT, RESULT_UINT64, "events", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 8 );
         if( metric )
         {
@@ -31324,7 +31243,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "XVE_INST_EXECUTED_ALU1_VS", "XVE Inst Executed ALU1 VS",
                           "Number of execution slots taken by instructions executed by Vertex Shader on ALU1 pipe",
-                          "EU Array/Vertex Shader", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_VS * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
                           METRIC_TYPE_EVENT, RESULT_UINT64, "events", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 9 );
         if( metric )
         {
@@ -31338,7 +31257,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "XVE_INST_EXECUTED_ALU1_HS", "XVE Inst Executed ALU1 HS",
                           "Number of execution slots taken by instructions executed by Hull Shader on ALU1 pipe",
-                          "EU Array/Hull Shader", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_HS * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
                           METRIC_TYPE_EVENT, RESULT_UINT64, "events", 0, 0, HW_UNIT_GPU, availabilityEquation, "Hull|Control,HS|TCS", nullptr, 10 );
         if( metric )
         {
@@ -31352,7 +31271,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "XVE_INST_EXECUTED_ALU1_DS", "XVE Inst Executed ALU1 DS",
                           "Number of execution slots taken by instructions executed by Domain Shader on ALU1 pipe",
-                          "EU Array/Domain Shader", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_DS * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
                           METRIC_TYPE_EVENT, RESULT_UINT64, "events", 0, 0, HW_UNIT_GPU, availabilityEquation, "Domain|Evaluation,DS|TES", nullptr, 11 );
         if( metric )
         {
@@ -31366,7 +31285,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "XVE_INST_EXECUTED_ALU1_PS", "XVE Inst Executed ALU1 PS",
                           "Number of execution slots taken by instructions executed by Pixel Shader on ALU1 pipe",
-                          "EU Array/Pixel Shader", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_PS * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
                           METRIC_TYPE_EVENT, RESULT_UINT64, "events", 0, 0, HW_UNIT_GPU, availabilityEquation, "Pixel|Fragment,PS|FS", nullptr, 12 );
         if( metric )
         {
@@ -31380,7 +31299,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "XVE_INST_EXECUTED_ALU1_CS", "XVE Inst Executed ALU1 CS",
                           "Number of execution slots taken by instructions executed by Compute Shader (from Render Engine) on ALU1 pipe",
-                          "EU Array/Compute Shader", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_CS * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
                           METRIC_TYPE_EVENT, RESULT_UINT64, "events", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 13 );
         if( metric )
         {
@@ -31394,7 +31313,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "XVE_INST_EXECUTED_ALU1_ASYNC_CS", "XVE Inst Executed ALU1 Async CS",
                           "Number of execution slots taken by instructions executed by Async Compute Shader on ALU1 pipe",
-                          "EU Array/Compute Shader", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_CS * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
                           METRIC_TYPE_EVENT, RESULT_UINT64, "events", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 14 );
         if( metric )
         {
@@ -31408,7 +31327,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "XVE_INST_EXECUTED_ALU0_VS_UTILIZATION", "XVE Inst Executed ALU0 VS Utilization",
                           "Percentage of execution slots taken by instructions executed by Vertex Shader on ALU0 pipe",
-                          "EU Array/Vertex Shader", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_VS * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
                           METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 15 );
         if( metric )
         {
@@ -31422,7 +31341,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "XVE_INST_EXECUTED_ALU0_HS_UTILIZATION", "XVE Inst Executed ALU0 HS Utilization",
                           "Percentage of execution slots taken by instructions executed by Hull Shader on ALU0 pipe",
-                          "EU Array/Hull Shader", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_HS * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
                           METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, "Hull|Control,HS|TCS", nullptr, 16 );
         if( metric )
         {
@@ -31436,7 +31355,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "XVE_INST_EXECUTED_ALU0_DS_UTILIZATION", "XVE Inst Executed ALU0 DS Utilization",
                           "Percentage of execution slots taken by instructions executed by Domain Shader on ALU0 pipe",
-                          "EU Array/Domain Shader", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_DS * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
                           METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, "Domain|Evaluation,DS|TES", nullptr, 17 );
         if( metric )
         {
@@ -31450,7 +31369,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "XVE_INST_EXECUTED_ALU0_PS_UTILIZATION", "XVE Inst Executed ALU0 PS Utilization",
                           "Percentage of execution slots taken by instructions executed by Pixel Shader on ALU0 pipe",
-                          "EU Array/Pixel Shader", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_PS * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
                           METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, "Pixel|Fragment,PS|FS", nullptr, 18 );
         if( metric )
         {
@@ -31464,7 +31383,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "XVE_INST_EXECUTED_ALU0_CS_UTILIZATION", "XVE Inst Executed ALU0 CS Utilization",
                           "Percentage of execution slots taken by instructions executed by Compute Shader (from Render Engine) on ALU0 pipe",
-                          "EU Array/Compute Shader", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_CS * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
                           METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 19 );
         if( metric )
         {
@@ -31478,7 +31397,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "XVE_INST_EXECUTED_ALU0_ASYNC_CS_UTILIZATION", "XVE Inst Executed ALU0 Async CS Utilization",
                           "Percentage of execution slots taken by instructions executed by Async Compute Shader on ALU0 pipe",
-                          "EU Array/Compute Shader", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_CS * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
                           METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 20 );
         if( metric )
         {
@@ -31492,7 +31411,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "XVE_INST_EXECUTED_ALU1_VS_UTILIZATION", "XVE Inst Executed ALU1 VS Utilization",
                           "Percentage of execution slots taken by instructions executed by Vertex Shader on ALU1 pipe",
-                          "EU Array/Vertex Shader", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_VS * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
                           METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 21 );
         if( metric )
         {
@@ -31506,7 +31425,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "XVE_INST_EXECUTED_ALU1_HS_UTILIZATION", "XVE Inst Executed ALU1 HS Utilization",
                           "Percentage of execution slots taken by instructions executed by Hull Shader on ALU1 pipe",
-                          "EU Array/Hull Shader", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_HS * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
                           METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, "Hull|Control,HS|TCS", nullptr, 22 );
         if( metric )
         {
@@ -31520,7 +31439,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "XVE_INST_EXECUTED_ALU1_DS_UTILIZATION", "XVE Inst Executed ALU1 DS Utilization",
                           "Percentage of execution slots taken by instructions executed by Domain Shader on ALU1 pipe",
-                          "EU Array/Domain Shader", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_DS * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
                           METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, "Domain|Evaluation,DS|TES", nullptr, 23 );
         if( metric )
         {
@@ -31534,7 +31453,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "XVE_INST_EXECUTED_ALU1_PS_UTILIZATION", "XVE Inst Executed ALU1 PS Utilization",
                           "Percentage of execution slots taken by instructions executed by Pixel Shader on ALU1 pipe",
-                          "EU Array/Pixel Shader", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_PS * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
                           METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, "Pixel|Fragment,PS|FS", nullptr, 24 );
         if( metric )
         {
@@ -31548,7 +31467,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "XVE_INST_EXECUTED_ALU1_CS_UTILIZATION", "XVE Inst Executed ALU1 CS Utilization",
                           "Percentage of execution slots taken by instructions executed by Compute Shader (from Render Engine) on ALU1 pipe",
-                          "EU Array/Compute Shader", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_CS * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
                           METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 25 );
         if( metric )
         {
@@ -31562,7 +31481,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "XVE_INST_EXECUTED_ALU1_ASYNC_CS_UTILIZATION", "XVE Inst Executed ALU1 Async CS Utilization",
                           "Percentage of execution slots taken by instructions executed by Async Compute Shader on ALU1 pipe",
-                          "EU Array/Compute Shader", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_CS * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
                           METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 26 );
         if( metric )
         {
@@ -31607,7 +31526,6 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
     {
         TCompletionCode ret                  = CC_OK;
         CMetric*        metric               = nullptr;
-        CInformation*   information          = nullptr;
         const char*     availabilityEquation = nullptr;
         m_params.InformationCount            = m_concurrentGroup->GetInformationCount();
         MD_CHECK_CC( SetApiSpecificId( "GPAV", 0, 0x40000000, 0x80000203, 0, 0, "Intel Performance Counters for GT Set Dynamic", 0, "Intel_Raw_Hardware_Counters_Set_0_Query", 0 ) );
@@ -31649,7 +31567,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "XVE_INST_EXECUTED_ALU0_RT_AHS_UTILIZATION", "XVE Inst Executed ALU0 RT AHS Utilization",
                           "Percentage of execution slots taken by instructions executed by BTD Any Hit Shader on ALU0 pipe",
-                          "EU Array/Compute Shader", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_CS * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
                           METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, "HS|TCS", nullptr, 3 );
         if( metric )
         {
@@ -31663,7 +31581,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "XVE_INST_EXECUTED_ALU1_RT_AHS_UTILIZATION", "XVE Inst Executed ALU1 RT AHS Utilization",
                           "Percentage of execution slots taken by instructions executed by BTD Any Hit Shader on ALU1 pipe",
-                          "EU Array/Compute Shader", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_CS * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
                           METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, "HS|TCS", nullptr, 4 );
         if( metric )
         {
@@ -31677,7 +31595,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "XVE_INST_EXECUTED_SEND_RT_AHS_UTILIZATION", "XVE Inst Executed Send RT AHS Utilization",
                           "Percentage of time taken by instructions executed by BTD Any Hit Shader threads on SEND pipe",
-                          "EU Array/Compute Shader", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_CS * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
                           METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, "HS|TCS", nullptr, 5 );
         if( metric )
         {
@@ -31691,7 +31609,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "XVE_INST_EXECUTED_ALU0_RT_CHS_UTILIZATION", "XVE Inst Executed ALU0 RT CHS Utilization",
                           "Percentage of execution slots taken by instructions executed by BTD Closest Hit Shader on ALU0 pipe",
-                          "EU Array/Compute Shader", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_CS * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
                           METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, "HS|TCS", nullptr, 6 );
         if( metric )
         {
@@ -31705,7 +31623,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "XVE_INST_EXECUTED_ALU1_RT_CHS_UTILIZATION", "XVE Inst Executed ALU1 RT CHS Utilization",
                           "Percentage of execution slots taken by instructions executed by BTD Closest Hit Shader on ALU1 pipe",
-                          "EU Array/Compute Shader", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_CS * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
                           METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, "HS|TCS", nullptr, 7 );
         if( metric )
         {
@@ -31719,7 +31637,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "XVE_INST_EXECUTED_SEND_RT_CHS_UTILIZATION", "XVE Inst Executed Send RT CHS Utilization",
                           "Percentage of time taken by instructions executed by BTD Closest Hit Shader threads on SEND pipe",
-                          "EU Array/Compute Shader", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_CS * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
                           METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, "HS|TCS", nullptr, 8 );
         if( metric )
         {
@@ -31733,7 +31651,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "XVE_INST_EXECUTED_ALU0_RT_MS_UTILIZATION", "XVE Inst Executed ALU0 RT MS Utilization",
                           "Percentage of execution slots taken by instructions executed by BTD Miss Shader on ALU0 pipe",
-                          "EU Array/Compute Shader", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_CS * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
                           METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 9 );
         if( metric )
         {
@@ -31747,7 +31665,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "XVE_INST_EXECUTED_ALU1_RT_MS_UTILIZATION", "XVE Inst Executed ALU1 RT MS Utilization",
                           "Percentage of execution slots taken by instructions executed by BTD Miss Shader on ALU1 pipe",
-                          "EU Array/Compute Shader", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_CS * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
                           METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 10 );
         if( metric )
         {
@@ -31761,7 +31679,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "XVE_INST_EXECUTED_SEND_RT_MS_UTILIZATION", "XVE Inst Executed Send RT MS Utilization",
                           "Percentage of time taken by instructions executed by BTD Miss Shader threads on SEND pipe",
-                          "EU Array/Compute Shader", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_CS * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
                           METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 11 );
         if( metric )
         {
@@ -31775,7 +31693,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "XVE_INST_EXECUTED_ALU0_RT_AHS", "XVE Inst Executed ALU0 RT AHS",
                           "Number of execution slots taken by instructions executed by BTD Any Hit Shader on ALU0 pipe",
-                          "EU Array/Compute Shader", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_CS * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
                           METRIC_TYPE_EVENT, RESULT_UINT64, "events", 0, 0, HW_UNIT_GPU, availabilityEquation, "HS|TCS", nullptr, 12 );
         if( metric )
         {
@@ -31786,7 +31704,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "XVE_INST_EXECUTED_ALU1_RT_AHS", "XVE Inst Executed ALU1 RT AHS",
                           "Number of execution slots taken by instructions executed by BTD Any Hit Shader on ALU1 pipe",
-                          "EU Array/Compute Shader", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_CS * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
                           METRIC_TYPE_EVENT, RESULT_UINT64, "events", 0, 0, HW_UNIT_GPU, availabilityEquation, "HS|TCS", nullptr, 13 );
         if( metric )
         {
@@ -31797,7 +31715,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "XVE_INST_EXECUTED_SEND_RT_AHS", "XVE Inst Executed Send RT AHS",
                           "Number of instructions executed by BTD Any Hit Shader threads on SEND pipe",
-                          "EU Array/Compute Shader", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_CS * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
                           METRIC_TYPE_EVENT, RESULT_UINT64, "events", 0, 0, HW_UNIT_GPU, availabilityEquation, "HS|TCS", nullptr, 14 );
         if( metric )
         {
@@ -31808,7 +31726,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "XVE_INST_EXECUTED_ALU0_RT_CHS", "XVE Inst Executed ALU0 RT CHS",
                           "Number of execution slots taken by instructions executed by BTD Closest Hit Shader on ALU0 pipe",
-                          "EU Array/Compute Shader", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_CS * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
                           METRIC_TYPE_EVENT, RESULT_UINT64, "events", 0, 0, HW_UNIT_GPU, availabilityEquation, "HS|TCS", nullptr, 15 );
         if( metric )
         {
@@ -31819,7 +31737,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "XVE_INST_EXECUTED_ALU1_RT_CHS", "XVE Inst Executed ALU1 RT CHS",
                           "Number of execution slots taken by instructions executed by BTD Closest Hit Shader on ALU1 pipe",
-                          "EU Array/Compute Shader", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_CS * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
                           METRIC_TYPE_EVENT, RESULT_UINT64, "events", 0, 0, HW_UNIT_GPU, availabilityEquation, "HS|TCS", nullptr, 16 );
         if( metric )
         {
@@ -31830,7 +31748,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "XVE_INST_EXECUTED_SEND_RT_CHS", "XVE Inst Executed Send RT CHS",
                           "Number of instructions executed by BTD Closest Hit Shader threads on SEND pipe",
-                          "EU Array/Compute Shader", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_CS * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
                           METRIC_TYPE_EVENT, RESULT_UINT64, "events", 0, 0, HW_UNIT_GPU, availabilityEquation, "HS|TCS", nullptr, 17 );
         if( metric )
         {
@@ -31841,7 +31759,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "XVE_INST_EXECUTED_ALU0_RT_MS", "XVE Inst Executed ALU0 RT MS",
                           "Number of execution slots taken by instructions executed by BTD Miss Shader on ALU0 pipe",
-                          "EU Array/Compute Shader", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_CS * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
                           METRIC_TYPE_EVENT, RESULT_UINT64, "events", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 18 );
         if( metric )
         {
@@ -31852,7 +31770,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "XVE_INST_EXECUTED_ALU1_RT_MS", "XVE Inst Executed ALU1 RT MS",
                           "Number of execution slots taken by instructions executed by BTD Miss Shader on ALU1 pipe",
-                          "EU Array/Compute Shader", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_CS * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
                           METRIC_TYPE_EVENT, RESULT_UINT64, "events", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 19 );
         if( metric )
         {
@@ -31863,7 +31781,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "XVE_INST_EXECUTED_SEND_RT_MS", "XVE Inst Executed Send RT MS",
                           "Number of instructions executed by BTD Miss Shader threads on SEND pipe",
-                          "EU Array/Compute Shader", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_CS * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
                           METRIC_TYPE_EVENT, RESULT_UINT64, "events", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 20 );
         if( metric )
         {
@@ -31904,7 +31822,6 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
     {
         TCompletionCode ret                  = CC_OK;
         CMetric*        metric               = nullptr;
-        CInformation*   information          = nullptr;
         const char*     availabilityEquation = nullptr;
         m_params.InformationCount            = m_concurrentGroup->GetInformationCount();
         MD_CHECK_CC( SetApiSpecificId( "GPAV", 0, 0x40000000, 0x80000203, 0, 0, "Intel Performance Counters for GT Set Dynamic", 0, "Intel_Raw_Hardware_Counters_Set_0_Query", 0 ) );
@@ -31946,7 +31863,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "XVE_ACTIVE", "XVE Active",
                           "Percentage of time in which at least one pipe is active in XVE",
-                          "EU Array", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ), USAGE_FLAG_TIER_2 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_2 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
                           METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 3 );
         if( metric )
         {
@@ -31960,7 +31877,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "XVE_ACTIVE_DS", "XVE Active DS",
                           "Percentage of time in which at least one pipe is active in XVE and there are Domain Shader threads loaded",
-                          "EU Array/Domain Shader", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_DS * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
                           METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, "Domain|Evaluation,DS|TES", nullptr, 4 );
         if( metric )
         {
@@ -31974,7 +31891,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "XVE_ACTIVE_HS", "XVE Active HS",
                           "Percentage of time in which at least one pipe is active in XVE and there are Hull Shader threads loaded",
-                          "EU Array/Hull Shader", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_HS * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
                           METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, "Hull|Control,HS|TCS", nullptr, 5 );
         if( metric )
         {
@@ -31988,7 +31905,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "XVE_ACTIVE_PS", "XVE Active PS",
                           "Percentage of time in which at least one pipe is active in XVE and there are Pixel Shader threads loaded",
-                          "EU Array/Pixel Shader", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_PS * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
                           METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, "Pixel|Fragment,PS|FS", nullptr, 6 );
         if( metric )
         {
@@ -32002,7 +31919,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "XVE_ACTIVE_VS", "XVE Active VS",
                           "Percentage of time in which at least one pipe is active in XVE and there are Vertex Shader threads loaded",
-                          "EU Array/Vertex Shader", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_VS * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
                           METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 7 );
         if( metric )
         {
@@ -32016,7 +31933,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "XVE_ACTIVE_ASYNC_CS", "XVE Active Async CS",
                           "Percentage of time in which at least one pipe is active in XVE and there are Async Compute Shader threads loaded",
-                          "EU Array/Compute Shader", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_CS * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
                           METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 8 );
         if( metric )
         {
@@ -32030,7 +31947,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "XVE_ACTIVE_CS", "XVE Active CS",
                           "Percentage of time in which at least one pipe is active in XVE and there are Compute Shader (from Render Engine) threads loaded",
-                          "EU Array/Compute Shader", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_CS * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
                           METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 9 );
         if( metric )
         {
@@ -32044,7 +31961,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "XVE_ACTIVE_MS", "XVE Active MS",
                           "Percentage of time in which at least one pipe is active in XVE and there are Mesh Shader threads loaded",
-                          "EU Array/Compute Shader", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_CS * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
                           METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 10 );
         if( metric )
         {
@@ -32058,7 +31975,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "XVE_ACTIVE_TS", "XVE Active TS",
                           "Percentage of time in which at least one pipe is active in XVE and there are Task Shader threads loaded",
-                          "EU Array/Compute Shader", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_CS * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
                           METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 11 );
         if( metric )
         {
@@ -32072,7 +31989,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "XVE_ACTIVE_RT", "XVE Active RT",
                           "Percentage of time in which at least one pipe is active in XVE and there are Ray Tracing Shader threads loaded",
-                          "EU Array/Compute Shader", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_CS * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
                           METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 12 );
         if( metric )
         {
@@ -32086,7 +32003,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "XVE_ACTIVE_CYCLES", "XVE Active Cycles",
                           "Number of cycles at least one pipe is active in XVE",
-                          "EU Array", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ), USAGE_FLAG_TIER_2 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_2 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
                           METRIC_TYPE_EVENT, RESULT_UINT64, "events", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 13 );
         if( metric )
         {
@@ -32097,7 +32014,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "XVE_ACTIVE_CYCLES_ASYNC_CS", "XVE Active Cycles Async CS",
                           "Number of cycles at least one pipe is active in XVE and there are Async Compute Shader threads loaded",
-                          "EU Array/Compute Shader", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_CS * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
                           METRIC_TYPE_EVENT, RESULT_UINT64, "events", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 14 );
         if( metric )
         {
@@ -32108,7 +32025,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "XVE_ACTIVE_CYCLES_CS", "XVE Active Cycles CS",
                           "Number of cycles at least one pipe is active in XVE and there are Compute Shader (from Render Engine) threads loaded",
-                          "EU Array/Compute Shader", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_CS * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
                           METRIC_TYPE_EVENT, RESULT_UINT64, "events", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 15 );
         if( metric )
         {
@@ -32119,7 +32036,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "XVE_ACTIVE_CYCLES_HS", "XVE Active Cycles HS",
                           "Number of cycles at least one pipe is active in XVE and there are Hull Shader threads loaded",
-                          "EU Array/Hull Shader", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_HS * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
                           METRIC_TYPE_EVENT, RESULT_UINT64, "events", 0, 0, HW_UNIT_GPU, availabilityEquation, "Hull|Control,HS|TCS", nullptr, 16 );
         if( metric )
         {
@@ -32130,7 +32047,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "XVE_ACTIVE_CYCLES_PS", "XVE Active Cycles PS",
                           "Number of cycles at least one pipe is active in XVE and there are Pixel Shader threads loaded",
-                          "EU Array/Pixel Shader", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_PS * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
                           METRIC_TYPE_EVENT, RESULT_UINT64, "events", 0, 0, HW_UNIT_GPU, availabilityEquation, "Pixel|Fragment,PS|FS", nullptr, 17 );
         if( metric )
         {
@@ -32141,7 +32058,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "XVE_ACTIVE_CYCLES_VS", "XVE Active Cycles VS",
                           "Number of cycles at least one pipe is active in XVE and there are Vertex Shader threads loaded",
-                          "EU Array/Vertex Shader", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_VS * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
                           METRIC_TYPE_EVENT, RESULT_UINT64, "events", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 18 );
         if( metric )
         {
@@ -32152,7 +32069,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "XVE_ACTIVE_CYCLES_DS", "XVE Active Cycles DS",
                           "Number of cycles at least one pipe is active in XVE and there are Domain Shader threads loaded",
-                          "EU Array/Domain Shader", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_DS * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
                           METRIC_TYPE_EVENT, RESULT_UINT64, "events", 0, 0, HW_UNIT_GPU, availabilityEquation, "Domain|Evaluation,DS|TES", nullptr, 19 );
         if( metric )
         {
@@ -32163,7 +32080,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "XVE_ACTIVE_CYCLES_MS", "XVE Active Cycles MS",
                           "Number of cycles at least one pipe is active in XVE and there are Mesh Shader threads loaded",
-                          "EU Array/Compute Shader", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_CS * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
                           METRIC_TYPE_EVENT, RESULT_UINT64, "events", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 20 );
         if( metric )
         {
@@ -32174,7 +32091,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "XVE_ACTIVE_CYCLES_TS", "XVE Active Cycles TS",
                           "Number of cycles at least one pipe is active in XVE and there are Task Shader threads loaded",
-                          "EU Array/Compute Shader", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_CS * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
                           METRIC_TYPE_EVENT, RESULT_UINT64, "events", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 21 );
         if( metric )
         {
@@ -32185,7 +32102,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "XVE_ACTIVE_CYCLES_RT", "XVE Active Cycles RT",
                           "Number of cycles at least one pipe is active in XVE and there are Ray Tracing Shader threads loaded",
-                          "EU Array/Compute Shader", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_CS * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
                           METRIC_TYPE_EVENT, RESULT_UINT64, "events", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 22 );
         if( metric )
         {
@@ -32227,7 +32144,6 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
     {
         TCompletionCode ret                  = CC_OK;
         CMetric*        metric               = nullptr;
-        CInformation*   information          = nullptr;
         const char*     availabilityEquation = nullptr;
         m_params.InformationCount            = m_concurrentGroup->GetInformationCount();
         MD_CHECK_CC( SetApiSpecificId( "GPAV", 0, 0x40000000, 0x80000203, 0, 0, "Intel Performance Counters for GT Set Dynamic", 0, "Intel_Raw_Hardware_Counters_Set_0_Query", 0 ) );
@@ -32269,7 +32185,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "XVE_STALL", "XVE Stall",
                           "Percentage of time in which any threads are loaded but not even a single pipe is active in XVE",
-                          "EU Array", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ), USAGE_FLAG_TIER_2 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_2 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
                           METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 3 );
         if( metric )
         {
@@ -32283,7 +32199,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "XVE_STALL_ASYNC_CS", "XVE Stall Async CS",
                           "Percentage of time in which there are Async Compute Shader threads loaded but not even a single pipe is active in XVE",
-                          "EU Array/Compute Shader", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_CS * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
                           METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 4 );
         if( metric )
         {
@@ -32297,7 +32213,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "XVE_STALL_CS", "XVE Stall CS",
                           "Percentage of time in which there are Compute Shader (from Render Engine) threads loaded but not even a single pipe is active in XVE",
-                          "EU Array/Compute Shader", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_CS * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
                           METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 5 );
         if( metric )
         {
@@ -32311,7 +32227,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "XVE_STALL_DS", "XVE Stall DS",
                           "Percentage of time in which there are Domain Shader threads loaded but not even a single pipe is active in XVE",
-                          "EU Array/Domain Shader", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_DS * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
                           METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, "Domain|Evaluation,DS|TES", nullptr, 6 );
         if( metric )
         {
@@ -32325,7 +32241,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "XVE_STALL_HS", "XVE Stall HS",
                           "Percentage of time in which there are Hull Shader threads loaded but not even a single pipe is active in XVE",
-                          "EU Array/Hull Shader", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_HS * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
                           METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, "Hull|Control,HS|TCS", nullptr, 7 );
         if( metric )
         {
@@ -32339,7 +32255,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "XVE_STALL_MS", "XVE Stall MS",
                           "Percentage of time in which there are Mesh Shader threads loaded but not even a single pipe is active in XVE",
-                          "EU Array/Compute Shader", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_CS * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
                           METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 8 );
         if( metric )
         {
@@ -32353,7 +32269,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "XVE_STALL_PS", "XVE Stall PS",
                           "Percentage of time in which there are Pixel Shader threads loaded but not even a single pipe is active in XVE",
-                          "EU Array/Pixel Shader", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_PS * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
                           METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, "Pixel|Fragment,PS|FS", nullptr, 9 );
         if( metric )
         {
@@ -32367,7 +32283,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "XVE_STALL_TS", "XVE Stall TS",
                           "Percentage of time in which there are Task Shader threads loaded but not even a single pipe is active in XVE",
-                          "EU Array/Compute Shader", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_CS * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
                           METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 10 );
         if( metric )
         {
@@ -32381,7 +32297,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "XVE_STALL_VS", "XVE Stall VS",
                           "Percentage of time in which there are Vertex Shader threads loaded but not even a single pipe is active in XVE",
-                          "EU Array/Vertex Shader", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_VS * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
                           METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 11 );
         if( metric )
         {
@@ -32395,7 +32311,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "XVE_STALL_RT", "XVE Stall RT",
                           "Percentage of time in which there are Ray Tracing Shader threads loaded but not even a single pipe is active in XVE",
-                          "EU Array/Compute Shader", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_CS * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
                           METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 12 );
         if( metric )
         {
@@ -32409,7 +32325,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "XVE_STALL_CYCLES", "XVE Stall Cycles",
                           "Number of cycles any threads are loaded but not even a single pipe is active in XVE",
-                          "EU Array", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ), USAGE_FLAG_TIER_2 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_2 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
                           METRIC_TYPE_EVENT, RESULT_UINT64, "events", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 13 );
         if( metric )
         {
@@ -32420,7 +32336,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "XVE_STALL_CYCLES_ASYNC_CS", "XVE Stall Cycles Async CS",
                           "Number of cycles there are Async Compute Shader threads loaded but not even a single pipe is active in XVE",
-                          "EU Array/Compute Shader", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_CS * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
                           METRIC_TYPE_EVENT, RESULT_UINT64, "events", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 14 );
         if( metric )
         {
@@ -32431,7 +32347,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "XVE_STALL_CYCLES_CS", "XVE Stall Cycles CS",
                           "Number of cycles there are Compute Shader (from Render Engine) threads loaded but not even a single pipe is active in XVE",
-                          "EU Array/Compute Shader", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_CS * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
                           METRIC_TYPE_EVENT, RESULT_UINT64, "events", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 15 );
         if( metric )
         {
@@ -32442,7 +32358,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "XVE_STALL_CYCLES_DS", "XVE Stall Cycles DS",
                           "Number of cycles there are Domain Shader threads loaded but not even a single pipe is active in XVE",
-                          "EU Array/Domain Shader", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_DS * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
                           METRIC_TYPE_EVENT, RESULT_UINT64, "events", 0, 0, HW_UNIT_GPU, availabilityEquation, "Domain|Evaluation,DS|TES", nullptr, 16 );
         if( metric )
         {
@@ -32453,7 +32369,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "XVE_STALL_CYCLES_HS", "XVE Stall Cycles HS",
                           "Number of cycles there are Hull Shader threads loaded but not even a single pipe is active in XVE",
-                          "EU Array/Hull Shader", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_HS * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
                           METRIC_TYPE_EVENT, RESULT_UINT64, "events", 0, 0, HW_UNIT_GPU, availabilityEquation, "Hull|Control,HS|TCS", nullptr, 17 );
         if( metric )
         {
@@ -32464,7 +32380,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "XVE_STALL_CYCLES_MS", "XVE Stall Cycles MS",
                           "Number of cycles there are Mesh Shader threads loaded but not even a single pipe is active in XVE",
-                          "EU Array/Compute Shader", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_CS * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
                           METRIC_TYPE_EVENT, RESULT_UINT64, "events", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 18 );
         if( metric )
         {
@@ -32475,7 +32391,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "XVE_STALL_CYCLES_PS", "XVE Stall Cycles PS",
                           "Number of cycles there are Pixel Shader threads loaded but not even a single pipe is active in XVE",
-                          "EU Array/Pixel Shader", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_PS * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
                           METRIC_TYPE_EVENT, RESULT_UINT64, "events", 0, 0, HW_UNIT_GPU, availabilityEquation, "Pixel|Fragment,PS|FS", nullptr, 19 );
         if( metric )
         {
@@ -32486,7 +32402,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "XVE_STALL_CYCLES_TS", "XVE Stall Cycles TS",
                           "Number of cycles there are Task Shader threads loaded but not even a single pipe is active in XVE",
-                          "EU Array/Compute Shader", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_CS * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
                           METRIC_TYPE_EVENT, RESULT_UINT64, "events", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 20 );
         if( metric )
         {
@@ -32497,7 +32413,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "XVE_STALL_CYCLES_VS", "XVE Stall Cycles VS",
                           "Number of cycles there are Vertex Shader threads loaded but not even a single pipe is active in XVE",
-                          "EU Array/Vertex Shader", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_VS * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
                           METRIC_TYPE_EVENT, RESULT_UINT64, "events", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 21 );
         if( metric )
         {
@@ -32508,7 +32424,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "XVE_STALL_CYCLES_RT", "XVE Stall Cycles RT",
                           "Number of cycles there are Ray Tracing Shader threads loaded but not even a single pipe is active in XVE",
-                          "EU Array/Compute Shader", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_CS * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
                           METRIC_TYPE_EVENT, RESULT_UINT64, "events", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 22 );
         if( metric )
         {
@@ -32550,7 +32466,6 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
     {
         TCompletionCode ret                  = CC_OK;
         CMetric*        metric               = nullptr;
-        CInformation*   information          = nullptr;
         const char*     availabilityEquation = nullptr;
         m_params.InformationCount            = m_concurrentGroup->GetInformationCount();
         MD_CHECK_CC( SetApiSpecificId( "GPAV", 0, 0x40000000, 0x80000203, 0, 0, "Intel Performance Counters for GT Set Dynamic", 0, "Intel_Raw_Hardware_Counters_Set_0_Query", 0 ) );
@@ -32592,7 +32507,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "XVE_INST_EXECUTED_ALU0_ALL", "XVE Inst Executed ALU0 All",
                           "Number of execution slots taken by instructions executed on ALU0 pipe",
-                          "EU Array/Pipes", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_EU_PIPES * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
                           METRIC_TYPE_EVENT, RESULT_UINT64, "events", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 3 );
         if( metric )
         {
@@ -32606,7 +32521,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "XVE_INST_EXECUTED_FP16", "XVE Inst Executed Fp16",
                           "Number of execution slots taken by FP16 ALU instructions",
-                          "EU Array", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ), USAGE_FLAG_TIER_4 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_4 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
                           METRIC_TYPE_EVENT, RESULT_UINT64, "events", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 4 );
         if( metric )
         {
@@ -32620,7 +32535,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "XVE_INST_EXECUTED_FP32", "XVE Inst Executed Fp32",
                           "Number of execution slots taken by FP32 ALU instructions",
-                          "EU Array", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ), USAGE_FLAG_TIER_4 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_4 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
                           METRIC_TYPE_EVENT, RESULT_UINT64, "events", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 5 );
         if( metric )
         {
@@ -32634,7 +32549,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "XVE_INST_EXECUTED_FP64", "XVE Inst Executed Fp64",
                           "The number of FLT64 instructions executed in ALU0 INT64 pipeline.",
-                          "EU Array", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ), USAGE_FLAG_TIER_4 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_4 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
                           METRIC_TYPE_EVENT, RESULT_UINT64, "events", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 6 );
         if( metric )
         {
@@ -32648,7 +32563,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "XVE_INST_EXECUTED_ALU1_ALL", "XVE Inst Executed ALU1 All",
                           "Number of execution slots taken by instructions executed on ALU1 pipe",
-                          "EU Array/Pipes", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_EU_PIPES * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
                           METRIC_TYPE_EVENT, RESULT_UINT64, "events", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 7 );
         if( metric )
         {
@@ -32662,7 +32577,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "XVE_INST_EXECUTED_INT16", "XVE Inst Executed Int16",
                           "Number of execution slots taken by INT16 ALU instructions",
-                          "EU Array", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ), USAGE_FLAG_TIER_4 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_4 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
                           METRIC_TYPE_EVENT, RESULT_UINT64, "events", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 8 );
         if( metric )
         {
@@ -32676,7 +32591,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "XVE_INST_EXECUTED_INT32", "XVE Inst Executed Int32",
                           "Number of execution slots taken by INT32 ALU instructions",
-                          "EU Array", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ), USAGE_FLAG_TIER_4 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_4 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
                           METRIC_TYPE_EVENT, RESULT_UINT64, "events", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 9 );
         if( metric )
         {
@@ -32690,7 +32605,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "XVE_INST_EXECUTED_MATH", "XVE Inst Executed Math",
                           "Number of execution slots taken by extended math instructions",
-                          "EU Array", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ), USAGE_FLAG_TIER_4 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_4 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
                           METRIC_TYPE_EVENT, RESULT_UINT64, "events", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 10 );
         if( metric )
         {
@@ -32704,7 +32619,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "XVE_INST_EXECUTED_XMX_ALL", "XVE Inst Executed XMX All",
                           "Number of execution slots taken by instructions executed in XMX pipe",
-                          "EU Array/Pipes", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_EU_PIPES * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
                           METRIC_TYPE_EVENT, RESULT_UINT64, "events", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 11 );
         if( metric )
         {
@@ -32718,7 +32633,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "XVE_INST_EXECUTED_XMX_BF16", "XVE Inst Executed XMX Bf16",
                           "Number of execution slots taken by BF16 XMX instructions",
-                          "EU Array", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
                           METRIC_TYPE_EVENT, RESULT_UINT64, "events", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 12 );
         if( metric )
         {
@@ -32732,7 +32647,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "XVE_INST_EXECUTED_XMX_FP16", "XVE Inst Executed XMX Fp16",
                           "Number of execution slots taken by FP16 XMX instructions",
-                          "EU Array", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
                           METRIC_TYPE_EVENT, RESULT_UINT64, "events", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 13 );
         if( metric )
         {
@@ -32746,7 +32661,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "XVE_INST_EXECUTED_XMX_INT8", "XVE Inst Executed XMX Int8",
                           "Number of execution slots taken by INT8 XMX instructions",
-                          "EU Array", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
                           METRIC_TYPE_EVENT, RESULT_UINT64, "events", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 14 );
         if( metric )
         {
@@ -32760,7 +32675,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "XVE_INST_EXECUTED_ALU0_ALL_UTILIZATION", "XVE Inst Executed ALU0 All Utilization",
                           "Percentage of execution slots taken by instructions executed on ALU0 pipe",
-                          "EU Array/Pipes", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_EU_PIPES * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
                           METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 15 );
         if( metric )
         {
@@ -32774,7 +32689,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "XVE_INST_EXECUTED_FP16_UTILIZATION", "XVE Inst Executed Fp16 Utilization",
                           "Percentage of execution slots taken by FP16 ALU instructions",
-                          "EU Array", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ), USAGE_FLAG_TIER_4 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_4 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
                           METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 16 );
         if( metric )
         {
@@ -32788,7 +32703,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "XVE_INST_EXECUTED_FP32_UTILIZATION", "XVE Inst Executed Fp32 Utilization",
                           "Percentage of execution slots taken by FP32 ALU instructions",
-                          "EU Array", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ), USAGE_FLAG_TIER_4 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_4 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
                           METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 17 );
         if( metric )
         {
@@ -32802,7 +32717,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "XVE_INST_EXECUTED_FP64_UTILIZATION", "XVE Inst Executed Fp64 Utilization",
                           "The percentage of time in which FLT64 instruction were processed actively on FPU INT64 pipeline.",
-                          "EU Array", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ), USAGE_FLAG_TIER_4 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_4 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
                           METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 18 );
         if( metric )
         {
@@ -32816,7 +32731,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "XVE_INST_EXECUTED_ALU1_ALL_UTILIZATION", "XVE Inst Executed ALU1 All Utilization",
                           "Percentage of execution slots taken by instructions executed on ALU1 pipe",
-                          "EU Array/Pipes", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_EU_PIPES * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
                           METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 19 );
         if( metric )
         {
@@ -32830,7 +32745,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "XVE_INST_EXECUTED_INT16_UTILIZATION", "XVE Inst Executed Int16 Utilization",
                           "Percentage of execution slots taken by INT16 ALU instructions",
-                          "EU Array", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ), USAGE_FLAG_TIER_4 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_4 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
                           METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 20 );
         if( metric )
         {
@@ -32844,7 +32759,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "XVE_INST_EXECUTED_INT32_UTILIZATION", "XVE Inst Executed Int32 Utilization",
                           "Percentage of execution slots taken by INT32 ALU instructions",
-                          "EU Array", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ), USAGE_FLAG_TIER_4 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_4 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
                           METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 21 );
         if( metric )
         {
@@ -32858,7 +32773,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "XVE_INST_EXECUTED_MATH_UTILIZATION", "XVE Inst Executed Math Utilization",
                           "Percentage of execution slots taken by extended math instructions",
-                          "EU Array", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ), USAGE_FLAG_TIER_4 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_4 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
                           METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 22 );
         if( metric )
         {
@@ -32872,7 +32787,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "XVE_INST_EXECUTED_XMX_ALL_UTILIZATION", "XVE Inst Executed XMX All Utilization",
                           "Percentage of execution slots taken by instructions executed in XMX pipe",
-                          "EU Array/Pipes", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_EU_PIPES * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
                           METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 23 );
         if( metric )
         {
@@ -32886,7 +32801,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "XVE_INST_EXECUTED_XMX_BF16_UTILIZATION", "XVE Inst Executed XMX Bf16 Utilization",
                           "Percentage of execution slots taken by BF16 XMX instructions",
-                          "EU Array", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
                           METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 24 );
         if( metric )
         {
@@ -32900,7 +32815,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "XVE_INST_EXECUTED_XMX_FP16_UTILIZATION", "XVE Inst Executed XMX Fp16 Utilization",
                           "Percentage of execution slots taken by FP16 XMX instructions",
-                          "EU Array", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
                           METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 25 );
         if( metric )
         {
@@ -32914,7 +32829,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "XVE_INST_EXECUTED_XMX_INT8_UTILIZATION", "XVE Inst Executed XMX Int8 Utilization",
                           "Percentage of execution slots taken by INT8 XMX instructions",
-                          "EU Array", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
                           METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 26 );
         if( metric )
         {
@@ -32959,7 +32874,6 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
     {
         TCompletionCode ret                  = CC_OK;
         CMetric*        metric               = nullptr;
-        CInformation*   information          = nullptr;
         const char*     availabilityEquation = nullptr;
         m_params.InformationCount            = m_concurrentGroup->GetInformationCount();
         MD_CHECK_CC( SetApiSpecificId( "GPAV", 0, 0x40000000, 0x80000203, 0, 0, "Intel Performance Counters for GT Set Dynamic", 0, "Intel_Raw_Hardware_Counters_Set_0_Query", 0 ) );
@@ -33001,7 +32915,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "XVE_INST_EXECUTED_SEND_ALL", "XVE Inst Executed Send All",
                           "Number of instructions executed on SEND pipe",
-                          "EU Array/Pipes", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_EU_PIPES * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
                           METRIC_TYPE_EVENT, RESULT_UINT64, "events", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 3 );
         if( metric )
         {
@@ -33015,7 +32929,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "XVE_INST_EXECUTED_SEND_ASYNC_CS", "XVE Inst Executed Send Async CS",
                           "Number of instructions executed by Async Compute Shader threads on SEND pipe",
-                          "EU Array/Compute Shader", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_CS * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
                           METRIC_TYPE_EVENT, RESULT_UINT64, "events", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 4 );
         if( metric )
         {
@@ -33029,7 +32943,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "XVE_INST_EXECUTED_SEND_CS", "XVE Inst Executed Send CS",
                           "Number of instructions executed by Compute Shader (from Render Engine) threads on SEND pipe",
-                          "EU Array/Compute Shader", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_CS * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
                           METRIC_TYPE_EVENT, RESULT_UINT64, "events", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 5 );
         if( metric )
         {
@@ -33043,7 +32957,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "XVE_INST_EXECUTED_SEND_DS", "XVE Inst Executed Send DS",
                           "Number of instructions executed by Domain Shader threads on SEND pipe",
-                          "EU Array/Domain Shader", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_DS * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
                           METRIC_TYPE_EVENT, RESULT_UINT64, "events", 0, 0, HW_UNIT_GPU, availabilityEquation, "Domain|Evaluation,DS|TES", nullptr, 6 );
         if( metric )
         {
@@ -33057,7 +32971,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "XVE_INST_EXECUTED_SEND_GS", "XVE Inst Executed Send GS",
                           "Number of instructions executed by Geometry Shader threads on SEND pipe",
-                          "EU Array/Geometry Shader", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_GS * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
                           METRIC_TYPE_EVENT, RESULT_UINT64, "events", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 7 );
         if( metric )
         {
@@ -33071,7 +32985,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "XVE_INST_EXECUTED_SEND_HS", "XVE Inst Executed Send HS",
                           "Number of instructions executed by Hull Shader threads on SEND pipe",
-                          "EU Array/Hull Shader", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_HS * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
                           METRIC_TYPE_EVENT, RESULT_UINT64, "events", 0, 0, HW_UNIT_GPU, availabilityEquation, "Hull|Control,HS|TCS", nullptr, 8 );
         if( metric )
         {
@@ -33085,7 +32999,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "XVE_INST_EXECUTED_SEND_MS", "XVE Inst Executed Send MS",
                           "Number of instructions executed by Mesh Shader threads on SEND pipe",
-                          "EU Array/Compute Shader", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_CS * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
                           METRIC_TYPE_EVENT, RESULT_UINT64, "events", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 9 );
         if( metric )
         {
@@ -33099,7 +33013,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "XVE_INST_EXECUTED_SEND_PS", "XVE Inst Executed Send PS",
                           "Number of instructions executed by Pixel Shader threads on SEND pipe",
-                          "EU Array/Pixel Shader", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_PS * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
                           METRIC_TYPE_EVENT, RESULT_UINT64, "events", 0, 0, HW_UNIT_GPU, availabilityEquation, "Pixel|Fragment,PS|FS", nullptr, 10 );
         if( metric )
         {
@@ -33113,7 +33027,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "XVE_INST_EXECUTED_SEND_TS", "XVE Inst Executed Send TS",
                           "Number of instructions executed by Task Shader threads on SEND pipe",
-                          "EU Array/Compute Shader", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_CS * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
                           METRIC_TYPE_EVENT, RESULT_UINT64, "events", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 11 );
         if( metric )
         {
@@ -33127,7 +33041,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "XVE_INST_EXECUTED_SEND_VS", "XVE Inst Executed Send VS",
                           "Number of instructions executed by Vertex Shader threads on SEND pipe",
-                          "EU Array/Vertex Shader", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_VS * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
                           METRIC_TYPE_EVENT, RESULT_UINT64, "events", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 12 );
         if( metric )
         {
@@ -33141,7 +33055,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "XVE_INST_EXECUTED_SEND_ALL_UTILIZATION", "XVE Inst Executed Send All Utilization",
                           "Percentage of time taken by instructions executed on SEND pipe",
-                          "EU Array/Pipes", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_EU_PIPES * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
                           METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 13 );
         if( metric )
         {
@@ -33155,7 +33069,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "XVE_INST_EXECUTED_SEND_ASYNC_CS_UTILIZATION", "XVE Inst Executed Send Async CS Utilization",
                           "Percentage of time taken by instructions executed by Async Compute Shader threads on SEND pipe",
-                          "EU Array/Compute Shader", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_CS * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
                           METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 14 );
         if( metric )
         {
@@ -33169,7 +33083,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "XVE_INST_EXECUTED_SEND_CS_UTILIZATION", "XVE Inst Executed Send CS Utilization",
                           "Percentage of time taken by instructions executed by Compute Shader (from Render Engine) threads on SEND pipe",
-                          "EU Array/Compute Shader", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_CS * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
                           METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 15 );
         if( metric )
         {
@@ -33183,7 +33097,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "XVE_INST_EXECUTED_SEND_DS_UTILIZATION", "XVE Inst Executed Send DS Utilization",
                           "Percentage of time taken by instructions executed by Domain Shader threads on SEND pipe",
-                          "EU Array/Domain Shader", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_DS * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
                           METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, "Domain|Evaluation,DS|TES", nullptr, 16 );
         if( metric )
         {
@@ -33197,7 +33111,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "XVE_INST_EXECUTED_SEND_GS_UTILIZATION", "XVE Inst Executed Send GS Utilization",
                           "Percentage of time taken by instructions executed by Geometry Shader threads on SEND pipe",
-                          "EU Array/Geometry Shader", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_GS * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
                           METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 17 );
         if( metric )
         {
@@ -33211,7 +33125,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "XVE_INST_EXECUTED_SEND_HS_UTILIZATION", "XVE Inst Executed Send HS Utilization",
                           "Percentage of time taken by instructions executed by Hull Shader threads on SEND pipe",
-                          "EU Array/Hull Shader", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_HS * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
                           METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, "Hull|Control,HS|TCS", nullptr, 18 );
         if( metric )
         {
@@ -33225,7 +33139,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "XVE_INST_EXECUTED_SEND_MS_UTILIZATION", "XVE Inst Executed Send MS Utilization",
                           "Percentage of time taken by instructions executed by Mesh Shader threads on SEND pipe",
-                          "EU Array/Compute Shader", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_CS * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
                           METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 19 );
         if( metric )
         {
@@ -33239,7 +33153,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "XVE_INST_EXECUTED_SEND_PS_UTILIZATION", "XVE Inst Executed Send PS Utilization",
                           "Percentage of time taken by instructions executed by Pixel Shader threads on SEND pipe",
-                          "EU Array/Pixel Shader", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_PS * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
                           METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, "Pixel|Fragment,PS|FS", nullptr, 20 );
         if( metric )
         {
@@ -33253,7 +33167,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "XVE_INST_EXECUTED_SEND_TS_UTILIZATION", "XVE Inst Executed Send TS Utilization",
                           "Percentage of time taken by instructions executed by Task Shader threads on SEND pipe",
-                          "EU Array/Compute Shader", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_CS * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
                           METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 21 );
         if( metric )
         {
@@ -33267,7 +33181,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "XVE_INST_EXECUTED_SEND_VS_UTILIZATION", "XVE Inst Executed Send VS Utilization",
                           "Percentage of time taken by instructions executed by Vertex Shader threads on SEND pipe",
-                          "EU Array/Vertex Shader", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_VS * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
                           METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 22 );
         if( metric )
         {
@@ -33311,7 +33225,6 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
     {
         TCompletionCode ret                  = CC_OK;
         CMetric*        metric               = nullptr;
-        CInformation*   information          = nullptr;
         const char*     availabilityEquation = nullptr;
         m_params.InformationCount            = m_concurrentGroup->GetInformationCount();
         MD_CHECK_CC( SetApiSpecificId( "GPAV", 0, 0x40000000, 0x80000203, 0, 0, "Intel Performance Counters for GT Set Dynamic", 0, "Intel_Raw_Hardware_Counters_Set_0_Query", 0 ) );
@@ -33353,7 +33266,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "XVE_ACTIVE_GS", "XVE Active GS",
                           "Percentage of time in which at least one pipe is active in XVE and there are Geometry Shader threads loaded",
-                          "EU Array/Geometry Shader", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_GS * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
                           METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 3 );
         if( metric )
         {
@@ -33367,7 +33280,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "XVE_STALL_GS", "XVE Stall GS",
                           "Percentage of time in which there are Geometry Shader threads loaded but not even a single pipe is active in XVE",
-                          "EU Array/Geometry Shader", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_GS * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
                           METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 4 );
         if( metric )
         {
@@ -33381,7 +33294,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "XVE_INST_EXECUTED_ALU0_GS", "XVE Inst Executed ALU0 GS",
                           "Number of execution slots taken by instructions executed by Geometry Shader on ALU0 pipe",
-                          "EU Array/Geometry Shader", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_GS * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
                           METRIC_TYPE_EVENT, RESULT_UINT64, "events", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 5 );
         if( metric )
         {
@@ -33395,7 +33308,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "XVE_INST_EXECUTED_ALU1_GS", "XVE Inst Executed ALU1 GS",
                           "Number of execution slots taken by instructions executed by Geometry Shader on ALU1 pipe",
-                          "EU Array/Geometry Shader", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_GS * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
                           METRIC_TYPE_EVENT, RESULT_UINT64, "events", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 6 );
         if( metric )
         {
@@ -33409,7 +33322,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "XVE_ACTIVE_CYCLES_GS", "XVE Active Cycles GS",
                           "Number of cycles at least one pipe is active in XVE and there are Geometry Shader threads loaded",
-                          "EU Array/Geometry Shader", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_GS * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
                           METRIC_TYPE_EVENT, RESULT_UINT64, "events", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 7 );
         if( metric )
         {
@@ -33420,7 +33333,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "XVE_STALL_CYCLES_GS", "XVE Stall Cycles GS",
                           "Number of cycles there are Geometry Shader threads loaded but not even a single pipe is active in XVE",
-                          "EU Array/Geometry Shader", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_GS * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
                           METRIC_TYPE_EVENT, RESULT_UINT64, "events", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 8 );
         if( metric )
         {
@@ -33431,7 +33344,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "XVE_INST_EXECUTED_ALU0_MS", "XVE Inst Executed ALU0 MS",
                           "Number of execution slots taken by instructions executed by Mesh Shader on ALU0 pipe",
-                          "EU Array/Compute Shader", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_CS * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
                           METRIC_TYPE_EVENT, RESULT_UINT64, "events", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 9 );
         if( metric )
         {
@@ -33445,7 +33358,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "XVE_INST_EXECUTED_ALU0_TS", "XVE Inst Executed ALU0 TS",
                           "Number of execution slots taken by instructions executed by Task Shader on ALU0 pipe",
-                          "EU Array/Compute Shader", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_CS * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
                           METRIC_TYPE_EVENT, RESULT_UINT64, "events", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 10 );
         if( metric )
         {
@@ -33459,7 +33372,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "XVE_INST_EXECUTED_ALU1_MS", "XVE Inst Executed ALU1 MS",
                           "Number of execution slots taken by instructions executed by Mesh Shader on ALU1 pipe",
-                          "EU Array/Compute Shader", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_CS * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
                           METRIC_TYPE_EVENT, RESULT_UINT64, "events", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 11 );
         if( metric )
         {
@@ -33473,7 +33386,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "XVE_INST_EXECUTED_ALU1_TS", "XVE Inst Executed ALU1 TS",
                           "Number of execution slots taken by instructions executed by Task Shader on ALU1 pipe",
-                          "EU Array/Compute Shader", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_CS * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
                           METRIC_TYPE_EVENT, RESULT_UINT64, "events", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 12 );
         if( metric )
         {
@@ -33487,7 +33400,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "XVE_INST_EXECUTED_ALU0_GS_UTILIZATION", "XVE Inst Executed ALU0 GS Utilization",
                           "Percentage of execution slots taken by instructions executed by Geometry Shader on ALU0 pipe",
-                          "EU Array/Geometry Shader", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_GS * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
                           METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 13 );
         if( metric )
         {
@@ -33501,7 +33414,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "XVE_INST_EXECUTED_ALU1_GS_UTILIZATION", "XVE Inst Executed ALU1 GS Utilization",
                           "Percentage of execution slots taken by instructions executed by Geometry Shader on ALU1 pipe",
-                          "EU Array/Geometry Shader", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_GS * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
                           METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 14 );
         if( metric )
         {
@@ -33515,7 +33428,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "XVE_INST_EXECUTED_ALU0_MS_UTILIZATION", "XVE Inst Executed ALU0 MS Utilization",
                           "Percentage of execution slots taken by instructions executed by Mesh Shader on ALU0 pipe",
-                          "EU Array/Compute Shader", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_CS * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
                           METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 15 );
         if( metric )
         {
@@ -33529,7 +33442,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "XVE_INST_EXECUTED_ALU0_TS_UTILIZATION", "XVE Inst Executed ALU0 TS Utilization",
                           "Percentage of execution slots taken by instructions executed by Task Shader on ALU0 pipe",
-                          "EU Array/Compute Shader", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_CS * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
                           METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 16 );
         if( metric )
         {
@@ -33543,7 +33456,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "XVE_INST_EXECUTED_ALU1_MS_UTILIZATION", "XVE Inst Executed ALU1 MS Utilization",
                           "Percentage of execution slots taken by instructions executed by Mesh Shader on ALU1 pipe",
-                          "EU Array/Compute Shader", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_CS * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
                           METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 17 );
         if( metric )
         {
@@ -33557,7 +33470,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "XVE_INST_EXECUTED_ALU1_TS_UTILIZATION", "XVE Inst Executed ALU1 TS Utilization",
                           "Percentage of execution slots taken by instructions executed by Task Shader on ALU1 pipe",
-                          "EU Array/Compute Shader", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_CS * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          "VectorEngine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
                           METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 18 );
         if( metric )
         {
@@ -33600,7 +33513,6 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
     {
         TCompletionCode ret                  = CC_OK;
         CMetric*        metric               = nullptr;
-        CInformation*   information          = nullptr;
         const char*     availabilityEquation = nullptr;
         m_params.InformationCount            = m_concurrentGroup->GetInformationCount();
         MD_CHECK_CC( SetApiSpecificId( "GPAV", 0, 0x40000000, 0x80000203, 0, 0, "Intel Performance Counters for GT Set Dynamic", 0, "Intel_Raw_Hardware_Counters_Set_0_Query", 0 ) );
@@ -33784,7 +33696,6 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OAM0
     {
         TCompletionCode ret                  = CC_OK;
         CMetric*        metric               = nullptr;
-        CInformation*   information          = nullptr;
         const char*     availabilityEquation = nullptr;
         m_params.InformationCount            = m_concurrentGroup->GetInformationCount();
         MD_CHECK_CC( SetApiSpecificId( "", 0, 0, 0, 0, 0, "", 0, "", 0 ) );
@@ -33946,7 +33857,6 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OAM0
     {
         TCompletionCode ret                  = CC_OK;
         CMetric*        metric               = nullptr;
-        CInformation*   information          = nullptr;
         const char*     availabilityEquation = nullptr;
         m_params.InformationCount            = m_concurrentGroup->GetInformationCount();
         MD_CHECK_CC( SetApiSpecificId( "", 0, 0, 0, 0, 0, "", 0, "", 0 ) );
@@ -34105,7 +34015,6 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OAM0
     {
         TCompletionCode ret                  = CC_OK;
         CMetric*        metric               = nullptr;
-        CInformation*   information          = nullptr;
         const char*     availabilityEquation = nullptr;
         m_params.InformationCount            = m_concurrentGroup->GetInformationCount();
         MD_CHECK_CC( SetApiSpecificId( "", 0, 0, 0, 0, 0, "", 0, "", 0 ) );

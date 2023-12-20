@@ -380,9 +380,9 @@ namespace MetricsDiscoveryInternal
 
         auto& driverInterface = m_device.GetDriverInterface();
 
-        auto frequencyOverrideParams = static_cast<TSetFrequencyOverrideParams_1_2*>( params );
+        auto& frequencyOverrideParams = static_cast<TSetFrequencyOverrideParams_1_2&>( *params );
 
-        auto ret = driverInterface.SetFrequencyOverride( frequencyOverrideParams );
+        auto ret = driverInterface.SetFrequencyOverride( m_device, frequencyOverrideParams );
         if( ret != CC_OK )
         {
             MD_LOG_A( adapterId, LOG_ERROR, "Setting frequency override failed, res: %u", ret );
@@ -435,8 +435,8 @@ namespace MetricsDiscoveryInternal
             return CC_ERROR_GENERAL;
         }
 
-        auto queryOverrideParams = static_cast<TSetQueryOverrideParams_1_2*>( params );
-        auto ret                 = driverInterface.SetQueryOverride( OVERRIDE_TYPE_EXTENDED_QUERY, oaBufferSize->ValueUInt32, queryOverrideParams );
+        auto& queryOverrideParams = static_cast<TSetQueryOverrideParams_1_2&>( *params );
+        auto  ret                 = driverInterface.SetQueryOverride( OVERRIDE_TYPE_EXTENDED_QUERY, oaBufferSize->ValueUInt32, queryOverrideParams );
         if( ret != CC_OK )
         {
             MD_LOG_A( adapterId, LOG_ERROR, "Setting extended query override failed, res: %u", ret );
@@ -484,8 +484,8 @@ namespace MetricsDiscoveryInternal
             return CC_ERROR_GENERAL;
         }
 
-        auto queryOverrideParams = static_cast<TSetQueryOverrideParams_1_2*>( params );
-        auto ret                 = driverInterface.SetQueryOverride( OVERRIDE_TYPE_MULTISAMPLED_QUERY, oaBufferSize->ValueUInt32, queryOverrideParams );
+        auto& queryOverrideParams = static_cast<TSetQueryOverrideParams_1_2&>( *params );
+        auto  ret                 = driverInterface.SetQueryOverride( OVERRIDE_TYPE_MULTISAMPLED_QUERY, oaBufferSize->ValueUInt32, queryOverrideParams );
         if( ret != CC_OK )
         {
             MD_LOG_A( adapterId, LOG_ERROR, "Setting multisampled query override failed, res: %u", ret );

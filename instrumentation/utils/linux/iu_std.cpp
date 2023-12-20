@@ -680,13 +680,13 @@ extern "C"
     //     Dump debug log to file.
     //
     // Input:
-    //     const char* msg - message to write
+    //     const char*   msg - message to write
     //
     // Output:
-    //     bool - always false
+    //     bool              - always false
     //
     ///////////////////////////////////////////////////////////////////////////////
-    bool iu_log_file( const char* msg )
+    bool iu_log_file( [[maybe_unused]] const char* msg )
     {
         // Not supported
         return false;

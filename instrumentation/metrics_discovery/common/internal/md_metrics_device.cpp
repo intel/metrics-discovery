@@ -78,12 +78,12 @@ namespace MetricsDiscoveryInternal
 
         GTDIDeviceInfoParamExtOut out = {};
 
-        if( m_driverInterface.SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_PLATFORM_INDEX, &out ) == CC_OK )
+        if( m_driverInterface.SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_PLATFORM_INDEX, out, *this ) == CC_OK )
         {
             m_platformIndex = out.ValueUint32;
             MD_LOG_A( adapterId, LOG_INFO, "Metrics device platform index: %u", m_platformIndex );
         }
-        if( m_driverInterface.SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_GT_TYPE, &out, this ) == CC_OK )
+        if( m_driverInterface.SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_GT_TYPE, out, *this ) == CC_OK )
         {
             m_gtType = (TGTType) ( 1 << out.ValueUint32 );
             MD_LOG_A( adapterId, LOG_INFO, "GT_TYPE is %u", m_gtType );
@@ -258,7 +258,7 @@ namespace MetricsDiscoveryInternal
 
         uint64_t        gpuTS = 0, cpuTS = 0, correlationIndicator = 0;
         uint32_t        cpuID = 0;
-        TCompletionCode ret   = m_driverInterface.GetGpuCpuTimestamps( *this, &gpuTS, &cpuTS, &cpuID, &correlationIndicator );
+        TCompletionCode ret   = m_driverInterface.GetGpuCpuTimestamps( *this, gpuTS, cpuTS, cpuID, correlationIndicator );
 
         if( ret == CC_OK )
         {
@@ -426,7 +426,7 @@ namespace MetricsDiscoveryInternal
         MD_CHECK_PTR_RET_A( adapterId, group, nullptr );
 
         m_groupsVector.push_back( group );
-        m_params.ConcurrentGroupsCount = m_groupsVector.size();
+        m_params.ConcurrentGroupsCount = static_cast<uint32_t>( m_groupsVector.size() );
 
         return group;
     }
@@ -492,7 +492,7 @@ namespace MetricsDiscoveryInternal
         {
             // Add override and update count
             m_overridesVector.push_back( override );
-            m_params.OverrideCount = m_overridesVector.size();
+            m_params.OverrideCount = static_cast<uint32_t>( m_overridesVector.size() );
             MD_LOG_A( adapterId, LOG_INFO, "%s - added", override->GetParams()->SymbolName );
         }
         else
@@ -628,7 +628,7 @@ namespace MetricsDiscoveryInternal
         m_symbolSet.WriteSymbolSetToFile( metricFile );
 
         // m_groupsVector
-        uint32_t groupsCount = m_groupsVector.size();
+        uint32_t groupsCount = static_cast<uint32_t>( m_groupsVector.size() );
         fwrite( &groupsCount, sizeof( groupsCount ), 1, metricFile );
         for( auto& group : m_groupsVector )
         {
@@ -1021,7 +1021,6 @@ namespace MetricsDiscoveryInternal
         bool               skip               = ( set == nullptr );
         TCompletionCode    ret                = CC_OK;
         uint32_t           metricsCount       = 0;
-        char*              symbolName         = nullptr;
         int64_t            valueLowWatermark  = 0;
         int64_t            valueHighWatermark = 0;
 
@@ -1324,7 +1323,7 @@ namespace MetricsDiscoveryInternal
 
             if( !skip )
             {
-                TCompletionCode ret = set->AddStartRegisterSet(
+                ret = set->AddStartRegisterSet(
                     registerSetParams.ConfigId,
                     registerSetParams.ConfigPriority,
                     equationString,
@@ -1783,7 +1782,7 @@ namespace MetricsDiscoveryInternal
             const uint32_t adapterId = m_adapter.GetAdapterId();
 
             GTDIDeviceInfoParamExtOut out = {};
-            const auto                ret = m_driverInterface.SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_OA_BUFFERS_COUNT, &out, this );
+            const auto                ret = m_driverInterface.SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_OA_BUFFERS_COUNT, out, *this );
             if( ret == CC_OK )
             {
                 m_oaBuferCount = out.ValueUint32;

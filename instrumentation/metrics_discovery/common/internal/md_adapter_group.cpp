@@ -441,7 +441,7 @@ namespace MetricsDiscoveryInternal
         MD_CHECK_PTR_RET( adapter, CC_ERROR_NO_MEMORY );
 
         m_adapterVector.push_back( adapter );
-        m_params.AdapterCount = m_adapterVector.size();
+        m_params.AdapterCount = static_cast<uint32_t>( m_adapterVector.size() );
 
         const TAdapterParamsLatest* adapterParams = adapter->GetParams();
         const uint32_t              adapterId     = adapter->GetAdapterId();
@@ -450,6 +450,7 @@ namespace MetricsDiscoveryInternal
         MD_LOG_A( adapterId, LOG_INFO, "Platform ID: %u", adapterParams->Platform );
         MD_LOG_A( adapterId, LOG_INFO, "Device ID: %x", adapterParams->DeviceId );
         MD_LOG_A( adapterId, LOG_INFO, "Adapter ID: %u", adapterId );
+
         return CC_OK;
     }
 

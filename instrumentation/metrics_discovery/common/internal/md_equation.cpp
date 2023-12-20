@@ -280,7 +280,7 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     uint32_t CEquation::GetEquationElementsCount()
     {
-        return m_elementsVector.size();
+        return static_cast<uint32_t>( m_elementsVector.size() );
     }
 
     //////////////////////////////////////////////////////////////////////////////

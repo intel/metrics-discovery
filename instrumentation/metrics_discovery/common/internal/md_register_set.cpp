@@ -236,7 +236,7 @@ namespace MetricsDiscoveryInternal
         WriteEquationToFile( m_availabilityEquation, metricFile, adapterId );
 
         // Registers
-        count = m_regList.size();
+        count = static_cast<uint32_t>( m_regList.size() );
         fwrite( &count, sizeof( uint32_t ), 1, metricFile );
 
         for( TRegister& reg : m_regList )

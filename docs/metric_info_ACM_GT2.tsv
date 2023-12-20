@@ -643,6 +643,7 @@ DataportWrites	XVE_BUSY	XVE Busy	VectorEngine	Any XVE thread loaded.
 DataportWrites	XVE_THREADS_OCCUPANCY_ALL	XVE Threads Occupancy All	VectorEngine	Percentage of thread slots occupied
 DataportWrites	XVE_COMPUTE_THREAD_COUNT	XVE Compute Thread Count	VectorEngine	Number of compute shader hardware threads dispatched
 DataportWrites	SAMPLER_L3_READ	Sampler L3 Read	L3Cache	Number of L3 read requests resulting from sampler local cache miss
+DataportWrites	SAMPLER_L3_BYTE_READ	Sampler L3 Byte Read	L3Cache	Number of L3 read bytes resulting from Sampler local cache miss
 DataportWrites	DATAPORT_BYTE_WRITE	Dataport Byte Write	Dataport	Number of bytes written through the Dataport
 AMFS1	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
 AMFS1	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.

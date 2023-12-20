@@ -165,7 +165,7 @@ namespace MetricsDiscoveryInternal
         uint32_t                        frequency       = 0;
         GTDIReadCounterStreamExceptions exceptions      = {};
 
-        auto ret = driverInterface.ReadIoStream( *this, readFlags, reportData, *reportCount, frequency, exceptions );
+        auto ret = driverInterface.ReadIoStream( *this, reportData, *reportCount, frequency, exceptions );
         if( ret == CC_OK || ret == CC_READ_PENDING )
         {
             driverInterface.HandleIoStreamExceptions( *this, m_processId, *reportCount, exceptions );
@@ -182,7 +182,7 @@ namespace MetricsDiscoveryInternal
             SetIoMeasurementInfoPredefined( IO_MEASUREMENT_INFO_BUFFER_OVERRUN, exceptions.BufferOverrun, index );
             SetIoMeasurementInfoPredefined( IO_MEASUREMENT_INFO_COUNTERS_OVERFLOW, exceptions.CountersOverflow, index );
 
-            m_params.IoMeasurementInformationCount = m_ioMeasurementInfoVector.size();
+            m_params.IoMeasurementInformationCount = static_cast<uint32_t>( m_ioMeasurementInfoVector.size() );
         }
 
         return ret;
@@ -570,7 +570,7 @@ namespace MetricsDiscoveryInternal
     //     const TStreamType - stream type
     //
     //////////////////////////////////////////////////////////////////////////////
-    const TStreamType COAConcurrentGroup::GetStreamType() const
+    TStreamType COAConcurrentGroup::GetStreamType() const
     {
         return m_streamType;
     }
@@ -590,7 +590,7 @@ namespace MetricsDiscoveryInternal
     //     const GTDI_OA_BUFFER_TYPE - oa buffer type
     //
     //////////////////////////////////////////////////////////////////////////////
-    const GTDI_OA_BUFFER_TYPE COAConcurrentGroup::GetOaBufferType() const
+    GTDI_OA_BUFFER_TYPE COAConcurrentGroup::GetOaBufferType() const
     {
         return m_oaBufferType;
     }
@@ -696,7 +696,7 @@ namespace MetricsDiscoveryInternal
     CInformation* COAConcurrentGroup::AddIoMeasurementInformation( const char* name, const char* shortName, const char* longName, const char* group, TInformationType informationType, const char* informationUnits )
     {
         const uint32_t adapterId       = m_device.GetAdapter().GetAdapterId();
-        CInformation*  measurementInfo = new( std::nothrow ) CInformation( m_device, m_ioMeasurementInfoVector.size(), name, shortName, longName, group, API_TYPE_IOSTREAM, informationType, informationUnits );
+        CInformation*  measurementInfo = new( std::nothrow ) CInformation( m_device, static_cast<uint32_t>( m_ioMeasurementInfoVector.size() ), name, shortName, longName, group, API_TYPE_IOSTREAM, informationType, informationUnits );
 
         MD_CHECK_PTR_RET_A( adapterId, measurementInfo, nullptr );
 
@@ -789,7 +789,7 @@ namespace MetricsDiscoveryInternal
     CInformation* COAConcurrentGroup::AddIoGpuContextInformation( const char* name, const char* shortName, const char* longName, const char* group, TInformationType informationType, const char* informationUnits )
     {
         const uint32_t adapterId      = m_device.GetAdapter().GetAdapterId();
-        CInformation*  gpuContextInfo = new( std::nothrow ) CInformation( m_device, m_ioGpuContextInfoVector.size(), name, shortName, longName, group, API_TYPE_IOSTREAM | 0x0, informationType, informationUnits );
+        CInformation*  gpuContextInfo = new( std::nothrow ) CInformation( m_device, static_cast<uint32_t>( m_ioGpuContextInfoVector.size() ), name, shortName, longName, group, API_TYPE_IOSTREAM | 0x0, informationType, informationUnits );
 
         MD_CHECK_PTR_RET_A( adapterId, gpuContextInfo, nullptr );
 

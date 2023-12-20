@@ -65,13 +65,13 @@ namespace MetricsDiscoveryInternal
         TCompletionCode QueryDrm( drm_i915_query& query );
 
         // Read global symbols per tile.
-        virtual TCompletionCode GetEuCoresTotalCount( GTDIDeviceInfoParamExtOut* out, CMetricsDevice* metricsDevice );
-        virtual TCompletionCode GetEuCoresPerSubsliceCount( GTDIDeviceInfoParamExtOut* out, CMetricsDevice* metricsDevice );
-        virtual TCompletionCode GetSliceMask( int32_t* sliceMask, CMetricsDevice* metricsDevice );
-        virtual TCompletionCode GetSubsliceMask( int64_t* subsliceMask, CMetricsDevice* metricsDevice );
+        virtual TCompletionCode GetEuCoresTotalCount( GTDIDeviceInfoParamExtOut& out, CMetricsDevice& metricsDevice );
+        virtual TCompletionCode GetEuCoresPerSubsliceCount( GTDIDeviceInfoParamExtOut& out, CMetricsDevice& metricsDevice );
+        virtual TCompletionCode GetSliceMask( int32_t& sliceMask, CMetricsDevice& metricsDevice );
+        virtual TCompletionCode GetSubsliceMask( int64_t& subsliceMask, CMetricsDevice& metricsDevice );
 
         // General
-        virtual TCompletionCode GetGpuCpuTimestamps( CMetricsDevice& device, uint64_t* gpuTimestamp, uint64_t* cpuTimestamp, uint32_t* cpuId, uint64_t* correlationIndicator );
+        virtual TCompletionCode GetGpuCpuTimestamps( CMetricsDevice& device, uint64_t& gpuTimestamp, uint64_t& cpuTimestamp, uint32_t& cpuId, uint64_t& correlationIndicator );
         virtual bool            IsTbsEngineValid( const TEngineParams_1_9& engineParams, const uint32_t requestedInstance = -1, const bool isOam = false ) const;
 
         // Overrides
@@ -84,6 +84,9 @@ namespace MetricsDiscoveryInternal
         TCompletionCode GetEngineDistances( const std::vector<drm_i915_engine_info>& engines, const std::vector<drm_i915_memory_region_info>& regions, std::vector<prelim_drm_i915_query_distance_info>& distances );
         TCompletionCode GetSubDeviceEngines( CSubDevices& subDevices, const std::vector<prelim_drm_i915_query_distance_info>& distances );
         virtual bool    CreateContext();
+
+        // SysFs
+        virtual void GetSysFsPath( CMetricsDevice& device, const TSysFsType fileType, char* filePath, const uint32_t filePathLength );
 
     private:
         // Perf
@@ -100,10 +103,11 @@ namespace MetricsDiscoveryInternal
         virtual TCompletionCode GetOaTimestampFrequency( uint64_t& frequency );
         virtual TCompletionCode GetCsTimestampFrequency( uint64_t& frequency );
         TCompletionCode         UpdateTbsEngineParams( CMetricsDevice& metricsDevice, std::vector<uint64_t>& properties );
+        bool                    IsOamSupported();
         bool                    IsOamRequested( const uint32_t reportType );
 
         // Read global symbols per tile.
-        TCompletionCode GetQueryGeometrySlices( std::vector<uint8_t>& buffer, CMetricsDevice* metricsDevice );
+        TCompletionCode GetQueryGeometrySlices( std::vector<uint8_t>& buffer, CMetricsDevice& metricsDevice );
         TCompletionCode GetQueryTopologyInfo( std::vector<uint8_t>& buffer );
 
         // Drm queries.
@@ -113,15 +117,18 @@ namespace MetricsDiscoveryInternal
         virtual TCompletionCode GetDeviceId( int32_t& deviceId );
         virtual TCompletionCode GetRevisionId( int32_t& revisionId );
         TCompletionCode         GetPerfRevision( int32_t& revision );
-        TCompletionCode         GetGpuTimestampNs( CMetricsDevice& metricsDevice, uint64_t* gpuTimestampNs );
-        TCompletionCode         GetGpuTimestampTicks( uint64_t* gpuTimestampTicks );
-        TCompletionCode         GetGpuCpuTimestamps( CMetricsDevice& device, const uint64_t gpuTimestampFrequency, uint64_t& gpuTimestampNs, uint64_t& cpuTimestampNs );
+        TCompletionCode         GetCpuTimestampNs( uint64_t& cpuTimestampNs );
+        TCompletionCode         GetGpuTimestampNs( CMetricsDevice& metricsDevice, uint64_t& gpuTimestampNs );
+        TCompletionCode         GetGpuTimestampTicks( uint64_t& gpuTimestampTicks );
+        TCompletionCode         GetGpuCpuTimestamps( CMetricsDevice& device, uint64_t& gpuTimestampNs, uint64_t& cpuTimestampNs );
 
         // IOCTLs
-        TCompletionCode         SendGetParamIoctl( int32_t drmFd, uint32_t paramId, GTDIDeviceInfoParamExtOut* outValue );
-        TCompletionCode         SendGetParamIoctl( int32_t drmFd, uint32_t paramId, int32_t* outValue );
+        TCompletionCode         SendGetParamIoctl( int32_t drmFd, uint32_t paramId, GTDIDeviceInfoParamExtOut& outValue );
+        TCompletionCode         SendGetParamIoctl( int32_t drmFd, uint32_t paramId, int32_t& outValue );
         virtual TCompletionCode GetOaBufferSupportedSizes( const uint32_t platformId, uint32_t& minSize, uint32_t& maxSize );
         virtual TCompletionCode GetOaBufferCount( CMetricsDevice& metricsDevice, uint32_t& oaBufferCount );
+        virtual TCompletionCode GetL3NodeTotalCount( CMetricsDevice& metricsDevice, uint32_t& l3NodeCount );
+        virtual TCompletionCode GetComputeEngineTotalCount( CMetricsDevice& metricsDevice, uint32_t& computeEngineCount );
 
         // Device info utils
         bool IsXePlus();

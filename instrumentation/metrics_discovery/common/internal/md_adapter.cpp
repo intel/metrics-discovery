@@ -996,17 +996,17 @@ namespace MetricsDiscoveryInternal
     //     aren't saved.
     //
     // Input:
-    //     const char*          fileName           - target file name
-    //     void*                saveParams         - save params
-    //     CMetricsDevice*      metricsDevice      - target metrics device
-    //     const uint32_t       minMajorApiVersion - required MDAPI major version to open the file
-    //     const uint32_t       minMinorApiVersion - required MDAPI minor version to open the file
+    //     const char*       fileName           - target file name
+    //     void*             saveParams         - save params
+    //     CMetricsDevice*   metricsDevice      - target metrics device
+    //     const uint32_t    minMajorApiVersion - required MDAPI major version to open the file
+    //     const uint32_t    minMinorApiVersion - required MDAPI minor version to open the file
     //
     // Output:
-    //     TCompletionCode                         - CC_OK means success
+    //     TCompletionCode                      - CC_OK means success
     //
     //////////////////////////////////////////////////////////////////////////////
-    TCompletionCode CAdapter::SaveMetricsDeviceToFile( const char* fileName, void* saveParams, CMetricsDevice* metricsDevice, const uint32_t minMajorApiVersion, const uint32_t minMinorApiVersion )
+    TCompletionCode CAdapter::SaveMetricsDeviceToFile( const char* fileName, [[maybe_unused]] void* saveParams, CMetricsDevice* metricsDevice, const uint32_t minMajorApiVersion, const uint32_t minMinorApiVersion )
     {
         MD_LOG_ENTER_A( m_adapterId );
         MD_CHECK_PTR_RET_A( m_adapterId, fileName, CC_ERROR_INVALID_PARAMETER );
@@ -1259,7 +1259,7 @@ namespace MetricsDiscoveryInternal
             MD_LOG_A( m_adapterId, LOG_ERROR, "Failed to get driver interface" );
             return retVal;
         }
-        MD_ASSERT_A( m_adapterId, m_driverInterface != nullptr );
+        MD_CHECK_PTR_RET_A( m_adapterId, m_driverInterface, CC_ERROR_GENERAL );
 
         // 2. Enable instrumentation support if needed
         retVal = EnableDriverSupport( true );
