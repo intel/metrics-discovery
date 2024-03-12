@@ -1,6 +1,6 @@
 /*========================== begin_copyright_notice ============================
 
-Copyright (C) 2019-2023 Intel Corporation
+Copyright (C) 2019-2024 Intel Corporation
 
 SPDX-License-Identifier: MIT
 
@@ -141,7 +141,7 @@ namespace MetricsDiscoveryInternal
     TCompletionCode ReadCStringFromFileBuffer( uint8_t*& fileBuffer, const uint8_t* fileBufferBeginOffset, const uint32_t fileSize, const char*& cstring, const uint32_t adapterId );
     TCompletionCode ReadUInt32FromFileBuffer( uint8_t*& fileBuffer, const uint8_t* fileBufferBeginOffset, const uint32_t fileSize, uint32_t& value, const uint32_t adapterId );
     TCompletionCode ReadInt64FromFileBuffer( uint8_t*& fileBuffer, const uint8_t* fileBufferBeginOffset, const uint32_t fileSize, int64_t& value, const uint32_t adapterId );
-    TCompletionCode ReadTTypedValueFromFileBuffer( uint8_t*& fileBuffer, const uint8_t* fileBufferBeginOffset, const uint32_t fileSize, TTypedValue_1_0& typedValue, const uint32_t adapterId );
+    TCompletionCode ReadTTypedValueFromFileBuffer( uint8_t*& fileBuffer, const uint8_t* fileBufferBeginOffset, const uint32_t fileSize, const uint32_t fileVersion, TTypedValue_1_0& typedValue, const uint32_t adapterId );
     TCompletionCode ReadEquationStringFromFile( uint8_t*& fileBuffer, const uint8_t* fileBufferBeginOffset, const uint32_t fileSize, const char*& cstring, const uint32_t adapterId );
 
     TCompletionCode SetBitInByteArray( TByteArrayLatest* byteArray, const uint32_t bitIndex, const uint32_t adapterId );

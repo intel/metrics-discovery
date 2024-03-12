@@ -27,7 +27,11 @@
 #ifndef _I915_DRM_H_
 #define _I915_DRM_H_
 
+#ifdef BPM_HEADER_PATH_ALIGN
+#include_next <uapi/drm/drm.h>
+#else
 #include "drm.h"
+#endif
 
 #if defined(__cplusplus)
 extern "C" {

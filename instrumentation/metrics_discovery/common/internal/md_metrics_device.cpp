@@ -1,6 +1,6 @@
 /*========================== begin_copyright_notice ============================
 
-Copyright (C) 2022 Intel Corporation
+Copyright (C) 2022-2024 Intel Corporation
 
 SPDX-License-Identifier: MIT
 
@@ -59,6 +59,24 @@ namespace MetricsDiscoveryInternal
     {
         const uint32_t adapterId = m_adapter.GetAdapterId();
 
+        GTDIDeviceInfoParamExtOut out = {};
+
+        if( m_driverInterface.SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_PLATFORM_INDEX, out, *this ) == CC_OK )
+        {
+            m_platformIndex = out.ValueUint32;
+            MD_LOG_A( adapterId, LOG_INFO, "Metrics device platform index: %u", m_platformIndex );
+        }
+        if( m_driverInterface.SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_GT_TYPE, out, *this ) == CC_OK )
+        {
+            m_gtType = static_cast<TGTType>( 1 << out.ValueUint32 );
+            MD_LOG_A( adapterId, LOG_INFO, "GT_TYPE is %u", m_gtType );
+        }
+
+        if( m_symbolSet.DetectMaxSlicesInfo() != CC_OK )
+        {
+            MD_LOG_A( adapterId, LOG_ERROR, "Cannot detect max slices, subslices per slice or dual subslices per slice" );
+        }
+
         m_params.DeltaFunctionsCount       = DELTA_FUNCTION_LAST_1_0;
         m_params.EquationOperationsCount   = EQUATION_OPER_LAST_1_0;
         m_params.EquationElementTypesCount = EQUATION_ELEM_LAST_1_0;
@@ -75,19 +93,6 @@ namespace MetricsDiscoveryInternal
 
         m_groupsVector.reserve( GROUPS_VECTOR_INCREASE );
         m_overridesVector.reserve( OVERRIDES_VECTOR_INCREASE );
-
-        GTDIDeviceInfoParamExtOut out = {};
-
-        if( m_driverInterface.SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_PLATFORM_INDEX, out, *this ) == CC_OK )
-        {
-            m_platformIndex = out.ValueUint32;
-            MD_LOG_A( adapterId, LOG_INFO, "Metrics device platform index: %u", m_platformIndex );
-        }
-        if( m_driverInterface.SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_GT_TYPE, out, *this ) == CC_OK )
-        {
-            m_gtType = (TGTType) ( 1 << out.ValueUint32 );
-            MD_LOG_A( adapterId, LOG_INFO, "GT_TYPE is %u", m_gtType );
-        }
     }
 
     //////////////////////////////////////////////////////////////////////////////
@@ -659,12 +664,13 @@ namespace MetricsDiscoveryInternal
     //     uint8_t*&       bufferPtr             - file buffer
     //     const uint8_t*  fileBufferBeginOffset - file buffer begin offset
     //     const uint32_t  fileSize              - file size
+    //     const uint32_t  fileVersion           - file version
     //
     // Output:
     //     TCompletionCode - result of the operation
     //
     //////////////////////////////////////////////////////////////////////////////
-    TCompletionCode CMetricsDevice::ReadGlobalSymbolsFromFileBuffer( uint8_t*& bufferPtr, const uint8_t* fileBufferBeginOffset, const uint32_t fileSize )
+    TCompletionCode CMetricsDevice::ReadGlobalSymbolsFromFileBuffer( uint8_t*& bufferPtr, const uint8_t* fileBufferBeginOffset, const uint32_t fileSize, const uint32_t fileVersion )
     {
         const uint32_t adapterId = m_adapter.GetAdapterId();
 
@@ -687,7 +693,7 @@ namespace MetricsDiscoveryInternal
         {
             ret = ReadCStringFromFileBuffer( bufferPtr, fileBufferBeginOffset, fileSize, globalSymbol.symbol_1_0.SymbolName, adapterId );
             MD_CHECK_CC_RET_A( adapterId, ret );
-            ret = ReadTTypedValueFromFileBuffer( bufferPtr, fileBufferBeginOffset, fileSize, globalSymbol.symbol_1_0.SymbolTypedValue, adapterId );
+            ret = ReadTTypedValueFromFileBuffer( bufferPtr, fileBufferBeginOffset, fileSize, fileVersion, globalSymbol.symbol_1_0.SymbolTypedValue, adapterId );
             MD_CHECK_CC_RET_A( adapterId, ret );
 
             uint32_t valueSymbolType = 0;
@@ -1520,7 +1526,7 @@ namespace MetricsDiscoveryInternal
             MD_LOG_A( adapterId, LOG_DEBUG, "Metrics device file saved with MDAPI v. %d.%d.%d, current v: %d.%d.%d", apiVersion.MajorNumber, apiVersion.MinorNumber, apiVersion.BuildNumber, MD_API_MAJOR_NUMBER_CURRENT, MD_API_MINOR_NUMBER_CURRENT, MD_API_BUILD_NUMBER_CURRENT );
 
             // GlobalSymbols
-            retVal = ReadGlobalSymbolsFromFileBuffer( bufferPtr, metricFileBuffer, fileSize );
+            retVal = ReadGlobalSymbolsFromFileBuffer( bufferPtr, metricFileBuffer, fileSize, fileVersion );
             MD_CHECK_CC( retVal );
 
             // ConcurrentGroup tree

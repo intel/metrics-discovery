@@ -1,6 +1,6 @@
 /*========================== begin_copyright_notice ============================
 
-Copyright (C) 2023 Intel Corporation
+Copyright (C) 2023-2024 Intel Corporation
 
 SPDX-License-Identifier: MIT
 
@@ -76,11 +76,14 @@ SPDX-License-Identifier: MIT
 //     Based on Intel driver files.
 //
 //////////////////////////////////////////////////////////////////////////////
-#define MD_MAX_SUBSLICE_PER_SLICE     8 // Currently max value
-#define MD_MAX_SLICE                  8 // Currently max value
-#define MD_MAX_DUALSUBSLICE_PER_SLICE 6 // Currently max value
-#define MD_MAX_SUBSLICE_PER_DSS       2 // Currently max value
-#define MD_DUALSUBSLICE_PER_SLICE     4 // Current value
+#define MD_MAX_SUBSLICE_PER_SLICE      8  // Currently max value
+#define MD_MAX_SLICE                   8  // Currently max value
+#define MD_MAX_DUALSUBSLICE_PER_SLICE  6  // Currently max value
+#define MD_MAX_SUBSLICE_PER_DSS        2  // Currently max value
+#define MD_MAX_L3_NODE                 16 // Currently max value
+#define MD_MAX_L3_BANK_PER_L3_NODE     4  // Currently max value
+#define MD_MAX_L3_NODE_PER_COPY_ENGINE 2  // Currently max value
+#define MD_DUALSUBSLICE_PER_SLICE      4  // Current value
 
 //////////////////////////////////////////////////////////////////////////////
 //
@@ -379,7 +382,11 @@ namespace MetricsDiscoveryInternal
         virtual TCompletionCode GetOaBufferSupportedSizes( const uint32_t platformId, uint32_t& minSize, uint32_t& maxSize ) = 0;
         virtual TCompletionCode GetOaBufferCount( CMetricsDevice& metricsDevice, uint32_t& oaBufferCount )                   = 0;
         virtual TCompletionCode GetL3NodeTotalCount( CMetricsDevice& metricsDevice, uint32_t& l3NodeCount )                  = 0;
+        virtual TCompletionCode GetL3BankTotalCount( CMetricsDevice& metricsDevice, uint32_t& l3BankCount )                  = 0;
         virtual TCompletionCode GetComputeEngineTotalCount( CMetricsDevice& metricsDevice, uint32_t& computeEngineCount )    = 0;
+        virtual TCompletionCode GetL3BankMask( CMetricsDevice& metricsDevice, uint64_t& l3BankMask )                         = 0;
+        virtual TCompletionCode GetL3NodeMask( CMetricsDevice& metricsDevice, uint64_t& l3NodeMask )                         = 0;
+        virtual TCompletionCode GetCopyEngineMask( CMetricsDevice& metricsDevice, uint64_t& copyEngineMask )                 = 0;
 
         // Device info utils
         uint32_t   GetGtMaxSubslicePerSlice();

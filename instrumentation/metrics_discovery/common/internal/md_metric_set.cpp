@@ -1,6 +1,6 @@
 /*========================== begin_copyright_notice ============================
 
-Copyright (C) 2022 Intel Corporation
+Copyright (C) 2022-2024 Intel Corporation
 
 SPDX-License-Identifier: MIT
 
@@ -2247,7 +2247,7 @@ namespace MetricsDiscoveryInternal
         MD_CHECK_PTR_RET_A( adapterId, m_concurrentGroup, CC_ERROR_GENERAL );
         MD_CHECK_PTR_RET_A( adapterId, out, CC_ERROR_INVALID_PARAMETER );
 
-        if( outSize < m_concurrentGroup->GetParams()->IoMeasurementInformationCount )
+        if( outSize < m_concurrentGroup->GetParams()->IoMeasurementInformationCount * sizeof( TTypedValue_1_0 ) )
         {
             MD_LOG_A( adapterId, LOG_ERROR, "error: output buffer has incorrect size" );
             MD_LOG_A( adapterId, LOG_DEBUG, "outSize: %u", outSize );

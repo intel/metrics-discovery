@@ -1,6 +1,6 @@
 /*========================== begin_copyright_notice ============================
 
-Copyright (C) 2022 Intel Corporation
+Copyright (C) 2022-2024 Intel Corporation
 
 SPDX-License-Identifier: MIT
 
@@ -45,11 +45,6 @@ namespace MetricsDiscoveryInternal
         , m_maxDualSubslicePerSlice( 0 )
     {
         m_symbolMap.reserve( SYMBOLS_MAP_INCREASE );
-
-        if( DetectMaxSlicesInfo() != CC_OK )
-        {
-            MD_LOG_A( metricsDevice.GetAdapter().GetAdapterId(), LOG_ERROR, "Cannot detect max slices, subslices per slice or dual subslices per slice" );
-        }
     }
 
     //////////////////////////////////////////////////////////////////////////////
@@ -284,8 +279,9 @@ namespace MetricsDiscoveryInternal
 
         const bool useDualSubslice = IsPlatformMatch(
             platformIndex,
-            // Only on ACM and MTL dual subslices are used to calculate XeCore global symbols.
+            // Only on ACM, MTL and ARL dual subslices are used to calculate XeCore global symbols.
             GENERATION_MTL,
+            GENERATION_ARL,
             GENERATION_ACM );
 
         if( name == "EuCoresTotalCount" || name == "VectorEngineTotalCount" )
@@ -628,12 +624,14 @@ namespace MetricsDiscoveryInternal
         const bool isXeHpgPlus = IsPlatformMatch(
             platformIndex,
             GENERATION_MTL,
+            GENERATION_ARL,
             GENERATION_ACM,
             GENERATION_PVC );
 
         const bool useDualSubslice = IsPlatformMatch(
             platformIndex,
             GENERATION_MTL,
+            GENERATION_ARL,
             GENERATION_TGL,
             GENERATION_DG1,
             GENERATION_XEHP_SDV,
@@ -649,11 +647,23 @@ namespace MetricsDiscoveryInternal
             const bool oamSupported = IsPlatformMatch(
                 platformIndex,
                 GENERATION_MTL,
+                GENERATION_ARL,
                 GENERATION_ACM );
 
             MD_LOG_A( adapterId, LOG_DEBUG, "Media symbol name is%s supported: %.*s", oamSupported ? "" : " not", static_cast<uint32_t>( name.length() ), name.data() );
 
             return oamSupported;
+        }
+
+        if( name == "L3BankTotalCount" )
+        {
+            const bool isL3BankSupported = IsPlatformMatch(
+                platformIndex,
+                GENERATION_PVC );
+
+            MD_LOG_A( adapterId, LOG_DEBUG, "Symbol name is%s supported: %.*s", isL3BankSupported ? "" : " not", static_cast<uint32_t>( name.length() ), name.data() );
+
+            return isL3BankSupported;
         }
 
         std::map<std::string_view, std::string_view> globalSymbolMap{
@@ -1017,6 +1027,43 @@ namespace MetricsDiscoveryInternal
         return DetectSymbolValue( symbolName, *symbolValue );
     }
 
+    ///////////////////////////////////////////////////////////////////////////////
+    //
+    // Class:
+    //     CSymbolSet
+    //
+    // Method:
+    //     DetectMaxSlicesInfo
+    //
+    // Description:
+    //     Gets information about max slices, max subslices per slice and
+    //     max dual subslices per slice sending escapes to KMD.
+    //
+    // Output:
+    //     TCompletionCode - result of the operation
+    //
+    ///////////////////////////////////////////////////////////////////////////////
+    TCompletionCode CSymbolSet::DetectMaxSlicesInfo()
+    {
+        TCompletionCode           ret       = CC_OK;
+        GTDIDeviceInfoParamExtOut out       = {};
+        const uint32_t            adapterId = m_metricsDevice.GetAdapter().GetAdapterId();
+
+        ret = m_driverInterface.SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_MAX_SLICE, out, m_metricsDevice );
+        MD_CHECK_CC_RET_A( adapterId, ret )
+        m_maxSlice = out.ValueUint32;
+
+        ret = m_driverInterface.SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_MAX_SUBSLICE_PER_SLICE, out, m_metricsDevice );
+        MD_CHECK_CC_RET_A( adapterId, ret )
+        m_maxSubslicePerSlice = out.ValueUint32;
+
+        ret = m_driverInterface.SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_MAX_DUALSUBSLICE_PER_SLICE, out, m_metricsDevice );
+        MD_CHECK_CC_RET_A( adapterId, ret )
+        m_maxDualSubslicePerSlice = out.ValueUint32;
+
+        return CC_OK;
+    }
+
     //////////////////////////////////////////////////////////////////////////////
     //
     // Class:
@@ -1067,6 +1114,7 @@ namespace MetricsDiscoveryInternal
         const bool useDualSubslice = IsPlatformMatch(
             platformIndex,
             GENERATION_MTL,
+            GENERATION_ARL,
             GENERATION_ACM );
 
         // Unpack mask
@@ -1074,8 +1122,8 @@ namespace MetricsDiscoveryInternal
         {
             for( uint32_t i = 0; i < m_maxSlice; ++i )
             {
-                uint32_t currentByte = i / MD_BITS_PER_BYTE;
-                uint32_t currentBit  = i % MD_BITS_PER_BYTE;
+                const uint32_t currentByte = i / MD_BITS_PER_BYTE;
+                const uint32_t currentBit  = i % MD_BITS_PER_BYTE;
 
                 if( mask[currentByte] & MD_BIT( currentBit ) )
                 {
@@ -1089,12 +1137,13 @@ namespace MetricsDiscoveryInternal
         {
             const char* subSliceString = ( isXeCoreSymbol ) ? "XeCore" : "Subslice";
 
-            for( uint32_t i = 0; i < m_maxSlice; i++ )
+            for( uint32_t i = 0; i < m_maxSlice; ++i )
             {
-                for( uint32_t j = 0; j < m_maxSubslicePerSlice; j++ )
+                for( uint32_t j = 0; j < m_maxSubslicePerSlice; ++j )
                 {
-                    uint32_t currentByte = ( i * m_maxSubslicePerSlice + j ) / MD_BITS_PER_BYTE;
-                    uint32_t currentBit  = ( i * m_maxSubslicePerSlice + j ) % MD_BITS_PER_BYTE;
+                    const uint32_t subsliceIndex = i * m_maxSubslicePerSlice + j;
+                    const uint32_t currentByte   = subsliceIndex / MD_BITS_PER_BYTE;
+                    const uint32_t currentBit    = subsliceIndex % MD_BITS_PER_BYTE;
 
                     if( mask[currentByte] & MD_BIT( currentBit ) )
                     {
@@ -1113,12 +1162,13 @@ namespace MetricsDiscoveryInternal
 
             const char* dualSubSliceString = ( isXeCoreSymbol ) ? "XeCore" : "DualSubslice";
 
-            for( uint32_t i = 0; i < m_maxSlice; i++ )
+            for( uint32_t i = 0; i < m_maxSlice; ++i )
             {
-                for( uint32_t j = 0; j < m_maxDualSubslicePerSlice; j++ )
+                for( uint32_t j = 0; j < m_maxDualSubslicePerSlice; ++j )
                 {
-                    uint32_t currentByte = ( i * m_maxDualSubslicePerSlice + j ) / MD_BITS_PER_BYTE;
-                    uint32_t currentBit  = ( i * m_maxDualSubslicePerSlice + j ) % MD_BITS_PER_BYTE;
+                    const uint32_t dualSubsliceIndex = i * m_maxDualSubslicePerSlice + j;
+                    const uint32_t currentByte       = dualSubsliceIndex / MD_BITS_PER_BYTE;
+                    const uint32_t currentBit        = dualSubsliceIndex % MD_BITS_PER_BYTE;
 
                     if( mask[currentByte] & MD_BIT( currentBit ) )
                     {
@@ -1143,43 +1193,6 @@ namespace MetricsDiscoveryInternal
         {
             MD_LOG_A( m_metricsDevice.GetAdapter().GetAdapterId(), LOG_WARNING, "%s - unknown mask, cannot unpack", symbol->symbol_1_0.SymbolName );
         }
-
-        return CC_OK;
-    }
-
-    ///////////////////////////////////////////////////////////////////////////////
-    //
-    // Class:
-    //     CSymbolSet
-    //
-    // Method:
-    //     DetectMaxSlicesInfo
-    //
-    // Description:
-    //     Gets information about max slices, max subslices per slice and
-    //     max dual subslices per slice sending escapes to KMD.
-    //
-    // Output:
-    //     TCompletionCode - result of the operation
-    //
-    ///////////////////////////////////////////////////////////////////////////////
-    TCompletionCode CSymbolSet::DetectMaxSlicesInfo()
-    {
-        TCompletionCode           ret       = CC_OK;
-        GTDIDeviceInfoParamExtOut out       = {};
-        const uint32_t            adapterId = m_metricsDevice.GetAdapter().GetAdapterId();
-
-        ret = m_driverInterface.SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_MAX_SLICE, out, m_metricsDevice );
-        MD_CHECK_CC_RET_A( adapterId, ret )
-        m_maxSlice = out.ValueUint32;
-
-        ret = m_driverInterface.SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_MAX_SUBSLICE_PER_SLICE, out, m_metricsDevice );
-        MD_CHECK_CC_RET_A( adapterId, ret )
-        m_maxSubslicePerSlice = out.ValueUint32;
-
-        ret = m_driverInterface.SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_MAX_DUALSUBSLICE_PER_SLICE, out, m_metricsDevice );
-        MD_CHECK_CC_RET_A( adapterId, ret )
-        m_maxDualSubslicePerSlice = out.ValueUint32;
 
         return CC_OK;
     }

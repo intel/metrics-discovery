@@ -1,6 +1,6 @@
 /*========================== begin_copyright_notice ============================
 
-Copyright (C) 2022 Intel Corporation
+Copyright (C) 2022-2024 Intel Corporation
 
 SPDX-License-Identifier: MIT
 
@@ -61,11 +61,11 @@ namespace MetricsDiscoveryInternal
         TCompletionCode      WriteSymbolSetToFile( FILE* metricFile );
         bool                 IsSymbolAlreadyAdded( std::string_view symbolName );
         TCompletionCode      RedetectSymbol( std::string_view name );
+        TCompletionCode      DetectMaxSlicesInfo();
 
     private:
         bool            IsPavpDisabled( uint32_t capabilities );
         TCompletionCode UnpackMask( const TGlobalSymbol* symbol );
-        TCompletionCode DetectMaxSlicesInfo();
         bool            IsSymbolNameSupported( std::string_view name );
 
     private:

@@ -1,6 +1,6 @@
 /*========================== begin_copyright_notice ============================
 
-Copyright (C) 2020-2022 Intel Corporation
+Copyright (C) 2020-2024 Intel Corporation
 
 SPDX-License-Identifier: MIT
 
@@ -243,6 +243,7 @@ namespace MetricsDiscoveryInternal
             case GENERATION_ACM:
             case GENERATION_PVC:
             case GENERATION_MTL:
+            case GENERATION_ARL:
                 useKernelVersion = m_perfCapabilities.IsGpuCpuTimestampSupported;
                 break;
 
@@ -299,7 +300,7 @@ namespace MetricsDiscoveryInternal
         const bool isComputeEngine      = engineParams.EngineId.ClassInstance.Class == I915_ENGINE_CLASS_COMPUTE;
         const bool isVideoEngine        = engineParams.EngineId.ClassInstance.Class == I915_ENGINE_CLASS_VIDEO;
         const bool isVideoEnhanceEngine = engineParams.EngineId.ClassInstance.Class == I915_ENGINE_CLASS_VIDEO_ENHANCE;
-        bool       isValidInstance      = requestedInstance != static_cast<uint32_t>( -1 ) ? engineParams.EngineId.ClassInstance.Instance == requestedInstance : true;
+        bool       isValidInstance      = ( requestedInstance == static_cast<uint32_t>( -1 ) ) || ( engineParams.EngineId.ClassInstance.Instance == requestedInstance );
 
         if( isValidInstance && ( ( isOam && ( isVideoEngine || isVideoEnhanceEngine ) ) || ( !isOam && ( isRenderEngine || isComputeEngine ) ) ) )
         {
@@ -431,6 +432,7 @@ namespace MetricsDiscoveryInternal
         m_subDevicesSupported &= IsPlatformMatch(
             gfxDeviceInfo->PlatformIndex,
             GENERATION_MTL,
+            GENERATION_ARL,
             GENERATION_XEHP_SDV,
             GENERATION_ACM,
             GENERATION_PVC );
@@ -691,7 +693,7 @@ namespace MetricsDiscoveryInternal
                     case I915_ENGINE_CLASS_COMPUTE:
                     case I915_ENGINE_CLASS_VIDEO:
                     case I915_ENGINE_CLASS_VIDEO_ENHANCE:
-                        MD_LOG_A( m_adapterId, LOG_DEBUG, "Sub device %u / engine %u:%u", subDevices.GetAllEnginesCount(), engine.engine_class, engine.engine_instance );
+                        MD_LOG_A( m_adapterId, LOG_DEBUG, "Sub device %u / engine %u:%u", subDevices.GetAllEnginesCount() - 1, engine.engine_class, engine.engine_instance );
                         subDevices.AddEngine( engine.engine_class, engine.engine_instance );
                         break;
 
@@ -1270,6 +1272,7 @@ namespace MetricsDiscoveryInternal
                 }
             }
             case GENERATION_MTL:
+            case GENERATION_ARL:
             {
                 switch( reportType )
                 {
@@ -2133,6 +2136,7 @@ namespace MetricsDiscoveryInternal
         {
             case GENERATION_ACM:
             case GENERATION_MTL:
+            case GENERATION_ARL:
                 return true;
             default:
                 return false;
@@ -2162,7 +2166,10 @@ namespace MetricsDiscoveryInternal
         switch( reportType )
         {
             case PRELIM_I915_OAM_FORMAT_A2u64_B8_C8:
+            case PRELIM_I915_OAM_FORMAT_MPEC8u32_B8_C8:
+            case PRELIM_I915_OAM_FORMAT_MPEC8u64_B8_C8:
                 return true;
+
             default:
                 return false;
         }
@@ -2356,7 +2363,7 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     //
     // Class:
-    //     CDriverInterfaceLinuxXe
+    //     CDriverInterfaceLinuxPerf
     //
     // Method:
     //     GetL3NodeTotalCount
@@ -2380,10 +2387,57 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     //
     // Class:
-    //     CDriverInterfaceLinuxXe
+    //     CDriverInterfaceLinuxPerf
     //
     // Method:
-    //     GetL3NodeTotalCount
+    //     GetL3BankTotalCount
+    //
+    // Description:
+    //     Returns L3 bank count for current platform.
+    //
+    // Input:
+    //     CMetricsDevice& metricsDevice - (IN) metrics device
+    //     uint32_t&       l3BankCount   - (OUT) L3 bank count
+    //
+    // Output:
+    //     TCompletionCode               - *CC_OK* means success
+    //
+    //////////////////////////////////////////////////////////////////////////////
+    TCompletionCode CDriverInterfaceLinuxPerf::GetL3BankTotalCount( CMetricsDevice& metricsDevice, uint32_t& l3BankCount )
+    {
+        auto  query          = drm_i915_query{};
+        auto  queryItem      = drm_i915_query_item{};
+        auto& subDevices     = metricsDevice.GetAdapter().GetSubDevices();
+        auto  subDeviceIndex = metricsDevice.GetSubDeviceIndex();
+        auto  engine         = TEngineParams_1_9{};
+        auto  result         = subDevices.GetTbsEngineParams( subDeviceIndex, engine );
+
+        MD_CHECK_CC_RET_A( m_adapterId, result );
+
+        // Query item data.
+        queryItem.query_id = PRELIM_DRM_I915_QUERY_L3BANK_COUNT;
+        queryItem.length   = sizeof( uint32_t );
+        queryItem.flags    = ( engine.EngineId.ClassInstance.Class & 0xFF ) | ( ( engine.EngineId.ClassInstance.Instance & 0xFF ) << 8 );
+        queryItem.data_ptr = reinterpret_cast<uint64_t>( &l3BankCount );
+
+        // Query data.
+        query.num_items = 1;
+        query.items_ptr = reinterpret_cast<uint64_t>( &queryItem );
+
+        // Send io control.
+        result = QueryDrm( query );
+        MD_CHECK_CC_RET_A( m_adapterId, result );
+
+        return CC_OK;
+    }
+
+    //////////////////////////////////////////////////////////////////////////////
+    //
+    // Class:
+    //     CDriverInterfaceLinuxPerf
+    //
+    // Method:
+    //     GetComputeEngineTotalCount
     //
     // Description:
     //     Returns compute engines count for current platform.
@@ -2397,6 +2451,78 @@ namespace MetricsDiscoveryInternal
     //
     //////////////////////////////////////////////////////////////////////////////
     TCompletionCode CDriverInterfaceLinuxPerf::GetComputeEngineTotalCount( CMetricsDevice& metricsDevice, uint32_t& computeEngineCount )
+    {
+        return CC_ERROR_NOT_SUPPORTED;
+    }
+
+    //////////////////////////////////////////////////////////////////////////////
+    //
+    // Class:
+    //     CDriverInterfaceLinuxPerf
+    //
+    // Method:
+    //     GetL3BankMask
+    //
+    // Description:
+    //     Returns l3 bank mask for current platform.
+    //
+    // Input:
+    //     CMetricsDevice& metricsDevice - (IN) metrics device
+    //     uint64_t&       l3BankMask    - (OUT) l3 bank mask
+    //
+    // Output:
+    //     TCompletionCode               - *CC_OK* means success
+    //
+    //////////////////////////////////////////////////////////////////////////////
+    TCompletionCode CDriverInterfaceLinuxPerf::GetL3BankMask( CMetricsDevice& metricsDevice, uint64_t& l3BankMask )
+    {
+        return CC_ERROR_NOT_SUPPORTED;
+    }
+
+    //////////////////////////////////////////////////////////////////////////////
+    //
+    // Class:
+    //     CDriverInterfaceLinuxPerf
+    //
+    // Method:
+    //     GetL3NodeMask
+    //
+    // Description:
+    //     Returns l3 node mask for current platform.
+    //
+    // Input:
+    //     CMetricsDevice& metricsDevice - (IN) metrics device
+    //     uint64_t&       l3NodeMask    - (OUT) l3 node mask
+    //
+    // Output:
+    //     TCompletionCode               - *CC_OK* means success
+    //
+    //////////////////////////////////////////////////////////////////////////////
+    TCompletionCode CDriverInterfaceLinuxPerf::GetL3NodeMask( CMetricsDevice& metricsDevice, uint64_t& l3NodeMask )
+    {
+        return CC_ERROR_NOT_SUPPORTED;
+    }
+
+    //////////////////////////////////////////////////////////////////////////////
+    //
+    // Class:
+    //     CDriverInterfaceLinuxPerf
+    //
+    // Method:
+    //     GetCopyEngineMask
+    //
+    // Description:
+    //     Returns copy engine mask for current platform.
+    //
+    // Input:
+    //     CMetricsDevice& metricsDevice  - (IN) metrics device
+    //     uint64_t&       copyEngineMask - (OUT) copy engine mask
+    //
+    // Output:
+    //     TCompletionCode                - *CC_OK* means success
+    //
+    //////////////////////////////////////////////////////////////////////////////
+    TCompletionCode CDriverInterfaceLinuxPerf::GetCopyEngineMask( CMetricsDevice& metricsDevice, uint64_t& copyEngineMask )
     {
         return CC_ERROR_NOT_SUPPORTED;
     }
@@ -2439,6 +2565,7 @@ namespace MetricsDiscoveryInternal
             case GENERATION_ADLS:
             case GENERATION_ADLN:
             case GENERATION_MTL:
+            case GENERATION_ARL:
                 return true;
 
             default:

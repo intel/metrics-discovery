@@ -1,17 +1,17 @@
 https://github.com/intel-gpu/drm-uapi-helper/tree/master/drm-uapi
 
 Base commit:
-https://github.com/intel-gpu/drm-uapi-helper/commit/6cc4a98623a075db68c57adc3c5e48010f7ddc76
+https://github.com/intel-gpu/drm-uapi-helper/commit/c41df665d23d124684597ba5e6ed97c574a575b9
 
 Author: Ashutosh Dixit <ashutosh.dixit@intel.com>
-Date:   12 Dec 2023 05:16:41 +01:00
+Date:   06 Mar 2024 21:42:41 +01:00
 
 Description:
-	  prelim v2.0-rc22
-        * No compatibility breakage in PRELIM uapi
-        * Other changes below
+	  prelim v2.0-rc24
+        * Correct the change introduced in public-duh-v2.0-rc23 as follows:
 
         i915_drm_prelim.h:
-        * PMU: Group busyness counters in VF
+        * Move drm_i915_reset_stats to i915_drm_prelim.h to include invalid
+          fault address
 
         Signed-off-by: Ashutosh Dixit <ashutosh.dixit@intel.com>

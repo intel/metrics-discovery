@@ -1,4 +1,4 @@
-# Copyright © 2020-2022, Intel Corporation
+# Copyright © 2020-2024, Intel Corporation
 #
 # Permission is hereby granted, free of charge, to any person obtaining a
 # copy of this software and associated documentation files (the "Software"),
@@ -115,6 +115,8 @@ set (_SOURCES ${_SOURCES}
     ${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen/md_metrics_PVC_GT2.cpp
     ${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen/md_metrics_MTL_GT2.cpp
     ${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen/md_metrics_MTL_GT3.cpp
+    ${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen/md_metrics_ARL_GT1.cpp
+    ${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen/md_metrics_ARL_GT2.cpp
 
     ${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen/md_metric_sets_HSW.cpp
     ${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen/md_metric_sets_BDW.cpp
@@ -146,6 +148,8 @@ set (_SOURCES ${_SOURCES}
     ${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen/md_metric_sets_PVC_GT2.cpp
     ${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen/md_metric_sets_MTL_GT2.cpp
     ${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen/md_metric_sets_MTL_GT3.cpp
+    ${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen/md_metric_sets_ARL_GT1.cpp
+    ${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen/md_metric_sets_ARL_GT2.cpp
     ${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen/md_metric_sets_common.cpp
 
     ${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen/md_metrics.cpp
@@ -508,32 +512,32 @@ set (API_HEADER_LOCATION "${BS_DIR_INC}/common/instrumentation/api/metrics_disco
 
 if ("${PLATFORM}" STREQUAL Windows) # windows
     install (TARGETS ${PROJECT_NAME} RUNTIME
-        DESTINATION Release/lh64
+        DESTINATION Release/bin
         CONFIGURATIONS Release
     )
 
     install (TARGETS ${PROJECT_NAME} RUNTIME
-        DESTINATION Release-Internal/lh64
+        DESTINATION Release-Internal/bin
         CONFIGURATIONS ReleaseInternal
     )
 
     install (TARGETS ${PROJECT_NAME} RUNTIME
-        DESTINATION Debug/lh64
+        DESTINATION Debug/bin
         CONFIGURATIONS Debug
     )
 
     install (FILES $<TARGET_PDB_FILE:${PROJECT_NAME}>
-        DESTINATION Release/lh64/pdb
+        DESTINATION Release/pdb
         CONFIGURATIONS Release
     )
 
     install (FILES $<TARGET_PDB_FILE:${PROJECT_NAME}>
-        DESTINATION Release-Internal/lh64/pdb
+        DESTINATION Release-Internal/pdb
         CONFIGURATIONS ReleaseInternal
     )
 
     install (FILES $<TARGET_PDB_FILE:${PROJECT_NAME}>
-        DESTINATION Debug/lh64/pdb
+        DESTINATION Debug/pdb
         CONFIGURATIONS Debug
     )
 elseif (${PLATFORM} STREQUAL linux) # linux

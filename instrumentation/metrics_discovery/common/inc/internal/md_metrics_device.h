@@ -1,6 +1,6 @@
 /*========================== begin_copyright_notice ============================
 
-Copyright (C) 2022 Intel Corporation
+Copyright (C) 2022-2024 Intel Corporation
 
 SPDX-License-Identifier: MIT
 
@@ -43,8 +43,7 @@ namespace MetricsDiscoveryInternal
         CUSTOM_METRICS_FILE_VERSION_1 = 1,
         CUSTOM_METRICS_FILE_VERSION_2 = 2,
         CUSTOM_METRICS_FILE_VERSION_3 = 3,
-
-        CUSTOM_METRICS_FILE_CURRENT = CUSTOM_METRICS_FILE_VERSION_3,
+        CUSTOM_METRICS_FILE_CURRENT   = CUSTOM_METRICS_FILE_VERSION_3,
     } TCustomMetricsFileVersion;
 
     //////////////////////////////////////////////////////////////////////////////
@@ -118,7 +117,7 @@ namespace MetricsDiscoveryInternal
 
     private:
         // Methods to read from file must be used in correct order
-        TCompletionCode ReadGlobalSymbolsFromFileBuffer( uint8_t*& bufferPtr, const uint8_t* fileBufferBeginOffset, const uint32_t fileSize );
+        TCompletionCode ReadGlobalSymbolsFromFileBuffer( uint8_t*& bufferPtr, const uint8_t* fileBufferBeginOffset, const uint32_t fileSize, const uint32_t fileVersion );
         TCompletionCode ReadConcurrentGroupsFromFileBuffer( uint8_t*& bufferPtr, const uint8_t* fileBufferBeginOffset, const uint32_t fileSize, TApiVersion_1_0* apiVersion, const uint32_t fileVersion );
         TCompletionCode ReadMetricSetsFromFileBuffer( uint8_t*& bufferPtr, const uint8_t* fileBufferBeginOffset, const uint32_t fileSize, CConcurrentGroup* group, TApiVersion_1_0* apiVersion, const uint32_t fileVersion );
         TCompletionCode ReadMetricsFromFileBuffer( uint8_t*& bufferPtr, const uint8_t* fileBufferBeginOffset, const uint32_t fileSize, CMetricSet* set, const bool isSetNew );

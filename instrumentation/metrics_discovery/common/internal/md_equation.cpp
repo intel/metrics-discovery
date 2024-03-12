@@ -1,6 +1,6 @@
 /*========================== begin_copyright_notice ============================
 
-Copyright (C) 2022 Intel Corporation
+Copyright (C) 2022-2024 Intel Corporation
 
 SPDX-License-Identifier: MIT
 
@@ -344,10 +344,18 @@ namespace MetricsDiscoveryInternal
                     break;
 
                 case EQUATION_ELEM_LOCAL_COUNTER_SYMBOL:
+                {
                     // Push 0 to stack for unavailable unpacked mask symbol.
-                    if( element.SymbolName != nullptr &&
-                        strstr( element.SymbolName, "GtSlice" ) != nullptr &&
-                        strstr( element.SymbolName, "Mask" ) == nullptr )
+                    const bool isUnpackedMaskSymbol = ( element.SymbolName != nullptr ) &&
+                        ( ( strstr( element.SymbolName, "GtSlice" ) != nullptr ) ||
+                            ( strstr( element.SymbolName, "GtXeCore" ) != nullptr ) ||
+                            ( strstr( element.SymbolName, "GtL3Bank" ) != nullptr ) ||
+                            ( strstr( element.SymbolName, "GtL3Node" ) != nullptr ) ||
+                            ( strstr( element.SymbolName, "GtSqidi" ) != nullptr ) ||
+                            ( strstr( element.SymbolName, "GtCopyEngine" ) != nullptr ) ) &&
+                        ( strstr( element.SymbolName, "Mask" ) == nullptr );
+
+                    if( isUnpackedMaskSymbol )
                     {
                         qwordValue = 0;
                         equationStack.push_back( qwordValue );
@@ -361,6 +369,7 @@ namespace MetricsDiscoveryInternal
                         return false;
                     }
                     break;
+                }
 
                 case EQUATION_ELEM_GLOBAL_SYMBOL:
                 {
@@ -611,9 +620,10 @@ namespace MetricsDiscoveryInternal
             const uint32_t platformIndex = m_device.GetPlatformIndex();
 
             // Workaround for renamed EuCoresTotalCount
-            bool platformXeHpPlus = IsPlatformMatch(
+            const bool platformXeHpPlus = IsPlatformMatch(
                 platformIndex,
                 GENERATION_MTL,
+                GENERATION_ARL,
                 GENERATION_ACM,
                 GENERATION_PVC );
 

@@ -1,6 +1,6 @@
 /*========================== begin_copyright_notice ============================
 
-Copyright (C) 2019-2023 Intel Corporation
+Copyright (C) 2019-2024 Intel Corporation
 
 SPDX-License-Identifier: MIT
 
@@ -231,7 +231,11 @@ typedef enum
     GTDI_IFC_VERSION_3_54    = GTDI_MAKE_IFC_VER( GTDI_IFC_VERSION_3, 54 ), // Deprecated DMA sampling
     GTDI_IFC_VERSION_3_55    = GTDI_MAKE_IFC_VER( GTDI_IFC_VERSION_3, 55 ), // New device param: Platform Version
     GTDI_IFC_VERSION_3_56    = GTDI_MAKE_IFC_VER( GTDI_IFC_VERSION_3, 56 ), // New device params: compute and copy engines count
-    GTDI_IFC_VERSION_CURRENT = GTDI_IFC_VERSION_3_56,
+    GTDI_IFC_VERSION_3_57    = GTDI_MAKE_IFC_VER( GTDI_IFC_VERSION_3, 57 ),
+    GTDI_IFC_VERSION_3_58    = GTDI_MAKE_IFC_VER( GTDI_IFC_VERSION_3, 58 ), // ARL base support
+    GTDI_IFC_VERSION_3_59    = GTDI_MAKE_IFC_VER( GTDI_IFC_VERSION_3, 59 ),
+    GTDI_IFC_VERSION_3_60    = GTDI_MAKE_IFC_VER( GTDI_IFC_VERSION_3, 60 ), // New device params: L3 Bank, L3 Node and Copy Engine masks
+    GTDI_IFC_VERSION_CURRENT = GTDI_IFC_VERSION_3_60,
     GTDI_IFC_VERSION_MAX     = 0xFFFFFFFF
 } GTDI_IFC_VERSION;
 
@@ -343,8 +347,8 @@ typedef enum GTDI_ESCAPE_FUNCTION_ENUM
     GTDI_FNC_GET_GPU_CPU_TIMESTAMPS       = 25, // Dedicated function for retrieving GPU and CPU timestamps at the same moment
     GTDI_FNC_GET_KI_BUILD_INFO            = 26, // obsolete - no longer supported
     GTDI_FNC_GET_ERROR_INFO               = 27, // extended error information
-    GTDI_FNC_DEVICE_INFO_PARAM            = 28,
-    GTDI_FNC_SET_DEVICE_PARAM             = 29,
+    GTDI_FNC_DEVICE_INFO_PARAM            = 28, // Get device parameter
+    GTDI_FNC_SET_DEVICE_PARAM             = 29, // Set device parameter
     GTDI_FNC_READ_REGS_CFG                = 30, // Get current values from specified registers
     GTDI_FNC_GET_CTX_ID_TAGS              = 31, // NOT AVAILABLE (removed)
     GTDI_FNC_VALIDATE_PM_REGS_CFG         = 32, // NOT AVAILABLE (removed)
@@ -452,7 +456,9 @@ typedef enum GTDI_REPORT_TYPE_ENUM
     GTDI_REPORT_TYPE_MC        = 103 << GTDI_REPORT_TYPE_OA_SHIFT, // memory counters only
     GTDI_REPORT_TYPE_USER      = 104 << GTDI_REPORT_TYPE_OA_SHIFT, // 16 user defined uint32_t counters only
     // media (OAM) report types
-    GTDI_REPORT_TYPE_128B_OAM = 1 << GTDI_REPORT_TYPE_OAM_SHIFT,
+    GTDI_REPORT_TYPE_128B_OAM           = 1 << GTDI_REPORT_TYPE_OAM_SHIFT, //
+    GTDI_REPORT_TYPE_192B_MPEC8LL_NOA16 = 2 << GTDI_REPORT_TYPE_OAM_SHIFT, // MTL+ format: 8 PEC(64-bit) + 16 NOA(32-bit)
+    GTDI_REPORT_TYPE_128B_MPEC8_NOA16   = 3 << GTDI_REPORT_TYPE_OAM_SHIFT, // MTL+ format: 8 PEC(32-bit) + 16 NOA(32-bit)
 
     GTDI_REPORT_TYPE_MAX = 0xFFFFFFFF,
 } GTDI_REPORT_TYPE;
@@ -515,6 +521,8 @@ typedef enum
     // 28 reserved
     GENERATION_ADLS     = 29,
     GENERATION_ADLN     = 30,
+    // 31-33 reserved
+    GENERATION_ARL      = 34,
     // ...
     // DO NOT CHANGE ORDER OF THIS ENUM, ADD NEW PLATFORMS AT THE END!
     // It has to be synchronized with metric_discovery_internal_api.h file.
@@ -597,6 +605,9 @@ typedef enum GTDI_DEVICE_PARAM_ENUM
     GTDI_DEVICE_PARAM_PLATFORM_VERSION                   = 57,
     GTDI_DEVICE_PARAM_COMPUTE_ENGINE_TOTAL_COUNT         = 58,
     GTDI_DEVICE_PARAM_COPY_ENGINE_TOTAL_COUNT            = 59,
+    GTDI_DEVICE_PARAM_L3_BANK_MASK                       = 60,
+    GTDI_DEVICE_PARAM_L3_NODE_MASK                       = 61,
+    GTDI_DEVICE_PARAM_COPY_ENGINE_MASK                   = 62,
 
     // Maximums which bound all supported GT. The values will change as needed with new GT.
     // These params are intended for internal use only.
@@ -604,6 +615,9 @@ typedef enum GTDI_DEVICE_PARAM_ENUM
     GTDI_DEVICE_PARAM_MAX_SUBSLICE_PER_SLICE     = 1001,
     GTDI_DEVICE_PARAM_MAX_SUBSLICE_PER_DSS       = 1002,
     GTDI_DEVICE_PARAM_MAX_DUALSUBSLICE_PER_SLICE = 1003,
+    GTDI_DEVICE_PARAM_MAX_L3_NODE                = 1004,
+    GTDI_DEVICE_PARAM_MAX_L3_BANK_PER_L3_NODE    = 1005,
+    GTDI_DEVICE_PARAM_MAX_COPY_ENGINE            = 1006,
 
     GTDI_DEVICE_PARAM_MAX = 0xFFFFFFFF
 } GTDI_DEVICE_PARAM;

@@ -1,6 +1,6 @@
 /*========================== begin_copyright_notice ============================
 
-Copyright (C) 2022 Intel Corporation
+Copyright (C) 2022-2024 Intel Corporation
 
 SPDX-License-Identifier: MIT
 
@@ -111,7 +111,7 @@ namespace MetricsDiscoveryInternal
         TCompletionCode ret = SetEquation( m_device, m_availabilityEquation, equationString );
         if( ret == CC_OK )
         {
-            m_isAvailable = m_availabilityEquation ? m_availabilityEquation->SolveBooleanEquation() : true;
+            m_isAvailable = !m_availabilityEquation || m_availabilityEquation->SolveBooleanEquation();
         }
         else
         {

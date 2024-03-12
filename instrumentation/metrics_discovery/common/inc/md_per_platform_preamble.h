@@ -1,6 +1,6 @@
 /*========================== begin_copyright_notice ============================
 
-Copyright (C) 2019-2021 Intel Corporation
+Copyright (C) 2019-2024 Intel Corporation
 
 SPDX-License-Identifier: MIT
 
@@ -58,7 +58,9 @@ SPDX-License-Identifier: MIT
            MD_INCLUDE_PVC_GT1_METRICS          || \
            MD_INCLUDE_PVC_GT2_METRICS          || \
            MD_INCLUDE_MTL_GT2_METRICS          || \
-           MD_INCLUDE_MTL_GT3_METRICS )
+           MD_INCLUDE_MTL_GT3_METRICS          || \
+           MD_INCLUDE_ARL_GT1_METRICS          || \
+           MD_INCLUDE_ARL_GT2_METRICS )
 // clang-format on
 
     #define MD_INCLUDE_HSW_METRICS              1
@@ -91,4 +93,6 @@ SPDX-License-Identifier: MIT
     #define MD_INCLUDE_PVC_GT2_METRICS          1
     #define MD_INCLUDE_MTL_GT2_METRICS          1
     #define MD_INCLUDE_MTL_GT3_METRICS          1
+    #define MD_INCLUDE_ARL_GT1_METRICS          1
+    #define MD_INCLUDE_ARL_GT2_METRICS          1
 #endif

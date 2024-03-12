@@ -1,6 +1,6 @@
 /*========================== begin_copyright_notice ============================
 
-Copyright (C) 2021-2023 Intel Corporation
+Copyright (C) 2021-2024 Intel Corporation
 
 SPDX-License-Identifier: MIT
 
@@ -287,6 +287,8 @@ namespace MetricsDiscoveryInternal
         { 0x46D0, TPlatformIndexGt( GENERATION_ADLN, GFX_GTTYPE_GT1 ) }, // ADLN
         { 0x46D1, TPlatformIndexGt( GENERATION_ADLN, GFX_GTTYPE_GT1 ) },
         { 0x46D2, TPlatformIndexGt( GENERATION_ADLN, GFX_GTTYPE_GT1 ) },
+        { 0x46D3, TPlatformIndexGt( GENERATION_ADLN, GFX_GTTYPE_GT1 ) },
+        { 0x46D4, TPlatformIndexGt( GENERATION_ADLN, GFX_GTTYPE_GT1 ) },
 
         { 0x9A40, TPlatformIndexGt( GENERATION_TGL, GFX_GTTYPE_GT2 ) },
         { 0x9A49, TPlatformIndexGt( GENERATION_TGL, GFX_GTTYPE_GT2 ) },
@@ -375,6 +377,11 @@ namespace MetricsDiscoveryInternal
         { 0x7D55, TPlatformIndexGt( GENERATION_MTL, GFX_GTTYPE_GT3 ) },
         { 0x7D60, TPlatformIndexGt( GENERATION_MTL, GFX_GTTYPE_GT2 ) },
         { 0x7DD5, TPlatformIndexGt( GENERATION_MTL, GFX_GTTYPE_GT3 ) },
+
+        { 0x7D41, TPlatformIndexGt( GENERATION_ARL, GFX_GTTYPE_GT1 ) },
+        { 0x7D51, TPlatformIndexGt( GENERATION_ARL, GFX_GTTYPE_GT2 ) },
+        { 0x7D67, TPlatformIndexGt( GENERATION_ARL, GFX_GTTYPE_GT1 ) },
+        { 0x7DD1, TPlatformIndexGt( GENERATION_ARL, GFX_GTTYPE_GT2 ) },
     };
 
     std::map<GTDI_PLATFORM_INDEX, uint32_t> threadsPerEuMap{
@@ -397,6 +404,7 @@ namespace MetricsDiscoveryInternal
         { GENERATION_ACM, 8 },
         { GENERATION_PVC, 8 },
         { GENERATION_MTL, 8 },
+        { GENERATION_ARL, 8 },
     };
 
 } // namespace MetricsDiscoveryInternal

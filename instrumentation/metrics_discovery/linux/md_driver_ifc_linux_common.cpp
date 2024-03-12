@@ -1,6 +1,6 @@
 /*========================== begin_copyright_notice ============================
 
-Copyright (C) 2023 Intel Corporation
+Copyright (C) 2023-2024 Intel Corporation
 
 SPDX-License-Identifier: MIT
 
@@ -894,13 +894,13 @@ namespace MetricsDiscoveryInternal
 
             case GTDI_DEVICE_PARAM_L3_BANK_TOTAL_COUNT:
             {
-                uint32_t l3NodeCount = 0;
+                uint32_t l3BankCount = 0;
 
-                ret = GetL3NodeTotalCount( metricsDevice, l3NodeCount );
+                ret = GetL3BankTotalCount( metricsDevice, l3BankCount );
                 MD_CHECK_CC_RET_A( m_adapterId, ret );
 
                 out.ValueType   = GTDI_DEVICE_PARAM_VALUE_TYPE_UINT32;
-                out.ValueUint32 = l3NodeCount * MD_L3_BANK_COUNT_PER_L3_NODE;
+                out.ValueUint32 = l3BankCount;
                 break;
             }
 
@@ -940,6 +940,57 @@ namespace MetricsDiscoveryInternal
                 out.ValueUint32 = l3NodeCount / MD_L3_NODE_COUNT_PER_COPY_ENGINE;
                 break;
             }
+
+            case GTDI_DEVICE_PARAM_L3_BANK_MASK:
+            {
+                uint64_t l3BankMask = 0;
+
+                ret = GetL3BankMask( metricsDevice, l3BankMask );
+                MD_CHECK_CC_RET_A( m_adapterId, ret );
+
+                out.ValueType   = GTDI_DEVICE_PARAM_VALUE_TYPE_UINT64;
+                out.ValueUint32 = l3BankMask;
+                break;
+            }
+
+            case GTDI_DEVICE_PARAM_L3_NODE_MASK:
+            {
+                uint64_t l3NodeMask = 0;
+
+                ret = GetL3NodeMask( metricsDevice, l3NodeMask );
+                MD_CHECK_CC_RET_A( m_adapterId, ret );
+
+                out.ValueType   = GTDI_DEVICE_PARAM_VALUE_TYPE_UINT64;
+                out.ValueUint32 = l3NodeMask;
+                break;
+            }
+
+            case GTDI_DEVICE_PARAM_COPY_ENGINE_MASK:
+            {
+                uint64_t copyEngineMask = 0;
+
+                ret = GetCopyEngineMask( metricsDevice, copyEngineMask );
+                MD_CHECK_CC_RET_A( m_adapterId, ret );
+
+                out.ValueType   = GTDI_DEVICE_PARAM_VALUE_TYPE_UINT64;
+                out.ValueUint32 = copyEngineMask;
+                break;
+            }
+
+            case GTDI_DEVICE_PARAM_MAX_L3_NODE:
+                out.ValueType   = GTDI_DEVICE_PARAM_VALUE_TYPE_UINT32;
+                out.ValueUint32 = MD_MAX_L3_NODE;
+                break;
+
+            case GTDI_DEVICE_PARAM_MAX_L3_BANK_PER_L3_NODE:
+                out.ValueType   = GTDI_DEVICE_PARAM_VALUE_TYPE_UINT32;
+                out.ValueUint32 = MD_MAX_L3_BANK_PER_L3_NODE;
+                break;
+
+            case GTDI_DEVICE_PARAM_MAX_COPY_ENGINE:
+                out.ValueType   = GTDI_DEVICE_PARAM_VALUE_TYPE_UINT32;
+                out.ValueUint32 = MD_MAX_L3_NODE / MD_MAX_L3_NODE_PER_COPY_ENGINE;
+                break;
 
             case GTDI_DEVICE_PARAM_PLATFORM_VERSION:
             {
@@ -2772,6 +2823,7 @@ namespace MetricsDiscoveryInternal
             case GENERATION_ACM:
             case GENERATION_PVC:
             case GENERATION_MTL:
+            case GENERATION_ARL:
                 ret = GetOaTimestampFrequency( oaTimestampFrequency );
                 MD_CHECK_CC_RET_A( m_adapterId, ret );
                 ret = GetCsTimestampFrequency( csTimestampFrequency );
@@ -2827,6 +2879,7 @@ namespace MetricsDiscoveryInternal
             case GENERATION_ACM:
             case GENERATION_PVC:
             case GENERATION_MTL:
+            case GENERATION_ARL:
                 result = GetOaTimestampFrequency( gpuTimestampFrequency );
                 break;
 
@@ -2933,6 +2986,7 @@ namespace MetricsDiscoveryInternal
             case GENERATION_XEHP_SDV:
             case GENERATION_ACM:
             case GENERATION_MTL:
+            case GENERATION_ARL:
                 return MD_MAX_DUALSUBSLICE_PER_SLICE * MD_MAX_SUBSLICE_PER_DSS;
 
             default:
@@ -2980,6 +3034,7 @@ namespace MetricsDiscoveryInternal
             case GENERATION_XEHP_SDV:
             case GENERATION_ACM:
             case GENERATION_MTL:
+            case GENERATION_ARL:
                 return MD_DUALSUBSLICE_PER_SLICE;
 
             default:
@@ -3024,6 +3079,7 @@ namespace MetricsDiscoveryInternal
             case GENERATION_ADLS:
             case GENERATION_ADLN:
             case GENERATION_MTL:
+            case GENERATION_ARL:
                 return true;
 
             default:

@@ -1,6 +1,6 @@
 /*========================== begin_copyright_notice ============================
 
-Copyright (C) 2019-2023 Intel Corporation
+Copyright (C) 2019-2024 Intel Corporation
 
 SPDX-License-Identifier: MIT
 
@@ -949,16 +949,18 @@ namespace MetricsDiscoveryInternal
     //     Reads TTypedValue struct from file buffer.
     //
     // Input:
-    //     uint8_t*&       fileBuffer            - pointer to the binary file buffer array
-    //     const uint8_t*  fileBufferBeginOffset - file buffer begin offset
-    //     const uint32_t  fileSize              - file size
-    //     const uint32_t  adapterId             - adapter id for purpose of logging
+    //     uint8_t*&      fileBuffer            - pointer to the binary file buffer array
+    //     const uint8_t* fileBufferBeginOffset - file buffer begin offset
+    //     const uint32_t fileSize              - file size
+    //     const uint32_t fileVersion           - file version
+    //     const uint32_t adapterId             - adapter id for purpose of logging
     //
     // Output:
-    //     TCompletionCode                       - result
+    //     TTypedValue_1_0                      - typed value
+    //     TCompletionCode                      - result
     //
     //////////////////////////////////////////////////////////////////////////////
-    TCompletionCode ReadTTypedValueFromFileBuffer( uint8_t*& fileBuffer, const uint8_t* fileBufferBeginOffset, const uint32_t fileSize, TTypedValue_1_0& typedValue, const uint32_t adapterId )
+    TCompletionCode ReadTTypedValueFromFileBuffer( uint8_t*& fileBuffer, const uint8_t* fileBufferBeginOffset, const uint32_t fileSize, const uint32_t fileVersion, TTypedValue_1_0& typedValue, const uint32_t adapterId )
     {
         TCompletionCode ret      = CC_OK;
         typedValue.ValueType     = VALUE_TYPE_UINT64;
@@ -1006,9 +1008,16 @@ namespace MetricsDiscoveryInternal
                 break;
 
             case VALUE_TYPE_BYTEARRAY:
-                MD_LOG_A( adapterId, LOG_DEBUG, "calling ReadByteArrayFromFileBuffer()..." );
-                ret = ReadByteArrayFromFileBuffer( fileBuffer, fileBufferBeginOffset, fileSize, typedValue.ValueByteArray, adapterId );
-                MD_CHECK_CC_RET_A( adapterId, ret );
+                if( fileVersion >= CUSTOM_METRICS_FILE_VERSION_3 )
+                {
+                    MD_LOG_A( adapterId, LOG_DEBUG, "calling ReadByteArrayFromFileBuffer()..." );
+                    ret = ReadByteArrayFromFileBuffer( fileBuffer, fileBufferBeginOffset, fileSize, typedValue.ValueByteArray, adapterId );
+                    MD_CHECK_CC_RET_A( adapterId, ret );
+                }
+                else
+                {
+                    MD_LOG_A( adapterId, LOG_DEBUG, "Reading ByteArray is not supported in file version %u", fileVersion );
+                }
                 break;
             default:
                 MD_ASSERT_A( adapterId, false );

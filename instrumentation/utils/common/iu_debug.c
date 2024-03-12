@@ -1,6 +1,6 @@
 /*========================== begin_copyright_notice ============================
 
-Copyright (C) 2019-2023 Intel Corporation
+Copyright (C) 2019-2024 Intel Corporation
 
 SPDX-License-Identifier: MIT
 
@@ -9,8 +9,6 @@ SPDX-License-Identifier: MIT
 //     File Name:  iu_debug.c
 
 //     Abstract:   Instrumentation Utils common debug routines and structures.
-
-#include <stdarg.h>
 
 #include "iu_debug.h"
 #include "iu_std.h"
@@ -101,13 +99,13 @@ static const char* __IuLogGetModuleInfo()
 #else
 
     static const char* const IU_EMPTY_MODULE_INFO = "";
-    static const char* pModuleInfo = NULL;
+    static const char*       pModuleInfo          = NULL;
 
     if( !pModuleInfo )
     {
         static char moduleInfo[IU_MODULE_NAME_SIZE_MAX] = { 0 };
-        const char* dlName = NULL;
-        char* processName = NULL;
+        const char* dlName                              = NULL;
+        char*       processName                         = NULL;
 
         iu_zeromem( moduleInfo, sizeof( moduleInfo ) );
 
@@ -147,7 +145,6 @@ static const char* __IuLogGetModuleInfo()
 //
 // Description:    Outputs debug information.
 ///////////////////////////////////////////////////////////////////////////////
-
 void __IuLogPrint(
     const uint32_t adapterId,
     const char     sevTag,
