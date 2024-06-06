@@ -912,7 +912,7 @@ namespace MetricsDiscoveryInternal
     //     ReadInt64FromFileBuffer
     //
     // Description:
-    //     Reads int64_t int from file buffer.
+    //     Reads int64_t from file buffer.
     //
     // Input:
     //     uint8_t*&       fileBuffer            - pointer to the binary file buffer array

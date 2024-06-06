@@ -8901,6 +8901,134 @@ namespace MetricsDiscoveryInternal::MetricSets_ACM_GT3_OA
         TCompletionCode Initialize();
     };
 
+    class CExt1208MetricSet final : public CMetricSet
+    {
+    public:
+        CExt1208MetricSet( CMetricsDevice& device, CConcurrentGroup* concurrentGroup, const char* symbolicName, const char* shortName, uint32_t apiMask, uint32_t category, uint32_t snapshotReportSize, uint32_t deltaReportSize, TReportType reportType, TByteArrayLatest* platformMask, uint32_t gtMask = GT_TYPE_ALL, bool isCustom = false );
+
+        TCompletionCode Initialize();
+    };
+
+    class CExt1209MetricSet final : public CMetricSet
+    {
+    public:
+        CExt1209MetricSet( CMetricsDevice& device, CConcurrentGroup* concurrentGroup, const char* symbolicName, const char* shortName, uint32_t apiMask, uint32_t category, uint32_t snapshotReportSize, uint32_t deltaReportSize, TReportType reportType, TByteArrayLatest* platformMask, uint32_t gtMask = GT_TYPE_ALL, bool isCustom = false );
+
+        TCompletionCode Initialize();
+    };
+
+    class CExt1210MetricSet final : public CMetricSet
+    {
+    public:
+        CExt1210MetricSet( CMetricsDevice& device, CConcurrentGroup* concurrentGroup, const char* symbolicName, const char* shortName, uint32_t apiMask, uint32_t category, uint32_t snapshotReportSize, uint32_t deltaReportSize, TReportType reportType, TByteArrayLatest* platformMask, uint32_t gtMask = GT_TYPE_ALL, bool isCustom = false );
+
+        TCompletionCode Initialize();
+    };
+
+    class CExt1211MetricSet final : public CMetricSet
+    {
+    public:
+        CExt1211MetricSet( CMetricsDevice& device, CConcurrentGroup* concurrentGroup, const char* symbolicName, const char* shortName, uint32_t apiMask, uint32_t category, uint32_t snapshotReportSize, uint32_t deltaReportSize, TReportType reportType, TByteArrayLatest* platformMask, uint32_t gtMask = GT_TYPE_ALL, bool isCustom = false );
+
+        TCompletionCode Initialize();
+    };
+
+    class CExt1212MetricSet final : public CMetricSet
+    {
+    public:
+        CExt1212MetricSet( CMetricsDevice& device, CConcurrentGroup* concurrentGroup, const char* symbolicName, const char* shortName, uint32_t apiMask, uint32_t category, uint32_t snapshotReportSize, uint32_t deltaReportSize, TReportType reportType, TByteArrayLatest* platformMask, uint32_t gtMask = GT_TYPE_ALL, bool isCustom = false );
+
+        TCompletionCode Initialize();
+    };
+
+    class CExt1213MetricSet final : public CMetricSet
+    {
+    public:
+        CExt1213MetricSet( CMetricsDevice& device, CConcurrentGroup* concurrentGroup, const char* symbolicName, const char* shortName, uint32_t apiMask, uint32_t category, uint32_t snapshotReportSize, uint32_t deltaReportSize, TReportType reportType, TByteArrayLatest* platformMask, uint32_t gtMask = GT_TYPE_ALL, bool isCustom = false );
+
+        TCompletionCode Initialize();
+    };
+
+    class CExt1214MetricSet final : public CMetricSet
+    {
+    public:
+        CExt1214MetricSet( CMetricsDevice& device, CConcurrentGroup* concurrentGroup, const char* symbolicName, const char* shortName, uint32_t apiMask, uint32_t category, uint32_t snapshotReportSize, uint32_t deltaReportSize, TReportType reportType, TByteArrayLatest* platformMask, uint32_t gtMask = GT_TYPE_ALL, bool isCustom = false );
+
+        TCompletionCode Initialize();
+    };
+
+    class CExt1215MetricSet final : public CMetricSet
+    {
+    public:
+        CExt1215MetricSet( CMetricsDevice& device, CConcurrentGroup* concurrentGroup, const char* symbolicName, const char* shortName, uint32_t apiMask, uint32_t category, uint32_t snapshotReportSize, uint32_t deltaReportSize, TReportType reportType, TByteArrayLatest* platformMask, uint32_t gtMask = GT_TYPE_ALL, bool isCustom = false );
+
+        TCompletionCode Initialize();
+    };
+
+    class CExt1216MetricSet final : public CMetricSet
+    {
+    public:
+        CExt1216MetricSet( CMetricsDevice& device, CConcurrentGroup* concurrentGroup, const char* symbolicName, const char* shortName, uint32_t apiMask, uint32_t category, uint32_t snapshotReportSize, uint32_t deltaReportSize, TReportType reportType, TByteArrayLatest* platformMask, uint32_t gtMask = GT_TYPE_ALL, bool isCustom = false );
+
+        TCompletionCode Initialize();
+    };
+
+    class CExt1217MetricSet final : public CMetricSet
+    {
+    public:
+        CExt1217MetricSet( CMetricsDevice& device, CConcurrentGroup* concurrentGroup, const char* symbolicName, const char* shortName, uint32_t apiMask, uint32_t category, uint32_t snapshotReportSize, uint32_t deltaReportSize, TReportType reportType, TByteArrayLatest* platformMask, uint32_t gtMask = GT_TYPE_ALL, bool isCustom = false );
+
+        TCompletionCode Initialize();
+    };
+
+    class CExt1218MetricSet final : public CMetricSet
+    {
+    public:
+        CExt1218MetricSet( CMetricsDevice& device, CConcurrentGroup* concurrentGroup, const char* symbolicName, const char* shortName, uint32_t apiMask, uint32_t category, uint32_t snapshotReportSize, uint32_t deltaReportSize, TReportType reportType, TByteArrayLatest* platformMask, uint32_t gtMask = GT_TYPE_ALL, bool isCustom = false );
+
+        TCompletionCode Initialize();
+    };
+
+    class CExt1219MetricSet final : public CMetricSet
+    {
+    public:
+        CExt1219MetricSet( CMetricsDevice& device, CConcurrentGroup* concurrentGroup, const char* symbolicName, const char* shortName, uint32_t apiMask, uint32_t category, uint32_t snapshotReportSize, uint32_t deltaReportSize, TReportType reportType, TByteArrayLatest* platformMask, uint32_t gtMask = GT_TYPE_ALL, bool isCustom = false );
+
+        TCompletionCode Initialize();
+    };
+
+    class CExt1220MetricSet final : public CMetricSet
+    {
+    public:
+        CExt1220MetricSet( CMetricsDevice& device, CConcurrentGroup* concurrentGroup, const char* symbolicName, const char* shortName, uint32_t apiMask, uint32_t category, uint32_t snapshotReportSize, uint32_t deltaReportSize, TReportType reportType, TByteArrayLatest* platformMask, uint32_t gtMask = GT_TYPE_ALL, bool isCustom = false );
+
+        TCompletionCode Initialize();
+    };
+
+    class CExt1221MetricSet final : public CMetricSet
+    {
+    public:
+        CExt1221MetricSet( CMetricsDevice& device, CConcurrentGroup* concurrentGroup, const char* symbolicName, const char* shortName, uint32_t apiMask, uint32_t category, uint32_t snapshotReportSize, uint32_t deltaReportSize, TReportType reportType, TByteArrayLatest* platformMask, uint32_t gtMask = GT_TYPE_ALL, bool isCustom = false );
+
+        TCompletionCode Initialize();
+    };
+
+    class CExt1222MetricSet final : public CMetricSet
+    {
+    public:
+        CExt1222MetricSet( CMetricsDevice& device, CConcurrentGroup* concurrentGroup, const char* symbolicName, const char* shortName, uint32_t apiMask, uint32_t category, uint32_t snapshotReportSize, uint32_t deltaReportSize, TReportType reportType, TByteArrayLatest* platformMask, uint32_t gtMask = GT_TYPE_ALL, bool isCustom = false );
+
+        TCompletionCode Initialize();
+    };
+
+    class CExt1223MetricSet final : public CMetricSet
+    {
+    public:
+        CExt1223MetricSet( CMetricsDevice& device, CConcurrentGroup* concurrentGroup, const char* symbolicName, const char* shortName, uint32_t apiMask, uint32_t category, uint32_t snapshotReportSize, uint32_t deltaReportSize, TReportType reportType, TByteArrayLatest* platformMask, uint32_t gtMask = GT_TYPE_ALL, bool isCustom = false );
+
+        TCompletionCode Initialize();
+    };
+
 } // namespace MetricsDiscoveryInternal::MetricSets_ACM_GT3_OA
 
 #endif

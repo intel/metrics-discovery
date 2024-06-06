@@ -45,9 +45,10 @@ namespace MetricsDiscoveryInternal
     protected:
         virtual TCompletionCode GetStreamTypeFromSamplingType( const TSamplingType samplingType, TStreamType& streamType ) const override;
 
-        // Static methods:
     public:
-        static bool IsSupported( const char* symbolicName, CMetricsDevice& device );
+        // Static methods:
+        static bool IsSupported( const char* symbolName, CMetricsDevice& device );
+        static bool IsValidSymbolName( const char* symbolName );
 
     protected:
         static GTDI_OA_BUFFER_TYPE GetOaBufferTypeFromName( const char* symbolName, CMetricsDevice& device );

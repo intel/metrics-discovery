@@ -43,14 +43,14 @@ namespace MetricsDiscoveryInternal
     public:
         CSubDeviceEngines( CSubDevices& subDevices );
 
-        TCompletionCode   AddEngine( const uint32_t engineClass, const uint32_t engineInstance );
-        TEngineParams_1_9 GetEngineParams( const uint32_t engineIndex );
-        TCompletionCode   GetTbsEngineParams( TEngineParams_1_9& engineParams, const uint32_t requestedInstance = -1, const bool isOam = false );
-        uint32_t          GetEnginesCount();
+        TCompletionCode     AddEngine( const uint32_t engineClass, const uint32_t engineInstance, const uint32_t gtId, const uint32_t oaUnit );
+        TEngineParamsLatest GetEngineParams( const uint32_t engineIndex );
+        TCompletionCode     GetTbsEngineParams( TEngineParamsLatest& engineParams, const uint32_t requestedInstance = -1, const bool isOam = false );
+        uint32_t            GetEnginesCount();
 
     private:
-        CSubDevices&                   m_subDevices;
-        std::vector<TEngineParams_1_9> m_engines;
+        CSubDevices&                     m_subDevices;
+        std::vector<TEngineParamsLatest> m_engines;
     };
 
     //////////////////////////////////////////////////////////////////////////////
@@ -73,10 +73,10 @@ namespace MetricsDiscoveryInternal
 
         TCompletionCode GetAdapterParams( TAdapterParams_1_9& params );
         TCompletionCode GetSubDeviceParams( const uint32_t subDeviceIndex, TSubDeviceParams_1_9& params );
-        TCompletionCode GetEngineParams( const uint32_t subDeviceIndex, const uint32_t engineIndex, TEngineParams_1_9& params );
-        TCompletionCode GetTbsEngineParams( const uint32_t subDeviceIndex, TEngineParams_1_9& params, const uint32_t requestedEngineInstance = -1, const bool isOam = false );
+        TCompletionCode GetEngineParams( const uint32_t subDeviceIndex, const uint32_t engineIndex, TEngineParamsLatest& params );
+        TCompletionCode GetTbsEngineParams( const uint32_t subDeviceIndex, TEngineParamsLatest& params, const uint32_t requestedEngineInstance = -1, const bool isOam = false );
         uint32_t        GetClassInstancesCount( const uint32_t subDeviceIndex, const uint32_t requestedEngineClass );
-        bool            IsTbsEngineValid( const TEngineParams_1_9& engineParams, const uint32_t requestedInstance = -1, const bool isOam = false ) const;
+        bool            IsTbsEngineValid( const TEngineParamsLatest& engineParams, const uint32_t requestedInstance = -1, const bool isOam = false ) const;
 
         uint32_t        GetDeviceCount();
         CMetricsDevice* GetDevice( const uint32_t index );
@@ -90,7 +90,7 @@ namespace MetricsDiscoveryInternal
         void            MakeSpaceForMetricsDevices();
         void            AppendSubDeviceEngine();
         uint32_t        GetAllEnginesCount();
-        TCompletionCode AddEngine( const uint32_t engineClass, const uint32_t engineInstance );
+        TCompletionCode AddEngine( const uint32_t engineClass, const uint32_t engineInstance, const uint32_t gtId, const uint32_t oaUnit );
 
     private:
         CAdapter&                      m_adapter;

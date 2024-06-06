@@ -175,7 +175,7 @@ namespace MetricsDiscovery
     {
         return CC_ERROR_NOT_SUPPORTED;
     }
-    IMetric_1_0* IMetricSet_1_0::AddCustomMetric( [[maybe_unused]] const char* symbolicName, [[maybe_unused]] const char* shortName, [[maybe_unused]] const char* groupName, [[maybe_unused]] const char* longName, [[maybe_unused]] const char* dxToOglAlias, [[maybe_unused]] uint32_t usageFlagsMask, [[maybe_unused]] uint32_t apiMask, [[maybe_unused]] TMetricResultType resultType, [[maybe_unused]] const char* resultUnits, [[maybe_unused]] TMetricType metricType, [[maybe_unused]] int64_t loWatermark, [[maybe_unused]] int64_t hiWatermark, [[maybe_unused]] THwUnitType hwType, [[maybe_unused]] const char* ioReadEquation, [[maybe_unused]] const char* deltaFunction, [[maybe_unused]] const char* queryReadEquation, [[maybe_unused]] const char* normalizationEquation, [[maybe_unused]] const char* maxValueEquation, [[maybe_unused]] const char* signalName )
+    IMetric_1_0* IMetricSet_1_0::AddCustomMetric( [[maybe_unused]] const char* symbolName, [[maybe_unused]] const char* shortName, [[maybe_unused]] const char* groupName, [[maybe_unused]] const char* longName, [[maybe_unused]] const char* dxToOglAlias, [[maybe_unused]] uint32_t usageFlagsMask, [[maybe_unused]] uint32_t apiMask, [[maybe_unused]] TMetricResultType resultType, [[maybe_unused]] const char* resultUnits, [[maybe_unused]] TMetricType metricType, [[maybe_unused]] int64_t loWatermark, [[maybe_unused]] int64_t hiWatermark, [[maybe_unused]] THwUnitType hwType, [[maybe_unused]] const char* ioReadEquation, [[maybe_unused]] const char* deltaFunction, [[maybe_unused]] const char* queryReadEquation, [[maybe_unused]] const char* normalizationEquation, [[maybe_unused]] const char* maxValueEquation, [[maybe_unused]] const char* signalName )
     {
         return nullptr;
     }
@@ -224,7 +224,6 @@ namespace MetricsDiscovery
     {
         return nullptr;
     }
-
     IInformation_1_0::~IInformation_1_0()
     {
     }

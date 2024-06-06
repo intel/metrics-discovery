@@ -309,7 +309,7 @@ namespace MetricsDiscoveryInternal
         virtual TCompletionCode GetPmRegsConfigHandles( uint32_t configId, uint32_t* oaConfigHandle, uint32_t* gpConfigHandle, uint32_t* rrConfigHandle );
         virtual TCompletionCode ValidatePmRegsConfig( TRegister* regVector, uint32_t regCount, uint32_t platformId );
         virtual TCompletionCode GetGpuCpuTimestamps( CMetricsDevice& device, uint64_t& gpuTimestamp, uint64_t& cpuTimestamp, uint32_t& cpuId, uint64_t& correlationIndicator ) = 0;
-        virtual bool            IsTbsEngineValid( const TEngineParams_1_9& engineParams, const uint32_t requestedInstance = -1, const bool isOam = false ) const               = 0;
+        virtual bool            IsTbsEngineValid( const TEngineParamsLatest& engineParams, const uint32_t requestedInstance = -1, const bool isOam = false ) const             = 0;
         virtual TCompletionCode SendGetCtxIdTagsEscape( TGetCtxTagsIdParams* params );
         virtual uint32_t        GetAdapterId();
         virtual bool            IsOaBufferSupported( const GTDI_OA_BUFFER_TYPE oaBufferType, CMetricsDevice& metricsDevice );

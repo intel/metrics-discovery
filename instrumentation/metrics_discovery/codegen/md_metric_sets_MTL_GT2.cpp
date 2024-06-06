@@ -18116,22 +18116,10 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         }
 
         availabilityEquation = "$GtSlice0";
-        metric               = AddMetric( "EARLY_DEPTH_STENCIL_TEST_FAIL_NP_ZPIPE0", "Early Depth Stencil Test Fail Np Zpipe0",
-                          "Number of non-promoted 2x2 that failed Depth / Stencil before the Pixel Shader that were previously ambiguous at HiZ",
-                          "GPU", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
-                          METRIC_TYPE_EVENT, RESULT_UINT64, "events", 0, 0, HW_UNIT_GPU, availabilityEquation, "Pixel|Fragment", nullptr, 3 );
-        if( metric )
-        {
-            MD_CHECK_CC( ( metric->SetSnapshotReportReadEquation( "dw@0xfc 2 dw@0xf8 UMUL UADD 4 dw@0xf4 UMUL UADD 8 dw@0xf0 UMUL UADD 16 dw@0xec UMUL UADD dw@0xc0 2 dw@0xc4 UMUL UADD 4 dw@0xc8 UMUL UADD 8 dw@0xcc UMUL UADD 16 dw@0xd0 UMUL UADD USUB" ) ) );
-            MD_CHECK_CC( ( metric->SetDeltaReportReadEquation( "qw@0x1b8 2 qw@0x1b0 UMUL UADD 4 qw@0x1a8 UMUL UADD 8 qw@0x1a0 UMUL UADD 16 qw@0x198 UMUL UADD qw@0x140 2 qw@0x148 UMUL UADD 4 qw@0x150 UMUL UADD 8 qw@0x158 UMUL UADD 16 qw@0x160 UMUL UADD USUB" ) ) );
-            MD_CHECK_CC( ( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ) ) );
-        }
-
-        availabilityEquation = "$GtSlice0";
-        metric               = AddMetric( "EARLY_DEPTH_STENCIL_TEST_FAIL_P_ZPIPE0", "Early Depth Stencil Test Fail P Zpipe0",
+        metric               = AddMetric( "EARLY_DEPTH_STENCIL_TEST_FAIL_P_ZPIPE0", "Early Depth Stencil Test Fail P ZPIPE0",
                           "Number of promoted 2x2 that failed Depth / Stencil that were previously ambiguous at HiZ",
                           "GPU", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
-                          METRIC_TYPE_EVENT, RESULT_UINT64, "events", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 4 );
+                          METRIC_TYPE_EVENT, RESULT_UINT64, "events", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 3 );
         if( metric )
         {
             MD_CHECK_CC( ( metric->SetSnapshotReportReadEquation( "dw@0xc0 2 dw@0xc4 UMUL UADD 4 dw@0xc8 UMUL UADD 8 dw@0xcc UMUL UADD 16 dw@0xd0 UMUL UADD" ) ) );
@@ -18144,24 +18132,21 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         {
             AddStartConfigRegister( 0x0d04, 0x00000200, REGISTER_TYPE_NOA );
             AddStartConfigRegister( 0x9884, 0x00000000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x0e0e5500, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x000cf801, REGISTER_TYPE_NOA );
+            AddStartConfigRegister( 0x9888, 0x0e0e5000, REGISTER_TYPE_NOA );
+            AddStartConfigRegister( 0x9888, 0x000c003f, REGISTER_TYPE_NOA );
             AddStartConfigRegister( 0x9888, 0x020e0080, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x040e0150, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x100e0493, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x120e0411, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x060e0000, REGISTER_TYPE_NOA );
+            AddStartConfigRegister( 0x9888, 0x040e5500, REGISTER_TYPE_NOA );
+            AddStartConfigRegister( 0x9888, 0x060e0491, REGISTER_TYPE_NOA );
+            AddStartConfigRegister( 0x9888, 0x080e0513, REGISTER_TYPE_NOA );
             AddStartConfigRegister( 0x9888, 0x000e0000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x00060002, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x0206aa80, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x00010002, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x0201aa80, REGISTER_TYPE_NOA );
+            AddStartConfigRegister( 0x9888, 0x00060aaa, REGISTER_TYPE_NOA );
+            AddStartConfigRegister( 0x9888, 0x00010aaa, REGISTER_TYPE_NOA );
             AddStartConfigRegister( 0x9888, 0x4e010000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x06010000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x50010000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x52010000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x54010000, REGISTER_TYPE_NOA );
             AddStartConfigRegister( 0x9888, 0x56010000, REGISTER_TYPE_NOA );
+            AddStartConfigRegister( 0x9888, 0x58010000, REGISTER_TYPE_NOA );
+            AddStartConfigRegister( 0x9888, 0x5a010000, REGISTER_TYPE_NOA );
+            AddStartConfigRegister( 0x9888, 0x5c010000, REGISTER_TYPE_NOA );
+            AddStartConfigRegister( 0x9888, 0x06010000, REGISTER_TYPE_NOA );
             AddStartConfigRegister( 0x9884, 0x00000000, REGISTER_TYPE_NOA );
             AddStartConfigRegister( 0x9888, 0x74010002, REGISTER_TYPE_NOA );
             AddStartConfigRegister( 0xd900, 0x00000000, REGISTER_TYPE_OA );
@@ -18172,16 +18157,16 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
             AddStartConfigRegister( 0xdc40, 0x00000000, REGISTER_TYPE_OA );
             AddStartConfigRegister( 0xdd40, 0x00000000, REGISTER_TYPE_OA );
             AddStartConfigRegister( 0x2b2c, 0x00000000, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0xd940, 0x0004000a, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0xd944, 0x00007ffe, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0xd948, 0x0002000a, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0xd94c, 0x0000bffe, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0xd950, 0x0001000a, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0xd954, 0x0000dffe, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0xd958, 0x0000800a, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0xd95c, 0x0000effe, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0xd960, 0x0000400a, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0xd964, 0x0000f7fe, REGISTER_TYPE_OA );
+            AddStartConfigRegister( 0xd940, 0x0000001a, REGISTER_TYPE_OA );
+            AddStartConfigRegister( 0xd944, 0x0000fffc, REGISTER_TYPE_OA );
+            AddStartConfigRegister( 0xd948, 0x00000032, REGISTER_TYPE_OA );
+            AddStartConfigRegister( 0xd94c, 0x0000fff9, REGISTER_TYPE_OA );
+            AddStartConfigRegister( 0xd950, 0x00000052, REGISTER_TYPE_OA );
+            AddStartConfigRegister( 0xd954, 0x0000fff5, REGISTER_TYPE_OA );
+            AddStartConfigRegister( 0xd958, 0x00000092, REGISTER_TYPE_OA );
+            AddStartConfigRegister( 0xd95c, 0x0000ffed, REGISTER_TYPE_OA );
+            AddStartConfigRegister( 0xd960, 0x00000112, REGISTER_TYPE_OA );
+            AddStartConfigRegister( 0xd964, 0x0000ffdd, REGISTER_TYPE_OA );
         }
         RefreshConfigRegisters();
         return CC_OK;
@@ -18238,22 +18223,10 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         }
 
         availabilityEquation = "$GtSlice0";
-        metric               = AddMetric( "EARLY_DEPTH_STENCIL_TEST_FAIL_NP_ZPIPE1", "Early Depth Stencil Test Fail Np Zpipe1",
-                          "Number of non-promoted 2x2 that failed Depth / Stencil before the Pixel Shader that were previously ambiguous at HiZ",
-                          "GPU", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
-                          METRIC_TYPE_EVENT, RESULT_UINT64, "events", 0, 0, HW_UNIT_GPU, availabilityEquation, "Pixel|Fragment", nullptr, 3 );
-        if( metric )
-        {
-            MD_CHECK_CC( ( metric->SetSnapshotReportReadEquation( "dw@0xfc 2 dw@0xf8 UMUL UADD 4 dw@0xf4 UMUL UADD 8 dw@0xf0 UMUL UADD 16 dw@0xec UMUL UADD dw@0xc0 2 dw@0xc4 UMUL UADD 4 dw@0xc8 UMUL UADD 8 dw@0xcc UMUL UADD 16 dw@0xd0 UMUL UADD USUB" ) ) );
-            MD_CHECK_CC( ( metric->SetDeltaReportReadEquation( "qw@0x1b8 2 qw@0x1b0 UMUL UADD 4 qw@0x1a8 UMUL UADD 8 qw@0x1a0 UMUL UADD 16 qw@0x198 UMUL UADD qw@0x140 2 qw@0x148 UMUL UADD 4 qw@0x150 UMUL UADD 8 qw@0x158 UMUL UADD 16 qw@0x160 UMUL UADD USUB" ) ) );
-            MD_CHECK_CC( ( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ) ) );
-        }
-
-        availabilityEquation = "$GtSlice0";
-        metric               = AddMetric( "EARLY_DEPTH_STENCIL_TEST_FAIL_P_ZPIPE1", "Early Depth Stencil Test Fail P Zpipe1",
+        metric               = AddMetric( "EARLY_DEPTH_STENCIL_TEST_FAIL_P_ZPIPE1", "Early Depth Stencil Test Fail P ZPIPE1",
                           "Number of promoted 2x2 that failed Depth / Stencil that were previously ambiguous at HiZ",
                           "GPU", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
-                          METRIC_TYPE_EVENT, RESULT_UINT64, "events", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 4 );
+                          METRIC_TYPE_EVENT, RESULT_UINT64, "events", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 3 );
         if( metric )
         {
             MD_CHECK_CC( ( metric->SetSnapshotReportReadEquation( "dw@0xc0 2 dw@0xc4 UMUL UADD 4 dw@0xc8 UMUL UADD 8 dw@0xcc UMUL UADD 16 dw@0xd0 UMUL UADD" ) ) );
@@ -18266,36 +18239,27 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
         {
             AddStartConfigRegister( 0x0d04, 0x00000200, REGISTER_TYPE_NOA );
             AddStartConfigRegister( 0x9884, 0x00000000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x0c0f5500, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x00130002, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x0213aa80, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x00140001, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x02145540, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x00150001, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x02155540, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x00160001, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x02165540, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x00170002, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x0217aa80, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x000cf801, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x000ef801, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x000d0001, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x020d5540, REGISTER_TYPE_NOA );
+            AddStartConfigRegister( 0x9888, 0x0c0f5000, REGISTER_TYPE_NOA );
+            AddStartConfigRegister( 0x9888, 0x00130aaa, REGISTER_TYPE_NOA );
+            AddStartConfigRegister( 0x9888, 0x00140555, REGISTER_TYPE_NOA );
+            AddStartConfigRegister( 0x9888, 0x00150555, REGISTER_TYPE_NOA );
+            AddStartConfigRegister( 0x9888, 0x00160555, REGISTER_TYPE_NOA );
+            AddStartConfigRegister( 0x9888, 0x00170aaa, REGISTER_TYPE_NOA );
+            AddStartConfigRegister( 0x9888, 0x000c003f, REGISTER_TYPE_NOA );
+            AddStartConfigRegister( 0x9888, 0x000e003f, REGISTER_TYPE_NOA );
+            AddStartConfigRegister( 0x9888, 0x000d0555, REGISTER_TYPE_NOA );
             AddStartConfigRegister( 0x9888, 0x000f0080, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x020f0150, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x0e0f0493, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x100f0411, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x040f0000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x00060002, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x0206aa80, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x00010002, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x0201aa80, REGISTER_TYPE_NOA );
+            AddStartConfigRegister( 0x9888, 0x020f5500, REGISTER_TYPE_NOA );
+            AddStartConfigRegister( 0x9888, 0x040f0491, REGISTER_TYPE_NOA );
+            AddStartConfigRegister( 0x9888, 0x060f0513, REGISTER_TYPE_NOA );
+            AddStartConfigRegister( 0x9888, 0x00060aaa, REGISTER_TYPE_NOA );
+            AddStartConfigRegister( 0x9888, 0x00010aaa, REGISTER_TYPE_NOA );
             AddStartConfigRegister( 0x9888, 0x4e010000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x06010000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x50010000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x52010000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x54010000, REGISTER_TYPE_NOA );
             AddStartConfigRegister( 0x9888, 0x56010000, REGISTER_TYPE_NOA );
+            AddStartConfigRegister( 0x9888, 0x58010000, REGISTER_TYPE_NOA );
+            AddStartConfigRegister( 0x9888, 0x5a010000, REGISTER_TYPE_NOA );
+            AddStartConfigRegister( 0x9888, 0x5c010000, REGISTER_TYPE_NOA );
+            AddStartConfigRegister( 0x9888, 0x06010000, REGISTER_TYPE_NOA );
             AddStartConfigRegister( 0x9884, 0x00000000, REGISTER_TYPE_NOA );
             AddStartConfigRegister( 0x9888, 0x74010002, REGISTER_TYPE_NOA );
             AddStartConfigRegister( 0xd900, 0x00000000, REGISTER_TYPE_OA );
@@ -18306,16 +18270,16 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
             AddStartConfigRegister( 0xdc40, 0x00000000, REGISTER_TYPE_OA );
             AddStartConfigRegister( 0xdd40, 0x00000000, REGISTER_TYPE_OA );
             AddStartConfigRegister( 0x2b2c, 0x00000000, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0xd940, 0x0004000a, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0xd944, 0x00007ffe, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0xd948, 0x0002000a, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0xd94c, 0x0000bffe, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0xd950, 0x0001000a, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0xd954, 0x0000dffe, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0xd958, 0x0000800a, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0xd95c, 0x0000effe, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0xd960, 0x0000400a, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0xd964, 0x0000f7fe, REGISTER_TYPE_OA );
+            AddStartConfigRegister( 0xd940, 0x0000001a, REGISTER_TYPE_OA );
+            AddStartConfigRegister( 0xd944, 0x0000fffc, REGISTER_TYPE_OA );
+            AddStartConfigRegister( 0xd948, 0x00000032, REGISTER_TYPE_OA );
+            AddStartConfigRegister( 0xd94c, 0x0000fff9, REGISTER_TYPE_OA );
+            AddStartConfigRegister( 0xd950, 0x00000052, REGISTER_TYPE_OA );
+            AddStartConfigRegister( 0xd954, 0x0000fff5, REGISTER_TYPE_OA );
+            AddStartConfigRegister( 0xd958, 0x00000092, REGISTER_TYPE_OA );
+            AddStartConfigRegister( 0xd95c, 0x0000ffed, REGISTER_TYPE_OA );
+            AddStartConfigRegister( 0xd960, 0x00000112, REGISTER_TYPE_OA );
+            AddStartConfigRegister( 0xd964, 0x0000ffdd, REGISTER_TYPE_OA );
         }
         RefreshConfigRegisters();
         return CC_OK;
@@ -27283,11 +27247,21 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
             MD_CHECK_CC( ( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ) ) );
         }
 
+        availabilityEquation = nullptr;
+        metric               = AddMetric( "AvgGpuCoreFrequencyMHz", "AVG GPU Core Frequency",
+                          "Average GPU Core Frequency in the measurement.",
+                          "GPU", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_1 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          METRIC_TYPE_EVENT, RESULT_UINT64, "MHz", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, "oa.fixed", 2 );
+        if( metric )
+        {
+            MD_CHECK_CC( ( metric->SetNormalizationEquation( "$GpuCoreClocks 1000 UMUL $$GpuTime UDIV" ) ) );
+        }
+
         availabilityEquation = "$GtSlice0XeCore3";
-        metric               = AddMetric( "ASYNC_GPGPU_THREADGROUP_COUNT_XECORE3", "Async GpGpu Threadgroup Count Xecore3",
+        metric               = AddMetric( "ASYNC_GPGPU_THREADGROUP_COUNT_XECORE3", "Async GpGpu Threadgroup Count XECORE3",
                           "Number of Async GPGPU threadgroups dispatched",
                           "GPU", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
-                          METRIC_TYPE_EVENT, RESULT_UINT64, "events", 0, 0, HW_UNIT_DUALSUBSLICE, availabilityEquation, nullptr, nullptr, 2 );
+                          METRIC_TYPE_EVENT, RESULT_UINT64, "events", 0, 0, HW_UNIT_DUALSUBSLICE, availabilityEquation, nullptr, nullptr, 3 );
         if( metric )
         {
             MD_CHECK_CC( ( metric->SetSnapshotReportReadEquation( "dw@0xc0" ) ) );
@@ -30526,6 +30500,226 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT2_OA
             AddStartConfigRegister( 0xdc40, 0x00000000, REGISTER_TYPE_OA );
             AddStartConfigRegister( 0xdd40, 0x00000000, REGISTER_TYPE_OA );
             AddStartConfigRegister( 0x2b2c, 0x00000000, REGISTER_TYPE_OA );
+        }
+        RefreshConfigRegisters();
+        return CC_OK;
+
+    exception:
+        return ret;
+    }
+
+    CExt580MetricSet::CExt580MetricSet( CMetricsDevice& device, CConcurrentGroup* concurrentGroup, const char* symbolicName, const char* shortName, uint32_t apiMask, uint32_t category, uint32_t snapshotReportSize, uint32_t deltaReportSize, TReportType reportType, TByteArrayLatest* platformMask, uint32_t gtMask /*= GT_TYPE_ALL*/, bool isCustom /*= false*/ )
+        : CMetricSet( device, concurrentGroup, symbolicName, shortName, apiMask, category, snapshotReportSize, deltaReportSize, reportType, platformMask, gtMask, isCustom )
+    {
+    }
+
+    TCompletionCode CExt580MetricSet::Initialize()
+    {
+        TCompletionCode ret                  = CC_OK;
+        CMetric*        metric               = nullptr;
+        const char*     availabilityEquation = nullptr;
+        m_params.InformationCount            = m_concurrentGroup->GetInformationCount();
+        MD_CHECK_CC( SetApiSpecificId( "GPAV", 0, 0x40000000, 0x80000203, 0, 0, "Intel Performance Counters for GT Set Dynamic", 0, "Intel_Raw_Hardware_Counters_Set_0_Query", 0 ) );
+
+        availabilityEquation = nullptr;
+        metric               = AddMetric( "GpuTime", "GPU Time Elapsed",
+                          "Time elapsed on the GPU during the measurement.",
+                          "GPU", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_1 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          METRIC_TYPE_DURATION, RESULT_UINT64, "ns", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, "oa.fixed", 0 );
+        if( metric )
+        {
+            MD_CHECK_CC( ( metric->SetSnapshotReportReadEquation( "dw@0x04 1000000000 UMUL $GpuTimestampFrequency UDIV" ) ) );
+            MD_CHECK_CC( ( metric->SetDeltaReportReadEquation( "qw@0x00" ) ) );
+            MD_CHECK_CC( ( metric->SetSnapshotReportDeltaFunction( "NS_TIME" ) ) );
+        }
+
+        availabilityEquation = nullptr;
+        metric               = AddMetric( "GpuCoreClocks", "GPU Core Clocks",
+                          "The total number of GPU core clocks elapsed during the measurement.",
+                          "GPU", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_1 | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          METRIC_TYPE_EVENT, RESULT_UINT64, "cycles", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, "oa.fixed", 1 );
+        if( metric )
+        {
+            MD_CHECK_CC( ( metric->SetSnapshotReportReadEquation( "dw@0x0c" ) ) );
+            MD_CHECK_CC( ( metric->SetDeltaReportReadEquation( "qw@0x08" ) ) );
+            MD_CHECK_CC( ( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ) ) );
+        }
+
+        availabilityEquation = nullptr;
+        metric               = AddMetric( "AvgGpuCoreFrequencyMHz", "AVG GPU Core Frequency",
+                          "Average GPU Core Frequency in the measurement.",
+                          "GPU", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_1 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          METRIC_TYPE_EVENT, RESULT_UINT64, "MHz", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, "oa.fixed", 2 );
+        if( metric )
+        {
+            MD_CHECK_CC( ( metric->SetNormalizationEquation( "$GpuCoreClocks 1000 UMUL $$GpuTime UDIV" ) ) );
+        }
+
+        availabilityEquation = "$GtSlice0";
+        metric               = AddMetric( "EARLY_DEPTH_STENCIL_TEST_FAIL_NP_ZPIPE0", "Early Depth Stencil Test Fail NP ZPIPE0",
+                          "Number of non-promoted 2x2 that failed Depth / Stencil that were previously ambiguous at HiZ",
+                          "GPU", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          METRIC_TYPE_EVENT, RESULT_UINT64, "events", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 3 );
+        if( metric )
+        {
+            MD_CHECK_CC( ( metric->SetSnapshotReportReadEquation( "dw@0xc0 2 dw@0xc4 UMUL UADD 4 dw@0xc8 UMUL UADD 8 dw@0xcc UMUL UADD 16 dw@0xd0 UMUL UADD" ) ) );
+            MD_CHECK_CC( ( metric->SetDeltaReportReadEquation( "qw@0x140 2 qw@0x148 UMUL UADD 4 qw@0x150 UMUL UADD 8 qw@0x158 UMUL UADD 16 qw@0x160 UMUL UADD" ) ) );
+            MD_CHECK_CC( ( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ) ) );
+        }
+
+        availabilityEquation = nullptr;
+        if( AddStartRegisterSet( 0, 0, availabilityEquation ) == CC_OK )
+        {
+            AddStartConfigRegister( 0x0d04, 0x00000200, REGISTER_TYPE_NOA );
+            AddStartConfigRegister( 0x9884, 0x00000000, REGISTER_TYPE_NOA );
+            AddStartConfigRegister( 0x9888, 0x0e0e5000, REGISTER_TYPE_NOA );
+            AddStartConfigRegister( 0x9888, 0x000c003f, REGISTER_TYPE_NOA );
+            AddStartConfigRegister( 0x9888, 0x020e0080, REGISTER_TYPE_NOA );
+            AddStartConfigRegister( 0x9888, 0x040e5500, REGISTER_TYPE_NOA );
+            AddStartConfigRegister( 0x9888, 0x060e0491, REGISTER_TYPE_NOA );
+            AddStartConfigRegister( 0x9888, 0x080e0513, REGISTER_TYPE_NOA );
+            AddStartConfigRegister( 0x9888, 0x000e0000, REGISTER_TYPE_NOA );
+            AddStartConfigRegister( 0x9888, 0x00060aaa, REGISTER_TYPE_NOA );
+            AddStartConfigRegister( 0x9888, 0x00010aaa, REGISTER_TYPE_NOA );
+            AddStartConfigRegister( 0x9888, 0x4e010000, REGISTER_TYPE_NOA );
+            AddStartConfigRegister( 0x9888, 0x56010000, REGISTER_TYPE_NOA );
+            AddStartConfigRegister( 0x9888, 0x58010000, REGISTER_TYPE_NOA );
+            AddStartConfigRegister( 0x9888, 0x5a010000, REGISTER_TYPE_NOA );
+            AddStartConfigRegister( 0x9888, 0x5c010000, REGISTER_TYPE_NOA );
+            AddStartConfigRegister( 0x9888, 0x06010000, REGISTER_TYPE_NOA );
+            AddStartConfigRegister( 0x9884, 0x00000000, REGISTER_TYPE_NOA );
+            AddStartConfigRegister( 0x9888, 0x74010002, REGISTER_TYPE_NOA );
+            AddStartConfigRegister( 0xd900, 0x00000000, REGISTER_TYPE_OA );
+            AddStartConfigRegister( 0xd904, 0xf0800000, REGISTER_TYPE_OA );
+            AddStartConfigRegister( 0xd910, 0x00000000, REGISTER_TYPE_OA );
+            AddStartConfigRegister( 0xd914, 0x10800000, REGISTER_TYPE_OA );
+            AddStartConfigRegister( 0xd920, 0x00000000, REGISTER_TYPE_OA );
+            AddStartConfigRegister( 0xdc40, 0x00000000, REGISTER_TYPE_OA );
+            AddStartConfigRegister( 0xdd40, 0x00000000, REGISTER_TYPE_OA );
+            AddStartConfigRegister( 0x2b2c, 0x00000000, REGISTER_TYPE_OA );
+            AddStartConfigRegister( 0xd940, 0x0000000a, REGISTER_TYPE_OA );
+            AddStartConfigRegister( 0xd944, 0x0000fffc, REGISTER_TYPE_OA );
+            AddStartConfigRegister( 0xd948, 0x00000022, REGISTER_TYPE_OA );
+            AddStartConfigRegister( 0xd94c, 0x0000fff9, REGISTER_TYPE_OA );
+            AddStartConfigRegister( 0xd950, 0x00000042, REGISTER_TYPE_OA );
+            AddStartConfigRegister( 0xd954, 0x0000fff5, REGISTER_TYPE_OA );
+            AddStartConfigRegister( 0xd958, 0x00000082, REGISTER_TYPE_OA );
+            AddStartConfigRegister( 0xd95c, 0x0000ffed, REGISTER_TYPE_OA );
+            AddStartConfigRegister( 0xd960, 0x00000102, REGISTER_TYPE_OA );
+            AddStartConfigRegister( 0xd964, 0x0000ffdd, REGISTER_TYPE_OA );
+        }
+        RefreshConfigRegisters();
+        return CC_OK;
+
+    exception:
+        return ret;
+    }
+
+    CExt581MetricSet::CExt581MetricSet( CMetricsDevice& device, CConcurrentGroup* concurrentGroup, const char* symbolicName, const char* shortName, uint32_t apiMask, uint32_t category, uint32_t snapshotReportSize, uint32_t deltaReportSize, TReportType reportType, TByteArrayLatest* platformMask, uint32_t gtMask /*= GT_TYPE_ALL*/, bool isCustom /*= false*/ )
+        : CMetricSet( device, concurrentGroup, symbolicName, shortName, apiMask, category, snapshotReportSize, deltaReportSize, reportType, platformMask, gtMask, isCustom )
+    {
+    }
+
+    TCompletionCode CExt581MetricSet::Initialize()
+    {
+        TCompletionCode ret                  = CC_OK;
+        CMetric*        metric               = nullptr;
+        const char*     availabilityEquation = nullptr;
+        m_params.InformationCount            = m_concurrentGroup->GetInformationCount();
+        MD_CHECK_CC( SetApiSpecificId( "GPAV", 0, 0x40000000, 0x80000203, 0, 0, "Intel Performance Counters for GT Set Dynamic", 0, "Intel_Raw_Hardware_Counters_Set_0_Query", 0 ) );
+
+        availabilityEquation = nullptr;
+        metric               = AddMetric( "GpuTime", "GPU Time Elapsed",
+                          "Time elapsed on the GPU during the measurement.",
+                          "GPU", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_1 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          METRIC_TYPE_DURATION, RESULT_UINT64, "ns", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, "oa.fixed", 0 );
+        if( metric )
+        {
+            MD_CHECK_CC( ( metric->SetSnapshotReportReadEquation( "dw@0x04 1000000000 UMUL $GpuTimestampFrequency UDIV" ) ) );
+            MD_CHECK_CC( ( metric->SetDeltaReportReadEquation( "qw@0x00" ) ) );
+            MD_CHECK_CC( ( metric->SetSnapshotReportDeltaFunction( "NS_TIME" ) ) );
+        }
+
+        availabilityEquation = nullptr;
+        metric               = AddMetric( "GpuCoreClocks", "GPU Core Clocks",
+                          "The total number of GPU core clocks elapsed during the measurement.",
+                          "GPU", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_1 | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          METRIC_TYPE_EVENT, RESULT_UINT64, "cycles", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, "oa.fixed", 1 );
+        if( metric )
+        {
+            MD_CHECK_CC( ( metric->SetSnapshotReportReadEquation( "dw@0x0c" ) ) );
+            MD_CHECK_CC( ( metric->SetDeltaReportReadEquation( "qw@0x08" ) ) );
+            MD_CHECK_CC( ( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ) ) );
+        }
+
+        availabilityEquation = nullptr;
+        metric               = AddMetric( "AvgGpuCoreFrequencyMHz", "AVG GPU Core Frequency",
+                          "Average GPU Core Frequency in the measurement.",
+                          "GPU", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_1 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          METRIC_TYPE_EVENT, RESULT_UINT64, "MHz", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, "oa.fixed", 2 );
+        if( metric )
+        {
+            MD_CHECK_CC( ( metric->SetNormalizationEquation( "$GpuCoreClocks 1000 UMUL $$GpuTime UDIV" ) ) );
+        }
+
+        availabilityEquation = "$GtSlice0";
+        metric               = AddMetric( "EARLY_DEPTH_STENCIL_TEST_FAIL_NP_ZPIPE1", "Early Depth Stencil Test Fail NP ZPIPE1",
+                          "Number of non-promoted 2x2 that failed Depth / Stencil that were previously ambiguous at HiZ",
+                          "GPU", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          METRIC_TYPE_EVENT, RESULT_UINT64, "events", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 3 );
+        if( metric )
+        {
+            MD_CHECK_CC( ( metric->SetSnapshotReportReadEquation( "dw@0xc0 2 dw@0xc4 UMUL UADD 4 dw@0xc8 UMUL UADD 8 dw@0xcc UMUL UADD 16 dw@0xd0 UMUL UADD" ) ) );
+            MD_CHECK_CC( ( metric->SetDeltaReportReadEquation( "qw@0x140 2 qw@0x148 UMUL UADD 4 qw@0x150 UMUL UADD 8 qw@0x158 UMUL UADD 16 qw@0x160 UMUL UADD" ) ) );
+            MD_CHECK_CC( ( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ) ) );
+        }
+
+        availabilityEquation = nullptr;
+        if( AddStartRegisterSet( 0, 0, availabilityEquation ) == CC_OK )
+        {
+            AddStartConfigRegister( 0x0d04, 0x00000200, REGISTER_TYPE_NOA );
+            AddStartConfigRegister( 0x9884, 0x00000000, REGISTER_TYPE_NOA );
+            AddStartConfigRegister( 0x9888, 0x0c0f5000, REGISTER_TYPE_NOA );
+            AddStartConfigRegister( 0x9888, 0x00130aaa, REGISTER_TYPE_NOA );
+            AddStartConfigRegister( 0x9888, 0x00140555, REGISTER_TYPE_NOA );
+            AddStartConfigRegister( 0x9888, 0x00150555, REGISTER_TYPE_NOA );
+            AddStartConfigRegister( 0x9888, 0x00160555, REGISTER_TYPE_NOA );
+            AddStartConfigRegister( 0x9888, 0x00170aaa, REGISTER_TYPE_NOA );
+            AddStartConfigRegister( 0x9888, 0x000c003f, REGISTER_TYPE_NOA );
+            AddStartConfigRegister( 0x9888, 0x000e003f, REGISTER_TYPE_NOA );
+            AddStartConfigRegister( 0x9888, 0x000d0555, REGISTER_TYPE_NOA );
+            AddStartConfigRegister( 0x9888, 0x000f0080, REGISTER_TYPE_NOA );
+            AddStartConfigRegister( 0x9888, 0x020f5500, REGISTER_TYPE_NOA );
+            AddStartConfigRegister( 0x9888, 0x040f0491, REGISTER_TYPE_NOA );
+            AddStartConfigRegister( 0x9888, 0x060f0513, REGISTER_TYPE_NOA );
+            AddStartConfigRegister( 0x9888, 0x00060aaa, REGISTER_TYPE_NOA );
+            AddStartConfigRegister( 0x9888, 0x00010aaa, REGISTER_TYPE_NOA );
+            AddStartConfigRegister( 0x9888, 0x4e010000, REGISTER_TYPE_NOA );
+            AddStartConfigRegister( 0x9888, 0x56010000, REGISTER_TYPE_NOA );
+            AddStartConfigRegister( 0x9888, 0x58010000, REGISTER_TYPE_NOA );
+            AddStartConfigRegister( 0x9888, 0x5a010000, REGISTER_TYPE_NOA );
+            AddStartConfigRegister( 0x9888, 0x5c010000, REGISTER_TYPE_NOA );
+            AddStartConfigRegister( 0x9888, 0x06010000, REGISTER_TYPE_NOA );
+            AddStartConfigRegister( 0x9884, 0x00000000, REGISTER_TYPE_NOA );
+            AddStartConfigRegister( 0x9888, 0x74010002, REGISTER_TYPE_NOA );
+            AddStartConfigRegister( 0xd900, 0x00000000, REGISTER_TYPE_OA );
+            AddStartConfigRegister( 0xd904, 0xf0800000, REGISTER_TYPE_OA );
+            AddStartConfigRegister( 0xd910, 0x00000000, REGISTER_TYPE_OA );
+            AddStartConfigRegister( 0xd914, 0x10800000, REGISTER_TYPE_OA );
+            AddStartConfigRegister( 0xd920, 0x00000000, REGISTER_TYPE_OA );
+            AddStartConfigRegister( 0xdc40, 0x00000000, REGISTER_TYPE_OA );
+            AddStartConfigRegister( 0xdd40, 0x00000000, REGISTER_TYPE_OA );
+            AddStartConfigRegister( 0x2b2c, 0x00000000, REGISTER_TYPE_OA );
+            AddStartConfigRegister( 0xd940, 0x0000000a, REGISTER_TYPE_OA );
+            AddStartConfigRegister( 0xd944, 0x0000fffc, REGISTER_TYPE_OA );
+            AddStartConfigRegister( 0xd948, 0x00000022, REGISTER_TYPE_OA );
+            AddStartConfigRegister( 0xd94c, 0x0000fff9, REGISTER_TYPE_OA );
+            AddStartConfigRegister( 0xd950, 0x00000042, REGISTER_TYPE_OA );
+            AddStartConfigRegister( 0xd954, 0x0000fff5, REGISTER_TYPE_OA );
+            AddStartConfigRegister( 0xd958, 0x00000082, REGISTER_TYPE_OA );
+            AddStartConfigRegister( 0xd95c, 0x0000ffed, REGISTER_TYPE_OA );
+            AddStartConfigRegister( 0xd960, 0x00000102, REGISTER_TYPE_OA );
+            AddStartConfigRegister( 0xd964, 0x0000ffdd, REGISTER_TYPE_OA );
         }
         RefreshConfigRegisters();
         return CC_OK;

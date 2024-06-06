@@ -669,6 +669,38 @@ TCompletionCode CreateMetricTreeACM_GT2_OA( CMetricsDevice* metricsDevice, CConc
             GPU_RENDER | GPU_COMPUTE | GPU_GENERIC, 256, 688, OA_REPORT_TYPE_256B_A45_NOA16, &platformMask, nullptr, GT_TYPE_GT2 );
         MD_CHECK_PTR( metricSet );
 
+        metricSet = concurrentGroup->AddMetricSetExplicit<MetricSets_ACM_GT2_OA::CDepthPipe51MetricSet>( "DepthPipe51", "DepthPipe51", API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+            GPU_RENDER | GPU_COMPUTE | GPU_GENERIC, 256, 688, OA_REPORT_TYPE_256B_A45_NOA16, &platformMask, nullptr, GT_TYPE_GT2 );
+        MD_CHECK_PTR( metricSet );
+
+        metricSet = concurrentGroup->AddMetricSetExplicit<MetricSets_ACM_GT2_OA::CDepthPipe52MetricSet>( "DepthPipe52", "DepthPipe52", API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+            GPU_RENDER | GPU_COMPUTE | GPU_GENERIC, 256, 688, OA_REPORT_TYPE_256B_A45_NOA16, &platformMask, nullptr, GT_TYPE_GT2 );
+        MD_CHECK_PTR( metricSet );
+
+        metricSet = concurrentGroup->AddMetricSetExplicit<MetricSets_ACM_GT2_OA::CDepthPipe53MetricSet>( "DepthPipe53", "DepthPipe53", API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+            GPU_RENDER | GPU_COMPUTE | GPU_GENERIC, 256, 688, OA_REPORT_TYPE_256B_A45_NOA16, &platformMask, nullptr, GT_TYPE_GT2 );
+        MD_CHECK_PTR( metricSet );
+
+        metricSet = concurrentGroup->AddMetricSetExplicit<MetricSets_ACM_GT2_OA::CDepthPipe54MetricSet>( "DepthPipe54", "DepthPipe54", API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+            GPU_RENDER | GPU_COMPUTE | GPU_GENERIC, 256, 688, OA_REPORT_TYPE_256B_A45_NOA16, &platformMask, nullptr, GT_TYPE_GT2 );
+        MD_CHECK_PTR( metricSet );
+
+        metricSet = concurrentGroup->AddMetricSetExplicit<MetricSets_ACM_GT2_OA::CDepthPipe55MetricSet>( "DepthPipe55", "DepthPipe55", API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+            GPU_RENDER | GPU_COMPUTE | GPU_GENERIC, 256, 688, OA_REPORT_TYPE_256B_A45_NOA16, &platformMask, nullptr, GT_TYPE_GT2 );
+        MD_CHECK_PTR( metricSet );
+
+        metricSet = concurrentGroup->AddMetricSetExplicit<MetricSets_ACM_GT2_OA::CDepthPipe56MetricSet>( "DepthPipe56", "DepthPipe56", API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+            GPU_RENDER | GPU_COMPUTE | GPU_GENERIC, 256, 688, OA_REPORT_TYPE_256B_A45_NOA16, &platformMask, nullptr, GT_TYPE_GT2 );
+        MD_CHECK_PTR( metricSet );
+
+        metricSet = concurrentGroup->AddMetricSetExplicit<MetricSets_ACM_GT2_OA::CDepthPipe57MetricSet>( "DepthPipe57", "DepthPipe57", API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+            GPU_RENDER | GPU_COMPUTE | GPU_GENERIC, 256, 688, OA_REPORT_TYPE_256B_A45_NOA16, &platformMask, nullptr, GT_TYPE_GT2 );
+        MD_CHECK_PTR( metricSet );
+
+        metricSet = concurrentGroup->AddMetricSetExplicit<MetricSets_ACM_GT2_OA::CDepthPipe58MetricSet>( "DepthPipe58", "DepthPipe58", API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+            GPU_RENDER | GPU_COMPUTE | GPU_GENERIC, 256, 688, OA_REPORT_TYPE_256B_A45_NOA16, &platformMask, nullptr, GT_TYPE_GT2 );
+        MD_CHECK_PTR( metricSet );
+
         metricSet = concurrentGroup->AddMetricSetExplicit<MetricSets_ACM_GT2_OA::CFrontEnd1MetricSet>( "FrontEnd1", "FrontEnd1", API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
             GPU_RENDER | GPU_COMPUTE | GPU_GENERIC, 256, 688, OA_REPORT_TYPE_256B_A45_NOA16, &platformMask, nullptr, GT_TYPE_GT2 );
         MD_CHECK_PTR( metricSet );

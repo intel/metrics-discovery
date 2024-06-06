@@ -84,16 +84,39 @@ namespace MetricsDiscoveryInternal
     //     Checks if OAM concurrent groups is supported on current platform.
     //
     // Input:
-    //    const char*     symbolicName - concurrent group symbolic name
-    //    CMetricsDevice& device       - metrics device
+    //     const char*     symbolName - concurrent group symbol name
+    //     CMetricsDevice& device     - metrics device
     //
     // Output:
-    //     bool                        - true if supported
+    //     bool                       - true if supported
     //
     //////////////////////////////////////////////////////////////////////////////
-    bool COAMConcurrentGroup::IsSupported( const char* symbolicName, CMetricsDevice& device )
+    bool COAMConcurrentGroup::IsSupported( const char* symbolName, CMetricsDevice& device )
     {
-        return GetOaBufferTypeFromName( symbolicName, device ) != GTDI_OA_BUFFER_TYPE_DEFAULT;
+        return GetOaBufferTypeFromName( symbolName, device ) != GTDI_OA_BUFFER_TYPE_DEFAULT;
+    }
+
+    //////////////////////////////////////////////////////////////////////////////
+    //
+    // Class:
+    //     COAMConcurrentGroup
+    //
+    // Method:
+    //     IsValidSymbolName
+    //
+    // Description:
+    //     Checks if OAM concurrent group symbol name is valid.
+    //
+    // Input:
+    //     const char* symbolName - concurrent group symbol name
+    //
+    // Output:
+    //     bool                   - true if valid
+    //
+    //////////////////////////////////////////////////////////////////////////////
+    bool COAMConcurrentGroup::IsValidSymbolName( const char* symbolName )
+    {
+        return strlen( symbolName ) == 4 && strstr( symbolName, "OAM" ) != nullptr;
     }
 
     //////////////////////////////////////////////////////////////////////////////
@@ -105,7 +128,7 @@ namespace MetricsDiscoveryInternal
     //     GetOaBufferTypeFromName
     //
     // Description:
-    //     Gets oa buffer type from concurrent group symbolic name.
+    //     Gets oa buffer type from concurrent group symbol name.
     //
     // Input:
     //     const char*     symbolName - concurrent group symbol name
@@ -117,7 +140,7 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     GTDI_OA_BUFFER_TYPE COAMConcurrentGroup::GetOaBufferTypeFromName( const char* symbolName, CMetricsDevice& device )
     {
-        if( strlen( symbolName ) > 3 && strstr( symbolName, "OAM" ) != nullptr )
+        if( IsValidSymbolName( symbolName ) )
         {
             const uint32_t oaBuferCount = device.GetOaBufferCount();
 

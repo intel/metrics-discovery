@@ -10,8 +10,7 @@ SPDX-License-Identifier: MIT
 
 // Interface for communication between driver and GPA 2.2
 
-#ifndef __GTDI_DRIVER_INTERFACE_H_
-#define __GTDI_DRIVER_INTERFACE_H_
+#pragma once
 
 /******************************************************************************/
 /******************************************************************************/
@@ -235,7 +234,9 @@ typedef enum
     GTDI_IFC_VERSION_3_58    = GTDI_MAKE_IFC_VER( GTDI_IFC_VERSION_3, 58 ), // ARL base support
     GTDI_IFC_VERSION_3_59    = GTDI_MAKE_IFC_VER( GTDI_IFC_VERSION_3, 59 ),
     GTDI_IFC_VERSION_3_60    = GTDI_MAKE_IFC_VER( GTDI_IFC_VERSION_3, 60 ), // New device params: L3 Bank, L3 Node and Copy Engine masks
-    GTDI_IFC_VERSION_CURRENT = GTDI_IFC_VERSION_3_60,
+    GTDI_IFC_VERSION_3_61    = GTDI_MAKE_IFC_VER( GTDI_IFC_VERSION_3, 61 ), // EU cores and threads override withdrawal
+    GTDI_IFC_VERSION_3_62    = GTDI_MAKE_IFC_VER( GTDI_IFC_VERSION_3, 62 ),
+    GTDI_IFC_VERSION_CURRENT = GTDI_IFC_VERSION_3_62,
     GTDI_IFC_VERSION_MAX     = 0xFFFFFFFF
 } GTDI_IFC_VERSION;
 
@@ -339,7 +340,7 @@ typedef enum GTDI_ESCAPE_FUNCTION_ENUM
     GTDI_FNC_READ_COUNTER_STREAM          = 17, // Request asynchronous read from (active) OA buffer providing UM application buffer to copy data to.
     GTDI_FNC_SET_KI_QUERY_CFG             = 18, // obsolete - no longer supported
     GTDI_FNC_SET_KI_BUILD_CFG             = 19, // obsolete - no longer supported
-    GTDI_FNC_SET_OVERRIDE_EU_CFG          = 20, // Overridden limit of threads(per EU) and EU cores used by thread dispatcher.
+    GTDI_FNC_SET_OVERRIDE_EU_CFG          = 20, // obsolete - no longer supported
     GTDI_FNC_SET_WORKAROUNDS              = 21, // Gen7+ Workarounds settings escape
     GTDI_FNC_SET_KI_QUERY_CFG_EX          = 22, // obsolete - no longer supported
     GTDI_FNC_SET_KI_BUILD_CFG_EX          = 23, // obsolete - no longer supported
@@ -441,14 +442,14 @@ typedef enum GTDI_REPORT_TYPE_ENUM
     GTDI_REPORT_TYPE_OAC_MASK  = 0x0000F000, // compute related report types range
 
     // 3D (OA/OAG) report types
-    GTDI_REPORT_TYPE_128B_A13_NOA16 = 0 << GTDI_REPORT_TYPE_OA_SHIFT, //
-    GTDI_REPORT_TYPE_192B_A29_NOA16 = 1 << GTDI_REPORT_TYPE_OA_SHIFT, //
+    GTDI_REPORT_TYPE_128B_A13_NOA16 = 0 << GTDI_REPORT_TYPE_OA_SHIFT, // obsolete
+    GTDI_REPORT_TYPE_192B_A29_NOA16 = 1 << GTDI_REPORT_TYPE_OA_SHIFT, // obsolete
     GTDI_REPORT_TYPE_256B_A45_NOA16 = 2 << GTDI_REPORT_TYPE_OA_SHIFT,
-    GTDI_REPORT_TYPE_64B_A13        = 3 << GTDI_REPORT_TYPE_OA_SHIFT, //
-    GTDI_REPORT_TYPE_128B_A29       = 4 << GTDI_REPORT_TYPE_OA_SHIFT, //
-    GTDI_REPORT_TYPE_64B_NOA12      = 5 << GTDI_REPORT_TYPE_OA_SHIFT, //
-    GTDI_REPORT_TYPE_128B_A16_NOA12 = 6 << GTDI_REPORT_TYPE_OA_SHIFT, //
-    GTDI_REPORT_TYPE_64B_NOA12_2    = 7 << GTDI_REPORT_TYPE_OA_SHIFT, //
+    GTDI_REPORT_TYPE_64B_A13        = 3 << GTDI_REPORT_TYPE_OA_SHIFT, // obsolete
+    GTDI_REPORT_TYPE_128B_A29       = 4 << GTDI_REPORT_TYPE_OA_SHIFT, // obsolete
+    GTDI_REPORT_TYPE_64B_NOA12      = 5 << GTDI_REPORT_TYPE_OA_SHIFT, // obsolete
+    GTDI_REPORT_TYPE_128B_A16_NOA12 = 6 << GTDI_REPORT_TYPE_OA_SHIFT, // obsolete
+    GTDI_REPORT_TYPE_64B_NOA12_2    = 7 << GTDI_REPORT_TYPE_OA_SHIFT, // obsolete
     // DMA sampling only
     GTDI_REPORT_TYPE_FULL      = 100 << GTDI_REPORT_TYPE_OA_SHIFT, // all counters
     GTDI_REPORT_TYPE_TIMESTAMP = 101 << GTDI_REPORT_TYPE_OA_SHIFT, // timestamp only
@@ -623,16 +624,16 @@ typedef enum GTDI_DEVICE_PARAM_ENUM
 } GTDI_DEVICE_PARAM;
 
 /******************************************************************************/
-/* GTDI_GTDI_GPU_FORCE_WAKE:                                                  */
+/* GTDI_GPU_FORCEWAKE:                                                        */
 /******************************************************************************/
-typedef enum GTDI_GPU_FORCE_WAKE_ENUM
+typedef enum GTDI_GPU_FORCEWAKE_ENUM
 {
     GTDI_FORCEWAKE_NONE    = 0,
     GTDI_FORCEWAKE_ALL     = 1,
     GTDI_FORCEWAKE_MEDIA   = 2,
     GTDI_FORCEWAKE_BLITTER = 3,
     GTDI_FORCEWAKE_RENDER  = 4
-} GTDI_GTDI_GPU_FORCE_WAKE;
+} GTDI_GPU_FORCEWAKE;
 
 /******************************************************************************/
 /* GTDI_OA_BUFFER_TYPE:                                                       */
@@ -1788,5 +1789,3 @@ typedef struct GTDI_STAT_FILE_HEADER_STRUCT
     uint32_t OffsetMetricCounters; // Offset of the counters block (in bytes from
                                    // the beginning of file)
 } GTDI_STAT_FILE_HEADER;
-
-#endif // __GTDI_DRIVER_INTERFACE_H_

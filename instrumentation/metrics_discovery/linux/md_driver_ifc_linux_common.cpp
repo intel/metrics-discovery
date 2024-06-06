@@ -2735,6 +2735,7 @@ namespace MetricsDiscoveryInternal
             if( !m_CachedMinFrequency )
             {
                 ret = ReadSysFsFile( device, SYS_FS_MIN_FREQ, &m_CachedMinFrequency );
+
                 MD_CHECK_CC_RET_A( m_adapterId, ret );
             }
 
@@ -2748,6 +2749,7 @@ namespace MetricsDiscoveryInternal
             if( !m_CachedMaxFrequency )
             {
                 ret = ReadSysFsFile( device, SYS_FS_MAX_FREQ, &m_CachedMaxFrequency );
+
                 MD_CHECK_CC_RET_A( m_adapterId, ret );
             }
 
@@ -2763,6 +2765,7 @@ namespace MetricsDiscoveryInternal
             // Using act ('actual') frequency file, curr ('current') freq file may show
             // frequency requested by the driver not the actual GPU frequency.
             ret = ReadSysFsFile( device, SYS_FS_ACT_FREQ, &actFrequencyMhz );
+
             MD_CHECK_CC_RET_A( m_adapterId, ret );
 
             // Convert reading to Hz (for compatibility with the other MDAPI driver interfaces)

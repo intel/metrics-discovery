@@ -160,7 +160,7 @@ namespace MetricsDiscoveryInternal
         virtual TCompletionCode CalculateIoMeasurementInformation( TTypedValue_1_0* out, uint32_t outSize );
 
         // API 1.0:
-        virtual IMetric_1_0*      GetMetric( uint32_t index );
+        virtual IMetricLatest*    GetMetric( uint32_t index );
         virtual IInformation_1_0* GetInformation( uint32_t index );
         virtual IMetricSet_1_11*  GetComplementaryMetricSet( uint32_t index );
         virtual TCompletionCode   Activate( void );   // To enable this configuration before query instance is created or IO stream is opened

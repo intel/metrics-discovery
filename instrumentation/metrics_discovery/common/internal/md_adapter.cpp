@@ -150,10 +150,10 @@ namespace MetricsDiscoveryInternal
     //     const uint32_t engineIndex    - engine index
     //
     // Output:
-    //     const TEngineParams_1_9*      - adapter params
+    //     const TEngineParamsLatest*    - engine params
     //
     //////////////////////////////////////////////////////////////////////////////
-    const TEngineParams_1_9* CAdapter::GetEngineParams( const uint32_t subDeviceIndex, const uint32_t engineIndex )
+    const TEngineParamsLatest* CAdapter::GetEngineParams( const uint32_t subDeviceIndex, const uint32_t engineIndex )
     {
         return ( m_subDevices.GetEngineParams( subDeviceIndex, engineIndex, m_engineParams ) == CC_OK )
             ? &m_engineParams

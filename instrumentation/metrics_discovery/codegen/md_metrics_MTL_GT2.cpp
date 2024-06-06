@@ -669,6 +669,14 @@ TCompletionCode CreateMetricTreeMTL_GT2_OA( CMetricsDevice* metricsDevice, CConc
             GPU_RENDER | GPU_COMPUTE | GPU_GENERIC, 256, 688, OA_REPORT_TYPE_256B_A45_NOA16, &platformMask, nullptr, GT_TYPE_GT2 );
         MD_CHECK_PTR( metricSet );
 
+        metricSet = concurrentGroup->AddMetricSetExplicit<MetricSets_MTL_GT2_OA::CExt580MetricSet>( "Ext580", "Ext580", API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+            GPU_RENDER | GPU_COMPUTE | GPU_GENERIC, 256, 688, OA_REPORT_TYPE_256B_A45_NOA16, &platformMask, nullptr, GT_TYPE_GT2 );
+        MD_CHECK_PTR( metricSet );
+
+        metricSet = concurrentGroup->AddMetricSetExplicit<MetricSets_MTL_GT2_OA::CExt581MetricSet>( "Ext581", "Ext581", API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+            GPU_RENDER | GPU_COMPUTE | GPU_GENERIC, 256, 688, OA_REPORT_TYPE_256B_A45_NOA16, &platformMask, nullptr, GT_TYPE_GT2 );
+        MD_CHECK_PTR( metricSet );
+
         metricSet = concurrentGroup->AddMetricSetExplicit<MetricSets_MTL_GT2_OA::CExt604MetricSet>( "Ext604", "Ext604", API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
             GPU_RENDER | GPU_COMPUTE | GPU_GENERIC, 256, 688, OA_REPORT_TYPE_256B_A45_NOA16, &platformMask, nullptr, GT_TYPE_GT2 );
         MD_CHECK_PTR( metricSet );

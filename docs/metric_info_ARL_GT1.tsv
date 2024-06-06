@@ -862,13 +862,11 @@ Ext128	URB_CROSS_SLICE_READ_SLICE0	URB Cross Slice Read Slice0	GPU	Number of URB
 Ext130	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
 Ext130	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
 Ext130	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
-Ext130	EARLY_DEPTH_STENCIL_TEST_FAIL_NP_ZPIPE0	Early Depth Stencil Test Fail Np Zpipe0	GPU	Number of non-promoted 2x2 that failed Depth / Stencil before the Pixel Shader that were previously ambiguous at HiZ
-Ext130	EARLY_DEPTH_STENCIL_TEST_FAIL_P_ZPIPE0	Early Depth Stencil Test Fail P Zpipe0	GPU	Number of promoted 2x2 that failed Depth / Stencil that were previously ambiguous at HiZ
+Ext130	EARLY_DEPTH_STENCIL_TEST_FAIL_P_ZPIPE0	Early Depth Stencil Test Fail P ZPIPE0	GPU	Number of promoted 2x2 that failed Depth / Stencil that were previously ambiguous at HiZ
 Ext131	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
 Ext131	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
 Ext131	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
-Ext131	EARLY_DEPTH_STENCIL_TEST_FAIL_NP_ZPIPE1	Early Depth Stencil Test Fail Np Zpipe1	GPU	Number of non-promoted 2x2 that failed Depth / Stencil before the Pixel Shader that were previously ambiguous at HiZ
-Ext131	EARLY_DEPTH_STENCIL_TEST_FAIL_P_ZPIPE1	Early Depth Stencil Test Fail P Zpipe1	GPU	Number of promoted 2x2 that failed Depth / Stencil that were previously ambiguous at HiZ
+Ext131	EARLY_DEPTH_STENCIL_TEST_FAIL_P_ZPIPE1	Early Depth Stencil Test Fail P ZPIPE1	GPU	Number of promoted 2x2 that failed Depth / Stencil that were previously ambiguous at HiZ
 Ext134	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
 Ext134	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
 Ext134	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
@@ -1229,7 +1227,8 @@ Ext300	ASYNC_GPGPU_THREADGROUP_COUNT_XECORE1	Async GpGpu Threadgroup Count Xecor
 Ext300	ASYNC_GPGPU_THREADGROUP_COUNT_XECORE2	Async GpGpu Threadgroup Count Xecore2	GPU	Number of Async GPGPU threadgroups dispatched
 Ext301	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
 Ext301	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
-Ext301	ASYNC_GPGPU_THREADGROUP_COUNT_XECORE3	Async GpGpu Threadgroup Count Xecore3	GPU	Number of Async GPGPU threadgroups dispatched
+Ext301	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
+Ext301	ASYNC_GPGPU_THREADGROUP_COUNT_XECORE3	Async GpGpu Threadgroup Count XECORE3	GPU	Number of Async GPGPU threadgroups dispatched
 Ext500	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
 Ext500	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
 Ext500	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
@@ -1354,6 +1353,14 @@ Ext543	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks ela
 Ext543	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
 Ext543	SLM_BYTE_WRITE_BANK0_XECORE3	SLM Byte Write Bank0 Xecore3	GPU	Number of bytes written to SLM
 Ext543	SLM_BYTE_WRITE_BANK1_XECORE3	SLM Byte Write Bank1 Xecore3	GPU	Number of bytes written to SLM
+Ext580	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
+Ext580	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
+Ext580	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
+Ext580	EARLY_DEPTH_STENCIL_TEST_FAIL_NP_ZPIPE0	Early Depth Stencil Test Fail NP ZPIPE0	GPU	Number of non-promoted 2x2 that failed Depth / Stencil that were previously ambiguous at HiZ
+Ext581	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
+Ext581	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
+Ext581	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
+Ext581	EARLY_DEPTH_STENCIL_TEST_FAIL_NP_ZPIPE1	Early Depth Stencil Test Fail NP ZPIPE1	GPU	Number of non-promoted 2x2 that failed Depth / Stencil that were previously ambiguous at HiZ
 Ext604	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
 Ext604	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
 Ext604	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.

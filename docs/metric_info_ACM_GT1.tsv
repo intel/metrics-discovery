@@ -1642,22 +1642,18 @@ Ext129	URB_CROSS_SLICE_READ_SLICE1	URB Cross Slice Read Slice1	URB	Number of URB
 Ext130	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
 Ext130	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
 Ext130	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
-Ext130	EARLY_DEPTH_STENCIL_TEST_FAIL_NP_ZPIPE0	Early Depth Stencil Test Fail Np Zpipe0	DepthPipe	Number of non-promoted 2x2 that failed Depth / Stencil before the Pixel Shader that were previously ambiguous at HiZ
 Ext130	EARLY_DEPTH_STENCIL_TEST_FAIL_P_ZPIPE0	Early Depth Stencil Test Fail P Zpipe0	DepthPipe	Number of promoted 2x2 that failed Depth / Stencil that were previously ambiguous at HiZ
 Ext131	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
 Ext131	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
 Ext131	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
-Ext131	EARLY_DEPTH_STENCIL_TEST_FAIL_NP_ZPIPE1	Early Depth Stencil Test Fail Np Zpipe1	DepthPipe	Number of non-promoted 2x2 that failed Depth / Stencil before the Pixel Shader that were previously ambiguous at HiZ
 Ext131	EARLY_DEPTH_STENCIL_TEST_FAIL_P_ZPIPE1	Early Depth Stencil Test Fail P Zpipe1	DepthPipe	Number of promoted 2x2 that failed Depth / Stencil that were previously ambiguous at HiZ
 Ext132	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
 Ext132	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
 Ext132	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
-Ext132	EARLY_DEPTH_STENCIL_TEST_FAIL_NP_ZPIPE2	Early Depth Stencil Test Fail Np Zpipe2	DepthPipe	Number of non-promoted 2x2 that failed Depth / Stencil before the Pixel Shader that were previously ambiguous at HiZ
 Ext132	EARLY_DEPTH_STENCIL_TEST_FAIL_P_ZPIPE2	Early Depth Stencil Test Fail P Zpipe2	DepthPipe	Number of promoted 2x2 that failed Depth / Stencil that were previously ambiguous at HiZ
 Ext133	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
 Ext133	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
 Ext133	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
-Ext133	EARLY_DEPTH_STENCIL_TEST_FAIL_NP_ZPIPE3	Early Depth Stencil Test Fail Np Zpipe3	DepthPipe	Number of non-promoted 2x2 that failed Depth / Stencil before the Pixel Shader that were previously ambiguous at HiZ
 Ext133	EARLY_DEPTH_STENCIL_TEST_FAIL_P_ZPIPE3	Early Depth Stencil Test Fail P Zpipe3	DepthPipe	Number of promoted 2x2 that failed Depth / Stencil that were previously ambiguous at HiZ
 Ext134	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
 Ext134	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
@@ -2859,6 +2855,22 @@ Ext573	XVE_INST_EXECUTED_BARRIER_XECORE6_XVE0_THREAD0	XVE Inst Executed Barrier 
 Ext573	XVE_INST_EXECUTED_PREDICATION_XECORE7_XVE0_THREAD0	XVE INST EXECUTED_PREDICATION XECORE7 XVE0 THREAD0	VectorEngine	Number of execution slots taken by instructions with predication mask enabled
 Ext573	XVE_INST_EXECUTED_NONDIVERGENT_XECORE7_XVE0_THREAD0	XVE INST EXECUTED_NONDIVERGENT XECORE7 XVE0 THREAD0	VectorEngine	Number of execution slots taken by nondivergent instructions executed
 Ext573	XVE_INST_EXECUTED_BARRIER_XECORE7_XVE0_THREAD0	XVE Inst Executed Barrier Xecore7 Xve0 Thread0	VectorEngine	Number of execution slots taken by bit manipulation instructions
+Ext580	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
+Ext580	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
+Ext580	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
+Ext580	EARLY_DEPTH_STENCIL_TEST_FAIL_NP_ZPIPE0	Early Depth Stencil Test Fail Np Zpipe0	DepthPipe	Number of non-promoted 2x2 that failed Depth / Stencil before the Pixel Shader that were previously ambiguous at HiZ
+Ext581	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
+Ext581	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
+Ext581	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
+Ext581	EARLY_DEPTH_STENCIL_TEST_FAIL_NP_ZPIPE1	Early Depth Stencil Test Fail Np Zpipe1	DepthPipe	Number of non-promoted 2x2 that failed Depth / Stencil before the Pixel Shader that were previously ambiguous at HiZ
+Ext582	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
+Ext582	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
+Ext582	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
+Ext582	EARLY_DEPTH_STENCIL_TEST_FAIL_NP_ZPIPE2	Early Depth Stencil Test Fail Np Zpipe2	DepthPipe	Number of non-promoted 2x2 that failed Depth / Stencil before the Pixel Shader that were previously ambiguous at HiZ
+Ext583	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
+Ext583	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
+Ext583	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
+Ext583	EARLY_DEPTH_STENCIL_TEST_FAIL_NP_ZPIPE3	Early Depth Stencil Test Fail Np Zpipe3	DepthPipe	Number of non-promoted 2x2 that failed Depth / Stencil before the Pixel Shader that were previously ambiguous at HiZ
 Ext1000	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
 Ext1000	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
 Ext1000	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.

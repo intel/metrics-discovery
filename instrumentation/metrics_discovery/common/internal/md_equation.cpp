@@ -554,14 +554,14 @@ namespace MetricsDiscoveryInternal
         {
             if( !ParseEquationElement( token ) )
             {
-                delete[] string;
+                MD_SAFE_DELETE_ARRAY( string );
                 return false;
             }
             token = iu_strtok_s( nullptr, " ", &tokenNext );
         }
 
         m_equationString = GetCopiedCString( equationString, adapterId );
-        delete[] string;
+        MD_SAFE_DELETE_ARRAY( string );
         return true;
     }
 

@@ -217,13 +217,13 @@ namespace MetricsDiscoveryInternal
     //     Returns the chosen metric or nullptr if index doesn't exist.
     //
     // Input:
-    //     uint32_t     index  - index of a metric
+    //     uint32_t index  - index of a metric
     //
     // Output:
-    //     IMetric_1_0*        - chosen metric or nullptr
+    //     IMetricLatest*  - chosen metric or nullptr
     //
     //////////////////////////////////////////////////////////////////////////////
-    IMetric_1_0* CMetricSet::GetMetric( uint32_t index )
+    IMetricLatest* CMetricSet::GetMetric( uint32_t index )
     {
         const uint32_t adapterId = m_device.GetAdapter().GetAdapterId();
 
@@ -231,7 +231,7 @@ namespace MetricsDiscoveryInternal
 
         if( index < m_currentMetricsVector->size() )
         {
-            return static_cast<IMetric_1_0*>( ( *m_currentMetricsVector )[index] );
+            return static_cast<IMetricLatest*>( ( *m_currentMetricsVector )[index] );
         }
 
         return nullptr;
@@ -516,32 +516,58 @@ namespace MetricsDiscoveryInternal
             return nullptr;
         }
 
-        if( params->Type != METRIC_CUSTOM_PARAMS_1_0 )
+        const char*       symbolName            = nullptr;
+        const char*       shortName             = nullptr;
+        const char*       groupName             = nullptr;
+        const char*       longName              = nullptr;
+        const char*       dxToOglAlias          = nullptr;
+        uint32_t          usageFlagsMask        = 0;
+        uint32_t          apiMask               = 0;
+        TMetricResultType resultType            = RESULT_UINT32;
+        const char*       resultUnits           = nullptr;
+        TMetricType       metricType            = METRIC_TYPE_DURATION;
+        int64_t           loWatermark           = 0;
+        int64_t           hiWatermark           = 0;
+        THwUnitType       hwType                = HW_UNIT_GPU;
+        const char*       ioReadEquation        = nullptr;
+        const char*       deltaFunction         = nullptr;
+        const char*       queryReadEquation     = nullptr;
+        const char*       normalizationEquation = nullptr;
+        const char*       maxValueEquation      = nullptr;
+        const char*       signalName            = nullptr;
+        const char*       availabilityEquation  = nullptr;
+        switch( params->Type )
         {
-            MD_LOG_A( adapterId, LOG_ERROR, "Unsupported TAddCustomMetricParams Type: %u", params->Type );
-            return nullptr;
+            case METRIC_CUSTOM_PARAMS_1_0:
+            {
+                symbolName            = MD_CUSTOM_METRIC_PARAMS( params, 1_0 ).SymbolName;
+                shortName             = MD_CUSTOM_METRIC_PARAMS( params, 1_0 ).ShortName;
+                groupName             = MD_CUSTOM_METRIC_PARAMS( params, 1_0 ).GroupName;
+                longName              = MD_CUSTOM_METRIC_PARAMS( params, 1_0 ).LongName;
+                dxToOglAlias          = MD_CUSTOM_METRIC_PARAMS( params, 1_0 ).DxToOglAlias;
+                usageFlagsMask        = MD_CUSTOM_METRIC_PARAMS( params, 1_0 ).UsageFlagsMask;
+                apiMask               = MD_CUSTOM_METRIC_PARAMS( params, 1_0 ).ApiMask;
+                resultType            = MD_CUSTOM_METRIC_PARAMS( params, 1_0 ).ResultType;
+                resultUnits           = MD_CUSTOM_METRIC_PARAMS( params, 1_0 ).MetricResultUnits;
+                metricType            = MD_CUSTOM_METRIC_PARAMS( params, 1_0 ).MetricType;
+                loWatermark           = MD_CUSTOM_METRIC_PARAMS( params, 1_0 ).LowWatermark;
+                hiWatermark           = MD_CUSTOM_METRIC_PARAMS( params, 1_0 ).HighWatermark;
+                hwType                = MD_CUSTOM_METRIC_PARAMS( params, 1_0 ).HwUnitType;
+                ioReadEquation        = MD_CUSTOM_METRIC_PARAMS( params, 1_0 ).IoReadEquation;
+                deltaFunction         = MD_CUSTOM_METRIC_PARAMS( params, 1_0 ).DeltaFunction;
+                queryReadEquation     = MD_CUSTOM_METRIC_PARAMS( params, 1_0 ).QueryReadEquation;
+                normalizationEquation = MD_CUSTOM_METRIC_PARAMS( params, 1_0 ).NormEquation;
+                maxValueEquation      = MD_CUSTOM_METRIC_PARAMS( params, 1_0 ).MaxValueEquation;
+                signalName            = MD_CUSTOM_METRIC_PARAMS( params, 1_0 ).SignalName;
+                availabilityEquation  = MD_CUSTOM_METRIC_PARAMS( params, 1_0 ).AvailabilityEquation;
+                break;
+            }
+            default:
+            {
+                MD_LOG_A( adapterId, LOG_ERROR, "Unsupported TAddCustomMetricParams Type: %u", params->Type );
+                return nullptr;
+            }
         }
-
-        const char*       symbolName            = MD_CUSTOM_METRIC_PARAMS( params, 1_0 ).SymbolName;
-        const char*       shortName             = MD_CUSTOM_METRIC_PARAMS( params, 1_0 ).ShortName;
-        const char*       groupName             = MD_CUSTOM_METRIC_PARAMS( params, 1_0 ).GroupName;
-        const char*       longName              = MD_CUSTOM_METRIC_PARAMS( params, 1_0 ).LongName;
-        const char*       dxToOglAlias          = MD_CUSTOM_METRIC_PARAMS( params, 1_0 ).DxToOglAlias;
-        uint32_t          usageFlagsMask        = MD_CUSTOM_METRIC_PARAMS( params, 1_0 ).UsageFlagsMask;
-        uint32_t          apiMask               = MD_CUSTOM_METRIC_PARAMS( params, 1_0 ).ApiMask;
-        TMetricResultType resultType            = MD_CUSTOM_METRIC_PARAMS( params, 1_0 ).ResultType;
-        const char*       resultUnits           = MD_CUSTOM_METRIC_PARAMS( params, 1_0 ).MetricResultUnits;
-        TMetricType       metricType            = MD_CUSTOM_METRIC_PARAMS( params, 1_0 ).MetricType;
-        int64_t           loWatermark           = MD_CUSTOM_METRIC_PARAMS( params, 1_0 ).LowWatermark;
-        int64_t           hiWatermark           = MD_CUSTOM_METRIC_PARAMS( params, 1_0 ).HighWatermark;
-        THwUnitType       hwType                = MD_CUSTOM_METRIC_PARAMS( params, 1_0 ).HwUnitType;
-        const char*       ioReadEquation        = MD_CUSTOM_METRIC_PARAMS( params, 1_0 ).IoReadEquation;
-        const char*       deltaFunction         = MD_CUSTOM_METRIC_PARAMS( params, 1_0 ).DeltaFunction;
-        const char*       queryReadEquation     = MD_CUSTOM_METRIC_PARAMS( params, 1_0 ).QueryReadEquation;
-        const char*       normalizationEquation = MD_CUSTOM_METRIC_PARAMS( params, 1_0 ).NormEquation;
-        const char*       maxValueEquation      = MD_CUSTOM_METRIC_PARAMS( params, 1_0 ).MaxValueEquation;
-        const char*       signalName            = MD_CUSTOM_METRIC_PARAMS( params, 1_0 ).SignalName;
-        const char*       availabilityEquation  = MD_CUSTOM_METRIC_PARAMS( params, 1_0 ).AvailabilityEquation;
 
         MD_LOG_ENTER_A( adapterId );
 
@@ -650,7 +676,7 @@ namespace MetricsDiscoveryInternal
         params.CustomMetricParams_1_0.NormEquation         = normalizationEquation;
         params.CustomMetricParams_1_0.MaxValueEquation     = maxValueEquation;
         params.CustomMetricParams_1_0.SignalName           = signalName;
-        params.CustomMetricParams_1_0.AvailabilityEquation = "1";
+        params.CustomMetricParams_1_0.AvailabilityEquation = nullptr;
 
         return AddCustomMetric( &params );
     }
@@ -1949,12 +1975,17 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     void CMetricSet::UseApiFilteredVariables( bool enable )
     {
+        const uint32_t adapterId = m_device.GetAdapter().GetAdapterId();
+
         if( enable )
         {
             m_currentParams            = &m_filteredParams;
             m_currentMetricsVector     = &m_filteredMetricsVector;
             m_currentInformationVector = &m_filteredInformationVector;
             m_isFiltered               = true;
+
+            MD_LOG_A( adapterId, LOG_DEBUG, "Before API filtering, MetricsCount: %u, InformationCount: %u", m_params.MetricsCount, m_params.InformationCount );
+            MD_LOG_A( adapterId, LOG_DEBUG, "After API filtering, MetricsCount: %u, InformationCount: %u", m_filteredParams.MetricsCount, m_filteredParams.InformationCount );
         }
         else
         {
@@ -1964,7 +1995,7 @@ namespace MetricsDiscoveryInternal
             m_isFiltered               = false;
         }
 
-        MD_LOG_A( m_device.GetAdapter().GetAdapterId(), LOG_DEBUG, "Use API filtered variables: %s", enable ? "TRUE" : "FALSE" );
+        MD_LOG_A( adapterId, LOG_DEBUG, "Use API filtered variables: %s", enable ? "TRUE" : "FALSE" );
     }
 
     //////////////////////////////////////////////////////////////////////////////
@@ -2000,24 +2031,31 @@ namespace MetricsDiscoveryInternal
         // Cache metrics
         for( uint32_t i = 0, j = 0; i < m_params.MetricsCount; ++i )
         {
-            auto metric = GetMetricExplicit( i );
-            if( metric && ( metric->GetParams()->ApiMask & m_filteredParams.ApiMask ) != 0 )
+            if( auto metric = GetMetricExplicit( i );
+                metric != nullptr )
             {
-                metric->SetIdInSetParam( j++ );
+                if( const auto params = metric->GetParams();
+                    params != nullptr && ( params->ApiMask & m_filteredParams.ApiMask ) )
+                {
+                    metric->SetIdInSetParam( j++ );
 
-                m_filteredMetricsVector.push_back( metric );
+                    m_filteredMetricsVector.push_back( metric );
+                }
             }
         }
 
         // Cache information
         for( uint32_t i = 0, j = 0; i < m_params.InformationCount; ++i )
         {
-            auto information = static_cast<CInformation*>( GetInformation( i ) );
-            if( information && ( information->GetParams()->ApiMask & m_filteredParams.ApiMask ) != 0 )
+            if( auto information = static_cast<CInformation*>( GetInformation( i ) ); information != nullptr )
             {
-                information->SetIdInSetParam( j++ );
+                if( const auto params = information->GetParams();
+                    params != nullptr && ( ( params->ApiMask & m_filteredParams.ApiMask ) != 0 ) )
+                {
+                    information->SetIdInSetParam( j++ );
 
-                m_filteredInformationVector.push_back( information );
+                    m_filteredInformationVector.push_back( information );
+                }
             }
         }
 
@@ -2047,16 +2085,8 @@ namespace MetricsDiscoveryInternal
     void CMetricSet::ClearCachedMetricsAndInformation()
     {
         // To prevent double memory freeing, original instances are in m_metrics/informationVector
-        uint32_t count = static_cast<uint32_t>( m_filteredMetricsVector.size() );
-        for( uint32_t i = 0; i < count; i++ )
-        {
-            m_filteredMetricsVector[i] = nullptr;
-        }
-        count = static_cast<uint32_t>( m_filteredInformationVector.size() );
-        for( uint32_t i = 0; i < count; i++ )
-        {
-            m_filteredInformationVector[i] = nullptr;
-        }
+        std::fill( m_filteredMetricsVector.begin(), m_filteredMetricsVector.end(), nullptr );
+        std::fill( m_filteredInformationVector.begin(), m_filteredInformationVector.end(), nullptr );
 
         m_filteredMetricsVector.clear();
         m_filteredInformationVector.clear();

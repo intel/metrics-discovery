@@ -103,12 +103,11 @@ namespace MetricsDiscoveryInternal
         m_params.QueryReadEquation          = nullptr;
         m_params.NormEquation               = nullptr;
         m_params.MaxValueEquation           = nullptr;
-
-        m_availabilityEquation = nullptr;
-        m_normEquation         = nullptr;
-        m_ioReadEquation       = nullptr;
-        m_queryReadEquation    = nullptr;
-        m_maxValueEquation     = nullptr;
+        m_availabilityEquation              = nullptr;
+        m_normEquation                      = nullptr;
+        m_ioReadEquation                    = nullptr;
+        m_queryReadEquation                 = nullptr;
+        m_maxValueEquation                  = nullptr;
 
         m_isCustom = isCustom;
     }
@@ -205,10 +204,10 @@ namespace MetricsDiscoveryInternal
     //     Returns the metric params.
     //
     // Output:
-    //     TMetricParams_1_0*  - pointer to metric params.
+    //     TMetricParamsLatest* - pointer to metric params.
     //
     //////////////////////////////////////////////////////////////////////////////
-    TMetricParams_1_0* CMetric::GetParams( void )
+    TMetricParamsLatest* CMetric::GetParams( void )
     {
         return &m_params;
     }
@@ -474,6 +473,46 @@ namespace MetricsDiscoveryInternal
     //     CMetric
     //
     // Method:
+    //     GetSignalName
+    //
+    // Description:
+    //     Returns signal name, can be nullptr.
+    //
+    // Output:
+    //     const char* - signal name
+    //
+    //////////////////////////////////////////////////////////////////////////////
+    const char* CMetric::GetSignalName()
+    {
+        return m_signalName;
+    }
+
+    //////////////////////////////////////////////////////////////////////////////
+    //
+    // Class:
+    //     CMetric
+    //
+    // Method:
+    //     GetId
+    //
+    // Description:
+    //     Returns metric position in metric set.
+    //
+    // Output:
+    //     uint32_t - id
+    //
+    //////////////////////////////////////////////////////////////////////////////
+    uint32_t CMetric::GetId() const
+    {
+        return m_id;
+    }
+
+    //////////////////////////////////////////////////////////////////////////////
+    //
+    // Class:
+    //     CMetric
+    //
+    // Method:
     //     IsAvailabilityEquationTrue
     //
     // Description:
@@ -548,46 +587,6 @@ namespace MetricsDiscoveryInternal
         WriteEquationToFile( m_maxValueEquation, metricFile, adapterId );
 
         return CC_OK;
-    }
-
-    //////////////////////////////////////////////////////////////////////////////
-    //
-    // Class:
-    //     CMetric
-    //
-    // Method:
-    //     GetSignalName
-    //
-    // Description:
-    //     Returns signal name, can be nullptr.
-    //
-    // Output:
-    //     const char* - signal name
-    //
-    //////////////////////////////////////////////////////////////////////////////
-    const char* CMetric::GetSignalName()
-    {
-        return m_signalName;
-    }
-
-    //////////////////////////////////////////////////////////////////////////////
-    //
-    // Class:
-    //     CMetric
-    //
-    // Method:
-    //     GetId
-    //
-    // Description:
-    //     Returns metric position in metric set.
-    //
-    // Output:
-    //     uint32_t - id
-    //
-    //////////////////////////////////////////////////////////////////////////////
-    uint32_t CMetric::GetId() const
-    {
-        return m_id;
     }
 
 } // namespace MetricsDiscoveryInternal

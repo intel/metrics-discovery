@@ -350,11 +350,11 @@ namespace MetricsDiscoveryInternal
     //     CMetricSet* metricSet  - metric set
     //
     // Output:
-    //     int - given information index in MetricSet, -1 if not found or error
+    //     int32_t - given information index in MetricSet, -1 if not found or error
     //
     //////////////////////////////////////////////////////////////////////////////
     template <>
-    int CMetricsCalculationManager<MEASUREMENT_TYPE_SNAPSHOT_IO>::GetInformationIndex( const char* symbolName, CMetricSet* metricSet )
+    int32_t CMetricsCalculationManager<MEASUREMENT_TYPE_SNAPSHOT_IO>::GetInformationIndex( const char* symbolName, CMetricSet* metricSet )
     {
         MD_CHECK_PTR_RET( metricSet, -1 );
 

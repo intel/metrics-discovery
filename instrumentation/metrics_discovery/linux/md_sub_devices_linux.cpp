@@ -54,16 +54,20 @@ namespace MetricsDiscoveryInternal
     // Input:
     //     const uint32_t engineClass    - engine class
     //     const uint32_t engineInstance - engine instance
+    //     const uint32_t gtId           - gt id linked to the engine
+    //     const uint32_t oaUnit         - oa unit linked to the engine
     //
     // Description:
     //     Adds engine to sub device.
     //
     //////////////////////////////////////////////////////////////////////////////
     TCompletionCode CSubDeviceEngines::AddEngine(
-        const uint32_t engineClass,
-        const uint32_t engineInstance )
+        const uint32_t                  engineClass,
+        const uint32_t                  engineInstance,
+        [[maybe_unused]] const uint32_t gtId,
+        [[maybe_unused]] const uint32_t oaUnit )
     {
-        TEngineParams_1_9 engine               = {};
+        TEngineParamsLatest engine             = {};
         engine.EngineId.Type                   = ENGINE_ID_TYPE_CLASS_INSTANCE;
         engine.EngineId.ClassInstance.Class    = engineClass;
         engine.EngineId.ClassInstance.Instance = engineInstance;
@@ -85,13 +89,13 @@ namespace MetricsDiscoveryInternal
     //     uint32_t engineIndex - engine index.
     //
     // Output:
-    //     TEngineParams_1_9    - engine parameters
+    //     TEngineParamsLatest  - engine parameters
     //
     // Description:
     //     Returns engine parameters.
     //
     //////////////////////////////////////////////////////////////////////////////
-    TEngineParams_1_9 CSubDeviceEngines::GetEngineParams( const uint32_t engineIndex )
+    TEngineParamsLatest CSubDeviceEngines::GetEngineParams( const uint32_t engineIndex )
     {
         MD_ASSERT( engineIndex < m_engines.size() );
 
@@ -111,17 +115,17 @@ namespace MetricsDiscoveryInternal
     //     const bool     isOam             - indicates if requested engine is related to oam
     //
     // Output:
-    //     TEngineParams_1_9               - tbs engine parameters
-    //     TCompletionCode                 - operation status
+    //     TEngineParamsLatest              - tbs engine parameters
+    //     TCompletionCode                  - operation status
     //
     // Description:
     //     Returns engine parameters that can be used with tbs.
     //
     //////////////////////////////////////////////////////////////////////////////
     TCompletionCode CSubDeviceEngines::GetTbsEngineParams(
-        TEngineParams_1_9& engineParams,
-        const uint32_t     requestedInstance /*= -1*/,
-        const bool         isOam /*= false*/ )
+        TEngineParamsLatest& engineParams,
+        const uint32_t       requestedInstance /*= -1*/,
+        const bool           isOam /*= false*/ )
     {
         for( auto& engine : m_engines )
         {
@@ -297,14 +301,14 @@ namespace MetricsDiscoveryInternal
     //     const uint32_t engineIndex    - engine index
     //
     // Output:
-    //     TEngineParams_1_9& params     - engine parameters
+    //     TEngineParamsLatest& params   - engine parameters
     //     TCompletionCode               - CC_OK means success
     //
     //////////////////////////////////////////////////////////////////////////////
     TCompletionCode CSubDevices::GetEngineParams(
-        const uint32_t     subDeviceIndex,
-        const uint32_t     engineIndex,
-        TEngineParams_1_9& params )
+        const uint32_t       subDeviceIndex,
+        const uint32_t       engineIndex,
+        TEngineParamsLatest& params )
     {
         const uint32_t adapterId    = m_adapter.GetAdapterId();
         const uint32_t enginesCount = m_subDeviceEngines[subDeviceIndex].GetEnginesCount();
@@ -335,15 +339,15 @@ namespace MetricsDiscoveryInternal
     //     const bool     isOam                   - is oam related engine required to find
     //
     // Output:
-    //     TEngineParams_1_9& params              - tbs engine parameters
+    //     TEngineParamsLatest& params            - tbs engine parameters
     //     TCompletionCode                        - CC_OK means success
     //
     //////////////////////////////////////////////////////////////////////////////
     TCompletionCode CSubDevices::GetTbsEngineParams(
-        const uint32_t     subDeviceIndex,
-        TEngineParams_1_9& params,
-        const uint32_t     requestedEngineInstance /*= -1*/,
-        const bool         isOam /*= false*/ )
+        const uint32_t       subDeviceIndex,
+        TEngineParamsLatest& params,
+        const uint32_t       requestedEngineInstance /*= -1*/,
+        const bool           isOam /*= false*/ )
     {
         const uint32_t adapterId = m_adapter.GetAdapterId();
         const size_t   size      = m_subDeviceEngines.size();
@@ -403,21 +407,21 @@ namespace MetricsDiscoveryInternal
     //     IsTbsEngineValid
     //
     // Input:
-    //     EngineParams_1_9& engineParams      - engine params
-    //     const uint32_t    requestedInstance - requested engine instance
-    //     const bool        isOam             - indicates if validated engine is related to oam
+    //     TEngineParamsLatest& engineParams      - engine params
+    //     const uint32_t       requestedInstance - requested engine instance
+    //     const bool           isOam             - indicates if validated engine is related to oam
     //
     // Output:
-    //     bool                                - result
+    //     bool                                   - result
     //
     // Description:
     //     Checks if engine with given params can be used to open tbs.
     //
     //////////////////////////////////////////////////////////////////////////////
     bool CSubDevices::IsTbsEngineValid(
-        const TEngineParams_1_9& engineParams,
-        const uint32_t           requestedInstance /*= -1*/,
-        const bool               isOam /*= false*/ ) const
+        const TEngineParamsLatest& engineParams,
+        const uint32_t             requestedInstance /*= -1*/,
+        const bool                 isOam /*= false*/ ) const
     {
         auto driver = static_cast<CDriverInterfaceLinuxCommon*>( m_adapter.GetDriverInterface() );
 
@@ -703,18 +707,24 @@ namespace MetricsDiscoveryInternal
     //     AddEngine
     //
     // Input:
-    //      const uint32_t engineClass    - engine class
-    //      const uint32_t engineInstance - engine instance
+    //     const uint32_t engineClass    - engine class
+    //     const uint32_t engineInstance - engine instance
+    //     const uint32_t gtId           - gt id linked to the engine
+    //     const uint32_t oaUnit         - oa unit linked to the engine
     //
     // Description:
     //     Adds engine to sub device.
     //
     //////////////////////////////////////////////////////////////////////////////
-    TCompletionCode CSubDevices::AddEngine( const uint32_t engineClass, const uint32_t engineInstance )
+    TCompletionCode CSubDevices::AddEngine(
+        const uint32_t engineClass,
+        const uint32_t engineInstance,
+        const uint32_t gtId,
+        const uint32_t oaUnit )
     {
         if( m_subDeviceEngines.size() > 0 )
         {
-            return m_subDeviceEngines.back().AddEngine( engineClass, engineInstance );
+            return m_subDeviceEngines.back().AddEngine( engineClass, engineInstance, gtId, oaUnit );
         }
 
         return CC_ERROR_GENERAL;

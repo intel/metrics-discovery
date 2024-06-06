@@ -2885,6 +2885,38 @@ namespace MetricsDiscoveryInternal::MetricSets_ACM_GT1_OA
         TCompletionCode Initialize();
     };
 
+    class CExt580MetricSet final : public CMetricSet
+    {
+    public:
+        CExt580MetricSet( CMetricsDevice& device, CConcurrentGroup* concurrentGroup, const char* symbolicName, const char* shortName, uint32_t apiMask, uint32_t category, uint32_t snapshotReportSize, uint32_t deltaReportSize, TReportType reportType, TByteArrayLatest* platformMask, uint32_t gtMask = GT_TYPE_ALL, bool isCustom = false );
+
+        TCompletionCode Initialize();
+    };
+
+    class CExt581MetricSet final : public CMetricSet
+    {
+    public:
+        CExt581MetricSet( CMetricsDevice& device, CConcurrentGroup* concurrentGroup, const char* symbolicName, const char* shortName, uint32_t apiMask, uint32_t category, uint32_t snapshotReportSize, uint32_t deltaReportSize, TReportType reportType, TByteArrayLatest* platformMask, uint32_t gtMask = GT_TYPE_ALL, bool isCustom = false );
+
+        TCompletionCode Initialize();
+    };
+
+    class CExt582MetricSet final : public CMetricSet
+    {
+    public:
+        CExt582MetricSet( CMetricsDevice& device, CConcurrentGroup* concurrentGroup, const char* symbolicName, const char* shortName, uint32_t apiMask, uint32_t category, uint32_t snapshotReportSize, uint32_t deltaReportSize, TReportType reportType, TByteArrayLatest* platformMask, uint32_t gtMask = GT_TYPE_ALL, bool isCustom = false );
+
+        TCompletionCode Initialize();
+    };
+
+    class CExt583MetricSet final : public CMetricSet
+    {
+    public:
+        CExt583MetricSet( CMetricsDevice& device, CConcurrentGroup* concurrentGroup, const char* symbolicName, const char* shortName, uint32_t apiMask, uint32_t category, uint32_t snapshotReportSize, uint32_t deltaReportSize, TReportType reportType, TByteArrayLatest* platformMask, uint32_t gtMask = GT_TYPE_ALL, bool isCustom = false );
+
+        TCompletionCode Initialize();
+    };
+
     class CExt1000MetricSet final : public CMetricSet
     {
     public:

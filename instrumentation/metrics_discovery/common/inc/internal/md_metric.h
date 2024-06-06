@@ -38,7 +38,7 @@ namespace MetricsDiscoveryInternal
     {
     public:
         // API 1.0:
-        virtual TMetricParams_1_0* GetParams( void );
+        virtual TMetricParamsLatest* GetParams( void );
 
     public:
         // Constructor & Destructor:
@@ -71,16 +71,16 @@ namespace MetricsDiscoveryInternal
         TCompletionCode SetDeltaReportReadEquation( const char* equationString );
         TCompletionCode SetNormalizationEquation( const char* equationString );
         TCompletionCode SetSnapshotReportDeltaFunction( const char* equationString );
+        TCompletionCode SetSnapshotReportDeltaFunction( TDeltaFunction_1_0 deltaFunction );
         TCompletionCode SetAvailabilityEquation( const char* equationString );
-        bool            IsAvailabilityEquationTrue();
         TCompletionCode SetMaxValueEquation( const char* equationString );
         void            SetIdInSetParam( uint32_t id );
 
-        TCompletionCode WriteCMetricToFile( FILE* metricFile );
-        TCompletionCode SetSnapshotReportDeltaFunction( TDeltaFunction_1_0 deltaFunction );
-        const char*     GetSignalName();
+        uint32_t    GetId() const;
+        const char* GetSignalName();
+        bool        IsAvailabilityEquationTrue();
 
-        uint32_t GetId() const;
+        TCompletionCode WriteCMetricToFile( FILE* metricFile );
 
     private:
         uint64_t GetMetricValue( const char* valueString );

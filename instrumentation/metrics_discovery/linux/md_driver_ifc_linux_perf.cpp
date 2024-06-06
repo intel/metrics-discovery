@@ -280,21 +280,21 @@ namespace MetricsDiscoveryInternal
     //     IsTbsEngineValid
     //
     // Input:
-    //     EngineParams_1_9& engineParams      - engine params
-    //     const uint32_t    requestedInstance - requested engine instance
-    //     const bool        isOam             - indicates if validated engine is related to oam
+    //     EngineParamsLatest& engineParams      - engine params
+    //     const uint32_t      requestedInstance - requested engine instance
+    //     const bool          isOam             - indicates if validated engine is related to oam
     //
     // Output:
-    //      bool                               - result
+    //      bool                                 - result
     //
     // Description:
     //     Checks if engine with given params can be used to open tbs.
     //
     //////////////////////////////////////////////////////////////////////////////
     bool CDriverInterfaceLinuxPerf::IsTbsEngineValid(
-        const TEngineParams_1_9& engineParams,
-        const uint32_t           requestedInstance /*= -1*/,
-        const bool               isOam /*= false*/ ) const
+        const TEngineParamsLatest& engineParams,
+        const uint32_t             requestedInstance /*= -1*/,
+        const bool                 isOam /*= false*/ ) const
     {
         const bool isRenderEngine       = engineParams.EngineId.ClassInstance.Class == I915_ENGINE_CLASS_RENDER;
         const bool isComputeEngine      = engineParams.EngineId.ClassInstance.Class == I915_ENGINE_CLASS_COMPUTE;
@@ -337,7 +337,7 @@ namespace MetricsDiscoveryInternal
     {
         auto& subDevices     = device.GetAdapter().GetSubDevices();
         auto  subDeviceIndex = device.GetSubDeviceIndex();
-        auto  engine         = TEngineParams_1_9{};
+        auto  engine         = TEngineParamsLatest{};
         auto  result         = subDevices.GetTbsEngineParams( subDeviceIndex, engine );
 
         MD_CHECK_CC_RET_A( m_adapterId, result );
@@ -411,15 +411,19 @@ namespace MetricsDiscoveryInternal
     // Description:
     //     Detects available sub devices.
     //
+    // Input:
+    //     CSubDevices& subDevices - sub devices
+    //
     // Output:
-    //     TCompletionCode - *CC_OK* means success
+    //     TCompletionCode         - *CC_OK* means success
     //
     //////////////////////////////////////////////////////////////////////////////
     TCompletionCode CDriverInterfaceLinuxPerf::EnumerateSubDevices( CSubDevices& subDevices )
     {
-        auto            engines   = std::vector<drm_i915_engine_info>();
+        auto            engines   = std::vector<prelim_drm_i915_engine_info>();
         auto            regions   = std::vector<drm_i915_memory_region_info>();
         auto            distances = std::vector<prelim_drm_i915_query_distance_info>();
+        auto            oaUnits   = std::vector<uint32_t>();
         TCompletionCode ret       = CC_OK;
 
         // Check sub device support.
@@ -448,11 +452,11 @@ namespace MetricsDiscoveryInternal
             MD_CHECK_CC_RET_A( m_adapterId, ret );
 
             // Enumerate engine distances.
-            ret = GetEngineDistances( engines, regions, distances );
+            ret = GetEngineDistances( engines, regions, distances, oaUnits );
             MD_CHECK_CC_RET_A( m_adapterId, ret );
 
             // Enumerate sub device engines.
-            ret = GetSubDeviceEngines( subDevices, distances );
+            ret = GetSubDeviceEngines( subDevices, distances, oaUnits );
             MD_CHECK_CC_RET_A( m_adapterId, ret );
 
             // Make space for CMetricsDevices.
@@ -479,26 +483,23 @@ namespace MetricsDiscoveryInternal
     // Description:
     //     Returns available engines.
     //
-    // Input:
-    //     CDriverInterfaceLinuxPerf& driver          - driver interface
-    //
     // Output:
-    //     std::vector<drm_i915_engine_info>& engines - available engines
-    //     TCompletionCode                            - *CC_OK* means success
+    //     std::vector<prelim_drm_i915_engine_info>& engines - available engines
+    //     TCompletionCode                                   - *CC_OK* means success
     //
     //////////////////////////////////////////////////////////////////////////////
     TCompletionCode CDriverInterfaceLinuxPerf::GetEngines(
-        std::vector<drm_i915_engine_info>& engines )
+        std::vector<prelim_drm_i915_engine_info>& engines )
     {
         auto            buffer = std::vector<uint8_t>();
-        TCompletionCode ret    = QueryDrm( DRM_I915_QUERY_ENGINE_INFO, buffer );
+        TCompletionCode ret    = QueryDrm( PRELIM_DRM_I915_QUERY_ENGINE_INFO, buffer );
         const size_t    size   = buffer.size();
 
         MD_CHECK_CC_RET_A( m_adapterId, ret );
         MD_CHECK_CC_RET_A( m_adapterId, size ? CC_OK : CC_ERROR_GENERAL );
 
         // Copy engine data.
-        auto enginesData = reinterpret_cast<drm_i915_query_engine_info*>( buffer.data() );
+        auto enginesData = reinterpret_cast<prelim_drm_i915_query_engine_info*>( buffer.data() );
 
         for( uint32_t i = 0; i < enginesData->num_engines; ++i )
         {
@@ -522,9 +523,6 @@ namespace MetricsDiscoveryInternal
     //
     // Description:
     //     Returns available memory regions.
-    //
-    // Input:
-    //     CDriverInterfaceLinuxPerf& driver                 - driver interface
     //
     // Output:
     //     std::vector<drm_i915_memory_region_info>& regions - available memory regions
@@ -589,20 +587,20 @@ namespace MetricsDiscoveryInternal
     //     Returns engine distances.
     //
     // Input:
-    //     CDriverInterfaceLinuxPerf& driver                           - driver interface
-    //     const std::vector<drm_i915_engine_info>& engines            - available engines
-    //     const std::vector<drm_i915_memory_region_info>& regions     - available memory regions
-    //     std::vector<prelim_drm_i915_query_distance_info>& distances - engine distances
+    //     const std::vector<prelim_drm_i915_engine_info>&   engines   - available engines
+    //     const std::vector<drm_i915_memory_region_info>&   regions   - available memory regions
     //
     // Output:
     //     std::vector<prelim_drm_i915_query_distance_info>& distances - engine distances
+    //     std::vector<uint32_t>&                            oaUnits   - engine oa units
     //     TCompletionCode                                             - *CC_OK* means success
     //
     //////////////////////////////////////////////////////////////////////////////
     TCompletionCode CDriverInterfaceLinuxPerf::GetEngineDistances(
-        const std::vector<drm_i915_engine_info>&          engines,
+        const std::vector<prelim_drm_i915_engine_info>&   engines,
         const std::vector<drm_i915_memory_region_info>&   regions,
-        std::vector<prelim_drm_i915_query_distance_info>& distances )
+        std::vector<prelim_drm_i915_query_distance_info>& distances,
+        std::vector<uint32_t>&                            oaUnits )
     {
         auto items = std::vector<drm_i915_query_item>();
         auto query = drm_i915_query{};
@@ -618,6 +616,12 @@ namespace MetricsDiscoveryInternal
             {
                 auto engine = engines[j];
 
+                if( engine.oa_unit_id == MD_OA_UNIT_ID_UNKNOWN )
+                {
+                    // Skip an engine with no OA unit.
+                    continue;
+                }
+
                 switch( engine.engine.engine_class )
                 {
                     case I915_ENGINE_CLASS_RENDER:
@@ -627,6 +631,7 @@ namespace MetricsDiscoveryInternal
                     case I915_ENGINE_CLASS_VIDEO_ENHANCE:
                         distance.engine = engine.engine;
                         distances.push_back( std::move( distance ) );
+                        oaUnits.push_back( engine.oa_unit_id );
                     default:
                         break;
                 }
@@ -663,16 +668,21 @@ namespace MetricsDiscoveryInternal
     //     Returns sub device engines.
     //
     // Input:
-    //      const std::vector<prelim_drm_i915_query_distance_info>& distances - engine distances
+    //      CSubDevices&                                            subDevices - sub devices
+    //      const std::vector<prelim_drm_i915_query_distance_info>& distances  - engine distances
+    //      const std::vector<uint32_t>&                            oaUnits    - engine oa units
     //
     // Output:
-    //     TCompletionCode                                             - *CC_OK* means success
+    //     TCompletionCode                                                     - *CC_OK* means success
     //
     //////////////////////////////////////////////////////////////////////////////
     TCompletionCode CDriverInterfaceLinuxPerf::GetSubDeviceEngines(
         CSubDevices&                                            subDevices,
-        const std::vector<prelim_drm_i915_query_distance_info>& distances )
+        const std::vector<prelim_drm_i915_query_distance_info>& distances,
+        const std::vector<uint32_t>&                            oaUnits )
     {
+        MD_ASSERT_A( m_adapterId, distances.size() == oaUnits.size() );
+
         for( uint32_t i = 0; i < distances.size(); ++i )
         {
             auto       engine        = distances[i].engine;
@@ -686,6 +696,10 @@ namespace MetricsDiscoveryInternal
 
             if( validDistance )
             {
+                const bool     isOam          = engine.engine_class == I915_ENGINE_CLASS_VIDEO_ENHANCE || engine.engine_class == I915_ENGINE_CLASS_VIDEO;
+                const uint32_t subDeviceIndex = subDevices.GetAllEnginesCount() - 1;
+                const uint32_t gtId           = subDeviceIndex * 2 + ( isOam ? 1 : 0 );
+
                 switch( engine.engine_class )
                 {
                     case I915_ENGINE_CLASS_RENDER:
@@ -693,8 +707,8 @@ namespace MetricsDiscoveryInternal
                     case I915_ENGINE_CLASS_COMPUTE:
                     case I915_ENGINE_CLASS_VIDEO:
                     case I915_ENGINE_CLASS_VIDEO_ENHANCE:
-                        MD_LOG_A( m_adapterId, LOG_DEBUG, "Sub device %u / engine %u:%u", subDevices.GetAllEnginesCount() - 1, engine.engine_class, engine.engine_instance );
-                        subDevices.AddEngine( engine.engine_class, engine.engine_instance );
+                        MD_LOG_A( m_adapterId, LOG_DEBUG, "Sub device %u / engine %u:%u / GT ID: %u / OA unit: %u", subDeviceIndex, engine.engine_class, engine.engine_instance, gtId, oaUnits[i] );
+                        subDevices.AddEngine( engine.engine_class, engine.engine_instance, gtId, oaUnits[i] );
                         break;
 
                     default:
@@ -823,7 +837,7 @@ namespace MetricsDiscoveryInternal
         const bool            isOamRequested         = IsOamRequested( oaReportType );
         const uint32_t        subDeviceIndex         = metricsDevice.GetSubDeviceIndex();
         auto                  subDevices             = metricsDevice.GetAdapter().GetSubDevices();
-        auto                  engine                 = TEngineParams_1_9{};
+        auto                  engine                 = TEngineParamsLatest{};
         auto                  param                  = drm_i915_perf_open_param{};
         std::vector<uint64_t> properties             = {};
 
@@ -911,7 +925,7 @@ namespace MetricsDiscoveryInternal
 
         if( oaEventFd == -1 )
         {
-            MD_LOG_A( m_adapterId, LOG_ERROR, "ERROR: opening i915 Perf stream failed, fd: %d, errno: %d (%s)", oaEventFd, errno, strerror( errno ) );
+            MD_LOG_A( m_adapterId, LOG_ERROR, "ERROR: Opening i915 Perf stream failed, errno: %d (%s)", errno, strerror( errno ) );
             return CC_ERROR_GENERAL;
         }
 
@@ -1523,7 +1537,7 @@ namespace MetricsDiscoveryInternal
         }
 
         auto subDevices = metricsDevice.GetAdapter().GetSubDevices();
-        auto engine     = TEngineParams_1_9{};
+        auto engine     = TEngineParamsLatest{};
 
         // Obtain sub device engines.
         ret = subDevices.GetTbsEngineParams( subDeviceIndex, engine );
@@ -2409,7 +2423,7 @@ namespace MetricsDiscoveryInternal
         auto  queryItem      = drm_i915_query_item{};
         auto& subDevices     = metricsDevice.GetAdapter().GetSubDevices();
         auto  subDeviceIndex = metricsDevice.GetSubDeviceIndex();
-        auto  engine         = TEngineParams_1_9{};
+        auto  engine         = TEngineParamsLatest{};
         auto  result         = subDevices.GetTbsEngineParams( subDeviceIndex, engine );
 
         MD_CHECK_CC_RET_A( m_adapterId, result );

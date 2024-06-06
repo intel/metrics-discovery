@@ -368,6 +368,8 @@ namespace MetricsDiscoveryInternal
         { 0x56bb, TPlatformIndexGt( GENERATION_ACM, GFX_GTTYPE_GT1 ) },
         { 0x56bc, TPlatformIndexGt( GENERATION_ACM, GFX_GTTYPE_GT1 ) },
         { 0x56bd, TPlatformIndexGt( GENERATION_ACM, GFX_GTTYPE_GT1 ) },
+        { 0x56be, TPlatformIndexGt( GENERATION_ACM, GFX_GTTYPE_GT3 ) },
+        { 0x56bf, TPlatformIndexGt( GENERATION_ACM, GFX_GTTYPE_GT3 ) },
         { 0x56c0, TPlatformIndexGt( GENERATION_ACM, GFX_GTTYPE_GT3 ) },
         { 0x56c1, TPlatformIndexGt( GENERATION_ACM, GFX_GTTYPE_GT1 ) },
         { 0x56c2, TPlatformIndexGt( GENERATION_ACM, GFX_GTTYPE_GT3 ) },

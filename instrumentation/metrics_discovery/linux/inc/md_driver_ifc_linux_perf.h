@@ -21,6 +21,14 @@ SPDX-License-Identifier: MIT
 
 #include "i915_drm.h"
 
+//////////////////////////////////////////////////////////////////////////////
+//
+// Description:
+//     Unknown oa unit id.
+//
+//////////////////////////////////////////////////////////////////////////////
+#define MD_OA_UNIT_ID_UNKNOWN 0xFFFFFFFF
+
 using namespace MetricsDiscovery;
 
 namespace MetricsDiscoveryInternal
@@ -72,17 +80,17 @@ namespace MetricsDiscoveryInternal
 
         // General
         virtual TCompletionCode GetGpuCpuTimestamps( CMetricsDevice& device, uint64_t& gpuTimestamp, uint64_t& cpuTimestamp, uint32_t& cpuId, uint64_t& correlationIndicator );
-        virtual bool            IsTbsEngineValid( const TEngineParams_1_9& engineParams, const uint32_t requestedInstance = -1, const bool isOam = false ) const;
+        virtual bool            IsTbsEngineValid( const TEngineParamsLatest& engineParams, const uint32_t requestedInstance = -1, const bool isOam = false ) const;
 
         // Overrides
         virtual bool            IsSubDeviceSupported();
         virtual TCompletionCode EnumerateSubDevices( CSubDevices& subDevices );
 
     protected:
-        TCompletionCode GetEngines( std::vector<drm_i915_engine_info>& engines );
+        TCompletionCode GetEngines( std::vector<prelim_drm_i915_engine_info>& engines );
         TCompletionCode GetMemoryRegions( std::vector<drm_i915_memory_region_info>& regions );
-        TCompletionCode GetEngineDistances( const std::vector<drm_i915_engine_info>& engines, const std::vector<drm_i915_memory_region_info>& regions, std::vector<prelim_drm_i915_query_distance_info>& distances );
-        TCompletionCode GetSubDeviceEngines( CSubDevices& subDevices, const std::vector<prelim_drm_i915_query_distance_info>& distances );
+        TCompletionCode GetEngineDistances( const std::vector<prelim_drm_i915_engine_info>& engines, const std::vector<drm_i915_memory_region_info>& regions, std::vector<prelim_drm_i915_query_distance_info>& distances, std::vector<uint32_t>& oaUnits );
+        TCompletionCode GetSubDeviceEngines( CSubDevices& subDevices, const std::vector<prelim_drm_i915_query_distance_info>& distances, const std::vector<uint32_t>& oaUnits );
         virtual bool    CreateContext();
 
         // SysFs

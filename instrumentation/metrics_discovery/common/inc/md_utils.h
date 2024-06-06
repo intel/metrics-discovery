@@ -977,13 +977,13 @@ namespace MetricsDiscoveryInternal
         //         Access operator.
         //
         //     Input:
-        //         int i   - index
+        //         uint32_t i - index
         //
         //     Output:
-        //         T       - object
+        //         T          - object
         //
         //////////////////////////////////////////////////////////////////////////////
-        T operator[]( int i ) const
+        T operator[]( uint32_t i ) const
         {
             return m_vector[i];
         }
@@ -1000,13 +1000,13 @@ namespace MetricsDiscoveryInternal
         //         Access operator.
         //
         //     Input:
-        //         int i   - index
+        //         uint32_t i - index
         //
         //     Output:
-        //         T&      - reference to object
+        //         T&         - reference to object
         //
         //////////////////////////////////////////////////////////////////////////////
-        T& operator[]( int i )
+        T& operator[]( uint32_t i )
         {
             return m_vector[i];
         }
