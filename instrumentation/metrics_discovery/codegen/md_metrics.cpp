@@ -141,6 +141,16 @@ TCompletionCode CreateMetricTreeMTL_GT2_PipelineStatistics( CMetricsDevice* metr
 TCompletionCode CreateMetricTreeMTL_GT3_PipelineStatistics( CMetricsDevice* metricsDevice, CConcurrentGroup* concurrentGroup );
 #endif
 
+#if MD_INCLUDE_BMG_METRICS
+    #define MD_CALL_BMG_METRICS 1
+TCompletionCode CreateMetricTreeBMG_PipelineStatistics( CMetricsDevice* metricsDevice, CConcurrentGroup* concurrentGroup );
+#endif
+
+#if MD_INCLUDE_LNL_METRICS
+    #define MD_CALL_LNL_METRICS 1
+TCompletionCode CreateMetricTreeLNL_PipelineStatistics( CMetricsDevice* metricsDevice, CConcurrentGroup* concurrentGroup );
+#endif
+
 #if MD_INCLUDE_ARL_GT1_METRICS
     #define MD_CALL_ARL_GT1_METRICS 1
 TCompletionCode CreateMetricTreeARL_GT1_PipelineStatistics( CMetricsDevice* metricsDevice, CConcurrentGroup* concurrentGroup );
@@ -301,6 +311,16 @@ TCompletionCode CreateMetricTreeMTL_GT2_OA( CMetricsDevice* metricsDevice, CConc
 TCompletionCode CreateMetricTreeMTL_GT3_OA( CMetricsDevice* metricsDevice, CConcurrentGroup* concurrentGroup );
 #endif
 
+#if MD_INCLUDE_BMG_METRICS
+    #define MD_CALL_BMG_METRICS 1
+TCompletionCode CreateMetricTreeBMG_OA( CMetricsDevice* metricsDevice, CConcurrentGroup* concurrentGroup );
+#endif
+
+#if MD_INCLUDE_LNL_METRICS
+    #define MD_CALL_LNL_METRICS 1
+TCompletionCode CreateMetricTreeLNL_OA( CMetricsDevice* metricsDevice, CConcurrentGroup* concurrentGroup );
+#endif
+
 #if MD_INCLUDE_ARL_GT1_METRICS
     #define MD_CALL_ARL_GT1_METRICS 1
 TCompletionCode CreateMetricTreeARL_GT1_OA( CMetricsDevice* metricsDevice, CConcurrentGroup* concurrentGroup );
@@ -321,6 +341,16 @@ TCompletionCode CreateMetricTreeMTL_GT2_OAM0( CMetricsDevice* metricsDevice, CCo
 TCompletionCode CreateMetricTreeMTL_GT3_OAM0( CMetricsDevice* metricsDevice, CConcurrentGroup* concurrentGroup );
 #endif
 
+#if MD_INCLUDE_BMG_METRICS
+    #define MD_CALL_BMG_METRICS 1
+TCompletionCode CreateMetricTreeBMG_OAM0( CMetricsDevice* metricsDevice, CConcurrentGroup* concurrentGroup );
+#endif
+
+#if MD_INCLUDE_LNL_METRICS
+    #define MD_CALL_LNL_METRICS 1
+TCompletionCode CreateMetricTreeLNL_OAM0( CMetricsDevice* metricsDevice, CConcurrentGroup* concurrentGroup );
+#endif
+
 #if MD_INCLUDE_ARL_GT1_METRICS
     #define MD_CALL_ARL_GT1_METRICS 1
 TCompletionCode CreateMetricTreeARL_GT1_OAM0( CMetricsDevice* metricsDevice, CConcurrentGroup* concurrentGroup );
@@ -329,6 +359,21 @@ TCompletionCode CreateMetricTreeARL_GT1_OAM0( CMetricsDevice* metricsDevice, CCo
 #if MD_INCLUDE_ARL_GT2_METRICS
     #define MD_CALL_ARL_GT2_METRICS 1
 TCompletionCode CreateMetricTreeARL_GT2_OAM0( CMetricsDevice* metricsDevice, CConcurrentGroup* concurrentGroup );
+#endif
+
+#if MD_INCLUDE_BMG_METRICS
+    #define MD_CALL_BMG_METRICS 1
+TCompletionCode CreateMetricTreeBMG_OAM1( CMetricsDevice* metricsDevice, CConcurrentGroup* concurrentGroup );
+#endif
+
+#if MD_INCLUDE_BMG_METRICS
+    #define MD_CALL_BMG_METRICS 1
+TCompletionCode CreateMetricTreeBMG_OAMG( CMetricsDevice* metricsDevice, CConcurrentGroup* concurrentGroup );
+#endif
+
+#if MD_INCLUDE_LNL_METRICS
+    #define MD_CALL_LNL_METRICS 1
+TCompletionCode CreateMetricTreeLNL_OAMG( CMetricsDevice* metricsDevice, CConcurrentGroup* concurrentGroup );
 #endif
 
 inline TCompletionCode AddGlobalSymbols( CMetricsDevice* metricsDevice )
@@ -480,6 +525,21 @@ inline TCompletionCode AddGlobalSymbols( CMetricsDevice* metricsDevice )
     ret = symbolSet.AddSymbolUINT32( "CopyEngineTotalCount", 0, SYMBOL_TYPE_DETECT );
     MD_CHECK_CC_RET_A( adapterId, ret );
 
+    ret = symbolSet.AddSymbolUINT32( "QueryMode", 0, SYMBOL_TYPE_DETECT );
+    MD_CHECK_CC_RET_A( adapterId, ret );
+
+    ret = symbolSet.AddSymbolBYTEARRAY( "GtL3BankMask", nullptr, SYMBOL_TYPE_DETECT );
+    MD_CHECK_CC_RET_A( adapterId, ret );
+
+    ret = symbolSet.AddSymbolBYTEARRAY( "GtL3NodeMask", nullptr, SYMBOL_TYPE_DETECT );
+    MD_CHECK_CC_RET_A( adapterId, ret );
+
+    ret = symbolSet.AddSymbolBYTEARRAY( "GtSqidiMask", nullptr, SYMBOL_TYPE_DETECT );
+    MD_CHECK_CC_RET_A( adapterId, ret );
+
+    ret = symbolSet.AddSymbolBYTEARRAY( "GtCopyEngineMask", nullptr, SYMBOL_TYPE_DETECT );
+    MD_CHECK_CC_RET_A( adapterId, ret );
+
     metricsDevice->GetParams()->GlobalSymbolsCount = symbolSet.GetSymbolCount();
 
     return ret;
@@ -500,7 +560,7 @@ TCompletionCode CreateMetricTree( CMetricsDevice* metricsDevice )
 
     MD_CHECK_CC( AddGlobalSymbols( metricsDevice ) );
 
-    MD_CHECK_CC( SetPlatformMask( adapterId, &platformMask, nullptr, false, GENERATION_HSW, GENERATION_BDW, GENERATION_SKL, GENERATION_BXT, GENERATION_KBL, GENERATION_CFL, GENERATION_GLK, GENERATION_ICL, GENERATION_EHL, GENERATION_TGL, GENERATION_RKL, GENERATION_DG1, GENERATION_ACM, GENERATION_ADLP, GENERATION_ADLS, GENERATION_ADLN, GENERATION_MTL, GENERATION_ARL ) );
+    MD_CHECK_CC( SetPlatformMask( adapterId, &platformMask, nullptr, false, GENERATION_HSW, GENERATION_BDW, GENERATION_SKL, GENERATION_BXT, GENERATION_KBL, GENERATION_CFL, GENERATION_GLK, GENERATION_ICL, GENERATION_EHL, GENERATION_TGL, GENERATION_RKL, GENERATION_DG1, GENERATION_ACM, GENERATION_ADLP, GENERATION_ADLS, GENERATION_ADLN, GENERATION_MTL, GENERATION_BMG, GENERATION_LNL, GENERATION_ARL ) );
     concurrentGroup = metricsDevice->AddConcurrentGroup( "OcclusionQueryStats", "Occlusion Query Statistics", MEASUREMENT_TYPE_DELTA_QUERY, &platformMask, isSupported );
     if( isSupported )
     {
@@ -519,7 +579,7 @@ TCompletionCode CreateMetricTree( CMetricsDevice* metricsDevice )
         MD_LOG_A( adapterId, LOG_INFO, "OcclusionQueryStats concurrent group is not supported!" );
     }
 
-    MD_CHECK_CC( SetPlatformMask( adapterId, &platformMask, nullptr, false, GENERATION_HSW, GENERATION_BDW, GENERATION_SKL, GENERATION_BXT, GENERATION_KBL, GENERATION_CFL, GENERATION_GLK, GENERATION_ICL, GENERATION_EHL, GENERATION_TGL, GENERATION_RKL, GENERATION_DG1, GENERATION_ACM, GENERATION_ADLP, GENERATION_ADLS, GENERATION_ADLN, GENERATION_MTL, GENERATION_ARL ) );
+    MD_CHECK_CC( SetPlatformMask( adapterId, &platformMask, nullptr, false, GENERATION_HSW, GENERATION_BDW, GENERATION_SKL, GENERATION_BXT, GENERATION_KBL, GENERATION_CFL, GENERATION_GLK, GENERATION_ICL, GENERATION_EHL, GENERATION_TGL, GENERATION_RKL, GENERATION_DG1, GENERATION_ACM, GENERATION_ADLP, GENERATION_ADLS, GENERATION_ADLN, GENERATION_MTL, GENERATION_BMG, GENERATION_LNL, GENERATION_ARL ) );
     concurrentGroup = metricsDevice->AddConcurrentGroup( "TimestampQuery", "Timestamp Query", MEASUREMENT_TYPE_SNAPSHOT_QUERY, &platformMask, isSupported );
     if( isSupported )
     {
@@ -534,7 +594,7 @@ TCompletionCode CreateMetricTree( CMetricsDevice* metricsDevice )
         MD_LOG_A( adapterId, LOG_INFO, "TimestampQuery concurrent group is not supported!" );
     }
 
-    MD_CHECK_CC( SetPlatformMask( adapterId, &platformMask, nullptr, false, GENERATION_HSW, GENERATION_BDW, GENERATION_SKL, GENERATION_BXT, GENERATION_KBL, GENERATION_CFL, GENERATION_GLK, GENERATION_ICL, GENERATION_EHL, GENERATION_TGL, GENERATION_RKL, GENERATION_DG1, GENERATION_ACM, GENERATION_ADLP, GENERATION_ADLS, GENERATION_ADLN, GENERATION_MTL, GENERATION_ARL ) );
+    MD_CHECK_CC( SetPlatformMask( adapterId, &platformMask, nullptr, false, GENERATION_HSW, GENERATION_BDW, GENERATION_SKL, GENERATION_BXT, GENERATION_KBL, GENERATION_CFL, GENERATION_GLK, GENERATION_ICL, GENERATION_EHL, GENERATION_TGL, GENERATION_RKL, GENERATION_DG1, GENERATION_ACM, GENERATION_ADLP, GENERATION_ADLS, GENERATION_ADLN, GENERATION_MTL, GENERATION_BMG, GENERATION_LNL, GENERATION_ARL ) );
     concurrentGroup = metricsDevice->AddConcurrentGroup( "PipelineStatistics", "Pipeline Statistics", MEASUREMENT_TYPE_DELTA_QUERY, &platformMask, isSupported );
     if( isSupported )
     {
@@ -639,6 +699,14 @@ TCompletionCode CreateMetricTree( CMetricsDevice* metricsDevice )
 
 #if MD_CALL_MTL_GT3_METRICS
         MD_CHECK_CC( CreateMetricTreeMTL_GT3_PipelineStatistics( metricsDevice, concurrentGroup ) );
+#endif
+
+#if MD_CALL_BMG_METRICS
+        MD_CHECK_CC( CreateMetricTreeBMG_PipelineStatistics( metricsDevice, concurrentGroup ) );
+#endif
+
+#if MD_CALL_LNL_METRICS
+        MD_CHECK_CC( CreateMetricTreeLNL_PipelineStatistics( metricsDevice, concurrentGroup ) );
 #endif
 
 #if MD_CALL_ARL_GT1_METRICS
@@ -781,6 +849,14 @@ TCompletionCode CreateMetricTree( CMetricsDevice* metricsDevice )
         MD_CHECK_CC( CreateMetricTreeMTL_GT3_OA( metricsDevice, concurrentGroup ) );
 #endif
 
+#if MD_CALL_BMG_METRICS
+        MD_CHECK_CC( CreateMetricTreeBMG_OA( metricsDevice, concurrentGroup ) );
+#endif
+
+#if MD_CALL_LNL_METRICS
+        MD_CHECK_CC( CreateMetricTreeLNL_OA( metricsDevice, concurrentGroup ) );
+#endif
+
 #if MD_CALL_ARL_GT1_METRICS
         MD_CHECK_CC( CreateMetricTreeARL_GT1_OA( metricsDevice, concurrentGroup ) );
 #endif
@@ -794,7 +870,7 @@ TCompletionCode CreateMetricTree( CMetricsDevice* metricsDevice )
         MD_LOG_A( adapterId, LOG_INFO, "OA concurrent group is not supported!" );
     }
 
-    MD_CHECK_CC( SetPlatformMask( adapterId, &platformMask, nullptr, false, GENERATION_MTL, GENERATION_ARL ) );
+    MD_CHECK_CC( SetPlatformMask( adapterId, &platformMask, nullptr, false, GENERATION_MTL, GENERATION_BMG, GENERATION_LNL, GENERATION_ARL ) );
     concurrentGroup = metricsDevice->AddConcurrentGroup( "OAM0", "OAM0 Unit Metrics", MEASUREMENT_TYPE_SNAPSHOT_IO, &platformMask, isSupported );
     if( isSupported )
     {
@@ -809,6 +885,14 @@ TCompletionCode CreateMetricTree( CMetricsDevice* metricsDevice )
         MD_CHECK_CC( CreateMetricTreeMTL_GT3_OAM0( metricsDevice, concurrentGroup ) );
 #endif
 
+#if MD_CALL_BMG_METRICS
+        MD_CHECK_CC( CreateMetricTreeBMG_OAM0( metricsDevice, concurrentGroup ) );
+#endif
+
+#if MD_CALL_LNL_METRICS
+        MD_CHECK_CC( CreateMetricTreeLNL_OAM0( metricsDevice, concurrentGroup ) );
+#endif
+
 #if MD_CALL_ARL_GT1_METRICS
         MD_CHECK_CC( CreateMetricTreeARL_GT1_OAM0( metricsDevice, concurrentGroup ) );
 #endif
@@ -820,6 +904,42 @@ TCompletionCode CreateMetricTree( CMetricsDevice* metricsDevice )
     else
     {
         MD_LOG_A( adapterId, LOG_INFO, "OAM0 concurrent group is not supported!" );
+    }
+
+    MD_CHECK_CC( SetPlatformMask( adapterId, &platformMask, nullptr, false, GENERATION_BMG ) );
+    concurrentGroup = metricsDevice->AddConcurrentGroup( "OAM1", "OAM1 Unit Metrics", MEASUREMENT_TYPE_SNAPSHOT_IO, &platformMask, isSupported );
+    if( isSupported )
+    {
+        MD_CHECK_PTR( concurrentGroup );
+
+        // Add platform specific metric sets
+#if MD_CALL_BMG_METRICS
+        MD_CHECK_CC( CreateMetricTreeBMG_OAM1( metricsDevice, concurrentGroup ) );
+#endif
+    }
+    else
+    {
+        MD_LOG_A( adapterId, LOG_INFO, "OAM1 concurrent group is not supported!" );
+    }
+
+    MD_CHECK_CC( SetPlatformMask( adapterId, &platformMask, nullptr, false, GENERATION_BMG, GENERATION_LNL ) );
+    concurrentGroup = metricsDevice->AddConcurrentGroup( "OAMG", "OAMG Unit Metrics", MEASUREMENT_TYPE_SNAPSHOT_IO, &platformMask, isSupported );
+    if( isSupported )
+    {
+        MD_CHECK_PTR( concurrentGroup );
+
+        // Add platform specific metric sets
+#if MD_CALL_BMG_METRICS
+        MD_CHECK_CC( CreateMetricTreeBMG_OAMG( metricsDevice, concurrentGroup ) );
+#endif
+
+#if MD_CALL_LNL_METRICS
+        MD_CHECK_CC( CreateMetricTreeLNL_OAMG( metricsDevice, concurrentGroup ) );
+#endif
+    }
+    else
+    {
+        MD_LOG_A( adapterId, LOG_INFO, "OAMG concurrent group is not supported!" );
     }
 
     MD_CHECK_CC( metricsDevice->AddOverrides() );

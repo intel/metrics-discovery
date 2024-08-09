@@ -22,27 +22,9 @@ SPDX-License-Identifier: MIT
 // LogLevel.severity - for debug & info logs don't forget to enable
 ///////////////////////////////////////////////////////////////////////////////
 IU_LOGS_CONTROL g_IuLogsControl = {
-
-#if defined( _DEBUG )
-
-    true,                                       // AssertEnable
-    IU_DBG_LAYER_ALL,                           // LogLayerEnable
-    IU_DBG_SEV_ERROR | IU_DBG_SEV_CRITICAL | 0, // LogLevel.severity & LogLevel.show_flags
-
-#elif defined( _RELEASE_INTERNAL )
-
-    false,                                                                                          // AssertEnable
-    IU_DBG_LAYER_ALL,                                                                               // LogLayerEnable
-    IU_DBG_SEV_WARNING | IU_DBG_SEV_ERROR | IU_DBG_SEV_CRITICAL | IU_DBG_SHOW_ALL | IU_DBG_ALIGNED, // LogLevel.severity & LogLevel.show_flags
-
-#else // RELEASE
-
-    false,                                               // AssertEnable
-    IU_DBG_LAYER_ALL,                                    // LogLayerEnable
-    IU_DBG_SEV_ERROR | IU_DBG_SHOW_TAG | IU_DBG_ALIGNED, // LogLevel.severity & LogLevel.show_flags
-
-#endif
-
+    IU_CONFIG_DEFAULT_ASSERT_ENABLE,
+    IU_CONFIG_DEFAULT_LOG_LAYER_ENABLE,
+    IU_CONFIG_DEFAULT_LOG_LEVEL,
 };
 
 ///////////////////////////////////////////////////////////////////////////////

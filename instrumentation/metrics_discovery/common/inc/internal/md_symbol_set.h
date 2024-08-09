@@ -67,6 +67,7 @@ namespace MetricsDiscoveryInternal
         bool            IsPavpDisabled( uint32_t capabilities );
         TCompletionCode UnpackMask( const TGlobalSymbol* symbol );
         bool            IsSymbolNameSupported( std::string_view name );
+        uint8_t         GetGtMaxSubslicePerSlice( const uint32_t platformId );
 
     private:
         // Variables:
@@ -76,6 +77,9 @@ namespace MetricsDiscoveryInternal
         uint32_t                                             m_maxSlice;
         uint32_t                                             m_maxSubslicePerSlice;
         uint32_t                                             m_maxDualSubslicePerSlice;
+        uint32_t                                             m_maxL3Node;
+        uint32_t                                             m_maxL3BankPerL3Node;
+        uint32_t                                             m_maxCopyEngine;
 
     private:
         // Static variables:

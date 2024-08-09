@@ -56,6 +56,8 @@ namespace MetricsDiscoveryInternal
         , m_isOpenedFromFile( false )
         , m_referenceCounter( 0 )
         , m_oaBuferCount( 0 )
+        , m_queryModeRequested( QUERY_MODE_NONE )
+        , m_queryModeDefault( m_driverInterface.GetQueryModeOverride() )
     {
         const uint32_t adapterId = m_adapter.GetAdapterId();
 
@@ -155,12 +157,9 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     IConcurrentGroupLatest* CMetricsDevice::GetConcurrentGroup( uint32_t index )
     {
-        if( index < m_groupsVector.size() )
-        {
-            return m_groupsVector[index];
-        }
-
-        return nullptr;
+        return ( index < m_groupsVector.size() )
+            ? m_groupsVector[index]
+            : nullptr;
     }
 
     //////////////////////////////////////////////////////////////////////////////
@@ -333,12 +332,9 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     IOverride_1_2* CMetricsDevice::GetOverride( uint32_t index )
     {
-        if( index < m_overridesVector.size() )
-        {
-            return m_overridesVector[index];
-        }
-
-        return nullptr;
+        return ( index < m_overridesVector.size() )
+            ? m_overridesVector[index]
+            : nullptr;
     }
 
     //////////////////////////////////////////////////////////////////////////////
@@ -565,26 +561,6 @@ namespace MetricsDiscoveryInternal
     bool CMetricsDevice::IsPlatformTypeOf( TByteArrayLatest* platformMask, uint32_t gtMask /*= GT_TYPE_ALL*/ )
     {
         return ( m_gtType & gtMask ) && IsPlatformPresentInMask( platformMask, m_platformIndex, m_adapter.GetAdapterId() );
-    }
-
-    //////////////////////////////////////////////////////////////////////////////
-    //
-    // Class:
-    //     CMetricsDevice
-    //
-    // Method:
-    //     IsPavpDisabled
-    //
-    // Description:
-    //     Checks if the PAVP_DISABLED bit in capabilities global symbol is set.
-    //
-    // Output:
-    //     bool - result
-    //
-    //////////////////////////////////////////////////////////////////////////////
-    bool CMetricsDevice::IsPavpDisabled( uint32_t capabilities )
-    {
-        return ( capabilities & GTDI_CAPABILITY_PAVP_DISABLED ) > 0;
     }
 
     //////////////////////////////////////////////////////////////////////////////
@@ -1549,6 +1525,28 @@ namespace MetricsDiscoveryInternal
     //     CMetricsDevice
     //
     // Method:
+    //     GetQueryMode
+    //
+    // Description:
+    //     Get status of query mode override.
+    //
+    // Output:
+    //     TQueryMode - enabled query mode override.
+    //
+    //////////////////////////////////////////////////////////////////////////////
+    TQueryMode CMetricsDevice::GetQueryMode() const
+    {
+        return ( m_queryModeRequested == QUERY_MODE_NONE )
+            ? m_queryModeDefault
+            : m_queryModeRequested;
+    }
+
+    //////////////////////////////////////////////////////////////////////////////
+    //
+    // Class:
+    //     CMetricsDevice
+    //
+    // Method:
     //     IsMetricsFileInPlainTextFormat
     //
     // Description:
@@ -1722,8 +1720,24 @@ namespace MetricsDiscoveryInternal
         {
             return 0;
         }
-        // Ticks masked to 32bit to get sync with report timestamps.
-        return ( gpuTimestampTicks & MD_GPU_TIMESTAMP_MASK_32 ) * MD_SECOND_IN_NS / gpuTimestampFrequency;
+
+        switch( m_platformIndex )
+        {
+            case GENERATION_BMG:
+            case GENERATION_LNL:
+            {
+                // Ticks masked to 56bit to get sync with report timestamps.
+                const double oneTickNs                        = static_cast<double>( MD_SECOND_IN_NS ) / gpuTimestampFrequency;
+                const double gpuTimestampNsHigh               = ( ( gpuTimestampTicks & MD_GPU_TIMESTAMP_MASK_56 ) >> 32 ) * oneTickNs;
+                const double gpuTimestampNsHighFractionalPart = ( gpuTimestampNsHigh - static_cast<uint64_t>( gpuTimestampNsHigh ) ) * ( MD_GPU_TIMESTAMP_MASK_32 + 1 );
+                const double gpuTimestampNsLow                = ( gpuTimestampTicks & MD_GPU_TIMESTAMP_MASK_32 ) * oneTickNs;
+
+                return ( static_cast<uint64_t>( gpuTimestampNsHigh ) << 32 ) + static_cast<uint64_t>( gpuTimestampNsLow + gpuTimestampNsHighFractionalPart );
+            }
+            default:
+                // Ticks masked to 32bit to get sync with report timestamps.
+                return ( gpuTimestampTicks & MD_GPU_TIMESTAMP_MASK_32 ) * MD_SECOND_IN_NS / gpuTimestampFrequency;
+        }
     }
 
     //////////////////////////////////////////////////////////////////////////////

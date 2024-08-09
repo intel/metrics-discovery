@@ -106,18 +106,17 @@ namespace MetricsDiscoveryInternal
         sc->ContextIdIdx    = GetInformationIndex( "ContextId", sc->MetricSet );
         sc->ReportReasonIdx = GetInformationIndex( "ReportReason", sc->MetricSet );
 
-        if( sc->DoContextFiltering )
+        if( sc->DoContextFiltering && sc->ContextIdIdx < 0 )
         {
-            if( sc->ContextIdIdx < 0 )
-            {
-                MD_LOG_A( adapterId, LOG_ERROR, "error: can't find required information for context filtering" );
-                MD_LOG_EXIT_A( adapterId );
-                return CC_ERROR_INVALID_PARAMETER;
-            }
+            MD_LOG_A( adapterId, LOG_ERROR, "error: can't find required information for context filtering" );
+            MD_LOG_EXIT_A( adapterId );
+            return CC_ERROR_INVALID_PARAMETER;
         }
 
-        sc->MetricsAndInformationCount = sc->MetricSet->GetParams()->MetricsCount + sc->MetricSet->GetParams()->InformationCount;
-        sc->RawReportSize              = sc->MetricSet->GetParams()->RawReportSize;
+        auto& metricSetParams = *sc->MetricSet->GetParams();
+
+        sc->MetricsAndInformationCount = metricSetParams.MetricsCount + metricSetParams.InformationCount;
+        sc->RawReportSize              = metricSetParams.RawReportSize;
 
         sc->OutReportCount      = 0;
         sc->OutPtr              = sc->Out;
@@ -166,8 +165,10 @@ namespace MetricsDiscoveryInternal
 
         qc->Calculator->Reset();
 
-        qc->MetricsAndInformationCount = qc->MetricSet->GetParams()->MetricsCount + qc->MetricSet->GetParams()->InformationCount;
-        qc->RawReportSize              = qc->MetricSet->GetParams()->QueryReportSize;
+        auto& metricSetParams = *qc->MetricSet->GetParams();
+
+        qc->MetricsAndInformationCount = metricSetParams.MetricsCount + metricSetParams.InformationCount;
+        qc->RawReportSize              = metricSetParams.QueryReportSize;
 
         qc->OutReportCount  = 0;
         qc->OutPtr          = qc->Out;
@@ -313,17 +314,19 @@ namespace MetricsDiscoveryInternal
             return false;
         }
 
+        const uint32_t metricsCount = qc->MetricSet->GetParams()->MetricsCount;
+
         // METRICS
         qc->Calculator->ReadMetricsFromQueryReport( qc->RawDataPtr, qc->DeltaValues, *qc->MetricSet );
         // NORMALIZATION
         qc->Calculator->NormalizeMetrics( qc->DeltaValues, qc->OutPtr, *qc->MetricSet );
         // INFORMATION
-        qc->Calculator->ReadInformation( qc->RawDataPtr, qc->OutPtr + qc->MetricSet->GetParams()->MetricsCount, *qc->MetricSet, -1 );
+        qc->Calculator->ReadInformation( qc->RawDataPtr, qc->OutPtr + metricsCount, *qc->MetricSet, -1 );
         // MAX VALUES
         if( qc->OutMaxValues )
         {
             qc->Calculator->CalculateMaxValues( qc->DeltaValues, qc->OutPtr, qc->OutMaxValuesPtr, *qc->MetricSet );
-            qc->OutMaxValuesPtr += qc->MetricSet->GetParams()->MetricsCount;
+            qc->OutMaxValuesPtr += metricsCount;
         }
 
         qc->RawDataPtr += qc->RawReportSize;

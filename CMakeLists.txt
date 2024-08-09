@@ -75,13 +75,6 @@ endif ()
 # SOURCES
 #################################################################################
 
-# mdapi internal files
-if (("${BUILD_TYPE}" STREQUAL "release-internal") OR
-    ("${BUILD_TYPE}" STREQUAL "releaseinternal") OR
-    ("${BUILD_TYPE}" STREQUAL "debug"))
-    set(MD_INTERNAL_BUILD TRUE)
-endif ()
-
 # generic
 set (_SOURCES ${_SOURCES}
     # mdapi metrics definitions
@@ -115,6 +108,8 @@ set (_SOURCES ${_SOURCES}
     ${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen/md_metrics_PVC_GT2.cpp
     ${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen/md_metrics_MTL_GT2.cpp
     ${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen/md_metrics_MTL_GT3.cpp
+    ${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen/md_metrics_BMG.cpp
+    ${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen/md_metrics_LNL.cpp
     ${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen/md_metrics_ARL_GT1.cpp
     ${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen/md_metrics_ARL_GT2.cpp
 
@@ -148,11 +143,15 @@ set (_SOURCES ${_SOURCES}
     ${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen/md_metric_sets_PVC_GT2.cpp
     ${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen/md_metric_sets_MTL_GT2.cpp
     ${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen/md_metric_sets_MTL_GT3.cpp
+    ${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen/md_metric_sets_BMG.cpp
+    ${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen/md_metric_sets_LNL.cpp
     ${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen/md_metric_sets_ARL_GT1.cpp
     ${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen/md_metric_sets_ARL_GT2.cpp
     ${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen/md_metric_sets_common.cpp
 
     ${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen/md_metrics.cpp
+    # events
+    ${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen/md_external_events.cpp
     # mdapi core
     ${BS_DIR_INSTRUMENTATION}/metrics_discovery/common/md_main.cpp
     ${BS_DIR_INSTRUMENTATION}/metrics_discovery/common/md_utils.cpp
@@ -163,8 +162,12 @@ set (_SOURCES ${_SOURCES}
     ${BS_DIR_INSTRUMENTATION}/metrics_discovery/common/internal/concurrent_groups/md_oa_concurrent_group.cpp
     ${BS_DIR_INSTRUMENTATION}/metrics_discovery/common/internal/concurrent_groups/md_oam_concurrent_group.cpp
     ${BS_DIR_INSTRUMENTATION}/metrics_discovery/common/internal/md_equation.cpp
+    ${BS_DIR_INSTRUMENTATION}/metrics_discovery/common/internal/md_events.cpp
     ${BS_DIR_INSTRUMENTATION}/metrics_discovery/common/internal/md_information.cpp
     ${BS_DIR_INSTRUMENTATION}/metrics_discovery/common/internal/md_metric.cpp
+    ${BS_DIR_INSTRUMENTATION}/metrics_discovery/common/internal/md_metric_enumerator.cpp
+    ${BS_DIR_INSTRUMENTATION}/metrics_discovery/common/internal/md_metric_prototype.cpp
+    ${BS_DIR_INSTRUMENTATION}/metrics_discovery/common/internal/md_metric_prototype_manager.cpp
     ${BS_DIR_INSTRUMENTATION}/metrics_discovery/common/internal/md_metric_set.cpp
     ${BS_DIR_INSTRUMENTATION}/metrics_discovery/common/internal/md_metrics_device.cpp
     ${BS_DIR_INSTRUMENTATION}/metrics_discovery/common/internal/md_override.cpp
@@ -196,6 +199,7 @@ if ("${PLATFORM}" STREQUAL Windows) # windows
         ${BS_DIR_INSTRUMENTATION}/metrics_discovery/linux/md_driver_ifc_linux_perf.cpp
         ${BS_DIR_INSTRUMENTATION}/metrics_discovery/linux/md_sub_devices_linux.cpp
         ${BS_DIR_INSTRUMENTATION}/metrics_discovery/linux/md_driver_ifc_linux_common.cpp
+        ${BS_DIR_INSTRUMENTATION}/metrics_discovery/linux/md_driver_ifc_linux_xe.cpp
         # instr utils
         ${BS_DIR_INSTRUMENTATION}/utils/linux/iu_std.cpp
         ${BS_DIR_INSTRUMENTATION}/utils/linux/iu_os.cpp
@@ -210,6 +214,7 @@ elseif ("${PLATFORM}" STREQUAL linux) # linux
     ${BS_DIR_INSTRUMENTATION}/metrics_discovery/linux/md_driver_ifc_linux_perf.cpp
     ${BS_DIR_INSTRUMENTATION}/metrics_discovery/linux/md_sub_devices_linux.cpp
     ${BS_DIR_INSTRUMENTATION}/metrics_discovery/linux/md_driver_ifc_linux_common.cpp
+    ${BS_DIR_INSTRUMENTATION}/metrics_discovery/linux/md_driver_ifc_linux_xe.cpp
     ${BS_DIR_INSTRUMENTATION}/utils/linux/iu_std.cpp
     ${BS_DIR_INSTRUMENTATION}/utils/linux/iu_os.cpp
     )
@@ -362,6 +367,7 @@ set (COMMON_TARGET_INCLUDE_DIRECTORIES
     ${BS_DIR_INSTRUMENTATION}/metrics_discovery/common/inc
     ${BS_DIR_INSTRUMENTATION}/metrics_discovery/common/inc/internal
     ${BS_DIR_INSTRUMENTATION}/metrics_discovery/common/inc/internal/concurrent_groups
+    ${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen
     )
 
 if ("${PLATFORM}" STREQUAL Windows) # windows

@@ -37,7 +37,7 @@ namespace MetricsDiscoveryInternal
     class CMetric : public IMetricLatest
     {
     public:
-        // API 1.0:
+        // API 1.13:
         virtual TMetricParamsLatest* GetParams( void );
 
     public:
@@ -75,15 +75,13 @@ namespace MetricsDiscoveryInternal
         TCompletionCode SetAvailabilityEquation( const char* equationString );
         TCompletionCode SetMaxValueEquation( const char* equationString );
         void            SetIdInSetParam( uint32_t id );
+        void            SetQueryModeMask( const uint32_t queryModeMask );
 
         uint32_t    GetId() const;
         const char* GetSignalName();
         bool        IsAvailabilityEquationTrue();
 
         TCompletionCode WriteCMetricToFile( FILE* metricFile );
-
-    private:
-        uint64_t GetMetricValue( const char* valueString );
 
     private:
         // Variables:

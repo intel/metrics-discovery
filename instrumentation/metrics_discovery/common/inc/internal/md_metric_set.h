@@ -39,6 +39,8 @@ namespace MetricsDiscoveryInternal
     union SCalculationContext;
     using TCalculationContext = SCalculationContext;
 
+    class CPrototypeManager;
+
     ///////////////////////////////////////////////////////////////////////////////
     // Metric group id levels:                                                   //
     ///////////////////////////////////////////////////////////////////////////////
@@ -148,6 +150,33 @@ namespace MetricsDiscoveryInternal
     class CMetricSet : public IInternalMetricSet
     {
     public:
+        // API 1.13:
+        virtual TCompletionCode Open();
+        virtual TCompletionCode AddMetric( IMetricPrototype_1_13* metricPrototype );
+        virtual TCompletionCode RemoveMetric( IMetricPrototype_1_13* metricPrototype );
+        virtual TCompletionCode Finalize();
+        virtual IMetricLatest*  AddCustomMetric(
+             const char*       symbolName,
+             const char*       shortName,
+             const char*       groupName,
+             const char*       longName,
+             const char*       dxToOglAlias,
+             uint32_t          usageFlagsMask,
+             uint32_t          apiMask,
+             TMetricResultType resultType,
+             const char*       resultUnits,
+             TMetricType       metricType,
+             int64_t           loWatermark,
+             int64_t           hiWatermark,
+             THwUnitType       hwType,
+             const char*       ioReadEquation,
+             const char*       deltaFunction,
+             const char*       queryReadEquation,
+             const char*       normalizationEquation,
+             const char*       maxValueEquation,
+             const char*       signalName,
+             uint32_t          queryModeMask );
+
         // API 1.11:
         virtual TMetricSetParams_1_11* GetParams( void );
 
@@ -249,6 +278,12 @@ namespace MetricsDiscoveryInternal
         TCompletionCode SetAvailabilityEquation( const char* equationString );
         bool            IsAvailabilityEquationTrue();
 
+        // Flexible metric set methods:
+        bool IsFlexible() const;
+        bool IsOpened();
+        void SetToFlexible();
+        void DecreasePrototypesReferenceCounters();
+
         // Inline function.
         inline CMetric* GetMetricExplicit( const uint32_t index )
         {
@@ -283,6 +318,9 @@ namespace MetricsDiscoveryInternal
         uint32_t MetricGroupNameToId( const char* groupName );
         uint32_t GetPartialGroupId( char* groupName, uint32_t tokenNo );
         bool     GetStartRegSetHiPriority( uint32_t id, CRegisterSet** registerSet );
+
+        // Flexible metric set methods:
+        TCompletionCode AddDefaultMetrics();
 
     private:
         // Variables:
@@ -319,6 +357,12 @@ namespace MetricsDiscoveryInternal
         bool                m_isReadRegsCfgSet; // if true then read regs config will be cleared on Deactivate; determined during Activate
         TPmRegsConfigInfo   m_pmRegsConfigInfo;
         CMetricsCalculator* m_metricsCalculator;
+
+        // Flexible metric set members:
+        bool               m_isOam;
+        bool               m_isFlexible;
+        bool               m_isOpened;
+        CPrototypeManager* m_prototypeManager;
 
     private:
         // Static variables:

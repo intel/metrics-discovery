@@ -58,12 +58,9 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     IMetricSetLatest* CConcurrentGroup::GetMetricSet( uint32_t index )
     {
-        if( index < m_setsVector.size() )
-        {
-            return m_setsVector[index];
-        }
-
-        return nullptr;
+        return ( index < m_setsVector.size() )
+            ? m_setsVector[index]
+            : nullptr;
     }
 
     //////////////////////////////////////////////////////////////////////////////
@@ -96,111 +93,137 @@ namespace MetricsDiscoveryInternal
         IMetricSetLatest* set        = nullptr;
         TReportType       reportType = DEFAULT_METRIC_SET_REPORT_TYPE;
 
-        if( params->Type == METRIC_SET_CUSTOM_PARAMS_1_0 )
+        switch( m_device.GetPlatformIndex() )
         {
-            auto platformMask = GetByteArrayFromPlatformType( MD_CUSTOM_METRIC_SET_PARAMS( params, 1_0 ).PlatformMask, MD_PLATFORM_MASK_BYTE_ARRAY_SIZE, adapterId );
-
-            set = AddCustomMetricSet(
-                nullptr, // don't inherit any metrics and information
-                nullptr,
-                MD_CUSTOM_METRIC_SET_PARAMS( params, 1_0 ).SymbolName,
-                MD_CUSTOM_METRIC_SET_PARAMS( params, 1_0 ).ShortName,
-                MD_CUSTOM_METRIC_SET_PARAMS( params, 1_0 ).ApiMask,
-                MD_CUSTOM_METRIC_SET_PARAMS( params, 1_0 ).CategoryMask,
-                platformMask,
-                MD_CUSTOM_METRIC_SET_PARAMS( params, 1_0 ).GtMask,
-                MD_CUSTOM_METRIC_SET_PARAMS( params, 1_0 ).RawReportSize,
-                MD_CUSTOM_METRIC_SET_PARAMS( params, 1_0 ).QueryReportSize,
-                MD_CUSTOM_METRIC_SET_PARAMS( params, 1_0 ).ComplementarySetsList,
-                MD_CUSTOM_METRIC_SET_PARAMS( params, 1_0 ).ApiSpecificId,
-                MD_CUSTOM_METRIC_SET_PARAMS( params, 1_0 ).StartConfigRegSets,
-                MD_CUSTOM_METRIC_SET_PARAMS( params, 1_0 ).StartConfigRegSetsCount,
-                nullptr,
-                reportType,
-                copyInformationOnly );
-
-            DeleteByteArray( platformMask, adapterId );
+            case GENERATION_BMG:
+            case GENERATION_LNL:
+                reportType = DEFAULT_METRIC_SET_REPORT_TYPE_XE2;
+                break;
+            default:
+                break;
         }
-        else if( params->Type == METRIC_SET_CUSTOM_PARAMS_1_1 )
-        {
-            auto platformMask = GetByteArrayFromPlatformType( MD_CUSTOM_METRIC_SET_PARAMS( params, 1_1 ).PlatformMask, MD_PLATFORM_MASK_BYTE_ARRAY_SIZE, adapterId );
 
-            set = AddCustomMetricSet(
-                nullptr, // don't inherit any metrics and information
-                nullptr,
-                MD_CUSTOM_METRIC_SET_PARAMS( params, 1_1 ).SymbolName,
-                MD_CUSTOM_METRIC_SET_PARAMS( params, 1_1 ).ShortName,
-                MD_CUSTOM_METRIC_SET_PARAMS( params, 1_1 ).ApiMask,
-                MD_CUSTOM_METRIC_SET_PARAMS( params, 1_1 ).CategoryMask,
-                platformMask,
-                MD_CUSTOM_METRIC_SET_PARAMS( params, 1_1 ).GtMask,
-                MD_CUSTOM_METRIC_SET_PARAMS( params, 1_1 ).RawReportSize,
-                MD_CUSTOM_METRIC_SET_PARAMS( params, 1_1 ).QueryReportSize,
-                MD_CUSTOM_METRIC_SET_PARAMS( params, 1_1 ).ComplementarySetsList,
-                MD_CUSTOM_METRIC_SET_PARAMS( params, 1_1 ).ApiSpecificId,
-                MD_CUSTOM_METRIC_SET_PARAMS( params, 1_1 ).StartConfigRegSets,
-                MD_CUSTOM_METRIC_SET_PARAMS( params, 1_1 ).StartConfigRegSetsCount,
-                MD_CUSTOM_METRIC_SET_PARAMS( params, 1_1 ).AvailabilityEquation,
-                reportType,
-                copyInformationOnly );
-
-            DeleteByteArray( platformMask, adapterId );
-        }
-        else if( params->Type == METRIC_SET_CUSTOM_PARAMS_1_2 )
+        switch( params->Type )
         {
-            if( MD_CUSTOM_METRIC_SET_PARAMS( params, 1_2 ).ReportType < OA_REPORT_TYPE_LAST )
+            case METRIC_SET_CUSTOM_PARAMS_1_0:
             {
-                reportType = static_cast<TReportType>( MD_CUSTOM_METRIC_SET_PARAMS( params, 1_2 ).ReportType );
+                auto platformMask = GetByteArrayFromPlatformType( MD_CUSTOM_METRIC_SET_PARAMS( params, 1_0 ).PlatformMask, MD_PLATFORM_MASK_BYTE_ARRAY_SIZE, adapterId );
+
+                set = AddCustomMetricSet(
+                    nullptr, // don't inherit any metrics and information
+                    nullptr,
+                    MD_CUSTOM_METRIC_SET_PARAMS( params, 1_0 ).SymbolName,
+                    MD_CUSTOM_METRIC_SET_PARAMS( params, 1_0 ).ShortName,
+                    MD_CUSTOM_METRIC_SET_PARAMS( params, 1_0 ).ApiMask,
+                    MD_CUSTOM_METRIC_SET_PARAMS( params, 1_0 ).CategoryMask,
+                    platformMask,
+                    MD_CUSTOM_METRIC_SET_PARAMS( params, 1_0 ).GtMask,
+                    MD_CUSTOM_METRIC_SET_PARAMS( params, 1_0 ).RawReportSize,
+                    MD_CUSTOM_METRIC_SET_PARAMS( params, 1_0 ).QueryReportSize,
+                    MD_CUSTOM_METRIC_SET_PARAMS( params, 1_0 ).ComplementarySetsList,
+                    MD_CUSTOM_METRIC_SET_PARAMS( params, 1_0 ).ApiSpecificId,
+                    MD_CUSTOM_METRIC_SET_PARAMS( params, 1_0 ).StartConfigRegSets,
+                    MD_CUSTOM_METRIC_SET_PARAMS( params, 1_0 ).StartConfigRegSetsCount,
+                    nullptr,
+                    reportType,
+                    copyInformationOnly );
+
+                DeleteByteArray( platformMask, adapterId );
+                break;
             }
 
-            auto platformMask = GetByteArrayFromPlatformType( MD_CUSTOM_METRIC_SET_PARAMS( params, 1_2 ).PlatformMask, MD_PLATFORM_MASK_BYTE_ARRAY_SIZE, adapterId );
-
-            set = AddCustomMetricSet(
-                nullptr, // don't inherit any metrics and information
-                nullptr,
-                MD_CUSTOM_METRIC_SET_PARAMS( params, 1_2 ).SymbolName,
-                MD_CUSTOM_METRIC_SET_PARAMS( params, 1_2 ).ShortName,
-                MD_CUSTOM_METRIC_SET_PARAMS( params, 1_2 ).ApiMask,
-                MD_CUSTOM_METRIC_SET_PARAMS( params, 1_2 ).CategoryMask,
-                platformMask,
-                MD_CUSTOM_METRIC_SET_PARAMS( params, 1_2 ).GtMask,
-                MD_CUSTOM_METRIC_SET_PARAMS( params, 1_2 ).RawReportSize,
-                MD_CUSTOM_METRIC_SET_PARAMS( params, 1_2 ).QueryReportSize,
-                MD_CUSTOM_METRIC_SET_PARAMS( params, 1_2 ).ComplementarySetsList,
-                MD_CUSTOM_METRIC_SET_PARAMS( params, 1_2 ).ApiSpecificId,
-                MD_CUSTOM_METRIC_SET_PARAMS( params, 1_2 ).StartConfigRegSets,
-                MD_CUSTOM_METRIC_SET_PARAMS( params, 1_2 ).StartConfigRegSetsCount,
-                MD_CUSTOM_METRIC_SET_PARAMS( params, 1_2 ).AvailabilityEquation,
-                reportType,
-                copyInformationOnly );
-
-            DeleteByteArray( platformMask, adapterId );
-        }
-        else if( params->Type == METRIC_SET_CUSTOM_PARAMS_1_3 )
-        {
-            if( MD_CUSTOM_METRIC_SET_PARAMS( params, 1_3 ).ReportType < OA_REPORT_TYPE_LAST )
+            case METRIC_SET_CUSTOM_PARAMS_1_1:
             {
-                reportType = static_cast<TReportType>( MD_CUSTOM_METRIC_SET_PARAMS( params, 1_3 ).ReportType );
+                auto platformMask = GetByteArrayFromPlatformType( MD_CUSTOM_METRIC_SET_PARAMS( params, 1_1 ).PlatformMask, MD_PLATFORM_MASK_BYTE_ARRAY_SIZE, adapterId );
+
+                set = AddCustomMetricSet(
+                    nullptr, // don't inherit any metrics and information
+                    nullptr,
+                    MD_CUSTOM_METRIC_SET_PARAMS( params, 1_1 ).SymbolName,
+                    MD_CUSTOM_METRIC_SET_PARAMS( params, 1_1 ).ShortName,
+                    MD_CUSTOM_METRIC_SET_PARAMS( params, 1_1 ).ApiMask,
+                    MD_CUSTOM_METRIC_SET_PARAMS( params, 1_1 ).CategoryMask,
+                    platformMask,
+                    MD_CUSTOM_METRIC_SET_PARAMS( params, 1_1 ).GtMask,
+                    MD_CUSTOM_METRIC_SET_PARAMS( params, 1_1 ).RawReportSize,
+                    MD_CUSTOM_METRIC_SET_PARAMS( params, 1_1 ).QueryReportSize,
+                    MD_CUSTOM_METRIC_SET_PARAMS( params, 1_1 ).ComplementarySetsList,
+                    MD_CUSTOM_METRIC_SET_PARAMS( params, 1_1 ).ApiSpecificId,
+                    MD_CUSTOM_METRIC_SET_PARAMS( params, 1_1 ).StartConfigRegSets,
+                    MD_CUSTOM_METRIC_SET_PARAMS( params, 1_1 ).StartConfigRegSetsCount,
+                    MD_CUSTOM_METRIC_SET_PARAMS( params, 1_1 ).AvailabilityEquation,
+                    reportType,
+                    copyInformationOnly );
+
+                DeleteByteArray( platformMask, adapterId );
+                break;
             }
 
-            set = AddCustomMetricSet(
-                nullptr, // don't inherit any metrics and information
-                nullptr,
-                MD_CUSTOM_METRIC_SET_PARAMS( params, 1_3 ).SymbolName,
-                MD_CUSTOM_METRIC_SET_PARAMS( params, 1_3 ).ShortName,
-                MD_CUSTOM_METRIC_SET_PARAMS( params, 1_3 ).ApiMask,
-                MD_CUSTOM_METRIC_SET_PARAMS( params, 1_3 ).CategoryMask,
-                MD_CUSTOM_METRIC_SET_PARAMS( params, 1_3 ).PlatformMask,
-                MD_CUSTOM_METRIC_SET_PARAMS( params, 1_3 ).GtMask,
-                MD_CUSTOM_METRIC_SET_PARAMS( params, 1_3 ).RawReportSize,
-                MD_CUSTOM_METRIC_SET_PARAMS( params, 1_3 ).QueryReportSize,
-                MD_CUSTOM_METRIC_SET_PARAMS( params, 1_3 ).ComplementarySetsList,
-                MD_CUSTOM_METRIC_SET_PARAMS( params, 1_3 ).ApiSpecificId,
-                MD_CUSTOM_METRIC_SET_PARAMS( params, 1_3 ).StartConfigRegSets,
-                MD_CUSTOM_METRIC_SET_PARAMS( params, 1_3 ).StartConfigRegSetsCount,
-                MD_CUSTOM_METRIC_SET_PARAMS( params, 1_3 ).AvailabilityEquation,
-                reportType,
-                copyInformationOnly );
+            case METRIC_SET_CUSTOM_PARAMS_1_2:
+            {
+                if( MD_CUSTOM_METRIC_SET_PARAMS( params, 1_2 ).ReportType < OA_REPORT_TYPE_LAST )
+                {
+                    reportType = static_cast<TReportType>( MD_CUSTOM_METRIC_SET_PARAMS( params, 1_2 ).ReportType );
+                }
+
+                auto platformMask = GetByteArrayFromPlatformType( MD_CUSTOM_METRIC_SET_PARAMS( params, 1_2 ).PlatformMask, MD_PLATFORM_MASK_BYTE_ARRAY_SIZE, adapterId );
+
+                set = AddCustomMetricSet(
+                    nullptr, // don't inherit any metrics and information
+                    nullptr,
+                    MD_CUSTOM_METRIC_SET_PARAMS( params, 1_2 ).SymbolName,
+                    MD_CUSTOM_METRIC_SET_PARAMS( params, 1_2 ).ShortName,
+                    MD_CUSTOM_METRIC_SET_PARAMS( params, 1_2 ).ApiMask,
+                    MD_CUSTOM_METRIC_SET_PARAMS( params, 1_2 ).CategoryMask,
+                    platformMask,
+                    MD_CUSTOM_METRIC_SET_PARAMS( params, 1_2 ).GtMask,
+                    MD_CUSTOM_METRIC_SET_PARAMS( params, 1_2 ).RawReportSize,
+                    MD_CUSTOM_METRIC_SET_PARAMS( params, 1_2 ).QueryReportSize,
+                    MD_CUSTOM_METRIC_SET_PARAMS( params, 1_2 ).ComplementarySetsList,
+                    MD_CUSTOM_METRIC_SET_PARAMS( params, 1_2 ).ApiSpecificId,
+                    MD_CUSTOM_METRIC_SET_PARAMS( params, 1_2 ).StartConfigRegSets,
+                    MD_CUSTOM_METRIC_SET_PARAMS( params, 1_2 ).StartConfigRegSetsCount,
+                    MD_CUSTOM_METRIC_SET_PARAMS( params, 1_2 ).AvailabilityEquation,
+                    reportType,
+                    copyInformationOnly );
+
+                DeleteByteArray( platformMask, adapterId );
+                break;
+            }
+
+            case METRIC_SET_CUSTOM_PARAMS_1_3:
+            {
+                if( MD_CUSTOM_METRIC_SET_PARAMS( params, 1_3 ).ReportType < OA_REPORT_TYPE_LAST )
+                {
+                    reportType = static_cast<TReportType>( MD_CUSTOM_METRIC_SET_PARAMS( params, 1_3 ).ReportType );
+                }
+
+                set = AddCustomMetricSet(
+                    nullptr, // don't inherit any metrics and information
+                    nullptr,
+                    MD_CUSTOM_METRIC_SET_PARAMS( params, 1_3 ).SymbolName,
+                    MD_CUSTOM_METRIC_SET_PARAMS( params, 1_3 ).ShortName,
+                    MD_CUSTOM_METRIC_SET_PARAMS( params, 1_3 ).ApiMask,
+                    MD_CUSTOM_METRIC_SET_PARAMS( params, 1_3 ).CategoryMask,
+                    MD_CUSTOM_METRIC_SET_PARAMS( params, 1_3 ).PlatformMask,
+                    MD_CUSTOM_METRIC_SET_PARAMS( params, 1_3 ).GtMask,
+                    MD_CUSTOM_METRIC_SET_PARAMS( params, 1_3 ).RawReportSize,
+                    MD_CUSTOM_METRIC_SET_PARAMS( params, 1_3 ).QueryReportSize,
+                    MD_CUSTOM_METRIC_SET_PARAMS( params, 1_3 ).ComplementarySetsList,
+                    MD_CUSTOM_METRIC_SET_PARAMS( params, 1_3 ).ApiSpecificId,
+                    MD_CUSTOM_METRIC_SET_PARAMS( params, 1_3 ).StartConfigRegSets,
+                    MD_CUSTOM_METRIC_SET_PARAMS( params, 1_3 ).StartConfigRegSetsCount,
+                    MD_CUSTOM_METRIC_SET_PARAMS( params, 1_3 ).AvailabilityEquation,
+                    reportType,
+                    copyInformationOnly );
+
+                break;
+            }
+
+            default:
+            {
+                MD_LOG_A( adapterId, LOG_ERROR, "Unsupported TAddCustomMetricSetParams Type: %u", params->Type );
+            }
         }
 
         return set;
@@ -468,11 +491,9 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     IInformation_1_0* CConcurrentGroup::GetInformation( uint32_t index )
     {
-        if( index < m_informationVector.size() )
-        {
-            return static_cast<IInformation_1_0*>( m_informationVector[index] );
-        }
-        return nullptr;
+        return ( index < m_informationVector.size() )
+            ? static_cast<IInformation_1_0*>( m_informationVector[index] )
+            : nullptr;
     }
 
     //////////////////////////////////////////////////////////////////////////////

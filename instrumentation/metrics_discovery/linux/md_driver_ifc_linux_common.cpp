@@ -996,6 +996,29 @@ namespace MetricsDiscoveryInternal
             {
                 out.ValueType   = GTDI_DEVICE_PARAM_VALUE_TYPE_UINT32;
                 out.ValueUint32 = 0;
+
+                drmDevicePtr drmDevice = nullptr;
+                if( drmGetDevice( m_DrmDeviceHandle, &drmDevice ) != 0 || drmDevice == nullptr )
+                {
+                    MD_LOG_A( m_adapterId, LOG_ERROR, "PCI device_id not recognized. drmGetDevice failed." );
+                    break;
+                }
+                switch( drmDevice->deviceinfo.pci->device_id )
+                {
+                    // BMG X2
+                    case 0xE202:
+                    case 0xE20B:
+                    case 0xE20C:
+                    case 0xE20D:
+                    case 0xE212:
+                    {
+                        out.ValueUint32 = 2;
+                        break;
+                    }
+                    default:
+                        break;
+                }
+
                 break;
             }
 
@@ -1564,7 +1587,12 @@ namespace MetricsDiscoveryInternal
 
         // 5. RETURN PARAMETERS
         nsTimerPeriod = GetNsTimerPeriod( timerPeriodExponent );
-        bufferSize    = MD_OA_BUFFER_SIZE_MAX;
+
+        ret = GetOaBufferSize( metricsDevice.GetStreamId(), bufferSize );
+        if( ret != CC_OK )
+        {
+            goto remove_config;
+        }
 
         metricsDevice.SetStreamConfigId( oaMetricSetId ); // Remember oa config id so it could be removed from the kernel on CloseIoStream
 
@@ -1941,6 +1969,27 @@ namespace MetricsDiscoveryInternal
     {
         // Only Frequency Override is available with Perf
         return overrideType == OVERRIDE_TYPE_FREQUENCY;
+    }
+
+    //////////////////////////////////////////////////////////////////////////////
+    //
+    // Class:
+    //     CDriverInterfaceLinuxCommon
+    //
+    // Method:
+    //     GetQueryModeOverride
+    //
+    // Description:
+    //     Gets enabled query mode.
+    //
+    // Output:
+    //     TQueryMode - enabled query mode
+    //
+    //////////////////////////////////////////////////////////////////////////////
+    TQueryMode CDriverInterfaceLinuxCommon::GetQueryModeOverride()
+    {
+        // Only OAG query is supported on Linux.
+        return QUERY_MODE_GLOBAL;
     }
 
     //////////////////////////////////////////////////////////////////////////////
@@ -2613,6 +2662,7 @@ namespace MetricsDiscoveryInternal
             case GENERATION_ACM:
             case GENERATION_XEHP_SDV:
             case GENERATION_PVC:
+            case GENERATION_BMG:
                 return ADAPTER_TYPE_DISCRETE;
             default:
                 return ADAPTER_TYPE_INTEGRATED;
@@ -2991,6 +3041,10 @@ namespace MetricsDiscoveryInternal
             case GENERATION_MTL:
             case GENERATION_ARL:
                 return MD_MAX_DUALSUBSLICE_PER_SLICE * MD_MAX_SUBSLICE_PER_DSS;
+
+            case GENERATION_LNL:
+            case GENERATION_BMG:
+                return MD_SUBSLICE_PER_SLICE_BMG;
 
             default:
                 MD_LOG_A( m_adapterId, LOG_WARNING, "WARNING: Unsupported platform, default MaxSubslicePerSlice used" );

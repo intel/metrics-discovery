@@ -67,6 +67,13 @@ namespace MetricsDiscoveryInternal
             , m_contextIdPrev( 0 )
             , m_savedReportPresent( false )
         {
+            TTypedValue_1_0* euCoresTotalCount = GetGlobalSymbolValue( "VectorEngineTotalCount" );
+            // Get old global symbol if new one is not available
+            if( euCoresTotalCount == nullptr )
+            {
+                euCoresTotalCount = GetGlobalSymbolValue( "EuCoresTotalCount" );
+            }
+            m_euCoresCount = euCoresTotalCount ? euCoresTotalCount->ValueUInt32 : 0;
         }
 
         //////////////////////////////////////////////////////////////////////////////
@@ -132,13 +139,6 @@ namespace MetricsDiscoveryInternal
         //////////////////////////////////////////////////////////////////////////////
         inline void Reset( uint32_t rawReportSize = 0 )
         {
-            TTypedValue_1_0* euCoresTotalCount = GetGlobalSymbolValue( "EuCoresTotalCount" );
-            // Workaround for renamed EuCoresTotalCount
-            if( euCoresTotalCount == nullptr )
-            {
-                euCoresTotalCount = GetGlobalSymbolValue( "VectorEngineTotalCount" );
-            }
-            m_euCoresCount  = euCoresTotalCount ? euCoresTotalCount->ValueUInt32 : 0;
             m_gpuCoreClocks = 0;
 
             if( m_savedReportSize != rawReportSize && rawReportSize > 0 )
@@ -196,15 +196,14 @@ namespace MetricsDiscoveryInternal
                 auto metric = metricSet.GetMetricExplicit( i );
                 MD_CHECK_PTR_RET_A( adapterId, metric, CC_ERROR_GENERAL );
 
-                auto metricParams = metric->GetParams();
-                MD_CHECK_PTR_RET_A( adapterId, metricParams, CC_ERROR_GENERAL );
+                auto& metricParams = *metric->GetParams();
 
-                if( metricParams->QueryReadEquation )
+                if( metricParams.QueryReadEquation )
                 {
-                    outValues[i] = CalculateReadEquation( static_cast<CEquation&>( *( metricParams->QueryReadEquation ) ), rawReport );
+                    outValues[i] = CalculateReadEquation( static_cast<CEquation&>( *( metricParams.QueryReadEquation ) ), rawReport );
                 }
 
-                if( std::string_view( metricParams->SymbolName ) == "GpuCoreClocks" )
+                if( m_gpuCoreClocks == 0 && std::string_view( metricParams.SymbolName ) == "GpuCoreClocks" )
                 {
                     m_gpuCoreClocks = outValues[i].ValueUInt64;
                 }
@@ -253,15 +252,14 @@ namespace MetricsDiscoveryInternal
                 auto metric = metricSet.GetMetricExplicit( i );
                 MD_CHECK_PTR_RET_A( adapterId, metric, CC_ERROR_GENERAL );
 
-                auto metricParams = metric->GetParams();
-                MD_CHECK_PTR_RET_A( adapterId, metricParams, CC_ERROR_GENERAL );
+                auto& metricParams = *metric->GetParams();
 
-                if( metricParams->IoReadEquation )
+                if( metricParams.IoReadEquation )
                 {
-                    outValues[i] = CalculateReadEquationAndDelta( static_cast<CEquation&>( *( metricParams->IoReadEquation ) ), metricParams->DeltaFunction, rawRaportLast, rawRaportPrev );
+                    outValues[i] = CalculateReadEquationAndDelta( static_cast<CEquation&>( *( metricParams.IoReadEquation ) ), metricParams.DeltaFunction, rawRaportLast, rawRaportPrev );
                 }
 
-                if( std::string_view( metricParams->SymbolName ) == "GpuCoreClocks" )
+                if( m_gpuCoreClocks == 0 && std::string_view( metricParams.SymbolName ) == "GpuCoreClocks" )
                 {
                     m_gpuCoreClocks = outValues[i].ValueUInt64;
                 }
@@ -305,14 +303,13 @@ namespace MetricsDiscoveryInternal
                 auto metric = metricSet.GetMetricExplicit( i );
                 MD_CHECK_PTR_RET_A( adapterId, metric, MD_EMPTY );
 
-                auto metricParams = metric->GetParams();
-                MD_CHECK_PTR_RET_A( adapterId, metricParams, MD_EMPTY );
+                auto& metricParams = *metric->GetParams();
 
-                outValues[i] = metricParams->NormEquation
-                    ? CalculateLocalNormalizationEquation( static_cast<CEquation&>( *( metricParams->NormEquation ) ), deltaValues, outValues, i )
+                outValues[i] = metricParams.NormEquation
+                    ? CalculateLocalNormalizationEquation( static_cast<CEquation&>( *( metricParams.NormEquation ) ), deltaValues, outValues, i )
                     : deltaValues[i];
 
-                switch( metricParams->ResultType )
+                switch( metricParams.ResultType )
                 {
                     case RESULT_UINT32:
                         if( outValues[i].ValueType != VALUE_TYPE_UINT32 )
@@ -382,11 +379,13 @@ namespace MetricsDiscoveryInternal
                 return;
             }
 
-            const uint32_t informationCount = metricSet.GetParams()->InformationCount;
+            auto&          metricSetParams  = *metricSet.GetParams();
+            const uint32_t apiMask          = metricSetParams.ApiMask;
+            const uint32_t informationCount = metricSetParams.InformationCount;
+
             for( uint32_t i = 0; i < informationCount; ++i )
             {
-                auto           information = metricSet.GetInformation( i );
-                const uint32_t apiMask     = metricSet.GetParams()->ApiMask;
+                auto information = metricSet.GetInformation( i );
 
                 ReadSingleInformation( rawData, information, apiMask, &outValues[i] );
             }
@@ -502,10 +501,10 @@ namespace MetricsDiscoveryInternal
 
             constexpr uint32_t streamMask = API_TYPE_IOSTREAM;
 
-            auto informationParams = information->GetParams();
-            auto equation          = ( apiMask & streamMask )
-                         ? informationParams->IoReadEquation
-                         : informationParams->QueryReadEquation;
+            auto& informationParams = *information->GetParams();
+            auto  equation          = ( apiMask & streamMask )
+                          ? informationParams.IoReadEquation
+                          : informationParams.QueryReadEquation;
 
             if( equation != nullptr )
             {
@@ -516,14 +515,9 @@ namespace MetricsDiscoveryInternal
                 outValue->ValueUInt64 = 0ULL;
             }
 
-            if( informationParams->InfoType == INFORMATION_TYPE_FLAG )
-            {
-                outValue->ValueType = VALUE_TYPE_BOOL;
-            }
-            else
-            {
-                outValue->ValueType = VALUE_TYPE_UINT64;
-            }
+            outValue->ValueType = ( informationParams.InfoType == INFORMATION_TYPE_FLAG )
+                ? VALUE_TYPE_BOOL
+                : VALUE_TYPE_UINT64;
         }
 
         //////////////////////////////////////////////////////////////////////////////
@@ -558,8 +552,10 @@ namespace MetricsDiscoveryInternal
                 auto measurementInfo = concurrentGroup.GetIoMeasurementInformation( i );
                 MD_ASSERT_A( adapterId, measurementInfo != nullptr );
 
-                auto equation = measurementInfo->GetParams()->IoReadEquation;
-                if( equation )
+                auto& measurementInfoParams = *measurementInfo->GetParams();
+
+                if( auto equation = measurementInfoParams.IoReadEquation;
+                    equation )
                 {
                     outValues[i] = CalculateReadEquation( static_cast<CEquation&>( *equation ), nullptr );
                 }
@@ -568,14 +564,9 @@ namespace MetricsDiscoveryInternal
                     outValues[i].ValueUInt64 = 0ULL;
                 }
 
-                if( measurementInfo->GetParams()->InfoType == INFORMATION_TYPE_FLAG )
-                {
-                    outValues[i].ValueType = VALUE_TYPE_BOOL;
-                }
-                else
-                {
-                    outValues[i].ValueType = VALUE_TYPE_UINT64;
-                }
+                outValues[i].ValueType = ( measurementInfoParams.InfoType == INFORMATION_TYPE_FLAG )
+                    ? VALUE_TYPE_BOOL
+                    : VALUE_TYPE_UINT64;
             }
         }
 
@@ -617,11 +608,10 @@ namespace MetricsDiscoveryInternal
                 auto metric = metricSet.GetMetricExplicit( i );
                 MD_CHECK_PTR_RET_A( adapterId, metric, MD_EMPTY );
 
-                auto metricParams = metric->GetParams();
-                MD_CHECK_PTR_RET_A( adapterId, metricParams, MD_EMPTY );
+                auto& metricParams = *metric->GetParams();
 
-                outMaxValues[i] = metricParams->MaxValueEquation
-                    ? CalculateLocalNormalizationEquation( static_cast<CEquation&>( *( metricParams->MaxValueEquation ) ), deltaMetricValues, outMetricValues, i )
+                outMaxValues[i] = metricParams.MaxValueEquation
+                    ? CalculateLocalNormalizationEquation( static_cast<CEquation&>( *( metricParams.MaxValueEquation ) ), deltaMetricValues, outMetricValues, i )
                     : outMetricValues[i];
             }
         }
@@ -984,7 +974,16 @@ namespace MetricsDiscoveryInternal
 
                 case DELTA_NS_TIME:
                     // No 'break' intentional - NS_TIME should be used only for overflow functions, here use as DELTA 32 or DELTA 56
-                    deltaFunction.BitsCount = 32;
+                    switch( m_device.GetPlatformIndex() )
+                    {
+                        case GENERATION_BMG:
+                        case GENERATION_LNL:
+                            deltaFunction.BitsCount = 56;
+                            break;
+                        default:
+                            deltaFunction.BitsCount = 32;
+                            break;
+                    }
                     [[fallthrough]];
 
                 case DELTA_N_BITS:
@@ -1086,8 +1085,9 @@ namespace MetricsDiscoveryInternal
             uint32_t        algorithmCheck = 0;
 
             ClearStack( m_readEquationStack );
-            const auto& equationElements = equation.GetElementsVector();
-            for( uint32_t i = 0; i < equationElements.size() && isValid; ++i )
+            const auto&    equationElements      = equation.GetElementsVector();
+            const uint32_t equationElementsCount = static_cast<uint32_t>( equationElements.size() );
+            for( uint32_t i = 0; i < equationElementsCount && isValid; ++i )
             {
                 const auto& element = equationElements[i];
                 switch( element.Type )
@@ -1278,7 +1278,17 @@ namespace MetricsDiscoveryInternal
             if( deltaFunction.FunctionType == DELTA_NS_TIME )
             {
                 readDeltaFunction.FunctionType = DELTA_N_BITS;
-                readDeltaFunction.BitsCount    = 32;
+
+                switch( m_device.GetPlatformIndex() )
+                {
+                    case GENERATION_BMG:
+                    case GENERATION_LNL:
+                        readDeltaFunction.BitsCount = 56;
+                        break;
+                    default:
+                        readDeltaFunction.BitsCount = 32;
+                        break;
+                }
             }
             else
             {
@@ -1290,8 +1300,9 @@ namespace MetricsDiscoveryInternal
             uint32_t       algorithmCheck = 0;
 
             ClearStack( m_readEquationAndDeltaStack );
-            const auto& equationElements = equation.GetElementsVector();
-            for( uint32_t i = 0; i < equationElements.size() && isValid; ++i )
+            const auto&    equationElements      = equation.GetElementsVector();
+            const uint32_t equationElementsCount = static_cast<uint32_t>( equationElements.size() );
+            for( uint32_t i = 0; i < equationElementsCount && isValid; ++i )
             {
                 const auto& element = equationElements[i];
                 switch( element.Type )
@@ -1500,8 +1511,9 @@ namespace MetricsDiscoveryInternal
             uint32_t        algorithmCheck = 0;
 
             ClearStack( m_normalizationEquationStack );
-            const auto& equationElements = equation.GetElementsVector();
-            for( uint32_t i = 0; i < equationElements.size() && isValid; ++i )
+            const auto&    equationElements      = equation.GetElementsVector();
+            const uint32_t equationElementsCount = static_cast<uint32_t>( equationElements.size() );
+            for( uint32_t i = 0; i < equationElementsCount && isValid; ++i )
             {
                 const auto& element = equationElements[i];
                 switch( element.Type )

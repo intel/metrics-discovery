@@ -36,6 +36,12 @@ namespace MetricsDiscoveryInternal
     class COAConcurrentGroup : public CConcurrentGroup
     {
     public:
+        // API 1.13:
+        virtual IMetricEnumerator_1_13* GetMetricEnumerator( void );
+        virtual IMetricEnumerator_1_13* GetMetricEnumeratorFromFile( const char* fileName );
+        virtual IMetricSet_1_13*        AddMetricSet( const char* symbolName, const char* shortName );
+        virtual TCompletionCode         RemoveMetricSet( IMetricSet_1_13* metricSet );
+
         // API 1.3:
         virtual TCompletionCode SetIoStreamSamplingType( TSamplingType samplingType );
 
@@ -65,6 +71,8 @@ namespace MetricsDiscoveryInternal
         void* GetStreamEventHandle();
         void  SetStreamEventHandle( void* streamEventHandle );
 
+        std::vector<TArchEvent*>& GetArchEvents();
+
     protected:
         // Constructor:
         COAConcurrentGroup( CMetricsDevice& device, const char* name, const char* description, const uint32_t measurementTypeMask, const TStreamType streamType, const GTDI_OA_BUFFER_TYPE oaBufferType );
@@ -77,16 +85,20 @@ namespace MetricsDiscoveryInternal
         void                    SetIoMeasurementInfoPredefined( const TIoMeasurementInfoType ioMeasurementInfoType, const uint32_t value, uint32_t& index );
         virtual TCompletionCode GetStreamTypeFromSamplingType( const TSamplingType samplingType, TStreamType& streamType ) const;
 
+        CMetricEnumerator* GetMetricEnumerator( const uint32_t oaReportingTypeMask );
+
     protected:
         // Variables:
-        TStreamType                m_streamType;
-        const GTDI_OA_BUFFER_TYPE  m_oaBufferType;
-        CMetricSet*                m_ioMetricSet;
-        bool                       m_contextTagsEnabled;
-        uint32_t                   m_processId;
-        void*                      m_streamEventHandle;
-        std::vector<CInformation*> m_ioMeasurementInfoVector;
-        std::vector<CInformation*> m_ioGpuContextInfoVector;
+        TStreamType                     m_streamType;
+        const GTDI_OA_BUFFER_TYPE       m_oaBufferType;
+        CMetricSet*                     m_ioMetricSet;
+        bool                            m_contextTagsEnabled;
+        uint32_t                        m_processId;
+        void*                           m_streamEventHandle;
+        std::vector<CInformation*>      m_ioMeasurementInfoVector;
+        std::vector<CInformation*>      m_ioGpuContextInfoVector;
+        std::vector<CMetricEnumerator*> m_metricEnumeratorVector;
+        std::vector<TArchEvent*>        m_archEventVector;
 
     protected:
         // Static variables:

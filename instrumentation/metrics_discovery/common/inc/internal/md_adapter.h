@@ -41,6 +41,13 @@ namespace MetricsDiscoveryInternal
     class CAdapter : public IAdapterLatest
     {
     public:
+        // API 1.13:
+        // Updates.
+        virtual TCompletionCode OpenMetricsDevice( IMetricsDevice_1_13** metricsDevice );
+        virtual TCompletionCode OpenMetricsDeviceFromFile( const char* fileName, void* openParams, IMetricsDevice_1_13** metricsDevice );
+        virtual TCompletionCode OpenMetricsSubDevice( const uint32_t subDeviceIndex, IMetricsDevice_1_13** metricsDevice );
+        virtual TCompletionCode OpenMetricsSubDeviceFromFile( const uint32_t subDeviceIndex, const char* fileName, void* openParams, IMetricsDevice_1_13** metricsDevice );
+
         // API 1.11:
         // New.
         virtual TCompletionCode SaveMetricsDeviceToFile( const char* fileName, void* saveParams, IMetricsDevice_1_11* metricsDevice, const uint32_t minMajorApiVersion, const uint32_t minMinorApiVersion );
@@ -106,7 +113,7 @@ namespace MetricsDiscoveryInternal
 
         // Metrics device:
         TCompletionCode CreateMetricsDevice( CMetricsDevice** metricsDevice, const uint32_t subDeviceIndex = 0 );
-        void            DestroyMetricsDevice();
+        void            DestroyMetricsDevice( CMetricsDevice* metricsDevice );
 
     private:
         // Variables:
@@ -114,7 +121,6 @@ namespace MetricsDiscoveryInternal
         TAdapterParamsLatest m_params;             // Adapter information
         CAdapterHandle*      m_adapterHandle;      // OS adapter handle which the given CAdapter object represents
         CDriverInterface*    m_driverInterface;    // Driver interface for this adapter
-        CMetricsDevice*      m_metricsDevice;      // Metrics device opened on this adapter
         void*                m_openCloseSemaphore; // Semaphore used during metrics device operations
 
         // Sub devices.

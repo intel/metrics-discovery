@@ -87,11 +87,10 @@ namespace MetricsDiscoveryInternal
 
         TCompletionCode AddOverrides();
         bool            IsPlatformTypeOf( TByteArrayLatest* platformMask, uint32_t gtMask = GT_TYPE_ALL );
-        bool            IsPavpDisabled( uint32_t capabilities );
 
-        TCompletionCode SaveToFile( const char* fileName, const uint32_t minMajorApiVersion = 0, const uint32_t minMinorApiVersion = 0 );
-        TCompletionCode OpenFromFile( const char* fileName );
-
+        TCompletionCode   SaveToFile( const char* fileName, const uint32_t minMajorApiVersion = 0, const uint32_t minMinorApiVersion = 0 );
+        TCompletionCode   OpenFromFile( const char* fileName );
+        TQueryMode        GetQueryMode() const;
         CConcurrentGroup* GetConcurrentGroupByName( const char* symbolicName );
         CDriverInterface& GetDriverInterface();
         CAdapter&         GetAdapter();
@@ -150,6 +149,9 @@ namespace MetricsDiscoveryInternal
         uint32_t m_referenceCounter;
 
         uint32_t m_oaBuferCount;
+
+        TQueryMode       m_queryModeRequested;
+        const TQueryMode m_queryModeDefault;
 
     private:
         // Static variables:

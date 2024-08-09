@@ -6,7 +6,7 @@ SPDX-License-Identifier: MIT
 
 ============================= end_copyright_notice ===========================*/
 
-//     File Name:  md_metric.h
+//     File Name:  md_metric.cpp
 
 //     Abstract:   C++ Metrics Discovery internal metric implementation
 
@@ -73,13 +73,20 @@ namespace MetricsDiscoveryInternal
         const char*       alias,
         const char*       signalName,
         bool              isCustom )
-        : m_device( device )
+        : m_params{}
+        , m_id( id ) // id in original set, equal to filtered on creation
+        , m_isCustom( isCustom )
+        , m_availabilityEquation( nullptr )
+        , m_normEquation( nullptr )
+        , m_ioReadEquation( nullptr )
+        , m_queryReadEquation( nullptr )
+        , m_maxValueEquation( nullptr )
+        , m_device( device )
     {
         const uint32_t adapterId = device.GetAdapter().GetAdapterId();
 
-        m_params = {};
+        m_signalName = GetCopiedCString( signalName, adapterId );
 
-        m_id                       = id; // id in original set, equal to filtered on creation
         m_params.IdInSet           = id; // filtered id, equal to original on creation
         m_params.SymbolName        = GetCopiedCString( name, adapterId );
         m_params.ShortName         = GetCopiedCString( shortName, adapterId );
@@ -95,21 +102,9 @@ namespace MetricsDiscoveryInternal
         m_params.LowWatermark      = static_cast<uint64_t>( loWatermark );
         m_params.HighWatermark     = static_cast<uint64_t>( hiWatermark );
         m_params.HwUnitType        = hwType;
-        m_signalName               = GetCopiedCString( signalName, adapterId );
-
-        m_params.DeltaFunction.FunctionType = DELTA_FUNCTION_NULL;
-        m_params.DeltaFunction.BitsCount    = 0;
-        m_params.IoReadEquation             = nullptr;
-        m_params.QueryReadEquation          = nullptr;
-        m_params.NormEquation               = nullptr;
-        m_params.MaxValueEquation           = nullptr;
-        m_availabilityEquation              = nullptr;
-        m_normEquation                      = nullptr;
-        m_ioReadEquation                    = nullptr;
-        m_queryReadEquation                 = nullptr;
-        m_maxValueEquation                  = nullptr;
-
-        m_isCustom = isCustom;
+        m_params.QueryModeMask     = ( apiMask & MD_QUERY_API_MASK )
+                ? static_cast<uint32_t>( QUERY_MODE_MASK_ALL )   // By default, a query metric supports all query modes
+                : static_cast<uint32_t>( QUERY_MODE_MASK_NONE ); // By default, a tbs metric does not support any query modes
     }
 
     //////////////////////////////////////////////////////////////////////////////
@@ -125,13 +120,15 @@ namespace MetricsDiscoveryInternal
     //
     //////////////////////////////////////////////////////////////////////////////
     CMetric::CMetric( const CMetric& other )
-        : m_device( other.m_device )
+        : m_params{}
+        , m_id( other.m_id ) // initial id before filterings
+        , m_isCustom( other.m_isCustom )
+        , m_device( other.m_device )
     {
         const uint32_t adapterId = other.m_device.GetAdapter().GetAdapterId();
 
-        m_params = {};
+        m_signalName = GetCopiedCString( other.m_signalName, adapterId );
 
-        m_id                       = other.m_id;             // initial id before filterings
         m_params.IdInSet           = other.m_params.IdInSet; // id after filterings
         m_params.GroupId           = other.m_params.GroupId;
         m_params.SymbolName        = GetCopiedCString( other.m_params.SymbolName, adapterId );
@@ -148,9 +145,7 @@ namespace MetricsDiscoveryInternal
         m_params.HighWatermark     = other.m_params.HighWatermark;
         m_params.HwUnitType        = other.m_params.HwUnitType;
         m_params.DeltaFunction     = other.m_params.DeltaFunction;
-
-        m_signalName = GetCopiedCString( other.m_signalName, adapterId );
-        m_isCustom   = other.m_isCustom;
+        m_params.QueryModeMask     = other.m_params.QueryModeMask;
 
         m_availabilityEquation = ( other.m_availabilityEquation ) ? new( std::nothrow ) CEquation( *other.m_availabilityEquation ) : nullptr;
         m_ioReadEquation       = ( other.m_ioReadEquation ) ? new( std::nothrow ) CEquation( *other.m_ioReadEquation ) : nullptr;
@@ -210,59 +205,6 @@ namespace MetricsDiscoveryInternal
     TMetricParamsLatest* CMetric::GetParams( void )
     {
         return &m_params;
-    }
-
-    //////////////////////////////////////////////////////////////////////////////
-    //
-    // Class:
-    //     CMetric
-    //
-    // Method:
-    //     GetMetricValue
-    //
-    // Description:
-    //     Decodes and returns value from the string which may be a symbol.
-    //     Empty string is equal to zero.
-    //
-    // Input:
-    //     const char* valueString - value string
-    //
-    // Output:
-    //     uint64_t                - read value
-    //
-    //////////////////////////////////////////////////////////////////////////////
-    uint64_t CMetric::GetMetricValue( const char* valueString )
-    {
-        uint64_t ret = 0LL;
-
-        if( ( valueString == nullptr ) || ( strcmp( valueString, "" ) == 0 ) )
-        {
-            return 0LL;
-        }
-
-        if( ( valueString[0] == '$' ) && ( valueString[1] != 0 ) )
-        {
-            auto pValue = m_device.GetGlobalSymbolValueByName( &valueString[1] );
-            if( pValue && ( pValue->ValueType == VALUE_TYPE_UINT64 ) )
-            {
-                ret = pValue->ValueUInt64;
-            }
-            else if( pValue && ( pValue->ValueType == VALUE_TYPE_UINT32 ) )
-            {
-                ret = static_cast<uint64_t>( pValue->ValueUInt32 );
-            }
-            else
-            {
-                const uint32_t adapterId = m_device.GetAdapter().GetAdapterId();
-                MD_ASSERT_A( adapterId, false );
-            }
-        }
-        else
-        {
-            ret = static_cast<uint64_t>( atol( valueString ) );
-        }
-
-        return ret;
     }
 
     //////////////////////////////////////////////////////////////////////////////
@@ -390,6 +332,26 @@ namespace MetricsDiscoveryInternal
     void CMetric::SetIdInSetParam( uint32_t id )
     {
         m_params.IdInSet = id;
+    }
+
+    //////////////////////////////////////////////////////////////////////////////
+    //
+    // Class:
+    //     CMetric
+    //
+    // Method:
+    //     SetQueryModeMask
+    //
+    // Description:
+    //     Updates QueryModeMask parameter in the metric.
+    //
+    // Input:
+    //     const uint32_t queryModeMask - query mode mask
+    //
+    //////////////////////////////////////////////////////////////////////////////
+    void CMetric::SetQueryModeMask( const uint32_t queryModeMask )
+    {
+        m_params.QueryModeMask = queryModeMask;
     }
 
     //////////////////////////////////////////////////////////////////////////////

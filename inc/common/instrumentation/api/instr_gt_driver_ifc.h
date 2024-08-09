@@ -519,10 +519,11 @@ typedef enum
     GENERATION_PVC      = 25,
     GENERATION_ADLP     = 26,
     GENERATION_MTL      = 27,
-    // 28 reserved
+    GENERATION_BMG      = 28,
     GENERATION_ADLS     = 29,
     GENERATION_ADLN     = 30,
-    // 31-33 reserved
+    GENERATION_LNL      = 31,
+    // 32-33 reserved
     GENERATION_ARL      = 34,
     // ...
     // DO NOT CHANGE ORDER OF THIS ENUM, ADD NEW PLATFORMS AT THE END!

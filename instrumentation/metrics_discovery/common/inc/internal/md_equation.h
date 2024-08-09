@@ -77,7 +77,6 @@ namespace MetricsDiscoveryInternal
         // Non-API:
         bool SolveBooleanEquation( void ); // Used only for availability equations
         bool ParseEquationString( const char* equationString );
-        bool AddEquationElement( const CEquationElementInternal& element );
         bool ParseEquationElement( const char* equationString );
 
         TCompletionCode WriteCEquationToFile( FILE* metricFile );

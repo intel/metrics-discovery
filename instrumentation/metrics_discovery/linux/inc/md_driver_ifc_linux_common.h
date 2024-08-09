@@ -84,6 +84,7 @@ SPDX-License-Identifier: MIT
 #define MD_MAX_L3_BANK_PER_L3_NODE     4  // Currently max value
 #define MD_MAX_L3_NODE_PER_COPY_ENGINE 2  // Currently max value
 #define MD_DUALSUBSLICE_PER_SLICE      4  // Current value
+#define MD_SUBSLICE_PER_SLICE_BMG      4  // Current Xe2 value
 
 //////////////////////////////////////////////////////////////////////////////
 //
@@ -335,6 +336,7 @@ namespace MetricsDiscoveryInternal
         virtual bool            IsOverrideAvailable( TOverrideType overrideType );
         virtual bool            IsSubDeviceSupported()                         = 0;
         virtual TCompletionCode EnumerateSubDevices( CSubDevices& subDevices ) = 0;
+        virtual TQueryMode      GetQueryModeOverride();
 
     protected:
         virtual bool CreateContext() = 0;
@@ -379,6 +381,8 @@ namespace MetricsDiscoveryInternal
         TCompletionCode         GetGpuFrequencyInfo( CMetricsDevice& device, uint64_t* minFrequency, uint64_t* maxFrequency, uint64_t* actFrequency, uint64_t* boostFrequency );
         TCompletionCode         GetGpuTimestampFrequency( uint64_t& gpuTimestampFrequency );
         TCompletionCode         GetGpuTimestampPeriodNs( uint64_t& gpuTimestampPeriodNs );
+
+        virtual TCompletionCode GetOaBufferSize( const int32_t streamId, uint32_t& oaBufferSize )                            = 0;
         virtual TCompletionCode GetOaBufferSupportedSizes( const uint32_t platformId, uint32_t& minSize, uint32_t& maxSize ) = 0;
         virtual TCompletionCode GetOaBufferCount( CMetricsDevice& metricsDevice, uint32_t& oaBufferCount )                   = 0;
         virtual TCompletionCode GetL3NodeTotalCount( CMetricsDevice& metricsDevice, uint32_t& l3NodeCount )                  = 0;

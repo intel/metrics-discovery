@@ -45,6 +45,20 @@ extern "C"
 #define IU_CONFIG_NAME_LOG_LAYER_ENABLE L"DebugEnable"
 #define IU_CONFIG_NAME_LOG_LEVEL        L"DebugLevel"
 
+#if defined( _DEBUG )
+    #define IU_CONFIG_DEFAULT_ASSERT_ENABLE    true
+    #define IU_CONFIG_DEFAULT_LOG_LAYER_ENABLE IU_DBG_LAYER_ALL
+    #define IU_CONFIG_DEFAULT_LOG_LEVEL        IU_DBG_SEV_ERROR | IU_DBG_SEV_CRITICAL | 0
+#elif defined( _RELEASE_INTERNAL )
+    #define IU_CONFIG_DEFAULT_ASSERT_ENABLE    false
+    #define IU_CONFIG_DEFAULT_LOG_LAYER_ENABLE IU_DBG_LAYER_ALL
+    #define IU_CONFIG_DEFAULT_LOG_LEVEL        IU_DBG_SEV_WARNING | IU_DBG_SEV_ERROR | IU_DBG_SEV_CRITICAL | IU_DBG_SHOW_ALL | IU_DBG_ALIGNED
+#else // RELEASE
+    #define IU_CONFIG_DEFAULT_ASSERT_ENABLE    false
+    #define IU_CONFIG_DEFAULT_LOG_LAYER_ENABLE IU_DBG_LAYER_ALL
+    #define IU_CONFIG_DEFAULT_LOG_LEVEL        IU_DBG_SEV_ERROR | IU_DBG_SHOW_TAG | IU_DBG_ALIGNED
+#endif
+
 ///////////////////////////////////////////////////////////////////////////////
 // MACRO: Local log settings constants and helpers
 ///////////////////////////////////////////////////////////////////////////////

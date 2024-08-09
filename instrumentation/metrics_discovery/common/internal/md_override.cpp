@@ -6,7 +6,7 @@ SPDX-License-Identifier: MIT
 
 ============================= end_copyright_notice ===========================*/
 
-//     File Name:  md_override.h
+//     File Name:  md_override.cpp
 
 //     Abstract:   C++ Metrics Discovery internal override implementation
 
@@ -118,7 +118,7 @@ namespace MetricsDiscoveryInternal
 
         m_params.SymbolName       = "FrequencyOverride";
         m_params.Description      = "Overrides device GPU frequency with a static value.";
-        m_params.ApiMask          = (uint32_t) API_TYPE_ALL;
+        m_params.ApiMask          = static_cast<uint32_t>( API_TYPE_ALL );
         m_params.OverrideModeMask = OVERRIDE_MODE_GLOBAL;
         m_params.PlatformMask     = PLATFORM_UNKNOWN;
 

@@ -143,6 +143,7 @@ namespace MetricsDiscoveryInternal
         virtual TCompletionCode SetFreqChangeReportsOverride( bool enable )                                                                      = 0;
         virtual bool            IsOverrideAvailable( TOverrideType overrideType )                                                                = 0;
         virtual bool            IsSubDeviceSupported()                                                                                           = 0;
+        virtual TQueryMode      GetQueryModeOverride()                                                                                           = 0;
 
     protected:
         virtual bool CreateContext() = 0;

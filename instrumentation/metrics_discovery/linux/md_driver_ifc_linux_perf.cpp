@@ -2309,6 +2309,31 @@ namespace MetricsDiscoveryInternal
     //     CDriverInterfaceLinuxPerf
     //
     // Method:
+    //     GetOaBufferSize
+    //
+    // Description:
+    //     Returns oa buffer size for current platform.
+    //
+    // Input:
+    //     const int32_t   streamId     - (IN) stream id
+    //     uint32_t&       oaBufferSize - (OUT) oa buffer size
+    //
+    // Output:
+    //     TCompletionCode              - *CC_OK* means success
+    //
+    //////////////////////////////////////////////////////////////////////////////
+    TCompletionCode CDriverInterfaceLinuxPerf::GetOaBufferSize( const int32_t streamId, uint32_t& oaBufferSize )
+    {
+        oaBufferSize = MD_OA_BUFFER_SIZE_MAX;
+        return CC_OK;
+    }
+
+    //////////////////////////////////////////////////////////////////////////////
+    //
+    // Class:
+    //     CDriverInterfaceLinuxPerf
+    //
+    // Method:
     //     GetOaBufferSupportedSizes
     //
     // Description:

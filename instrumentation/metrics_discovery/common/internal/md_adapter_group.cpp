@@ -6,7 +6,7 @@ SPDX-License-Identifier: MIT
 
 ============================= end_copyright_notice ===========================*/
 
-//     File Name:  md_adapter_group.h
+//     File Name:  md_adapter_group.cpp
 
 //     Abstract:   C++ Metrics Discovery internal adapter group implementation
 

@@ -6,7 +6,7 @@ SPDX-License-Identifier: MIT
 
 ============================= end_copyright_notice ===========================*/
 
-//     File Name:  md_metric_set.h
+//     File Name:  md_metric_set.cpp
 
 //     Abstract:   C++ Metrics Discovery internal metric set implementation
 
@@ -19,6 +19,9 @@ SPDX-License-Identifier: MIT
 #include "md_metric.h"
 #include "md_metrics_device.h"
 #include "md_register_set.h"
+#include "md_metric_prototype.h"
+#include "md_metric_enumerator.h"
+#include "md_metric_prototype_manager.h"
 
 #include "md_calculation.h"
 #include "md_driver_ifc.h"
@@ -81,6 +84,10 @@ namespace MetricsDiscoveryInternal
         , m_isCustom( isCustom )
         , m_isReadRegsCfgSet( false )
         , m_metricsCalculator( new( std::nothrow ) CMetricsCalculator( m_device ) )
+        , m_isOam( COAMConcurrentGroup::IsValidSymbolName( concurrentGroup->GetParams()->SymbolName ) )
+        , m_isFlexible( false )
+        , m_isOpened( false )
+        , m_prototypeManager( nullptr )
     {
         const uint32_t adapterId = m_device.GetAdapter().GetAdapterId();
 
@@ -163,6 +170,7 @@ namespace MetricsDiscoveryInternal
         MD_SAFE_DELETE( m_metricsCalculator );
 
         MD_SAFE_DELETE( m_availabilityEquation );
+        MD_SAFE_DELETE( m_prototypeManager );
 
         DeleteByteArray( m_platformMask, m_device.GetAdapter().GetAdapterId() );
     }
@@ -263,25 +271,22 @@ namespace MetricsDiscoveryInternal
 
         if( m_isFiltered )
         {
-            if( index < m_currentInformationVector->size() )
-            {
-                return static_cast<IInformation_1_0*>( ( *m_currentInformationVector )[index] );
-            }
-            return nullptr;
+            return ( index < m_currentInformationVector->size() )
+                ? static_cast<IInformation_1_0*>( ( *m_currentInformationVector )[index] )
+                : nullptr;
         }
 
         // if index is in Concurrent Group indexes bounds ( 0..N, N = amount of infs in concurrent group )
-        if( index < m_concurrentGroup->GetInformationCount() )
+        const uint32_t cgInformationCount = m_concurrentGroup->GetInformationCount();
+
+        if( index < cgInformationCount )
         {
             // return information from Concurrent Group
             return m_concurrentGroup->GetInformation( index );
         }
-        else
+        else if( index < m_currentInformationVector->size() + cgInformationCount )
         {
-            if( index < m_currentInformationVector->size() + m_concurrentGroup->GetInformationCount() )
-            {
-                return static_cast<IInformation_1_0*>( ( *m_currentInformationVector )[index - m_concurrentGroup->GetInformationCount()] );
-            }
+            return static_cast<IInformation_1_0*>( ( *m_currentInformationVector )[index - cgInformationCount] );
         }
         return nullptr;
     }
@@ -342,6 +347,15 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     TCompletionCode CMetricSet::Activate( void )
     {
+        if( m_isOpened )
+        {
+            MD_LOG_A( m_device.GetAdapter().GetAdapterId(), LOG_ERROR, "Finalize method has not been called before Activate" );
+            return CC_ERROR_GENERAL;
+        }
+
+        // Cannot change metric sets after their activation.
+        m_isFlexible = false;
+
         return ActivateInternal( true, true );
     }
 
@@ -367,6 +381,13 @@ namespace MetricsDiscoveryInternal
 
         MD_LOG_ENTER_A( adapterId );
         TCompletionCode ret = CC_OK;
+
+        if( m_isOpened )
+        {
+            MD_LOG_A( adapterId, LOG_ERROR, "Finalize method has not been called before Deactivate" );
+            return CC_ERROR_GENERAL;
+        }
+
         if( m_isReadRegsCfgSet )
         {
             auto& driverInterface = m_device.GetDriverInterface();
@@ -536,6 +557,8 @@ namespace MetricsDiscoveryInternal
         const char*       maxValueEquation      = nullptr;
         const char*       signalName            = nullptr;
         const char*       availabilityEquation  = nullptr;
+        uint32_t          queryModeMask         = 0;
+
         switch( params->Type )
         {
             case METRIC_CUSTOM_PARAMS_1_0:
@@ -560,8 +583,39 @@ namespace MetricsDiscoveryInternal
                 maxValueEquation      = MD_CUSTOM_METRIC_PARAMS( params, 1_0 ).MaxValueEquation;
                 signalName            = MD_CUSTOM_METRIC_PARAMS( params, 1_0 ).SignalName;
                 availabilityEquation  = MD_CUSTOM_METRIC_PARAMS( params, 1_0 ).AvailabilityEquation;
+                queryModeMask         = ( apiMask & MD_QUERY_API_MASK )
+                            ? static_cast<uint32_t>( QUERY_MODE_MASK_ALL )   // By default, a query metric supports all query modes
+                            : static_cast<uint32_t>( QUERY_MODE_MASK_NONE ); // By default, a tbs metric does not support any query
                 break;
             }
+
+            case METRIC_CUSTOM_PARAMS_1_1:
+            {
+                symbolName            = MD_CUSTOM_METRIC_PARAMS( params, 1_1 ).SymbolName;
+                shortName             = MD_CUSTOM_METRIC_PARAMS( params, 1_1 ).ShortName;
+                groupName             = MD_CUSTOM_METRIC_PARAMS( params, 1_1 ).GroupName;
+                longName              = MD_CUSTOM_METRIC_PARAMS( params, 1_1 ).LongName;
+                dxToOglAlias          = MD_CUSTOM_METRIC_PARAMS( params, 1_1 ).DxToOglAlias;
+                usageFlagsMask        = MD_CUSTOM_METRIC_PARAMS( params, 1_1 ).UsageFlagsMask;
+                apiMask               = MD_CUSTOM_METRIC_PARAMS( params, 1_1 ).ApiMask;
+                resultType            = MD_CUSTOM_METRIC_PARAMS( params, 1_1 ).ResultType;
+                resultUnits           = MD_CUSTOM_METRIC_PARAMS( params, 1_1 ).MetricResultUnits;
+                metricType            = MD_CUSTOM_METRIC_PARAMS( params, 1_1 ).MetricType;
+                loWatermark           = MD_CUSTOM_METRIC_PARAMS( params, 1_1 ).LowWatermark;
+                hiWatermark           = MD_CUSTOM_METRIC_PARAMS( params, 1_1 ).HighWatermark;
+                hwType                = MD_CUSTOM_METRIC_PARAMS( params, 1_1 ).HwUnitType;
+                ioReadEquation        = MD_CUSTOM_METRIC_PARAMS( params, 1_1 ).IoReadEquation;
+                deltaFunction         = MD_CUSTOM_METRIC_PARAMS( params, 1_1 ).DeltaFunction;
+                queryReadEquation     = MD_CUSTOM_METRIC_PARAMS( params, 1_1 ).QueryReadEquation;
+                normalizationEquation = MD_CUSTOM_METRIC_PARAMS( params, 1_1 ).NormEquation;
+                maxValueEquation      = MD_CUSTOM_METRIC_PARAMS( params, 1_1 ).MaxValueEquation;
+                signalName            = MD_CUSTOM_METRIC_PARAMS( params, 1_1 ).SignalName;
+                availabilityEquation  = MD_CUSTOM_METRIC_PARAMS( params, 1_1 ).AvailabilityEquation;
+                queryModeMask         = MD_CUSTOM_METRIC_PARAMS( params, 1_1 ).QueryModeMask;
+
+                break;
+            }
+
             default:
             {
                 MD_LOG_A( adapterId, LOG_ERROR, "Unsupported TAddCustomMetricParams Type: %u", params->Type );
@@ -597,6 +651,8 @@ namespace MetricsDiscoveryInternal
 
         CMetric* metric = new( std::nothrow ) CMetric( m_device, static_cast<uint32_t>( m_metricsVector.size() ), symbolName, shortName, longName, groupName, groupId, usageFlagsMask, apiMask, metricType, resultType, resultUnits, loWatermark, hiWatermark, hwType, dxToOglAlias, signalName, true );
         MD_CHECK_PTR_RET_A( adapterId, metric, nullptr );
+
+        metric->SetQueryModeMask( queryModeMask );
 
         if( metric->SetAvailabilityEquation( availabilityEquation ) != CC_OK || metric->SetSnapshotReportReadEquation( ioReadEquation ) != CC_OK || metric->SetDeltaReportReadEquation( queryReadEquation ) != CC_OK || metric->SetNormalizationEquation( normalizationEquation ) != CC_OK || metric->SetSnapshotReportDeltaFunction( deltaFunction ) != CC_OK || metric->SetMaxValueEquation( maxValueEquation ) != CC_OK )
         {
@@ -748,6 +804,255 @@ namespace MetricsDiscoveryInternal
         m_params.ApiSpecificId.OGLQueryIntelName     = GetCopiedCString( apiSpecificId.OGLQueryIntelName, adapterId );
 
         return CC_OK;
+    }
+
+    //////////////////////////////////////////////////////////////////////////////
+    //
+    // Class:
+    //     CMetricSet
+    //
+    // Method:
+    //     Open
+    //
+    // Description:
+    //     Opens metric set for adding metric prototypes.
+    //
+    // Output:
+    //     TCompletionCode - result of the operation.
+    //
+    //////////////////////////////////////////////////////////////////////////////
+    TCompletionCode CMetricSet::Open()
+    {
+        if( !m_isFlexible )
+        {
+            return CC_ERROR_NOT_SUPPORTED;
+        }
+
+        if( m_isOpened )
+        {
+            MD_LOG_A( m_device.GetAdapter().GetAdapterId(), LOG_WARNING, "Metric set is already opened" );
+            return CC_OK;
+        }
+
+        // Clear vectors.
+        ClearVector( m_metricsVector );
+        ClearVector( m_informationVector );
+        ClearVector( m_complementarySetsVector );
+        ClearList( m_startRegisterSetList );
+        ClearVector( m_otherMetricsVector );
+        ClearVector( m_otherInformationVector );
+
+        // Disable api filtering.
+        EnableApiFiltering( 0, false );
+
+        // Clear references in vectors.
+        m_startRegsVector.clear();
+        m_startRegsQueryVector.clear();
+
+        m_params.MetricsCount    = 0;
+        m_filteredParams.ApiMask = static_cast<uint32_t>( API_TYPE_ALL );
+
+        m_isOpened = true;
+
+        // Open should not clear previously added metric prototypes.
+
+        return CC_OK;
+    }
+
+    //////////////////////////////////////////////////////////////////////////////
+    //
+    // Class:
+    //     CMetricSet
+    //
+    // Method:
+    //     AddMetric
+    //
+    // Description:
+    //     Adds a metric to the metric set using a metric prototype.
+    //
+    // Input:
+    //     IMetricPrototype_1_13* metricPrototype - metric prototype to be added to the metric set.
+    //
+    // Output:
+    //     TCompletionCode - result of the operation.
+    //
+    //////////////////////////////////////////////////////////////////////////////
+    TCompletionCode CMetricSet::AddMetric( IMetricPrototype_1_13* metricPrototype )
+    {
+        const uint32_t adapterId = m_device.GetAdapter().GetAdapterId();
+
+        MD_CHECK_PTR_RET_A( adapterId, m_prototypeManager, CC_ERROR_NOT_SUPPORTED );
+        MD_CHECK_PTR_RET_A( adapterId, metricPrototype, CC_ERROR_INVALID_PARAMETER );
+
+        if( !m_isOpened || m_params.MetricsCount > 0 )
+        {
+            MD_LOG_A( adapterId, LOG_ERROR, "Cannot add metrics after finalizing metric set" );
+            return CC_ERROR_GENERAL;
+        }
+
+        auto& metricPrototypeInternal = static_cast<CMetricPrototype&>( *metricPrototype );
+
+        // Check if metric prototype is from the same concurrent group.
+        if( auto& prototypeConcurrentGroup = metricPrototypeInternal.GetMetricEnumerator().GetConcurrentGroup();
+            m_concurrentGroup != &prototypeConcurrentGroup )
+        {
+            MD_LOG_A( adapterId, LOG_WARNING, "Metric prototype is not from the same concurrent group! MetricSet CG is: %s and MetricPrototype CG is: %s ", m_concurrentGroup->GetParams()->SymbolName, prototypeConcurrentGroup.GetParams()->SymbolName );
+            return CC_ERROR_INVALID_PARAMETER;
+        }
+
+        return m_prototypeManager->AddPrototype( metricPrototypeInternal );
+    }
+
+    //////////////////////////////////////////////////////////////////////////////
+    //
+    // Class:
+    //     CMetricSet
+    //
+    // Method:
+    //     RemoveMetric
+    //
+    // Description:
+    //     Removes a given metric from the metric set.
+    //
+    // Input:
+    //     IMetricPrototype_1_13* metricPrototype - metric prototype to be removed
+    //                                              from the metric set.
+    //
+    // Output:
+    //     TCompletionCode - result of the operation.
+    //
+    //////////////////////////////////////////////////////////////////////////////
+    TCompletionCode CMetricSet::RemoveMetric( IMetricPrototype_1_13* metricPrototype )
+    {
+        const uint32_t adapterId = m_device.GetAdapter().GetAdapterId();
+
+        MD_CHECK_PTR_RET_A( adapterId, m_prototypeManager, CC_ERROR_NOT_SUPPORTED );
+        MD_CHECK_PTR_RET_A( adapterId, metricPrototype, CC_ERROR_INVALID_PARAMETER );
+
+        if( !m_isOpened || m_params.MetricsCount > 0 )
+        {
+            MD_LOG_A( adapterId, LOG_ERROR, "Cannot remove metrics after finalizing metric set" );
+            return CC_ERROR_GENERAL;
+        }
+
+        auto& metricPrototypeInternal = static_cast<CMetricPrototype&>( *metricPrototype );
+
+        return m_prototypeManager->RemovePrototype( metricPrototypeInternal );
+    }
+
+    //////////////////////////////////////////////////////////////////////////////
+    //
+    // Class:
+    //     CMetricSet
+    //
+    // Method:
+    //     Finalize
+    //
+    // Description:
+    //     Finalizes metric set to make it usable for metrics enumeration, activation etc.
+    //
+    // Output:
+    //     TCompletionCode - result of the operation.
+    //
+    //////////////////////////////////////////////////////////////////////////////
+    TCompletionCode CMetricSet::Finalize()
+    {
+        const uint32_t adapterId = m_device.GetAdapter().GetAdapterId();
+
+        if( !m_prototypeManager || !m_prototypeManager->IsSupported() )
+        {
+            m_isOpened = false;
+            return CC_ERROR_NOT_SUPPORTED;
+        }
+
+        if( m_prototypeManager->IsEmpty() )
+        {
+            m_isOpened = false;
+            return CC_ERROR_GENERAL;
+        }
+
+        auto ret = AddDefaultMetrics();
+        MD_CHECK_CC_RET_A( adapterId, ret );
+
+        // Begin configuration.
+        ret = AddStartRegisterSet( 0, 0, nullptr );
+        MD_CHECK_CC_RET_A( adapterId, ret );
+
+        // Process prototypes and create metrics with equations.
+        ret = m_prototypeManager->CreateMetricsFromPrototypes();
+        MD_CHECK_CC_RET_A( adapterId, ret );
+
+        // End configuration.
+        RefreshConfigRegisters();
+
+        m_isOpened = false;
+
+        return CC_OK;
+    }
+    //////////////////////////////////////////////////////////////////////////////
+    //
+    // Class:
+    //     CMetricSet
+    //
+    // Method:
+    //     AddCustomMetric
+    //
+    // Description:
+    //     Adds custom metric with given parameters.
+    //
+    // Input:
+    //     const char * symbolName                  -
+    //     const char * shortName                   -
+    //     const char * groupName                   -
+    //     const char * longName                    -
+    //     const char * dxToOglAlias                -
+    //     uint32_t     usageFlagsMask              -
+    //     uint32_t     apiMask                     -
+    //     TMetricResultType resultType             -
+    //     const char * resultUnits                 -
+    //     TMetricType metricType                   -
+    //     int64_t *   loWatermark                  -
+    //     int64_t *   hiWatermark                  -
+    //     THwUnitType hwType                       -
+    //     const char * ioReadEquation              -
+    //     const char * deltaFunction               -
+    //     const char * queryReadEquation           -
+    //     const char * normalizationEquation       -
+    //     const char * maxValueEquation            -
+    //     const char * signalName                  -
+    //     uint32_t     queryModeMask               -
+    //
+    // Output:
+    //     IMetricLatest* - newly created metric, nullptr if error
+    //
+    //////////////////////////////////////////////////////////////////////////////
+    IMetricLatest* CMetricSet::AddCustomMetric( const char* symbolName, const char* shortName, const char* groupName, const char* longName, const char* dxToOglAlias, uint32_t usageFlagsMask, uint32_t apiMask, TMetricResultType resultType, const char* resultUnits, TMetricType metricType, int64_t loWatermark, int64_t hiWatermark, THwUnitType hwType, const char* ioReadEquation, const char* deltaFunction, const char* queryReadEquation, const char* normalizationEquation, const char* maxValueEquation, const char* signalName, uint32_t queryModeMask )
+    {
+        TAddCustomMetricParams params                      = {};
+        params.Type                                        = METRIC_CUSTOM_PARAMS_1_1;
+        params.CustomMetricParams_1_1.SymbolName           = symbolName;
+        params.CustomMetricParams_1_1.ShortName            = shortName;
+        params.CustomMetricParams_1_1.GroupName            = groupName;
+        params.CustomMetricParams_1_1.LongName             = longName;
+        params.CustomMetricParams_1_1.DxToOglAlias         = dxToOglAlias;
+        params.CustomMetricParams_1_1.UsageFlagsMask       = usageFlagsMask;
+        params.CustomMetricParams_1_1.ApiMask              = apiMask;
+        params.CustomMetricParams_1_1.ResultType           = resultType;
+        params.CustomMetricParams_1_1.MetricResultUnits    = resultUnits;
+        params.CustomMetricParams_1_1.MetricType           = metricType;
+        params.CustomMetricParams_1_1.LowWatermark         = loWatermark;
+        params.CustomMetricParams_1_1.HighWatermark        = hiWatermark;
+        params.CustomMetricParams_1_1.HwUnitType           = hwType;
+        params.CustomMetricParams_1_1.IoReadEquation       = ioReadEquation;
+        params.CustomMetricParams_1_1.QueryReadEquation    = queryReadEquation;
+        params.CustomMetricParams_1_1.DeltaFunction        = deltaFunction;
+        params.CustomMetricParams_1_1.NormEquation         = normalizationEquation;
+        params.CustomMetricParams_1_1.MaxValueEquation     = maxValueEquation;
+        params.CustomMetricParams_1_1.SignalName           = signalName;
+        params.CustomMetricParams_1_1.AvailabilityEquation = nullptr;
+        params.CustomMetricParams_1_1.QueryModeMask        = queryModeMask;
+
+        return AddCustomMetric( &params );
     }
 
     //////////////////////////////////////////////////////////////////////////////
@@ -1173,18 +1478,20 @@ namespace MetricsDiscoveryInternal
             {
                 // Add registers
                 TRegisterSetParams* params = registerSet->GetParams();
-                if( params->ConfigType == CONFIG_TYPE_COMMON )
+
+                switch( params->ConfigType )
                 {
-                    registerSet->RegsToVector( m_startRegsVector );
-                }
-                else if( params->ConfigType == CONFIG_TYPE_QUERY )
-                {
-                    registerSet->RegsToVector( m_startRegsQueryVector );
-                }
-                else
-                {
-                    MD_LOG_A( m_device.GetAdapter().GetAdapterId(), LOG_ERROR, "Unknown register method" );
-                    return CC_ERROR_GENERAL;
+                    case CONFIG_TYPE_COMMON:
+                        registerSet->RegsToVector( m_startRegsVector );
+                        break;
+
+                    case CONFIG_TYPE_QUERY:
+                        registerSet->RegsToVector( m_startRegsQueryVector );
+                        break;
+
+                    default:
+                        MD_LOG_A( m_device.GetAdapter().GetAdapterId(), LOG_ERROR, "Unknown register method" );
+                        return CC_ERROR_GENERAL;
                 }
             }
         }
@@ -1775,6 +2082,12 @@ namespace MetricsDiscoveryInternal
 
         MD_LOG_ENTER_A( adapterId );
 
+        if( m_isOpened )
+        {
+            MD_LOG_A( adapterId, LOG_ERROR, "Cannot do filtering if metric set is opened" );
+            return CC_ERROR_GENERAL;
+        }
+
         if( !IsApiFilteringMaskValid( apiMask ) )
         {
             MD_LOG_A( adapterId, LOG_WARNING, "error: invalid filtering API mask" );
@@ -1928,10 +2241,11 @@ namespace MetricsDiscoveryInternal
                 if( metricParams->NormEquation != nullptr )
                 {
                     // Get an equation
-                    IEquation_1_0* equation = metricParams->NormEquation;
+                    IEquation_1_0* equation              = metricParams->NormEquation;
+                    const uint32_t equationElementsCount = equation->GetEquationElementsCount();
 
                     // Metrics equation can use only preceding metrics' values
-                    for( uint32_t j = 0; j < equation->GetEquationElementsCount(); ++j )
+                    for( uint32_t j = 0; j < equationElementsCount; ++j )
                     {
                         const auto internalElement = static_cast<CEquationElementInternal*>( equation->GetEquationElement( j ) );
 
@@ -2028,6 +2342,9 @@ namespace MetricsDiscoveryInternal
 
         ClearCachedMetricsAndInformation();
 
+        const auto queryMode = m_device.GetQueryMode();
+        MD_LOG_A( m_device.GetAdapter().GetAdapterId(), LOG_DEBUG, "queryMode: %u", queryMode );
+
         // Cache metrics
         for( uint32_t i = 0, j = 0; i < m_params.MetricsCount; ++i )
         {
@@ -2037,6 +2354,11 @@ namespace MetricsDiscoveryInternal
                 if( const auto params = metric->GetParams();
                     params != nullptr && ( params->ApiMask & m_filteredParams.ApiMask ) )
                 {
+                    if( ( m_filteredParams.ApiMask & MD_QUERY_API_MASK ) && !IsQueryModeMatch( queryMode, params->QueryModeMask ) )
+                    {
+                        continue;
+                    }
+
                     metric->SetIdInSetParam( j++ );
 
                     m_filteredMetricsVector.push_back( metric );
@@ -2742,4 +3064,161 @@ namespace MetricsDiscoveryInternal
         return !m_availabilityEquation || m_availabilityEquation->SolveBooleanEquation();
     }
 
+    //////////////////////////////////////////////////////////////////////////////
+    //
+    // Class:
+    //     CMetricSet
+    //
+    // Method:
+    //     IsFlexible
+    //
+    // Description:
+    //     Returns true if a given metric set is flexible. False otherwise.
+    //
+    // Output:
+    //     bool - true if flexible.
+    //
+    //////////////////////////////////////////////////////////////////////////////
+    bool CMetricSet::IsFlexible() const
+    {
+        return m_isFlexible;
+    }
+
+    //////////////////////////////////////////////////////////////////////////////
+    //
+    // Class:
+    //     CMetricSet
+    //
+    // Method:
+    //     SetToFlexible
+    //
+    // Description:
+    //     Makes metric set flexible what means that the metric set is able to
+    //     create metrics from metric prototypes. Allocates a prototype manager.
+    //
+    //////////////////////////////////////////////////////////////////////////////
+    void CMetricSet::SetToFlexible()
+    {
+        if( !m_prototypeManager )
+        {
+            if( m_isOam )
+            {
+                m_prototypeManager = new( std::nothrow ) CMetricPrototypeManager<METRIC_PROTOTYPE_MANAGER_TYPE_OAM>( m_device, *this );
+            }
+            else
+            {
+                m_prototypeManager = new( std::nothrow ) CMetricPrototypeManager<METRIC_PROTOTYPE_MANAGER_TYPE_OA>( m_device, *this );
+            }
+
+            m_isFlexible = m_prototypeManager != nullptr;
+        }
+    }
+
+    //////////////////////////////////////////////////////////////////////////////
+    //
+    // Class:
+    //     CMetricSet
+    //
+    // Method:
+    //     DecreasePrototypesReferenceCounters
+    //
+    // Description:
+    //     Decreases reference counters for all metric prototypes added to the
+    //     metric set.
+    //
+    //////////////////////////////////////////////////////////////////////////////
+    void CMetricSet::DecreasePrototypesReferenceCounters()
+    {
+        if( m_prototypeManager )
+        {
+            m_prototypeManager->DecreasePrototypesReferenceCounters();
+        }
+    }
+
+    //////////////////////////////////////////////////////////////////////////////
+    //
+    // Class:
+    //     CMetricSet
+    //
+    // Method:
+    //     IsOpened
+    //
+    // Description:
+    //     Returns true if a given metric set is opened. False otherwise.
+    //
+    // Output:
+    //     bool - true if open.
+    //
+    //////////////////////////////////////////////////////////////////////////////
+    bool CMetricSet::IsOpened()
+    {
+        return m_isOpened;
+    }
+
+    //////////////////////////////////////////////////////////////////////////////
+    //
+    // Class:
+    //     CMetricSet
+    //
+    // Method:
+    //     AddDefaultMetrics
+    //
+    // Description:
+    //     Add default metrics to metric set like GpuCoreClock, GpuTime etc.
+    //
+    // Output:
+    //     TCompletionCode - CC_OK if metrics have been added successfully.
+    //
+    //////////////////////////////////////////////////////////////////////////////
+    TCompletionCode CMetricSet::AddDefaultMetrics()
+    {
+        const uint32_t adapterId = m_device.GetAdapter().GetAdapterId();
+
+        const bool isXe2PlusPlatform =
+            IsPlatformPresentInMask( m_platformMask, GENERATION_BMG, adapterId ) ||
+            IsPlatformPresentInMask( m_platformMask, GENERATION_LNL, adapterId );
+
+        const uint32_t apiMask = m_isOam
+            ? API_TYPE_IOSTREAM
+            : ( MD_QUERY_API_MASK | API_TYPE_IOSTREAM );
+
+        CMetric* metric      = nullptr;
+        uint32_t metricIndex = 0;
+
+        metric = AddMetric( "GpuTime", "GPU Time Elapsed", "Time elapsed on the GPU during the measurement.", "GPU", 0, USAGE_FLAG_TIER_1 | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, apiMask, METRIC_TYPE_DURATION, RESULT_UINT64, "ns", 0, 0, HW_UNIT_GPU, nullptr, nullptr, "oa.fixed", metricIndex++, true );
+        MD_CHECK_PTR_RET_A( adapterId, metric, CC_ERROR_NO_MEMORY );
+
+        if( isXe2PlusPlatform )
+        {
+            metric->SetSnapshotReportReadEquation( "qw@0x08 100 UMUL $GpuTimestampFrequency 100000 UDIV UDIV 100 UMUL" );
+        }
+        else
+        {
+            metric->SetSnapshotReportReadEquation( "dw@0x08 1000000000 UMUL $GpuTimestampFrequency UDIV" );
+        }
+        if( !m_isOam )
+        {
+            metric->SetDeltaReportReadEquation( "qw@0x00" );
+        }
+        metric->SetSnapshotReportDeltaFunction( "NS_TIME" );
+
+        metric = AddMetric( "GpuCoreClocks", "GPU Core Clocks", "The total number of GPU core clocks elapsed during the measurement.", "GPU", 0, USAGE_FLAG_TIER_1 | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, apiMask, METRIC_TYPE_EVENT, RESULT_UINT64, "cycles", 0, 0, HW_UNIT_GPU, nullptr, nullptr, "oa.fixed", metricIndex++, true );
+        MD_CHECK_PTR_RET_A( adapterId, metric, CC_ERROR_NO_MEMORY );
+        metric->SetSnapshotReportReadEquation( "qw@0x18" );
+        if( !m_isOam )
+        {
+            metric->SetDeltaReportReadEquation( "qw@0x08" );
+        }
+        metric->SetSnapshotReportDeltaFunction( "DELTA 64" );
+
+        metric = AddMetric( "AvgGpuCoreFrequencyMHz", "AVG GPU Core Frequency", "Average GPU Core Frequency in the measurement.", "GPU", 0, USAGE_FLAG_TIER_1 | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, apiMask, METRIC_TYPE_EVENT, RESULT_UINT64, "MHz", 0, 0, HW_UNIT_GPU, nullptr, nullptr, "oa.fixed", metricIndex++, true );
+        MD_CHECK_PTR_RET_A( adapterId, metric, CC_ERROR_NO_MEMORY );
+        metric->SetNormalizationEquation( "$GpuCoreClocks 1000 UMUL $$GpuTime UDIV" );
+
+        metric = AddMetric( "ResultUncertainty", "Result Uncertainty", "Result uncertainty indicator", "GPU", 0, USAGE_FLAG_TIER_1 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, apiMask, METRIC_TYPE_EVENT, RESULT_UINT64, "percent", 0, 0, HW_UNIT_GPU, nullptr, nullptr, nullptr, metricIndex++, true );
+        MD_CHECK_PTR_RET_A( adapterId, metric, CC_ERROR_NO_MEMORY );
+        metric->SetNormalizationEquation( "100 $GpuCoreClocks 500 UMAX 5000 UMIN 500 USUB 45 UDIV USUB" );
+
+        return CC_OK;
+    }
 } // namespace MetricsDiscoveryInternal

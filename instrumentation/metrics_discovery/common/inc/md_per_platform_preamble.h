@@ -14,12 +14,6 @@ SPDX-License-Identifier: MIT
 
 #include "metrics_discovery_api.h"
 
-#if defined( _DEBUG ) || defined( _RELEASE_INTERNAL )
-    #define MD_IS_INTERNAL_BUILD 1
-#else
-    #define MD_IS_INTERNAL_BUILD 0
-#endif // defined(_DEBUG) || defined(_RELEASE_INTERNAL)
-
 #if defined( __linux__ )
 
     #define MD_INCLUDE_Common_METRICS 1
@@ -61,6 +55,8 @@ SPDX-License-Identifier: MIT
            MD_INCLUDE_PVC_GT2_METRICS          || \
            MD_INCLUDE_MTL_GT2_METRICS          || \
            MD_INCLUDE_MTL_GT3_METRICS          || \
+           MD_INCLUDE_BMG_METRICS              || \
+           MD_INCLUDE_LNL_METRICS              || \
            MD_INCLUDE_ARL_GT1_METRICS          || \
            MD_INCLUDE_ARL_GT2_METRICS )
     // clang-format on
@@ -95,6 +91,8 @@ SPDX-License-Identifier: MIT
         #define MD_INCLUDE_PVC_GT2_METRICS          1
         #define MD_INCLUDE_MTL_GT2_METRICS          1
         #define MD_INCLUDE_MTL_GT3_METRICS          1
+        #define MD_INCLUDE_BMG_METRICS              1
+        #define MD_INCLUDE_LNL_METRICS              1
         #define MD_INCLUDE_ARL_GT1_METRICS          1
         #define MD_INCLUDE_ARL_GT2_METRICS          1
     #endif

@@ -6,7 +6,7 @@ SPDX-License-Identifier: MIT
 
 ============================= end_copyright_notice ===========================*/
 
-//     File Name:  md_information.h
+//     File Name:  md_information.cpp
 
 //     Abstract:   C++ Metrics Discovery internal information implementation
 
@@ -44,11 +44,15 @@ namespace MetricsDiscoveryInternal
     //
     //////////////////////////////////////////////////////////////////////////////
     CInformation::CInformation( CMetricsDevice& device, uint32_t id, const char* name, const char* shortName, const char* longName, const char* group, uint32_t apiMask, TInformationType informationType, const char* informationUnits )
-        : m_device( device )
+        : m_params{}
+        , m_id( id ) // original, equal to filtered on creation
+        , m_ioReadEquation( nullptr )
+        , m_availabilityEquation( nullptr )
+        , m_queryReadEquation( nullptr )
+        , m_device( device )
     {
         const uint32_t adapterId = m_device.GetAdapter().GetAdapterId();
 
-        m_id                = id; // original, equal to filtered on creation
         m_params.IdInSet    = id; // filtered, equal to original on creation
         m_params.SymbolName = GetCopiedCString( name, adapterId );
         m_params.ShortName  = GetCopiedCString( shortName, adapterId );
@@ -59,13 +63,6 @@ namespace MetricsDiscoveryInternal
         m_params.InfoUnits  = GetCopiedCString( informationUnits, adapterId );
 
         m_params.OverflowFunction.FunctionType = DELTA_FUNCTION_NULL;
-
-        m_params.IoReadEquation    = nullptr;
-        m_params.QueryReadEquation = nullptr;
-
-        m_availabilityEquation = nullptr;
-        m_ioReadEquation       = nullptr;
-        m_queryReadEquation    = nullptr;
     }
 
     //////////////////////////////////////////////////////////////////////////////
@@ -81,11 +78,12 @@ namespace MetricsDiscoveryInternal
     //
     //////////////////////////////////////////////////////////////////////////////
     CInformation::CInformation( const CInformation& other )
-        : m_device( other.m_device )
+        : m_params{}
+        , m_id( other.m_id ) // initial id before filterings
+        , m_device( other.m_device )
     {
         const uint32_t adapterId = m_device.GetAdapter().GetAdapterId();
 
-        m_id                = other.m_id;             // initial id before filterings
         m_params.IdInSet    = other.m_params.IdInSet; // id after filterings
         m_params.SymbolName = GetCopiedCString( other.m_params.SymbolName, adapterId );
         m_params.ShortName  = GetCopiedCString( other.m_params.ShortName, adapterId );

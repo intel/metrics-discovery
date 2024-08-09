@@ -6,7 +6,7 @@ SPDX-License-Identifier: MIT
 
 ============================= end_copyright_notice ===========================*/
 
-//     File Name:  md_equation.h
+//     File Name:  md_equation.cpp
 
 //     Abstract:   C++ Metrics Discovery internal equation implementation
 
@@ -150,14 +150,15 @@ namespace MetricsDiscoveryInternal
                     {
                         Mask.Size = byteArraySize;
                         Mask.Data = new( std::nothrow ) uint8_t[byteArraySize]();
-                    }
-                    if( Mask.Data == nullptr )
-                    {
-                        MD_LOG( LOG_WARNING, "Cannot allocate memory for element's mask" );
-                    }
-                    else
-                    {
-                        iu_memcpy_s( &Mask.Data, byteArraySize, &element.Mask.Data, byteArraySize );
+
+                        if( Mask.Data == nullptr )
+                        {
+                            MD_LOG( LOG_WARNING, "Cannot allocate memory for element's mask" );
+                        }
+                        else
+                        {
+                            iu_memcpy_s( &Mask.Data, byteArraySize, &element.Mask.Data, byteArraySize );
+                        }
                     }
                 }
                 else
@@ -303,11 +304,9 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     TEquationElement_1_0* CEquation::GetEquationElement( uint32_t index )
     {
-        if( index < m_elementsVector.size() )
-        {
-            return static_cast<TEquationElement_1_0*>( &m_elementsVector[index] );
-        }
-        return nullptr;
+        return ( index < m_elementsVector.size() )
+            ? static_cast<TEquationElement_1_0*>( &m_elementsVector[index] )
+            : nullptr;
     }
 
     //////////////////////////////////////////////////////////////////////////////
@@ -332,8 +331,9 @@ namespace MetricsDiscoveryInternal
         std::list<uint64_t> equationStack  = {};
         uint64_t            qwordValue     = 0ULL;
         uint32_t            algorithmCheck = 0;
+        const uint32_t      elementsCount  = static_cast<uint32_t>( m_elementsVector.size() );
 
-        for( uint32_t i = 0; i < m_elementsVector.size(); ++i )
+        for( uint32_t i = 0; i < elementsCount; ++i )
         {
             const auto& element = m_elementsVector[i];
             switch( element.Type )
@@ -373,23 +373,33 @@ namespace MetricsDiscoveryInternal
 
                 case EQUATION_ELEM_GLOBAL_SYMBOL:
                 {
-                    const auto pValue = m_device.GetGlobalSymbolValueByName( element.SymbolName );
-                    if( pValue && ( pValue->ValueType == VALUE_TYPE_UINT64 ) )
+                    if( const auto pValue = m_device.GetGlobalSymbolValueByName( element.SymbolName );
+                        pValue )
                     {
-                        qwordValue = static_cast<uint64_t>( pValue->ValueUInt64 );
-                    }
-                    else if( pValue && ( pValue->ValueType == VALUE_TYPE_UINT32 ) )
-                    {
-                        qwordValue = static_cast<uint64_t>( pValue->ValueUInt32 );
-                    }
-                    else if( pValue && ( pValue->ValueType == VALUE_TYPE_BOOL ) )
-                    {
-                        qwordValue = static_cast<uint64_t>( pValue->ValueBool );
-                    }
-                    else if( pValue && ( pValue->ValueType == VALUE_TYPE_BYTEARRAY ) )
-                    {
-                        // TODO: should be improved (the array can be bigger than 64bits)
-                        qwordValue = *reinterpret_cast<uint64_t*>( pValue->ValueByteArray->Data );
+                        switch( pValue->ValueType )
+                        {
+                            case VALUE_TYPE_UINT64:
+                                qwordValue = static_cast<uint64_t>( pValue->ValueUInt64 );
+                                break;
+
+                            case VALUE_TYPE_UINT32:
+                                qwordValue = static_cast<uint64_t>( pValue->ValueUInt32 );
+                                break;
+
+                            case VALUE_TYPE_BOOL:
+                                qwordValue = static_cast<uint64_t>( pValue->ValueBool );
+                                break;
+
+                            case VALUE_TYPE_BYTEARRAY:
+                                // TODO: should be improved (the array can be bigger than 64bits)
+                                qwordValue = *reinterpret_cast<uint64_t*>( pValue->ValueByteArray->Data );
+                                break;
+
+                            default:
+                                MD_ASSERT_A( adapterId, false );
+                                qwordValue = 0ULL;
+                                break;
+                        }
                     }
                     else
                     {
@@ -501,7 +511,7 @@ namespace MetricsDiscoveryInternal
                     return false;
             }
         }
-        if( m_elementsVector.size() > 0 )
+        if( elementsCount > 0 )
         {
             // here should be only 1 element on the list - the result (if the equation is fine)
             MD_ASSERT_A( adapterId, algorithmCheck == 1 );
@@ -571,31 +581,6 @@ namespace MetricsDiscoveryInternal
     //     CEquation
     //
     // Method:
-    //     AddEquationElement
-    //
-    // Description:
-    //     Adds the element to the equation list.
-    //
-    // Input:
-    //     const CEquationElementInternal& element - equation element to add
-    //
-    // Output:
-    //     bool                                    - result of the operation
-    //
-    //////////////////////////////////////////////////////////////////////////////
-    bool CEquation::AddEquationElement( const CEquationElementInternal& element )
-    {
-        m_elementsVector.push_back( element );
-
-        return true;
-    }
-
-    //////////////////////////////////////////////////////////////////////////////
-    //
-    // Class:
-    //     CEquation
-    //
-    // Method:
     //     ParseEquationElement
     //
     // Description:
@@ -617,19 +602,19 @@ namespace MetricsDiscoveryInternal
 
         if( strcmp( equationString, "EuAggrDurationSlice" ) == 0 )
         {
-            const uint32_t platformIndex = m_device.GetPlatformIndex();
+            switch( m_device.GetPlatformIndex() )
+            {
+                case GENERATION_MTL:
+                case GENERATION_ARL:
+                case GENERATION_ACM:
+                case GENERATION_PVC:
+                case GENERATION_BMG:
+                case GENERATION_LNL:
+                    return ParseEquationString( "$Self $GpuSliceClocksCount $VectorEngineTotalCount UMUL FDIV 100 FMUL" );
 
-            // Workaround for renamed EuCoresTotalCount
-            const bool platformXeHpPlus = IsPlatformMatch(
-                platformIndex,
-                GENERATION_MTL,
-                GENERATION_ARL,
-                GENERATION_ACM,
-                GENERATION_PVC );
-
-            return ParseEquationString( platformXeHpPlus
-                    ? "$Self $GpuSliceClocksCount $VectorEngineTotalCount UMUL FDIV 100 FMUL"
-                    : "$Self $GpuSliceClocksCount $EuCoresTotalCount UMUL FDIV 100 FMUL" );
+                default:
+                    return ParseEquationString( "$Self $GpuSliceClocksCount $EuCoresTotalCount UMUL FDIV 100 FMUL" );
+            }
         }
         else if( strcmp( equationString, "EuAggrDuration" ) == 0 )
         {
@@ -841,16 +826,9 @@ namespace MetricsDiscoveryInternal
             iu_strncpy_s( element.SymbolNameInternal, sizeof( element.SymbolNameInternal ), &equationString[1], sizeof( element.SymbolNameInternal ) - 1 );
             element.SymbolName = element.SymbolNameInternal;
 
-            if( value == nullptr )
-            {
-                // Finish element as local counter symbol
-                element.Type = EQUATION_ELEM_LOCAL_COUNTER_SYMBOL;
-            }
-            else
-            {
-                // Finish element as global symbol
-                element.Type = EQUATION_ELEM_GLOBAL_SYMBOL;
-            }
+            element.Type = ( value == nullptr )
+                ? EQUATION_ELEM_LOCAL_COUNTER_SYMBOL // Finish element as local counter symbol
+                : EQUATION_ELEM_GLOBAL_SYMBOL;       // Finish element as global symbol
         }
         else if( strncmp( equationString, "i$", sizeof( "i$" ) - 1 ) == 0 )
         {
@@ -885,7 +863,9 @@ namespace MetricsDiscoveryInternal
             return false;
         }
 
-        return AddEquationElement( element );
+        m_elementsVector.push_back( element );
+
+        return true;
     }
 
     //////////////////////////////////////////////////////////////////////////////

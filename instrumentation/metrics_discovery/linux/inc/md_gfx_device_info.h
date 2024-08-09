@@ -384,6 +384,17 @@ namespace MetricsDiscoveryInternal
         { 0x7D51, TPlatformIndexGt( GENERATION_ARL, GFX_GTTYPE_GT2 ) },
         { 0x7D67, TPlatformIndexGt( GENERATION_ARL, GFX_GTTYPE_GT1 ) },
         { 0x7DD1, TPlatformIndexGt( GENERATION_ARL, GFX_GTTYPE_GT2 ) },
+
+        { 0xE202, TPlatformIndexGt( GENERATION_BMG, GFX_GTTYPE_UNDEFINED ) }, // X2
+        { 0xE20B, TPlatformIndexGt( GENERATION_BMG, GFX_GTTYPE_UNDEFINED ) },
+        { 0xE20C, TPlatformIndexGt( GENERATION_BMG, GFX_GTTYPE_UNDEFINED ) },
+        { 0xE20D, TPlatformIndexGt( GENERATION_BMG, GFX_GTTYPE_UNDEFINED ) },
+        { 0xE212, TPlatformIndexGt( GENERATION_BMG, GFX_GTTYPE_UNDEFINED ) },
+
+        { 0x64A0, TPlatformIndexGt( GENERATION_LNL, GFX_GTTYPE_UNDEFINED ) },
+        { 0x6420, TPlatformIndexGt( GENERATION_LNL, GFX_GTTYPE_UNDEFINED ) },
+        { 0x64B0, TPlatformIndexGt( GENERATION_LNL, GFX_GTTYPE_UNDEFINED ) },
+
     };
 
     std::map<GTDI_PLATFORM_INDEX, uint32_t> threadsPerEuMap{
@@ -407,6 +418,8 @@ namespace MetricsDiscoveryInternal
         { GENERATION_PVC, 8 },
         { GENERATION_MTL, 8 },
         { GENERATION_ARL, 8 },
+        { GENERATION_BMG, 8 },
+        { GENERATION_LNL, 8 },
     };
 
 } // namespace MetricsDiscoveryInternal

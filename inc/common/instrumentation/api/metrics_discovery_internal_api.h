@@ -46,7 +46,7 @@ namespace MetricsDiscovery
         PLATFORM_PVC      = 1 << 25 /*GENERATION_PVC*/,
         PLATFORM_ADLP     = 1 << 26 /*GENERATION_ADLP*/,
         PLATFORM_MTL      = 1 << 27 /*GENERATION_MTL*/,
-        // 28 reserved
+        PLATFORM_BMG      = 1 << 28 /*GENERATION_BMG*/,
         PLATFORM_ADLS     = 1 << 29 /*GENERATION_ADLS*/,
         PLATFORM_ADLN     = 1 << 30 /*GENERATION_ADLN*/,
         PLATFORM_FUTURE   = 0x80000000,
@@ -87,6 +87,7 @@ namespace MetricsDiscovery
     typedef enum EAddCustomMetricParamsType
     {
         METRIC_CUSTOM_PARAMS_1_0,
+        METRIC_CUSTOM_PARAMS_1_1,
     } TAddCustomMetricParamsType;
 
     ///////////////////////////////////////////////////////////////////////////////
@@ -313,6 +314,31 @@ namespace MetricsDiscovery
                 const char*       SignalName;
                 const char*       AvailabilityEquation;
             } CustomMetricParams_1_0;
+
+            struct
+            {
+                const char*       SymbolName;
+                const char*       ShortName;
+                const char*       GroupName;
+                const char*       LongName;
+                const char*       DxToOglAlias;
+                uint32_t          UsageFlagsMask;
+                uint32_t          ApiMask;
+                TMetricResultType ResultType;
+                const char*       MetricResultUnits;
+                TMetricType       MetricType;
+                int64_t           LowWatermark;
+                int64_t           HighWatermark;
+                THwUnitType       HwUnitType;
+                const char*       IoReadEquation;
+                const char*       QueryReadEquation;
+                const char*       DeltaFunction;
+                const char*       NormEquation;
+                const char*       MaxValueEquation;
+                const char*       SignalName;
+                const char*       AvailabilityEquation;
+                uint32_t          QueryModeMask;
+            } CustomMetricParams_1_1;
 
             struct
             {

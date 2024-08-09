@@ -45,6 +45,9 @@ namespace MetricsDiscoveryInternal
     typedef enum EReportType
     {
         OA_REPORT_TYPE_256B_A45_NOA16     = 2,
+        OA_REPORT_TYPE_320B_PEC64         = 8,
+        OA_REPORT_TYPE_576B_PEC64LL       = 9,
+        OA_REPORT_TYPE_640B_PEC64LL_NOA16 = 10,
         OA_REPORT_TYPE_128B_OAM           = 1 << GTDI_REPORT_TYPE_OAM_SHIFT,
         OA_REPORT_TYPE_192B_MPEC8LL_NOA16 = 2 << GTDI_REPORT_TYPE_OAM_SHIFT,
         OA_REPORT_TYPE_128B_MPEC8_NOA16   = 3 << GTDI_REPORT_TYPE_OAM_SHIFT,

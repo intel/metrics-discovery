@@ -36,6 +36,11 @@ namespace MetricsDiscoveryInternal
     ///////////////////////////////////////////////////////////////////////////////
     class CInformation;
 
+    struct SArchEvent;
+    using TArchEvent = SArchEvent;
+
+    class CMetricEnumerator;
+
     //////////////////////////////////////////////////////////////////////////////
     //
     // Class:
@@ -49,7 +54,9 @@ namespace MetricsDiscoveryInternal
     class CConcurrentGroup : public IInternalConcurrentGroup
     {
     public:
-        // API 1.0:
+        // API 1.13:
+        using IConcurrentGroup_1_13::AddMetricSet; // To avoid hiding by 1.13 interface function
+
         virtual TConcurrentGroupParamsLatest* GetParams( void );
         virtual IMetricSetLatest*             GetMetricSet( uint32_t index );
 
@@ -164,9 +171,10 @@ namespace MetricsDiscoveryInternal
 
     protected:
         // Static variables:
-        static constexpr uint32_t    SETS_VECTOR_INCREASE           = 16;
-        static constexpr uint32_t    INFORMATION_VECTOR_INCREASE    = 16;
-        static constexpr TReportType DEFAULT_METRIC_SET_REPORT_TYPE = OA_REPORT_TYPE_256B_A45_NOA16;
+        static constexpr uint32_t    SETS_VECTOR_INCREASE               = 16;
+        static constexpr uint32_t    INFORMATION_VECTOR_INCREASE        = 16;
+        static constexpr TReportType DEFAULT_METRIC_SET_REPORT_TYPE     = OA_REPORT_TYPE_256B_A45_NOA16;
+        static constexpr TReportType DEFAULT_METRIC_SET_REPORT_TYPE_XE2 = OA_REPORT_TYPE_576B_PEC64LL;
     };
 
 } // namespace MetricsDiscoveryInternal

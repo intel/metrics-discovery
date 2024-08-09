@@ -19,6 +19,8 @@ SPDX-License-Identifier: MIT
 #include "md_metric.h"
 #include "md_metric_set.h"
 #include "md_register_set.h"
+#include "md_metric_enumerator.h"
+#include "md_metric_prototype.h"
 
 #include <cmath>
 #include <cstring>
@@ -1282,6 +1284,46 @@ namespace MetricsDiscoveryInternal
 
     //////////////////////////////////////////////////////////////////////////////
     //
+    // Function:
+    //     IsQueryModeMatch
+    //
+    // Description:
+    //     Helper function to determinate if query mode is match with given query type mask.
+    //
+    // Input:
+    //     const TQueryMode queryMode     - query mode
+    //     const uint32_t   queryModeMask - TQueryModeMask mask.
+    //                                      TOaReportingType mask can be also passed.
+    //                                      Values are synchronized and validated by static_assert.
+    //
+    // Output:
+    //     bool                           - true if match
+    //
+    //////////////////////////////////////////////////////////////////////////////
+    bool IsQueryModeMatch( const TQueryMode queryMode, const uint32_t queryModeMask )
+    {
+        switch( queryMode )
+        {
+            case QUERY_MODE_RENDER:
+                return queryModeMask & QUERY_MODE_RENDER;
+
+            case QUERY_MODE_COMPUTE:
+                return queryModeMask & QUERY_MODE_COMPUTE;
+
+            case QUERY_MODE_GLOBAL:
+                return queryModeMask & QUERY_MODE_MASK_GLOBAL;
+
+            case QUERY_MODE_GLOBAL_EXTENDED:
+                return queryModeMask & QUERY_MODE_MASK_GLOBAL_EXTENDED;
+
+            default:
+                MD_LOG( LOG_DEBUG, "Unknown query mode: %u", queryMode );
+                return false;
+        }
+    }
+
+    //////////////////////////////////////////////////////////////////////////////
+    //
     // Group:
     //     Metrics Discovery Utils
     //
@@ -1390,6 +1432,11 @@ namespace MetricsDiscoveryInternal
     template void ClearVector( std::vector<CEquationElementInternal>& );
     template void ClearVector( std::vector<SGlobalSymbol*>& );
     template void ClearVector( std::vector<IOverride_1_2*>& );
+    template void ClearVector( std::vector<CMetricEnumerator*>& );
+    template void ClearVector( std::vector<CMetricPrototype*>& );
+    template void ClearVector( std::vector<TArchEvent*>& );
+    template void ClearVector( std::vector<THwEvent*>& );
+    template void ClearVector( std::vector<TMetricPrototypeOptionDescriptorLatest*>& );
     template void ClearList( std::list<uint64_t>& );
     template void ClearList( std::list<CRegisterSet*>& );
     template void ClearList( std::list<CMetricSet*>& );

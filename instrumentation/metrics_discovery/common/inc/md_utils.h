@@ -103,6 +103,7 @@ SPDX-License-Identifier: MIT
 
 #define MD_SECOND_IN_NS          1000000000ULL
 #define MD_GPU_TIMESTAMP_MASK_32 MD_BITMASK( 32 )
+#define MD_GPU_TIMESTAMP_MASK_56 MD_BITMASK( 56 )
 
 #define MD_BYTE_ARRAY_MAGIC_NUMBER 0xFFED8B17
 
@@ -151,6 +152,7 @@ namespace MetricsDiscoveryInternal
     bool            IsPlatformPresentInMask( const TByteArrayLatest* platformMask, const uint32_t platformIndex, const uint32_t adapterId );
 
     uint32_t CalculateEnabledBits( uint64_t value, uint64_t mask = UINT64_MAX );
+    bool     IsQueryModeMatch( const TQueryMode queryMode, const uint32_t queryModeMask );
 
     //////////////////////////////////////////////////////////////////////////////
     //

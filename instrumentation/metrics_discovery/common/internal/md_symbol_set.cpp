@@ -6,7 +6,7 @@ SPDX-License-Identifier: MIT
 
 ============================= end_copyright_notice ===========================*/
 
-//     File Name:  md_symbol_set.h
+//     File Name:  md_symbol_set.cpp
 
 //     Abstract:   C++ Metrics Discovery internal symbol set implementation
 
@@ -43,6 +43,9 @@ namespace MetricsDiscoveryInternal
         , m_maxSlice( 0 )
         , m_maxSubslicePerSlice( 0 )
         , m_maxDualSubslicePerSlice( 0 )
+        , m_maxL3Node( 0 )
+        , m_maxL3BankPerL3Node( 0 )
+        , m_maxCopyEngine( 0 )
     {
         m_symbolMap.reserve( SYMBOLS_MAP_INCREASE );
     }
@@ -577,6 +580,43 @@ namespace MetricsDiscoveryInternal
             ret                    = m_driverInterface.SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_COPY_ENGINE_TOTAL_COUNT, out, m_metricsDevice );
             typedValue.ValueUInt32 = out.ValueUint32;
         }
+        else if( name == "GtL3BankMask" )
+        {
+            ret = m_driverInterface.SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_L3_BANK_MASK, out, m_metricsDevice );
+
+            if( typedValue.ValueByteArray != nullptr )
+            {
+                DeleteByteArray( typedValue.ValueByteArray, adapterId );
+            }
+            TByteArray_1_0 byteArray  = { sizeof( out.ValueByteArray ), out.ValueByteArray };
+            typedValue.ValueByteArray = GetCopiedByteArray( &byteArray, adapterId );
+        }
+        else if( name == "GtL3NodeMask" || name == "GtSqidiMask" )
+        {
+            ret = m_driverInterface.SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_L3_NODE_MASK, out, m_metricsDevice );
+
+            if( typedValue.ValueByteArray != nullptr )
+            {
+                DeleteByteArray( typedValue.ValueByteArray, adapterId );
+            }
+            TByteArray_1_0 byteArray  = { sizeof( out.ValueByteArray ), out.ValueByteArray };
+            typedValue.ValueByteArray = GetCopiedByteArray( &byteArray, adapterId );
+        }
+        else if( name == "GtCopyEngineMask" )
+        {
+            ret = m_driverInterface.SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_COPY_ENGINE_MASK, out, m_metricsDevice );
+
+            if( typedValue.ValueByteArray != nullptr )
+            {
+                DeleteByteArray( typedValue.ValueByteArray, adapterId );
+            }
+            TByteArray_1_0 byteArray  = { sizeof( out.ValueByteArray ), out.ValueByteArray };
+            typedValue.ValueByteArray = GetCopiedByteArray( &byteArray, adapterId );
+        }
+        else if( name == "QueryMode" )
+        {
+            typedValue.ValueUInt32 = static_cast<uint32_t>( m_metricsDevice.GetQueryMode() );
+        }
         else
         {
             MD_LOG_A( adapterId, LOG_ERROR, "Unknown global symbol name: %.*s", static_cast<uint32_t>( name.length() ), name.data() );
@@ -616,54 +656,107 @@ namespace MetricsDiscoveryInternal
         const uint32_t adapterId     = m_metricsDevice.GetAdapter().GetAdapterId();
         const uint32_t platformIndex = m_metricsDevice.GetPlatformIndex();
 
-        if( name == "PlatformVersion" )
+        bool isPlatformVersionSupported = false;
+        bool isNewTermUsed              = false;
+        bool isDualSubsliceUsed         = false;
+        bool isOamSupported             = false;
+        bool isL3BankSupported          = false;
+        bool isXe2Plus                  = false;
+
+        switch( platformIndex )
         {
-            return platformIndex == GENERATION_ACM;
+            case GENERATION_TGL:
+            case GENERATION_DG1:
+            case GENERATION_XEHP_SDV:
+            case GENERATION_RKL:
+            case GENERATION_ADLP:
+            case GENERATION_ADLS:
+            case GENERATION_ADLN:
+                isDualSubsliceUsed = true;
+                break;
+
+            case GENERATION_ACM:
+                isPlatformVersionSupported = true;
+                isNewTermUsed              = true;
+                isDualSubsliceUsed         = true;
+                isOamSupported             = true;
+                break;
+
+            case GENERATION_PVC:
+                isNewTermUsed     = true;
+                isL3BankSupported = true;
+                break;
+
+            case GENERATION_MTL:
+            case GENERATION_ARL:
+                isNewTermUsed      = true;
+                isDualSubsliceUsed = true;
+                isOamSupported     = true;
+                break;
+
+            case GENERATION_BMG:
+                isPlatformVersionSupported = true;
+                isNewTermUsed              = true;
+                isOamSupported             = true;
+                isL3BankSupported          = true;
+                isXe2Plus                  = true;
+                break;
+
+            case GENERATION_LNL:
+                isNewTermUsed     = true;
+                isOamSupported    = true;
+                isL3BankSupported = true;
+                isXe2Plus         = true;
+                break;
+
+            default:
+                break;
         }
 
-        const bool isXeHpgPlus = IsPlatformMatch(
-            platformIndex,
-            GENERATION_MTL,
-            GENERATION_ARL,
-            GENERATION_ACM,
-            GENERATION_PVC );
-
-        const bool useDualSubslice = IsPlatformMatch(
-            platformIndex,
-            GENERATION_MTL,
-            GENERATION_ARL,
-            GENERATION_TGL,
-            GENERATION_DG1,
-            GENERATION_XEHP_SDV,
-            GENERATION_ACM,
-            GENERATION_RKL,
-            GENERATION_ADLP,
-            GENERATION_ADLS,
-            GENERATION_ADLN );
+        if( name == "PlatformVersion" )
+        {
+            MD_LOG_A( adapterId, LOG_DEBUG, "Symbol name is%s supported: %.*s", isPlatformVersionSupported ? "" : " not", static_cast<uint32_t>( name.length() ), name.data() );
+            return isPlatformVersionSupported;
+        }
 
         // Media related global symbols
         if( name == "MediaOABufferMinSize" || name == "MediaOABufferMaxSize" )
         {
-            const bool oamSupported = IsPlatformMatch(
-                platformIndex,
-                GENERATION_MTL,
-                GENERATION_ARL,
-                GENERATION_ACM );
-
-            MD_LOG_A( adapterId, LOG_DEBUG, "Media symbol name is%s supported: %.*s", oamSupported ? "" : " not", static_cast<uint32_t>( name.length() ), name.data() );
-
-            return oamSupported;
+            MD_LOG_A( adapterId, LOG_DEBUG, "Media symbol name is%s supported: %.*s", isOamSupported ? "" : " not", static_cast<uint32_t>( name.length() ), name.data() );
+            return isOamSupported;
         }
 
         if( name == "L3BankTotalCount" )
         {
-            const bool isL3BankSupported = IsPlatformMatch(
-                platformIndex,
-                GENERATION_PVC );
-
             MD_LOG_A( adapterId, LOG_DEBUG, "Symbol name is%s supported: %.*s", isL3BankSupported ? "" : " not", static_cast<uint32_t>( name.length() ), name.data() );
-
             return isL3BankSupported;
+        }
+
+        // Xe2+ related global symbols
+        if( name == "L3NodeTotalCount" ||
+            name == "SqidiTotalCount" ||
+            name == "ComputeEngineTotalCount" ||
+            name == "CopyEngineTotalCount" ||
+            name == "QueryMode" ||
+            name == "GtL3BankMask" ||
+            name == "GtL3NodeMask" ||
+            name == "GtSqidiMask" ||
+            name == "GtCopyEngineMask" )
+        {
+            MD_LOG_A( adapterId, LOG_DEBUG, "Symbol name is%s supported: %.*s", isXe2Plus ? "" : " not", static_cast<uint32_t>( name.length() ), name.data() );
+            return isXe2Plus;
+        }
+
+        if( name == "L3Size" ||
+            name == "MemoryPeakThroghputMB" ||
+            name == "ApertureSize" ||
+            name == "LLCSize" ||
+            name == "EdramSize" ||
+            name == "NumberOfShadingUnits" ||
+            name == "NumberOfRenderOutputUnits" )
+        {
+            MD_LOG_A( adapterId, LOG_DEBUG, "Symbol name is%s supported: %.*s", isXe2Plus ? " not" : "", static_cast<uint32_t>( name.length() ), name.data() );
+            return !isXe2Plus;
         }
 
         std::map<std::string_view, std::string_view> globalSymbolMap{
@@ -673,7 +766,7 @@ namespace MetricsDiscoveryInternal
             { "EuThreadsCount", "VectorEngineThreadsCount" },
         };
 
-        if( useDualSubslice )
+        if( isDualSubsliceUsed )
         {
             globalSymbolMap.emplace( "EuSubslicesTotalCount", "" );
             globalSymbolMap.emplace( "EuDualSubslicesTotalCount", "XeCoreTotalCount" );
@@ -697,7 +790,7 @@ namespace MetricsDiscoveryInternal
         }
 
         // Not supported symbol names or old ones
-        if( isXeHpgPlus )
+        if( isNewTermUsed )
         {
             if( globalSymbolMap.find( name ) != globalSymbolMap.end() )
             {
@@ -719,7 +812,7 @@ namespace MetricsDiscoveryInternal
                 // Dual subslice/subslice support
                 if( ( iterator->first == name ) && ( iterator->second == "" ) )
                 {
-                    MD_LOG_A( adapterId, LOG_DEBUG, "%.*s symbol is not supported because platform %s dual subslices", static_cast<uint32_t>( name.length() ), name.data(), useDualSubslice ? "supports" : "does not support" );
+                    MD_LOG_A( adapterId, LOG_DEBUG, "%.*s symbol is not supported because platform %s dual subslices", static_cast<uint32_t>( name.length() ), name.data(), isDualSubsliceUsed ? "supports" : "does not support" );
                     return false;
                 }
             }
@@ -921,14 +1014,13 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     TCompletionCode CSymbolSet::AddSymbolBYTEARRAY( const char* name, TByteArrayLatest* value, TSymbolType symbolType )
     {
-        TCompletionCode ret        = CC_OK;
+        const uint32_t adapterId = m_metricsDevice.GetAdapter().GetAdapterId();
+
         TTypedValue_1_0 typedValue = {};
+        typedValue.ValueType       = VALUE_TYPE_BYTEARRAY;
+        typedValue.ValueByteArray  = value;
 
-        typedValue.ValueType      = VALUE_TYPE_BYTEARRAY;
-        typedValue.ValueByteArray = value;
-        const uint32_t adapterId  = m_metricsDevice.GetAdapter().GetAdapterId();
-
-        ret = AddSymbol( name, typedValue, symbolType );
+        const auto ret = AddSymbol( name, typedValue, symbolType );
 
         MD_CHECK_CC_MSG_A( adapterId, ret, "Failed to add global symbol: %s, ret: %d", name, ret );
         return ret;
@@ -1045,9 +1137,10 @@ namespace MetricsDiscoveryInternal
     ///////////////////////////////////////////////////////////////////////////////
     TCompletionCode CSymbolSet::DetectMaxSlicesInfo()
     {
-        TCompletionCode           ret       = CC_OK;
-        GTDIDeviceInfoParamExtOut out       = {};
-        const uint32_t            adapterId = m_metricsDevice.GetAdapter().GetAdapterId();
+        TCompletionCode           ret           = CC_OK;
+        GTDIDeviceInfoParamExtOut out           = {};
+        const uint32_t            adapterId     = m_metricsDevice.GetAdapter().GetAdapterId();
+        const uint32_t            platformIndex = m_metricsDevice.GetPlatformIndex();
 
         ret = m_driverInterface.SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_MAX_SLICE, out, m_metricsDevice );
         MD_CHECK_CC_RET_A( adapterId, ret )
@@ -1060,6 +1153,30 @@ namespace MetricsDiscoveryInternal
         ret = m_driverInterface.SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_MAX_DUALSUBSLICE_PER_SLICE, out, m_metricsDevice );
         MD_CHECK_CC_RET_A( adapterId, ret )
         m_maxDualSubslicePerSlice = out.ValueUint32;
+
+        switch( platformIndex )
+        {
+            case GENERATION_BMG:
+            case GENERATION_LNL:
+            {
+                ret = m_driverInterface.SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_MAX_L3_NODE, out, m_metricsDevice );
+                MD_CHECK_CC_RET_A( adapterId, ret )
+                m_maxL3Node = out.ValueUint32;
+
+                ret = m_driverInterface.SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_MAX_L3_BANK_PER_L3_NODE, out, m_metricsDevice );
+                MD_CHECK_CC_RET_A( adapterId, ret )
+                m_maxL3BankPerL3Node = out.ValueUint32;
+
+                ret = m_driverInterface.SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_MAX_COPY_ENGINE, out, m_metricsDevice );
+                MD_CHECK_CC_RET_A( adapterId, ret )
+                m_maxCopyEngine = out.ValueUint32;
+
+                break;
+            }
+
+            default:
+                break;
+        }
 
         return CC_OK;
     }
@@ -1111,11 +1228,25 @@ namespace MetricsDiscoveryInternal
         boolValue.ValueType            = VALUE_TYPE_BOOL;
         boolValue.ValueBool            = true;
 
-        const bool useDualSubslice = IsPlatformMatch(
-            platformIndex,
-            GENERATION_MTL,
-            GENERATION_ARL,
-            GENERATION_ACM );
+        bool useDualSubslice = false;
+        bool isXe2Plus       = false;
+
+        switch( platformIndex )
+        {
+            case GENERATION_MTL:
+            case GENERATION_ARL:
+            case GENERATION_ACM:
+                useDualSubslice = true;
+                break;
+
+            case GENERATION_BMG:
+            case GENERATION_LNL:
+                isXe2Plus = true;
+                break;
+
+            default:
+                break;
+        }
 
         // Unpack mask
         if( name == "GtSliceMask" )
@@ -1147,7 +1278,10 @@ namespace MetricsDiscoveryInternal
 
                     if( mask[currentByte] & MD_BIT( currentBit ) )
                     {
-                        std::string dynamicSymbolName = "GtSlice" + std::to_string( i ) + subSliceString + std::to_string( j );
+                        std::string dynamicSymbolName = ( isXe2Plus )
+                            ? "GtXeCore" + std::to_string( i * GetGtMaxSubslicePerSlice( platformIndex ) + j ) // For Xe2 actual max number must be used.
+                            : "GtSlice" + std::to_string( i ) + subSliceString + std::to_string( j );
+
                         AddSymbol( dynamicSymbolName.c_str(), boolValue, SYMBOL_TYPE_IMMEDIATE );
                     }
                 }
@@ -1189,11 +1323,106 @@ namespace MetricsDiscoveryInternal
                 AddSymbol( "EuDualSubslicesSlice0123Count", activeDualSubsliceForFirst4Slices, SYMBOL_TYPE_IMMEDIATE );
             }
         }
+        else if( name == "GtL3BankMask" )
+        {
+            for( uint32_t i = 0; i < m_maxL3Node; ++i )
+            {
+                for( uint32_t j = 0; j < m_maxL3BankPerL3Node; ++j )
+                {
+                    const uint32_t l3BankIndex = i * m_maxL3BankPerL3Node + j;
+                    const uint32_t currentByte = ( l3BankIndex ) / MD_BITS_PER_BYTE;
+                    const uint32_t currentBit  = ( l3BankIndex ) % MD_BITS_PER_BYTE;
+
+                    if( mask[currentByte] & MD_BIT( currentBit ) )
+                    {
+                        std::string dynamicSymbolName = "GtL3Bank" + std::to_string( l3BankIndex );
+                        AddSymbol( dynamicSymbolName.c_str(), boolValue, SYMBOL_TYPE_IMMEDIATE );
+                    }
+                }
+            }
+        }
+        else if( name == "GtL3NodeMask" )
+        {
+            for( uint32_t i = 0; i < m_maxL3Node; ++i )
+            {
+                const uint32_t currentByte = ( i ) / MD_BITS_PER_BYTE;
+                const uint32_t currentBit  = ( i ) % MD_BITS_PER_BYTE;
+
+                if( mask[currentByte] & MD_BIT( currentBit ) )
+                {
+                    std::string dynamicSymbolName = "GtL3Node" + std::to_string( i );
+                    AddSymbol( dynamicSymbolName.c_str(), boolValue, SYMBOL_TYPE_IMMEDIATE );
+                }
+            }
+        }
+        else if( name == "GtSqidiMask" )
+        {
+            for( uint32_t i = 0; i < m_maxL3Node; ++i )
+            {
+                const uint32_t currentByte = ( i ) / MD_BITS_PER_BYTE;
+                const uint32_t currentBit  = ( i ) % MD_BITS_PER_BYTE;
+
+                if( mask[currentByte] & MD_BIT( currentBit ) )
+                {
+                    std::string dynamicSymbolName = "GtSqidi" + std::to_string( i );
+                    AddSymbol( dynamicSymbolName.c_str(), boolValue, SYMBOL_TYPE_IMMEDIATE );
+                }
+            }
+        }
+        else if( name == "GtCopyEngineMask" )
+        {
+            for( uint32_t i = 0; i < m_maxCopyEngine; ++i )
+            {
+                const uint32_t currentByte = ( i ) / MD_BITS_PER_BYTE;
+                const uint32_t currentBit  = ( i ) % MD_BITS_PER_BYTE;
+
+                if( mask[currentByte] & MD_BIT( currentBit ) )
+                {
+                    std::string dynamicSymbolName = "GtCopyEngine" + std::to_string( i );
+                    AddSymbol( dynamicSymbolName.c_str(), boolValue, SYMBOL_TYPE_IMMEDIATE );
+                }
+            }
+        }
         else
         {
             MD_LOG_A( m_metricsDevice.GetAdapter().GetAdapterId(), LOG_WARNING, "%s - unknown mask, cannot unpack", symbol->symbol_1_0.SymbolName );
         }
 
         return CC_OK;
+    }
+    ///////////////////////////////////////////////////////////////////////////////
+    //
+    // Class:
+    //     CSymbolSet
+    //
+    // Method:
+    //     GetGtMaxSubslicePerSlice
+    //
+    // Input:
+    //     const uint32_t platformId - platform Id
+    //
+    // Description:
+    //     Returns maximum number of subslice per slice
+    //     for current platform.
+    //
+    // Output:
+    //     uint8_t - maximum number of subslice per slice
+    //               for current platform.
+    //
+    ///////////////////////////////////////////////////////////////////////////////
+    uint8_t CSymbolSet::GetGtMaxSubslicePerSlice( const uint32_t platformId )
+    {
+        const uint32_t adapterId = m_metricsDevice.GetAdapter().GetAdapterId();
+
+        switch( platformId )
+        {
+            case GENERATION_BMG:
+            case GENERATION_LNL:
+                return 4;
+            default:
+                MD_LOG_A( adapterId, LOG_DEBUG, "Current platform is not supported: %u", platformId );
+                MD_ASSERT_A( adapterId, false );
+                return 0;
+        }
     }
 } // namespace MetricsDiscoveryInternal

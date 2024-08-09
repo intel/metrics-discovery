@@ -96,5 +96,15 @@ intel-metrics-discovery-pkgconfig-[VERSION].x86_64.rpm
 
 *Note: To clear CMake params remove CMakeCache.txt, then regenerate.*
 
+## Support
+
+Please file a GitHub issue to report an issue or ask questions.
+
+## How to Contribute
+
+Contributions to the Metrics-Discovery are welcomed and encouraged.
+Please see [CONTRIBUTING](CONTRIBUTING.md) for details how to
+contribute to the project.
+
 ##
 ___(*) Other names and brands my be claimed as property of others.___

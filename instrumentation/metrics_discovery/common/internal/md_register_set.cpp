@@ -6,7 +6,7 @@ SPDX-License-Identifier: MIT
 
 ============================= end_copyright_notice ===========================*/
 
-//     File Name:  md_register_set.h
+//     File Name:  md_register_set.cpp
 
 //     Abstract:   C++ Metrics Discovery internal registry set implementation
 

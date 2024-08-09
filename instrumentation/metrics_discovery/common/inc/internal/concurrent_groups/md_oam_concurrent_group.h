@@ -36,6 +36,11 @@ namespace MetricsDiscoveryInternal
     class COAMConcurrentGroup : public COAConcurrentGroup
     {
     public:
+        // API 1.13:
+        virtual IMetricEnumerator_1_13* GetMetricEnumerator( void ) override;
+        virtual IMetricSet_1_13*        AddMetricSet( const char* symbolName, const char* shortName ) override;
+
+    public:
         // Constructor:
         COAMConcurrentGroup( CMetricsDevice& device, const char* name, const char* description, const uint32_t measurementTypeMask );
 

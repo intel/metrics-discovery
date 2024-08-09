@@ -62,15 +62,17 @@ namespace MetricsDiscoveryInternal
     //
     //////////////////////////////////////////////////////////////////////////////
     TCompletionCode CSubDeviceEngines::AddEngine(
-        const uint32_t                  engineClass,
-        const uint32_t                  engineInstance,
-        [[maybe_unused]] const uint32_t gtId,
-        [[maybe_unused]] const uint32_t oaUnit )
+        const uint32_t engineClass,
+        const uint32_t engineInstance,
+        const uint32_t gtId,
+        const uint32_t oaUnit )
     {
         TEngineParamsLatest engine             = {};
         engine.EngineId.Type                   = ENGINE_ID_TYPE_CLASS_INSTANCE;
         engine.EngineId.ClassInstance.Class    = engineClass;
         engine.EngineId.ClassInstance.Instance = engineInstance;
+        engine.GtId                            = gtId;
+        engine.OaUnit                          = oaUnit;
 
         m_engines.push_back( std::move( engine ) );
 
@@ -170,10 +172,14 @@ namespace MetricsDiscoveryInternal
     // Description:
     //     CSubDevice constructor.
     //
+    // Input:
+    //     CAdapter& adapter - adapter.
+    //
     //////////////////////////////////////////////////////////////////////////////
     CSubDevices::CSubDevices( CAdapter& adapter )
         : m_adapter( adapter )
     {
+        m_subDevices.resize( 1, nullptr ); // Space for one root device.
     }
 
     //////////////////////////////////////////////////////////////////////////////
@@ -452,9 +458,9 @@ namespace MetricsDiscoveryInternal
     {
         uint32_t count = 0;
 
-        for( uint32_t i = 0; i < m_subDevices.size(); ++i )
+        for( auto& subDevice : m_subDevices )
         {
-            count += ( m_subDevices[i] != nullptr )
+            count += ( subDevice != nullptr )
                 ? 1
                 : 0;
         }
@@ -474,10 +480,10 @@ namespace MetricsDiscoveryInternal
     //     Checks if given sub device exists.
     //
     // Input:
-    //     const CMetricsDevice* metricsDevice  - sub device
+    //     const CMetricsDevice* metricsDevice - sub device
     //
     // Output:
-    //     bool                                 - true if sub device found
+    //     bool                                - true if sub device found
     //
     //////////////////////////////////////////////////////////////////////////////
     bool CSubDevices::FindDevice( const CMetricsDevice* metricsDevice )
@@ -610,7 +616,7 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     void CSubDevices::SetRootDevice( CMetricsDevice* metricsDevice )
     {
-        if( IsSupported() && m_subDevices[MD_ROOT_DEVICE_INDEX] == nullptr )
+        if( m_subDevices[MD_ROOT_DEVICE_INDEX] == nullptr )
         {
             m_subDevices[MD_ROOT_DEVICE_INDEX] = metricsDevice;
         }
@@ -635,11 +641,12 @@ namespace MetricsDiscoveryInternal
     {
         // Removes device from cache, metricsDevice instance
         // will be removed by original CloseMetricsDevice.
-        for( uint32_t i = 0; i < m_subDevices.size(); ++i )
+        for( auto& subDevice : m_subDevices )
         {
-            if( m_subDevices[i] == metricsDevice )
+            if( subDevice == metricsDevice )
             {
-                m_subDevices[i] = nullptr;
+                subDevice = nullptr;
+                break;
             }
         }
     }

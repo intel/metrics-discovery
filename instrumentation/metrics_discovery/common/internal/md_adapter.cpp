@@ -6,7 +6,7 @@ SPDX-License-Identifier: MIT
 
 ============================= end_copyright_notice ===========================*/
 
-//     File Name:  md_adapter.h
+//     File Name:  md_adapter.cpp
 
 //     Abstract:   C++ Metrics Discovery internal adapter implementation
 
@@ -44,7 +44,6 @@ namespace MetricsDiscoveryInternal
         , m_params( params )
         , m_adapterHandle( &adapterHandle )
         , m_driverInterface( nullptr )
-        , m_metricsDevice( nullptr )
         , m_openCloseSemaphore( nullptr )
         , m_subDevices( *this )
         , m_subDeviceParams{}
@@ -79,7 +78,6 @@ namespace MetricsDiscoveryInternal
     {
         MD_SAFE_DELETE_ARRAY( m_params.ShortName );
 
-        MD_SAFE_DELETE( m_metricsDevice );
         MD_SAFE_DELETE( m_driverInterface );
 
         if( m_adapterHandle )
@@ -232,7 +230,7 @@ namespace MetricsDiscoveryInternal
         }
 
         // 2. Allow resetting only if no metrics device objects are created
-        if( !m_metricsDevice )
+        if( m_subDevices.GetDeviceCount() == 0 )
         {
             if( CDriverInterface::IsSupportEnableRequired() )
             {
@@ -297,7 +295,7 @@ namespace MetricsDiscoveryInternal
 
         TCompletionCode retVal = CC_OK;
 
-        // if MD_METRIC_EXTENSION environment var is set, OpenMetricsDeviceFromFileByIndex  instead
+        // if MD_METRIC_EXTENSION environment var is set, OpenMetricsDeviceFromFileByIndex instead
         const char* metricFilename = iu_dupenv_s( MD_METRIC_EXTENSION );
         if( metricFilename != nullptr )
         {
@@ -325,18 +323,19 @@ namespace MetricsDiscoveryInternal
         }
 
         // 2. Create or return existing metrics device object
-        if( m_metricsDevice )
+        if( CMetricsDevice* device = m_subDevices.GetDevice( subDeviceIndex );
+            device )
         {
-            *metricsDevice = m_metricsDevice;
+            *metricsDevice = device;
             retVal         = CC_ALREADY_INITIALIZED;
-            ++m_metricsDevice->GetReferenceCounter();
+            ++device->GetReferenceCounter();
         }
         else
         {
             retVal = CreateMetricsDevice( metricsDevice, subDeviceIndex );
-            if( retVal == CC_OK )
+            if( retVal == CC_OK && *metricsDevice )
             {
-                ++m_metricsDevice->GetReferenceCounter();
+                ++( *metricsDevice )->GetReferenceCounter();
 
                 if( subDeviceIndex == MD_ROOT_DEVICE_INDEX )
                 {
@@ -433,6 +432,31 @@ namespace MetricsDiscoveryInternal
     //     CAdapter
     //
     // Method:
+    //     OpenMetricsDevice
+    //
+    // Description:
+    //     Opens metrics device or retrieves an instance opened before. Only one
+    //     instance per adapter may exist. All OpenMetricsDevice() calls are
+    //     reference counted.
+    //
+    // Input:
+    //     IMetricsDevice_1_13** metricsDevice - [out] created / retrieved metrics device
+    //
+    // Output:
+    //     TCompletionCode                     - CC_OK or CC_ALREADY_INITIALIZED means success
+    //
+    //////////////////////////////////////////////////////////////////////////////
+    TCompletionCode CAdapter::OpenMetricsDevice( IMetricsDevice_1_13** metricsDevice )
+    {
+        return OpenMetricsDeviceByIndex( (CMetricsDevice**) metricsDevice, MD_ROOT_DEVICE_INDEX );
+    }
+
+    //////////////////////////////////////////////////////////////////////////////
+    //
+    // Class:
+    //     CAdapter
+    //
+    // Method:
     //     OpenMetricsDeviceFromFileByIndex
     //
     // Description:
@@ -466,33 +490,39 @@ namespace MetricsDiscoveryInternal
         }
 
         // 2. Create 'standard' metrics device object if needed
-        if( !m_metricsDevice )
+        CMetricsDevice* device = m_subDevices.GetDevice( subDeviceIndex );
+        if( !device )
         {
-            retVal = CreateMetricsDevice( nullptr, subDeviceIndex );
+            retVal = CreateMetricsDevice( &device, subDeviceIndex );
         }
         MD_ASSERT_A( m_adapterId, m_driverInterface != nullptr );
 
         // 3. Load from file or return existing metrics device object
-        if( retVal == CC_OK )
+        if( retVal == CC_OK && device )
         {
-            if( m_metricsDevice->IsOpenedFromFile() )
+            if( device->IsOpenedFromFile() )
             {
-                *metricsDevice = m_metricsDevice;
+                *metricsDevice = device;
                 retVal         = CC_ALREADY_INITIALIZED;
-                ++m_metricsDevice->GetReferenceCounter();
+                ++device->GetReferenceCounter();
             }
             else
             {
-                retVal = m_metricsDevice->OpenFromFile( fileName );
+                retVal = device->OpenFromFile( fileName );
                 if( retVal == CC_OK )
                 {
-                    *metricsDevice = m_metricsDevice;
-                    ++m_metricsDevice->GetReferenceCounter();
+                    *metricsDevice = device;
+                    ++device->GetReferenceCounter();
+
+                    if( subDeviceIndex == MD_ROOT_DEVICE_INDEX )
+                    {
+                        m_subDevices.SetRootDevice( device );
+                    }
                 }
-                else if( !m_metricsDevice->GetReferenceCounter() )
+                else if( !device->GetReferenceCounter() )
                 {
                     // If this was a first call to OpenMetricsDevice
-                    DestroyMetricsDevice();
+                    DestroyMetricsDevice( device );
                 }
             }
         }
@@ -591,6 +621,33 @@ namespace MetricsDiscoveryInternal
     //     CAdapter
     //
     // Method:
+    //     OpenMetricsDeviceFromFile
+    //
+    // Description:
+    //     Opens metrics device or uses an instance opened before (just like OpenMetricsDevice),
+    //     then loads custom metric sets / metrics from a file and merged them into the 'standard'
+    //     metrics device.
+    //
+    // Input:
+    //     const char*           fileName       - custom metric file
+    //     void*                 openParams     - open params
+    //     IMetricsDevice_1_13** metricsDevice  - [out] created / retrieved metrics device
+    //
+    // Output:
+    //     TCompletionCode                      - CC_OK or CC_ALREADY_INITIALIZED means success
+    //
+    //////////////////////////////////////////////////////////////////////////////
+    TCompletionCode CAdapter::OpenMetricsDeviceFromFile( const char* fileName, void* openParams, IMetricsDevice_1_13** metricsDevice )
+    {
+        return OpenMetricsDeviceFromFileByIndex( fileName, openParams, (CMetricsDevice**) metricsDevice, MD_ROOT_DEVICE_INDEX );
+    }
+
+    //////////////////////////////////////////////////////////////////////////////
+    //
+    // Class:
+    //     CAdapter
+    //
+    // Method:
     //     OpenMetricsSubDevice
     //
     // Description:
@@ -631,22 +688,22 @@ namespace MetricsDiscoveryInternal
         }
 
         // Check if device is already created.
-        m_metricsDevice = m_subDevices.GetDevice( subDeviceIndex );
+        CMetricsDevice* device = m_subDevices.GetDevice( subDeviceIndex );
 
         // Create new one if needed or increment reference counter.
-        if( m_metricsDevice == nullptr )
+        if( device == nullptr )
         {
-            m_metricsDevice = m_subDevices.OpenDevice( subDeviceIndex );
-            result          = m_metricsDevice ? CC_OK : CC_ERROR_GENERAL;
+            device = m_subDevices.OpenDevice( subDeviceIndex );
+            result = device ? CC_OK : CC_ERROR_GENERAL;
         }
         else
         {
-            ++m_metricsDevice->GetReferenceCounter();
+            ++device->GetReferenceCounter();
             result = CC_ALREADY_INITIALIZED;
         }
 
         MD_LOG_EXIT_A( m_adapterId )
-        *metricsDevice = m_metricsDevice;
+        *metricsDevice = device;
         return result;
     }
 
@@ -728,6 +785,30 @@ namespace MetricsDiscoveryInternal
     //     CAdapter
     //
     // Method:
+    //     OpenMetricsSubDevice
+    //
+    // Description:
+    //     Opens metrics sub device or retrieves an instance opened before.
+    //
+    // Input:
+    //     const uint32_t          subDeviceIndex - sub device index to create
+    //     IMetricsDevice_1_13**   metricsDevice  - [out] created / retrieved metrics sub device
+    //
+    // Output:
+    //     TCompletionCode                        - CC_OK or CC_ALREADY_INITIALIZED means success
+    //
+    //////////////////////////////////////////////////////////////////////////////
+    TCompletionCode CAdapter::OpenMetricsSubDevice( const uint32_t subDeviceIndex, IMetricsDevice_1_13** metricsDevice )
+    {
+        return OpenMetricsSubDevice( subDeviceIndex, (CMetricsDevice**) metricsDevice );
+    }
+
+    //////////////////////////////////////////////////////////////////////////////
+    //
+    // Class:
+    //     CAdapter
+    //
+    // Method:
     //     OpenMetricsSubDeviceFromFile
     //
     // Description:
@@ -773,22 +854,22 @@ namespace MetricsDiscoveryInternal
         }
 
         // Check if device is already created.
-        m_metricsDevice = m_subDevices.GetDevice( subDeviceIndex );
+        CMetricsDevice* device = m_subDevices.GetDevice( subDeviceIndex );
 
         // Create new one if needed or increment reference counter.
-        if( m_metricsDevice == nullptr )
+        if( device == nullptr )
         {
-            m_metricsDevice = m_subDevices.OpenDeviceFromFile( subDeviceIndex, fileName, openParams );
-            result          = m_metricsDevice ? CC_OK : CC_ERROR_GENERAL;
+            device = m_subDevices.OpenDeviceFromFile( subDeviceIndex, fileName, openParams );
+            result = device ? CC_OK : CC_ERROR_GENERAL;
         }
         else
         {
-            ++m_metricsDevice->GetReferenceCounter();
+            ++device->GetReferenceCounter();
             result = CC_ALREADY_INITIALIZED;
         }
 
         MD_LOG_EXIT_A( m_adapterId )
-        *metricsDevice = m_metricsDevice;
+        *metricsDevice = device;
         return result;
     }
 
@@ -882,6 +963,34 @@ namespace MetricsDiscoveryInternal
     //     CAdapter
     //
     // Method:
+    //     OpenMetricsSubDeviceFromFile
+    //
+    // Description:
+    //     Opens metrics device or uses an instance opened before (just like OpenMetricsDevice),
+    //     then loads custom metric sets / metrics from a file and merged them into the 'standard'
+    //     metrics device.
+    //
+    // Input:
+    //     const uint32_t             subDeviceIndex  - sub device index to create
+    //     const char*                fileName        - custom metric file
+    //     void*                      openParams      - open params
+    //     IMetricsDevice_1_13**      metricsDevice   - [out] created / retrieved metrics device
+    //
+    // Output:
+    //     TCompletionCode                            - CC_OK or CC_ALREADY_INITIALIZED means success
+    //
+    //////////////////////////////////////////////////////////////////////////////
+    TCompletionCode CAdapter::OpenMetricsSubDeviceFromFile( const uint32_t subDeviceIndex, const char* fileName, void* openParams, IMetricsDevice_1_13** metricsDevice )
+    {
+        return OpenMetricsSubDeviceFromFile( subDeviceIndex, fileName, openParams, (CMetricsDevice**) metricsDevice );
+    }
+
+    //////////////////////////////////////////////////////////////////////////////
+    //
+    // Class:
+    //     CAdapter
+    //
+    // Method:
     //     CloseMetricsDevice
     //
     // Description:
@@ -919,10 +1028,9 @@ namespace MetricsDiscoveryInternal
         // 3. Check whether correct metrics device was passed
         if( retVal == CC_OK )
         {
-            const bool validDevice    = metricsDevice == m_metricsDevice;
-            const bool validSubDevice = m_subDevices.FindDevice( metricsDevice );
+            const bool validDevice = m_subDevices.FindDevice( metricsDevice );
 
-            if( !validDevice && !validSubDevice )
+            if( !validDevice )
             {
                 MD_LOG_A( m_adapterId, LOG_ERROR, "Pointers mismatch" );
                 retVal = CC_ERROR_GENERAL;
@@ -932,18 +1040,15 @@ namespace MetricsDiscoveryInternal
         // 4. Destroy or decrease reference counter for existing metrics device object
         if( retVal == CC_OK )
         {
-            // Set as default device to remove.
-            m_metricsDevice = metricsDevice;
-
-            if( m_metricsDevice->GetReferenceCounter() > 1 )
+            if( metricsDevice->GetReferenceCounter() > 1 )
             {
-                --m_metricsDevice->GetReferenceCounter();
+                --metricsDevice->GetReferenceCounter();
                 retVal = CC_STILL_INITIALIZED;
             }
-            else if( m_metricsDevice->GetReferenceCounter() == 1 )
+            else if( metricsDevice->GetReferenceCounter() == 1 )
             {
-                m_metricsDevice->GetReferenceCounter() = 0;
-                DestroyMetricsDevice();
+                metricsDevice->GetReferenceCounter() = 0;
+                DestroyMetricsDevice( metricsDevice );
                 retVal = CC_OK;
             }
             else
@@ -1022,7 +1127,7 @@ namespace MetricsDiscoveryInternal
         }
 
         // 2. Check whether correct metrics device was passed
-        if( metricsDevice != m_metricsDevice )
+        if( !m_subDevices.FindDevice( metricsDevice ) )
         {
             MD_LOG_A( m_adapterId, LOG_ERROR, "Pointers mismatch" );
             retVal = CC_ERROR_GENERAL;
@@ -1031,7 +1136,7 @@ namespace MetricsDiscoveryInternal
         // 3. Save metrics device object to a file
         if( retVal == CC_OK )
         {
-            retVal = m_metricsDevice->SaveToFile( fileName, minMajorApiVersion, minMinorApiVersion );
+            retVal = metricsDevice->SaveToFile( fileName, minMajorApiVersion, minMinorApiVersion );
             if( retVal != CC_OK )
             {
                 MD_LOG_A( m_adapterId, LOG_ERROR, "Saving to file failed" );
@@ -1241,7 +1346,7 @@ namespace MetricsDiscoveryInternal
     //     May enable instrumentation support if needed.
     //
     // Input:
-    //     CMetricsDevice**      metricsDevice  - [out][optional] created metrics device
+    //     CMetricsDevice**      metricsDevice  - [out] created metrics device
     //     const uint32_t        subDeviceIndex - index of sub device to create
     //
     // Output:
@@ -1250,7 +1355,7 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     TCompletionCode CAdapter::CreateMetricsDevice( CMetricsDevice** metricsDevice, const uint32_t subDeviceIndex /* = 0 */ )
     {
-        MD_ASSERT_A( m_adapterId, m_metricsDevice == nullptr );
+        MD_CHECK_PTR_RET_A( m_adapterId, metricsDevice, CC_ERROR_GENERAL );
 
         // 1. Create driver interface
         TCompletionCode retVal = CreateDriverInterface();
@@ -1270,8 +1375,8 @@ namespace MetricsDiscoveryInternal
         }
 
         // 3. Create metrics device object
-        m_metricsDevice = new( std::nothrow ) CMetricsDevice( *this, *m_driverInterface, subDeviceIndex );
-        if( !m_metricsDevice )
+        CMetricsDevice* device = new( std::nothrow ) CMetricsDevice( *this, *m_driverInterface, subDeviceIndex );
+        if( !device )
         {
             EnableDriverSupport( false );
             DestroyDriverInterface();
@@ -1279,19 +1384,16 @@ namespace MetricsDiscoveryInternal
         }
 
         // 4. Populate metric tree
-        retVal = CreateMetricTree( m_metricsDevice );
+        retVal = CreateMetricTree( device );
         if( retVal != CC_OK )
         {
-            MD_SAFE_DELETE( m_metricsDevice );
+            MD_SAFE_DELETE( device );
             EnableDriverSupport( false );
             DestroyDriverInterface();
             return retVal;
         }
 
-        if( metricsDevice )
-        {
-            *metricsDevice = m_metricsDevice;
-        }
+        *metricsDevice = device;
 
         return retVal;
     }
@@ -1307,14 +1409,17 @@ namespace MetricsDiscoveryInternal
     // Description:
     //     Destroys metrics device for this adapter.
     //
+    // Input:
+    //     CMetricsDevice* metricsDevice - metrics device to destroy
+    //
     //////////////////////////////////////////////////////////////////////////////
-    void CAdapter::DestroyMetricsDevice()
+    void CAdapter::DestroyMetricsDevice( CMetricsDevice* metricsDevice )
     {
         // 1. Remove device from sub devices.
-        m_subDevices.RemoveDevice( m_metricsDevice );
+        m_subDevices.RemoveDevice( metricsDevice );
 
         // 2. Delete metrics device object
-        MD_SAFE_DELETE( m_metricsDevice );
+        MD_SAFE_DELETE( metricsDevice );
 
         // 3. Disable instrumentation support if needed
         EnableDriverSupport( false );
