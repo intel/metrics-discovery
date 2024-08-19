@@ -13,9 +13,9 @@ SPDX-License-Identifier: MIT
 #include "md_per_platform_preamble.h"
 #include "md_metric_sets_RKL.h"
 
-#if( ( !defined( MD_INCLUDE_RKL_METRICS ) && MD_INCLUDE_ALL_METRICS ) || MD_INCLUDE_RKL_METRICS )
-
 using namespace MetricsDiscoveryInternal;
+
+#if( ( !defined( MD_INCLUDE_RKL_METRICS ) && MD_INCLUDE_ALL_METRICS ) || MD_INCLUDE_RKL_METRICS )
 
 TCompletionCode CreateMetricTreeRKL_PipelineStatistics( CMetricsDevice* metricsDevice, CConcurrentGroup* concurrentGroup )
 {
@@ -48,8 +48,6 @@ exception:
 #endif
 
 #if( ( !defined( MD_INCLUDE_RKL_METRICS ) && MD_INCLUDE_ALL_METRICS ) || MD_INCLUDE_RKL_METRICS )
-
-using namespace MetricsDiscoveryInternal;
 
 TCompletionCode CreateMetricTreeRKL_OA( CMetricsDevice* metricsDevice, CConcurrentGroup* concurrentGroup )
 {

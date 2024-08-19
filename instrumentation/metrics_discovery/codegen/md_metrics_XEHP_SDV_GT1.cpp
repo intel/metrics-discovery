@@ -13,9 +13,9 @@ SPDX-License-Identifier: MIT
 #include "md_per_platform_preamble.h"
 #include "md_metric_sets_XEHP_SDV_GT1.h"
 
-#if( ( !defined( MD_INCLUDE_XEHP_SDV_GT1_METRICS ) && MD_INCLUDE_ALL_METRICS ) || MD_INCLUDE_XEHP_SDV_GT1_METRICS )
-
 using namespace MetricsDiscoveryInternal;
+
+#if( ( !defined( MD_INCLUDE_XEHP_SDV_GT1_METRICS ) && MD_INCLUDE_ALL_METRICS ) || MD_INCLUDE_XEHP_SDV_GT1_METRICS )
 
 TCompletionCode CreateMetricTreeXEHP_SDV_GT1_OA( CMetricsDevice* metricsDevice, CConcurrentGroup* concurrentGroup )
 {

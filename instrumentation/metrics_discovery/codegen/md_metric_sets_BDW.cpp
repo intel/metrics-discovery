@@ -25,12 +25,11 @@ namespace MetricsDiscoveryInternal::MetricSets_BDW_MMIO_Regs
 
     TCompletionCode CMcRequestsMetricSet::Initialize()
     {
-        TCompletionCode ret                             = CC_OK;
-        CMetric*        metric                          = nullptr;
-        CInformation*   information                     = nullptr;
-        const char*     availabilityEquation            = nullptr;
-        const uint32_t  concurrentGroupInformationCount = m_concurrentGroup->GetInformationCount();
-        m_params.InformationCount                       = concurrentGroupInformationCount;
+        CMetric*       metric                          = nullptr;
+        CInformation*  information                     = nullptr;
+        const char*    availabilityEquation            = nullptr;
+        const uint32_t concurrentGroupInformationCount = m_concurrentGroup->GetInformationCount();
+        m_params.InformationCount                      = concurrentGroupInformationCount;
         MD_CHECK_CC( SetApiSpecificId( "GPAV", 0, 0x40000000, 0x80000203, 0, 0, "Intel Performance Counters for GT Set Dynamic", 0, "Intel_Raw_Hardware_Counters_Set_0_Query", 0 ) );
 
         availabilityEquation = nullptr;
@@ -114,11 +113,12 @@ namespace MetricsDiscoveryInternal::MetricSets_BDW_MMIO_Regs
             AddStartConfigRegister( 0x145044, 0x00000020, REGISTER_TYPE_MMIO );
             AddStartConfigRegister( 0x145048, 0x00000020, REGISTER_TYPE_MMIO );
         }
+
         RefreshConfigRegisters();
         return CC_OK;
 
     exception:
-        return ret;
+        return CC_ERROR_GENERAL;
     }
 
 } // namespace MetricsDiscoveryInternal::MetricSets_BDW_MMIO_Regs
@@ -132,10 +132,9 @@ namespace MetricsDiscoveryInternal::MetricSets_BDW_PipelineStatistics
 
     TCompletionCode CPipelineStatsMetricSet::Initialize()
     {
-        TCompletionCode ret                  = CC_OK;
-        CMetric*        metric               = nullptr;
-        const char*     availabilityEquation = nullptr;
-        m_params.InformationCount            = m_concurrentGroup->GetInformationCount();
+        CMetric*    metric               = nullptr;
+        const char* availabilityEquation = nullptr;
+        m_params.InformationCount        = m_concurrentGroup->GetInformationCount();
         MD_CHECK_CC( SetApiSpecificId( "", 0, 0, 0x80000206, 0, 0, "", 0, "Intel_Raw_Pipeline_Statistics_Query", 0 ) );
 
         availabilityEquation = nullptr;
@@ -252,7 +251,7 @@ namespace MetricsDiscoveryInternal::MetricSets_BDW_PipelineStatistics
         return CC_OK;
 
     exception:
-        return ret;
+        return CC_ERROR_GENERAL;
     }
 
 } // namespace MetricsDiscoveryInternal::MetricSets_BDW_PipelineStatistics
@@ -266,12 +265,11 @@ namespace MetricsDiscoveryInternal::MetricSets_BDW_OA
 
     TCompletionCode CRenderBasicMetricSet::Initialize()
     {
-        TCompletionCode ret                             = CC_OK;
-        CMetric*        metric                          = nullptr;
-        CInformation*   information                     = nullptr;
-        const char*     availabilityEquation            = nullptr;
-        const uint32_t  concurrentGroupInformationCount = m_concurrentGroup->GetInformationCount();
-        m_params.InformationCount                       = concurrentGroupInformationCount;
+        CMetric*       metric                          = nullptr;
+        CInformation*  information                     = nullptr;
+        const char*    availabilityEquation            = nullptr;
+        const uint32_t concurrentGroupInformationCount = m_concurrentGroup->GetInformationCount();
+        m_params.InformationCount                      = concurrentGroupInformationCount;
         MD_CHECK_CC( SetApiSpecificId( "GPAV", 0, 0x40000000, 0x80000203, 0, 0, "Intel Performance Counters for GT Set Dynamic", 0, "Intel_Raw_Hardware_Counters_Set_0_Query", 0 ) );
 
         availabilityEquation = nullptr;
@@ -1296,11 +1294,12 @@ namespace MetricsDiscoveryInternal::MetricSets_BDW_OA
             AddStartConfigRegister( 0x00009888, 0x41800845, REGISTER_TYPE_NOA );
             AddStartConfigRegister( 0x00009840, 0x00000080, REGISTER_TYPE_NOA );
         }
+
         RefreshConfigRegisters();
         return CC_OK;
 
     exception:
-        return ret;
+        return CC_ERROR_GENERAL;
     }
 
     CComputeBasicMetricSet::CComputeBasicMetricSet( CMetricsDevice& device, CConcurrentGroup* concurrentGroup, const char* symbolicName, const char* shortName, uint32_t apiMask, uint32_t category, uint32_t snapshotReportSize, uint32_t deltaReportSize, TReportType reportType, TByteArrayLatest* platformMask, uint32_t gtMask /*= GT_TYPE_ALL*/, bool isCustom /*= false*/ )
@@ -1310,12 +1309,11 @@ namespace MetricsDiscoveryInternal::MetricSets_BDW_OA
 
     TCompletionCode CComputeBasicMetricSet::Initialize()
     {
-        TCompletionCode ret                             = CC_OK;
-        CMetric*        metric                          = nullptr;
-        CInformation*   information                     = nullptr;
-        const char*     availabilityEquation            = nullptr;
-        const uint32_t  concurrentGroupInformationCount = m_concurrentGroup->GetInformationCount();
-        m_params.InformationCount                       = concurrentGroupInformationCount;
+        CMetric*       metric                          = nullptr;
+        CInformation*  information                     = nullptr;
+        const char*    availabilityEquation            = nullptr;
+        const uint32_t concurrentGroupInformationCount = m_concurrentGroup->GetInformationCount();
+        m_params.InformationCount                      = concurrentGroupInformationCount;
         MD_CHECK_CC( SetApiSpecificId( "GPAV", 0, 0x40000000, 0x80000203, 0, 0, "Intel Performance Counters for GT Set Dynamic", 0, "Intel_Raw_Hardware_Counters_Set_0_Query", 0 ) );
 
         availabilityEquation = nullptr;
@@ -2136,11 +2134,12 @@ namespace MetricsDiscoveryInternal::MetricSets_BDW_OA
             AddStartConfigRegister( 0x9888, 0x41800000, REGISTER_TYPE_NOA );
             AddStartConfigRegister( 0x9840, 0x00000080, REGISTER_TYPE_NOA );
         }
+
         RefreshConfigRegisters();
         return CC_OK;
 
     exception:
-        return ret;
+        return CC_ERROR_GENERAL;
     }
 
     CRenderDX1xMetricSet::CRenderDX1xMetricSet( CMetricsDevice& device, CConcurrentGroup* concurrentGroup, const char* symbolicName, const char* shortName, uint32_t apiMask, uint32_t category, uint32_t snapshotReportSize, uint32_t deltaReportSize, TReportType reportType, TByteArrayLatest* platformMask, uint32_t gtMask /*= GT_TYPE_ALL*/, bool isCustom /*= false*/ )
@@ -2150,12 +2149,11 @@ namespace MetricsDiscoveryInternal::MetricSets_BDW_OA
 
     TCompletionCode CRenderDX1xMetricSet::Initialize()
     {
-        TCompletionCode ret                             = CC_OK;
-        CMetric*        metric                          = nullptr;
-        CInformation*   information                     = nullptr;
-        const char*     availabilityEquation            = nullptr;
-        const uint32_t  concurrentGroupInformationCount = m_concurrentGroup->GetInformationCount();
-        m_params.InformationCount                       = concurrentGroupInformationCount;
+        CMetric*       metric                          = nullptr;
+        CInformation*  information                     = nullptr;
+        const char*    availabilityEquation            = nullptr;
+        const uint32_t concurrentGroupInformationCount = m_concurrentGroup->GetInformationCount();
+        m_params.InformationCount                      = concurrentGroupInformationCount;
         MD_CHECK_CC( SetApiSpecificId( "GPAV", 0, 0x40000000, 0x80000203, 0, 0, "Intel Performance Counters for GT Set Dynamic", 0, "Intel_Raw_Hardware_Counters_Set_0_Query", 0 ) );
 
         availabilityEquation = nullptr;
@@ -3068,11 +3066,12 @@ namespace MetricsDiscoveryInternal::MetricSets_BDW_OA
             AddStartConfigRegister( 0x00009888, 0x41800845, REGISTER_TYPE_NOA );
             AddStartConfigRegister( 0x00009840, 0x00000080, REGISTER_TYPE_NOA );
         }
+
         RefreshConfigRegisters();
         return CC_OK;
 
     exception:
-        return ret;
+        return CC_ERROR_GENERAL;
     }
 
     CRenderPipeProfileMetricSet::CRenderPipeProfileMetricSet( CMetricsDevice& device, CConcurrentGroup* concurrentGroup, const char* symbolicName, const char* shortName, uint32_t apiMask, uint32_t category, uint32_t snapshotReportSize, uint32_t deltaReportSize, TReportType reportType, TByteArrayLatest* platformMask, uint32_t gtMask /*= GT_TYPE_ALL*/, bool isCustom /*= false*/ )
@@ -3082,12 +3081,11 @@ namespace MetricsDiscoveryInternal::MetricSets_BDW_OA
 
     TCompletionCode CRenderPipeProfileMetricSet::Initialize()
     {
-        TCompletionCode ret                             = CC_OK;
-        CMetric*        metric                          = nullptr;
-        CInformation*   information                     = nullptr;
-        const char*     availabilityEquation            = nullptr;
-        const uint32_t  concurrentGroupInformationCount = m_concurrentGroup->GetInformationCount();
-        m_params.InformationCount                       = concurrentGroupInformationCount;
+        CMetric*       metric                          = nullptr;
+        CInformation*  information                     = nullptr;
+        const char*    availabilityEquation            = nullptr;
+        const uint32_t concurrentGroupInformationCount = m_concurrentGroup->GetInformationCount();
+        m_params.InformationCount                      = concurrentGroupInformationCount;
         MD_CHECK_CC( SetApiSpecificId( "GPAV", 0, 0x40000000, 0x80000203, 0, 0, "Intel Performance Counters for GT Set Dynamic", 0, "Intel_Raw_Hardware_Counters_Set_0_Query", 0 ) );
 
         availabilityEquation = nullptr;
@@ -3891,11 +3889,12 @@ namespace MetricsDiscoveryInternal::MetricSets_BDW_OA
             AddStartConfigRegister( 0x27a8, 0x0003fffa, REGISTER_TYPE_OA );
             AddStartConfigRegister( 0x27ac, 0x00005f7f, REGISTER_TYPE_OA );
         }
+
         RefreshConfigRegisters();
         return CC_OK;
 
     exception:
-        return ret;
+        return CC_ERROR_GENERAL;
     }
 
     CMemoryReadsMetricSet::CMemoryReadsMetricSet( CMetricsDevice& device, CConcurrentGroup* concurrentGroup, const char* symbolicName, const char* shortName, uint32_t apiMask, uint32_t category, uint32_t snapshotReportSize, uint32_t deltaReportSize, TReportType reportType, TByteArrayLatest* platformMask, uint32_t gtMask /*= GT_TYPE_ALL*/, bool isCustom /*= false*/ )
@@ -3905,12 +3904,11 @@ namespace MetricsDiscoveryInternal::MetricSets_BDW_OA
 
     TCompletionCode CMemoryReadsMetricSet::Initialize()
     {
-        TCompletionCode ret                             = CC_OK;
-        CMetric*        metric                          = nullptr;
-        CInformation*   information                     = nullptr;
-        const char*     availabilityEquation            = nullptr;
-        const uint32_t  concurrentGroupInformationCount = m_concurrentGroup->GetInformationCount();
-        m_params.InformationCount                       = concurrentGroupInformationCount;
+        CMetric*       metric                          = nullptr;
+        CInformation*  information                     = nullptr;
+        const char*    availabilityEquation            = nullptr;
+        const uint32_t concurrentGroupInformationCount = m_concurrentGroup->GetInformationCount();
+        m_params.InformationCount                      = concurrentGroupInformationCount;
         MD_CHECK_CC( SetApiSpecificId( "GPAV", 0, 0x40000000, 0x80000203, 0, 0, "Intel Performance Counters for GT Set Dynamic", 0, "Intel_Raw_Hardware_Counters_Set_0_Query", 0 ) );
 
         availabilityEquation = nullptr;
@@ -4619,11 +4617,12 @@ namespace MetricsDiscoveryInternal::MetricSets_BDW_OA
             AddStartConfigRegister( 0x27a8, 0x0007f8f2, REGISTER_TYPE_OA );
             AddStartConfigRegister( 0x27ac, 0x0000fe00, REGISTER_TYPE_OA );
         }
+
         RefreshConfigRegisters();
         return CC_OK;
 
     exception:
-        return ret;
+        return CC_ERROR_GENERAL;
     }
 
     CMemoryWritesMetricSet::CMemoryWritesMetricSet( CMetricsDevice& device, CConcurrentGroup* concurrentGroup, const char* symbolicName, const char* shortName, uint32_t apiMask, uint32_t category, uint32_t snapshotReportSize, uint32_t deltaReportSize, TReportType reportType, TByteArrayLatest* platformMask, uint32_t gtMask /*= GT_TYPE_ALL*/, bool isCustom /*= false*/ )
@@ -4633,12 +4632,11 @@ namespace MetricsDiscoveryInternal::MetricSets_BDW_OA
 
     TCompletionCode CMemoryWritesMetricSet::Initialize()
     {
-        TCompletionCode ret                             = CC_OK;
-        CMetric*        metric                          = nullptr;
-        CInformation*   information                     = nullptr;
-        const char*     availabilityEquation            = nullptr;
-        const uint32_t  concurrentGroupInformationCount = m_concurrentGroup->GetInformationCount();
-        m_params.InformationCount                       = concurrentGroupInformationCount;
+        CMetric*       metric                          = nullptr;
+        CInformation*  information                     = nullptr;
+        const char*    availabilityEquation            = nullptr;
+        const uint32_t concurrentGroupInformationCount = m_concurrentGroup->GetInformationCount();
+        m_params.InformationCount                      = concurrentGroupInformationCount;
         MD_CHECK_CC( SetApiSpecificId( "GPAV", 0, 0x40000000, 0x80000203, 0, 0, "Intel Performance Counters for GT Set Dynamic", 0, "Intel_Raw_Hardware_Counters_Set_0_Query", 0 ) );
 
         availabilityEquation = nullptr;
@@ -5334,11 +5332,12 @@ namespace MetricsDiscoveryInternal::MetricSets_BDW_OA
             AddStartConfigRegister( 0x27a8, 0x0007f8f2, REGISTER_TYPE_OA );
             AddStartConfigRegister( 0x27ac, 0x0000fe00, REGISTER_TYPE_OA );
         }
+
         RefreshConfigRegisters();
         return CC_OK;
 
     exception:
-        return ret;
+        return CC_ERROR_GENERAL;
     }
 
     CComputeExtendedMetricSet::CComputeExtendedMetricSet( CMetricsDevice& device, CConcurrentGroup* concurrentGroup, const char* symbolicName, const char* shortName, uint32_t apiMask, uint32_t category, uint32_t snapshotReportSize, uint32_t deltaReportSize, TReportType reportType, TByteArrayLatest* platformMask, uint32_t gtMask /*= GT_TYPE_ALL*/, bool isCustom /*= false*/ )
@@ -5348,12 +5347,11 @@ namespace MetricsDiscoveryInternal::MetricSets_BDW_OA
 
     TCompletionCode CComputeExtendedMetricSet::Initialize()
     {
-        TCompletionCode ret                             = CC_OK;
-        CMetric*        metric                          = nullptr;
-        CInformation*   information                     = nullptr;
-        const char*     availabilityEquation            = nullptr;
-        const uint32_t  concurrentGroupInformationCount = m_concurrentGroup->GetInformationCount();
-        m_params.InformationCount                       = concurrentGroupInformationCount;
+        CMetric*       metric                          = nullptr;
+        CInformation*  information                     = nullptr;
+        const char*    availabilityEquation            = nullptr;
+        const uint32_t concurrentGroupInformationCount = m_concurrentGroup->GetInformationCount();
+        m_params.InformationCount                      = concurrentGroupInformationCount;
         MD_CHECK_CC( SetApiSpecificId( "", 0, 0x40000000, 0x80000203, 0, 0, "Intel Performance Counters for GT Set Dynamic", 0, "Intel_Raw_Hardware_Counters_Set_0_Query", 0 ) );
 
         availabilityEquation = nullptr;
@@ -6761,11 +6759,12 @@ namespace MetricsDiscoveryInternal::MetricSets_BDW_OA
             AddStartConfigRegister( 0x9888, 0x41800000, REGISTER_TYPE_NOA );
             AddStartConfigRegister( 0x9840, 0x00000080, REGISTER_TYPE_NOA );
         }
+
         RefreshConfigRegisters();
         return CC_OK;
 
     exception:
-        return ret;
+        return CC_ERROR_GENERAL;
     }
 
     CComputeL3CacheMetricSet::CComputeL3CacheMetricSet( CMetricsDevice& device, CConcurrentGroup* concurrentGroup, const char* symbolicName, const char* shortName, uint32_t apiMask, uint32_t category, uint32_t snapshotReportSize, uint32_t deltaReportSize, TReportType reportType, TByteArrayLatest* platformMask, uint32_t gtMask /*= GT_TYPE_ALL*/, bool isCustom /*= false*/ )
@@ -6775,12 +6774,11 @@ namespace MetricsDiscoveryInternal::MetricSets_BDW_OA
 
     TCompletionCode CComputeL3CacheMetricSet::Initialize()
     {
-        TCompletionCode ret                             = CC_OK;
-        CMetric*        metric                          = nullptr;
-        CInformation*   information                     = nullptr;
-        const char*     availabilityEquation            = nullptr;
-        const uint32_t  concurrentGroupInformationCount = m_concurrentGroup->GetInformationCount();
-        m_params.InformationCount                       = concurrentGroupInformationCount;
+        CMetric*       metric                          = nullptr;
+        CInformation*  information                     = nullptr;
+        const char*    availabilityEquation            = nullptr;
+        const uint32_t concurrentGroupInformationCount = m_concurrentGroup->GetInformationCount();
+        m_params.InformationCount                      = concurrentGroupInformationCount;
         MD_CHECK_CC( SetApiSpecificId( "GPAV", 0, 0x40000000, 0x80000203, 0, 0, "Intel Performance Counters for GT Set Dynamic", 0, "Intel_Raw_Hardware_Counters_Set_0_Query", 0 ) );
 
         availabilityEquation = nullptr;
@@ -7765,11 +7763,12 @@ namespace MetricsDiscoveryInternal::MetricSets_BDW_OA
             AddStartConfigRegister( 0x2798, 0x0007fffa, REGISTER_TYPE_OA );
             AddStartConfigRegister( 0x279c, 0x0000fbdf, REGISTER_TYPE_OA );
         }
+
         RefreshConfigRegisters();
         return CC_OK;
 
     exception:
-        return ret;
+        return CC_ERROR_GENERAL;
     }
 
     CDataPortReadsCoalescingMetricSet::CDataPortReadsCoalescingMetricSet( CMetricsDevice& device, CConcurrentGroup* concurrentGroup, const char* symbolicName, const char* shortName, uint32_t apiMask, uint32_t category, uint32_t snapshotReportSize, uint32_t deltaReportSize, TReportType reportType, TByteArrayLatest* platformMask, uint32_t gtMask /*= GT_TYPE_ALL*/, bool isCustom /*= false*/ )
@@ -7779,12 +7778,11 @@ namespace MetricsDiscoveryInternal::MetricSets_BDW_OA
 
     TCompletionCode CDataPortReadsCoalescingMetricSet::Initialize()
     {
-        TCompletionCode ret                             = CC_OK;
-        CMetric*        metric                          = nullptr;
-        CInformation*   information                     = nullptr;
-        const char*     availabilityEquation            = nullptr;
-        const uint32_t  concurrentGroupInformationCount = m_concurrentGroup->GetInformationCount();
-        m_params.InformationCount                       = concurrentGroupInformationCount;
+        CMetric*       metric                          = nullptr;
+        CInformation*  information                     = nullptr;
+        const char*    availabilityEquation            = nullptr;
+        const uint32_t concurrentGroupInformationCount = m_concurrentGroup->GetInformationCount();
+        m_params.InformationCount                      = concurrentGroupInformationCount;
         MD_CHECK_CC( SetApiSpecificId( "", 0, 0x40000000, 0x80000203, 0, 0, "Intel Performance Counters for GT Set Dynamic", 0, "Intel_Raw_Hardware_Counters_Set_0_Query", 0 ) );
 
         availabilityEquation = nullptr;
@@ -8466,11 +8464,12 @@ namespace MetricsDiscoveryInternal::MetricSets_BDW_OA
             AddStartConfigRegister( 0x9888, 0x41800041, REGISTER_TYPE_NOA );
             AddStartConfigRegister( 0x9840, 0x00000080, REGISTER_TYPE_NOA );
         }
+
         RefreshConfigRegisters();
         return CC_OK;
 
     exception:
-        return ret;
+        return CC_ERROR_GENERAL;
     }
 
     CDataPortWritesCoalescingMetricSet::CDataPortWritesCoalescingMetricSet( CMetricsDevice& device, CConcurrentGroup* concurrentGroup, const char* symbolicName, const char* shortName, uint32_t apiMask, uint32_t category, uint32_t snapshotReportSize, uint32_t deltaReportSize, TReportType reportType, TByteArrayLatest* platformMask, uint32_t gtMask /*= GT_TYPE_ALL*/, bool isCustom /*= false*/ )
@@ -8480,12 +8479,11 @@ namespace MetricsDiscoveryInternal::MetricSets_BDW_OA
 
     TCompletionCode CDataPortWritesCoalescingMetricSet::Initialize()
     {
-        TCompletionCode ret                             = CC_OK;
-        CMetric*        metric                          = nullptr;
-        CInformation*   information                     = nullptr;
-        const char*     availabilityEquation            = nullptr;
-        const uint32_t  concurrentGroupInformationCount = m_concurrentGroup->GetInformationCount();
-        m_params.InformationCount                       = concurrentGroupInformationCount;
+        CMetric*       metric                          = nullptr;
+        CInformation*  information                     = nullptr;
+        const char*    availabilityEquation            = nullptr;
+        const uint32_t concurrentGroupInformationCount = m_concurrentGroup->GetInformationCount();
+        m_params.InformationCount                      = concurrentGroupInformationCount;
         MD_CHECK_CC( SetApiSpecificId( "", 0, 0x40000000, 0x80000203, 0, 0, "Intel Performance Counters for GT Set Dynamic", 0, "Intel_Raw_Hardware_Counters_Set_0_Query", 0 ) );
 
         availabilityEquation = nullptr;
@@ -9203,11 +9201,12 @@ namespace MetricsDiscoveryInternal::MetricSets_BDW_OA
             AddStartConfigRegister( 0x9888, 0x41800041, REGISTER_TYPE_NOA );
             AddStartConfigRegister( 0x9840, 0x00000080, REGISTER_TYPE_NOA );
         }
+
         RefreshConfigRegisters();
         return CC_OK;
 
     exception:
-        return ret;
+        return CC_ERROR_GENERAL;
     }
 
     CHDCAndSFMetricSet::CHDCAndSFMetricSet( CMetricsDevice& device, CConcurrentGroup* concurrentGroup, const char* symbolicName, const char* shortName, uint32_t apiMask, uint32_t category, uint32_t snapshotReportSize, uint32_t deltaReportSize, TReportType reportType, TByteArrayLatest* platformMask, uint32_t gtMask /*= GT_TYPE_ALL*/, bool isCustom /*= false*/ )
@@ -9217,12 +9216,11 @@ namespace MetricsDiscoveryInternal::MetricSets_BDW_OA
 
     TCompletionCode CHDCAndSFMetricSet::Initialize()
     {
-        TCompletionCode ret                             = CC_OK;
-        CMetric*        metric                          = nullptr;
-        CInformation*   information                     = nullptr;
-        const char*     availabilityEquation            = nullptr;
-        const uint32_t  concurrentGroupInformationCount = m_concurrentGroup->GetInformationCount();
-        m_params.InformationCount                       = concurrentGroupInformationCount;
+        CMetric*       metric                          = nullptr;
+        CInformation*  information                     = nullptr;
+        const char*    availabilityEquation            = nullptr;
+        const uint32_t concurrentGroupInformationCount = m_concurrentGroup->GetInformationCount();
+        m_params.InformationCount                      = concurrentGroupInformationCount;
         MD_CHECK_CC( SetApiSpecificId( "GPAV", 0, 0x40000000, 0x80000203, 0, 0, "Intel Performance Counters for GT Set Dynamic", 0, "Intel_Raw_Hardware_Counters_Set_0_Query", 0 ) );
 
         availabilityEquation = nullptr;
@@ -10003,11 +10001,12 @@ namespace MetricsDiscoveryInternal::MetricSets_BDW_OA
             AddStartConfigRegister( 0xE65c, 0x00055054, REGISTER_TYPE_FLEX );
             AddStartConfigRegister( 0x91bc, 0xe0500000, REGISTER_TYPE_PM );
         }
+
         RefreshConfigRegisters();
         return CC_OK;
 
     exception:
-        return ret;
+        return CC_ERROR_GENERAL;
     }
 
     CL3_1MetricSet::CL3_1MetricSet( CMetricsDevice& device, CConcurrentGroup* concurrentGroup, const char* symbolicName, const char* shortName, uint32_t apiMask, uint32_t category, uint32_t snapshotReportSize, uint32_t deltaReportSize, TReportType reportType, TByteArrayLatest* platformMask, uint32_t gtMask /*= GT_TYPE_ALL*/, bool isCustom /*= false*/ )
@@ -10017,12 +10016,11 @@ namespace MetricsDiscoveryInternal::MetricSets_BDW_OA
 
     TCompletionCode CL3_1MetricSet::Initialize()
     {
-        TCompletionCode ret                             = CC_OK;
-        CMetric*        metric                          = nullptr;
-        CInformation*   information                     = nullptr;
-        const char*     availabilityEquation            = nullptr;
-        const uint32_t  concurrentGroupInformationCount = m_concurrentGroup->GetInformationCount();
-        m_params.InformationCount                       = concurrentGroupInformationCount;
+        CMetric*       metric                          = nullptr;
+        CInformation*  information                     = nullptr;
+        const char*    availabilityEquation            = nullptr;
+        const uint32_t concurrentGroupInformationCount = m_concurrentGroup->GetInformationCount();
+        m_params.InformationCount                      = concurrentGroupInformationCount;
         MD_CHECK_CC( SetApiSpecificId( "GPAV", 0, 0x40000000, 0x80000203, 0, 0, "Intel Performance Counters for GT Set Dynamic", 0, "Intel_Raw_Hardware_Counters_Set_0_Query", 0 ) );
 
         availabilityEquation = nullptr;
@@ -10768,11 +10766,12 @@ namespace MetricsDiscoveryInternal::MetricSets_BDW_OA
             AddStartConfigRegister( 0xE65c, 0x00055054, REGISTER_TYPE_FLEX );
             AddStartConfigRegister( 0x91bc, 0xe0500000, REGISTER_TYPE_PM );
         }
+
         RefreshConfigRegisters();
         return CC_OK;
 
     exception:
-        return ret;
+        return CC_ERROR_GENERAL;
     }
 
     CL3_2MetricSet::CL3_2MetricSet( CMetricsDevice& device, CConcurrentGroup* concurrentGroup, const char* symbolicName, const char* shortName, uint32_t apiMask, uint32_t category, uint32_t snapshotReportSize, uint32_t deltaReportSize, TReportType reportType, TByteArrayLatest* platformMask, uint32_t gtMask /*= GT_TYPE_ALL*/, bool isCustom /*= false*/ )
@@ -10782,12 +10781,11 @@ namespace MetricsDiscoveryInternal::MetricSets_BDW_OA
 
     TCompletionCode CL3_2MetricSet::Initialize()
     {
-        TCompletionCode ret                             = CC_OK;
-        CMetric*        metric                          = nullptr;
-        CInformation*   information                     = nullptr;
-        const char*     availabilityEquation            = nullptr;
-        const uint32_t  concurrentGroupInformationCount = m_concurrentGroup->GetInformationCount();
-        m_params.InformationCount                       = concurrentGroupInformationCount;
+        CMetric*       metric                          = nullptr;
+        CInformation*  information                     = nullptr;
+        const char*    availabilityEquation            = nullptr;
+        const uint32_t concurrentGroupInformationCount = m_concurrentGroup->GetInformationCount();
+        m_params.InformationCount                      = concurrentGroupInformationCount;
         MD_CHECK_CC( SetApiSpecificId( "GPAV", 0, 0x40000000, 0x80000203, 0, 0, "Intel Performance Counters for GT Set Dynamic", 0, "Intel_Raw_Hardware_Counters_Set_0_Query", 0 ) );
 
         availabilityEquation = nullptr;
@@ -11520,11 +11518,12 @@ namespace MetricsDiscoveryInternal::MetricSets_BDW_OA
             AddStartConfigRegister( 0xE65c, 0x00055054, REGISTER_TYPE_FLEX );
             AddStartConfigRegister( 0x91bc, 0xe0500000, REGISTER_TYPE_PM );
         }
+
         RefreshConfigRegisters();
         return CC_OK;
 
     exception:
-        return ret;
+        return CC_ERROR_GENERAL;
     }
 
     CL3_3MetricSet::CL3_3MetricSet( CMetricsDevice& device, CConcurrentGroup* concurrentGroup, const char* symbolicName, const char* shortName, uint32_t apiMask, uint32_t category, uint32_t snapshotReportSize, uint32_t deltaReportSize, TReportType reportType, TByteArrayLatest* platformMask, uint32_t gtMask /*= GT_TYPE_ALL*/, bool isCustom /*= false*/ )
@@ -11534,12 +11533,11 @@ namespace MetricsDiscoveryInternal::MetricSets_BDW_OA
 
     TCompletionCode CL3_3MetricSet::Initialize()
     {
-        TCompletionCode ret                             = CC_OK;
-        CMetric*        metric                          = nullptr;
-        CInformation*   information                     = nullptr;
-        const char*     availabilityEquation            = nullptr;
-        const uint32_t  concurrentGroupInformationCount = m_concurrentGroup->GetInformationCount();
-        m_params.InformationCount                       = concurrentGroupInformationCount;
+        CMetric*       metric                          = nullptr;
+        CInformation*  information                     = nullptr;
+        const char*    availabilityEquation            = nullptr;
+        const uint32_t concurrentGroupInformationCount = m_concurrentGroup->GetInformationCount();
+        m_params.InformationCount                      = concurrentGroupInformationCount;
         MD_CHECK_CC( SetApiSpecificId( "GPAV", 0, 0x40000000, 0x80000203, 0, 0, "Intel Performance Counters for GT Set Dynamic", 0, "Intel_Raw_Hardware_Counters_Set_0_Query", 0 ) );
 
         availabilityEquation = nullptr;
@@ -12288,11 +12286,12 @@ namespace MetricsDiscoveryInternal::MetricSets_BDW_OA
             AddStartConfigRegister( 0xE65c, 0x00055054, REGISTER_TYPE_FLEX );
             AddStartConfigRegister( 0x91bc, 0xe0500000, REGISTER_TYPE_PM );
         }
+
         RefreshConfigRegisters();
         return CC_OK;
 
     exception:
-        return ret;
+        return CC_ERROR_GENERAL;
     }
 
     CL3_4MetricSet::CL3_4MetricSet( CMetricsDevice& device, CConcurrentGroup* concurrentGroup, const char* symbolicName, const char* shortName, uint32_t apiMask, uint32_t category, uint32_t snapshotReportSize, uint32_t deltaReportSize, TReportType reportType, TByteArrayLatest* platformMask, uint32_t gtMask /*= GT_TYPE_ALL*/, bool isCustom /*= false*/ )
@@ -12302,12 +12301,11 @@ namespace MetricsDiscoveryInternal::MetricSets_BDW_OA
 
     TCompletionCode CL3_4MetricSet::Initialize()
     {
-        TCompletionCode ret                             = CC_OK;
-        CMetric*        metric                          = nullptr;
-        CInformation*   information                     = nullptr;
-        const char*     availabilityEquation            = nullptr;
-        const uint32_t  concurrentGroupInformationCount = m_concurrentGroup->GetInformationCount();
-        m_params.InformationCount                       = concurrentGroupInformationCount;
+        CMetric*       metric                          = nullptr;
+        CInformation*  information                     = nullptr;
+        const char*    availabilityEquation            = nullptr;
+        const uint32_t concurrentGroupInformationCount = m_concurrentGroup->GetInformationCount();
+        m_params.InformationCount                      = concurrentGroupInformationCount;
         MD_CHECK_CC( SetApiSpecificId( "GPAV", 0, 0x40000000, 0x80000203, 0, 0, "Intel Performance Counters for GT Set Dynamic", 0, "Intel_Raw_Hardware_Counters_Set_0_Query", 0 ) );
 
         availabilityEquation = nullptr;
@@ -13055,11 +13053,12 @@ namespace MetricsDiscoveryInternal::MetricSets_BDW_OA
             AddStartConfigRegister( 0xE65c, 0x00055054, REGISTER_TYPE_FLEX );
             AddStartConfigRegister( 0x91bc, 0xe0500000, REGISTER_TYPE_PM );
         }
+
         RefreshConfigRegisters();
         return CC_OK;
 
     exception:
-        return ret;
+        return CC_ERROR_GENERAL;
     }
 
     CRasterizerAndPixelBackendMetricSet::CRasterizerAndPixelBackendMetricSet( CMetricsDevice& device, CConcurrentGroup* concurrentGroup, const char* symbolicName, const char* shortName, uint32_t apiMask, uint32_t category, uint32_t snapshotReportSize, uint32_t deltaReportSize, TReportType reportType, TByteArrayLatest* platformMask, uint32_t gtMask /*= GT_TYPE_ALL*/, bool isCustom /*= false*/ )
@@ -13069,12 +13068,11 @@ namespace MetricsDiscoveryInternal::MetricSets_BDW_OA
 
     TCompletionCode CRasterizerAndPixelBackendMetricSet::Initialize()
     {
-        TCompletionCode ret                             = CC_OK;
-        CMetric*        metric                          = nullptr;
-        CInformation*   information                     = nullptr;
-        const char*     availabilityEquation            = nullptr;
-        const uint32_t  concurrentGroupInformationCount = m_concurrentGroup->GetInformationCount();
-        m_params.InformationCount                       = concurrentGroupInformationCount;
+        CMetric*       metric                          = nullptr;
+        CInformation*  information                     = nullptr;
+        const char*    availabilityEquation            = nullptr;
+        const uint32_t concurrentGroupInformationCount = m_concurrentGroup->GetInformationCount();
+        m_params.InformationCount                      = concurrentGroupInformationCount;
         MD_CHECK_CC( SetApiSpecificId( "GPAV", 0, 0x40000000, 0x80000203, 0, 0, "Intel Performance Counters for GT Set Dynamic", 0, "Intel_Raw_Hardware_Counters_Set_0_Query", 0 ) );
 
         availabilityEquation = nullptr;
@@ -13923,11 +13921,12 @@ namespace MetricsDiscoveryInternal::MetricSets_BDW_OA
             AddStartConfigRegister( 0xE65c, 0x00055054, REGISTER_TYPE_FLEX );
             AddStartConfigRegister( 0x91bc, 0xe0500000, REGISTER_TYPE_PM );
         }
+
         RefreshConfigRegisters();
         return CC_OK;
 
     exception:
-        return ret;
+        return CC_ERROR_GENERAL;
     }
 
     CSampler_1MetricSet::CSampler_1MetricSet( CMetricsDevice& device, CConcurrentGroup* concurrentGroup, const char* symbolicName, const char* shortName, uint32_t apiMask, uint32_t category, uint32_t snapshotReportSize, uint32_t deltaReportSize, TReportType reportType, TByteArrayLatest* platformMask, uint32_t gtMask /*= GT_TYPE_ALL*/, bool isCustom /*= false*/ )
@@ -13937,12 +13936,11 @@ namespace MetricsDiscoveryInternal::MetricSets_BDW_OA
 
     TCompletionCode CSampler_1MetricSet::Initialize()
     {
-        TCompletionCode ret                             = CC_OK;
-        CMetric*        metric                          = nullptr;
-        CInformation*   information                     = nullptr;
-        const char*     availabilityEquation            = nullptr;
-        const uint32_t  concurrentGroupInformationCount = m_concurrentGroup->GetInformationCount();
-        m_params.InformationCount                       = concurrentGroupInformationCount;
+        CMetric*       metric                          = nullptr;
+        CInformation*  information                     = nullptr;
+        const char*    availabilityEquation            = nullptr;
+        const uint32_t concurrentGroupInformationCount = m_concurrentGroup->GetInformationCount();
+        m_params.InformationCount                      = concurrentGroupInformationCount;
         MD_CHECK_CC( SetApiSpecificId( "GPAV", 0, 0x40000000, 0x80000203, 0, 0, "Intel Performance Counters for GT Set Dynamic", 0, "Intel_Raw_Hardware_Counters_Set_0_Query", 0 ) );
 
         availabilityEquation = nullptr;
@@ -14741,11 +14739,12 @@ namespace MetricsDiscoveryInternal::MetricSets_BDW_OA
             AddStartConfigRegister( 0xE65c, 0x00055054, REGISTER_TYPE_FLEX );
             AddStartConfigRegister( 0x91bc, 0xe0500000, REGISTER_TYPE_PM );
         }
+
         RefreshConfigRegisters();
         return CC_OK;
 
     exception:
-        return ret;
+        return CC_ERROR_GENERAL;
     }
 
     CSampler_2MetricSet::CSampler_2MetricSet( CMetricsDevice& device, CConcurrentGroup* concurrentGroup, const char* symbolicName, const char* shortName, uint32_t apiMask, uint32_t category, uint32_t snapshotReportSize, uint32_t deltaReportSize, TReportType reportType, TByteArrayLatest* platformMask, uint32_t gtMask /*= GT_TYPE_ALL*/, bool isCustom /*= false*/ )
@@ -14755,12 +14754,11 @@ namespace MetricsDiscoveryInternal::MetricSets_BDW_OA
 
     TCompletionCode CSampler_2MetricSet::Initialize()
     {
-        TCompletionCode ret                             = CC_OK;
-        CMetric*        metric                          = nullptr;
-        CInformation*   information                     = nullptr;
-        const char*     availabilityEquation            = nullptr;
-        const uint32_t  concurrentGroupInformationCount = m_concurrentGroup->GetInformationCount();
-        m_params.InformationCount                       = concurrentGroupInformationCount;
+        CMetric*       metric                          = nullptr;
+        CInformation*  information                     = nullptr;
+        const char*    availabilityEquation            = nullptr;
+        const uint32_t concurrentGroupInformationCount = m_concurrentGroup->GetInformationCount();
+        m_params.InformationCount                      = concurrentGroupInformationCount;
         MD_CHECK_CC( SetApiSpecificId( "GPAV", 0, 0x40000000, 0x80000203, 0, 0, "Intel Performance Counters for GT Set Dynamic", 0, "Intel_Raw_Hardware_Counters_Set_0_Query", 0 ) );
 
         availabilityEquation = nullptr;
@@ -15547,11 +15545,12 @@ namespace MetricsDiscoveryInternal::MetricSets_BDW_OA
             AddStartConfigRegister( 0xE65c, 0x00055054, REGISTER_TYPE_FLEX );
             AddStartConfigRegister( 0x91bc, 0xe0500000, REGISTER_TYPE_PM );
         }
+
         RefreshConfigRegisters();
         return CC_OK;
 
     exception:
-        return ret;
+        return CC_ERROR_GENERAL;
     }
 
     CTDL_1MetricSet::CTDL_1MetricSet( CMetricsDevice& device, CConcurrentGroup* concurrentGroup, const char* symbolicName, const char* shortName, uint32_t apiMask, uint32_t category, uint32_t snapshotReportSize, uint32_t deltaReportSize, TReportType reportType, TByteArrayLatest* platformMask, uint32_t gtMask /*= GT_TYPE_ALL*/, bool isCustom /*= false*/ )
@@ -15561,12 +15560,11 @@ namespace MetricsDiscoveryInternal::MetricSets_BDW_OA
 
     TCompletionCode CTDL_1MetricSet::Initialize()
     {
-        TCompletionCode ret                             = CC_OK;
-        CMetric*        metric                          = nullptr;
-        CInformation*   information                     = nullptr;
-        const char*     availabilityEquation            = nullptr;
-        const uint32_t  concurrentGroupInformationCount = m_concurrentGroup->GetInformationCount();
-        m_params.InformationCount                       = concurrentGroupInformationCount;
+        CMetric*       metric                          = nullptr;
+        CInformation*  information                     = nullptr;
+        const char*    availabilityEquation            = nullptr;
+        const uint32_t concurrentGroupInformationCount = m_concurrentGroup->GetInformationCount();
+        m_params.InformationCount                      = concurrentGroupInformationCount;
         MD_CHECK_CC( SetApiSpecificId( "GPAV", 0, 0x40000000, 0x80000203, 0, 0, "Intel Performance Counters for GT Set Dynamic", 0, "Intel_Raw_Hardware_Counters_Set_0_Query", 0 ) );
 
         availabilityEquation = nullptr;
@@ -16480,11 +16478,12 @@ namespace MetricsDiscoveryInternal::MetricSets_BDW_OA
             AddStartConfigRegister( 0xE65c, 0x00055054, REGISTER_TYPE_FLEX );
             AddStartConfigRegister( 0x91bc, 0xe0500000, REGISTER_TYPE_PM );
         }
+
         RefreshConfigRegisters();
         return CC_OK;
 
     exception:
-        return ret;
+        return CC_ERROR_GENERAL;
     }
 
     CTDL_2MetricSet::CTDL_2MetricSet( CMetricsDevice& device, CConcurrentGroup* concurrentGroup, const char* symbolicName, const char* shortName, uint32_t apiMask, uint32_t category, uint32_t snapshotReportSize, uint32_t deltaReportSize, TReportType reportType, TByteArrayLatest* platformMask, uint32_t gtMask /*= GT_TYPE_ALL*/, bool isCustom /*= false*/ )
@@ -16494,12 +16493,11 @@ namespace MetricsDiscoveryInternal::MetricSets_BDW_OA
 
     TCompletionCode CTDL_2MetricSet::Initialize()
     {
-        TCompletionCode ret                             = CC_OK;
-        CMetric*        metric                          = nullptr;
-        CInformation*   information                     = nullptr;
-        const char*     availabilityEquation            = nullptr;
-        const uint32_t  concurrentGroupInformationCount = m_concurrentGroup->GetInformationCount();
-        m_params.InformationCount                       = concurrentGroupInformationCount;
+        CMetric*       metric                          = nullptr;
+        CInformation*  information                     = nullptr;
+        const char*    availabilityEquation            = nullptr;
+        const uint32_t concurrentGroupInformationCount = m_concurrentGroup->GetInformationCount();
+        m_params.InformationCount                      = concurrentGroupInformationCount;
         MD_CHECK_CC( SetApiSpecificId( "GPAV", 0, 0x40000000, 0x80000203, 0, 0, "Intel Performance Counters for GT Set Dynamic", 0, "Intel_Raw_Hardware_Counters_Set_0_Query", 0 ) );
 
         availabilityEquation = nullptr;
@@ -17417,11 +17415,12 @@ namespace MetricsDiscoveryInternal::MetricSets_BDW_OA
             AddStartConfigRegister( 0xE65c, 0x00055054, REGISTER_TYPE_FLEX );
             AddStartConfigRegister( 0x91bc, 0xe0500000, REGISTER_TYPE_PM );
         }
+
         RefreshConfigRegisters();
         return CC_OK;
 
     exception:
-        return ret;
+        return CC_ERROR_GENERAL;
     }
 
     CComputeExtraMetricSet::CComputeExtraMetricSet( CMetricsDevice& device, CConcurrentGroup* concurrentGroup, const char* symbolicName, const char* shortName, uint32_t apiMask, uint32_t category, uint32_t snapshotReportSize, uint32_t deltaReportSize, TReportType reportType, TByteArrayLatest* platformMask, uint32_t gtMask /*= GT_TYPE_ALL*/, bool isCustom /*= false*/ )
@@ -17431,12 +17430,11 @@ namespace MetricsDiscoveryInternal::MetricSets_BDW_OA
 
     TCompletionCode CComputeExtraMetricSet::Initialize()
     {
-        TCompletionCode ret                             = CC_OK;
-        CMetric*        metric                          = nullptr;
-        CInformation*   information                     = nullptr;
-        const char*     availabilityEquation            = nullptr;
-        const uint32_t  concurrentGroupInformationCount = m_concurrentGroup->GetInformationCount();
-        m_params.InformationCount                       = concurrentGroupInformationCount;
+        CMetric*       metric                          = nullptr;
+        CInformation*  information                     = nullptr;
+        const char*    availabilityEquation            = nullptr;
+        const uint32_t concurrentGroupInformationCount = m_concurrentGroup->GetInformationCount();
+        m_params.InformationCount                      = concurrentGroupInformationCount;
         MD_CHECK_CC( SetApiSpecificId( "GPAV", 0, 0x40000000, 0x80000203, 0, 0, "Intel Performance Counters for GT Set Dynamic", 0, "Intel_Raw_Hardware_Counters_Set_0_Query", 0 ) );
 
         availabilityEquation = nullptr;
@@ -17709,11 +17707,12 @@ namespace MetricsDiscoveryInternal::MetricSets_BDW_OA
             AddStartConfigRegister( 0x2720, 0x00000000, REGISTER_TYPE_OA );
             AddStartConfigRegister( 0x2724, 0x00800000, REGISTER_TYPE_OA );
         }
+
         RefreshConfigRegisters();
         return CC_OK;
 
     exception:
-        return ret;
+        return CC_ERROR_GENERAL;
     }
 
     CVMEPipeMetricSet::CVMEPipeMetricSet( CMetricsDevice& device, CConcurrentGroup* concurrentGroup, const char* symbolicName, const char* shortName, uint32_t apiMask, uint32_t category, uint32_t snapshotReportSize, uint32_t deltaReportSize, TReportType reportType, TByteArrayLatest* platformMask, uint32_t gtMask /*= GT_TYPE_ALL*/, bool isCustom /*= false*/ )
@@ -17723,12 +17722,11 @@ namespace MetricsDiscoveryInternal::MetricSets_BDW_OA
 
     TCompletionCode CVMEPipeMetricSet::Initialize()
     {
-        TCompletionCode ret                             = CC_OK;
-        CMetric*        metric                          = nullptr;
-        CInformation*   information                     = nullptr;
-        const char*     availabilityEquation            = nullptr;
-        const uint32_t  concurrentGroupInformationCount = m_concurrentGroup->GetInformationCount();
-        m_params.InformationCount                       = concurrentGroupInformationCount;
+        CMetric*       metric                          = nullptr;
+        CInformation*  information                     = nullptr;
+        const char*    availabilityEquation            = nullptr;
+        const uint32_t concurrentGroupInformationCount = m_concurrentGroup->GetInformationCount();
+        m_params.InformationCount                      = concurrentGroupInformationCount;
         MD_CHECK_CC( SetApiSpecificId( "GPAV", 0, 0x40000000, 0x80000203, 0, 0, "Intel Performance Counters for GT Set Dynamic", 0, "Intel_Raw_Hardware_Counters_Set_0_Query", 0 ) );
 
         availabilityEquation = nullptr;
@@ -18069,11 +18067,12 @@ namespace MetricsDiscoveryInternal::MetricSets_BDW_OA
             AddStartConfigRegister( 0xe458, 0x00005004, REGISTER_TYPE_FLEX );
             AddStartConfigRegister( 0xe558, 0x00008003, REGISTER_TYPE_FLEX );
         }
+
         RefreshConfigRegisters();
         return CC_OK;
 
     exception:
-        return ret;
+        return CC_ERROR_GENERAL;
     }
 
     CGpuBusynessMetricSet::CGpuBusynessMetricSet( CMetricsDevice& device, CConcurrentGroup* concurrentGroup, const char* symbolicName, const char* shortName, uint32_t apiMask, uint32_t category, uint32_t snapshotReportSize, uint32_t deltaReportSize, TReportType reportType, TByteArrayLatest* platformMask, uint32_t gtMask /*= GT_TYPE_ALL*/, bool isCustom /*= false*/ )
@@ -18083,12 +18082,11 @@ namespace MetricsDiscoveryInternal::MetricSets_BDW_OA
 
     TCompletionCode CGpuBusynessMetricSet::Initialize()
     {
-        TCompletionCode ret                             = CC_OK;
-        CMetric*        metric                          = nullptr;
-        CInformation*   information                     = nullptr;
-        const char*     availabilityEquation            = nullptr;
-        const uint32_t  concurrentGroupInformationCount = m_concurrentGroup->GetInformationCount();
-        m_params.InformationCount                       = concurrentGroupInformationCount;
+        CMetric*       metric                          = nullptr;
+        CInformation*  information                     = nullptr;
+        const char*    availabilityEquation            = nullptr;
+        const uint32_t concurrentGroupInformationCount = m_concurrentGroup->GetInformationCount();
+        m_params.InformationCount                      = concurrentGroupInformationCount;
         MD_CHECK_CC( SetApiSpecificId( "GPAV", 0, 0x40000000, 0x80000203, 0, 0, "Intel Performance Counters for GT Set Dynamic", 0, "Intel_Raw_Hardware_Counters_Set_0_Query", 0 ) );
 
         availabilityEquation = nullptr;
@@ -18357,11 +18355,12 @@ namespace MetricsDiscoveryInternal::MetricSets_BDW_OA
             AddStartConfigRegister( 0x2770, 0x0007c000, REGISTER_TYPE_OA );
             AddStartConfigRegister( 0x2774, 0x000007ff, REGISTER_TYPE_OA );
         }
+
         RefreshConfigRegisters();
         return CC_OK;
 
     exception:
-        return ret;
+        return CC_ERROR_GENERAL;
     }
 
     CTestOaMetricSet::CTestOaMetricSet( CMetricsDevice& device, CConcurrentGroup* concurrentGroup, const char* symbolicName, const char* shortName, uint32_t apiMask, uint32_t category, uint32_t snapshotReportSize, uint32_t deltaReportSize, TReportType reportType, TByteArrayLatest* platformMask, uint32_t gtMask /*= GT_TYPE_ALL*/, bool isCustom /*= false*/ )
@@ -18371,12 +18370,11 @@ namespace MetricsDiscoveryInternal::MetricSets_BDW_OA
 
     TCompletionCode CTestOaMetricSet::Initialize()
     {
-        TCompletionCode ret                             = CC_OK;
-        CMetric*        metric                          = nullptr;
-        CInformation*   information                     = nullptr;
-        const char*     availabilityEquation            = nullptr;
-        const uint32_t  concurrentGroupInformationCount = m_concurrentGroup->GetInformationCount();
-        m_params.InformationCount                       = concurrentGroupInformationCount;
+        CMetric*       metric                          = nullptr;
+        CInformation*  information                     = nullptr;
+        const char*    availabilityEquation            = nullptr;
+        const uint32_t concurrentGroupInformationCount = m_concurrentGroup->GetInformationCount();
+        m_params.InformationCount                      = concurrentGroupInformationCount;
         MD_CHECK_CC( SetApiSpecificId( "GPAV", 0, 0x40000000, 0x80000203, 0, 0, "Intel Performance Counters for GT Set Dynamic", 0, "Intel_Raw_Hardware_Counters_Set_0_Query", 0 ) );
 
         availabilityEquation = nullptr;
@@ -18659,11 +18657,12 @@ namespace MetricsDiscoveryInternal::MetricSets_BDW_OA
             AddStartConfigRegister( 0x27a8, 0x00100001, REGISTER_TYPE_OA );
             AddStartConfigRegister( 0x27ac, 0x0000ffe7, REGISTER_TYPE_OA );
         }
+
         RefreshConfigRegisters();
         return CC_OK;
 
     exception:
-        return ret;
+        return CC_ERROR_GENERAL;
     }
 
     CSTC_PmaStallMetricSet::CSTC_PmaStallMetricSet( CMetricsDevice& device, CConcurrentGroup* concurrentGroup, const char* symbolicName, const char* shortName, uint32_t apiMask, uint32_t category, uint32_t snapshotReportSize, uint32_t deltaReportSize, TReportType reportType, TByteArrayLatest* platformMask, uint32_t gtMask /*= GT_TYPE_ALL*/, bool isCustom /*= false*/ )
@@ -18673,12 +18672,11 @@ namespace MetricsDiscoveryInternal::MetricSets_BDW_OA
 
     TCompletionCode CSTC_PmaStallMetricSet::Initialize()
     {
-        TCompletionCode ret                             = CC_OK;
-        CMetric*        metric                          = nullptr;
-        CInformation*   information                     = nullptr;
-        const char*     availabilityEquation            = nullptr;
-        const uint32_t  concurrentGroupInformationCount = m_concurrentGroup->GetInformationCount();
-        m_params.InformationCount                       = concurrentGroupInformationCount;
+        CMetric*       metric                          = nullptr;
+        CInformation*  information                     = nullptr;
+        const char*    availabilityEquation            = nullptr;
+        const uint32_t concurrentGroupInformationCount = m_concurrentGroup->GetInformationCount();
+        m_params.InformationCount                      = concurrentGroupInformationCount;
         MD_CHECK_CC( SetApiSpecificId( "GPAV", 0, 0x40000000, 0x80000203, 0, 0, "Intel Performance Counters for GT Set Dynamic", 0, "Intel_Raw_Hardware_Counters_Set_0_Query", 0 ) );
 
         availabilityEquation = nullptr;
@@ -18958,11 +18956,12 @@ namespace MetricsDiscoveryInternal::MetricSets_BDW_OA
             AddStartConfigRegister( 0x2770, 0x008000e1, REGISTER_TYPE_OA );
             AddStartConfigRegister( 0x2774, 0x001fffe0, REGISTER_TYPE_OA );
         }
+
         RefreshConfigRegisters();
         return CC_OK;
 
     exception:
-        return ret;
+        return CC_ERROR_GENERAL;
     }
 
 } // namespace MetricsDiscoveryInternal::MetricSets_BDW_OA

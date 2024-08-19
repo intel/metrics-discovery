@@ -13,9 +13,9 @@ SPDX-License-Identifier: MIT
 #include "md_per_platform_preamble.h"
 #include "md_metric_sets_TGL_GT2.h"
 
-#if( ( !defined( MD_INCLUDE_TGL_GT2_METRICS ) && MD_INCLUDE_ALL_METRICS ) || MD_INCLUDE_TGL_GT2_METRICS )
-
 using namespace MetricsDiscoveryInternal;
+
+#if( ( !defined( MD_INCLUDE_TGL_GT2_METRICS ) && MD_INCLUDE_ALL_METRICS ) || MD_INCLUDE_TGL_GT2_METRICS )
 
 TCompletionCode CreateMetricTreeTGL_GT2_PipelineStatistics( CMetricsDevice* metricsDevice, CConcurrentGroup* concurrentGroup )
 {
@@ -48,8 +48,6 @@ exception:
 #endif
 
 #if( ( !defined( MD_INCLUDE_TGL_GT2_METRICS ) && MD_INCLUDE_ALL_METRICS ) || MD_INCLUDE_TGL_GT2_METRICS )
-
-using namespace MetricsDiscoveryInternal;
 
 TCompletionCode CreateMetricTreeTGL_GT2_OA( CMetricsDevice* metricsDevice, CConcurrentGroup* concurrentGroup )
 {

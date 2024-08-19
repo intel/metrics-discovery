@@ -13,9 +13,9 @@ SPDX-License-Identifier: MIT
 #include "md_per_platform_preamble.h"
 #include "md_metric_sets_ICL.h"
 
-#if( ( !defined( MD_INCLUDE_ICL_METRICS ) && MD_INCLUDE_ALL_METRICS ) || MD_INCLUDE_ICL_METRICS )
-
 using namespace MetricsDiscoveryInternal;
+
+#if( ( !defined( MD_INCLUDE_ICL_METRICS ) && MD_INCLUDE_ALL_METRICS ) || MD_INCLUDE_ICL_METRICS )
 
 TCompletionCode CreateMetricTreeICL_MMIO_Regs( CMetricsDevice* metricsDevice, CConcurrentGroup* concurrentGroup )
 {
@@ -55,8 +55,6 @@ exception:
 
 #if( ( !defined( MD_INCLUDE_ICL_METRICS ) && MD_INCLUDE_ALL_METRICS ) || MD_INCLUDE_ICL_METRICS )
 
-using namespace MetricsDiscoveryInternal;
-
 TCompletionCode CreateMetricTreeICL_PipelineStatistics( CMetricsDevice* metricsDevice, CConcurrentGroup* concurrentGroup )
 {
     const uint32_t adapterId = OBTAIN_ADAPTER_ID( metricsDevice );
@@ -88,8 +86,6 @@ exception:
 #endif
 
 #if( ( !defined( MD_INCLUDE_ICL_METRICS ) && MD_INCLUDE_ALL_METRICS ) || MD_INCLUDE_ICL_METRICS )
-
-using namespace MetricsDiscoveryInternal;
 
 TCompletionCode CreateMetricTreeICL_OA( CMetricsDevice* metricsDevice, CConcurrentGroup* concurrentGroup )
 {

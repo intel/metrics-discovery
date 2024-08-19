@@ -13,9 +13,9 @@ SPDX-License-Identifier: MIT
 #include "md_per_platform_preamble.h"
 #include "md_metric_sets_SKL_GT4.h"
 
-#if( ( !defined( MD_INCLUDE_SKL_GT4_METRICS ) && MD_INCLUDE_ALL_METRICS ) || MD_INCLUDE_SKL_GT4_METRICS )
-
 using namespace MetricsDiscoveryInternal;
+
+#if( ( !defined( MD_INCLUDE_SKL_GT4_METRICS ) && MD_INCLUDE_ALL_METRICS ) || MD_INCLUDE_SKL_GT4_METRICS )
 
 TCompletionCode CreateMetricTreeSKL_GT4_MMIO_Regs( CMetricsDevice* metricsDevice, CConcurrentGroup* concurrentGroup )
 {
@@ -55,8 +55,6 @@ exception:
 
 #if( ( !defined( MD_INCLUDE_SKL_GT4_METRICS ) && MD_INCLUDE_ALL_METRICS ) || MD_INCLUDE_SKL_GT4_METRICS )
 
-using namespace MetricsDiscoveryInternal;
-
 TCompletionCode CreateMetricTreeSKL_GT4_PipelineStatistics( CMetricsDevice* metricsDevice, CConcurrentGroup* concurrentGroup )
 {
     const uint32_t adapterId = OBTAIN_ADAPTER_ID( metricsDevice );
@@ -88,8 +86,6 @@ exception:
 #endif
 
 #if( ( !defined( MD_INCLUDE_SKL_GT4_METRICS ) && MD_INCLUDE_ALL_METRICS ) || MD_INCLUDE_SKL_GT4_METRICS )
-
-using namespace MetricsDiscoveryInternal;
 
 TCompletionCode CreateMetricTreeSKL_GT4_OA( CMetricsDevice* metricsDevice, CConcurrentGroup* concurrentGroup )
 {

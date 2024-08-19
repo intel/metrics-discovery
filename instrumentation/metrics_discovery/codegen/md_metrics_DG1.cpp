@@ -13,9 +13,9 @@ SPDX-License-Identifier: MIT
 #include "md_per_platform_preamble.h"
 #include "md_metric_sets_DG1.h"
 
-#if( ( !defined( MD_INCLUDE_DG1_METRICS ) && MD_INCLUDE_ALL_METRICS ) || MD_INCLUDE_DG1_METRICS )
-
 using namespace MetricsDiscoveryInternal;
+
+#if( ( !defined( MD_INCLUDE_DG1_METRICS ) && MD_INCLUDE_ALL_METRICS ) || MD_INCLUDE_DG1_METRICS )
 
 TCompletionCode CreateMetricTreeDG1_PipelineStatistics( CMetricsDevice* metricsDevice, CConcurrentGroup* concurrentGroup )
 {
@@ -48,8 +48,6 @@ exception:
 #endif
 
 #if( ( !defined( MD_INCLUDE_DG1_METRICS ) && MD_INCLUDE_ALL_METRICS ) || MD_INCLUDE_DG1_METRICS )
-
-using namespace MetricsDiscoveryInternal;
 
 TCompletionCode CreateMetricTreeDG1_OA( CMetricsDevice* metricsDevice, CConcurrentGroup* concurrentGroup )
 {

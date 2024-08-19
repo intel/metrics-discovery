@@ -91,14 +91,14 @@ TCompletionCode CreateMetricTreeTGL_GT1_PipelineStatistics( CMetricsDevice* metr
 TCompletionCode CreateMetricTreeTGL_GT2_PipelineStatistics( CMetricsDevice* metricsDevice, CConcurrentGroup* concurrentGroup );
 #endif
 
-#if MD_INCLUDE_DG1_METRICS
-    #define MD_CALL_DG1_METRICS 1
-TCompletionCode CreateMetricTreeDG1_PipelineStatistics( CMetricsDevice* metricsDevice, CConcurrentGroup* concurrentGroup );
-#endif
-
 #if MD_INCLUDE_RKL_METRICS
     #define MD_CALL_RKL_METRICS 1
 TCompletionCode CreateMetricTreeRKL_PipelineStatistics( CMetricsDevice* metricsDevice, CConcurrentGroup* concurrentGroup );
+#endif
+
+#if MD_INCLUDE_DG1_METRICS
+    #define MD_CALL_DG1_METRICS 1
+TCompletionCode CreateMetricTreeDG1_PipelineStatistics( CMetricsDevice* metricsDevice, CConcurrentGroup* concurrentGroup );
 #endif
 
 #if MD_INCLUDE_ACM_GT1_METRICS
@@ -507,6 +507,9 @@ inline TCompletionCode AddGlobalSymbols( CMetricsDevice* metricsDevice )
     ret = symbolSet.AddSymbolBYTEARRAY( "GtXeCoreMask", nullptr, SYMBOL_TYPE_DETECT );
     MD_CHECK_CC_RET_A( adapterId, ret );
 
+    ret = symbolSet.AddSymbolUINT32( "PlatformVersion", 0, SYMBOL_TYPE_DETECT );
+    MD_CHECK_CC_RET_A( adapterId, ret );
+
     ret = symbolSet.AddSymbolUINT32( "L3BankTotalCount", 0, SYMBOL_TYPE_DETECT );
     MD_CHECK_CC_RET_A( adapterId, ret );
 
@@ -514,9 +517,6 @@ inline TCompletionCode AddGlobalSymbols( CMetricsDevice* metricsDevice )
     MD_CHECK_CC_RET_A( adapterId, ret );
 
     ret = symbolSet.AddSymbolUINT32( "SqidiTotalCount", 0, SYMBOL_TYPE_DETECT );
-    MD_CHECK_CC_RET_A( adapterId, ret );
-
-    ret = symbolSet.AddSymbolUINT32( "PlatformVersion", 0, SYMBOL_TYPE_DETECT );
     MD_CHECK_CC_RET_A( adapterId, ret );
 
     ret = symbolSet.AddSymbolUINT32( "ComputeEngineTotalCount", 0, SYMBOL_TYPE_DETECT );
@@ -661,12 +661,12 @@ TCompletionCode CreateMetricTree( CMetricsDevice* metricsDevice )
         MD_CHECK_CC( CreateMetricTreeTGL_GT2_PipelineStatistics( metricsDevice, concurrentGroup ) );
 #endif
 
-#if MD_CALL_DG1_METRICS
-        MD_CHECK_CC( CreateMetricTreeDG1_PipelineStatistics( metricsDevice, concurrentGroup ) );
-#endif
-
 #if MD_CALL_RKL_METRICS
         MD_CHECK_CC( CreateMetricTreeRKL_PipelineStatistics( metricsDevice, concurrentGroup ) );
+#endif
+
+#if MD_CALL_DG1_METRICS
+        MD_CHECK_CC( CreateMetricTreeDG1_PipelineStatistics( metricsDevice, concurrentGroup ) );
 #endif
 
 #if MD_CALL_ACM_GT1_METRICS

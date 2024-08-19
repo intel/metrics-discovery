@@ -23,10 +23,9 @@ namespace MetricsDiscoveryInternal::MetricSets_OcclusionQueryStats
 
     TCompletionCode CRenderedPixelsStatsMetricSet::Initialize()
     {
-        TCompletionCode ret                  = CC_OK;
-        CMetric*        metric               = nullptr;
-        const char*     availabilityEquation = nullptr;
-        m_params.InformationCount            = m_concurrentGroup->GetInformationCount();
+        CMetric*    metric               = nullptr;
+        const char* availabilityEquation = nullptr;
+        m_params.InformationCount        = m_concurrentGroup->GetInformationCount();
         MD_CHECK_CC( SetApiSpecificId( "", 9, 0, 0, 0, 0, "", 1, "", 0 ) );
 
         availabilityEquation = nullptr;
@@ -43,7 +42,7 @@ namespace MetricsDiscoveryInternal::MetricSets_OcclusionQueryStats
         return CC_OK;
 
     exception:
-        return ret;
+        return CC_ERROR_GENERAL;
     }
 
     CRenderedFragmentsStatsMetricSet::CRenderedFragmentsStatsMetricSet( CMetricsDevice& device, CConcurrentGroup* concurrentGroup, const char* symbolicName, const char* shortName, uint32_t apiMask, uint32_t category, uint32_t snapshotReportSize, uint32_t deltaReportSize, TReportType reportType, TByteArrayLatest* platformMask, uint32_t gtMask /*= GT_TYPE_ALL*/, bool isCustom /*= false*/ )
@@ -53,10 +52,9 @@ namespace MetricsDiscoveryInternal::MetricSets_OcclusionQueryStats
 
     TCompletionCode CRenderedFragmentsStatsMetricSet::Initialize()
     {
-        TCompletionCode ret                  = CC_OK;
-        CMetric*        metric               = nullptr;
-        const char*     availabilityEquation = nullptr;
-        m_params.InformationCount            = m_concurrentGroup->GetInformationCount();
+        CMetric*    metric               = nullptr;
+        const char* availabilityEquation = nullptr;
+        m_params.InformationCount        = m_concurrentGroup->GetInformationCount();
         MD_CHECK_CC( SetApiSpecificId( "", 0, 0, 0, 0, 0, "", 0, "", 0x8C2F ) );
 
         availabilityEquation = nullptr;
@@ -73,7 +71,7 @@ namespace MetricsDiscoveryInternal::MetricSets_OcclusionQueryStats
         return CC_OK;
 
     exception:
-        return ret;
+        return CC_ERROR_GENERAL;
     }
 
 } // namespace MetricsDiscoveryInternal::MetricSets_OcclusionQueryStats
@@ -87,10 +85,9 @@ namespace MetricsDiscoveryInternal::MetricSets_TimestampQuery
 
     TCompletionCode CGPUTimestampMetricSet::Initialize()
     {
-        TCompletionCode ret                  = CC_OK;
-        CMetric*        metric               = nullptr;
-        const char*     availabilityEquation = nullptr;
-        m_params.InformationCount            = m_concurrentGroup->GetInformationCount();
+        CMetric*    metric               = nullptr;
+        const char* availabilityEquation = nullptr;
+        m_params.InformationCount        = m_concurrentGroup->GetInformationCount();
         MD_CHECK_CC( SetApiSpecificId( "", 10, 0, 0, 0, 0, "", 2, "", 0x88BF ) );
 
         availabilityEquation = nullptr;
@@ -109,7 +106,7 @@ namespace MetricsDiscoveryInternal::MetricSets_TimestampQuery
         return CC_OK;
 
     exception:
-        return ret;
+        return CC_ERROR_GENERAL;
     }
 
 } // namespace MetricsDiscoveryInternal::MetricSets_TimestampQuery
