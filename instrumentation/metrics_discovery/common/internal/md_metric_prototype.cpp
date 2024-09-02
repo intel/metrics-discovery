@@ -162,18 +162,19 @@ namespace MetricsDiscoveryInternal
             m_symbolNameSeparator = '.';
         }
 
-        m_params_1_13.SymbolName        = GetCopiedCString( m_hwEvent.m_name.c_str(), adapterId );
-        m_params_1_13.ShortName         = GetCopiedCString( m_hwEvent.m_shortName.c_str(), adapterId );
-        m_params_1_13.GroupName         = GetCopiedCString( m_hwEvent.m_archEvent.m_groupName.c_str(), adapterId );
-        m_params_1_13.LongName          = GetCopiedCString( m_hwEvent.m_description.c_str(), adapterId );
-        m_params_1_13.DxToOglAlias      = nullptr;
-        m_params_1_13.UsageFlagsMask    = USAGE_FLAG_OVERVIEW; // OVERVIEW (all disaggregated, no filters), FRAME and DRAW (oar/oac)
-        m_params_1_13.ApiMask           = 0;
-        m_params_1_13.ResultType        = RESULT_UINT64;
-        m_params_1_13.MetricResultUnits = GetCopiedCString( m_hwEvent.m_archEvent.m_resultUnits.c_str(), adapterId );
-        m_params_1_13.MetricType        = m_hwEvent.m_archEvent.m_metricType;
-        m_params_1_13.HwUnitType        = m_hwEvent.m_archEvent.m_hwUnitType;
-        m_params_1_13.QueryModeMask     = static_cast<uint32_t>( m_hwEvent.m_archEvent.m_oaReportingType & ~OA_REPORTING_MEDIA ); // Media metric prototypes don't support query
+        m_params_1_13.SymbolName         = GetCopiedCString( m_hwEvent.m_name.c_str(), adapterId );
+        m_params_1_13.ShortName          = GetCopiedCString( m_hwEvent.m_shortName.c_str(), adapterId );
+        m_params_1_13.GroupName          = GetCopiedCString( m_hwEvent.m_archEvent.m_groupName.c_str(), adapterId );
+        m_params_1_13.LongName           = GetCopiedCString( m_hwEvent.m_description.c_str(), adapterId );
+        m_params_1_13.DxToOglAlias       = nullptr;
+        m_params_1_13.UsageFlagsMask     = USAGE_FLAG_OVERVIEW; // OVERVIEW (all disaggregated, no filters), FRAME and DRAW (oar/oac)
+        m_params_1_13.ApiMask            = 0;
+        m_params_1_13.ResultType         = RESULT_UINT64;
+        m_params_1_13.MetricResultUnits  = GetCopiedCString( m_hwEvent.m_archEvent.m_resultUnits.c_str(), adapterId );
+        m_params_1_13.MetricType         = m_hwEvent.m_archEvent.m_metricType;
+        m_params_1_13.HwUnitType         = m_hwEvent.m_archEvent.m_hwUnitType;
+        m_params_1_13.DisaggregationMode = m_hwEvent.m_archEvent.m_disaggregationMode;
+        m_params_1_13.QueryModeMask      = static_cast<uint32_t>( m_hwEvent.m_archEvent.m_oaReportingType & ~OA_REPORTING_MEDIA ); // Media metric prototypes don't support query
 
         const auto oaReportingType = m_hwEvent.m_archEvent.m_oaReportingType;
         if( oaReportingType & ( OA_REPORTING_GLOBAL | OA_REPORTING_GLOBAL_EXTENDED | OA_REPORTING_MEDIA ) )
@@ -185,6 +186,88 @@ namespace MetricsDiscoveryInternal
         {
             m_params_1_13.UsageFlagsMask |= USAGE_FLAG_FRAME | USAGE_FLAG_DRAW;
             m_params_1_13.ApiMask |= MD_QUERY_API_MASK;
+        }
+
+        // Disaggregation.
+        if( const auto disaggregationMode = m_hwEvent.m_archEvent.m_disaggregationMode;
+            disaggregationMode != DISAGGREGATION_MODE_NONE )
+        {
+            std::string_view globalSymbolName = "";
+
+            switch( disaggregationMode )
+            {
+                case DISAGGREGATION_MODE_XECORE:
+                    globalSymbolName = "GtXeCoreMask";
+                    break;
+                case DISAGGREGATION_MODE_L3BANK:
+                    globalSymbolName = "GtL3BankMask";
+                    break;
+                case DISAGGREGATION_MODE_SLICE:
+                    globalSymbolName = "GtSliceMask";
+                    break;
+                case DISAGGREGATION_MODE_SQIDI:
+                    globalSymbolName = "GtSqidiMask";
+                    break;
+                case DISAGGREGATION_MODE_L3NODE:
+                    globalSymbolName = "GtL3NodeMask";
+                    break;
+                case DISAGGREGATION_MODE_COPYENGINE:
+                    globalSymbolName = "GtCopyEngineMask";
+                    break;
+                default:
+                    MD_LOG_A( adapterId, LOG_DEBUG, "ERROR: unknown disaggeragation mode for HW event %s:%d",
+                        m_hwEvent.m_name.c_str(), disaggregationMode );
+                    break;
+            }
+
+            if( globalSymbolName != "" )
+            {
+                auto globalSymbol = device.GetSymbolSet().GetSymbolValueByName( globalSymbolName );
+                if( globalSymbol != nullptr )
+                {
+                    auto optionDescriptor = new( std::nothrow ) TMetricPrototypeOptionDescriptorLatest;
+
+                    if( optionDescriptor == nullptr )
+                    {
+                        MD_LOG_A( adapterId, LOG_DEBUG, "ERROR: null pointer: optionDescriptor" );
+                        return CC_ERROR_NO_MEMORY;
+                    }
+
+                    TCompletionCode    ret             = CC_OK;
+                    uint32_t           validValueCount = 0;
+                    TValidValueLatest* validValues     = nullptr;
+
+                    if( globalSymbol->ValueType == VALUE_TYPE_BYTEARRAY )
+                    {
+                        ret = device.GetSymbolSet().UnpackMaskToValidValues( globalSymbolName, globalSymbol->ValueByteArray->Data, validValueCount, validValues );
+                    }
+                    else
+                    {
+                        MD_LOG_A( adapterId, LOG_DEBUG, "ERROR: unknown valueType" );
+                        ret = CC_ERROR_GENERAL;
+                    }
+
+                    if( ret != CC_OK )
+                    {
+                        MD_SAFE_DELETE( optionDescriptor );
+                        MD_SAFE_DELETE_ARRAY( validValues );
+                        MD_LOG_A( adapterId, LOG_DEBUG, "ERROR: null pointer: validValue" );
+                        return CC_ERROR_NO_MEMORY;
+                    }
+
+                    optionDescriptor->Type            = OPTION_DESCRIPTOR_TYPE_DISAGGREGATION;
+                    optionDescriptor->SymbolName      = GetCopiedCString( "Disaggregation", adapterId );
+                    optionDescriptor->ValidValues     = validValues;
+                    optionDescriptor->ValidValueCount = validValueCount;
+
+                    m_optionsDescriptor.push_back( optionDescriptor );
+                }
+                else
+                {
+                    MD_ASSERT_A( adapterId, globalSymbol != nullptr );
+                    MD_LOG_A( adapterId, LOG_DEBUG, "ERROR: Global Symbol %.*s not found", static_cast<uint32_t>( globalSymbolName.length() ), globalSymbolName.data() );
+                }
+            }
         }
 
         // Normalization.
@@ -321,6 +404,53 @@ namespace MetricsDiscoveryInternal
         m_params_1_13.OptionDescriptorCount = static_cast<uint32_t>( m_availableOptions.size() );
 
         return CC_OK;
+    }
+
+    //////////////////////////////////////////////////////////////////////////////
+    //
+    // Class:
+    //     CMetricPrototype
+    //
+    // Method:
+    //     GetDisaggregationName
+    //
+    // Description:
+    //     Maps disaggregation mode to disaggregation mode name.
+    //
+    // Input:
+    //     const TDisaggregationMode mode - disaggregation mode.
+    //
+    // Output:
+    //     std::string                    - disaggregation mode name.
+    //
+    //////////////////////////////////////////////////////////////////////////////
+    std::string CMetricPrototype::GetDisaggregationName( const TDisaggregationMode mode ) const
+    {
+        switch( mode )
+        {
+            case DISAGGREGATION_MODE_XECORE:
+                return "XeCore";
+
+            case DISAGGREGATION_MODE_L3BANK:
+                return "L3Bank";
+
+            case DISAGGREGATION_MODE_SLICE:
+                return "Slice";
+
+            case DISAGGREGATION_MODE_SQIDI:
+                return "Sqidi";
+
+            case DISAGGREGATION_MODE_L3NODE:
+                return "L3Node";
+
+            case DISAGGREGATION_MODE_COPYENGINE:
+                return "CopyEngine";
+
+            default:
+                const uint32_t adapterId = m_metricEnumerator.GetMetricsDevice().GetAdapter().GetAdapterId();
+                MD_ASSERT_A( adapterId, false );
+                return "";
+        }
     }
 
     //////////////////////////////////////////////////////////////////////////////
@@ -477,6 +607,12 @@ namespace MetricsDiscoveryInternal
 
         switch( option->Type )
         {
+            case OPTION_DESCRIPTOR_TYPE_DISAGGREGATION:
+                suffix                         = GetDisaggregationName( m_hwEvent.m_archEvent.m_disaggregationMode ) + std::to_string( value );
+                m_hwEvent.m_disaggregationMask = static_cast<uint32_t>( ( m_hwEvent.m_archEvent.m_disaggregationMode & 0b111 ) << 16 ); // disaggregation mode 18:16
+                m_hwEvent.m_disaggregationMask |= ( ( value & 0b111111 ) << 20 );                                                       // disaggregation select 25:20
+                break;
+
             case OPTION_DESCRIPTOR_TYPE_NORMALIZATION_UTILIZATION:
                 suffix                   = "Utilization";
                 resultUnits              = "percent";
@@ -1058,6 +1194,11 @@ namespace MetricsDiscoveryInternal
         const bool isRateEnabled =
             ( optionType == OPTION_DESCRIPTOR_TYPE_NORMALIZATION_RATE ) ||
             ( std::find( m_appliedOptions.begin(), m_appliedOptions.end(), OPTION_DESCRIPTOR_TYPE_NORMALIZATION_RATE ) != m_appliedOptions.end() );
+
+        const bool isDisaggregationEnabled =
+            ( optionType == OPTION_DESCRIPTOR_TYPE_DISAGGREGATION ) ||
+            ( std::find( m_appliedOptions.begin(), m_appliedOptions.end(), OPTION_DESCRIPTOR_TYPE_DISAGGREGATION ) != m_appliedOptions.end() );
+
         const bool isByteEnabled =
             ( optionType == OPTION_DESCRIPTOR_TYPE_NORMALIZATION_BYTE ) ||
             ( std::find( m_appliedOptions.begin(), m_appliedOptions.end(), OPTION_DESCRIPTOR_TYPE_NORMALIZATION_BYTE ) != m_appliedOptions.end() );
@@ -1067,6 +1208,7 @@ namespace MetricsDiscoveryInternal
         std::string units           = "";
         std::string average         = "";
         std::string byte            = "";
+        std::string disaggregation  = "";
 
         std::string symbolNameLowerCase( eventSymbolName.size(), 0 );
         std::transform( eventSymbolName.begin(), eventSymbolName.end(), symbolNameLowerCase.begin(), toLower );
@@ -1132,6 +1274,23 @@ namespace MetricsDiscoveryInternal
             // Get rate suffix.
             units = GetSuffix( rateSuffix );
         }
+
+        if( isDisaggregationEnabled )
+        {
+            const uint32_t disaggregationInstance = ( m_hwEvent.m_disaggregationMask >> 20 ) & 0b111111;
+
+            std::string instanceSuffix = GetDisaggregationName( m_hwEvent.m_archEvent.m_disaggregationMode ) + std::to_string( disaggregationInstance );
+
+            std::transform( instanceSuffix.begin(), instanceSuffix.end(), instanceSuffix.begin(), toLower );
+
+            // Delete instance from symbol name and short name.
+            DeleteSuffixFromName( eventSymbolName, symbolNameLowerCase, instanceSuffix );
+            DeleteSuffixFromName( eventShortName, shortNameLowerCase, instanceSuffix );
+
+            // Get disaggregation suffix.
+            disaggregation = GetSuffix( instanceSuffix );
+        }
+
         if( isByteEnabled )
         {
             std::string byteSuffix = "byte";
@@ -1169,17 +1328,19 @@ namespace MetricsDiscoveryInternal
         }
 
         // Produce symbol name.
-        iu_sprintf_s( symbolNameTemplate, sizeof( symbolNameTemplate ), "%s%s%s", eventSymbolName.c_str(), units.c_str(), average.c_str() );
+        iu_sprintf_s( symbolNameTemplate, sizeof( symbolNameTemplate ), "%s%s%s%s", eventSymbolName.c_str(), units.c_str(), disaggregation.c_str(), average.c_str() );
 
         convertToShortNameFormat( units );
         convertToShortNameFormat( average );
+        convertToShortNameFormat( disaggregation );
 
         // Change separators to spaces.
         std::replace( units.begin(), units.end(), m_symbolNameSeparator, ' ' );
         std::replace( average.begin(), average.end(), m_symbolNameSeparator, ' ' );
+        std::replace( disaggregation.begin(), disaggregation.end(), m_symbolNameSeparator, ' ' );
 
         // Produce short name.
-        iu_sprintf_s( shortNameTemplate, sizeof( symbolNameTemplate ), "%s%s%s", eventShortName.c_str(), units.c_str(), average.c_str() );
+        iu_sprintf_s( shortNameTemplate, sizeof( symbolNameTemplate ), "%s%s%s", eventShortName.c_str(), units.c_str(), disaggregation.c_str(), average.c_str() );
 
         symbolName = symbolNameTemplate;
         shortName  = shortNameTemplate;

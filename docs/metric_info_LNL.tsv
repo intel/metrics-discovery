@@ -448,33 +448,41 @@ TestOa	ASYNC_GPGPU_THREADGROUP_COUNT	Async GpGpu Threadgroup Count	Thread Dispat
 TestOa	RASTERIZER_SAMPLE_OUTPUT	Rasterizer Sample Output	Rasterizer	Number of lit samples emitted by Rasterizer
 TestOa	TEST_EVENT1	Test Event1	Test	Number of GPU (gt) clock cycles at every clock period
 TestOa	TEST_EVENT1_CYCLES	Test Event1 Cycles	Test	Number of GPU (gt) clock cycles at every clock period
+TestOa	TEST_EVENT1_CYCLES_XECORE0	Test Event1 Cycles Xecore0	Test	Number of GPU (gt) clock cycles at every clock period (XECORE0)
+TestOa	TEST_EVENT1_CYCLES_XECORE1	Test Event1 Cycles Xecore1	Test	Number of GPU (gt) clock cycles at every clock period (XECORE1)
+TestOa	TEST_EVENT1_CYCLES_XECORE2	Test Event1 Cycles Xecore2	Test	Number of GPU (gt) clock cycles at every clock period (XECORE2)
+TestOa	TEST_EVENT1_CYCLES_XECORE3	Test Event1 Cycles Xecore3	Test	Number of GPU (gt) clock cycles at every clock period (XECORE3)
+TestOa	TEST_EVENT1_CYCLES_XECORE4	Test Event1 Cycles Xecore4	Test	Number of GPU (gt) clock cycles at every clock period (XECORE4)
+TestOa	TEST_EVENT1_CYCLES_XECORE5	Test Event1 Cycles Xecore5	Test	Number of GPU (gt) clock cycles at every clock period (XECORE5)
+TestOa	TEST_EVENT1_CYCLES_XECORE6	Test Event1 Cycles Xecore6	Test	Number of GPU (gt) clock cycles at every clock period (XECORE6)
+TestOa	TEST_EVENT1_CYCLES_XECORE7	Test Event1 Cycles Xecore7	Test	Number of GPU (gt) clock cycles at every clock period (XECORE7)
 TestOa	TEST_EVENT1_CYCLES_AVERAGE	Test Event1 Cycles Average	Test	Average number of GPU (gt) clock cycles at every clock period
 TestOa	TEST_EVENT2	Test Event2	Test	Number of GPU (gt) clock cycles at every other clock period
 TestOa	TEST_EVENT2_CYCLES	Test Event2 Cycles	Test	Number of GPU (gt) clock cycles at every other clock period
 MediaSet1	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
-MediaSet1	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
-MediaSet1	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
+MediaSet1	GpuCoreClocks	GPU Media Clocks	GPU	The total number of media slice clocks elapsed during the measurement.
+MediaSet1	AvgGpuCoreFrequencyMHz	AVG GPU Media Frequency	GPU	Average GPU Media Frequency in the measurement.
 MediaSet1	ResultUncertainty	Result Uncertainty	GPU	Result uncertainty indicator
-MediaSet1	MEDIA_READ_REQUEST	Media Read Request	GPU	Number of read requests from stand alone media
-MediaSet1	MEDIA_WRITE_REQUEST	Media Write Request	GPU	Number of write requests from stand alone media
-MediaSet1	COMMAND_PARSER_VIDEO_DECODE_ENGINE0_BUSY	Command Parser Video Decode Engine0 Busy	GPU	Number of VCS0 (VDBOX0) activities
-MediaSet1	VIDEO_DECODE_BOX0_READ_REQUEST	Video Decode Box0 Read Request	GPU	Number of VDBOX0 read requests
-MediaSet1	VIDEO_DECODE_BOX0_WRITE_REQUEST	Video Decode Box0 Write Request	GPU	Number of VDBOX0 write requests
-MediaSet1	COMMAND_PARSER_VIDEO_DECODE_ENGINE1_BUSY	Command Parser Video Decode Engine1 Busy	GPU	Number of VCS1 (VDBOX1) activities
-MediaSet1	VIDEO_DECODE_BOX1_READ_REQUEST	Video Decode Box1 Read Request	GPU	Number of VDBOX1 read requests
-MediaSet1	VIDEO_DECODE_BOX1_WRITE_REQUEST	Video Decode Box1 Write Request	GPU	Number of VDBOX1 write requests
+MediaSet1	MEDIA_READ_REQUEST	Media Read Request	Media	Number of read requests from stand alone media
+MediaSet1	MEDIA_WRITE_REQUEST	Media Write Request	Media	Number of write requests from stand alone media
+MediaSet1	COMMAND_PARSER_VIDEO_DECODE_ENGINE0_BUSY	Command Parser Video Decode Engine0 Busy	Media	Number of VCS0 (VDBOX0) activities
+MediaSet1	VIDEO_DECODE_BOX0_READ_REQUEST	Video Decode Box0 Read Request	Media	Number of VDBOX0 read requests
+MediaSet1	VIDEO_DECODE_BOX0_WRITE_REQUEST	Video Decode Box0 Write Request	Media	Number of VDBOX0 write requests
+MediaSet1	COMMAND_PARSER_VIDEO_DECODE_ENGINE1_BUSY	Command Parser Video Decode Engine1 Busy	Media	Number of VCS1 (VDBOX1) activities
+MediaSet1	VIDEO_DECODE_BOX1_READ_REQUEST	Video Decode Box1 Read Request	Media	Number of VDBOX1 read requests
+MediaSet1	VIDEO_DECODE_BOX1_WRITE_REQUEST	Video Decode Box1 Write Request	Media	Number of VDBOX1 write requests
 MediaSet2	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
-MediaSet2	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
-MediaSet2	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
+MediaSet2	GpuCoreClocks	GPU Media Clocks	GPU	The total number of media slice clocks elapsed during the measurement.
+MediaSet2	AvgGpuCoreFrequencyMHz	AVG GPU Media Frequency	GPU	Average GPU Media Frequency in the measurement.
 MediaSet2	ResultUncertainty	Result Uncertainty	GPU	Result uncertainty indicator
-MediaSet2	COMMAND_PARSER_VIDEO_ENHANCEMENT_ENGINE0_BUSY	Command Parser Video Enhancement Engine0 Busy	GPU	Number of VECS0 (VEBOX0) activities
-MediaSet2	VIDEO_ENHANCEMENT_BOX0_READ_REQUEST	Video Enhancement Box0 Read Request	GPU	Number of VEBOX0 read requests
-MediaSet2	VIDEO_ENHANCEMENT_BOX0_WRITE_REQUEST	Video Enhancement Box0 Write Request	GPU	Number of VEBOX0 write requests
-MediaSet2	COMMAND_PARSER_VIDEO_ENHANCEMENT_ENGINE1_BUSY	Command Parser Video Enhancement Engine1 Busy	GPU	Number of VECS1 (VEBOX1) activities
-MediaSet2	VIDEO_ENHANCEMENT_BOX1_READ_REQUEST	Video Enhancement Box1 Read Request	GPU	Number of VEBOX1 read requests
-MediaSet2	VIDEO_ENHANCEMENT_BOX1_WRITE_REQUEST	Video Enhancement Box1 Write Request	GPU	Number of VEBOX1 write requests
+MediaSet2	COMMAND_PARSER_VIDEO_ENHANCEMENT_ENGINE0_BUSY	Command Parser Video Enhancement Engine0 Busy	Media	Number of VECS0 (VEBOX0) activities
+MediaSet2	VIDEO_ENHANCEMENT_BOX0_READ_REQUEST	Video Enhancement Box0 Read Request	Media	Number of VEBOX0 read requests
+MediaSet2	VIDEO_ENHANCEMENT_BOX0_WRITE_REQUEST	Video Enhancement Box0 Write Request	Media	Number of VEBOX0 write requests
+MediaSet2	COMMAND_PARSER_VIDEO_ENHANCEMENT_ENGINE1_BUSY	Command Parser Video Enhancement Engine1 Busy	Media	Number of VECS1 (VEBOX1) activities
+MediaSet2	VIDEO_ENHANCEMENT_BOX1_READ_REQUEST	Video Enhancement Box1 Read Request	Media	Number of VEBOX1 read requests
+MediaSet2	VIDEO_ENHANCEMENT_BOX1_WRITE_REQUEST	Video Enhancement Box1 Write Request	Media	Number of VEBOX1 write requests
 MediaSet1	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
-MediaSet1	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
-MediaSet1	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
+MediaSet1	GpuCoreClocks	GPU Media Clocks	GPU	The total number of media slice clocks elapsed during the measurement.
+MediaSet1	AvgGpuCoreFrequencyMHz	AVG GPU Media Frequency	GPU	Average GPU Media Frequency in the measurement.
 MediaSet1	ResultUncertainty	Result Uncertainty	GPU	Result uncertainty indicator
-MediaSet1	COMMAND_PARSER_GRAPHICS_SECURITY_CONTROLLER_BUSY	Command Parser Graphics Security Controller Busy	GPU	Number of GSCCS activities
+MediaSet1	COMMAND_PARSER_GRAPHICS_SECURITY_CONTROLLER_BUSY	Command Parser Graphics Security Controller Busy	Media	Number of GSCCS activities

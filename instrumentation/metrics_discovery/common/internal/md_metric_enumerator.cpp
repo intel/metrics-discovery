@@ -411,6 +411,10 @@ namespace MetricsDiscoveryInternal
                     {
                         archEvent->m_eventEncoding = static_cast<uint32_t>( atoi( archEventValueString ) );
                     }
+                    else if( archEventHeader[j].m_name == "Disaggregation Mode" )
+                    {
+                        archEvent->m_disaggregationMode = static_cast<TDisaggregationMode>( atoi( archEventValueString ) );
+                    }
                     else if( archEventHeader[j].m_name == "Metric Type" )
                     {
                         archEvent->m_metricType = static_cast<TMetricType>( atoi( archEventValueString ) );

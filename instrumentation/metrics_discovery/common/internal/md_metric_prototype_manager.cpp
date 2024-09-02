@@ -160,7 +160,7 @@ namespace MetricsDiscoveryInternal
 
             const auto& hwEvent = metricPrototype->GetHwEvent();
 
-            const uint64_t pesProgramming = hwEvent.m_archEvent.m_eventEncoding;
+            const uint64_t pesProgramming = hwEvent.m_archEvent.m_eventEncoding | hwEvent.m_disaggregationMask;
 
             uint32_t snapshotReportOffsets = 0;
             uint32_t deltaReportOffsets    = 0;
@@ -500,6 +500,7 @@ namespace MetricsDiscoveryInternal
                 auto& event = *pair.first;
 
                 return event.m_archEvent.m_eventEncoding == hwEvent.m_archEvent.m_eventEncoding &&
+                    event.m_disaggregationMask == hwEvent.m_disaggregationMask &&
                     event.m_filterValue == hwEvent.m_filterValue;
             } );
 
@@ -628,10 +629,11 @@ namespace MetricsDiscoveryInternal
         const auto& hwEvent        = prototype.GetHwEvent();
         const auto& appliedOptions = prototype.GetAppliedOptions();
 
-        const bool isUtilizationEnabled = std::find( appliedOptions.begin(), appliedOptions.end(), OPTION_DESCRIPTOR_TYPE_NORMALIZATION_UTILIZATION ) != appliedOptions.end();
-        const bool isAverageEnabled     = std::find( appliedOptions.begin(), appliedOptions.end(), OPTION_DESCRIPTOR_TYPE_NORMALIZATION_AVERAGE ) != appliedOptions.end();
-        const bool isRateEnabled        = std::find( appliedOptions.begin(), appliedOptions.end(), OPTION_DESCRIPTOR_TYPE_NORMALIZATION_RATE ) != appliedOptions.end();
-        const bool isByteEnabled        = std::find( appliedOptions.begin(), appliedOptions.end(), OPTION_DESCRIPTOR_TYPE_NORMALIZATION_BYTE ) != appliedOptions.end();
+        const bool isDisaggregationEnabled = std::find( appliedOptions.begin(), appliedOptions.end(), OPTION_DESCRIPTOR_TYPE_DISAGGREGATION ) != appliedOptions.end();
+        const bool isUtilizationEnabled    = std::find( appliedOptions.begin(), appliedOptions.end(), OPTION_DESCRIPTOR_TYPE_NORMALIZATION_UTILIZATION ) != appliedOptions.end();
+        const bool isAverageEnabled        = std::find( appliedOptions.begin(), appliedOptions.end(), OPTION_DESCRIPTOR_TYPE_NORMALIZATION_AVERAGE ) != appliedOptions.end();
+        const bool isRateEnabled           = std::find( appliedOptions.begin(), appliedOptions.end(), OPTION_DESCRIPTOR_TYPE_NORMALIZATION_RATE ) != appliedOptions.end();
+        const bool isByteEnabled           = std::find( appliedOptions.begin(), appliedOptions.end(), OPTION_DESCRIPTOR_TYPE_NORMALIZATION_BYTE ) != appliedOptions.end();
 
         // Apply workarounds if any.
         switch( auto& archWorkaround = hwEvent.m_archEvent.m_workaround;
@@ -654,6 +656,15 @@ namespace MetricsDiscoveryInternal
                 snapshotReportReadEquation << ' ' << hwEvent.m_workaround.m_equation;
                 deltaReportReadEquation << ' ' << hwEvent.m_workaround.m_equation;
                 break;
+
+            case EVENT_WORKAROUND_TYPE_DISAGGREGATED_ONLY:
+                if( isDisaggregationEnabled )
+                {
+                    snapshotReportReadEquation << ' ' << hwEvent.m_workaround.m_equation;
+                    deltaReportReadEquation << ' ' << hwEvent.m_workaround.m_equation;
+                }
+                break;
+
             default:
                 // Nothing on purpose.
                 break;
@@ -677,7 +688,8 @@ namespace MetricsDiscoveryInternal
                     // Utilization and rate normalizations do not make sense. We do not expose prototypes with these both options available.
                     MD_ASSERT_A( adapterId, false );
                 }
-                if( instance == "eu" || instance == "thread" )
+
+                if( ( instance == "eu" || instance == "thread" ) && !isDisaggregationEnabled )
                 {
                     // Use built-in vector engine normalization equation: $Self $GpuCoreClocks $VectorEngineTotalCount UMUL FDIV 100 FMUL
                     metric.SetNormalizationEquation( "EuAggrDuration" );
@@ -701,78 +713,140 @@ namespace MetricsDiscoveryInternal
                     MD_ASSERT_A( adapterId, false );
                 }
             }
-            if( instance == "xecore" )
+            // Divide by the number of instances if disaggregation is disabled.
+            if( !isDisaggregationEnabled )
             {
-                snapshotReportReadEquation << " $XeCoreTotalCount UDIV";
-                deltaReportReadEquation << " $XeCoreTotalCount UDIV";
-            }
-            else if( instance == "l3bank" )
-            {
-                snapshotReportReadEquation << " $L3BankTotalCount UDIV";
-                deltaReportReadEquation << " $L3BankTotalCount UDIV";
-            }
-            else if( instance == "slice" )
-            {
-                snapshotReportReadEquation << " $SliceTotalCount UDIV";
-                deltaReportReadEquation << " $SliceTotalCount UDIV";
-            }
-            else if( instance == "sqidi" )
-            {
-                snapshotReportReadEquation << " $SqidiTotalCount UDIV";
-                deltaReportReadEquation << " $SqidiTotalCount UDIV";
-            }
-            else if( instance == "l3node" )
-            {
-                snapshotReportReadEquation << " $L3NodeTotalCount UDIV";
-                deltaReportReadEquation << " $L3NodeTotalCount UDIV";
-            }
-            else if( instance == "copyengine" )
-            {
-                snapshotReportReadEquation << " $CopyEngineTotalCount UDIV";
-                deltaReportReadEquation << " $CopyEngineTotalCount UDIV";
-            }
-            else if( instance == "eu" )
-            {
-                // EuAggrDuration for utilization has already divided by vector engine count.
-                if( isAverageEnabled )
+                if( instance == "xecore" )
                 {
-                    snapshotReportReadEquation << " $VectorEngineTotalCount UDIV";
-                    deltaReportReadEquation << " $VectorEngineTotalCount UDIV";
+                    snapshotReportReadEquation << " $XeCoreTotalCount UDIV";
+                    deltaReportReadEquation << " $XeCoreTotalCount UDIV";
                 }
-            }
-            else if( instance == "thread" )
-            {
-                if( isAverageEnabled )
+                else if( instance == "l3bank" )
                 {
-                    snapshotReportReadEquation << " $VectorEngineTotalCount UDIV $VectorEngineThreadsCount UDIV";
-                    deltaReportReadEquation << " $VectorEngineTotalCount UDIV $VectorEngineThreadsCount UDIV";
+                    snapshotReportReadEquation << " $L3BankTotalCount UDIV";
+                    deltaReportReadEquation << " $L3BankTotalCount UDIV";
+                }
+                else if( instance == "slice" )
+                {
+                    snapshotReportReadEquation << " $SliceTotalCount UDIV";
+                    deltaReportReadEquation << " $SliceTotalCount UDIV";
+                }
+                else if( instance == "sqidi" )
+                {
+                    snapshotReportReadEquation << " $SqidiTotalCount UDIV";
+                    deltaReportReadEquation << " $SqidiTotalCount UDIV";
+                }
+                else if( instance == "l3node" )
+                {
+                    snapshotReportReadEquation << " $L3NodeTotalCount UDIV";
+                    deltaReportReadEquation << " $L3NodeTotalCount UDIV";
+                }
+                else if( instance == "copyengine" )
+                {
+                    snapshotReportReadEquation << " $CopyEngineTotalCount UDIV";
+                    deltaReportReadEquation << " $CopyEngineTotalCount UDIV";
+                }
+                else if( instance == "eu" )
+                {
+                    // EuAggrDuration for utilization has already divided by vector engine count.
+                    if( isAverageEnabled )
+                    {
+                        snapshotReportReadEquation << " $VectorEngineTotalCount UDIV";
+                        deltaReportReadEquation << " $VectorEngineTotalCount UDIV";
+                    }
+                }
+                else if( instance == "thread" )
+                {
+                    if( isAverageEnabled )
+                    {
+                        snapshotReportReadEquation << " $VectorEngineTotalCount UDIV $VectorEngineThreadsCount UDIV";
+                        deltaReportReadEquation << " $VectorEngineTotalCount UDIV $VectorEngineThreadsCount UDIV";
+                    }
+                    else
+                    {
+                        // EuAggrDuration for utilization has already divided by vector engine count.
+                        snapshotReportReadEquation << " $VectorEngineThreadsCount UDIV";
+                        deltaReportReadEquation << " $VectorEngineThreadsCount UDIV";
+                    }
+                }
+                else if( instance == "pixpipe" || instance == "zpipe" )
+                {
+                    // 2 pixel/depth pipes per slice
+                    snapshotReportReadEquation << " $SliceTotalCount 2 UMUL UDIV";
+                    deltaReportReadEquation << " $SliceTotalCount 2 UMUL UDIV";
+                }
+                else if( instance == "ccs" )
+                {
+                    snapshotReportReadEquation << " $ComputeEngineTotalCount UDIV";
+                    deltaReportReadEquation << " $ComputeEngineTotalCount UDIV";
+                }
+                else if( instance == "" )
+                {
+                    // Do nothing on purpose.
                 }
                 else
                 {
-                    // EuAggrDuration for utilization has already divided by vector engine count.
-                    snapshotReportReadEquation << " $VectorEngineThreadsCount UDIV";
-                    deltaReportReadEquation << " $VectorEngineThreadsCount UDIV";
+                    // Not acceptable instance.
+                    MD_ASSERT_A( adapterId, false );
                 }
             }
-            else if( instance == "pixpipe" || instance == "zpipe" )
+            else // Disaggregation is enabled.
             {
-                // 2 pixel/depth pipes per slice
-                snapshotReportReadEquation << " $SliceTotalCount 2 UMUL UDIV";
-                deltaReportReadEquation << " $SliceTotalCount 2 UMUL UDIV";
-            }
-            else if( instance == "ccs" )
-            {
-                snapshotReportReadEquation << " $ComputeEngineTotalCount UDIV";
-                deltaReportReadEquation << " $ComputeEngineTotalCount UDIV";
-            }
-            else if( instance == "" )
-            {
-                // Do nothing on purpose.
-            }
-            else
-            {
-                // Not acceptable instance.
-                MD_ASSERT_A( adapterId, false );
+                if( instance == "eu" )
+                {
+                    if( hwEvent.m_archEvent.m_disaggregationMode == DISAGGREGATION_MODE_XECORE )
+                    {
+                        snapshotReportReadEquation << " $VectorEnginePerXeCoreCount UDIV";
+                        deltaReportReadEquation << " $VectorEnginePerXeCoreCount UDIV";
+                    }
+                    else
+                    {
+                        // These disaggregation mode and instance type are not supported.
+                        MD_ASSERT_A( adapterId, false );
+                    }
+                }
+                else if( instance == "thread" )
+                {
+                    if( hwEvent.m_archEvent.m_disaggregationMode == DISAGGREGATION_MODE_XECORE )
+                    {
+                        snapshotReportReadEquation << " $VectorEnginePerXeCoreCount UDIV $VectorEngineThreadsCount UDIV";
+                        deltaReportReadEquation << " $VectorEnginePerXeCoreCount UDIV $VectorEngineThreadsCount UDIV";
+                    }
+                    else
+                    {
+                        // These disaggregation mode and instance type are not supported.
+                        MD_ASSERT_A( adapterId, false );
+                    }
+                }
+                else if( instance == "pixpipe" || instance == "zpipe" )
+                {
+                    // 2 pixel/depth pipes per slice
+                    if( hwEvent.m_archEvent.m_disaggregationMode == DISAGGREGATION_MODE_SLICE )
+                    {
+                        snapshotReportReadEquation << " 2 UDIV";
+                        deltaReportReadEquation << " 2 UDIV";
+                    }
+                    else
+                    {
+                        // These disaggregation mode and instance type are not supported.
+                        MD_ASSERT_A( adapterId, false );
+                    }
+                }
+                else if( instance == "xecore" ||
+                    instance == "l3bank" ||
+                    instance == "slice" ||
+                    instance == "sqidi" ||
+                    instance == "l3node" ||
+                    instance == "copyengine" ||
+                    instance == "" )
+                {
+                    // Do nothing on purpose.
+                }
+                else
+                {
+                    // These disaggregation mode and instance type are not supported.
+                    MD_ASSERT_A( adapterId, false );
+                }
             }
         }
         else if( isRateEnabled )

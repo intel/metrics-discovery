@@ -7834,11 +7834,115 @@ namespace MetricsDiscoveryInternal::MetricSets_LNL_OA
             metric->SetQueryModeMask( QUERY_MODE_MASK_RENDER | QUERY_MODE_MASK_COMPUTE | QUERY_MODE_MASK_GLOBAL | QUERY_MODE_MASK_GLOBAL_EXTENDED );
         }
 
+        availabilityEquation = "$GtXeCore0";
+        metric               = AddMetric( "TEST_EVENT1_CYCLES_XECORE0", "Test Event1 Cycles Xecore0",
+                          "Number of GPU (gt) clock cycles at every clock period (XECORE0)",
+                          "Test", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          METRIC_TYPE_EVENT, RESULT_UINT64, "cycles", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 11 );
+        if( metric )
+        {
+            MD_CHECK_CC( ( metric->SetSnapshotReportReadEquation( "qw@0x38" ) ) );
+            MD_CHECK_CC( ( metric->SetDeltaReportReadEquation( "qw@0x28" ) ) );
+            MD_CHECK_CC( ( metric->SetSnapshotReportDeltaFunction( "DELTA 64" ) ) );
+            metric->SetQueryModeMask( QUERY_MODE_MASK_RENDER | QUERY_MODE_MASK_COMPUTE | QUERY_MODE_MASK_GLOBAL | QUERY_MODE_MASK_GLOBAL_EXTENDED );
+        }
+
+        availabilityEquation = "$GtXeCore1";
+        metric               = AddMetric( "TEST_EVENT1_CYCLES_XECORE1", "Test Event1 Cycles Xecore1",
+                          "Number of GPU (gt) clock cycles at every clock period (XECORE1)",
+                          "Test", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          METRIC_TYPE_EVENT, RESULT_UINT64, "cycles", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 12 );
+        if( metric )
+        {
+            MD_CHECK_CC( ( metric->SetSnapshotReportReadEquation( "qw@0x40" ) ) );
+            MD_CHECK_CC( ( metric->SetDeltaReportReadEquation( "qw@0x30" ) ) );
+            MD_CHECK_CC( ( metric->SetSnapshotReportDeltaFunction( "DELTA 64" ) ) );
+            metric->SetQueryModeMask( QUERY_MODE_MASK_RENDER | QUERY_MODE_MASK_COMPUTE | QUERY_MODE_MASK_GLOBAL | QUERY_MODE_MASK_GLOBAL_EXTENDED );
+        }
+
+        availabilityEquation = "$GtXeCore2";
+        metric               = AddMetric( "TEST_EVENT1_CYCLES_XECORE2", "Test Event1 Cycles Xecore2",
+                          "Number of GPU (gt) clock cycles at every clock period (XECORE2)",
+                          "Test", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          METRIC_TYPE_EVENT, RESULT_UINT64, "cycles", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 13 );
+        if( metric )
+        {
+            MD_CHECK_CC( ( metric->SetSnapshotReportReadEquation( "qw@0x48" ) ) );
+            MD_CHECK_CC( ( metric->SetDeltaReportReadEquation( "qw@0x38" ) ) );
+            MD_CHECK_CC( ( metric->SetSnapshotReportDeltaFunction( "DELTA 64" ) ) );
+            metric->SetQueryModeMask( QUERY_MODE_MASK_RENDER | QUERY_MODE_MASK_COMPUTE | QUERY_MODE_MASK_GLOBAL | QUERY_MODE_MASK_GLOBAL_EXTENDED );
+        }
+
+        availabilityEquation = "$GtXeCore3";
+        metric               = AddMetric( "TEST_EVENT1_CYCLES_XECORE3", "Test Event1 Cycles Xecore3",
+                          "Number of GPU (gt) clock cycles at every clock period (XECORE3)",
+                          "Test", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          METRIC_TYPE_EVENT, RESULT_UINT64, "cycles", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 14 );
+        if( metric )
+        {
+            MD_CHECK_CC( ( metric->SetSnapshotReportReadEquation( "qw@0x50" ) ) );
+            MD_CHECK_CC( ( metric->SetDeltaReportReadEquation( "qw@0x40" ) ) );
+            MD_CHECK_CC( ( metric->SetSnapshotReportDeltaFunction( "DELTA 64" ) ) );
+            metric->SetQueryModeMask( QUERY_MODE_MASK_RENDER | QUERY_MODE_MASK_COMPUTE | QUERY_MODE_MASK_GLOBAL | QUERY_MODE_MASK_GLOBAL_EXTENDED );
+        }
+
+        availabilityEquation = "$GtXeCore4";
+        metric               = AddMetric( "TEST_EVENT1_CYCLES_XECORE4", "Test Event1 Cycles Xecore4",
+                          "Number of GPU (gt) clock cycles at every clock period (XECORE4)",
+                          "Test", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          METRIC_TYPE_EVENT, RESULT_UINT64, "cycles", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 15 );
+        if( metric )
+        {
+            MD_CHECK_CC( ( metric->SetSnapshotReportReadEquation( "qw@0xc8" ) ) );
+            MD_CHECK_CC( ( metric->SetDeltaReportReadEquation( "qw@0xb8" ) ) );
+            MD_CHECK_CC( ( metric->SetSnapshotReportDeltaFunction( "DELTA 64" ) ) );
+            metric->SetQueryModeMask( QUERY_MODE_MASK_RENDER | QUERY_MODE_MASK_COMPUTE | QUERY_MODE_MASK_GLOBAL | QUERY_MODE_MASK_GLOBAL_EXTENDED );
+        }
+
+        availabilityEquation = "$GtXeCore5";
+        metric               = AddMetric( "TEST_EVENT1_CYCLES_XECORE5", "Test Event1 Cycles Xecore5",
+                          "Number of GPU (gt) clock cycles at every clock period (XECORE5)",
+                          "Test", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          METRIC_TYPE_EVENT, RESULT_UINT64, "cycles", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 16 );
+        if( metric )
+        {
+            MD_CHECK_CC( ( metric->SetSnapshotReportReadEquation( "qw@0xd0" ) ) );
+            MD_CHECK_CC( ( metric->SetDeltaReportReadEquation( "qw@0xc0" ) ) );
+            MD_CHECK_CC( ( metric->SetSnapshotReportDeltaFunction( "DELTA 64" ) ) );
+            metric->SetQueryModeMask( QUERY_MODE_MASK_RENDER | QUERY_MODE_MASK_COMPUTE | QUERY_MODE_MASK_GLOBAL | QUERY_MODE_MASK_GLOBAL_EXTENDED );
+        }
+
+        availabilityEquation = "$GtXeCore6";
+        metric               = AddMetric( "TEST_EVENT1_CYCLES_XECORE6", "Test Event1 Cycles Xecore6",
+                          "Number of GPU (gt) clock cycles at every clock period (XECORE6)",
+                          "Test", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          METRIC_TYPE_EVENT, RESULT_UINT64, "cycles", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 17 );
+        if( metric )
+        {
+            MD_CHECK_CC( ( metric->SetSnapshotReportReadEquation( "qw@0xd8" ) ) );
+            MD_CHECK_CC( ( metric->SetDeltaReportReadEquation( "qw@0xc8" ) ) );
+            MD_CHECK_CC( ( metric->SetSnapshotReportDeltaFunction( "DELTA 64" ) ) );
+            metric->SetQueryModeMask( QUERY_MODE_MASK_RENDER | QUERY_MODE_MASK_COMPUTE | QUERY_MODE_MASK_GLOBAL | QUERY_MODE_MASK_GLOBAL_EXTENDED );
+        }
+
+        availabilityEquation = "$GtXeCore7";
+        metric               = AddMetric( "TEST_EVENT1_CYCLES_XECORE7", "Test Event1 Cycles Xecore7",
+                          "Number of GPU (gt) clock cycles at every clock period (XECORE7)",
+                          "Test", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+                          METRIC_TYPE_EVENT, RESULT_UINT64, "cycles", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 18 );
+        if( metric )
+        {
+            MD_CHECK_CC( ( metric->SetSnapshotReportReadEquation( "qw@0xe0" ) ) );
+            MD_CHECK_CC( ( metric->SetDeltaReportReadEquation( "qw@0xd0" ) ) );
+            MD_CHECK_CC( ( metric->SetSnapshotReportDeltaFunction( "DELTA 64" ) ) );
+            metric->SetQueryModeMask( QUERY_MODE_MASK_RENDER | QUERY_MODE_MASK_COMPUTE | QUERY_MODE_MASK_GLOBAL | QUERY_MODE_MASK_GLOBAL_EXTENDED );
+        }
+
         availabilityEquation = nullptr;
         metric               = AddMetric( "TEST_EVENT1_CYCLES_AVERAGE", "Test Event1 Cycles Average",
                           "Average number of GPU (gt) clock cycles at every clock period",
                           "Test", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
-                          METRIC_TYPE_EVENT, RESULT_UINT64, "cycles", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 11 );
+                          METRIC_TYPE_EVENT, RESULT_UINT64, "cycles", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 19 );
         if( metric )
         {
             MD_CHECK_CC( ( metric->SetSnapshotReportReadEquation( "qw@0x30 $XeCoreTotalCount UDIV" ) ) );
@@ -7851,7 +7955,7 @@ namespace MetricsDiscoveryInternal::MetricSets_LNL_OA
         metric               = AddMetric( "TEST_EVENT2", "Test Event2",
                           "Number of GPU (gt) clock cycles at every other clock period",
                           "Test", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
-                          METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 12 );
+                          METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 20 );
         if( metric )
         {
             MD_CHECK_CC( ( metric->SetSnapshotReportReadEquation( "qw@0x138 $SliceTotalCount UDIV" ) ) );
@@ -7865,7 +7969,7 @@ namespace MetricsDiscoveryInternal::MetricSets_LNL_OA
         metric               = AddMetric( "TEST_EVENT2_CYCLES", "Test Event2 Cycles",
                           "Number of GPU (gt) clock cycles at every other clock period",
                           "Test", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
-                          METRIC_TYPE_EVENT, RESULT_UINT64, "cycles", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 13 );
+                          METRIC_TYPE_EVENT, RESULT_UINT64, "cycles", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 21 );
         if( metric )
         {
             MD_CHECK_CC( ( metric->SetSnapshotReportReadEquation( "qw@0x138" ) ) );
@@ -7883,6 +7987,22 @@ namespace MetricsDiscoveryInternal::MetricSets_LNL_OA
             AddStartConfigRegister( 0x1300c, 0x00000000, REGISTER_TYPE_OA );
             AddStartConfigRegister( 0x13010, 0x00003e00, REGISTER_TYPE_OA );
             AddStartConfigRegister( 0x13014, 0x00000000, REGISTER_TYPE_OA );
+            AddStartConfigRegister( 0x13018, 0x00013e00, REGISTER_TYPE_OA );
+            AddStartConfigRegister( 0x1301c, 0x00000000, REGISTER_TYPE_OA );
+            AddStartConfigRegister( 0x13020, 0x00113e00, REGISTER_TYPE_OA );
+            AddStartConfigRegister( 0x13024, 0x00000000, REGISTER_TYPE_OA );
+            AddStartConfigRegister( 0x13028, 0x00213e00, REGISTER_TYPE_OA );
+            AddStartConfigRegister( 0x1302c, 0x00000000, REGISTER_TYPE_OA );
+            AddStartConfigRegister( 0x13030, 0x00313e00, REGISTER_TYPE_OA );
+            AddStartConfigRegister( 0x13034, 0x00000000, REGISTER_TYPE_OA );
+            AddStartConfigRegister( 0x130a8, 0x00413e00, REGISTER_TYPE_OA );
+            AddStartConfigRegister( 0x130ac, 0x00000000, REGISTER_TYPE_OA );
+            AddStartConfigRegister( 0x130b0, 0x00513e00, REGISTER_TYPE_OA );
+            AddStartConfigRegister( 0x130b4, 0x00000000, REGISTER_TYPE_OA );
+            AddStartConfigRegister( 0x130b8, 0x00613e00, REGISTER_TYPE_OA );
+            AddStartConfigRegister( 0x130bc, 0x00000000, REGISTER_TYPE_OA );
+            AddStartConfigRegister( 0x130c0, 0x00713e00, REGISTER_TYPE_OA );
+            AddStartConfigRegister( 0x130c4, 0x00000000, REGISTER_TYPE_OA );
             AddStartConfigRegister( 0x13300, 0x00005a00, REGISTER_TYPE_OA );
             AddStartConfigRegister( 0x13304, 0x00000000, REGISTER_TYPE_OA );
             AddStartConfigRegister( 0x13500, 0x00005a00, REGISTER_TYPE_OA );
@@ -7972,7 +8092,7 @@ namespace MetricsDiscoveryInternal::MetricSets_LNL_OAM0
         metric               = AddMetric( "GpuTime", "GPU Time Elapsed",
                           "Time elapsed on the GPU during the measurement.",
                           "GPU", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_1 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_BATCH, API_TYPE_IOSTREAM,
-                          METRIC_TYPE_EVENT, RESULT_UINT64, "ns", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, "GpuTime", 0 );
+                          METRIC_TYPE_EVENT, RESULT_UINT64, "ns", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 0 );
         if( metric )
         {
             MD_CHECK_CC( ( metric->SetSnapshotReportReadEquation( "qw@0x08 100 UMUL $GpuTimestampFrequency 100000 UDIV UDIV 100 UMUL" ) ) );
@@ -7980,10 +8100,10 @@ namespace MetricsDiscoveryInternal::MetricSets_LNL_OAM0
         }
 
         availabilityEquation = nullptr;
-        metric               = AddMetric( "GpuCoreClocks", "GPU Core Clocks",
-                          "The total number of GPU core clocks elapsed during the measurement.",
-                          "GPU", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_1 | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH, API_TYPE_IOSTREAM,
-                          METRIC_TYPE_EVENT, RESULT_UINT64, "cycles", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, "oa.fixed", 1 );
+        metric               = AddMetric( "GpuCoreClocks", "GPU Media Clocks",
+                          "The total number of media slice clocks elapsed during the measurement.",
+                          "GPU", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_1 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_BATCH, API_TYPE_IOSTREAM,
+                          METRIC_TYPE_EVENT, RESULT_UINT64, "cycles", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 1 );
         if( metric )
         {
             MD_CHECK_CC( ( metric->SetSnapshotReportReadEquation( "qw@0x18" ) ) );
@@ -7991,10 +8111,10 @@ namespace MetricsDiscoveryInternal::MetricSets_LNL_OAM0
         }
 
         availabilityEquation = nullptr;
-        metric               = AddMetric( "AvgGpuCoreFrequencyMHz", "AVG GPU Core Frequency",
-                          "Average GPU Core Frequency in the measurement.",
-                          "GPU", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_1 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH, API_TYPE_IOSTREAM,
-                          METRIC_TYPE_EVENT, RESULT_UINT64, "MHz", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, "oa.fixed", 2 );
+        metric               = AddMetric( "AvgGpuCoreFrequencyMHz", "AVG GPU Media Frequency",
+                          "Average GPU Media Frequency in the measurement.",
+                          "GPU", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_1 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_BATCH, API_TYPE_IOSTREAM,
+                          METRIC_TYPE_EVENT, RESULT_UINT64, "MHz", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 2 );
         if( metric )
         {
             MD_CHECK_CC( ( metric->SetNormalizationEquation( "$GpuCoreClocks 1000 UMUL $$GpuTime UDIV" ) ) );
@@ -8003,7 +8123,7 @@ namespace MetricsDiscoveryInternal::MetricSets_LNL_OAM0
         availabilityEquation = nullptr;
         metric               = AddMetric( "ResultUncertainty", "Result Uncertainty",
                           "Result uncertainty indicator",
-                          "GPU", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_1 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH, API_TYPE_IOSTREAM,
+                          "GPU", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_1 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_BATCH, API_TYPE_IOSTREAM,
                           METRIC_TYPE_EVENT, RESULT_UINT64, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 3 );
         if( metric )
         {
@@ -8013,7 +8133,7 @@ namespace MetricsDiscoveryInternal::MetricSets_LNL_OAM0
         availabilityEquation = nullptr;
         metric               = AddMetric( "MEDIA_READ_REQUEST", "Media Read Request",
                           "Number of read requests from stand alone media",
-                          "GPU", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_1 | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH, API_TYPE_IOSTREAM,
+                          "Media", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_BATCH, API_TYPE_IOSTREAM,
                           METRIC_TYPE_EVENT, RESULT_UINT64, "events", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 4 );
         if( metric )
         {
@@ -8024,7 +8144,7 @@ namespace MetricsDiscoveryInternal::MetricSets_LNL_OAM0
         availabilityEquation = nullptr;
         metric               = AddMetric( "MEDIA_WRITE_REQUEST", "Media Write Request",
                           "Number of write requests from stand alone media",
-                          "GPU", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_1 | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH, API_TYPE_IOSTREAM,
+                          "Media", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_BATCH, API_TYPE_IOSTREAM,
                           METRIC_TYPE_EVENT, RESULT_UINT64, "events", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 5 );
         if( metric )
         {
@@ -8035,18 +8155,19 @@ namespace MetricsDiscoveryInternal::MetricSets_LNL_OAM0
         availabilityEquation = nullptr;
         metric               = AddMetric( "COMMAND_PARSER_VIDEO_DECODE_ENGINE0_BUSY", "Command Parser Video Decode Engine0 Busy",
                           "Number of VCS0 (VDBOX0) activities",
-                          "GPU", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_1 | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH, API_TYPE_IOSTREAM,
-                          METRIC_TYPE_EVENT, RESULT_UINT64, "events", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 6 );
+                          "Media", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_BATCH, API_TYPE_IOSTREAM,
+                          METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 6 );
         if( metric )
         {
             MD_CHECK_CC( ( metric->SetSnapshotReportReadEquation( "dw@0x28" ) ) );
+            MD_CHECK_CC( ( metric->SetNormalizationEquation( "GpuDuration" ) ) );
             MD_CHECK_CC( ( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ) ) );
         }
 
         availabilityEquation = nullptr;
         metric               = AddMetric( "VIDEO_DECODE_BOX0_READ_REQUEST", "Video Decode Box0 Read Request",
                           "Number of VDBOX0 read requests",
-                          "GPU", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_1 | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH, API_TYPE_IOSTREAM,
+                          "Media", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_BATCH, API_TYPE_IOSTREAM,
                           METRIC_TYPE_EVENT, RESULT_UINT64, "events", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 7 );
         if( metric )
         {
@@ -8057,7 +8178,7 @@ namespace MetricsDiscoveryInternal::MetricSets_LNL_OAM0
         availabilityEquation = nullptr;
         metric               = AddMetric( "VIDEO_DECODE_BOX0_WRITE_REQUEST", "Video Decode Box0 Write Request",
                           "Number of VDBOX0 write requests",
-                          "GPU", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_1 | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH, API_TYPE_IOSTREAM,
+                          "Media", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_BATCH, API_TYPE_IOSTREAM,
                           METRIC_TYPE_EVENT, RESULT_UINT64, "events", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 8 );
         if( metric )
         {
@@ -8068,18 +8189,19 @@ namespace MetricsDiscoveryInternal::MetricSets_LNL_OAM0
         availabilityEquation = nullptr;
         metric               = AddMetric( "COMMAND_PARSER_VIDEO_DECODE_ENGINE1_BUSY", "Command Parser Video Decode Engine1 Busy",
                           "Number of VCS1 (VDBOX1) activities",
-                          "GPU", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_1 | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH, API_TYPE_IOSTREAM,
-                          METRIC_TYPE_EVENT, RESULT_UINT64, "events", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 9 );
+                          "Media", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_BATCH, API_TYPE_IOSTREAM,
+                          METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 9 );
         if( metric )
         {
             MD_CHECK_CC( ( metric->SetSnapshotReportReadEquation( "dw@0x34" ) ) );
+            MD_CHECK_CC( ( metric->SetNormalizationEquation( "GpuDuration" ) ) );
             MD_CHECK_CC( ( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ) ) );
         }
 
         availabilityEquation = nullptr;
         metric               = AddMetric( "VIDEO_DECODE_BOX1_READ_REQUEST", "Video Decode Box1 Read Request",
                           "Number of VDBOX1 read requests",
-                          "GPU", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_1 | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH, API_TYPE_IOSTREAM,
+                          "Media", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_BATCH, API_TYPE_IOSTREAM,
                           METRIC_TYPE_EVENT, RESULT_UINT64, "events", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 10 );
         if( metric )
         {
@@ -8090,7 +8212,7 @@ namespace MetricsDiscoveryInternal::MetricSets_LNL_OAM0
         availabilityEquation = nullptr;
         metric               = AddMetric( "VIDEO_DECODE_BOX1_WRITE_REQUEST", "Video Decode Box1 Write Request",
                           "Number of VDBOX1 write requests",
-                          "GPU", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_1 | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH, API_TYPE_IOSTREAM,
+                          "Media", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_BATCH, API_TYPE_IOSTREAM,
                           METRIC_TYPE_EVENT, RESULT_UINT64, "events", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 11 );
         if( metric )
         {
@@ -8101,22 +8223,22 @@ namespace MetricsDiscoveryInternal::MetricSets_LNL_OAM0
         availabilityEquation = nullptr;
         if( AddStartRegisterSet( 0, 0, availabilityEquation ) == CC_OK )
         {
-            AddStartConfigRegister( 0x00394200, 0x0001, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x00394204, 0x0000, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x00394208, 0x0002, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x0039420c, 0x0000, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x00394210, 0x0200, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x00394214, 0x0000, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x00394218, 0x0201, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x0039421c, 0x0000, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x00394220, 0x0202, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x00394224, 0x0000, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x00394228, 0x0400, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x0039422c, 0x0000, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x00394230, 0x0401, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x00394234, 0x0000, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x00394238, 0x0402, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x0039423c, 0x0000, REGISTER_TYPE_OA );
+            AddStartConfigRegister( 0x394200, 0x00000001, REGISTER_TYPE_OA );
+            AddStartConfigRegister( 0x394204, 0x00000000, REGISTER_TYPE_OA );
+            AddStartConfigRegister( 0x394208, 0x00000002, REGISTER_TYPE_OA );
+            AddStartConfigRegister( 0x39420c, 0x00000000, REGISTER_TYPE_OA );
+            AddStartConfigRegister( 0x394210, 0x00000200, REGISTER_TYPE_OA );
+            AddStartConfigRegister( 0x394214, 0x00000000, REGISTER_TYPE_OA );
+            AddStartConfigRegister( 0x394218, 0x00000201, REGISTER_TYPE_OA );
+            AddStartConfigRegister( 0x39421c, 0x00000000, REGISTER_TYPE_OA );
+            AddStartConfigRegister( 0x394220, 0x00000202, REGISTER_TYPE_OA );
+            AddStartConfigRegister( 0x394224, 0x00000000, REGISTER_TYPE_OA );
+            AddStartConfigRegister( 0x394228, 0x00000400, REGISTER_TYPE_OA );
+            AddStartConfigRegister( 0x39422c, 0x00000000, REGISTER_TYPE_OA );
+            AddStartConfigRegister( 0x394230, 0x00000401, REGISTER_TYPE_OA );
+            AddStartConfigRegister( 0x394234, 0x00000000, REGISTER_TYPE_OA );
+            AddStartConfigRegister( 0x394238, 0x00000402, REGISTER_TYPE_OA );
+            AddStartConfigRegister( 0x39423c, 0x00000000, REGISTER_TYPE_OA );
         }
 
         RefreshConfigRegisters();
@@ -8142,7 +8264,7 @@ namespace MetricsDiscoveryInternal::MetricSets_LNL_OAM0
         metric               = AddMetric( "GpuTime", "GPU Time Elapsed",
                           "Time elapsed on the GPU during the measurement.",
                           "GPU", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_1 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_BATCH, API_TYPE_IOSTREAM,
-                          METRIC_TYPE_EVENT, RESULT_UINT64, "ns", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, "GpuTime", 0 );
+                          METRIC_TYPE_EVENT, RESULT_UINT64, "ns", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 0 );
         if( metric )
         {
             MD_CHECK_CC( ( metric->SetSnapshotReportReadEquation( "qw@0x08 100 UMUL $GpuTimestampFrequency 100000 UDIV UDIV 100 UMUL" ) ) );
@@ -8150,10 +8272,10 @@ namespace MetricsDiscoveryInternal::MetricSets_LNL_OAM0
         }
 
         availabilityEquation = nullptr;
-        metric               = AddMetric( "GpuCoreClocks", "GPU Core Clocks",
-                          "The total number of GPU core clocks elapsed during the measurement.",
-                          "GPU", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_1 | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH, API_TYPE_IOSTREAM,
-                          METRIC_TYPE_EVENT, RESULT_UINT64, "cycles", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, "oa.fixed", 1 );
+        metric               = AddMetric( "GpuCoreClocks", "GPU Media Clocks",
+                          "The total number of media slice clocks elapsed during the measurement.",
+                          "GPU", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_1 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_BATCH, API_TYPE_IOSTREAM,
+                          METRIC_TYPE_EVENT, RESULT_UINT64, "cycles", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 1 );
         if( metric )
         {
             MD_CHECK_CC( ( metric->SetSnapshotReportReadEquation( "qw@0x18" ) ) );
@@ -8161,10 +8283,10 @@ namespace MetricsDiscoveryInternal::MetricSets_LNL_OAM0
         }
 
         availabilityEquation = nullptr;
-        metric               = AddMetric( "AvgGpuCoreFrequencyMHz", "AVG GPU Core Frequency",
-                          "Average GPU Core Frequency in the measurement.",
-                          "GPU", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_1 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH, API_TYPE_IOSTREAM,
-                          METRIC_TYPE_EVENT, RESULT_UINT64, "MHz", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, "oa.fixed", 2 );
+        metric               = AddMetric( "AvgGpuCoreFrequencyMHz", "AVG GPU Media Frequency",
+                          "Average GPU Media Frequency in the measurement.",
+                          "GPU", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_1 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_BATCH, API_TYPE_IOSTREAM,
+                          METRIC_TYPE_EVENT, RESULT_UINT64, "MHz", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 2 );
         if( metric )
         {
             MD_CHECK_CC( ( metric->SetNormalizationEquation( "$GpuCoreClocks 1000 UMUL $$GpuTime UDIV" ) ) );
@@ -8173,7 +8295,7 @@ namespace MetricsDiscoveryInternal::MetricSets_LNL_OAM0
         availabilityEquation = nullptr;
         metric               = AddMetric( "ResultUncertainty", "Result Uncertainty",
                           "Result uncertainty indicator",
-                          "GPU", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_1 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH, API_TYPE_IOSTREAM,
+                          "GPU", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_1 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_BATCH, API_TYPE_IOSTREAM,
                           METRIC_TYPE_EVENT, RESULT_UINT64, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 3 );
         if( metric )
         {
@@ -8183,18 +8305,19 @@ namespace MetricsDiscoveryInternal::MetricSets_LNL_OAM0
         availabilityEquation = nullptr;
         metric               = AddMetric( "COMMAND_PARSER_VIDEO_ENHANCEMENT_ENGINE0_BUSY", "Command Parser Video Enhancement Engine0 Busy",
                           "Number of VECS0 (VEBOX0) activities",
-                          "GPU", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_1 | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH, API_TYPE_IOSTREAM,
-                          METRIC_TYPE_EVENT, RESULT_UINT64, "events", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 4 );
+                          "Media", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_BATCH, API_TYPE_IOSTREAM,
+                          METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 4 );
         if( metric )
         {
             MD_CHECK_CC( ( metric->SetSnapshotReportReadEquation( "dw@0x20" ) ) );
+            MD_CHECK_CC( ( metric->SetNormalizationEquation( "GpuDuration" ) ) );
             MD_CHECK_CC( ( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ) ) );
         }
 
         availabilityEquation = nullptr;
         metric               = AddMetric( "VIDEO_ENHANCEMENT_BOX0_READ_REQUEST", "Video Enhancement Box0 Read Request",
                           "Number of VEBOX0 read requests",
-                          "GPU", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_1 | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH, API_TYPE_IOSTREAM,
+                          "Media", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_BATCH, API_TYPE_IOSTREAM,
                           METRIC_TYPE_EVENT, RESULT_UINT64, "events", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 5 );
         if( metric )
         {
@@ -8205,7 +8328,7 @@ namespace MetricsDiscoveryInternal::MetricSets_LNL_OAM0
         availabilityEquation = nullptr;
         metric               = AddMetric( "VIDEO_ENHANCEMENT_BOX0_WRITE_REQUEST", "Video Enhancement Box0 Write Request",
                           "Number of VEBOX0 write requests",
-                          "GPU", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_1 | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH, API_TYPE_IOSTREAM,
+                          "Media", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_BATCH, API_TYPE_IOSTREAM,
                           METRIC_TYPE_EVENT, RESULT_UINT64, "events", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 6 );
         if( metric )
         {
@@ -8216,18 +8339,19 @@ namespace MetricsDiscoveryInternal::MetricSets_LNL_OAM0
         availabilityEquation = nullptr;
         metric               = AddMetric( "COMMAND_PARSER_VIDEO_ENHANCEMENT_ENGINE1_BUSY", "Command Parser Video Enhancement Engine1 Busy",
                           "Number of VECS1 (VEBOX1) activities",
-                          "GPU", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_1 | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH, API_TYPE_IOSTREAM,
-                          METRIC_TYPE_EVENT, RESULT_UINT64, "events", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 7 );
+                          "Media", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_BATCH, API_TYPE_IOSTREAM,
+                          METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 7 );
         if( metric )
         {
             MD_CHECK_CC( ( metric->SetSnapshotReportReadEquation( "dw@0x2c" ) ) );
+            MD_CHECK_CC( ( metric->SetNormalizationEquation( "GpuDuration" ) ) );
             MD_CHECK_CC( ( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ) ) );
         }
 
         availabilityEquation = nullptr;
         metric               = AddMetric( "VIDEO_ENHANCEMENT_BOX1_READ_REQUEST", "Video Enhancement Box1 Read Request",
                           "Number of VEBOX1 read requests",
-                          "GPU", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_1 | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH, API_TYPE_IOSTREAM,
+                          "Media", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_BATCH, API_TYPE_IOSTREAM,
                           METRIC_TYPE_EVENT, RESULT_UINT64, "events", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 8 );
         if( metric )
         {
@@ -8238,7 +8362,7 @@ namespace MetricsDiscoveryInternal::MetricSets_LNL_OAM0
         availabilityEquation = nullptr;
         metric               = AddMetric( "VIDEO_ENHANCEMENT_BOX1_WRITE_REQUEST", "Video Enhancement Box1 Write Request",
                           "Number of VEBOX1 write requests",
-                          "GPU", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_1 | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH, API_TYPE_IOSTREAM,
+                          "Media", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_BATCH, API_TYPE_IOSTREAM,
                           METRIC_TYPE_EVENT, RESULT_UINT64, "events", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 9 );
         if( metric )
         {
@@ -8249,18 +8373,18 @@ namespace MetricsDiscoveryInternal::MetricSets_LNL_OAM0
         availabilityEquation = nullptr;
         if( AddStartRegisterSet( 0, 0, availabilityEquation ) == CC_OK )
         {
-            AddStartConfigRegister( 0x00394200, 0x2200, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x00394204, 0x0000, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x00394208, 0x2201, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x0039420c, 0x0000, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x00394210, 0x2202, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x00394214, 0x0000, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x00394218, 0x2400, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x0039421c, 0x0000, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x00394220, 0x2401, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x00394224, 0x0000, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x00394228, 0x2402, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x0039422c, 0x0000, REGISTER_TYPE_OA );
+            AddStartConfigRegister( 0x394200, 0x00002200, REGISTER_TYPE_OA );
+            AddStartConfigRegister( 0x394204, 0x00000000, REGISTER_TYPE_OA );
+            AddStartConfigRegister( 0x394208, 0x00002201, REGISTER_TYPE_OA );
+            AddStartConfigRegister( 0x39420c, 0x00000000, REGISTER_TYPE_OA );
+            AddStartConfigRegister( 0x394210, 0x00002202, REGISTER_TYPE_OA );
+            AddStartConfigRegister( 0x394214, 0x00000000, REGISTER_TYPE_OA );
+            AddStartConfigRegister( 0x394218, 0x00002400, REGISTER_TYPE_OA );
+            AddStartConfigRegister( 0x39421c, 0x00000000, REGISTER_TYPE_OA );
+            AddStartConfigRegister( 0x394220, 0x00002401, REGISTER_TYPE_OA );
+            AddStartConfigRegister( 0x394224, 0x00000000, REGISTER_TYPE_OA );
+            AddStartConfigRegister( 0x394228, 0x00002402, REGISTER_TYPE_OA );
+            AddStartConfigRegister( 0x39422c, 0x00000000, REGISTER_TYPE_OA );
         }
 
         RefreshConfigRegisters();
@@ -8326,7 +8450,7 @@ namespace MetricsDiscoveryInternal::MetricSets_LNL_OAMG
         metric               = AddMetric( "GpuTime", "GPU Time Elapsed",
                           "Time elapsed on the GPU during the measurement.",
                           "GPU", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_1 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_BATCH, API_TYPE_IOSTREAM,
-                          METRIC_TYPE_EVENT, RESULT_UINT64, "ns", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, "GpuTime", 0 );
+                          METRIC_TYPE_EVENT, RESULT_UINT64, "ns", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 0 );
         if( metric )
         {
             MD_CHECK_CC( ( metric->SetSnapshotReportReadEquation( "qw@0x08 100 UMUL $GpuTimestampFrequency 100000 UDIV UDIV 100 UMUL" ) ) );
@@ -8334,10 +8458,10 @@ namespace MetricsDiscoveryInternal::MetricSets_LNL_OAMG
         }
 
         availabilityEquation = nullptr;
-        metric               = AddMetric( "GpuCoreClocks", "GPU Core Clocks",
-                          "The total number of GPU core clocks elapsed during the measurement.",
-                          "GPU", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_1 | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH, API_TYPE_IOSTREAM,
-                          METRIC_TYPE_EVENT, RESULT_UINT64, "cycles", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, "oa.fixed", 1 );
+        metric               = AddMetric( "GpuCoreClocks", "GPU Media Clocks",
+                          "The total number of media slice clocks elapsed during the measurement.",
+                          "GPU", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_1 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_BATCH, API_TYPE_IOSTREAM,
+                          METRIC_TYPE_EVENT, RESULT_UINT64, "cycles", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 1 );
         if( metric )
         {
             MD_CHECK_CC( ( metric->SetSnapshotReportReadEquation( "qw@0x18" ) ) );
@@ -8345,10 +8469,10 @@ namespace MetricsDiscoveryInternal::MetricSets_LNL_OAMG
         }
 
         availabilityEquation = nullptr;
-        metric               = AddMetric( "AvgGpuCoreFrequencyMHz", "AVG GPU Core Frequency",
-                          "Average GPU Core Frequency in the measurement.",
-                          "GPU", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_1 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH, API_TYPE_IOSTREAM,
-                          METRIC_TYPE_EVENT, RESULT_UINT64, "MHz", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, "oa.fixed", 2 );
+        metric               = AddMetric( "AvgGpuCoreFrequencyMHz", "AVG GPU Media Frequency",
+                          "Average GPU Media Frequency in the measurement.",
+                          "GPU", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_1 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_BATCH, API_TYPE_IOSTREAM,
+                          METRIC_TYPE_EVENT, RESULT_UINT64, "MHz", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 2 );
         if( metric )
         {
             MD_CHECK_CC( ( metric->SetNormalizationEquation( "$GpuCoreClocks 1000 UMUL $$GpuTime UDIV" ) ) );
@@ -8357,7 +8481,7 @@ namespace MetricsDiscoveryInternal::MetricSets_LNL_OAMG
         availabilityEquation = nullptr;
         metric               = AddMetric( "ResultUncertainty", "Result Uncertainty",
                           "Result uncertainty indicator",
-                          "GPU", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_1 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH, API_TYPE_IOSTREAM,
+                          "GPU", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_1 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_BATCH, API_TYPE_IOSTREAM,
                           METRIC_TYPE_EVENT, RESULT_UINT64, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 3 );
         if( metric )
         {
@@ -8367,19 +8491,20 @@ namespace MetricsDiscoveryInternal::MetricSets_LNL_OAMG
         availabilityEquation = nullptr;
         metric               = AddMetric( "COMMAND_PARSER_GRAPHICS_SECURITY_CONTROLLER_BUSY", "Command Parser Graphics Security Controller Busy",
                           "Number of GSCCS activities",
-                          "GPU", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_1 | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH, API_TYPE_IOSTREAM,
-                          METRIC_TYPE_EVENT, RESULT_UINT64, "events", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 4 );
+                          "Media", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_BATCH, API_TYPE_IOSTREAM,
+                          METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 4 );
         if( metric )
         {
             MD_CHECK_CC( ( metric->SetSnapshotReportReadEquation( "dw@0x20" ) ) );
+            MD_CHECK_CC( ( metric->SetNormalizationEquation( "GpuDuration" ) ) );
             MD_CHECK_CC( ( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ) ) );
         }
 
         availabilityEquation = nullptr;
         if( AddStartRegisterSet( 0, 0, availabilityEquation ) == CC_OK )
         {
-            AddStartConfigRegister( 0x00393200, 0x0003, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x00393204, 0x0000, REGISTER_TYPE_OA );
+            AddStartConfigRegister( 0x393200, 0x00000003, REGISTER_TYPE_OA );
+            AddStartConfigRegister( 0x393204, 0x00000000, REGISTER_TYPE_OA );
         }
 
         RefreshConfigRegisters();

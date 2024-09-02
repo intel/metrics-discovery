@@ -57,7 +57,6 @@ SPDX-License-Identifier: MIT
 #define MD_L3_BANK_COUNT_PER_L3_NODE        ( 4 )
 #define MD_L3_NODE_COUNT_PER_COPY_ENGINE    ( 2 )
 #define MD_L3_NODE_COUNT_PER_PAIR_OF_SLICES ( 2 )
-#define MD_OLD_EU_COUNT_PER_NEW_EU_COUNT    ( 2 )
 
 //////////////////////////////////////////////////////////////////////////////
 //

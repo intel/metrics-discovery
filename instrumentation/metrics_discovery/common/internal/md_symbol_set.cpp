@@ -1390,6 +1390,138 @@ namespace MetricsDiscoveryInternal
 
         return CC_OK;
     }
+
+    ///////////////////////////////////////////////////////////////////////////////
+    //
+    // Class:
+    //     CSymbolSet
+    //
+    // Method:
+    //     UnpackMaskToValidValues
+    //
+    // Description:
+    //     Unpack mask of the global symbol and assign validValues based on it
+    //
+    // Input:
+    //     std::string_view    name            - global symbol name.
+    //     uint8_t*            mask            - global symbol mask.
+    //     uint32_t&           validValueCount - valid values count.
+    //     TValidValueLatest*& validValues     - validValues array.
+    //
+    // Output:
+    //     TCompletionCode  - result of the operation
+    //
+    ///////////////////////////////////////////////////////////////////////////////
+    TCompletionCode CSymbolSet::UnpackMaskToValidValues( std::string_view name, uint8_t* mask, uint32_t& validValueCount, TValidValueLatest*& validValues )
+    {
+        const uint32_t    adapterId = m_metricsDevice.GetAdapter().GetAdapterId();
+        uint32_t          index     = 0;
+        TValidValueLatest localValidValues[64];
+
+        // Unpack mask
+        if( name == "GtSliceMask" )
+        {
+            for( uint32_t i = 0; i < m_maxSlice; ++i )
+            {
+                const uint32_t currentByte = i / MD_BITS_PER_BYTE;
+                const uint32_t currentBit  = i % MD_BITS_PER_BYTE;
+
+                if( mask[currentByte] & MD_BIT( currentBit ) )
+                {
+                    localValidValues[index].ValueType   = VALUE_TYPE_UINT32;
+                    localValidValues[index].ValueUInt32 = i;
+                    ++index;
+                }
+            }
+        }
+        else if( name == "GtXeCoreMask" )
+        {
+            const uint32_t platformId            = m_metricsDevice.GetPlatformIndex();
+            const uint8_t  gtMaxSubslicePerSlice = GetGtMaxSubslicePerSlice( platformId );
+
+            for( uint32_t i = 0; i < m_maxSlice; ++i )
+            {
+                for( uint32_t j = 0; j < m_maxSubslicePerSlice; ++j )
+                {
+                    const uint32_t currentByte = ( i * m_maxSubslicePerSlice + j ) / MD_BITS_PER_BYTE;
+                    const uint32_t currentBit  = ( i * m_maxSubslicePerSlice + j ) % MD_BITS_PER_BYTE;
+
+                    if( mask[currentByte] & MD_BIT( currentBit ) )
+                    {
+                        localValidValues[index].ValueType   = VALUE_TYPE_UINT32;
+                        localValidValues[index].ValueUInt32 = i * gtMaxSubslicePerSlice + j;
+                        ++index;
+                    }
+                }
+            }
+        }
+        else if( name == "GtL3BankMask" )
+        {
+            for( uint32_t i = 0; i < m_maxL3Node; ++i )
+            {
+                for( uint32_t j = 0; j < m_maxL3BankPerL3Node; ++j )
+                {
+                    const uint32_t currentByte = ( i * m_maxL3BankPerL3Node + j ) / MD_BITS_PER_BYTE;
+                    const uint32_t currentBit  = ( i * m_maxL3BankPerL3Node + j ) % MD_BITS_PER_BYTE;
+
+                    if( mask[currentByte] & MD_BIT( currentBit ) )
+                    {
+                        localValidValues[index].ValueType   = VALUE_TYPE_UINT32;
+                        localValidValues[index].ValueUInt32 = i * m_maxL3BankPerL3Node + j;
+                        ++index;
+                    }
+                }
+            }
+        }
+        else if( name == "GtSqidiMask" || name == "GtL3NodeMask" )
+        {
+            for( uint32_t i = 0; i < m_maxL3Node; ++i )
+            {
+                const uint32_t currentByte = i / MD_BITS_PER_BYTE;
+                const uint32_t currentBit  = i % MD_BITS_PER_BYTE;
+
+                if( mask[currentByte] & MD_BIT( currentBit ) )
+                {
+                    localValidValues[index].ValueType   = VALUE_TYPE_UINT32;
+                    localValidValues[index].ValueUInt32 = i;
+                    ++index;
+                }
+            }
+        }
+        else if( name == "GtCopyEngineMask" )
+        {
+            for( uint32_t i = 0; i < m_maxCopyEngine; ++i )
+            {
+                const uint32_t currentByte = i / MD_BITS_PER_BYTE;
+                const uint32_t currentBit  = i % MD_BITS_PER_BYTE;
+
+                if( mask[currentByte] & MD_BIT( currentBit ) )
+                {
+                    localValidValues[index].ValueType   = VALUE_TYPE_UINT32;
+                    localValidValues[index].ValueUInt32 = i;
+                    ++index;
+                }
+            }
+        }
+        else
+        {
+            MD_LOG_A( adapterId, LOG_DEBUG, "ERROR: not supported symbol" );
+        }
+
+        validValueCount = index;
+        validValues     = new( std::nothrow ) TValidValueLatest[validValueCount]();
+
+        if( validValues == nullptr )
+        {
+            MD_LOG_A( adapterId, LOG_DEBUG, "ERROR: null pointer: validValues" );
+            return CC_ERROR_NO_MEMORY;
+        }
+
+        return ( iu_memcpy_s( validValues, validValueCount * sizeof( TValidValueLatest ), localValidValues, validValueCount * sizeof( TValidValueLatest ) ) )
+            ? CC_OK
+            : CC_ERROR_GENERAL;
+    }
+
     ///////////////////////////////////////////////////////////////////////////////
     //
     // Class:

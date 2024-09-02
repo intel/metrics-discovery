@@ -1192,7 +1192,7 @@ namespace MetricsDiscoveryInternal
                             computeSubsliceMask |= static_cast<uint64_t>( topology->mask[i] ) << ( i * 8 );
                             break;
 
-                        case DRM_XE_TOPO_EU_PER_DSS:
+                        case DRM_XE_TOPO_SIMD16_EU_PER_DSS:
                             vectorEngineMask |= static_cast<uint64_t>( topology->mask[i] ) << ( i * 8 );
                             break;
 
@@ -1210,7 +1210,7 @@ namespace MetricsDiscoveryInternal
         const uint32_t computeSubsliceCount  = CalculateEnabledBits( computeSubsliceMask );
         const uint32_t vectorEngineCount     = CalculateEnabledBits( vectorEngineMask );
 
-        out.ValueUint32 = std::max( geometrySubsliceCount, computeSubsliceCount ) * vectorEngineCount / MD_OLD_EU_COUNT_PER_NEW_EU_COUNT;
+        out.ValueUint32 = std::max( geometrySubsliceCount, computeSubsliceCount ) * vectorEngineCount;
 
         return ret;
     }

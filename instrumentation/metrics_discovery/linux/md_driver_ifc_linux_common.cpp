@@ -11,6 +11,7 @@ SPDX-License-Identifier: MIT
 //     Abstract:   C++ common implementation for Linux
 
 #include "md_driver_ifc_linux_perf.h"
+#include "md_driver_ifc_linux_xe.h"
 #include "md_adapter.h"
 #include "md_metrics_device.h"
 #include "md_metric_set.h"
@@ -218,6 +219,11 @@ namespace MetricsDiscoveryInternal
             case DRM_VERSION_I915:
                 MD_LOG( LOG_INFO, "Initializing i915..." );
                 driverInterface = new( std::nothrow ) CDriverInterfaceLinuxPerf( adapterHandle );
+                break;
+
+            case DRM_VERSION_XE:
+                MD_LOG( LOG_INFO, "Initializing XE KMD..." );
+                driverInterface = new( std::nothrow ) CDriverInterfaceLinuxXe( adapterHandle );
                 break;
 
             default:
@@ -2705,6 +2711,10 @@ namespace MetricsDiscoveryInternal
         if( std::string_view( name ) == "i915" )
         {
             return DRM_VERSION_I915;
+        }
+        else if( std::string_view( name ) == "xe" )
+        {
+            return DRM_VERSION_XE;
         }
 
         return DRM_VERSION_UNDEFINED;

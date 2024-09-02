@@ -138,11 +138,11 @@ TCompletionCode CreateMetricTreeLNL_OAM0( CMetricsDevice* metricsDevice, CConcur
         MetricSets_LNL_OAM0::AddInformationSet( concurrentGroup );
 
         metricSet = concurrentGroup->AddMetricSetExplicit<MetricSets_LNL_OAM0::CMediaSet1MetricSet>( "MediaSet1", "MediaSet1", API_TYPE_IOSTREAM,
-            GPU_GENERIC, 128, 0, OA_REPORT_TYPE_128B_MPEC8_NOA16, &platformMask, nullptr );
+            GPU_MEDIA | GPU_GENERIC, 128, 0, OA_REPORT_TYPE_128B_MPEC8_NOA16, &platformMask, nullptr );
         MD_CHECK_PTR( metricSet );
 
         metricSet = concurrentGroup->AddMetricSetExplicit<MetricSets_LNL_OAM0::CMediaSet2MetricSet>( "MediaSet2", "MediaSet2", API_TYPE_IOSTREAM,
-            GPU_GENERIC, 128, 0, OA_REPORT_TYPE_128B_MPEC8_NOA16, &platformMask, nullptr );
+            GPU_MEDIA | GPU_GENERIC, 128, 0, OA_REPORT_TYPE_128B_MPEC8_NOA16, &platformMask, nullptr );
         MD_CHECK_PTR( metricSet );
     }
 
@@ -176,7 +176,7 @@ TCompletionCode CreateMetricTreeLNL_OAMG( CMetricsDevice* metricsDevice, CConcur
         MetricSets_LNL_OAMG::AddInformationSet( concurrentGroup );
 
         metricSet = concurrentGroup->AddMetricSetExplicit<MetricSets_LNL_OAMG::CMediaSet1MetricSet>( "MediaSet1", "MediaSet1", API_TYPE_IOSTREAM,
-            GPU_GENERIC, 128, 0, OA_REPORT_TYPE_128B_MPEC8_NOA16, &platformMask, nullptr );
+            GPU_MEDIA | GPU_GENERIC, 128, 0, OA_REPORT_TYPE_128B_MPEC8_NOA16, &platformMask, nullptr );
         MD_CHECK_PTR( metricSet );
     }
 

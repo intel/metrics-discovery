@@ -62,6 +62,7 @@ namespace MetricsDiscoveryInternal
         bool                 IsSymbolAlreadyAdded( std::string_view symbolName );
         TCompletionCode      RedetectSymbol( std::string_view name );
         TCompletionCode      DetectMaxSlicesInfo();
+        TCompletionCode      UnpackMaskToValidValues( std::string_view name, uint8_t* mask, uint32_t& validValueCount, TValidValueLatest*& validValues );
 
     private:
         bool            IsPavpDisabled( uint32_t capabilities );

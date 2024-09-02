@@ -91,6 +91,7 @@ namespace MetricsDiscoveryInternal
     {
         if( m_name == "Group Mask" ||
             m_name == "Event Encoding" ||
+            m_name == "Disaggregation Mode" ||
             m_name == "Metric Type" ||
             m_name == "Hw Unit Type" ||
             m_name == "Normalization" )
@@ -144,6 +145,7 @@ namespace MetricsDiscoveryInternal
         , m_resultUnits( "" )
         , m_normalization( NORMALIZATION_TYPE_NONE )
         , m_projectName( "" )
+        , m_disaggregationMode( DISAGGREGATION_MODE_NONE )
     {
     }
 
@@ -206,6 +208,7 @@ namespace MetricsDiscoveryInternal
         , m_name( "" )
         , m_shortName( "" )
         , m_description( "" )
+        , m_disaggregationMask( 0 )
     {
     }
 } // namespace MetricsDiscoveryInternal

@@ -141,22 +141,23 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     typedef struct SArchEvent
     {
-        TArchEventGroup    m_groupMask;
-        uint32_t           m_eventEncoding;
-        TByteArrayLatest*  m_platformMask;
-        TOaReportingType   m_oaReportingType;
-        TMetricType        m_metricType;
-        THwUnitType        m_hwUnitType;
-        std::string        m_name;
-        std::string        m_description;
-        std::string        m_oamUnit;
-        std::string        m_groupName;
-        std::string        m_instance;
-        std::string        m_filter;
-        std::string        m_resultUnits;
-        TNormalizationType m_normalization;
-        TEventWorkaround   m_workaround;
-        std::string        m_projectName;
+        TArchEventGroup     m_groupMask;
+        uint32_t            m_eventEncoding;
+        TByteArrayLatest*   m_platformMask;
+        TOaReportingType    m_oaReportingType;
+        TMetricType         m_metricType;
+        THwUnitType         m_hwUnitType;
+        std::string         m_name;
+        std::string         m_description;
+        std::string         m_oamUnit;
+        std::string         m_groupName;
+        std::string         m_instance;
+        std::string         m_filter;
+        std::string         m_resultUnits;
+        TNormalizationType  m_normalization;
+        TEventWorkaround    m_workaround;
+        std::string         m_projectName;
+        TDisaggregationMode m_disaggregationMode;
 
         SArchEvent();
     } TArchEvent;
@@ -195,6 +196,7 @@ namespace MetricsDiscoveryInternal
         std::string       m_name;
         std::string       m_shortName;
         std::string       m_description;
+        uint32_t          m_disaggregationMask;
         TEventWorkaround  m_workaround;
 
         SHwEvent( TArchEvent& archEvent );
