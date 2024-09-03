@@ -1340,7 +1340,7 @@ namespace MetricsDiscoveryInternal
         std::replace( disaggregation.begin(), disaggregation.end(), m_symbolNameSeparator, ' ' );
 
         // Produce short name.
-        iu_sprintf_s( shortNameTemplate, sizeof( symbolNameTemplate ), "%s%s%s", eventShortName.c_str(), units.c_str(), disaggregation.c_str(), average.c_str() );
+        iu_sprintf_s( shortNameTemplate, sizeof( symbolNameTemplate ), "%s%s%s%s", eventShortName.c_str(), units.c_str(), disaggregation.c_str(), average.c_str() );
 
         symbolName = symbolNameTemplate;
         shortName  = shortNameTemplate;
