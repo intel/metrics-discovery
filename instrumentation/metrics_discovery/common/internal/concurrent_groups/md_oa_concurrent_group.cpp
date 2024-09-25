@@ -371,8 +371,6 @@ namespace MetricsDiscoveryInternal
             SetIoMeasurementInfoPredefined( IO_MEASUREMENT_INFO_BUFFER_OVERFLOW, exceptions.BufferOverflow, index );
             SetIoMeasurementInfoPredefined( IO_MEASUREMENT_INFO_BUFFER_OVERRUN, exceptions.BufferOverrun, index );
             SetIoMeasurementInfoPredefined( IO_MEASUREMENT_INFO_COUNTERS_OVERFLOW, exceptions.CountersOverflow, index );
-
-            m_params.IoMeasurementInformationCount = static_cast<uint32_t>( m_ioMeasurementInfoVector.size() );
         }
 
         return ret;
@@ -898,10 +896,11 @@ namespace MetricsDiscoveryInternal
         , m_metricEnumeratorVector{ new( std::nothrow ) CMetricEnumerator( *this ) }
         , m_archEventVector()
     {
-        AddIoMeasurementInfoPredefined();
-
         m_ioMeasurementInfoVector.reserve( EXCEPTIONS_VECTOR_INCREASE );
         m_ioGpuContextInfoVector.reserve( GPU_CONTEXTS_VECTOR_INCREASE );
+
+        AddIoMeasurementInfoPredefined();
+        m_params.IoMeasurementInformationCount = static_cast<uint32_t>( m_ioMeasurementInfoVector.size() );
     }
 
     //////////////////////////////////////////////////////////////////////////////
