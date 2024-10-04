@@ -452,8 +452,8 @@ elseif ("${PLATFORM}" STREQUAL "linux") # linux
     # configuration specific defines
     if ("${BUILD_TYPE}" STREQUAL "release")
         add_definitions(-DNDEBUG)
-        # security compiler flags
-        add_definitions(-O2 -D_FORTIFY_SOURCE=2 -Wformat)
+        # optimization flags
+        add_definitions(-O2)
     elseif ("${BUILD_TYPE}" STREQUAL "release-internal" OR
             "${BUILD_TYPE}" STREQUAL "releaseinternal")
             add_definitions(-D_RELEASE_INTERNAL)
@@ -493,7 +493,10 @@ elseif ("${PLATFORM}" STREQUAL "linux") # linux
     add_definitions(-DMD_USE_PERF)
     add_definitions(-DMETRICS_DISCOVERY)
     add_definitions(-fno-inline)
-    add_definitions(-Wno-extern-c-compat)
+
+    if (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+        add_definitions(-Wno-extern-c-compat) # disable "empty struct has size 0 in C, size 1 in C++" warning
+    endif ()
 
     # to enable x86 build on x64 host
     if ("${TARGET_ARCH}" STREQUAL "32")
