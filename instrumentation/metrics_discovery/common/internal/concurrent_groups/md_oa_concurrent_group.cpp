@@ -113,12 +113,14 @@ namespace MetricsDiscoveryInternal
         {
             case GENERATION_BMG:
             case GENERATION_LNL:
+            case GENERATION_PTL:
                 snapshotReportSize = snapshotReportSizePostXe2;
                 deltaReportSize    = deltaReportSizePostXe2;
                 reportFormat       = OA_REPORT_TYPE_576B_PEC64LL;
                 break;
 
             default:
+                MD_LOG_A( adapterId, LOG_INFO, "Platform: %u not supported", platformIndex );
                 return nullptr;
         }
 
@@ -526,6 +528,7 @@ namespace MetricsDiscoveryInternal
         {
             case GENERATION_BMG:
             case GENERATION_LNL:
+            case GENERATION_PTL:
                 reportType = DEFAULT_METRIC_SET_REPORT_TYPE_XE2;
                 break;
             default:
@@ -934,11 +937,15 @@ namespace MetricsDiscoveryInternal
 
         MD_CHECK_PTR_RET_A( adapterId, measurementInfo, nullptr );
 
-        measurementInfo->SetSnapshotReportReadEquation( "0" );
-        measurementInfo->SetDeltaReportReadEquation( "0" );
+        MD_CHECK_CC( measurementInfo->SetSnapshotReportReadEquation( "0" ) );
+        MD_CHECK_CC( measurementInfo->SetDeltaReportReadEquation( "0" ) );
 
         m_ioMeasurementInfoVector.push_back( measurementInfo );
         return measurementInfo;
+
+    exception:
+        MD_SAFE_DELETE( measurementInfo );
+        return nullptr;
     }
 
     //////////////////////////////////////////////////////////////////////////////
@@ -1027,11 +1034,15 @@ namespace MetricsDiscoveryInternal
 
         MD_CHECK_PTR_RET_A( adapterId, gpuContextInfo, nullptr );
 
-        gpuContextInfo->SetSnapshotReportReadEquation( "" );
-        gpuContextInfo->SetDeltaReportReadEquation( "" );
+        MD_CHECK_CC( gpuContextInfo->SetSnapshotReportReadEquation( "" ) );
+        MD_CHECK_CC( gpuContextInfo->SetDeltaReportReadEquation( "" ) );
 
         m_ioGpuContextInfoVector.push_back( gpuContextInfo );
         return gpuContextInfo;
+
+    exception:
+        MD_SAFE_DELETE( gpuContextInfo );
+        return nullptr;
     }
 
     //////////////////////////////////////////////////////////////////////////////

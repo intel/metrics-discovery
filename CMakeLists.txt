@@ -95,9 +95,6 @@ set (_SOURCES ${_SOURCES}
     ${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen/md_metrics_TGL_GT2.cpp
     ${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen/md_metrics_DG1.cpp
     ${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen/md_metrics_RKL.cpp
-    ${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen/md_metrics_XEHP_SDV_GT1_GT2.cpp
-    ${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen/md_metrics_XEHP_SDV_GT1.cpp
-    ${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen/md_metrics_XEHP_SDV_GT2.cpp
     ${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen/md_metrics_ACM_GT1.cpp
     ${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen/md_metrics_ACM_GT2.cpp
     ${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen/md_metrics_ACM_GT3.cpp
@@ -112,6 +109,7 @@ set (_SOURCES ${_SOURCES}
     ${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen/md_metrics_LNL.cpp
     ${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen/md_metrics_ARL_GT1.cpp
     ${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen/md_metrics_ARL_GT2.cpp
+    ${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen/md_metrics_PTL.cpp
 
     ${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen/md_metric_sets_HSW.cpp
     ${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen/md_metric_sets_BDW.cpp
@@ -130,9 +128,6 @@ set (_SOURCES ${_SOURCES}
     ${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen/md_metric_sets_TGL_GT2.cpp
     ${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen/md_metric_sets_DG1.cpp
     ${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen/md_metric_sets_RKL.cpp
-    ${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen/md_metric_sets_XEHP_SDV_GT1_GT2.cpp
-    ${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen/md_metric_sets_XEHP_SDV_GT1.cpp
-    ${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen/md_metric_sets_XEHP_SDV_GT2.cpp
     ${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen/md_metric_sets_ACM_GT1.cpp
     ${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen/md_metric_sets_ACM_GT2.cpp
     ${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen/md_metric_sets_ACM_GT3.cpp
@@ -147,6 +142,7 @@ set (_SOURCES ${_SOURCES}
     ${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen/md_metric_sets_LNL.cpp
     ${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen/md_metric_sets_ARL_GT1.cpp
     ${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen/md_metric_sets_ARL_GT2.cpp
+    ${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen/md_metric_sets_PTL.cpp
     ${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen/md_metric_sets_common.cpp
 
     ${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen/md_metrics.cpp

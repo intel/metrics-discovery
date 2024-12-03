@@ -38,7 +38,8 @@ namespace MetricsDiscoveryInternal::MetricSets_OcclusionQueryStats
             MD_CHECK_CC( ( metric->SetDeltaReportReadEquation( "qw@0x00" ) ) );
         }
 
-        RefreshConfigRegisters();
+        MD_CHECK_CC( RefreshConfigRegisters() );
+
         return CC_OK;
 
     exception:
@@ -67,7 +68,8 @@ namespace MetricsDiscoveryInternal::MetricSets_OcclusionQueryStats
             MD_CHECK_CC( ( metric->SetDeltaReportReadEquation( "qw@0x00" ) ) );
         }
 
-        RefreshConfigRegisters();
+        MD_CHECK_CC( RefreshConfigRegisters() );
+
         return CC_OK;
 
     exception:
@@ -102,7 +104,8 @@ namespace MetricsDiscoveryInternal::MetricSets_TimestampQuery
             MD_CHECK_CC( ( metric->SetSnapshotReportDeltaFunction( "DELTA 64" ) ) );
         }
 
-        RefreshConfigRegisters();
+        MD_CHECK_CC( RefreshConfigRegisters() );
+
         return CC_OK;
 
     exception:

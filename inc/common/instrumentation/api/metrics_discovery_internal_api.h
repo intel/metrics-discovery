@@ -40,7 +40,7 @@ namespace MetricsDiscovery
         PLATFORM_EHL      = 1 << 19 /*GENERATION_EHL*/,
         // 20 reserved
         PLATFORM_DG1      = 1 << 21 /*GENERATION_DG1*/,
-        PLATFORM_XEHP_SDV = 1 << 22 /*GENERATION_XEHP_SDV*/,
+        // 22 reserved
         PLATFORM_RKL      = 1 << 23 /*GENERATION_RKL*/,
         PLATFORM_ACM      = 1 << 24 /*GENERATION_ACM*/,
         PLATFORM_PVC      = 1 << 25 /*GENERATION_PVC*/,

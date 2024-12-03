@@ -48,7 +48,6 @@ namespace MetricsDiscoveryInternal
         OA_REPORT_TYPE_320B_PEC64         = 8,
         OA_REPORT_TYPE_576B_PEC64LL       = 9,
         OA_REPORT_TYPE_640B_PEC64LL_NOA16 = 10,
-        OA_REPORT_TYPE_128B_OAM           = 1 << GTDI_REPORT_TYPE_OAM_SHIFT,
         OA_REPORT_TYPE_192B_MPEC8LL_NOA16 = 2 << GTDI_REPORT_TYPE_OAM_SHIFT,
         OA_REPORT_TYPE_128B_MPEC8_NOA16   = 3 << GTDI_REPORT_TYPE_OAM_SHIFT,
         // ...
@@ -164,8 +163,9 @@ namespace MetricsDiscoveryInternal
     ///////////////////////////////////////////////////////////////////////////////
     typedef enum ESymbolType
     {
-        SYMBOL_TYPE_IMMEDIATE,
-        SYMBOL_TYPE_DETECT,
+        SYMBOL_TYPE_IMMEDIATE, // static value
+        SYMBOL_TYPE_DETECT,    // static value detected during initialization
+        SYMBOL_TYPE_DYNAMIC    // dynamic value that can change during runtime
     } TSymbolType;
 
     ///////////////////////////////////////////////////////////////////////////////
@@ -176,7 +176,7 @@ namespace MetricsDiscoveryInternal
         EApiVersion version;
         union
         {
-            TGlobalSymbol_1_0 symbol_1_0;
+            TGlobalSymbolLatest symbol;
         };
         TSymbolType symbolType;
     } TGlobalSymbol;

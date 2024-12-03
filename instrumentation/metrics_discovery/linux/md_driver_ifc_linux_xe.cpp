@@ -482,6 +482,7 @@ namespace MetricsDiscoveryInternal
     //     CMetricsDevice&           metricsDevice       - metrics device
     //     uint32_t                  oaMetricSetId       - oa configuration ID (previously added)
     //     uint32_t                  oaReportType        - oa report type
+    //     uint32_t                  oaReportSize        - oa report size
     //     uint32_t                  timerPeriodExponent - timer period exponent
     //     uint32_t                  bufferSize          - oa buffer size
     //     const GTDI_OA_BUFFER_TYPE oaBufferType        - oa buffer type
@@ -490,7 +491,7 @@ namespace MetricsDiscoveryInternal
     //     TCompletionCode                               - *CC_OK* means success
     //
     //////////////////////////////////////////////////////////////////////////////
-    TCompletionCode CDriverInterfaceLinuxXe::OpenOaStream( CMetricsDevice& metricsDevice, uint32_t oaMetricSetId, uint32_t oaReportType, uint32_t timerPeriodExponent, uint32_t bufferSize, const GTDI_OA_BUFFER_TYPE oaBufferType )
+    TCompletionCode CDriverInterfaceLinuxXe::OpenOaStream( CMetricsDevice& metricsDevice, uint32_t oaMetricSetId, uint32_t oaReportType, uint32_t oaReportSize, uint32_t timerPeriodExponent, uint32_t bufferSize, const GTDI_OA_BUFFER_TYPE oaBufferType )
     {
         TCompletionCode         ret                                                                          = CC_ERROR_GENERAL;
         int32_t                 oaEventFd                                                                    = -1;
@@ -854,6 +855,7 @@ namespace MetricsDiscoveryInternal
         {
             case GENERATION_BMG:
             case GENERATION_LNL:
+            case GENERATION_PTL:
             {
                 switch( reportType )
                 {
@@ -1600,6 +1602,37 @@ namespace MetricsDiscoveryInternal
         MD_CHECK_CC_RET_A( m_adapterId, ret );
 
         l3BankCount = CalculateEnabledBits( l3BankMask );
+
+        return CC_OK;
+    }
+
+    //////////////////////////////////////////////////////////////////////////////
+    //
+    // Class:
+    //     CDriverInterfaceLinuxXe
+    //
+    // Method:
+    //     GetCopyEngineTotalCount
+    //
+    // Description:
+    //     Returns copy engine count for current platform.
+    //
+    // Input:
+    //     CMetricsDevice& metricsDevice   - (IN) metrics device
+    //     uint32_t&       copyEngineCount - (OUT) copy engine count
+    //
+    // Output:
+    //     TCompletionCode                 - *CC_OK* means success
+    //
+    //////////////////////////////////////////////////////////////////////////////
+    TCompletionCode CDriverInterfaceLinuxXe::GetCopyEngineTotalCount( CMetricsDevice& metricsDevice, uint32_t& copyEngineCount )
+    {
+        uint64_t copyEngineMask = 0;
+        auto     ret            = GetCopyEngineMask( metricsDevice, copyEngineMask );
+
+        MD_CHECK_CC_RET_A( m_adapterId, ret );
+
+        copyEngineCount = CalculateEnabledBits( copyEngineMask );
 
         return CC_OK;
     }

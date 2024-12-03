@@ -84,17 +84,15 @@ SPDX-License-Identifier: MIT
 #define MD_MAX_L3_NODE_PER_COPY_ENGINE 2  // Currently max value
 #define MD_DUALSUBSLICE_PER_SLICE      4  // Current value
 #define MD_SUBSLICE_PER_SLICE_BMG      4  // Current Xe2 value
-
-//////////////////////////////////////////////////////////////////////////////
-//
-// Description:
-//     Masks helping to define OA Adder workaround need
-//
-//////////////////////////////////////////////////////////////////////////////
-#define SLICES0TO3  0x0F
-#define SLICES4TO7  0xF0
-#define SLICES4AND5 0x30
-#define SLICES6AND7 0xC0
+#define MD_SUBSLICE_PER_SLICE_PTL      6  // Current Xe3 value
+#define MD_MAX_SLICE_BMG_G21           5  // Currently BMG G21 value
+#define MD_MAX_SLICE_LNL               2  // Currently LNL value
+#define MD_MAX_SLICE_PTL_H             2  // Currently PTL H value
+#define MD_MAX_SLICE_PTL_U             1  // Currently PTL U value
+#define MD_MAX_L3_NODE_BMG_G21         6  // Currently BMG G21 value
+#define MD_MAX_L3_NODE_LNL             2  // Currently LNL value
+#define MD_MAX_L3_NODE_PTL_H           2  // Currently PTL H value
+#define MD_MAX_L3_NODE_PTL_U           1  // Currently PTL U value
 
 //////////////////////////////////////////////////////////////////////////////
 //
@@ -102,8 +100,9 @@ SPDX-License-Identifier: MIT
 //     Oa buffer min/max size value
 //
 //////////////////////////////////////////////////////////////////////////////
-// Oa buffer min/max size is equal to 16 MB
-#define MD_OA_BUFFER_SIZE_MAX ( 16 * MD_MBYTE )
+#define MD_OA_BUFFER_SIZE_MIN       ( 128 * MD_KBYTE )
+#define MD_OA_BUFFER_SIZE_MAX       ( 16 * MD_MBYTE )
+#define MD_OA_BUFFER_SIZE_MAX_XE_HP ( 128 * MD_MBYTE )
 
 using namespace MetricsDiscovery;
 
@@ -189,16 +188,25 @@ namespace MetricsDiscoveryInternal
         SPlatformIndexGt()
             : PlatformIndex( GTDI_PLATFORM_MAX )
             , GtType( GFX_GTTYPE_UNDEFINED )
+            , PlatformVersion( 0 )
         {
         }
         SPlatformIndexGt( const GTDI_PLATFORM_INDEX platformIndex, const TGfxGtType gtType )
             : PlatformIndex( platformIndex )
             , GtType( gtType )
+            , PlatformVersion( 0 )
+        {
+        }
+        SPlatformIndexGt( const GTDI_PLATFORM_INDEX platformIndex, const TGfxGtType gtType, const uint32_t platformVersion )
+            : PlatformIndex( platformIndex )
+            , GtType( gtType )
+            , PlatformVersion( platformVersion )
         {
         }
 
         GTDI_PLATFORM_INDEX PlatformIndex;
         TGfxGtType          GtType;
+        uint32_t            PlatformVersion;
     } TPlatformIndexGt;
 
     //////////////////////////////////////////////////////////////////////////////
@@ -215,6 +223,7 @@ namespace MetricsDiscoveryInternal
         GTDI_PLATFORM_INDEX PlatformIndex;
         TGfxGtType          GtType;
         uint32_t            ThreadsPerEu;
+        uint32_t            PlatformVersion;
     } TGfxDeviceInfo;
 
     //////////////////////////////////////////////////////////////////////////////
@@ -306,7 +315,7 @@ namespace MetricsDiscoveryInternal
         virtual TCompletionCode GetMaxMinOaBufferSize( const GTDI_OA_BUFFER_TYPE oaBufferType, const GTDI_DEVICE_PARAM param, GTDIDeviceInfoParamExtOut& out, CMetricsDevice& metricsDevice );
         virtual TCompletionCode SendPmRegsConfig( TRegister** regVector, const uint32_t regCount, const uint32_t subDeviceIndex, const GTDI_OA_BUFFER_TYPE oaBufferType );
         virtual TCompletionCode SendReadRegsConfig( TRegister** regVector, uint32_t regCount );
-        virtual TCompletionCode GetPmRegsConfigHandles( uint32_t configId, uint32_t* oaConfigHandle, uint32_t* gpConfigHandle, uint32_t* rrConfigHandle );
+        virtual TCompletionCode GetPmRegsConfigHandles( uint32_t* oaConfigHandle, uint32_t* gpConfigHandle, uint32_t* rrConfigHandle );
         virtual TCompletionCode ValidatePmRegsConfig( TRegister* regVector, uint32_t regCount, uint32_t platformId );
         virtual TCompletionCode GetGpuCpuTimestamps( CMetricsDevice& device, uint64_t& gpuTimestamp, uint64_t& cpuTimestamp, uint32_t& cpuId, uint64_t& correlationIndicator ) = 0;
         virtual bool            IsTbsEngineValid( const TEngineParamsLatest& engineParams, const uint32_t requestedInstance = -1, const bool isOam = false ) const             = 0;
@@ -343,8 +352,8 @@ namespace MetricsDiscoveryInternal
 
     protected:
         // OA
-        virtual TCompletionCode OpenOaStream( CMetricsDevice& metricsDevice, uint32_t oaMetricSetId, uint32_t oaReportType, uint32_t timerPeriodExponent, uint32_t bufferSize, const GTDI_OA_BUFFER_TYPE oaBufferType ) = 0;
-        virtual TCompletionCode ReadOaStream( CMetricsDevice& metricsDevice, uint32_t reportSize, uint32_t reportsToRead, char* reportData, uint32_t& readBytes, GTDIReadCounterStreamExceptions& exceptions )          = 0;
+        virtual TCompletionCode OpenOaStream( CMetricsDevice& metricsDevice, uint32_t oaMetricSetId, uint32_t oaReportType, uint32_t oaReportSize, uint32_t timerPeriodExponent, uint32_t bufferSize, const GTDI_OA_BUFFER_TYPE oaBufferType ) = 0;
+        virtual TCompletionCode ReadOaStream( CMetricsDevice& metricsDevice, uint32_t reportSize, uint32_t reportsToRead, char* reportData, uint32_t& readBytes, GTDIReadCounterStreamExceptions& exceptions )                                 = 0;
         TCompletionCode         CloseOaStream( CMetricsDevice& metricsDevice );
         TCompletionCode         WaitForOaStreamReports( CMetricsDevice& metricsDevice, uint32_t timeoutMs );
         std::string             GenerateQueryGuid( const uint32_t subDeviceIndex );
@@ -386,14 +395,19 @@ namespace MetricsDiscoveryInternal
         virtual TCompletionCode GetOaBufferCount( CMetricsDevice& metricsDevice, uint32_t& oaBufferCount )                   = 0;
         virtual TCompletionCode GetL3NodeTotalCount( CMetricsDevice& metricsDevice, uint32_t& l3NodeCount )                  = 0;
         virtual TCompletionCode GetL3BankTotalCount( CMetricsDevice& metricsDevice, uint32_t& l3BankCount )                  = 0;
+        virtual TCompletionCode GetCopyEngineTotalCount( CMetricsDevice& metricsDevice, uint32_t& copyEngineCount )          = 0;
         virtual TCompletionCode GetComputeEngineTotalCount( CMetricsDevice& metricsDevice, uint32_t& computeEngineCount )    = 0;
         virtual TCompletionCode GetL3BankMask( CMetricsDevice& metricsDevice, uint64_t& l3BankMask )                         = 0;
         virtual TCompletionCode GetL3NodeMask( CMetricsDevice& metricsDevice, uint64_t& l3NodeMask )                         = 0;
         virtual TCompletionCode GetCopyEngineMask( CMetricsDevice& metricsDevice, uint64_t& copyEngineMask )                 = 0;
 
         // Device info utils
+        uint32_t   GetGtMaxSlice();
         uint32_t   GetGtMaxSubslicePerSlice();
         uint32_t   GetGtMaxDualSubslicePerSlice();
+        uint32_t   GetGtMaxL3Node();
+        uint32_t   GetGtMaxL3BankPerL3Node();
+        uint32_t   GetGtMaxCopyEngine();
         bool       IsDualSubsliceSupported();
         TGfxGtType MapDeviceInfoToInstrGtTypeGfxVer12( const TGfxDeviceInfo& gfxDeviceInfo, CMetricsDevice& metricsDevice );
 

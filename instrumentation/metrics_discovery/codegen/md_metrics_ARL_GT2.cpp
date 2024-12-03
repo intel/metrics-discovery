@@ -65,7 +65,7 @@ TCompletionCode CreateMetricTreeARL_GT2_OA( CMetricsDevice* metricsDevice, CConc
 
     if( metricsDevice->IsPlatformTypeOf( &platformMask, GT_TYPE_GT2 ) )
     {
-        MetricSets_ARL_GT2_OA::AddInformationSet( concurrentGroup );
+        MD_CHECK_CC( MetricSets_ARL_GT2_OA::AddInformationSet( concurrentGroup ) );
 
         metricSet = concurrentGroup->AddMetricSetExplicit<MetricSets_ARL_GT2_OA::CRenderBasicMetricSet>( "RenderBasic", "Render Metrics Basic", API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
             GPU_RENDER | GPU_COMPUTE, 256, 688, OA_REPORT_TYPE_256B_A45_NOA16, &platformMask, nullptr, GT_TYPE_GT2 );
@@ -79,7 +79,7 @@ TCompletionCode CreateMetricTreeARL_GT2_OA( CMetricsDevice* metricsDevice, CConc
             GPU_RENDER | GPU_COMPUTE | GPU_MEDIA | GPU_GENERIC, 256, 688, OA_REPORT_TYPE_256B_A45_NOA16, &platformMask, nullptr, GT_TYPE_GT2 );
         MD_CHECK_PTR( metricSet );
 
-        metricSet = concurrentGroup->AddMetricSetExplicit<MetricSets_ARL_GT2_OA::CXveActivityMetricSet>( "XveActivity", "XveActivity", API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+        metricSet = concurrentGroup->AddMetricSetExplicit<MetricSets_ARL_GT2_OA::CXveActivityMetricSet>( "XveActivity", "XveActivity", API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
             GPU_RENDER | GPU_COMPUTE | GPU_MEDIA | GPU_GENERIC, 256, 688, OA_REPORT_TYPE_256B_A45_NOA16, &platformMask, nullptr, GT_TYPE_GT2 );
         MD_CHECK_PTR( metricSet );
 
@@ -1163,7 +1163,7 @@ TCompletionCode CreateMetricTreeARL_GT2_OAM0( CMetricsDevice* metricsDevice, CCo
 
     if( metricsDevice->IsPlatformTypeOf( &platformMask, GT_TYPE_GT2 ) )
     {
-        MetricSets_ARL_GT2_OAM0::AddInformationSet( concurrentGroup );
+        MD_CHECK_CC( MetricSets_ARL_GT2_OAM0::AddInformationSet( concurrentGroup ) );
 
         metricSet = concurrentGroup->AddMetricSetExplicit<MetricSets_ARL_GT2_OAM0::CMediaSet1MetricSet>( "MediaSet1", "MediaSet1", API_TYPE_IOSTREAM,
             GPU_GENERIC, 128, 0, OA_REPORT_TYPE_128B_MPEC8_NOA16, &platformMask, nullptr, GT_TYPE_GT2 );

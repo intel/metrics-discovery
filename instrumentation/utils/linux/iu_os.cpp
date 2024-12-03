@@ -86,14 +86,24 @@ extern "C"
     ///////////////////////////////////////////////////////////////////////////////
     const char* IuOsGetModuleInfo( char** processName )
     {
+        if( !processName )
+        {
+            return NULL;
+        }
+
         static char fullProcessName[IU_MODULE_NAME_SIZE_MAX] = { 0 };
 
         // Get an executable path. If the function fails, it shall return a value of -1.
-        if( readlink( "/proc/self/exe", fullProcessName, IU_MODULE_NAME_SIZE_MAX ) == -1 )
+        const int64_t length = readlink( "/proc/self/exe", fullProcessName, IU_MODULE_NAME_SIZE_MAX );
+
+        if( length == -1 )
         {
             IU_DBG_PRINT( IU_DBG_SEV_ERROR, "Couldn't find an executable, exiting" );
             return NULL;
         }
+
+        // Null-terminate the string.
+        fullProcessName[length == IU_MODULE_NAME_SIZE_MAX ? IU_MODULE_NAME_SIZE_MAX - 1 : length] = '\0';
 
         *processName = strrchr( fullProcessName, '/' ) + 1;
 

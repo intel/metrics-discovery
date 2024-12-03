@@ -40,14 +40,17 @@ namespace MetricsDiscoveryInternal
     public:
         CEquationElementInternal();
         CEquationElementInternal( const CEquationElementInternal& element );
+        CEquationElementInternal( CEquationElementInternal&& element );
         CEquationElementInternal& operator=( const CEquationElementInternal& element );
+        CEquationElementInternal& operator=( CEquationElementInternal&& element );
         virtual ~CEquationElementInternal();
 
-        char    SymbolNameInternal[32];
         int32_t MetricIndexInternal;
 
     private:
         void SetMembers( const CEquationElementInternal& element );
+        void CopyMembers( const CEquationElementInternal& element );
+        void MoveMembers( CEquationElementInternal& element );
     };
 
     //////////////////////////////////////////////////////////////////////////////

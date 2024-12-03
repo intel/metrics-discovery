@@ -193,7 +193,7 @@ TCompletionCode CreateMetricTreeBDW_OA( CMetricsDevice* metricsDevice, CConcurre
             GPU_RENDER | GPU_COMPUTE, 256, 536, OA_REPORT_TYPE_256B_A45_NOA16, &platformMask, nullptr );
         MD_CHECK_PTR( metricSet );
 
-        metricSet = concurrentGroup->AddMetricSetExplicit<MetricSets_BDW_OA::CSTC_PmaStallMetricSet>( "STC_PmaStall", "Metric set PMA Stall", API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OGL4_X | API_TYPE_IOSTREAM,
+        metricSet = concurrentGroup->AddMetricSetExplicit<MetricSets_BDW_OA::CSTC_PmaStallMetricSet>( "STC_PmaStall", "Metric set PMA Stall", API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_IOSTREAM,
             GPU_RENDER, 256, 536, OA_REPORT_TYPE_256B_A45_NOA16, &platformMask, nullptr );
         MD_CHECK_PTR( metricSet );
     }

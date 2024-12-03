@@ -23,7 +23,7 @@ SPDX-License-Identifier: MIT
 
 namespace MetricsDiscoveryInternal::MetricSets_ICL_MMIO_Regs
 {
-    void AddInformationSet( CConcurrentGroup* concurrentGroup );
+    TCompletionCode AddInformationSet( CConcurrentGroup* concurrentGroup );
 
     class CMcRequestsMetricSet final : public CMetricSet
     {
@@ -57,7 +57,7 @@ namespace MetricsDiscoveryInternal::MetricSets_ICL_PipelineStatistics
 
 namespace MetricsDiscoveryInternal::MetricSets_ICL_OA
 {
-    void AddInformationSet( CConcurrentGroup* concurrentGroup );
+    TCompletionCode AddInformationSet( CConcurrentGroup* concurrentGroup );
 
     class CRenderBasicMetricSet final : public CMetricSet
     {

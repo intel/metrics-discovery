@@ -35,7 +35,7 @@ namespace MetricsDiscoveryInternal::MetricSets_GLK_PipelineStatistics
 
 namespace MetricsDiscoveryInternal::MetricSets_GLK_OA
 {
-    void AddInformationSet( CConcurrentGroup* concurrentGroup );
+    TCompletionCode AddInformationSet( CConcurrentGroup* concurrentGroup );
 
     class CRenderBasicMetricSet final : public CMetricSet
     {

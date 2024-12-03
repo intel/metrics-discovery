@@ -33,7 +33,7 @@ TCompletionCode CreateMetricTreeSKL_GT4_MMIO_Regs( CMetricsDevice* metricsDevice
 
     if( metricsDevice->IsPlatformTypeOf( &platformMask, GT_TYPE_GT4 ) )
     {
-        MetricSets_SKL_GT4_MMIO_Regs::AddInformationSet( concurrentGroup );
+        MD_CHECK_CC( MetricSets_SKL_GT4_MMIO_Regs::AddInformationSet( concurrentGroup ) );
 
         metricSet = concurrentGroup->AddMetricSetExplicit<MetricSets_SKL_GT4_MMIO_Regs::CMcRequestsMetricSet>( "McRequests", "Memory Controller Request counts", API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X,
             GPU_GENERIC, 0, 672, OA_REPORT_TYPE_256B_A45_NOA16, &platformMask, nullptr, GT_TYPE_GT4 );
@@ -103,7 +103,7 @@ TCompletionCode CreateMetricTreeSKL_GT4_OA( CMetricsDevice* metricsDevice, CConc
 
     if( metricsDevice->IsPlatformTypeOf( &platformMask, GT_TYPE_GT4 ) )
     {
-        MetricSets_SKL_GT4_OA::AddInformationSet( concurrentGroup );
+        MD_CHECK_CC( MetricSets_SKL_GT4_OA::AddInformationSet( concurrentGroup ) );
 
         metricSet = concurrentGroup->AddMetricSetExplicit<MetricSets_SKL_GT4_OA::CRenderBasicMetricSet>( "RenderBasic", "Render Metrics Basic set", API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
             GPU_RENDER | GPU_COMPUTE, 256, 672, OA_REPORT_TYPE_256B_A45_NOA16, &platformMask, nullptr, GT_TYPE_GT4 );
@@ -213,11 +213,11 @@ TCompletionCode CreateMetricTreeSKL_GT4_OA( CMetricsDevice* metricsDevice, CConc
             GPU_RENDER | GPU_COMPUTE, 256, 672, OA_REPORT_TYPE_256B_A45_NOA16, &platformMask, nullptr, GT_TYPE_GT4 );
         MD_CHECK_PTR( metricSet );
 
-        metricSet = concurrentGroup->AddMetricSetExplicit<MetricSets_SKL_GT4_OA::CPMA_StallMetricSet>( "PMA_Stall", "Metric set PMA Stall", API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+        metricSet = concurrentGroup->AddMetricSetExplicit<MetricSets_SKL_GT4_OA::CPMA_StallMetricSet>( "PMA_Stall", "Metric set PMA Stall", API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
             GPU_RENDER, 256, 672, OA_REPORT_TYPE_256B_A45_NOA16, &platformMask, nullptr, GT_TYPE_GT4 );
         MD_CHECK_PTR( metricSet );
 
-        metricSet = concurrentGroup->AddMetricSetExplicit<MetricSets_SKL_GT4_OA::CAsyncComputeMetricSet>( "AsyncCompute", "AsyncCompute", API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_VULKAN | API_TYPE_IOSTREAM,
+        metricSet = concurrentGroup->AddMetricSetExplicit<MetricSets_SKL_GT4_OA::CAsyncComputeMetricSet>( "AsyncCompute", "AsyncCompute", API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_VULKAN | API_TYPE_IOSTREAM,
             GPU_RENDER | GPU_COMPUTE | GPU_MEDIA | GPU_GENERIC, 256, 672, OA_REPORT_TYPE_256B_A45_NOA16, &platformMask, nullptr, GT_TYPE_GT4 );
         MD_CHECK_PTR( metricSet );
     }

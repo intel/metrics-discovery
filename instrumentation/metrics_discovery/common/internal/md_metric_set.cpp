@@ -103,7 +103,7 @@ namespace MetricsDiscoveryInternal
         m_params.ApiSpecificId          = {};
         m_params.PlatformMask           = GetPlatformTypeFromByteArray( platformMask, adapterId );
         m_params.GtMask                 = gtMask;
-        m_params.AvailabilityEquation   = "";
+        m_params.AvailabilityEquation   = nullptr;
 
         m_pmRegsConfigInfo.IsQueryConfig  = false;
         m_pmRegsConfigInfo.OaConfigHandle = 0;
@@ -399,7 +399,7 @@ namespace MetricsDiscoveryInternal
             if( ret == CC_OK )
             {
                 // Update PmRegsHandles and reset rrSet flag
-                driverInterface.GetPmRegsConfigHandles( m_params.ApiSpecificId.HwConfigId, &m_pmRegsConfigInfo.OaConfigHandle, &m_pmRegsConfigInfo.GpConfigHandle, &m_pmRegsConfigInfo.RrConfigHandle );
+                driverInterface.GetPmRegsConfigHandles( &m_pmRegsConfigInfo.OaConfigHandle, &m_pmRegsConfigInfo.GpConfigHandle, &m_pmRegsConfigInfo.RrConfigHandle );
                 m_isReadRegsCfgSet = false;
             }
         }
@@ -971,23 +971,43 @@ namespace MetricsDiscoveryInternal
             return CC_ERROR_GENERAL;
         }
 
-        auto ret = AddDefaultMetrics();
-        MD_CHECK_CC_RET_A( adapterId, ret );
+        MD_CHECK_CC( AddDefaultMetrics() );
 
         // Begin configuration.
-        ret = AddStartRegisterSet( 0, 0, nullptr );
-        MD_CHECK_CC_RET_A( adapterId, ret );
+        MD_CHECK_CC( AddStartRegisterSet( 0, 0, nullptr ) );
 
         // Process prototypes and create metrics with equations.
-        ret = m_prototypeManager->CreateMetricsFromPrototypes();
-        MD_CHECK_CC_RET_A( adapterId, ret );
+        MD_CHECK_CC( m_prototypeManager->CreateMetricsFromPrototypes() );
 
         // End configuration.
-        RefreshConfigRegisters();
+        MD_CHECK_CC( RefreshConfigRegisters() );
 
         m_isOpened = false;
 
         return CC_OK;
+
+    exception:
+        // Clear vectors.
+        ClearVector( m_metricsVector );
+        ClearVector( m_informationVector );
+        ClearVector( m_complementarySetsVector );
+        ClearList( m_startRegisterSetList );
+        ClearVector( m_otherMetricsVector );
+        ClearVector( m_otherInformationVector );
+
+        // Disable api filtering.
+        EnableApiFiltering( 0, false );
+
+        // Clear references in vectors.
+        m_startRegsVector.clear();
+        m_startRegsQueryVector.clear();
+
+        m_params.MetricsCount    = 0;
+        m_filteredParams.ApiMask = static_cast<uint32_t>( API_TYPE_ALL );
+
+        m_isOpened = false;
+
+        return CC_ERROR_GENERAL;
     }
 
     //////////////////////////////////////////////////////////////////////////////
@@ -1409,6 +1429,7 @@ namespace MetricsDiscoveryInternal
 
         if( registerSet->SetAvailabilityEquation( availabilityEquation ) != CC_OK )
         {
+            MD_LOG_A( adapterId, LOG_INFO, "Failed to add start config register set to the metric set" );
             MD_SAFE_DELETE( registerSet );
             return CC_ERROR_GENERAL;
         }
@@ -1634,7 +1655,7 @@ namespace MetricsDiscoveryInternal
                     m_isReadRegsCfgSet = readRegs.size() > 0;
 
                     m_pmRegsConfigInfo.IsQueryConfig = sendQueryConfigFlag;
-                    driverInterface.GetPmRegsConfigHandles( m_params.ApiSpecificId.HwConfigId, &m_pmRegsConfigInfo.OaConfigHandle, &m_pmRegsConfigInfo.GpConfigHandle, &m_pmRegsConfigInfo.RrConfigHandle );
+                    driverInterface.GetPmRegsConfigHandles( &m_pmRegsConfigInfo.OaConfigHandle, &m_pmRegsConfigInfo.GpConfigHandle, &m_pmRegsConfigInfo.RrConfigHandle );
                 }
             }
             else
@@ -1712,7 +1733,7 @@ namespace MetricsDiscoveryInternal
             uint32_t        rrCfgHandle = 0;
             TCompletionCode retCode     = CC_OK;
 
-            retCode = driverInterface.GetPmRegsConfigHandles( m_params.ApiSpecificId.HwConfigId, &oaCfgHandle, &gpCfgHandle, &rrCfgHandle );
+            retCode = driverInterface.GetPmRegsConfigHandles( &oaCfgHandle, &gpCfgHandle, &rrCfgHandle );
 
             if( retCode == CC_OK && oaCfgHandle == m_pmRegsConfigInfo.OaConfigHandle && gpCfgHandle == m_pmRegsConfigInfo.GpConfigHandle && rrCfgHandle == m_pmRegsConfigInfo.RrConfigHandle )
             {
@@ -2228,7 +2249,7 @@ namespace MetricsDiscoveryInternal
     {
         std::unordered_map<std::string, uint32_t> metricsIndexMap( m_params.MetricsCount );
 
-        // Update metric indices
+        // Initialize metric indices map
         for( uint32_t i = 0; i < m_params.MetricsCount; ++i )
         {
             CMetric* metric = GetMetricExplicit( i );
@@ -2238,6 +2259,17 @@ namespace MetricsDiscoveryInternal
                 const auto metricParams = metric->GetParams();
 
                 metricsIndexMap[metricParams->SymbolName] = i;
+            }
+        }
+
+        // Update metric indices
+        for( uint32_t i = 0; i < m_params.MetricsCount; ++i )
+        {
+            CMetric* metric = GetMetricExplicit( i );
+
+            if( metric != nullptr )
+            {
+                const auto metricParams = metric->GetParams();
 
                 if( metricParams->NormEquation != nullptr )
                 {
@@ -3121,6 +3153,28 @@ namespace MetricsDiscoveryInternal
     //     CMetricSet
     //
     // Method:
+    //     SetPrototypeManager
+    //
+    // Description:
+    //     Deletes the current prototype manager and sets the new one.
+    //
+    // Input:
+    //     CPrototypeManager* prototypeManager - prototype manager
+    //
+    //////////////////////////////////////////////////////////////////////////////
+    void CMetricSet::SetPrototypeManager( CPrototypeManager* prototypeManager )
+    {
+        MD_SAFE_DELETE( m_prototypeManager );
+
+        m_prototypeManager = prototypeManager;
+    }
+
+    //////////////////////////////////////////////////////////////////////////////
+    //
+    // Class:
+    //     CMetricSet
+    //
+    // Method:
     //     DecreasePrototypesReferenceCounters
     //
     // Description:
@@ -3177,7 +3231,8 @@ namespace MetricsDiscoveryInternal
 
         const bool isXe2PlusPlatform =
             IsPlatformPresentInMask( m_platformMask, GENERATION_BMG, adapterId ) ||
-            IsPlatformPresentInMask( m_platformMask, GENERATION_LNL, adapterId );
+            IsPlatformPresentInMask( m_platformMask, GENERATION_LNL, adapterId ) ||
+            IsPlatformPresentInMask( m_platformMask, GENERATION_PTL, adapterId );
 
         const uint32_t apiMask = m_isOam
             ? API_TYPE_IOSTREAM
@@ -3191,35 +3246,42 @@ namespace MetricsDiscoveryInternal
 
         if( isXe2PlusPlatform )
         {
-            metric->SetSnapshotReportReadEquation( "qw@0x08 100 UMUL $GpuTimestampFrequency 100000 UDIV UDIV 100 UMUL" );
+            MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "qw@0x08 100 UMUL $GpuTimestampFrequency 100000 UDIV UDIV 100 UMUL" ) );
         }
         else
         {
-            metric->SetSnapshotReportReadEquation( "dw@0x08 1000000000 UMUL $GpuTimestampFrequency UDIV" );
+            MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "dw@0x08 1000000000 UMUL $GpuTimestampFrequency UDIV" ) );
         }
         if( !m_isOam )
         {
-            metric->SetDeltaReportReadEquation( "qw@0x00" );
+            MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x00" ) );
         }
-        metric->SetSnapshotReportDeltaFunction( "NS_TIME" );
+
+        MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "NS_TIME" ) );
 
         metric = AddMetric( "GpuCoreClocks", "GPU Core Clocks", "The total number of GPU core clocks elapsed during the measurement.", "GPU", 0, USAGE_FLAG_TIER_1 | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, apiMask, METRIC_TYPE_EVENT, RESULT_UINT64, "cycles", 0, 0, HW_UNIT_GPU, nullptr, nullptr, "oa.fixed", metricIndex++, true );
         MD_CHECK_PTR_RET_A( adapterId, metric, CC_ERROR_NO_MEMORY );
-        metric->SetSnapshotReportReadEquation( "qw@0x18" );
+        MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "qw@0x18" ) );
+
         if( !m_isOam )
         {
-            metric->SetDeltaReportReadEquation( "qw@0x08" );
+            MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x08" ) );
         }
-        metric->SetSnapshotReportDeltaFunction( "DELTA 64" );
+
+        MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 64" ) );
 
         metric = AddMetric( "AvgGpuCoreFrequencyMHz", "AVG GPU Core Frequency", "Average GPU Core Frequency in the measurement.", "GPU", 0, USAGE_FLAG_TIER_1 | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, apiMask, METRIC_TYPE_EVENT, RESULT_UINT64, "MHz", 0, 0, HW_UNIT_GPU, nullptr, nullptr, "oa.fixed", metricIndex++, true );
         MD_CHECK_PTR_RET_A( adapterId, metric, CC_ERROR_NO_MEMORY );
-        metric->SetNormalizationEquation( "$GpuCoreClocks 1000 UMUL $$GpuTime UDIV" );
+        MD_CHECK_CC( metric->SetNormalizationEquation( "$GpuCoreClocks 1000 UMUL $$GpuTime UDIV" ) );
 
         metric = AddMetric( "ResultUncertainty", "Result Uncertainty", "Result uncertainty indicator", "GPU", 0, USAGE_FLAG_TIER_1 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, apiMask, METRIC_TYPE_EVENT, RESULT_UINT64, "percent", 0, 0, HW_UNIT_GPU, nullptr, nullptr, nullptr, metricIndex++, true );
         MD_CHECK_PTR_RET_A( adapterId, metric, CC_ERROR_NO_MEMORY );
-        metric->SetNormalizationEquation( "100 $GpuCoreClocks 500 UMAX 5000 UMIN 500 USUB 45 UDIV USUB" );
+        MD_CHECK_CC( metric->SetNormalizationEquation( "100 $GpuCoreClocks 500 UMAX 5000 UMIN 500 USUB 45 UDIV USUB" ) );
 
         return CC_OK;
+
+    exception:
+        MD_LOG_A( adapterId, LOG_INFO, "Failed to add default metrics" );
+        return CC_ERROR_GENERAL;
     }
 } // namespace MetricsDiscoveryInternal

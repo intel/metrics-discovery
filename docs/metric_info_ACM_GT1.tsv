@@ -14,153 +14,6 @@ PipelineStats	CpsInvocations	CPS invocations	3D Pipe/Compute Shader	The total nu
 RenderBasic	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
 RenderBasic	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
 RenderBasic	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
-RenderBasic	VsThreads	VS Threads Dispatched	ThreadDispatcher	The total number of vertex shader hardware threads dispatched.
-RenderBasic	HsThreads	HS Threads Dispatched	ThreadDispatcher	The total number of hull shader hardware threads dispatched.
-RenderBasic	DsThreads	DS Threads Dispatched	ThreadDispatcher	The total number of domain shader hardware threads dispatched.
-RenderBasic	GsThreads	GS Threads Dispatched	ThreadDispatcher	The total number of geometry shader hardware threads dispatched.
-RenderBasic	PsThreads	PS Threads Dispatched	ThreadDispatcher	The total number of pixel shader hardware threads dispatched.
-RenderBasic	CsThreads	CS Threads Dispatched	ThreadDispatcher	The total number of compute shader hardware threads dispatched.
-RenderBasic	GpuBusy	GPU Busy	FrontEnd	The percentage of time in which the GPU has been processing GPU commands.
-RenderBasic	XveActive	XVE Active	VectorEngine	The percentage of time in which the Execution Units were actively processing.
-RenderBasic	XveStall	XVE Stall	VectorEngine	The percentage of time in which the Execution Units were stalled.
-RenderBasic	XveThreadOccupancy	XVE Thread Occupancy	VectorEngine	The percentage of time in which hardware threads occupied XVEs.
-RenderBasic	XveFpuEmActive	EM And FPU Pipes Active	VectorEngine	The percentage of time in which XVE EM INT and FPU INT64 pipelines were actively processing.
-RenderBasic	VsFpuActive	VS FPU Pipe Active	VectorEngine	The percentage of time in which XVE FPU INT64 pipeline was actively processing a vertex shader instruction.
-RenderBasic	VsEmActive	VS EM Pipe Active	VectorEngine	The percentage of time in which XVE EM INT pipeline was actively processing a vertex shader instruction.
-RenderBasic	VsSendActive	VS Send Pipe Active	VectorEngine	The percentage of time in which XVE send pipeline was actively processing a vertex shader instruction.
-RenderBasic	PsFpuActive	PS FPU Pipe Active	VectorEngine	The percentage of time in which XVE FPU INT64 pipeline was actively processing a pixel shader instruction.
-RenderBasic	PsEmActive	PS EM Pipe Active	VectorEngine	The percentage of time in which XVE EM INT pipeline was actively processing a pixel shader instruction.
-RenderBasic	PsSendActive	PS Send Pipe Active	VectorEngine	The percentage of time in which XVE send pipeline was actively processing a pixel shader instruction.
-RenderBasic	RasterizedPixels	Rasterized Pixels	Rasterizer	The total number of rasterized pixels.
-RenderBasic	HiDepthTestFails	Early Hi-Depth Test Fails	DepthPipe	The total number of pixels dropped on early hierarchical depth test.
-RenderBasic	EarlyDepthTestFails	Early Depth Test Fails	DepthPipe	The total number of pixels dropped on early depth test.
-RenderBasic	SamplesKilledInPs	Samples Killed in PS	ColorPipe	The total number of samples or pixels dropped in pixel shaders.
-RenderBasic	PixelsFailingPostPsTests	Pixels Failing Tests	ColorPipe	The total number of pixels dropped on post-PS alpha, stencil, or depth tests.
-RenderBasic	SamplesWritten	Samples Written	Rasterizer	The total number of samples or pixels written to all render targets.
-RenderBasic	SamplesBlended	Samples Blended	Rasterizer	The total number of blended samples or pixels written to all render targets.
-RenderBasic	SamplerTexels	Sampler Texels	Sampler	The total number of texels seen on input (with 2x2 accuracy) in all sampler units.
-RenderBasic	SamplerTexelMisses	Sampler Texels Misses	Sampler	The total number of texels lookups (with 2x2 accuracy) that missed L1 sampler cache.
-RenderBasic	SlmReads	SLM Bytes Read	L1Cache	The total number of reads from shared local memory.
-RenderBasic	SlmWrites	SLM Writes	L1Cache	The total number of writes into shared local memory.
-RenderBasic	ShaderMemoryAccesses	Shader Memory Accesses	VectorEngine	The total number of shader memory accesses to L3.
-RenderBasic	ShaderAtomics	Shader Atomic Memory Accesses	VectorEngine	The total number of shader atomic memory accesses.
-RenderBasic	ShaderBarriers	Shader Barrier Messages	VectorEngine	The total number of shader barrier messages.
-RenderBasic	GtiReadThroughput	GTI Read Throughput	Memory	The total number of GPU memory bytes read from GTI.
-RenderBasic	GtiWriteThroughput	GTI Write Throughput	Memory	The total number of GPU memory bytes written to GTI.
-RenderBasic	Sampler20Busy	Sampler Slice2 Xe Core0 is busy	Sampler	The percentage of time when sampler slice2 Xe core0 is busy
-RenderBasic	SamplersBusy	Samplers Busy	Sampler	The percentage of time in which samplers or L1 cache are not idle.
-RenderBasic	Sampler20Bottleneck	Sampler20 Bottleneck	Sampler	The percentage of time in which Slice2 Sampler0 has been slowing down the pipe when processing XVE requests.
-RenderBasic	SamplerBottleneck	Samplers Bottleneck	Sampler	The percentage of time in which samplers have been slowing down the pipe when processing XVE requests.
-ComputeBasic	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
-ComputeBasic	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
-ComputeBasic	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
-ComputeBasic	GpuBusy	GPU Busy	FrontEnd	The percentage of time in which the GPU has been processing GPU commands.
-ComputeBasic	VsThreads	VS Threads Dispatched	ThreadDispatcher	The total number of vertex shader hardware threads dispatched.
-ComputeBasic	HsThreads	HS Threads Dispatched	ThreadDispatcher	The total number of hull shader hardware threads dispatched.
-ComputeBasic	DsThreads	DS Threads Dispatched	ThreadDispatcher	The total number of domain shader hardware threads dispatched.
-ComputeBasic	GsThreads	GS Threads Dispatched	ThreadDispatcher	The total number of geometry shader hardware threads dispatched.
-ComputeBasic	PsThreads	PS Threads Dispatched	ThreadDispatcher	The total number of pixel shader hardware threads dispatched.
-ComputeBasic	CsThreads	CS Threads Dispatched	ThreadDispatcher	The total number of compute shader hardware threads dispatched.
-ComputeBasic	XveActive	XVE Active	VectorEngine	The percentage of time in which the Execution Units were actively processing.
-ComputeBasic	XveStall	XVE Stall	VectorEngine	The percentage of time in which the Execution Units were stalled.
-ComputeBasic	FpuActive	XVE FPU Pipe Active	VectorEngine	The percentage of time in which XVE FPU INT64 pipeline was actively processing.
-ComputeBasic	EmActive	EM Pipe Active	VectorEngine	The percentage of time in which XVE EM INT pipeline was actively processing.
-ComputeBasic	XmxActive	XMX Pipe Active	VectorEngine	The percentage of time in which XVE XMX pipeline was actively processing.
-ComputeBasic	XveFpuEmActive	EM And FPU Pipes Active	VectorEngine	The percentage of time in which XVE EM INT and FPU INT64 pipelines were actively processing.
-ComputeBasic	XveFpuXmxActive	XMX And FPU Pipes Active	VectorEngine	The percentage of time in which XVE XMX and FPU INT64 pipelines were actively processing.
-ComputeBasic	XveAvgIpcRate	XVE AVG IPC Rate	VectorEngine	The average rate of IPC calculated for 2 FPU pipelines.
-ComputeBasic	SendActive	Send Pipe Active	VectorEngine	The percentage of time in which XVE send pipeline was actively processing.
-ComputeBasic	XveThreadOccupancy	XVE Thread Occupancy	VectorEngine	The percentage of time in which hardware threads occupied XVEs.
-ComputeBasic	XveFpuFlt16	FPU FLT16 Instruction	VectorEngine	The percentage of time in which FLT16 instruction were processed actively on FPU INT64 pipeline.
-ComputeBasic	XveFpuFlt32	FPU FLT32 Instruction	VectorEngine	The percentage of time in which FLT32 instruction were processed actively on FPU INT64 pipeline.
-ComputeBasic	XveFpuFlt64	FPU FLT64 Instruction	VectorEngine	The percentage of time in which FLT64 instruction were processed actively on FPU INT64 pipeline.
-ComputeBasic	RasterizedPixels	Rasterized Pixels	Rasterizer	The total number of rasterized pixels.
-ComputeBasic	HiDepthTestFails	Early Hi-Depth Test Fails	DepthPipe	The total number of pixels dropped on early hierarchical depth test.
-ComputeBasic	EarlyDepthTestFails	Early Depth Test Fails	DepthPipe	The total number of pixels dropped on early depth test.
-ComputeBasic	SamplesKilledInPs	Samples Killed in PS	ColorPipe	The total number of samples or pixels dropped in pixel shaders.
-ComputeBasic	PixelsFailingPostPsTests	Pixels Failing Tests	ColorPipe	The total number of pixels dropped on post-PS alpha, stencil, or depth tests.
-ComputeBasic	SamplesWritten	Samples Written	Rasterizer	The total number of samples or pixels written to all render targets.
-ComputeBasic	SamplesBlended	Samples Blended	Rasterizer	The total number of blended samples or pixels written to all render targets.
-ComputeBasic	SamplerTexels	Sampler Texels	Sampler	The total number of texels seen on input (with 2x2 accuracy) in all sampler units.
-ComputeBasic	SamplerTexelMisses	Sampler Texels Misses	Sampler	The total number of texels lookups (with 2x2 accuracy) that missed L1 sampler cache.
-ComputeBasic	SlmReads	SLM Bytes Read	L1Cache	The total number of reads from shared local memory.
-ComputeBasic	SlmWrites	SLM Writes	L1Cache	The total number of writes into shared local memory.
-ComputeBasic	ShaderMemoryAccesses	Shader Memory Accesses	VectorEngine	The total number of shader memory accesses to L3.
-ComputeBasic	ShaderAtomics	Shader Atomic Memory Accesses	VectorEngine	The total number of shader atomic memory accesses.
-ComputeBasic	ShaderBarriers	Shader Barrier Messages	VectorEngine	The total number of shader barrier messages.
-ComputeBasic	GtiReadThroughput	GTI Read Throughput	Memory	The total number of GPU memory bytes read from GTI.
-ComputeBasic	GtiWriteThroughput	GTI Write Throughput	Memory	The total number of GPU memory bytes written to GTI.
-AsyncCompute	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
-AsyncCompute	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
-AsyncCompute	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
-AsyncCompute	GpuBusy	GPU Busy	FrontEnd	The percentage of time in which the GPU has been processing GPU commands.
-AsyncCompute	VsThreads	VS Threads Dispatched	ThreadDispatcher	The total number of vertex shader hardware threads dispatched.
-AsyncCompute	HsThreads	HS Threads Dispatched	ThreadDispatcher	The total number of hull shader hardware threads dispatched.
-AsyncCompute	DsThreads	DS Threads Dispatched	ThreadDispatcher	The total number of domain shader hardware threads dispatched.
-AsyncCompute	GsThreads	GS Threads Dispatched	ThreadDispatcher	The total number of geometry shader hardware threads dispatched.
-AsyncCompute	PsThreads	PS Threads Dispatched	ThreadDispatcher	The total number of pixel shader hardware threads dispatched.
-AsyncCompute	CsThreads	CS Threads Dispatched	ThreadDispatcher	The total number of compute shader hardware threads dispatched.
-AsyncCompute	FpuActive	XVE FPU Pipe Active	VectorEngine	The percentage of time in which XVE FPU INT64 pipeline was actively processing.
-AsyncCompute	VsFpuActive	VS FPU Pipe Active	VectorEngine	The percentage of time in which XVE FPU INT64 pipeline was actively processing a vertex shader instruction.
-AsyncCompute	PsFpuActive	PS FPU Pipe Active	VectorEngine	The percentage of time in which XVE FPU INT64 pipeline was actively processing a pixel shader instruction.
-AsyncCompute	CsFpuActive	CS FPU Pipe Active	VectorEngine	The percentage of time in which XVE FPU INT64 pipeline was actively processing a compute shader instruction.
-AsyncCompute	AsyncCsFpuActive	ASYNC CS FPU Pipe Active	VectorEngine	The percentage of time in which XVE FPU INT64 pipeline was actively processing a compute shader instruction.
-AsyncCompute	EmActive	EM Pipe Active	VectorEngine	The percentage of time in which XVE EM INT pipeline was actively processing.
-AsyncCompute	VsEmActive	VS EM Pipe Active	VectorEngine	The percentage of time in which XVE EM INT pipeline was actively processing a vertex shader instruction.
-AsyncCompute	PsEmActive	PS EM Pipe Active	VectorEngine	The percentage of time in which XVE EM INT pipeline was actively processing a pixel shader instruction.
-AsyncCompute	CsEmActive	CS EM Pipe Active	VectorEngine	The percentage of time in which XVE EM INT pipeline was actively processing a compute shader instruction.
-AsyncCompute	AsyncCsEmActive	ASYNC CS EM Pipe Active	VectorEngine	The percentage of time in which XVE EM INT pipeline was actively processing a compute shader instruction.
-AsyncCompute	XveThreadOccupancy	XVE Thread Occupancy	VectorEngine	The percentage of time in which hardware threads occupied XVEs.
-AsyncCompute	XveActive	XVE Active	VectorEngine	The percentage of time in which the Execution Units were actively processing.
-AsyncCompute	XveStall	XVE Stall	VectorEngine	The percentage of time in which the Execution Units were stalled.
-XveActivity1	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
-XveActivity1	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
-XveActivity1	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
-XveActivity1	GpuBusy	GPU Busy	FrontEnd	The percentage of time in which the GPU has been processing GPU commands.
-XveActivity1	VsThreads	VS Threads Dispatched	ThreadDispatcher	The total number of vertex shader hardware threads dispatched.
-XveActivity1	HsThreads	HS Threads Dispatched	ThreadDispatcher	The total number of hull shader hardware threads dispatched.
-XveActivity1	DsThreads	DS Threads Dispatched	ThreadDispatcher	The total number of domain shader hardware threads dispatched.
-XveActivity1	GsThreads	GS Threads Dispatched	ThreadDispatcher	The total number of geometry shader hardware threads dispatched.
-XveActivity1	PsThreads	PS Threads Dispatched	ThreadDispatcher	The total number of pixel shader hardware threads dispatched.
-XveActivity1	CsThreads	CS Threads Dispatched	ThreadDispatcher	The total number of compute shader hardware threads dispatched.
-XveActivity1	HsFpuActive	HS FPU Pipe Active	VectorEngine	The percentage of time in which XVE FPU INT64 pipeline was actively processing a hull shader instruction.
-XveActivity1	DsFpuActive	DS FPU Pipe Active	VectorEngine	The percentage of time in which XVE FPU INT64 pipeline was actively processing a domain shader instruction.
-XveActivity1	GsFpuActive	GS FPU Pipe Active	VectorEngine	The percentage of time in which XVE FPU INT64 pipeline was actively processing a geometry shader instruction.
-XveActivity1	HsEmActive	HS EM Pipe Active	VectorEngine	The percentage of time in which XVE EM INT pipeline was actively processing a hull shader instruction.
-XveActivity1	DsEmActive	DS EM Pipe Active	VectorEngine	The percentage of time in which XVE EM INT pipeline was actively processing a domain shader instruction.
-XveActivity1	GsEmActive	GS EM Pipe Active	VectorEngine	The percentage of time in which XVE EM INT pipeline was actively processing a geometry shader instruction.
-XveActivity1	HsSendActive	HS Send Pipe Active	VectorEngine	The percentage of time in which XVE send pipeline was actively processing a hull shader instruction.
-XveActivity1	DsSendActive	DS Send Pipe Active	VectorEngine	The percentage of time in which XVE send pipeline was actively processing a domain shader instruction.
-XveActivity1	GsSendActive	GS Send Pipe Active	VectorEngine	The percentage of time in which XVE send pipeline was actively processing a geometry shader instruction.
-XveActivity1	CsSendActive	CS Send Pipe Active	VectorEngine	The percentage of time in which XVE send pipeline was actively processing a compute shader instruction.
-GpuBusyness	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
-GpuBusyness	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
-GpuBusyness	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
-GpuBusyness	GpuBusy	GPU Busy	FrontEnd	The percentage of time in which the GPU has been processing GPU commands.
-GpuBusyness	XveActive	XVE Active	VectorEngine	The percentage of time in which the Execution Units were actively processing.
-GpuBusyness	XveStall	XVE Stall	VectorEngine	The percentage of time in which the Execution Units were stalled.
-GpuBusyness	XveThreadOccupancy	XVE Thread Occupancy	VectorEngine	The percentage of time in which hardware threads occupied XVEs.
-GpuBusyness	VsThreads	VS Threads Dispatched	ThreadDispatcher	The total number of vertex shader hardware threads dispatched.
-GpuBusyness	HsThreads	HS Threads Dispatched	ThreadDispatcher	The total number of hull shader hardware threads dispatched.
-GpuBusyness	DsThreads	DS Threads Dispatched	ThreadDispatcher	The total number of domain shader hardware threads dispatched.
-GpuBusyness	GsThreads	GS Threads Dispatched	ThreadDispatcher	The total number of geometry shader hardware threads dispatched.
-GpuBusyness	PsThreads	PS Threads Dispatched	ThreadDispatcher	The total number of pixel shader hardware threads dispatched.
-GpuBusyness	CsThreads	CS Threads Dispatched	ThreadDispatcher	The total number of compute shader hardware threads dispatched.
-GpuBusyness	RenderBusy	Render Ring Busy	FrontEnd	The percentage of time when render command streamer was busy.
-GpuBusyness	ComputeEngine0Busy	ComputeEngine0 Ring Busy	FrontEnd	The percentage of time when compute command streamer 0 was busy.
-GpuBusyness	ComputeEngine1Busy	ComputeEngine1 Ring Busy	FrontEnd	The percentage of time when compute command streamer 1 was busy.
-GpuBusyness	ComputeEngine2Busy	ComputeEngine2 Ring Busy	FrontEnd	The percentage of time when compute command streamer 2 was busy.
-GpuBusyness	ComputeEngine3Busy	ComputeEngine3 Ring Busy	FrontEnd	The percentage of time when compute command streamer 3 was busy.
-GpuBusyness	BlitterBusy	Blitter Ring Busy	FrontEnd	The percentage of time when blitter command streamer was busy.
-GpuBusyness	Vdbox00Busy	Vdbox00 Ring Busy	Media	The percentage of time when vdbox00 command streamer was busy.
-GpuBusyness	Vebox0Busy	Vebox0 Ring Busy	Media	The percentage of time when vebox0 command streamer was busy.
-GpuBusyness	Vdbox10Busy	Vdbox10 Ring Busy	Media	The percentage of time when vdbox10 command streamer was busy.
-GpuBusyness	Vebox1Busy	Vebox1 Ring Busy	Media	The percentage of time when vebox1 command streamer was busy.
-GpuBusyness	AnyComputeEngineBusy	Any compute engine busy	FrontEnd	The percentage of time when any compute engine is busy
-GpuBusyness	RenderAndAnyComputeEngineBusy	Render and any compute engines are simultaneously busy	FrontEnd	The percentage of time when render and any compute engines are simultaneously busy
-RenderBasic	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
-RenderBasic	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
-RenderBasic	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
 RenderBasic	CsThreads	CS Threads Dispatched	ThreadDispatcher	The total number of compute shader hardware threads dispatched.
 RenderBasic	GpuBusy	GPU Busy	FrontEnd	The percentage of time in which the GPU has been processing GPU commands.
 RenderBasic	XveActive	XVE Active	VectorEngine	The percentage of time in which the Execution Units were actively processing.
@@ -1543,20 +1396,6 @@ Ext121	PIXEL_POST_PROCESS_INPUT_AVAILABLE_XECORE4	Pixel Post Process Input Avail
 Ext121	PIXEL_POST_PROCESS_INPUT_AVAILABLE_XECORE5	Pixel Post Process Input Available Xecore5	ColorPipe	Percentage of time in which Color Pipeline input ready
 Ext121	PIXEL_POST_PROCESS_INPUT_AVAILABLE_XECORE6	Pixel Post Process Input Available Xecore6	ColorPipe	Percentage of time in which Color Pipeline input ready
 Ext121	PIXEL_POST_PROCESS_INPUT_AVAILABLE_XECORE7	Pixel Post Process Input Available Xecore7	ColorPipe	Percentage of time in which Color Pipeline input ready
-Ext120	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
-Ext120	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
-Ext120	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
-Ext120	PIXEL_POST_PROCESS_INPUT_AVAILABLE_XECORE0	Pixel Post Process Input Available Xecore0	ColorPipe	Percentage of time in which Color Pipeline input ready
-Ext120	PIXEL_POST_PROCESS_INPUT_AVAILABLE_XECORE1	Pixel Post Process Input Available Xecore1	ColorPipe	Percentage of time in which Color Pipeline input ready
-Ext120	PIXEL_POST_PROCESS_INPUT_AVAILABLE_XECORE2	Pixel Post Process Input Available Xecore2	ColorPipe	Percentage of time in which Color Pipeline input ready
-Ext120	PIXEL_POST_PROCESS_INPUT_AVAILABLE_XECORE3	Pixel Post Process Input Available Xecore3	ColorPipe	Percentage of time in which Color Pipeline input ready
-Ext121	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
-Ext121	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
-Ext121	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
-Ext121	PIXEL_POST_PROCESS_INPUT_AVAILABLE_XECORE4	Pixel Post Process Input Available Xecore4	ColorPipe	Percentage of time in which Color Pipeline input ready
-Ext121	PIXEL_POST_PROCESS_INPUT_AVAILABLE_XECORE5	Pixel Post Process Input Available Xecore5	ColorPipe	Percentage of time in which Color Pipeline input ready
-Ext121	PIXEL_POST_PROCESS_INPUT_AVAILABLE_XECORE6	Pixel Post Process Input Available Xecore6	ColorPipe	Percentage of time in which Color Pipeline input ready
-Ext121	PIXEL_POST_PROCESS_INPUT_AVAILABLE_XECORE7	Pixel Post Process Input Available Xecore7	ColorPipe	Percentage of time in which Color Pipeline input ready
 Ext122	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
 Ext122	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
 Ext122	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
@@ -1997,94 +1836,6 @@ Ext180	XVE_STALL_OTHER_XECORE7_XVE0_THREAD0	XVE Stall Other Xecore7 Xve0 Thread0
 Ext180	XVE_STALL_SBID_XECORE7_XVE0_THREAD0	XVE Stall Sbid Xecore7 Xve0 Thread0	VectorEngine	Percentage of time in which XVE stalled, with at least one thread waiting for Scoreboard token to be available
 Ext180	XVE_STALL_SENDWR_XECORE7_XVE0_THREAD0	XVE Stall Sendwr Xecore7 Xve0 Thread0	VectorEngine	Percentage of time in which XVE stalled, with at least one thread waiting for SEND to write GRF register
 Ext180	XVE_SHARED_FUNCTION_ACCESS_HOLD_XECORE7_XVE0_THREAD0	XVE Shared Function Access Hold Xecore7 Xve0 Thread0	VectorEngine	Percentage of time in which XVE requests stalled by Shared Function units
-Ext173	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
-Ext173	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
-Ext173	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
-Ext173	XVE_STALL_ALUWR_XECORE0_XVE0_THREAD0	XVE Stall Aluwr Xecore0 Xve0 Thread0	VectorEngine	Percentage of time in which XVE stalled, with at least one thread waiting for ALU to write GRF/ACC register
-Ext173	XVE_STALL_BARRIER_XECORE0_XVE0_THREAD0	XVE Stall Barrier Xecore0 Xve0 Thread0	VectorEngine	Percentage of time in which XVE stalled, with at least one thread waiting for Gateway to write Notify register
-Ext173	XVE_STALL_INSTFETCH_XECORE0_XVE0_THREAD0	XVE Stall Instfetch Xecore0 Xve0 Thread0	VectorEngine	Percentage of time in which XVE stalled, with at least one thread waiting for Instruction Fetch
-Ext173	XVE_STALL_OTHER_XECORE0_XVE0_THREAD0	XVE Stall Other Xecore0 Xve0 Thread0	VectorEngine	Percentage of time in which XVE stalled, with at least one thread waiting on any other dependency (Flag/EoT etc)
-Ext173	XVE_STALL_SBID_XECORE0_XVE0_THREAD0	XVE Stall Sbid Xecore0 Xve0 Thread0	VectorEngine	Percentage of time in which XVE stalled, with at least one thread waiting for Scoreboard token to be available
-Ext173	XVE_STALL_SENDWR_XECORE0_XVE0_THREAD0	XVE Stall Sendwr Xecore0 Xve0 Thread0	VectorEngine	Percentage of time in which XVE stalled, with at least one thread waiting for SEND to write GRF register
-Ext173	XVE_STALL_CONTROL_XECORE0_XVE0_THREAD0	XVE_STALL_CONTROL XECORE0 XVE0 THREAD0	VectorEngine	Percentage of time when XVE is stalled, with at least one thread waiting for JEU to complete branch instruction
-Ext173	XVE_SHARED_FUNCTION_ACCESS_HOLD_XECORE0_XVE0_THREAD0	XVE Shared Function Access Hold Xecore0 Xve0 Thread0	VectorEngine	Percentage of time in which XVE requests stalled by Shared Function units
-Ext174	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
-Ext174	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
-Ext174	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
-Ext174	XVE_STALL_ALUWR_XECORE1_XVE0_THREAD0	XVE Stall Aluwr Xecore1 Xve0 Thread0	VectorEngine	Percentage of time in which XVE stalled, with at least one thread waiting for ALU to write GRF/ACC register
-Ext174	XVE_STALL_BARRIER_XECORE1_XVE0_THREAD0	XVE Stall Barrier Xecore1 Xve0 Thread0	VectorEngine	Percentage of time in which XVE stalled, with at least one thread waiting for Gateway to write Notify register
-Ext174	XVE_STALL_INSTFETCH_XECORE1_XVE0_THREAD0	XVE Stall Instfetch Xecore1 Xve0 Thread0	VectorEngine	Percentage of time in which XVE stalled, with at least one thread waiting for Instruction Fetch
-Ext174	XVE_STALL_OTHER_XECORE1_XVE0_THREAD0	XVE Stall Other Xecore1 Xve0 Thread0	VectorEngine	Percentage of time in which XVE stalled, with at least one thread waiting on any other dependency (Flag/EoT etc)
-Ext174	XVE_STALL_SBID_XECORE1_XVE0_THREAD0	XVE Stall Sbid Xecore1 Xve0 Thread0	VectorEngine	Percentage of time in which XVE stalled, with at least one thread waiting for Scoreboard token to be available
-Ext174	XVE_STALL_SENDWR_XECORE1_XVE0_THREAD0	XVE Stall Sendwr Xecore1 Xve0 Thread0	VectorEngine	Percentage of time in which XVE stalled, with at least one thread waiting for SEND to write GRF register
-Ext174	XVE_STALL_CONTROL_XECORE1_XVE0_THREAD0	XVE_STALL_CONTROL XECORE1 XVE0 THREAD0	VectorEngine	Percentage of time when XVE is stalled, with at least one thread waiting for JEU to complete branch instruction
-Ext174	XVE_SHARED_FUNCTION_ACCESS_HOLD_XECORE1_XVE0_THREAD0	XVE Shared Function Access Hold Xecore1 Xve0 Thread0	VectorEngine	Percentage of time in which XVE requests stalled by Shared Function units
-Ext175	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
-Ext175	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
-Ext175	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
-Ext175	XVE_STALL_ALUWR_XECORE2_XVE0_THREAD0	XVE Stall Aluwr Xecore2 Xve0 Thread0	VectorEngine	Percentage of time in which XVE stalled, with at least one thread waiting for ALU to write GRF/ACC register
-Ext175	XVE_STALL_BARRIER_XECORE2_XVE0_THREAD0	XVE Stall Barrier Xecore2 Xve0 Thread0	VectorEngine	Percentage of time in which XVE stalled, with at least one thread waiting for Gateway to write Notify register
-Ext175	XVE_STALL_INSTFETCH_XECORE2_XVE0_THREAD0	XVE Stall Instfetch Xecore2 Xve0 Thread0	VectorEngine	Percentage of time in which XVE stalled, with at least one thread waiting for Instruction Fetch
-Ext175	XVE_STALL_OTHER_XECORE2_XVE0_THREAD0	XVE Stall Other Xecore2 Xve0 Thread0	VectorEngine	Percentage of time in which XVE stalled, with at least one thread waiting on any other dependency (Flag/EoT etc)
-Ext175	XVE_STALL_SBID_XECORE2_XVE0_THREAD0	XVE Stall Sbid Xecore2 Xve0 Thread0	VectorEngine	Percentage of time in which XVE stalled, with at least one thread waiting for Scoreboard token to be available
-Ext175	XVE_STALL_SENDWR_XECORE2_XVE0_THREAD0	XVE Stall Sendwr Xecore2 Xve0 Thread0	VectorEngine	Percentage of time in which XVE stalled, with at least one thread waiting for SEND to write GRF register
-Ext175	XVE_STALL_CONTROL_XECORE2_XVE0_THREAD0	XVE_STALL_CONTROL XECORE2 XVE0 THREAD0	VectorEngine	Percentage of time when XVE is stalled, with at least one thread waiting for JEU to complete branch instruction
-Ext175	XVE_SHARED_FUNCTION_ACCESS_HOLD_XECORE2_XVE0_THREAD0	XVE Shared Function Access Hold Xecore2 Xve0 Thread0	VectorEngine	Percentage of time in which XVE requests stalled by Shared Function units
-Ext176	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
-Ext176	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
-Ext176	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
-Ext176	XVE_STALL_ALUWR_XECORE3_XVE0_THREAD0	XVE Stall Aluwr Xecore3 Xve0 Thread0	VectorEngine	Percentage of time in which XVE stalled, with at least one thread waiting for ALU to write GRF/ACC register
-Ext176	XVE_STALL_BARRIER_XECORE3_XVE0_THREAD0	XVE Stall Barrier Xecore3 Xve0 Thread0	VectorEngine	Percentage of time in which XVE stalled, with at least one thread waiting for Gateway to write Notify register
-Ext176	XVE_STALL_INSTFETCH_XECORE3_XVE0_THREAD0	XVE Stall Instfetch Xecore3 Xve0 Thread0	VectorEngine	Percentage of time in which XVE stalled, with at least one thread waiting for Instruction Fetch
-Ext176	XVE_STALL_OTHER_XECORE3_XVE0_THREAD0	XVE Stall Other Xecore3 Xve0 Thread0	VectorEngine	Percentage of time in which XVE stalled, with at least one thread waiting on any other dependency (Flag/EoT etc)
-Ext176	XVE_STALL_SBID_XECORE3_XVE0_THREAD0	XVE Stall Sbid Xecore3 Xve0 Thread0	VectorEngine	Percentage of time in which XVE stalled, with at least one thread waiting for Scoreboard token to be available
-Ext176	XVE_STALL_SENDWR_XECORE3_XVE0_THREAD0	XVE Stall Sendwr Xecore3 Xve0 Thread0	VectorEngine	Percentage of time in which XVE stalled, with at least one thread waiting for SEND to write GRF register
-Ext176	XVE_STALL_CONTROL_XECORE3_XVE0_THREAD0	XVE_STALL_CONTROL XECORE3 XVE0 THREAD0	VectorEngine	Percentage of time when XVE is stalled, with at least one thread waiting for JEU to complete branch instruction
-Ext176	XVE_SHARED_FUNCTION_ACCESS_HOLD_XECORE3_XVE0_THREAD0	XVE Shared Function Access Hold Xecore3 Xve0 Thread0	VectorEngine	Percentage of time in which XVE requests stalled by Shared Function units
-Ext177	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
-Ext177	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
-Ext177	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
-Ext177	XVE_STALL_ALUWR_XECORE4_XVE0_THREAD0	XVE Stall Aluwr Xecore4 Xve0 Thread0	VectorEngine	Percentage of time in which XVE stalled, with at least one thread waiting for ALU to write GRF/ACC register
-Ext177	XVE_STALL_BARRIER_XECORE4_XVE0_THREAD0	XVE Stall Barrier Xecore4 Xve0 Thread0	VectorEngine	Percentage of time in which XVE stalled, with at least one thread waiting for Gateway to write Notify register
-Ext177	XVE_STALL_INSTFETCH_XECORE4_XVE0_THREAD0	XVE Stall Instfetch Xecore4 Xve0 Thread0	VectorEngine	Percentage of time in which XVE stalled, with at least one thread waiting for Instruction Fetch
-Ext177	XVE_STALL_OTHER_XECORE4_XVE0_THREAD0	XVE Stall Other Xecore4 Xve0 Thread0	VectorEngine	Percentage of time in which XVE stalled, with at least one thread waiting on any other dependency (Flag/EoT etc)
-Ext177	XVE_STALL_SBID_XECORE4_XVE0_THREAD0	XVE Stall Sbid Xecore4 Xve0 Thread0	VectorEngine	Percentage of time in which XVE stalled, with at least one thread waiting for Scoreboard token to be available
-Ext177	XVE_STALL_SENDWR_XECORE4_XVE0_THREAD0	XVE Stall Sendwr Xecore4 Xve0 Thread0	VectorEngine	Percentage of time in which XVE stalled, with at least one thread waiting for SEND to write GRF register
-Ext177	XVE_STALL_CONTROL_XECORE4_XVE0_THREAD0	XVE_STALL_CONTROL XECORE4 XVE0 THREAD0	VectorEngine	Percentage of time when XVE is stalled, with at least one thread waiting for JEU to complete branch instruction
-Ext177	XVE_SHARED_FUNCTION_ACCESS_HOLD_XECORE4_XVE0_THREAD0	XVE Shared Function Access Hold Xecore4 Xve0 Thread0	VectorEngine	Percentage of time in which XVE requests stalled by Shared Function units
-Ext178	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
-Ext178	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
-Ext178	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
-Ext178	XVE_STALL_ALUWR_XECORE5_XVE0_THREAD0	XVE Stall Aluwr Xecore5 Xve0 Thread0	VectorEngine	Percentage of time in which XVE stalled, with at least one thread waiting for ALU to write GRF/ACC register
-Ext178	XVE_STALL_BARRIER_XECORE5_XVE0_THREAD0	XVE Stall Barrier Xecore5 Xve0 Thread0	VectorEngine	Percentage of time in which XVE stalled, with at least one thread waiting for Gateway to write Notify register
-Ext178	XVE_STALL_INSTFETCH_XECORE5_XVE0_THREAD0	XVE Stall Instfetch Xecore5 Xve0 Thread0	VectorEngine	Percentage of time in which XVE stalled, with at least one thread waiting for Instruction Fetch
-Ext178	XVE_STALL_OTHER_XECORE5_XVE0_THREAD0	XVE Stall Other Xecore5 Xve0 Thread0	VectorEngine	Percentage of time in which XVE stalled, with at least one thread waiting on any other dependency (Flag/EoT etc)
-Ext178	XVE_STALL_SBID_XECORE5_XVE0_THREAD0	XVE Stall Sbid Xecore5 Xve0 Thread0	VectorEngine	Percentage of time in which XVE stalled, with at least one thread waiting for Scoreboard token to be available
-Ext178	XVE_STALL_SENDWR_XECORE5_XVE0_THREAD0	XVE Stall Sendwr Xecore5 Xve0 Thread0	VectorEngine	Percentage of time in which XVE stalled, with at least one thread waiting for SEND to write GRF register
-Ext178	XVE_STALL_CONTROL_XECORE5_XVE0_THREAD0	XVE_STALL_CONTROL XECORE5 XVE0 THREAD0	VectorEngine	Percentage of time when XVE is stalled, with at least one thread waiting for JEU to complete branch instruction
-Ext178	XVE_SHARED_FUNCTION_ACCESS_HOLD_XECORE5_XVE0_THREAD0	XVE Shared Function Access Hold Xecore5 Xve0 Thread0	VectorEngine	Percentage of time in which XVE requests stalled by Shared Function units
-Ext179	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
-Ext179	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
-Ext179	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
-Ext179	XVE_STALL_ALUWR_XECORE6_XVE0_THREAD0	XVE Stall Aluwr Xecore6 Xve0 Thread0	VectorEngine	Percentage of time in which XVE stalled, with at least one thread waiting for ALU to write GRF/ACC register
-Ext179	XVE_STALL_BARRIER_XECORE6_XVE0_THREAD0	XVE Stall Barrier Xecore6 Xve0 Thread0	VectorEngine	Percentage of time in which XVE stalled, with at least one thread waiting for Gateway to write Notify register
-Ext179	XVE_STALL_INSTFETCH_XECORE6_XVE0_THREAD0	XVE Stall Instfetch Xecore6 Xve0 Thread0	VectorEngine	Percentage of time in which XVE stalled, with at least one thread waiting for Instruction Fetch
-Ext179	XVE_STALL_OTHER_XECORE6_XVE0_THREAD0	XVE Stall Other Xecore6 Xve0 Thread0	VectorEngine	Percentage of time in which XVE stalled, with at least one thread waiting on any other dependency (Flag/EoT etc)
-Ext179	XVE_STALL_SBID_XECORE6_XVE0_THREAD0	XVE Stall Sbid Xecore6 Xve0 Thread0	VectorEngine	Percentage of time in which XVE stalled, with at least one thread waiting for Scoreboard token to be available
-Ext179	XVE_STALL_SENDWR_XECORE6_XVE0_THREAD0	XVE Stall Sendwr Xecore6 Xve0 Thread0	VectorEngine	Percentage of time in which XVE stalled, with at least one thread waiting for SEND to write GRF register
-Ext179	XVE_STALL_CONTROL_XECORE6_XVE0_THREAD0	XVE_STALL_CONTROL XECORE6 XVE0 THREAD0	VectorEngine	Percentage of time when XVE is stalled, with at least one thread waiting for JEU to complete branch instruction
-Ext179	XVE_SHARED_FUNCTION_ACCESS_HOLD_XECORE6_XVE0_THREAD0	XVE Shared Function Access Hold Xecore6 Xve0 Thread0	VectorEngine	Percentage of time in which XVE requests stalled by Shared Function units
-Ext180	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
-Ext180	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
-Ext180	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
-Ext180	XVE_STALL_ALUWR_XECORE7_XVE0_THREAD0	XVE Stall Aluwr Xecore7 Xve0 Thread0	VectorEngine	Percentage of time in which XVE stalled, with at least one thread waiting for ALU to write GRF/ACC register
-Ext180	XVE_STALL_BARRIER_XECORE7_XVE0_THREAD0	XVE Stall Barrier Xecore7 Xve0 Thread0	VectorEngine	Percentage of time in which XVE stalled, with at least one thread waiting for Gateway to write Notify register
-Ext180	XVE_STALL_INSTFETCH_XECORE7_XVE0_THREAD0	XVE Stall Instfetch Xecore7 Xve0 Thread0	VectorEngine	Percentage of time in which XVE stalled, with at least one thread waiting for Instruction Fetch
-Ext180	XVE_STALL_OTHER_XECORE7_XVE0_THREAD0	XVE Stall Other Xecore7 Xve0 Thread0	VectorEngine	Percentage of time in which XVE stalled, with at least one thread waiting on any other dependency (Flag/EoT etc)
-Ext180	XVE_STALL_SBID_XECORE7_XVE0_THREAD0	XVE Stall Sbid Xecore7 Xve0 Thread0	VectorEngine	Percentage of time in which XVE stalled, with at least one thread waiting for Scoreboard token to be available
-Ext180	XVE_STALL_SENDWR_XECORE7_XVE0_THREAD0	XVE Stall Sendwr Xecore7 Xve0 Thread0	VectorEngine	Percentage of time in which XVE stalled, with at least one thread waiting for SEND to write GRF register
-Ext180	XVE_STALL_CONTROL_XECORE7_XVE0_THREAD0	XVE_STALL_CONTROL XECORE7 XVE0 THREAD0	VectorEngine	Percentage of time when XVE is stalled, with at least one thread waiting for JEU to complete branch instruction
-Ext180	XVE_SHARED_FUNCTION_ACCESS_HOLD_XECORE7_XVE0_THREAD0	XVE Shared Function Access Hold Xecore7 Xve0 Thread0	VectorEngine	Percentage of time in which XVE requests stalled by Shared Function units
 Ext181	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
 Ext181	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
 Ext181	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
@@ -2155,16 +1906,6 @@ Ext192	RT_INPUT_AVAILABLE_XECORE4	RT Input Available Xecore4	RayTracing	Percenta
 Ext192	RT_INPUT_AVAILABLE_XECORE5	RT Input Available Xecore5	RayTracing	Percentage of time in which new message is accepted by Ray Tracing Frontend
 Ext192	RT_INPUT_AVAILABLE_XECORE6	RT Input Available Xecore6	RayTracing	Percentage of time in which new message is accepted by Ray Tracing Frontend
 Ext192	RT_INPUT_AVAILABLE_XECORE7	RT Input Available Xecore7	RayTracing	Percentage of time in which new message is accepted by Ray Tracing Frontend
-Ext193	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
-Ext193	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
-Ext193	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
-Ext193	PIXEL_POST_PROCESS_INPUT_AVAILABLE_CPIPE0	Pixel Post Process Input Available Cpipe0	ColorPipe	Percentage of time in which Color Pipeline input ready
-Ext193	PIXEL_POST_PROCESS_INPUT_AVAILABLE_CPIPE1	Pixel Post Process Input Available Cpipe1	ColorPipe	Percentage of time in which Color Pipeline input ready
-Ext194	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
-Ext194	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
-Ext194	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
-Ext194	PIXEL_POST_PROCESS_INPUT_AVAILABLE_CPIPE2	Pixel Post Process Input Available Cpipe2	ColorPipe	Percentage of time in which Color Pipeline input ready
-Ext194	PIXEL_POST_PROCESS_INPUT_AVAILABLE_CPIPE3	Pixel Post Process Input Available Cpipe3	ColorPipe	Percentage of time in which Color Pipeline input ready
 Ext193	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
 Ext193	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
 Ext193	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
@@ -2825,36 +2566,6 @@ Ext571	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks ela
 Ext571	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
 Ext571	SLM_BYTE_WRITE_BANK3_XECORE7	SLM Byte Write Bank3 Xecore7	L1Cache	Number of bytes written to SLM
 Ext571	LOAD_STORE_CACHE_BYTE_WRITE_BANK3_XECORE7	Load Store Cache Byte Write Bank3 Xecore7	L1Cache	Number of bytes written to the Load Store Cache, excluding SLM accesses.
-Ext572	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
-Ext572	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
-Ext572	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
-Ext572	XVE_INST_EXECUTED_PREDICATION_XECORE0_XVE0_THREAD0	XVE INST EXECUTED_PREDICATION XECORE0 XVE0 THREAD0	VectorEngine	Number of execution slots taken by instructions with predication mask enabled
-Ext572	XVE_INST_EXECUTED_NONDIVERGENT_XECORE0_XVE0_THREAD0	XVE INST EXECUTED_NONDIVERGENT XECORE0 XVE0 THREAD0	VectorEngine	Number of execution slots taken by nondivergent instructions executed
-Ext572	XVE_INST_EXECUTED_BARRIER_XECORE0_XVE0_THREAD0	XVE Inst Executed Barrier Xecore0 Xve0 Thread0	VectorEngine	Number of execution slots taken by bit manipulation instructions
-Ext572	XVE_INST_EXECUTED_PREDICATION_XECORE1_XVE0_THREAD0	XVE INST EXECUTED_PREDICATION XECORE1 XVE0 THREAD0	VectorEngine	Number of execution slots taken by instructions with predication mask enabled
-Ext572	XVE_INST_EXECUTED_NONDIVERGENT_XECORE1_XVE0_THREAD0	XVE INST EXECUTED_NONDIVERGENT XECORE1 XVE0 THREAD0	VectorEngine	Number of execution slots taken by nondivergent instructions executed
-Ext572	XVE_INST_EXECUTED_BARRIER_XECORE1_XVE0_THREAD0	XVE Inst Executed Barrier Xecore1 Xve0 Thread0	VectorEngine	Number of execution slots taken by bit manipulation instructions
-Ext572	XVE_INST_EXECUTED_PREDICATION_XECORE2_XVE0_THREAD0	XVE INST EXECUTED_PREDICATION XECORE2 XVE0 THREAD0	VectorEngine	Number of execution slots taken by instructions with predication mask enabled
-Ext572	XVE_INST_EXECUTED_NONDIVERGENT_XECORE2_XVE0_THREAD0	XVE INST EXECUTED_NONDIVERGENT XECORE2 XVE0 THREAD0	VectorEngine	Number of execution slots taken by nondivergent instructions executed
-Ext572	XVE_INST_EXECUTED_BARRIER_XECORE2_XVE0_THREAD0	XVE Inst Executed Barrier Xecore2 Xve0 Thread0	VectorEngine	Number of execution slots taken by bit manipulation instructions
-Ext572	XVE_INST_EXECUTED_PREDICATION_XECORE3_XVE0_THREAD0	XVE INST EXECUTED_PREDICATION XECORE3 XVE0 THREAD0	VectorEngine	Number of execution slots taken by instructions with predication mask enabled
-Ext572	XVE_INST_EXECUTED_NONDIVERGENT_XECORE3_XVE0_THREAD0	XVE INST EXECUTED_NONDIVERGENT XECORE3 XVE0 THREAD0	VectorEngine	Number of execution slots taken by nondivergent instructions executed
-Ext572	XVE_INST_EXECUTED_BARRIER_XECORE3_XVE0_THREAD0	XVE Inst Executed Barrier Xecore3 Xve0 Thread0	VectorEngine	Number of execution slots taken by bit manipulation instructions
-Ext573	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
-Ext573	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
-Ext573	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
-Ext573	XVE_INST_EXECUTED_PREDICATION_XECORE4_XVE0_THREAD0	XVE INST EXECUTED_PREDICATION XECORE4 XVE0 THREAD0	VectorEngine	Number of execution slots taken by instructions with predication mask enabled
-Ext573	XVE_INST_EXECUTED_NONDIVERGENT_XECORE4_XVE0_THREAD0	XVE INST EXECUTED_NONDIVERGENT XECORE4 XVE0 THREAD0	VectorEngine	Number of execution slots taken by nondivergent instructions executed
-Ext573	XVE_INST_EXECUTED_BARRIER_XECORE4_XVE0_THREAD0	XVE Inst Executed Barrier Xecore4 Xve0 Thread0	VectorEngine	Number of execution slots taken by bit manipulation instructions
-Ext573	XVE_INST_EXECUTED_PREDICATION_XECORE5_XVE0_THREAD0	XVE INST EXECUTED_PREDICATION XECORE5 XVE0 THREAD0	VectorEngine	Number of execution slots taken by instructions with predication mask enabled
-Ext573	XVE_INST_EXECUTED_NONDIVERGENT_XECORE5_XVE0_THREAD0	XVE INST EXECUTED_NONDIVERGENT XECORE5 XVE0 THREAD0	VectorEngine	Number of execution slots taken by nondivergent instructions executed
-Ext573	XVE_INST_EXECUTED_BARRIER_XECORE5_XVE0_THREAD0	XVE Inst Executed Barrier Xecore5 Xve0 Thread0	VectorEngine	Number of execution slots taken by bit manipulation instructions
-Ext573	XVE_INST_EXECUTED_PREDICATION_XECORE6_XVE0_THREAD0	XVE INST EXECUTED_PREDICATION XECORE6 XVE0 THREAD0	VectorEngine	Number of execution slots taken by instructions with predication mask enabled
-Ext573	XVE_INST_EXECUTED_NONDIVERGENT_XECORE6_XVE0_THREAD0	XVE INST EXECUTED_NONDIVERGENT XECORE6 XVE0 THREAD0	VectorEngine	Number of execution slots taken by nondivergent instructions executed
-Ext573	XVE_INST_EXECUTED_BARRIER_XECORE6_XVE0_THREAD0	XVE Inst Executed Barrier Xecore6 Xve0 Thread0	VectorEngine	Number of execution slots taken by bit manipulation instructions
-Ext573	XVE_INST_EXECUTED_PREDICATION_XECORE7_XVE0_THREAD0	XVE INST EXECUTED_PREDICATION XECORE7 XVE0 THREAD0	VectorEngine	Number of execution slots taken by instructions with predication mask enabled
-Ext573	XVE_INST_EXECUTED_NONDIVERGENT_XECORE7_XVE0_THREAD0	XVE INST EXECUTED_NONDIVERGENT XECORE7 XVE0 THREAD0	VectorEngine	Number of execution slots taken by nondivergent instructions executed
-Ext573	XVE_INST_EXECUTED_BARRIER_XECORE7_XVE0_THREAD0	XVE Inst Executed Barrier Xecore7 Xve0 Thread0	VectorEngine	Number of execution slots taken by bit manipulation instructions
 Ext580	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
 Ext580	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
 Ext580	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
@@ -3038,14 +2749,5 @@ Ext1010	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequ
 Ext1010	SAMPLER_2X2_READ	Sampler 2x2 Read	Sampler	Number of 2x2 texel block requested from Sampler
 Ext1010	PIXEL_WRITE	Pixel Write	ColorPipe	Number of 2x2 pixels written to all render targets
 Ext1010	PIXEL_BLEND	Pixel Blend	ColorPipe	Number of blended 2x2 pixels written to all render targets
-Ext1010	RASTERIZER_SAMPLE_OUTPUT	Rasterizer Sample Output	Rasterizer	Number of lit samples emitted by Rasterizer
-Ext1010	POSTPS_DEPTH_STENCIL_ALPHA_TEST_FAIL	PostPS Depth Stencil Alpha Test Fail	ColorPipe	Number of 2x2 that were lit from Rasterizer but failed the depth stencil test or alpha test
-Ext1010	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
-Ext1010	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
-Ext1010	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
-Ext1010	SAMPLER_2X2_READ	Sampler 2x2 Read	Sampler	Number of 2x2 texel block requested from Sampler
-Ext1010	PIXEL_WRITE	Pixel Write	ColorPipe	Number of 2x2 pixels written to all render targets
-Ext1010	PIXEL_BLEND	Pixel Blend	ColorPipe	Number of blended 2x2 pixels written to all render targets
-Ext1010	SHADER_PIX_KILL	Shader Pix Kill	ColorPipe	Number of pixels that were lit from Rasterizer but killed by the Pixel Shader
 Ext1010	RASTERIZER_SAMPLE_OUTPUT	Rasterizer Sample Output	Rasterizer	Number of lit samples emitted by Rasterizer
 Ext1010	POSTPS_DEPTH_STENCIL_ALPHA_TEST_FAIL	PostPS Depth Stencil Alpha Test Fail	ColorPipe	Number of 2x2 that were lit from Rasterizer but failed the depth stencil test or alpha test

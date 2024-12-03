@@ -35,7 +35,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT3_PipelineStatistics
 
 namespace MetricsDiscoveryInternal::MetricSets_MTL_GT3_OA
 {
-    void AddInformationSet( CConcurrentGroup* concurrentGroup );
+    TCompletionCode AddInformationSet( CConcurrentGroup* concurrentGroup );
 
     class CRenderBasicMetricSet final : public CMetricSet
     {
@@ -2185,7 +2185,7 @@ namespace MetricsDiscoveryInternal::MetricSets_MTL_GT3_OA
 
 namespace MetricsDiscoveryInternal::MetricSets_MTL_GT3_OAM0
 {
-    void AddInformationSet( CConcurrentGroup* concurrentGroup );
+    TCompletionCode AddInformationSet( CConcurrentGroup* concurrentGroup );
 
     class CMediaSet1MetricSet final : public CMetricSet
     {

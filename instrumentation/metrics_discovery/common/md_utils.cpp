@@ -216,14 +216,14 @@ namespace MetricsDiscoveryInternal
 
         if( !( *semaphorePtr ) )
         {
-            if( CDriverInterface::SemaphoreCreate( semaphoreName, semaphorePtr, IU_ADAPTER_ID_UNKNOWN ) != CC_OK )
+            if( CDriverInterface::SemaphoreCreate( semaphoreName, semaphorePtr, adapterId ) != CC_OK )
             {
                 MD_LOG_A( adapterId, LOG_ERROR, "semaphore create failed" );
                 return CC_ERROR_GENERAL;
             }
         }
 
-        TSemaphoreWaitResult result = CDriverInterface::SemaphoreWait( 1000L, *semaphorePtr, IU_ADAPTER_ID_UNKNOWN ); // Wait 1 sec
+        TSemaphoreWaitResult result = CDriverInterface::SemaphoreWait( 1000L, *semaphorePtr, adapterId ); // Wait 1 sec
         switch( result )
         {
             case WAIT_RESULT_SUCCESSFUL: // The semaphore object was signaled
@@ -269,7 +269,7 @@ namespace MetricsDiscoveryInternal
     {
         MD_LOG_ENTER_A( adapterId );
 
-        if( CDriverInterface::SemaphoreRelease( semaphorePtr, IU_ADAPTER_ID_UNKNOWN ) != CC_OK )
+        if( CDriverInterface::SemaphoreRelease( semaphorePtr, adapterId ) != CC_OK )
         {
             // Error while releasing semaphore
             MD_LOG_A( adapterId, LOG_ERROR, "semaphore release failed" );
@@ -348,7 +348,20 @@ namespace MetricsDiscoveryInternal
         TByteArrayLatest* copiedByteArray = new( std::nothrow ) TByteArrayLatest();
         MD_CHECK_PTR_RET_A( adapterId, copiedByteArray, nullptr );
 
-        copiedByteArray->Size = byteArray->Size;
+        uint32_t copiedByteArraySize = 0;
+        for( uint32_t i = byteArray->Size; i > 0; i -= sizeof( uint64_t ) )
+        {
+            const uint8_t* currentQword = byteArray->Data + ( i - sizeof( uint64_t ) );
+            const uint64_t qwordValue   = *reinterpret_cast<const uint64_t*>( currentQword );
+
+            if( qwordValue != 0 )
+            {
+                copiedByteArraySize = i;
+                break;
+            }
+        }
+
+        copiedByteArray->Size = copiedByteArraySize;
         copiedByteArray->Data = new( std::nothrow ) uint8_t[copiedByteArray->Size](); // Initialize all to 0
         if( copiedByteArray->Data == nullptr )
         {
@@ -358,7 +371,16 @@ namespace MetricsDiscoveryInternal
             return nullptr;
         }
 
-        iu_memcpy_s( copiedByteArray->Data, copiedByteArray->Size, byteArray->Data, byteArray->Size );
+        const bool result = iu_memcpy_s( copiedByteArray->Data, copiedByteArray->Size, byteArray->Data, copiedByteArray->Size );
+
+        if( !result )
+        {
+            MD_SAFE_DELETE_ARRAY( copiedByteArray->Data );
+            MD_SAFE_DELETE( copiedByteArray );
+            MD_LOG_A( adapterId, LOG_DEBUG, "ERROR: memory copy failed" );
+            MD_LOG_EXIT_A( adapterId );
+            return nullptr;
+        }
 
         return copiedByteArray;
     }

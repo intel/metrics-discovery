@@ -47,28 +47,27 @@ namespace MetricsDiscoveryInternal
         CSymbolSet& operator=( const CSymbolSet& ) = delete; // Delete assignment operator
 
         // Non-API:
-        uint32_t             GetSymbolCount();
-        TGlobalSymbolLatest* GetSymbol( uint32_t index );
-        TTypedValueLatest*   GetSymbolValueByName( std::string_view name );
-        TCompletionCode      AddSymbol( const char* name, TTypedValueLatest typedValue, TSymbolType symbolType );
-        TCompletionCode      DetectSymbolValue( std::string_view name, TTypedValueLatest& typedValue );
-        TCompletionCode      AddSymbolUINT32( const char* name, uint32_t value, TSymbolType symbolType );
-        TCompletionCode      AddSymbolUINT64( const char* name, uint64_t value, TSymbolType symbolType );
-        TCompletionCode      AddSymbolBOOL( const char* name, bool value, TSymbolType symbolType );
-        TCompletionCode      AddSymbolFLOAT( const char* name, float value, TSymbolType symbolType );
-        TCompletionCode      AddSymbolCSTRING( const char* name, char* value, TSymbolType symbolType );
-        TCompletionCode      AddSymbolBYTEARRAY( const char* name, TByteArrayLatest* value, TSymbolType symbolType );
-        TCompletionCode      WriteSymbolSetToFile( FILE* metricFile );
-        bool                 IsSymbolAlreadyAdded( std::string_view symbolName );
-        TCompletionCode      RedetectSymbol( std::string_view name );
-        TCompletionCode      DetectMaxSlicesInfo();
-        TCompletionCode      UnpackMaskToValidValues( std::string_view name, uint8_t* mask, uint32_t& validValueCount, TValidValueLatest*& validValues );
+        uint32_t        GetSymbolCount();
+        TGlobalSymbol*  GetSymbol( uint32_t index );
+        TGlobalSymbol*  GetSymbolByName( std::string_view name );
+        TCompletionCode AddSymbol( const char* name, TTypedValueLatest typedValue, TSymbolType symbolType );
+        TCompletionCode DetectSymbolValue( std::string_view name, TTypedValueLatest& typedValue );
+        TCompletionCode AddSymbolUINT32( const char* name, uint32_t value, TSymbolType symbolType );
+        TCompletionCode AddSymbolUINT64( const char* name, uint64_t value, TSymbolType symbolType );
+        TCompletionCode AddSymbolBOOL( const char* name, bool value, TSymbolType symbolType );
+        TCompletionCode AddSymbolFLOAT( const char* name, float value, TSymbolType symbolType );
+        TCompletionCode AddSymbolCSTRING( const char* name, char* value, TSymbolType symbolType );
+        TCompletionCode AddSymbolBYTEARRAY( const char* name, TByteArrayLatest* value, TSymbolType symbolType );
+        TCompletionCode WriteSymbolSetToFile( FILE* metricFile );
+        bool            IsSymbolAlreadyAdded( std::string_view symbolName );
+        TCompletionCode RedetectSymbol( std::string_view name );
+        TCompletionCode DetectMaxSlicesInfo();
+        TCompletionCode UnpackMaskToValidValues( std::string_view name, TByteArrayLatest* byteArray, uint32_t& validValueCount, TValidValueLatest*& validValues );
 
     private:
         bool            IsPavpDisabled( uint32_t capabilities );
         TCompletionCode UnpackMask( const TGlobalSymbol* symbol );
         bool            IsSymbolNameSupported( std::string_view name );
-        uint8_t         GetGtMaxSubslicePerSlice( const uint32_t platformId );
 
     private:
         // Variables:

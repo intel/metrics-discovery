@@ -239,7 +239,6 @@ namespace MetricsDiscoveryInternal
 
         switch( gfxDeviceInfo->PlatformIndex )
         {
-            case GENERATION_XEHP_SDV:
             case GENERATION_ACM:
             case GENERATION_PVC:
             case GENERATION_MTL:
@@ -437,7 +436,6 @@ namespace MetricsDiscoveryInternal
             gfxDeviceInfo->PlatformIndex,
             GENERATION_MTL,
             GENERATION_ARL,
-            GENERATION_XEHP_SDV,
             GENERATION_ACM,
             GENERATION_PVC );
 
@@ -752,11 +750,12 @@ namespace MetricsDiscoveryInternal
             return getPerfRevisionRet == CC_OK && perfRevision >= requiredPerfRevision;
         };
 
-        // Check capabilities. Update when OA interrupt will be merged.
-
-        m_perfCapabilities.IsOaInterruptSupported     = false;
-        m_perfCapabilities.IsSubDeviceSupported       = requirePerfRevision( 10 );
-        m_perfCapabilities.IsGpuCpuTimestampSupported = requirePerfRevision( 11 );
+        // Check prelim capabilities.
+        m_perfCapabilities.IsGpuCpuTimestampSupported    = requirePerfRevision( MD_GET_GPU_CPU_TIMESTAMPS_PERF_REVISION_MIN_VERSION );
+        m_perfCapabilities.IsOaBufferSizeSupported       = requirePerfRevision( MD_SET_OA_BUFFER_SIZE_PERF_REVISION_MIN_VERSION );
+        m_perfCapabilities.IsSubDeviceSupported          = requirePerfRevision( MD_SUB_DEVICES_SUPPORT_PERF_REVISION_MIN_VERSION );
+        m_perfCapabilities.IsOamSupported                = requirePerfRevision( MD_OAM_SUPPORT_PERF_REVISION_MIN_VERSION );
+        m_perfCapabilities.IsOaNotifyNumReportsSupported = requirePerfRevision( MD_SET_OA_NOTIFY_NUM_REPORTS_PERF_REVISION_MIN_VERSION );
 
         PrintPerfCapabilities();
     }
@@ -798,9 +797,11 @@ namespace MetricsDiscoveryInternal
                              : "not supported";
         };
 
-        MD_LOG_A( m_adapterId, LOG_INFO, "Oa interrupt: %s", getSupportedString( m_perfCapabilities.IsOaInterruptSupported ) );
-        MD_LOG_A( m_adapterId, LOG_INFO, "Sub devices: %s", getSupportedString( m_perfCapabilities.IsSubDeviceSupported ) );
         MD_LOG_A( m_adapterId, LOG_INFO, "Cpu gpu timestamps: %s", getSupportedString( m_perfCapabilities.IsGpuCpuTimestampSupported ) );
+        MD_LOG_A( m_adapterId, LOG_INFO, "Oa buffer size: %s", getSupportedString( m_perfCapabilities.IsOaBufferSizeSupported ) );
+        MD_LOG_A( m_adapterId, LOG_INFO, "Sub devices: %s", getSupportedString( m_perfCapabilities.IsSubDeviceSupported ) );
+        MD_LOG_A( m_adapterId, LOG_INFO, "Oam: %s", getSupportedString( m_perfCapabilities.IsOamSupported ) );
+        MD_LOG_A( m_adapterId, LOG_INFO, "Oa notify num reports: %s", getSupportedString( m_perfCapabilities.IsOaNotifyNumReportsSupported ) );
     }
 
     //////////////////////////////////////////////////////////////////////////////
@@ -820,6 +821,7 @@ namespace MetricsDiscoveryInternal
     //     CMetricsDevice&           metricsDevice       - metrics device
     //     uint32_t                  oaMetricSetId       - oa configuration ID (previously added)
     //     uint32_t                  oaReportType        - oa report type
+    //     uint32_t                  oaReportSize        - oa report size
     //     uint32_t                  timerPeriodExponent - timer period exponent
     //     uint32_t                  bufferSize          - oa buffer size
     //     const GTDI_OA_BUFFER_TYPE oaBufferType        - oa buffer type
@@ -828,7 +830,7 @@ namespace MetricsDiscoveryInternal
     //     TCompletionCode                               - *CC_OK* means success
     //
     //////////////////////////////////////////////////////////////////////////////
-    TCompletionCode CDriverInterfaceLinuxPerf::OpenOaStream( CMetricsDevice& metricsDevice, uint32_t oaMetricSetId, uint32_t oaReportType, uint32_t timerPeriodExponent, uint32_t bufferSize, const GTDI_OA_BUFFER_TYPE oaBufferType )
+    TCompletionCode CDriverInterfaceLinuxPerf::OpenOaStream( CMetricsDevice& metricsDevice, uint32_t oaMetricSetId, uint32_t oaReportType, uint32_t oaReportSize, uint32_t timerPeriodExponent, uint32_t bufferSize, const GTDI_OA_BUFFER_TYPE oaBufferType )
     {
         TCompletionCode       ret                    = CC_ERROR_GENERAL;
         int32_t               oaRevision             = -1;
@@ -866,6 +868,28 @@ namespace MetricsDiscoveryInternal
         addProperty( DRM_I915_PERF_PROP_OA_METRICS_SET, oaMetricSetId );
         addProperty( DRM_I915_PERF_PROP_OA_FORMAT, oaReportType );
         addProperty( DRM_I915_PERF_PROP_OA_EXPONENT, timerPeriodExponent );
+
+        // Oa buffer size.
+        if( m_perfCapabilities.IsOaBufferSizeSupported )
+        {
+            bufferSize = CalculateOaBufferSize( bufferSize, metricsDevice );
+            addProperty( PRELIM_DRM_I915_PERF_PROP_OA_BUFFER_SIZE, bufferSize );
+        }
+        else
+        {
+            bufferSize = MD_OA_BUFFER_SIZE_MAX;
+            MD_LOG_A( m_adapterId, LOG_DEBUG, "Cannot set oa buffer size. Current perf revision is %d. Required is %d.", m_cachedPerfRevision, MD_SET_OA_BUFFER_SIZE_PERF_REVISION_MIN_VERSION );
+        }
+
+        // Half-full buffer interrupt.
+        if( m_perfCapabilities.IsOaNotifyNumReportsSupported )
+        {
+            const uint32_t halfSizeInReports = bufferSize / 2 / oaReportSize;
+
+            addProperty( PRELIM_DRM_I915_PERF_PROP_OA_NOTIFY_NUM_REPORTS, halfSizeInReports );
+
+            MD_LOG_A( m_adapterId, LOG_DEBUG, "Notify num reports is %u", halfSizeInReports );
+        }
 
         if( IsSubDeviceSupported() )
         {
@@ -1262,23 +1286,11 @@ namespace MetricsDiscoveryInternal
                         return -1;
                 }
             }
-            case GENERATION_XEHP_SDV:
+            case GENERATION_ACM:
             case GENERATION_PVC:
             {
                 switch( reportType )
                 {
-                    case OA_REPORT_TYPE_256B_A45_NOA16:
-                        return I915_OA_FORMAT_A24u40_A14u32_B8_C8;
-                    default:
-                        return -1;
-                }
-            }
-            case GENERATION_ACM:
-            {
-                switch( reportType )
-                {
-                    case OA_REPORT_TYPE_128B_OAM:
-                        return PRELIM_I915_OAM_FORMAT_A2u64_B8_C8;
                     case OA_REPORT_TYPE_256B_A45_NOA16:
                         return I915_OA_FORMAT_A24u40_A14u32_B8_C8;
                     default:
@@ -1839,7 +1851,6 @@ namespace MetricsDiscoveryInternal
                 case GENERATION_ADLP:
                 case GENERATION_ADLS:
                 case GENERATION_ADLN:
-                case GENERATION_XEHP_SDV:
                     subslicesTotalCount *= MD_MAX_SUBSLICE_PER_DSS;
                     break;
                 default:
@@ -2148,10 +2159,9 @@ namespace MetricsDiscoveryInternal
 
         switch( gfxDeviceInfo->PlatformIndex )
         {
-            case GENERATION_ACM:
             case GENERATION_MTL:
             case GENERATION_ARL:
-                return true;
+                return m_perfCapabilities.IsOamSupported;
             default:
                 return false;
         }
@@ -2179,7 +2189,6 @@ namespace MetricsDiscoveryInternal
     {
         switch( reportType )
         {
-            case PRELIM_I915_OAM_FORMAT_A2u64_B8_C8:
             case PRELIM_I915_OAM_FORMAT_MPEC8u32_B8_C8:
             case PRELIM_I915_OAM_FORMAT_MPEC8u64_B8_C8:
                 return true;
@@ -2192,7 +2201,7 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     //
     // Class:
-    //     CDriverInterfaceLinuxCommon
+    //     CDriverInterfaceLinuxPerf
     //
     // Method:
     //     GetCpuTimestampNs
@@ -2324,7 +2333,29 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     TCompletionCode CDriverInterfaceLinuxPerf::GetOaBufferSize( const int32_t streamId, uint32_t& oaBufferSize )
     {
-        oaBufferSize = MD_OA_BUFFER_SIZE_MAX;
+        if( !m_perfCapabilities.IsOaBufferSizeSupported )
+        {
+            oaBufferSize = MD_OA_BUFFER_SIZE_MAX;
+            MD_LOG_A( m_adapterId, LOG_DEBUG, "PerfRevision is less than %d. Using default size of oa buffer - 16 MB", MD_SET_OA_BUFFER_SIZE_PERF_REVISION_MIN_VERSION );
+            return CC_OK;
+        }
+
+        auto properties  = prelim_drm_i915_perf_oa_buffer_info{};
+        properties.type  = 0;
+        properties.flags = 0;
+
+        int32_t result = SendIoctl( streamId, PRELIM_I915_PERF_IOCTL_GET_OA_BUFFER_INFO, &properties );
+
+        if( result == -1 )
+        {
+            oaBufferSize = 0;
+            MD_LOG_A( m_adapterId, LOG_ERROR, "ERROR: Failed to send PRELIM_I915_PERF_IOCTL_GET_OA_BUFFER_INFO ioctl" );
+            return CC_ERROR_GENERAL;
+        }
+
+        oaBufferSize = properties.size;
+        MD_LOG_A( m_adapterId, LOG_INFO, "Oa buffer size is %d", properties.size );
+
         return CC_OK;
     }
 
@@ -2350,9 +2381,34 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     TCompletionCode CDriverInterfaceLinuxPerf::GetOaBufferSupportedSizes( const uint32_t platformId, uint32_t& minSize, uint32_t& maxSize )
     {
-        // Buffer size in Perf is constant
-        minSize = MD_OA_BUFFER_SIZE_MAX;
-        maxSize = MD_OA_BUFFER_SIZE_MAX;
+        if( m_perfCapabilities.IsOaBufferSizeSupported )
+        {
+            minSize = MD_OA_BUFFER_SIZE_MIN;
+
+            switch( platformId )
+            {
+                case GENERATION_ACM:
+                case GENERATION_PVC:
+                case GENERATION_MTL:
+                case GENERATION_ARL:
+                {
+                    maxSize = MD_OA_BUFFER_SIZE_MAX_XE_HP;
+                    break;
+                }
+
+                default:
+                {
+                    maxSize = MD_OA_BUFFER_SIZE_MAX;
+                    break;
+                }
+            }
+        }
+        else
+        {
+            // Default size is 16 mb, i.e. max size is equal to min size
+            minSize = MD_OA_BUFFER_SIZE_MAX;
+            maxSize = MD_OA_BUFFER_SIZE_MAX;
+        }
 
         return CC_OK;
     }
@@ -2476,6 +2532,30 @@ namespace MetricsDiscoveryInternal
     //     CDriverInterfaceLinuxPerf
     //
     // Method:
+    //     GetCopyEngineTotalCount
+    //
+    // Description:
+    //     Returns copy engine count for current platform.
+    //
+    // Input:
+    //     CMetricsDevice& metricsDevice   - (IN) metrics device
+    //     uint32_t&       copyEngineCount - (OUT) copy engine count
+    //
+    // Output:
+    //     TCompletionCode                 - *CC_OK* means success
+    //
+    //////////////////////////////////////////////////////////////////////////////
+    TCompletionCode CDriverInterfaceLinuxPerf::GetCopyEngineTotalCount( CMetricsDevice& metricsDevice, uint32_t& copyEngineCount )
+    {
+        return CC_ERROR_NOT_SUPPORTED;
+    }
+
+    //////////////////////////////////////////////////////////////////////////////
+    //
+    // Class:
+    //     CDriverInterfaceLinuxPerf
+    //
+    // Method:
     //     GetComputeEngineTotalCount
     //
     // Description:
@@ -2569,7 +2649,7 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     //
     // Class:
-    //   CDriverInterfaceLinuxPerf
+    //     CDriverInterfaceLinuxPerf
     //
     // Method:
     //     IsXePlus
@@ -2596,7 +2676,6 @@ namespace MetricsDiscoveryInternal
         {
             case GENERATION_TGL:
             case GENERATION_DG1:
-            case GENERATION_XEHP_SDV:
             case GENERATION_PVC:
             case GENERATION_ACM:
             case GENERATION_RKL:

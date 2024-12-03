@@ -65,7 +65,7 @@ TCompletionCode CreateMetricTreeADLN_OA( CMetricsDevice* metricsDevice, CConcurr
 
     if( metricsDevice->IsPlatformTypeOf( &platformMask ) )
     {
-        MetricSets_ADLN_OA::AddInformationSet( concurrentGroup );
+        MD_CHECK_CC( MetricSets_ADLN_OA::AddInformationSet( concurrentGroup ) );
 
         metricSet = concurrentGroup->AddMetricSetExplicit<MetricSets_ADLN_OA::CRenderBasicMetricSet>( "RenderBasic", "Render Metrics Basic Gen12", API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
             GPU_RENDER | GPU_COMPUTE, 256, 672, OA_REPORT_TYPE_256B_A45_NOA16, &platformMask, nullptr );
@@ -79,7 +79,7 @@ TCompletionCode CreateMetricTreeADLN_OA( CMetricsDevice* metricsDevice, CConcurr
             GPU_RENDER | GPU_COMPUTE | GPU_MEDIA | GPU_GENERIC, 256, 672, OA_REPORT_TYPE_256B_A45_NOA16, &platformMask, nullptr );
         MD_CHECK_PTR( metricSet );
 
-        metricSet = concurrentGroup->AddMetricSetExplicit<MetricSets_ADLN_OA::CXveActivity1MetricSet>( "XveActivity1", "XveActivity1", API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+        metricSet = concurrentGroup->AddMetricSetExplicit<MetricSets_ADLN_OA::CXveActivity1MetricSet>( "XveActivity1", "XveActivity1", API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
             GPU_RENDER | GPU_COMPUTE | GPU_MEDIA | GPU_GENERIC, 256, 672, OA_REPORT_TYPE_256B_A45_NOA16, &platformMask, nullptr );
         MD_CHECK_PTR( metricSet );
 

@@ -100,6 +100,7 @@ SPDX-License-Identifier: MIT
 #define MD_BITMASK( n )                      ( ~( (uint64_t) ( -1 ) << ( n ) ) )
 #define MD_BITMASK_RANGE( startbit, endbit ) ( MD_BITMASK( ( endbit ) + 1 ) & ~MD_BITMASK( startbit ) )
 #define MD_BITS_PER_BYTE                     ( 8 )
+#define MD_BYTE_ARRAY_MIN_SIZE               ( 8 )
 
 #define MD_SECOND_IN_NS          1000000000ULL
 #define MD_GPU_TIMESTAMP_MASK_32 MD_BITMASK( 32 )
@@ -153,6 +154,32 @@ namespace MetricsDiscoveryInternal
 
     uint32_t CalculateEnabledBits( uint64_t value, uint64_t mask = UINT64_MAX );
     bool     IsQueryModeMatch( const TQueryMode queryMode, const uint32_t queryModeMask );
+
+    //////////////////////////////////////////////////////////////////////////////
+    //
+    // Group:
+    //     Metrics Discovery Utils
+    //
+    // Function:
+    //     RoundUp
+    //
+    // Description:
+    //     Rounds up the given number to the nearest multiple.
+    //
+    // Input:
+    //     const uint32_t number   - a number to round up
+    //     const uint32_t multiple - a multiple to round up to
+    //
+    // Output:
+    //     uint32_t                - a rounded up number
+    //
+    //////////////////////////////////////////////////////////////////////////////
+    inline uint32_t RoundUp( const uint32_t number, const uint32_t multiple )
+    {
+        return ( multiple != 0 )
+            ? ( ( ( number ? number : 1 ) + multiple - 1 ) / multiple ) * multiple
+            : 0;
+    }
 
     //////////////////////////////////////////////////////////////////////////////
     //

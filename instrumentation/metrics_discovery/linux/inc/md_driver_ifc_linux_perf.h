@@ -24,6 +24,19 @@ SPDX-License-Identifier: MIT
 //////////////////////////////////////////////////////////////////////////////
 //
 // Description:
+//     Minimal Perf revisions for prelim capabilities.
+//     This must be synced with i915_perf_ioctl_version routine in i915_perf.c.
+//
+//////////////////////////////////////////////////////////////////////////////
+#define MD_GET_GPU_CPU_TIMESTAMPS_PERF_REVISION_MIN_VERSION    ( PRELIM_PERF_VERSION + 0 )
+#define MD_SET_OA_BUFFER_SIZE_PERF_REVISION_MIN_VERSION        ( PRELIM_PERF_VERSION + 1 )
+#define MD_SUB_DEVICES_SUPPORT_PERF_REVISION_MIN_VERSION       ( PRELIM_PERF_VERSION + 2 )
+#define MD_OAM_SUPPORT_PERF_REVISION_MIN_VERSION               ( PRELIM_PERF_VERSION + 7 )
+#define MD_SET_OA_NOTIFY_NUM_REPORTS_PERF_REVISION_MIN_VERSION ( PRELIM_PERF_VERSION + 8 )
+
+//////////////////////////////////////////////////////////////////////////////
+//
+// Description:
 //     Unknown oa unit id.
 //
 //////////////////////////////////////////////////////////////////////////////
@@ -44,9 +57,11 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     typedef struct SPerfCapabilities
     {
-        bool IsOaInterruptSupported;     // Available since i915 Perf revision '2'
-        bool IsSubDeviceSupported;       // Available since i915 Perf revision '10'
-        bool IsGpuCpuTimestampSupported; // Available since i915 Perf revision '11'
+        bool IsGpuCpuTimestampSupported;    // Available since i915 Perf revision '1000'
+        bool IsOaBufferSizeSupported;       // Available since i915 Perf revision '1001'
+        bool IsSubDeviceSupported;          // Available since i915 Perf revision '1002'
+        bool IsOamSupported;                // Available since i915 Perf revision '1007'
+        bool IsOaNotifyNumReportsSupported; // Available since i915 Perf revision '1008'
     } TPerfCapabilities;
 
     //////////////////////////////////////////////////////////////////////////////
@@ -103,7 +118,7 @@ namespace MetricsDiscoveryInternal
         void PrintPerfCapabilities();
 
         // OA Stream
-        virtual TCompletionCode OpenOaStream( CMetricsDevice& metricsDevice, uint32_t oaMetricSetId, uint32_t oaReportType, uint32_t timerPeriodExponent, uint32_t bufferSize, const GTDI_OA_BUFFER_TYPE oaBufferType );
+        virtual TCompletionCode OpenOaStream( CMetricsDevice& metricsDevice, uint32_t oaMetricSetId, uint32_t oaReportType, uint32_t oaReportSize, uint32_t timerPeriodExponent, uint32_t bufferSize, const GTDI_OA_BUFFER_TYPE oaBufferType );
         virtual TCompletionCode ReadOaStream( CMetricsDevice& metricsDevice, uint32_t reportSize, uint32_t reportsToRead, char* reportData, uint32_t& readBytes, GTDIReadCounterStreamExceptions& exceptions );
         virtual TCompletionCode AddOaConfig( TRegister** regVector, const uint32_t regCount, const uint32_t subDeviceIndex, const char* requestedGuid, int32_t& addedConfigId );
         virtual TCompletionCode RemoveOaConfig( int32_t oaConfigId );
@@ -139,6 +154,7 @@ namespace MetricsDiscoveryInternal
         virtual TCompletionCode GetOaBufferCount( CMetricsDevice& metricsDevice, uint32_t& oaBufferCount );
         virtual TCompletionCode GetL3NodeTotalCount( CMetricsDevice& metricsDevice, uint32_t& l3NodeCount );
         virtual TCompletionCode GetL3BankTotalCount( CMetricsDevice& metricsDevice, uint32_t& l3BankCount );
+        virtual TCompletionCode GetCopyEngineTotalCount( CMetricsDevice& metricsDevice, uint32_t& copyEngineCount );
         virtual TCompletionCode GetComputeEngineTotalCount( CMetricsDevice& metricsDevice, uint32_t& computeEngineCount );
         virtual TCompletionCode GetL3BankMask( CMetricsDevice& metricsDevice, uint64_t& l3BankMask );
         virtual TCompletionCode GetL3NodeMask( CMetricsDevice& metricsDevice, uint64_t& l3NodeMask );

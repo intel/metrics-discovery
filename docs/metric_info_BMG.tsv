@@ -329,7 +329,7 @@ RTProfile	GPGPU_THREADGROUP_COUNT	GpGpu Threadgroup Count	Thread Dispatcher	Numb
 RTProfile	ASYNC_GPGPU_THREADGROUP_COUNT	Async GpGpu Threadgroup Count	Thread Dispatcher	Number of Async GPGPU threadgroups dispatched
 RTProfile	RASTERIZER_SAMPLE_OUTPUT	Rasterizer Sample Output	Rasterizer	Number of lit samples emitted by Rasterizer
 RTProfile	RT_ANY_HIT_THREAD_RAY_DISPATCH	RT Any Hit Thread Ray Dispatch	Ray Tracing	Number of any hit threads dispatched
-RTProfile	RT_CALLABLE_THREAD_RAY_DISPATCH	RT Callable Thread Ray Dispatch	Ray Tracing	Number of callable threads dispatched
+RTProfile	RT_CALLABLE_THREAD_RAY_DISPATCH	RT Callable Thread Ray Dispatch	Ray Tracing	Number of BTD shader spawn requests dispatched
 RTProfile	RT_CLOSEST_HIT_THREAD_RAY_DISPATCH	RT Closest Hit Thread Ray Dispatch	Ray Tracing	Number of closest hit threads dispatched
 RTProfile	RT_INPUT_MESSAGE_SPAWN_COUNT	RT Input Message Spawn Count	Ray Tracing	Number of valid SIMD lanes in the Spawn message
 RTProfile	RT_INSTANCE_NODE_RAY_COUNT	RT Instance Node Ray Count	Ray Tracing	Number of instance BVH nodes processed by the traversal function

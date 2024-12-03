@@ -35,7 +35,7 @@ namespace MetricsDiscoveryInternal::MetricSets_LNL_PipelineStatistics
 
 namespace MetricsDiscoveryInternal::MetricSets_LNL_OA
 {
-    void AddInformationSet( CConcurrentGroup* concurrentGroup );
+    TCompletionCode AddInformationSet( CConcurrentGroup* concurrentGroup );
 
     class CRenderBasicMetricSet final : public CMetricSet
     {
@@ -121,7 +121,7 @@ namespace MetricsDiscoveryInternal::MetricSets_LNL_OA
 
 namespace MetricsDiscoveryInternal::MetricSets_LNL_OAM0
 {
-    void AddInformationSet( CConcurrentGroup* concurrentGroup );
+    TCompletionCode AddInformationSet( CConcurrentGroup* concurrentGroup );
 
     class CMediaSet1MetricSet final : public CMetricSet
     {
@@ -143,7 +143,7 @@ namespace MetricsDiscoveryInternal::MetricSets_LNL_OAM0
 
 namespace MetricsDiscoveryInternal::MetricSets_LNL_OAMG
 {
-    void AddInformationSet( CConcurrentGroup* concurrentGroup );
+    TCompletionCode AddInformationSet( CConcurrentGroup* concurrentGroup );
 
     class CMediaSet1MetricSet final : public CMetricSet
     {

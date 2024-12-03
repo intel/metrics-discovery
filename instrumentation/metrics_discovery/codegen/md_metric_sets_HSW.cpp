@@ -140,7 +140,8 @@ namespace MetricsDiscoveryInternal::MetricSets_HSW_PipelineStatistics
             MD_CHECK_CC( ( metric->SetDeltaReportReadEquation( "qw@0x50" ) ) );
         }
 
-        RefreshConfigRegisters();
+        MD_CHECK_CC( RefreshConfigRegisters() );
+
         return CC_OK;
 
     exception:
@@ -1068,151 +1069,128 @@ namespace MetricsDiscoveryInternal::MetricSets_HSW_OA
         }
 
         information = AddInformation( "QueryBeginTime", "Query Begin Time", "The measurement begin time.", "Report Meta Data", API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM, INFORMATION_TYPE_TIMESTAMP, "ns", nullptr, concurrentGroupInformationCount + 0 );
-        if( information )
-        {
-            information->SetSnapshotReportReadEquation( "dw@0x04 1000000000 UMUL $GpuTimestampFrequency UDIV" );
-            information->SetDeltaReportReadEquation( "qw@0x168" );
-            information->SetOverflowFunction( "NS_TIME" );
-        }
+        MD_CHECK_PTR( information );
+        MD_CHECK_CC( information->SetSnapshotReportReadEquation( "dw@0x04 1000000000 UMUL $GpuTimestampFrequency UDIV" ) );
+        MD_CHECK_CC( information->SetDeltaReportReadEquation( "qw@0x168" ) );
+        MD_CHECK_CC( information->SetOverflowFunction( "NS_TIME" ) );
 
         information = AddInformation( "CoreFrequencyMHz", "GPU Core Frequency", "The last core frequency in the measurement.", "Report Meta Data", API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL, INFORMATION_TYPE_VALUE, "MHz", nullptr, concurrentGroupInformationCount + 1 );
-        if( information )
-        {
-            information->SetDeltaReportReadEquation( "qw@0x208 1000000 UDIV" );
-        }
+        MD_CHECK_PTR( information );
+        MD_CHECK_CC( information->SetDeltaReportReadEquation( "qw@0x208 1000000 UDIV" ) );
 
         information = AddInformation( "ReportReason", "Report Reason", "The reason of the report.", "Report Meta Data", API_TYPE_IOSTREAM, INFORMATION_TYPE_REPORT_REASON, nullptr, nullptr, concurrentGroupInformationCount + 2 );
-        if( information )
-        {
-            information->SetSnapshotReportReadEquation( "dw@0x0 16 >> 0x3 AND" );
-        }
+        MD_CHECK_PTR( information );
+        MD_CHECK_CC( information->SetSnapshotReportReadEquation( "dw@0x0 16 >> 0x3 AND" ) );
 
         information = AddInformation( "ContextId", "Context ID", "The context tag in which report has been taken.", "Report Meta Data", API_TYPE_IOSTREAM, INFORMATION_TYPE_CONTEXT_ID_TAG, nullptr, nullptr, concurrentGroupInformationCount + 3 );
-        if( information )
-        {
-            information->SetSnapshotReportReadEquation( "dw@0x08" );
-        }
+        MD_CHECK_PTR( information );
+        MD_CHECK_CC( information->SetSnapshotReportReadEquation( "dw@0x08" ) );
 
         information = AddInformation( "CoreFrequencyChanged", "Core Frequency Changed", "The flag indicating that core frequency has changed.", "Exception", API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL, INFORMATION_TYPE_FLAG, nullptr, nullptr, concurrentGroupInformationCount + 4 );
-        if( information )
-        {
-            information->SetDeltaReportReadEquation( "dw@0x204" );
-        }
+        MD_CHECK_PTR( information );
+        MD_CHECK_CC( information->SetDeltaReportReadEquation( "dw@0x204" ) );
 
         information = AddInformation( "QuerySplitOccurred", "Query Split Occurred", "The flag indicating that query has been split during execution on the GPU.", "Exception", API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL, INFORMATION_TYPE_FLAG, nullptr, nullptr, concurrentGroupInformationCount + 5 );
-        if( information )
-        {
-            information->SetDeltaReportReadEquation( "dw@0x200" );
-        }
+        MD_CHECK_PTR( information );
+        MD_CHECK_CC( information->SetDeltaReportReadEquation( "dw@0x200" ) );
 
         information = AddInformation( "MidQueryTimer", "Mid Query Timer", "The flag indicating that timer report was detected during query.", "Report Meta Data", API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL, INFORMATION_TYPE_FLAG, nullptr, nullptr, concurrentGroupInformationCount + 6 );
-        if( information )
-        {
-            information->SetDeltaReportReadEquation( "dw@0x1c8 0x01 AND" );
-        }
+        MD_CHECK_PTR( information );
+        MD_CHECK_CC( information->SetDeltaReportReadEquation( "dw@0x1c8 0x01 AND" ) );
 
         information = AddInformation( "MidQueryProgramming", "Mid Query Programming", "The flag indicating that counter programming report was detected during query.", "Report Meta Data", API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL, INFORMATION_TYPE_FLAG, nullptr, nullptr, concurrentGroupInformationCount + 7 );
-        if( information )
-        {
-            information->SetDeltaReportReadEquation( "dw@0x1c8 0x02 AND" );
-        }
+        MD_CHECK_PTR( information );
+        MD_CHECK_CC( information->SetDeltaReportReadEquation( "dw@0x1c8 0x02 AND" ) );
 
         information = AddInformation( "MidQueryMarker", "Mid Query Marker", "The flag indicating that query marker report was detected during query.", "Report Meta Data", API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL, INFORMATION_TYPE_FLAG, nullptr, nullptr, concurrentGroupInformationCount + 8 );
-        if( information )
-        {
-            information->SetDeltaReportReadEquation( "dw@0x1c8 0x04 AND" );
-        }
+        MD_CHECK_PTR( information );
+        MD_CHECK_CC( information->SetDeltaReportReadEquation( "dw@0x1c8 0x04 AND" ) );
 
         information = AddInformation( "MidQueryCtxSwitch", "Mid Query Context Switch", "The flag indicating that context switch report was detected during query.", "Report Meta Data", API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL, INFORMATION_TYPE_FLAG, nullptr, nullptr, concurrentGroupInformationCount + 9 );
-        if( information )
-        {
-            information->SetDeltaReportReadEquation( "dw@0x1c8 0x08 AND" );
-        }
+        MD_CHECK_PTR( information );
+        MD_CHECK_CC( information->SetDeltaReportReadEquation( "dw@0x1c8 0x08 AND" ) );
 
         information = AddInformation( "MidQueryC6", "Mid Query C6", "The flag indicating that C6 report was detected during query.", "Report Meta Data", API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL, INFORMATION_TYPE_FLAG, nullptr, nullptr, concurrentGroupInformationCount + 10 );
-        if( information )
-        {
-            information->SetDeltaReportReadEquation( "dw@0x1c8 0x10 AND" );
-        }
+        MD_CHECK_PTR( information );
+        MD_CHECK_CC( information->SetDeltaReportReadEquation( "dw@0x1c8 0x10 AND" ) );
 
         information = AddInformation( "MidQueryFreqChange", "Mid Query Freq Change", "The flag indicating that frequency change report was detected during query.", "Report Meta Data", API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL, INFORMATION_TYPE_FLAG, nullptr, nullptr, concurrentGroupInformationCount + 11 );
-        if( information )
-        {
-            information->SetDeltaReportReadEquation( "dw@0x1c8 0x20 AND" );
-        }
+        MD_CHECK_PTR( information );
+        MD_CHECK_CC( information->SetDeltaReportReadEquation( "dw@0x1c8 0x20 AND" ) );
 
         availabilityEquation = nullptr;
         if( AddStartRegisterSet( 0, 0, availabilityEquation ) == CC_OK )
         {
-            AddStartConfigRegister( 0x9840, 0x00000080, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x253A4, 0x01600000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x25440, 0x00100000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x25128, 0x00000000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x2691C, 0x00000800, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x26AA0, 0x01500000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x26B9C, 0x00006000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x2791C, 0x00000800, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x27AA0, 0x01500000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x27B9C, 0x00006000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x2641C, 0x00000400, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x25380, 0x00000010, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x2538C, 0x00000000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x25384, 0x0800AAAA, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x25400, 0x00000004, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x2540C, 0x06029000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x25410, 0x00000002, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x25404, 0x5C30FFFF, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x25100, 0x00000016, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x25110, 0x00000400, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x25104, 0x00000000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x26804, 0x00001211, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x26884, 0x00000100, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x26900, 0x00000002, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x26908, 0x00700000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x26904, 0x00000000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x26984, 0x00001022, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x26A04, 0x00000011, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x26A80, 0x00000006, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x26A88, 0x00000C02, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x26A84, 0x00000000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x26B04, 0x00001000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x26B80, 0x00000002, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x26B8C, 0x00000007, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x26B84, 0x00000000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x27804, 0x00004844, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x27884, 0x00000400, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x27900, 0x00000002, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x27908, 0x0E000000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x27904, 0x00000000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x27984, 0x00004088, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x27A04, 0x00000044, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x27A80, 0x00000006, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x27A88, 0x00018040, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x27A84, 0x00000000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x27B04, 0x00004000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x27B80, 0x00000002, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x27B8C, 0x000000E0, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x27B84, 0x00000000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x26104, 0x00002222, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x26184, 0x0C006666, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x26284, 0x04000000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x26304, 0x04000000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x26400, 0x00000002, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x26410, 0x000000A0, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x26404, 0x00000000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x25420, 0x04108020, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x25424, 0x1284A420, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x2541C, 0x00000000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x25428, 0x00042049, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x2724, 0x00800000, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x2720, 0x00000000, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x2714, 0x00800000, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x2710, 0x00000000, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x91bc, 0xe0400000, REGISTER_TYPE_PM );
-            AddStartConfigRegister( 0x91c4, 0xe4500000, REGISTER_TYPE_PM );
+            MD_CHECK_CC( AddStartConfigRegister( 0x9840, 0x00000080, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x253A4, 0x01600000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x25440, 0x00100000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x25128, 0x00000000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2691C, 0x00000800, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x26AA0, 0x01500000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x26B9C, 0x00006000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2791C, 0x00000800, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x27AA0, 0x01500000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x27B9C, 0x00006000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2641C, 0x00000400, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x25380, 0x00000010, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2538C, 0x00000000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x25384, 0x0800AAAA, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x25400, 0x00000004, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2540C, 0x06029000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x25410, 0x00000002, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x25404, 0x5C30FFFF, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x25100, 0x00000016, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x25110, 0x00000400, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x25104, 0x00000000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x26804, 0x00001211, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x26884, 0x00000100, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x26900, 0x00000002, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x26908, 0x00700000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x26904, 0x00000000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x26984, 0x00001022, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x26A04, 0x00000011, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x26A80, 0x00000006, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x26A88, 0x00000C02, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x26A84, 0x00000000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x26B04, 0x00001000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x26B80, 0x00000002, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x26B8C, 0x00000007, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x26B84, 0x00000000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x27804, 0x00004844, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x27884, 0x00000400, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x27900, 0x00000002, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x27908, 0x0E000000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x27904, 0x00000000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x27984, 0x00004088, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x27A04, 0x00000044, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x27A80, 0x00000006, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x27A88, 0x00018040, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x27A84, 0x00000000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x27B04, 0x00004000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x27B80, 0x00000002, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x27B8C, 0x000000E0, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x27B84, 0x00000000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x26104, 0x00002222, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x26184, 0x0C006666, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x26284, 0x04000000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x26304, 0x04000000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x26400, 0x00000002, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x26410, 0x000000A0, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x26404, 0x00000000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x25420, 0x04108020, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x25424, 0x1284A420, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2541C, 0x00000000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x25428, 0x00042049, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2724, 0x00800000, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2720, 0x00000000, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2714, 0x00800000, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2710, 0x00000000, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x91bc, 0xe0400000, REGISTER_TYPE_PM ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x91c4, 0xe4500000, REGISTER_TYPE_PM ) );
         }
 
-        RefreshConfigRegisters();
+        MD_CHECK_CC( RefreshConfigRegisters() );
+
         return CC_OK;
 
     exception:
@@ -1914,136 +1892,113 @@ namespace MetricsDiscoveryInternal::MetricSets_HSW_OA
         }
 
         information = AddInformation( "QueryBeginTime", "Query Begin Time", "The measurement begin time.", "Report Meta Data", API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM, INFORMATION_TYPE_TIMESTAMP, "ns", nullptr, concurrentGroupInformationCount + 0 );
-        if( information )
-        {
-            information->SetSnapshotReportReadEquation( "dw@0x04 1000000000 UMUL $GpuTimestampFrequency UDIV" );
-            information->SetDeltaReportReadEquation( "qw@0x168" );
-            information->SetOverflowFunction( "NS_TIME" );
-        }
+        MD_CHECK_PTR( information );
+        MD_CHECK_CC( information->SetSnapshotReportReadEquation( "dw@0x04 1000000000 UMUL $GpuTimestampFrequency UDIV" ) );
+        MD_CHECK_CC( information->SetDeltaReportReadEquation( "qw@0x168" ) );
+        MD_CHECK_CC( information->SetOverflowFunction( "NS_TIME" ) );
 
         information = AddInformation( "CoreFrequencyMHz", "GPU Core Frequency", "The last core frequency in the measurement.", "Report Meta Data", API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL, INFORMATION_TYPE_VALUE, "MHz", nullptr, concurrentGroupInformationCount + 1 );
-        if( information )
-        {
-            information->SetDeltaReportReadEquation( "qw@0x208 1000000 UDIV" );
-        }
+        MD_CHECK_PTR( information );
+        MD_CHECK_CC( information->SetDeltaReportReadEquation( "qw@0x208 1000000 UDIV" ) );
 
         information = AddInformation( "ReportReason", "Report Reason", "The reason of the report.", "Report Meta Data", API_TYPE_IOSTREAM, INFORMATION_TYPE_REPORT_REASON, nullptr, nullptr, concurrentGroupInformationCount + 2 );
-        if( information )
-        {
-            information->SetSnapshotReportReadEquation( "dw@0x0 16 >> 0x3 AND" );
-        }
+        MD_CHECK_PTR( information );
+        MD_CHECK_CC( information->SetSnapshotReportReadEquation( "dw@0x0 16 >> 0x3 AND" ) );
 
         information = AddInformation( "ContextId", "Context ID", "The context tag in which report has been taken.", "Report Meta Data", API_TYPE_IOSTREAM, INFORMATION_TYPE_CONTEXT_ID_TAG, nullptr, nullptr, concurrentGroupInformationCount + 3 );
-        if( information )
-        {
-            information->SetSnapshotReportReadEquation( "dw@0x08" );
-        }
+        MD_CHECK_PTR( information );
+        MD_CHECK_CC( information->SetSnapshotReportReadEquation( "dw@0x08" ) );
 
         information = AddInformation( "CoreFrequencyChanged", "Core Frequency Changed", "The flag indicating that core frequency has changed.", "Exception", API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL, INFORMATION_TYPE_FLAG, nullptr, nullptr, concurrentGroupInformationCount + 4 );
-        if( information )
-        {
-            information->SetDeltaReportReadEquation( "dw@0x204" );
-        }
+        MD_CHECK_PTR( information );
+        MD_CHECK_CC( information->SetDeltaReportReadEquation( "dw@0x204" ) );
 
         information = AddInformation( "QuerySplitOccurred", "Query Split Occurred", "The flag indicating that query has been split during execution on the GPU.", "Exception", API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL, INFORMATION_TYPE_FLAG, nullptr, nullptr, concurrentGroupInformationCount + 5 );
-        if( information )
-        {
-            information->SetDeltaReportReadEquation( "dw@0x200" );
-        }
+        MD_CHECK_PTR( information );
+        MD_CHECK_CC( information->SetDeltaReportReadEquation( "dw@0x200" ) );
 
         information = AddInformation( "MidQueryTimer", "Mid Query Timer", "The flag indicating that timer report was detected during query.", "Report Meta Data", API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL, INFORMATION_TYPE_FLAG, nullptr, nullptr, concurrentGroupInformationCount + 6 );
-        if( information )
-        {
-            information->SetDeltaReportReadEquation( "dw@0x1c8 0x01 AND" );
-        }
+        MD_CHECK_PTR( information );
+        MD_CHECK_CC( information->SetDeltaReportReadEquation( "dw@0x1c8 0x01 AND" ) );
 
         information = AddInformation( "MidQueryProgramming", "Mid Query Programming", "The flag indicating that counter programming report was detected during query.", "Report Meta Data", API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL, INFORMATION_TYPE_FLAG, nullptr, nullptr, concurrentGroupInformationCount + 7 );
-        if( information )
-        {
-            information->SetDeltaReportReadEquation( "dw@0x1c8 0x02 AND" );
-        }
+        MD_CHECK_PTR( information );
+        MD_CHECK_CC( information->SetDeltaReportReadEquation( "dw@0x1c8 0x02 AND" ) );
 
         information = AddInformation( "MidQueryMarker", "Mid Query Marker", "The flag indicating that query marker report was detected during query.", "Report Meta Data", API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL, INFORMATION_TYPE_FLAG, nullptr, nullptr, concurrentGroupInformationCount + 8 );
-        if( information )
-        {
-            information->SetDeltaReportReadEquation( "dw@0x1c8 0x04 AND" );
-        }
+        MD_CHECK_PTR( information );
+        MD_CHECK_CC( information->SetDeltaReportReadEquation( "dw@0x1c8 0x04 AND" ) );
 
         information = AddInformation( "MidQueryCtxSwitch", "Mid Query Context Switch", "The flag indicating that context switch report was detected during query.", "Report Meta Data", API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL, INFORMATION_TYPE_FLAG, nullptr, nullptr, concurrentGroupInformationCount + 9 );
-        if( information )
-        {
-            information->SetDeltaReportReadEquation( "dw@0x1c8 0x08 AND" );
-        }
+        MD_CHECK_PTR( information );
+        MD_CHECK_CC( information->SetDeltaReportReadEquation( "dw@0x1c8 0x08 AND" ) );
 
         information = AddInformation( "MidQueryC6", "Mid Query C6", "The flag indicating that C6 report was detected during query.", "Report Meta Data", API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL, INFORMATION_TYPE_FLAG, nullptr, nullptr, concurrentGroupInformationCount + 10 );
-        if( information )
-        {
-            information->SetDeltaReportReadEquation( "dw@0x1c8 0x10 AND" );
-        }
+        MD_CHECK_PTR( information );
+        MD_CHECK_CC( information->SetDeltaReportReadEquation( "dw@0x1c8 0x10 AND" ) );
 
         information = AddInformation( "MidQueryFreqChange", "Mid Query Freq Change", "The flag indicating that frequency change report was detected during query.", "Report Meta Data", API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL, INFORMATION_TYPE_FLAG, nullptr, nullptr, concurrentGroupInformationCount + 11 );
-        if( information )
-        {
-            information->SetDeltaReportReadEquation( "dw@0x1c8 0x20 AND" );
-        }
+        MD_CHECK_PTR( information );
+        MD_CHECK_CC( information->SetDeltaReportReadEquation( "dw@0x1c8 0x20 AND" ) );
 
         availabilityEquation = nullptr;
         if( AddStartRegisterSet( 0, 0, availabilityEquation ) == CC_OK )
         {
-            AddStartConfigRegister( 0x9840, 0x00000080, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x253A4, 0x00000000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x2681C, 0x01F00800, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x26820, 0x00001000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x2781C, 0x01F00800, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x26520, 0x00000007, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x265A0, 0x00000007, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x25380, 0x00000010, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x2538C, 0x00300000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x25384, 0xAA8AAAAA, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x25404, 0xFFFFFFFF, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x26800, 0x00004202, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x26808, 0x00605817, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x2680C, 0x10001005, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x26804, 0x00000000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x27800, 0x00000102, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x27808, 0x0C0701E0, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x2780C, 0x000200A0, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x27804, 0x00000000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x26484, 0x44000000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x26704, 0x44000000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x26500, 0x00000006, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x26510, 0x00000001, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x26504, 0x88000000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x26580, 0x00000006, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x26590, 0x00000020, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x26584, 0x00000000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x26104, 0x55822222, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x26184, 0xAA866666, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x25420, 0x08320C83, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x25424, 0x06820C83, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x2541C, 0x00000000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x25428, 0x00000C03, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x2710, 0x00000000, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x2714, 0x00800000, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x2718, 0xAAAAAAAA, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x271C, 0xAAAAAAAA, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x2720, 0x00000000, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x2724, 0x00800000, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x2728, 0xAAAAAAAA, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x272C, 0xAAAAAAAA, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x2740, 0x00000000, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x2744, 0x00000000, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x2748, 0x00000000, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x274C, 0x00000000, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x2750, 0x00000000, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x2754, 0x00000000, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x2758, 0x00000000, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x275C, 0x00000000, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x91bc, 0xe0400000, REGISTER_TYPE_PM );
-            AddStartConfigRegister( 0x91c4, 0xe4500000, REGISTER_TYPE_PM );
+            MD_CHECK_CC( AddStartConfigRegister( 0x9840, 0x00000080, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x253A4, 0x00000000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2681C, 0x01F00800, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x26820, 0x00001000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2781C, 0x01F00800, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x26520, 0x00000007, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x265A0, 0x00000007, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x25380, 0x00000010, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2538C, 0x00300000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x25384, 0xAA8AAAAA, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x25404, 0xFFFFFFFF, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x26800, 0x00004202, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x26808, 0x00605817, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2680C, 0x10001005, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x26804, 0x00000000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x27800, 0x00000102, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x27808, 0x0C0701E0, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2780C, 0x000200A0, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x27804, 0x00000000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x26484, 0x44000000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x26704, 0x44000000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x26500, 0x00000006, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x26510, 0x00000001, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x26504, 0x88000000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x26580, 0x00000006, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x26590, 0x00000020, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x26584, 0x00000000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x26104, 0x55822222, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x26184, 0xAA866666, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x25420, 0x08320C83, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x25424, 0x06820C83, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2541C, 0x00000000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x25428, 0x00000C03, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2710, 0x00000000, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2714, 0x00800000, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2718, 0xAAAAAAAA, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x271C, 0xAAAAAAAA, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2720, 0x00000000, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2724, 0x00800000, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2728, 0xAAAAAAAA, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x272C, 0xAAAAAAAA, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2740, 0x00000000, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2744, 0x00000000, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2748, 0x00000000, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x274C, 0x00000000, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2750, 0x00000000, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2754, 0x00000000, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2758, 0x00000000, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x275C, 0x00000000, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x91bc, 0xe0400000, REGISTER_TYPE_PM ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x91c4, 0xe4500000, REGISTER_TYPE_PM ) );
         }
 
-        RefreshConfigRegisters();
+        MD_CHECK_CC( RefreshConfigRegisters() );
+
         return CC_OK;
 
     exception:
@@ -2315,123 +2270,100 @@ namespace MetricsDiscoveryInternal::MetricSets_HSW_OA
         }
 
         information = AddInformation( "QueryBeginTime", "Query Begin Time", "The measurement begin time.", "Report Meta Data", API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM, INFORMATION_TYPE_TIMESTAMP, "ns", nullptr, concurrentGroupInformationCount + 0 );
-        if( information )
-        {
-            information->SetSnapshotReportReadEquation( "dw@0x04 1000000000 UMUL $GpuTimestampFrequency UDIV" );
-            information->SetDeltaReportReadEquation( "qw@0x168" );
-            information->SetOverflowFunction( "NS_TIME" );
-        }
+        MD_CHECK_PTR( information );
+        MD_CHECK_CC( information->SetSnapshotReportReadEquation( "dw@0x04 1000000000 UMUL $GpuTimestampFrequency UDIV" ) );
+        MD_CHECK_CC( information->SetDeltaReportReadEquation( "qw@0x168" ) );
+        MD_CHECK_CC( information->SetOverflowFunction( "NS_TIME" ) );
 
         information = AddInformation( "CoreFrequencyMHz", "GPU Core Frequency", "The last core frequency in the measurement.", "Report Meta Data", API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL, INFORMATION_TYPE_VALUE, "MHz", nullptr, concurrentGroupInformationCount + 1 );
-        if( information )
-        {
-            information->SetDeltaReportReadEquation( "qw@0x208 1000000 UDIV" );
-        }
+        MD_CHECK_PTR( information );
+        MD_CHECK_CC( information->SetDeltaReportReadEquation( "qw@0x208 1000000 UDIV" ) );
 
         information = AddInformation( "ReportReason", "Report Reason", "The reason of the report.", "Report Meta Data", API_TYPE_IOSTREAM, INFORMATION_TYPE_REPORT_REASON, nullptr, nullptr, concurrentGroupInformationCount + 2 );
-        if( information )
-        {
-            information->SetSnapshotReportReadEquation( "dw@0x0 16 >> 0x3 AND" );
-        }
+        MD_CHECK_PTR( information );
+        MD_CHECK_CC( information->SetSnapshotReportReadEquation( "dw@0x0 16 >> 0x3 AND" ) );
 
         information = AddInformation( "ContextId", "Context ID", "The context tag in which report has been taken.", "Report Meta Data", API_TYPE_IOSTREAM, INFORMATION_TYPE_CONTEXT_ID_TAG, nullptr, nullptr, concurrentGroupInformationCount + 3 );
-        if( information )
-        {
-            information->SetSnapshotReportReadEquation( "dw@0x08" );
-        }
+        MD_CHECK_PTR( information );
+        MD_CHECK_CC( information->SetSnapshotReportReadEquation( "dw@0x08" ) );
 
         information = AddInformation( "CoreFrequencyChanged", "Core Frequency Changed", "The flag indicating that core frequency has changed.", "Exception", API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL, INFORMATION_TYPE_FLAG, nullptr, nullptr, concurrentGroupInformationCount + 4 );
-        if( information )
-        {
-            information->SetDeltaReportReadEquation( "dw@0x204" );
-        }
+        MD_CHECK_PTR( information );
+        MD_CHECK_CC( information->SetDeltaReportReadEquation( "dw@0x204" ) );
 
         information = AddInformation( "QuerySplitOccurred", "Query Split Occurred", "The flag indicating that query has been split during execution on the GPU.", "Exception", API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL, INFORMATION_TYPE_FLAG, nullptr, nullptr, concurrentGroupInformationCount + 5 );
-        if( information )
-        {
-            information->SetDeltaReportReadEquation( "dw@0x200" );
-        }
+        MD_CHECK_PTR( information );
+        MD_CHECK_CC( information->SetDeltaReportReadEquation( "dw@0x200" ) );
 
         information = AddInformation( "MidQueryTimer", "Mid Query Timer", "The flag indicating that timer report was detected during query.", "Report Meta Data", API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL, INFORMATION_TYPE_FLAG, nullptr, nullptr, concurrentGroupInformationCount + 6 );
-        if( information )
-        {
-            information->SetDeltaReportReadEquation( "dw@0x1c8 0x01 AND" );
-        }
+        MD_CHECK_PTR( information );
+        MD_CHECK_CC( information->SetDeltaReportReadEquation( "dw@0x1c8 0x01 AND" ) );
 
         information = AddInformation( "MidQueryProgramming", "Mid Query Programming", "The flag indicating that counter programming report was detected during query.", "Report Meta Data", API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL, INFORMATION_TYPE_FLAG, nullptr, nullptr, concurrentGroupInformationCount + 7 );
-        if( information )
-        {
-            information->SetDeltaReportReadEquation( "dw@0x1c8 0x02 AND" );
-        }
+        MD_CHECK_PTR( information );
+        MD_CHECK_CC( information->SetDeltaReportReadEquation( "dw@0x1c8 0x02 AND" ) );
 
         information = AddInformation( "MidQueryMarker", "Mid Query Marker", "The flag indicating that query marker report was detected during query.", "Report Meta Data", API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL, INFORMATION_TYPE_FLAG, nullptr, nullptr, concurrentGroupInformationCount + 8 );
-        if( information )
-        {
-            information->SetDeltaReportReadEquation( "dw@0x1c8 0x04 AND" );
-        }
+        MD_CHECK_PTR( information );
+        MD_CHECK_CC( information->SetDeltaReportReadEquation( "dw@0x1c8 0x04 AND" ) );
 
         information = AddInformation( "MidQueryCtxSwitch", "Mid Query Context Switch", "The flag indicating that context switch report was detected during query.", "Report Meta Data", API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL, INFORMATION_TYPE_FLAG, nullptr, nullptr, concurrentGroupInformationCount + 9 );
-        if( information )
-        {
-            information->SetDeltaReportReadEquation( "dw@0x1c8 0x08 AND" );
-        }
+        MD_CHECK_PTR( information );
+        MD_CHECK_CC( information->SetDeltaReportReadEquation( "dw@0x1c8 0x08 AND" ) );
 
         information = AddInformation( "MidQueryC6", "Mid Query C6", "The flag indicating that C6 report was detected during query.", "Report Meta Data", API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL, INFORMATION_TYPE_FLAG, nullptr, nullptr, concurrentGroupInformationCount + 10 );
-        if( information )
-        {
-            information->SetDeltaReportReadEquation( "dw@0x1c8 0x10 AND" );
-        }
+        MD_CHECK_PTR( information );
+        MD_CHECK_CC( information->SetDeltaReportReadEquation( "dw@0x1c8 0x10 AND" ) );
 
         information = AddInformation( "MidQueryFreqChange", "Mid Query Freq Change", "The flag indicating that frequency change report was detected during query.", "Report Meta Data", API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL, INFORMATION_TYPE_FLAG, nullptr, nullptr, concurrentGroupInformationCount + 11 );
-        if( information )
-        {
-            information->SetDeltaReportReadEquation( "dw@0x1c8 0x20 AND" );
-        }
+        MD_CHECK_PTR( information );
+        MD_CHECK_CC( information->SetDeltaReportReadEquation( "dw@0x1c8 0x20 AND" ) );
 
         availabilityEquation = nullptr;
         if( AddStartRegisterSet( 0, 0, availabilityEquation ) == CC_OK )
         {
-            AddStartConfigRegister( 0x9840, 0x00000080, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x2681C, 0x3EB00800, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x26820, 0x00900000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x25384, 0x02AAAAAA, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x25404, 0x03FFFFFF, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x26800, 0x00142284, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x26808, 0x0E629062, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x2680C, 0x3F6F55CB, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x26810, 0x00000014, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x26804, 0x00000000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x26104, 0x02AAAAAA, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x26184, 0x02AAAAAA, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x25420, 0x00000000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x25424, 0x00000000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x2541C, 0x00000000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x25428, 0x00000000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x2724, 0xf0800000, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x2720, 0x00000000, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x2714, 0xf0800000, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x2710, 0x00000000, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x2770, 0x0007fe2a, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x2774, 0x0000ff00, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x2778, 0x0007fe6a, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x277c, 0x0000ff00, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x2780, 0x0007fe92, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x2784, 0x0000ff00, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x2788, 0x0007fea2, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x278c, 0x0000ff00, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x2790, 0x0007fe32, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x2794, 0x0000ff00, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x2798, 0x0007fe9a, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x279c, 0x0000ff00, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x27a0, 0x0007ff23, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x27a4, 0x0000ff00, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x27a8, 0x0007fff3, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x27ac, 0x0000fffe, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x91bc, 0xe0400000, REGISTER_TYPE_PM );
-            AddStartConfigRegister( 0x91c4, 0xe4500000, REGISTER_TYPE_PM );
+            MD_CHECK_CC( AddStartConfigRegister( 0x9840, 0x00000080, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2681C, 0x3EB00800, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x26820, 0x00900000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x25384, 0x02AAAAAA, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x25404, 0x03FFFFFF, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x26800, 0x00142284, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x26808, 0x0E629062, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2680C, 0x3F6F55CB, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x26810, 0x00000014, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x26804, 0x00000000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x26104, 0x02AAAAAA, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x26184, 0x02AAAAAA, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x25420, 0x00000000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x25424, 0x00000000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2541C, 0x00000000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x25428, 0x00000000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2724, 0xf0800000, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2720, 0x00000000, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2714, 0xf0800000, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2710, 0x00000000, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2770, 0x0007fe2a, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2774, 0x0000ff00, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2778, 0x0007fe6a, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x277c, 0x0000ff00, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2780, 0x0007fe92, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2784, 0x0000ff00, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2788, 0x0007fea2, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x278c, 0x0000ff00, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2790, 0x0007fe32, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2794, 0x0000ff00, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2798, 0x0007fe9a, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x279c, 0x0000ff00, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x27a0, 0x0007ff23, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x27a4, 0x0000ff00, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x27a8, 0x0007fff3, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x27ac, 0x0000fffe, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x91bc, 0xe0400000, REGISTER_TYPE_PM ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x91c4, 0xe4500000, REGISTER_TYPE_PM ) );
         }
 
-        RefreshConfigRegisters();
+        MD_CHECK_CC( RefreshConfigRegisters() );
+
         return CC_OK;
 
     exception:
@@ -3248,80 +3180,57 @@ namespace MetricsDiscoveryInternal::MetricSets_HSW_OA
         }
 
         information = AddInformation( "QueryBeginTime", "Query Begin Time", "The measurement begin time.", "Report Meta Data", API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_IOSTREAM, INFORMATION_TYPE_TIMESTAMP, "ns", nullptr, concurrentGroupInformationCount + 0 );
-        if( information )
-        {
-            information->SetSnapshotReportReadEquation( "dw@0x04 1000000000 UMUL $GpuTimestampFrequency UDIV" );
-            information->SetDeltaReportReadEquation( "qw@0x168" );
-            information->SetOverflowFunction( "NS_TIME" );
-        }
+        MD_CHECK_PTR( information );
+        MD_CHECK_CC( information->SetSnapshotReportReadEquation( "dw@0x04 1000000000 UMUL $GpuTimestampFrequency UDIV" ) );
+        MD_CHECK_CC( information->SetDeltaReportReadEquation( "qw@0x168" ) );
+        MD_CHECK_CC( information->SetOverflowFunction( "NS_TIME" ) );
 
         information = AddInformation( "CoreFrequencyMHz", "GPU Core Frequency", "The last core frequency in the measurement.", "Report Meta Data", API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_OGL | API_TYPE_OGL4_X, INFORMATION_TYPE_VALUE, "MHz", nullptr, concurrentGroupInformationCount + 1 );
-        if( information )
-        {
-            information->SetDeltaReportReadEquation( "qw@0x208 1000000 UDIV" );
-        }
+        MD_CHECK_PTR( information );
+        MD_CHECK_CC( information->SetDeltaReportReadEquation( "qw@0x208 1000000 UDIV" ) );
 
         information = AddInformation( "ReportReason", "Report Reason", "The reason of the report.", "Report Meta Data", API_TYPE_IOSTREAM, INFORMATION_TYPE_REPORT_REASON, nullptr, nullptr, concurrentGroupInformationCount + 2 );
-        if( information )
-        {
-            information->SetSnapshotReportReadEquation( "dw@0x0 16 >> 0x3 AND" );
-        }
+        MD_CHECK_PTR( information );
+        MD_CHECK_CC( information->SetSnapshotReportReadEquation( "dw@0x0 16 >> 0x3 AND" ) );
 
         information = AddInformation( "ContextId", "Context ID", "The context tag in which report has been taken.", "Report Meta Data", API_TYPE_IOSTREAM, INFORMATION_TYPE_CONTEXT_ID_TAG, nullptr, nullptr, concurrentGroupInformationCount + 3 );
-        if( information )
-        {
-            information->SetSnapshotReportReadEquation( "dw@0x08" );
-        }
+        MD_CHECK_PTR( information );
+        MD_CHECK_CC( information->SetSnapshotReportReadEquation( "dw@0x08" ) );
 
         information = AddInformation( "CoreFrequencyChanged", "Core Frequency Changed", "The flag indicating that core frequency has changed.", "Exception", API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_OGL | API_TYPE_OGL4_X, INFORMATION_TYPE_FLAG, nullptr, nullptr, concurrentGroupInformationCount + 4 );
-        if( information )
-        {
-            information->SetDeltaReportReadEquation( "dw@0x204" );
-        }
+        MD_CHECK_PTR( information );
+        MD_CHECK_CC( information->SetDeltaReportReadEquation( "dw@0x204" ) );
 
         information = AddInformation( "QuerySplitOccurred", "Query Split Occurred", "The flag indicating that query has been split during execution on the GPU.", "Exception", API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_OGL | API_TYPE_OGL4_X, INFORMATION_TYPE_FLAG, nullptr, nullptr, concurrentGroupInformationCount + 5 );
-        if( information )
-        {
-            information->SetDeltaReportReadEquation( "dw@0x200" );
-        }
+        MD_CHECK_PTR( information );
+        MD_CHECK_CC( information->SetDeltaReportReadEquation( "dw@0x200" ) );
 
         information = AddInformation( "MidQueryTimer", "Mid Query Timer", "The flag indicating that timer report was detected during query.", "Report Meta Data", API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL, INFORMATION_TYPE_FLAG, nullptr, nullptr, concurrentGroupInformationCount + 6 );
-        if( information )
-        {
-            information->SetDeltaReportReadEquation( "dw@0x1c8 0x01 AND" );
-        }
+        MD_CHECK_PTR( information );
+        MD_CHECK_CC( information->SetDeltaReportReadEquation( "dw@0x1c8 0x01 AND" ) );
 
         information = AddInformation( "MidQueryProgramming", "Mid Query Programming", "The flag indicating that counter programming report was detected during query.", "Report Meta Data", API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL, INFORMATION_TYPE_FLAG, nullptr, nullptr, concurrentGroupInformationCount + 7 );
-        if( information )
-        {
-            information->SetDeltaReportReadEquation( "dw@0x1c8 0x02 AND" );
-        }
+        MD_CHECK_PTR( information );
+        MD_CHECK_CC( information->SetDeltaReportReadEquation( "dw@0x1c8 0x02 AND" ) );
 
         information = AddInformation( "MidQueryMarker", "Mid Query Marker", "The flag indicating that query marker report was detected during query.", "Report Meta Data", API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL, INFORMATION_TYPE_FLAG, nullptr, nullptr, concurrentGroupInformationCount + 8 );
-        if( information )
-        {
-            information->SetDeltaReportReadEquation( "dw@0x1c8 0x04 AND" );
-        }
+        MD_CHECK_PTR( information );
+        MD_CHECK_CC( information->SetDeltaReportReadEquation( "dw@0x1c8 0x04 AND" ) );
 
         information = AddInformation( "MidQueryCtxSwitch", "Mid Query Context Switch", "The flag indicating that context switch report was detected during query.", "Report Meta Data", API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL, INFORMATION_TYPE_FLAG, nullptr, nullptr, concurrentGroupInformationCount + 9 );
-        if( information )
-        {
-            information->SetDeltaReportReadEquation( "dw@0x1c8 0x08 AND" );
-        }
+        MD_CHECK_PTR( information );
+        MD_CHECK_CC( information->SetDeltaReportReadEquation( "dw@0x1c8 0x08 AND" ) );
 
         information = AddInformation( "MidQueryC6", "Mid Query C6", "The flag indicating that C6 report was detected during query.", "Report Meta Data", API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL, INFORMATION_TYPE_FLAG, nullptr, nullptr, concurrentGroupInformationCount + 10 );
-        if( information )
-        {
-            information->SetDeltaReportReadEquation( "dw@0x1c8 0x10 AND" );
-        }
+        MD_CHECK_PTR( information );
+        MD_CHECK_CC( information->SetDeltaReportReadEquation( "dw@0x1c8 0x10 AND" ) );
 
         information = AddInformation( "MidQueryFreqChange", "Mid Query Freq Change", "The flag indicating that frequency change report was detected during query.", "Report Meta Data", API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL, INFORMATION_TYPE_FLAG, nullptr, nullptr, concurrentGroupInformationCount + 11 );
-        if( information )
-        {
-            information->SetDeltaReportReadEquation( "dw@0x1c8 0x20 AND" );
-        }
+        MD_CHECK_PTR( information );
+        MD_CHECK_CC( information->SetDeltaReportReadEquation( "dw@0x1c8 0x20 AND" ) );
 
-        RefreshConfigRegisters();
+        MD_CHECK_CC( RefreshConfigRegisters() );
+
         return CC_OK;
 
     exception:
@@ -4058,134 +3967,111 @@ namespace MetricsDiscoveryInternal::MetricSets_HSW_OA
         }
 
         information = AddInformation( "QueryBeginTime", "Query Begin Time", "The measurement begin time.", "Report Meta Data", API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM, INFORMATION_TYPE_TIMESTAMP, "ns", nullptr, concurrentGroupInformationCount + 0 );
-        if( information )
-        {
-            information->SetSnapshotReportReadEquation( "dw@0x04 1000000000 UMUL $GpuTimestampFrequency UDIV" );
-            information->SetDeltaReportReadEquation( "qw@0x168" );
-            information->SetOverflowFunction( "NS_TIME" );
-        }
+        MD_CHECK_PTR( information );
+        MD_CHECK_CC( information->SetSnapshotReportReadEquation( "dw@0x04 1000000000 UMUL $GpuTimestampFrequency UDIV" ) );
+        MD_CHECK_CC( information->SetDeltaReportReadEquation( "qw@0x168" ) );
+        MD_CHECK_CC( information->SetOverflowFunction( "NS_TIME" ) );
 
         information = AddInformation( "CoreFrequencyMHz", "GPU Core Frequency", "The last core frequency in the measurement.", "Report Meta Data", API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL, INFORMATION_TYPE_VALUE, "MHz", nullptr, concurrentGroupInformationCount + 1 );
-        if( information )
-        {
-            information->SetDeltaReportReadEquation( "qw@0x208 1000000 UDIV" );
-        }
+        MD_CHECK_PTR( information );
+        MD_CHECK_CC( information->SetDeltaReportReadEquation( "qw@0x208 1000000 UDIV" ) );
 
         information = AddInformation( "ReportReason", "Report Reason", "The reason of the report.", "Report Meta Data", API_TYPE_IOSTREAM, INFORMATION_TYPE_REPORT_REASON, nullptr, nullptr, concurrentGroupInformationCount + 2 );
-        if( information )
-        {
-            information->SetSnapshotReportReadEquation( "dw@0x0 16 >> 0x3 AND" );
-        }
+        MD_CHECK_PTR( information );
+        MD_CHECK_CC( information->SetSnapshotReportReadEquation( "dw@0x0 16 >> 0x3 AND" ) );
 
         information = AddInformation( "ContextId", "Context ID", "The context tag in which report has been taken.", "Report Meta Data", API_TYPE_IOSTREAM, INFORMATION_TYPE_CONTEXT_ID_TAG, nullptr, nullptr, concurrentGroupInformationCount + 3 );
-        if( information )
-        {
-            information->SetSnapshotReportReadEquation( "dw@0x08" );
-        }
+        MD_CHECK_PTR( information );
+        MD_CHECK_CC( information->SetSnapshotReportReadEquation( "dw@0x08" ) );
 
         information = AddInformation( "CoreFrequencyChanged", "Core Frequency Changed", "The flag indicating that core frequency has changed.", "Exception", API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL, INFORMATION_TYPE_FLAG, nullptr, nullptr, concurrentGroupInformationCount + 4 );
-        if( information )
-        {
-            information->SetDeltaReportReadEquation( "dw@0x204" );
-        }
+        MD_CHECK_PTR( information );
+        MD_CHECK_CC( information->SetDeltaReportReadEquation( "dw@0x204" ) );
 
         information = AddInformation( "QuerySplitOccurred", "Query Split Occurred", "The flag indicating that query has been split during execution on the GPU.", "Exception", API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL, INFORMATION_TYPE_FLAG, nullptr, nullptr, concurrentGroupInformationCount + 5 );
-        if( information )
-        {
-            information->SetDeltaReportReadEquation( "dw@0x200" );
-        }
+        MD_CHECK_PTR( information );
+        MD_CHECK_CC( information->SetDeltaReportReadEquation( "dw@0x200" ) );
 
         information = AddInformation( "MidQueryTimer", "Mid Query Timer", "The flag indicating that timer report was detected during query.", "Report Meta Data", API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL, INFORMATION_TYPE_FLAG, nullptr, nullptr, concurrentGroupInformationCount + 6 );
-        if( information )
-        {
-            information->SetDeltaReportReadEquation( "dw@0x1c8 0x01 AND" );
-        }
+        MD_CHECK_PTR( information );
+        MD_CHECK_CC( information->SetDeltaReportReadEquation( "dw@0x1c8 0x01 AND" ) );
 
         information = AddInformation( "MidQueryProgramming", "Mid Query Programming", "The flag indicating that counter programming report was detected during query.", "Report Meta Data", API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL, INFORMATION_TYPE_FLAG, nullptr, nullptr, concurrentGroupInformationCount + 7 );
-        if( information )
-        {
-            information->SetDeltaReportReadEquation( "dw@0x1c8 0x02 AND" );
-        }
+        MD_CHECK_PTR( information );
+        MD_CHECK_CC( information->SetDeltaReportReadEquation( "dw@0x1c8 0x02 AND" ) );
 
         information = AddInformation( "MidQueryMarker", "Mid Query Marker", "The flag indicating that query marker report was detected during query.", "Report Meta Data", API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL, INFORMATION_TYPE_FLAG, nullptr, nullptr, concurrentGroupInformationCount + 8 );
-        if( information )
-        {
-            information->SetDeltaReportReadEquation( "dw@0x1c8 0x04 AND" );
-        }
+        MD_CHECK_PTR( information );
+        MD_CHECK_CC( information->SetDeltaReportReadEquation( "dw@0x1c8 0x04 AND" ) );
 
         information = AddInformation( "MidQueryCtxSwitch", "Mid Query Context Switch", "The flag indicating that context switch report was detected during query.", "Report Meta Data", API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL, INFORMATION_TYPE_FLAG, nullptr, nullptr, concurrentGroupInformationCount + 9 );
-        if( information )
-        {
-            information->SetDeltaReportReadEquation( "dw@0x1c8 0x08 AND" );
-        }
+        MD_CHECK_PTR( information );
+        MD_CHECK_CC( information->SetDeltaReportReadEquation( "dw@0x1c8 0x08 AND" ) );
 
         information = AddInformation( "MidQueryC6", "Mid Query C6", "The flag indicating that C6 report was detected during query.", "Report Meta Data", API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL, INFORMATION_TYPE_FLAG, nullptr, nullptr, concurrentGroupInformationCount + 10 );
-        if( information )
-        {
-            information->SetDeltaReportReadEquation( "dw@0x1c8 0x10 AND" );
-        }
+        MD_CHECK_PTR( information );
+        MD_CHECK_CC( information->SetDeltaReportReadEquation( "dw@0x1c8 0x10 AND" ) );
 
         information = AddInformation( "MidQueryFreqChange", "Mid Query Freq Change", "The flag indicating that frequency change report was detected during query.", "Report Meta Data", API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL, INFORMATION_TYPE_FLAG, nullptr, nullptr, concurrentGroupInformationCount + 11 );
-        if( information )
-        {
-            information->SetDeltaReportReadEquation( "dw@0x1c8 0x20 AND" );
-        }
+        MD_CHECK_PTR( information );
+        MD_CHECK_CC( information->SetDeltaReportReadEquation( "dw@0x1c8 0x20 AND" ) );
 
         availabilityEquation = nullptr;
         if( AddStartRegisterSet( 0, 0, availabilityEquation ) == CC_OK )
         {
-            AddStartConfigRegister( 0x9840, 0x00000080, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x253A4, 0x34300000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x25440, 0x2D800000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x25444, 0x00000008, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x25128, 0x0E600000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x25380, 0x00000450, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x25390, 0x00052C43, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x25384, 0x00000000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x25400, 0x00006144, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x25408, 0x0A418820, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x2540C, 0x000820E6, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x25404, 0xFF500000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x25100, 0x000005D6, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x2510C, 0x0EF00000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x25104, 0x00000000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x25420, 0x02108421, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x25424, 0x00008421, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x2541C, 0x00000000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x25428, 0x00000000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x2724, 0xf0800000, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x2720, 0x00000000, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x2714, 0xf0800000, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x2710, 0x00000000, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x274c, 0x76543298, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x2748, 0x98989898, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x2744, 0x000000e4, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x2740, 0x00000000, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x275c, 0x98a98a98, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x2758, 0x88888888, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x2754, 0x000c5500, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x2750, 0x00000000, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x2770, 0x0007f81a, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x2774, 0x0000fc00, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x2778, 0x0007f82a, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x277c, 0x0000fc00, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x2780, 0x0007f872, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x2784, 0x0000fc00, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x2788, 0x0007f8ba, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x278c, 0x0000fc00, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x2790, 0x0007f87a, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x2794, 0x0000fc00, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x2798, 0x0007f8ea, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x279c, 0x0000fc00, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x27a0, 0x0007f8e2, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x27a4, 0x0000fc00, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x27a8, 0x0007f8f2, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x27ac, 0x0000fc00, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x91bc, 0xe0400000, REGISTER_TYPE_PM );
-            AddStartConfigRegister( 0x91c4, 0xe4500000, REGISTER_TYPE_PM );
+            MD_CHECK_CC( AddStartConfigRegister( 0x9840, 0x00000080, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x253A4, 0x34300000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x25440, 0x2D800000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x25444, 0x00000008, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x25128, 0x0E600000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x25380, 0x00000450, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x25390, 0x00052C43, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x25384, 0x00000000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x25400, 0x00006144, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x25408, 0x0A418820, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2540C, 0x000820E6, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x25404, 0xFF500000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x25100, 0x000005D6, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2510C, 0x0EF00000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x25104, 0x00000000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x25420, 0x02108421, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x25424, 0x00008421, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2541C, 0x00000000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x25428, 0x00000000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2724, 0xf0800000, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2720, 0x00000000, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2714, 0xf0800000, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2710, 0x00000000, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x274c, 0x76543298, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2748, 0x98989898, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2744, 0x000000e4, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2740, 0x00000000, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x275c, 0x98a98a98, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2758, 0x88888888, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2754, 0x000c5500, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2750, 0x00000000, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2770, 0x0007f81a, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2774, 0x0000fc00, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2778, 0x0007f82a, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x277c, 0x0000fc00, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2780, 0x0007f872, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2784, 0x0000fc00, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2788, 0x0007f8ba, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x278c, 0x0000fc00, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2790, 0x0007f87a, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2794, 0x0000fc00, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2798, 0x0007f8ea, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x279c, 0x0000fc00, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x27a0, 0x0007f8e2, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x27a4, 0x0000fc00, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x27a8, 0x0007f8f2, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x27ac, 0x0000fc00, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x91bc, 0xe0400000, REGISTER_TYPE_PM ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x91c4, 0xe4500000, REGISTER_TYPE_PM ) );
         }
 
-        RefreshConfigRegisters();
+        MD_CHECK_CC( RefreshConfigRegisters() );
+
         return CC_OK;
 
     exception:
@@ -4934,134 +4820,111 @@ namespace MetricsDiscoveryInternal::MetricSets_HSW_OA
         }
 
         information = AddInformation( "QueryBeginTime", "Query Begin Time", "The measurement begin time.", "Report Meta Data", API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM, INFORMATION_TYPE_TIMESTAMP, "ns", nullptr, concurrentGroupInformationCount + 0 );
-        if( information )
-        {
-            information->SetSnapshotReportReadEquation( "dw@0x04 1000000000 UMUL $GpuTimestampFrequency UDIV" );
-            information->SetDeltaReportReadEquation( "qw@0x168" );
-            information->SetOverflowFunction( "NS_TIME" );
-        }
+        MD_CHECK_PTR( information );
+        MD_CHECK_CC( information->SetSnapshotReportReadEquation( "dw@0x04 1000000000 UMUL $GpuTimestampFrequency UDIV" ) );
+        MD_CHECK_CC( information->SetDeltaReportReadEquation( "qw@0x168" ) );
+        MD_CHECK_CC( information->SetOverflowFunction( "NS_TIME" ) );
 
         information = AddInformation( "CoreFrequencyMHz", "GPU Core Frequency", "The last core frequency in the measurement.", "Report Meta Data", API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL, INFORMATION_TYPE_VALUE, "MHz", nullptr, concurrentGroupInformationCount + 1 );
-        if( information )
-        {
-            information->SetDeltaReportReadEquation( "qw@0x208 1000000 UDIV" );
-        }
+        MD_CHECK_PTR( information );
+        MD_CHECK_CC( information->SetDeltaReportReadEquation( "qw@0x208 1000000 UDIV" ) );
 
         information = AddInformation( "ReportReason", "Report Reason", "The reason of the report.", "Report Meta Data", API_TYPE_IOSTREAM, INFORMATION_TYPE_REPORT_REASON, nullptr, nullptr, concurrentGroupInformationCount + 2 );
-        if( information )
-        {
-            information->SetSnapshotReportReadEquation( "dw@0x0 16 >> 0x3 AND" );
-        }
+        MD_CHECK_PTR( information );
+        MD_CHECK_CC( information->SetSnapshotReportReadEquation( "dw@0x0 16 >> 0x3 AND" ) );
 
         information = AddInformation( "ContextId", "Context ID", "The context tag in which report has been taken.", "Report Meta Data", API_TYPE_IOSTREAM, INFORMATION_TYPE_CONTEXT_ID_TAG, nullptr, nullptr, concurrentGroupInformationCount + 3 );
-        if( information )
-        {
-            information->SetSnapshotReportReadEquation( "dw@0x08" );
-        }
+        MD_CHECK_PTR( information );
+        MD_CHECK_CC( information->SetSnapshotReportReadEquation( "dw@0x08" ) );
 
         information = AddInformation( "CoreFrequencyChanged", "Core Frequency Changed", "The flag indicating that core frequency has changed.", "Exception", API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL, INFORMATION_TYPE_FLAG, nullptr, nullptr, concurrentGroupInformationCount + 4 );
-        if( information )
-        {
-            information->SetDeltaReportReadEquation( "dw@0x204" );
-        }
+        MD_CHECK_PTR( information );
+        MD_CHECK_CC( information->SetDeltaReportReadEquation( "dw@0x204" ) );
 
         information = AddInformation( "QuerySplitOccurred", "Query Split Occurred", "The flag indicating that query has been split during execution on the GPU.", "Exception", API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL, INFORMATION_TYPE_FLAG, nullptr, nullptr, concurrentGroupInformationCount + 5 );
-        if( information )
-        {
-            information->SetDeltaReportReadEquation( "dw@0x200" );
-        }
+        MD_CHECK_PTR( information );
+        MD_CHECK_CC( information->SetDeltaReportReadEquation( "dw@0x200" ) );
 
         information = AddInformation( "MidQueryTimer", "Mid Query Timer", "The flag indicating that timer report was detected during query.", "Report Meta Data", API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL, INFORMATION_TYPE_FLAG, nullptr, nullptr, concurrentGroupInformationCount + 6 );
-        if( information )
-        {
-            information->SetDeltaReportReadEquation( "dw@0x1c8 0x01 AND" );
-        }
+        MD_CHECK_PTR( information );
+        MD_CHECK_CC( information->SetDeltaReportReadEquation( "dw@0x1c8 0x01 AND" ) );
 
         information = AddInformation( "MidQueryProgramming", "Mid Query Programming", "The flag indicating that counter programming report was detected during query.", "Report Meta Data", API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL, INFORMATION_TYPE_FLAG, nullptr, nullptr, concurrentGroupInformationCount + 7 );
-        if( information )
-        {
-            information->SetDeltaReportReadEquation( "dw@0x1c8 0x02 AND" );
-        }
+        MD_CHECK_PTR( information );
+        MD_CHECK_CC( information->SetDeltaReportReadEquation( "dw@0x1c8 0x02 AND" ) );
 
         information = AddInformation( "MidQueryMarker", "Mid Query Marker", "The flag indicating that query marker report was detected during query.", "Report Meta Data", API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL, INFORMATION_TYPE_FLAG, nullptr, nullptr, concurrentGroupInformationCount + 8 );
-        if( information )
-        {
-            information->SetDeltaReportReadEquation( "dw@0x1c8 0x04 AND" );
-        }
+        MD_CHECK_PTR( information );
+        MD_CHECK_CC( information->SetDeltaReportReadEquation( "dw@0x1c8 0x04 AND" ) );
 
         information = AddInformation( "MidQueryCtxSwitch", "Mid Query Context Switch", "The flag indicating that context switch report was detected during query.", "Report Meta Data", API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL, INFORMATION_TYPE_FLAG, nullptr, nullptr, concurrentGroupInformationCount + 9 );
-        if( information )
-        {
-            information->SetDeltaReportReadEquation( "dw@0x1c8 0x08 AND" );
-        }
+        MD_CHECK_PTR( information );
+        MD_CHECK_CC( information->SetDeltaReportReadEquation( "dw@0x1c8 0x08 AND" ) );
 
         information = AddInformation( "MidQueryC6", "Mid Query C6", "The flag indicating that C6 report was detected during query.", "Report Meta Data", API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL, INFORMATION_TYPE_FLAG, nullptr, nullptr, concurrentGroupInformationCount + 10 );
-        if( information )
-        {
-            information->SetDeltaReportReadEquation( "dw@0x1c8 0x10 AND" );
-        }
+        MD_CHECK_PTR( information );
+        MD_CHECK_CC( information->SetDeltaReportReadEquation( "dw@0x1c8 0x10 AND" ) );
 
         information = AddInformation( "MidQueryFreqChange", "Mid Query Freq Change", "The flag indicating that frequency change report was detected during query.", "Report Meta Data", API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL, INFORMATION_TYPE_FLAG, nullptr, nullptr, concurrentGroupInformationCount + 11 );
-        if( information )
-        {
-            information->SetDeltaReportReadEquation( "dw@0x1c8 0x20 AND" );
-        }
+        MD_CHECK_PTR( information );
+        MD_CHECK_CC( information->SetDeltaReportReadEquation( "dw@0x1c8 0x20 AND" ) );
 
         availabilityEquation = nullptr;
         if( AddStartRegisterSet( 0, 0, availabilityEquation ) == CC_OK )
         {
-            AddStartConfigRegister( 0x9840, 0x00000080, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x253A4, 0x34300000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x25440, 0x01500000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x25444, 0x00000120, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x25128, 0x0C200000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x25380, 0x00000450, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x25390, 0x00052C43, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x25384, 0x00000000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x25400, 0x00007184, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x25408, 0x0A418820, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x2540C, 0x000820E6, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x25404, 0xFF500000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x25100, 0x000005D6, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x2510C, 0x1E700000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x25104, 0x00000000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x25420, 0x02108421, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x25424, 0x00008421, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x2541C, 0x00000000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x25428, 0x00000000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x2724, 0xf0800000, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x2720, 0x00000000, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x2714, 0xf0800000, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x2710, 0x00000000, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x274c, 0x76543298, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x2748, 0x98989898, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x2744, 0x000000e4, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x2740, 0x00000000, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x275c, 0xbabababa, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x2758, 0x88888888, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x2754, 0x000c5500, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x2750, 0x00000000, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x2770, 0x0007f81a, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x2774, 0x0000fc00, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x2778, 0x0007f82a, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x277c, 0x0000fc00, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x2780, 0x0007f822, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x2784, 0x0000fc00, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x2788, 0x0007f8ba, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x278c, 0x0000fc00, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x2790, 0x0007f87a, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x2794, 0x0000fc00, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x2798, 0x0007f8ea, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x279c, 0x0000fc00, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x27a0, 0x0007f8e2, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x27a4, 0x0000fc00, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x27a8, 0x0007f8f2, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x27ac, 0x0000fc00, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x91bc, 0xe0400000, REGISTER_TYPE_PM );
-            AddStartConfigRegister( 0x91c4, 0xe4500000, REGISTER_TYPE_PM );
+            MD_CHECK_CC( AddStartConfigRegister( 0x9840, 0x00000080, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x253A4, 0x34300000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x25440, 0x01500000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x25444, 0x00000120, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x25128, 0x0C200000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x25380, 0x00000450, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x25390, 0x00052C43, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x25384, 0x00000000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x25400, 0x00007184, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x25408, 0x0A418820, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2540C, 0x000820E6, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x25404, 0xFF500000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x25100, 0x000005D6, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2510C, 0x1E700000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x25104, 0x00000000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x25420, 0x02108421, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x25424, 0x00008421, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2541C, 0x00000000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x25428, 0x00000000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2724, 0xf0800000, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2720, 0x00000000, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2714, 0xf0800000, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2710, 0x00000000, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x274c, 0x76543298, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2748, 0x98989898, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2744, 0x000000e4, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2740, 0x00000000, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x275c, 0xbabababa, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2758, 0x88888888, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2754, 0x000c5500, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2750, 0x00000000, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2770, 0x0007f81a, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2774, 0x0000fc00, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2778, 0x0007f82a, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x277c, 0x0000fc00, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2780, 0x0007f822, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2784, 0x0000fc00, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2788, 0x0007f8ba, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x278c, 0x0000fc00, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2790, 0x0007f87a, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2794, 0x0000fc00, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2798, 0x0007f8ea, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x279c, 0x0000fc00, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x27a0, 0x0007f8e2, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x27a4, 0x0000fc00, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x27a8, 0x0007f8f2, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x27ac, 0x0000fc00, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x91bc, 0xe0400000, REGISTER_TYPE_PM ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x91c4, 0xe4500000, REGISTER_TYPE_PM ) );
         }
 
-        RefreshConfigRegisters();
+        MD_CHECK_CC( RefreshConfigRegisters() );
+
         return CC_OK;
 
     exception:
@@ -5797,134 +5660,111 @@ namespace MetricsDiscoveryInternal::MetricSets_HSW_OA
         }
 
         information = AddInformation( "QueryBeginTime", "Query Begin Time", "The measurement begin time.", "Report Meta Data", API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM, INFORMATION_TYPE_TIMESTAMP, "ns", nullptr, concurrentGroupInformationCount + 0 );
-        if( information )
-        {
-            information->SetSnapshotReportReadEquation( "dw@0x04 1000000000 UMUL $GpuTimestampFrequency UDIV" );
-            information->SetDeltaReportReadEquation( "qw@0x168" );
-            information->SetOverflowFunction( "NS_TIME" );
-        }
+        MD_CHECK_PTR( information );
+        MD_CHECK_CC( information->SetSnapshotReportReadEquation( "dw@0x04 1000000000 UMUL $GpuTimestampFrequency UDIV" ) );
+        MD_CHECK_CC( information->SetDeltaReportReadEquation( "qw@0x168" ) );
+        MD_CHECK_CC( information->SetOverflowFunction( "NS_TIME" ) );
 
         information = AddInformation( "CoreFrequencyMHz", "GPU Core Frequency", "The last core frequency in the measurement.", "Report Meta Data", API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL, INFORMATION_TYPE_VALUE, "MHz", nullptr, concurrentGroupInformationCount + 1 );
-        if( information )
-        {
-            information->SetDeltaReportReadEquation( "qw@0x208 1000000 UDIV" );
-        }
+        MD_CHECK_PTR( information );
+        MD_CHECK_CC( information->SetDeltaReportReadEquation( "qw@0x208 1000000 UDIV" ) );
 
         information = AddInformation( "ReportReason", "Report Reason", "The reason of the report.", "Report Meta Data", API_TYPE_IOSTREAM, INFORMATION_TYPE_REPORT_REASON, nullptr, nullptr, concurrentGroupInformationCount + 2 );
-        if( information )
-        {
-            information->SetSnapshotReportReadEquation( "dw@0x0 16 >> 0x3 AND" );
-        }
+        MD_CHECK_PTR( information );
+        MD_CHECK_CC( information->SetSnapshotReportReadEquation( "dw@0x0 16 >> 0x3 AND" ) );
 
         information = AddInformation( "ContextId", "Context ID", "The context tag in which report has been taken.", "Report Meta Data", API_TYPE_IOSTREAM, INFORMATION_TYPE_CONTEXT_ID_TAG, nullptr, nullptr, concurrentGroupInformationCount + 3 );
-        if( information )
-        {
-            information->SetSnapshotReportReadEquation( "dw@0x08" );
-        }
+        MD_CHECK_PTR( information );
+        MD_CHECK_CC( information->SetSnapshotReportReadEquation( "dw@0x08" ) );
 
         information = AddInformation( "CoreFrequencyChanged", "Core Frequency Changed", "The flag indicating that core frequency has changed.", "Exception", API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL, INFORMATION_TYPE_FLAG, nullptr, nullptr, concurrentGroupInformationCount + 4 );
-        if( information )
-        {
-            information->SetDeltaReportReadEquation( "dw@0x204" );
-        }
+        MD_CHECK_PTR( information );
+        MD_CHECK_CC( information->SetDeltaReportReadEquation( "dw@0x204" ) );
 
         information = AddInformation( "QuerySplitOccurred", "Query Split Occurred", "The flag indicating that query has been split during execution on the GPU.", "Exception", API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL, INFORMATION_TYPE_FLAG, nullptr, nullptr, concurrentGroupInformationCount + 5 );
-        if( information )
-        {
-            information->SetDeltaReportReadEquation( "dw@0x200" );
-        }
+        MD_CHECK_PTR( information );
+        MD_CHECK_CC( information->SetDeltaReportReadEquation( "dw@0x200" ) );
 
         information = AddInformation( "MidQueryTimer", "Mid Query Timer", "The flag indicating that timer report was detected during query.", "Report Meta Data", API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL, INFORMATION_TYPE_FLAG, nullptr, nullptr, concurrentGroupInformationCount + 6 );
-        if( information )
-        {
-            information->SetDeltaReportReadEquation( "dw@0x1c8 0x01 AND" );
-        }
+        MD_CHECK_PTR( information );
+        MD_CHECK_CC( information->SetDeltaReportReadEquation( "dw@0x1c8 0x01 AND" ) );
 
         information = AddInformation( "MidQueryProgramming", "Mid Query Programming", "The flag indicating that counter programming report was detected during query.", "Report Meta Data", API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL, INFORMATION_TYPE_FLAG, nullptr, nullptr, concurrentGroupInformationCount + 7 );
-        if( information )
-        {
-            information->SetDeltaReportReadEquation( "dw@0x1c8 0x02 AND" );
-        }
+        MD_CHECK_PTR( information );
+        MD_CHECK_CC( information->SetDeltaReportReadEquation( "dw@0x1c8 0x02 AND" ) );
 
         information = AddInformation( "MidQueryMarker", "Mid Query Marker", "The flag indicating that query marker report was detected during query.", "Report Meta Data", API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL, INFORMATION_TYPE_FLAG, nullptr, nullptr, concurrentGroupInformationCount + 8 );
-        if( information )
-        {
-            information->SetDeltaReportReadEquation( "dw@0x1c8 0x04 AND" );
-        }
+        MD_CHECK_PTR( information );
+        MD_CHECK_CC( information->SetDeltaReportReadEquation( "dw@0x1c8 0x04 AND" ) );
 
         information = AddInformation( "MidQueryCtxSwitch", "Mid Query Context Switch", "The flag indicating that context switch report was detected during query.", "Report Meta Data", API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL, INFORMATION_TYPE_FLAG, nullptr, nullptr, concurrentGroupInformationCount + 9 );
-        if( information )
-        {
-            information->SetDeltaReportReadEquation( "dw@0x1c8 0x08 AND" );
-        }
+        MD_CHECK_PTR( information );
+        MD_CHECK_CC( information->SetDeltaReportReadEquation( "dw@0x1c8 0x08 AND" ) );
 
         information = AddInformation( "MidQueryC6", "Mid Query C6", "The flag indicating that C6 report was detected during query.", "Report Meta Data", API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL, INFORMATION_TYPE_FLAG, nullptr, nullptr, concurrentGroupInformationCount + 10 );
-        if( information )
-        {
-            information->SetDeltaReportReadEquation( "dw@0x1c8 0x10 AND" );
-        }
+        MD_CHECK_PTR( information );
+        MD_CHECK_CC( information->SetDeltaReportReadEquation( "dw@0x1c8 0x10 AND" ) );
 
         information = AddInformation( "MidQueryFreqChange", "Mid Query Freq Change", "The flag indicating that frequency change report was detected during query.", "Report Meta Data", API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL, INFORMATION_TYPE_FLAG, nullptr, nullptr, concurrentGroupInformationCount + 11 );
-        if( information )
-        {
-            information->SetDeltaReportReadEquation( "dw@0x1c8 0x20 AND" );
-        }
+        MD_CHECK_PTR( information );
+        MD_CHECK_CC( information->SetDeltaReportReadEquation( "dw@0x1c8 0x20 AND" ) );
 
         availabilityEquation = nullptr;
         if( AddStartRegisterSet( 0, 0, availabilityEquation ) == CC_OK )
         {
-            AddStartConfigRegister( 0x9840, 0x00000080, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x2eb9c, 0x01906400, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x2fb9c, 0x01906400, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x253a4, 0x00000000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x26b9c, 0x01906400, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x27b9c, 0x01906400, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x27104, 0x00a00000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x27184, 0x00a50000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x2e804, 0x00500000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x2e984, 0x00500000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x2eb04, 0x00500000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x2eb80, 0x00000084, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x2eb8c, 0x14200000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x2eb84, 0x00000000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x2f804, 0x00050000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x2f984, 0x00050000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x2fb04, 0x00050000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x2fb80, 0x00000084, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x2fb8c, 0x00050800, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x2fb84, 0x00000000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x25380, 0x00000010, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x2538c, 0x000000c0, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x25384, 0xaa550000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x25404, 0xffffc000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x26804, 0x50000000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x26984, 0x50000000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x26b04, 0x50000000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x26b80, 0x00000084, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x26b90, 0x00050800, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x26b84, 0x00000000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x27804, 0x05000000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x27984, 0x05000000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x27b04, 0x05000000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x27b80, 0x00000084, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x27b90, 0x00000142, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x27b84, 0x00000000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x26104, 0xa0000000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x26184, 0xa5000000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x25424, 0x00008620, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x2541c, 0x00000000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x25428, 0x0004a54a, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x2740, 0x00000000, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x2744, 0x00800000, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x2710, 0x00000000, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x2714, 0x00800000, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x2720, 0x00000000, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x2724, 0x00800000, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x91bc, 0xe0400000, REGISTER_TYPE_PM );
-            AddStartConfigRegister( 0x91c4, 0xe4500000, REGISTER_TYPE_PM );
+            MD_CHECK_CC( AddStartConfigRegister( 0x9840, 0x00000080, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2eb9c, 0x01906400, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2fb9c, 0x01906400, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x253a4, 0x00000000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x26b9c, 0x01906400, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x27b9c, 0x01906400, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x27104, 0x00a00000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x27184, 0x00a50000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2e804, 0x00500000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2e984, 0x00500000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2eb04, 0x00500000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2eb80, 0x00000084, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2eb8c, 0x14200000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2eb84, 0x00000000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2f804, 0x00050000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2f984, 0x00050000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2fb04, 0x00050000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2fb80, 0x00000084, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2fb8c, 0x00050800, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2fb84, 0x00000000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x25380, 0x00000010, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2538c, 0x000000c0, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x25384, 0xaa550000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x25404, 0xffffc000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x26804, 0x50000000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x26984, 0x50000000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x26b04, 0x50000000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x26b80, 0x00000084, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x26b90, 0x00050800, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x26b84, 0x00000000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x27804, 0x05000000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x27984, 0x05000000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x27b04, 0x05000000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x27b80, 0x00000084, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x27b90, 0x00000142, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x27b84, 0x00000000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x26104, 0xa0000000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x26184, 0xa5000000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x25424, 0x00008620, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2541c, 0x00000000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x25428, 0x0004a54a, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2740, 0x00000000, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2744, 0x00800000, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2710, 0x00000000, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2714, 0x00800000, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2720, 0x00000000, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2724, 0x00800000, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x91bc, 0xe0400000, REGISTER_TYPE_PM ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x91c4, 0xe4500000, REGISTER_TYPE_PM ) );
         }
 
-        RefreshConfigRegisters();
+        MD_CHECK_CC( RefreshConfigRegisters() );
+
         return CC_OK;
 
     exception:

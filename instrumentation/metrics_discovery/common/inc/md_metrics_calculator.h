@@ -978,6 +978,7 @@ namespace MetricsDiscoveryInternal
                     {
                         case GENERATION_BMG:
                         case GENERATION_LNL:
+                        case GENERATION_PTL:
                             deltaFunction.BitsCount = 56;
                             break;
                         default:
@@ -1210,13 +1211,22 @@ namespace MetricsDiscoveryInternal
                     }
 
                     case EQUATION_ELEM_LOCAL_COUNTER_SYMBOL:
+                        if( m_gpuCoreClocks != 0 && std::string_view( element.SymbolName ) == "GpuCoreClocks" )
+                        {
+                            typedValue.ValueUInt64 = m_gpuCoreClocks;
+                            typedValue.ValueType   = VALUE_TYPE_UINT64;
+                            isValid                = EquationStackPush( m_readEquationStack, typedValue, algorithmCheck );
+                            break;
+                        }
+
                         typedValue.ValueUInt64 = 0LL;
                         typedValue.ValueType   = VALUE_TYPE_UINT64;
                         isValid                = EquationStackPush( m_readEquationStack, typedValue, algorithmCheck );
 
-                        if( IsPlatformMatch( m_device.GetPlatformIndex(), GENERATION_ACM ) &&
+                        if( IsPlatformMatch( m_device.GetPlatformIndex(), GENERATION_ACM, GENERATION_PVC, GENERATION_MTL, GENERATION_ARL ) &&
                             strstr( element.SymbolName, "GtSlice" ) != nullptr )
                         {
+                            // Exception for missing global symbols (GtSlice[X]XeCore[Y]) in read equations.
                             break;
                         }
                         // Asserts, because this is not a valid condition
@@ -1283,6 +1293,7 @@ namespace MetricsDiscoveryInternal
                 {
                     case GENERATION_BMG:
                     case GENERATION_LNL:
+                    case GENERATION_PTL:
                         readDeltaFunction.BitsCount = 56;
                         break;
                     default:
@@ -1442,13 +1453,22 @@ namespace MetricsDiscoveryInternal
                     }
 
                     case EQUATION_ELEM_LOCAL_COUNTER_SYMBOL:
+                        if( m_gpuCoreClocks != 0 && std::string_view( element.SymbolName ) == "GpuCoreClocks" )
+                        {
+                            typedValue.ValueUInt64 = m_gpuCoreClocks;
+                            typedValue.ValueType   = VALUE_TYPE_UINT64;
+                            isValid                = EquationStackPush( m_readEquationAndDeltaStack, typedValue, algorithmCheck );
+                            break;
+                        }
+
                         typedValue.ValueUInt64 = 0LL;
                         typedValue.ValueType   = VALUE_TYPE_UINT64;
                         isValid                = EquationStackPush( m_readEquationAndDeltaStack, typedValue, algorithmCheck );
 
-                        if( IsPlatformMatch( m_device.GetPlatformIndex(), GENERATION_ACM ) &&
+                        if( IsPlatformMatch( m_device.GetPlatformIndex(), GENERATION_ACM, GENERATION_PVC, GENERATION_MTL, GENERATION_ARL ) &&
                             strstr( element.SymbolName, "GtSlice" ) != nullptr )
                         {
+                            // Exception for missing global symbols (GtSlice[X]XeCore[Y]) in read equations.
                             break;
                         }
                         // Asserts, because this is not a valid condition

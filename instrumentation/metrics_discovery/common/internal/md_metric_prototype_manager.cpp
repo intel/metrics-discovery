@@ -165,14 +165,18 @@ namespace MetricsDiscoveryInternal
             uint32_t snapshotReportOffsets = 0;
             uint32_t deltaReportOffsets    = 0;
 
-            AppendPesConfiguration( hwEvent, pesProgramming, pesProgrammed, flexProgramming, snapshotReportOffsets, deltaReportOffsets );
+            MD_CHECK_CC( AppendPesConfiguration( hwEvent, pesProgramming, pesProgrammed, flexProgramming, snapshotReportOffsets, deltaReportOffsets ) );
 
-            AddEquations( *metricPrototype, *metric, snapshotReportOffsets, deltaReportOffsets );
+            MD_CHECK_CC( AddEquations( *metricPrototype, *metric, snapshotReportOffsets, deltaReportOffsets ) );
         }
 
-        AppendFlexConfiguration( flexProgramming );
+        MD_CHECK_CC( AppendFlexConfiguration( flexProgramming ) );
 
         return CC_OK;
+
+    exception:
+        MD_LOG_A( adapterId, LOG_ERROR, "Failed to create metrics and their equations from prototypes" );
+        return CC_ERROR_GENERAL;
     }
 
     //////////////////////////////////////////////////////////////////////////////
@@ -575,20 +579,28 @@ namespace MetricsDiscoveryInternal
     //     const uint32_t    snapshotReportOffset - snapshot report offset for the metric.
     //     const uint32_t    deltaReportOffset    - delta report offset for the metric.
     //
+    // Output:
+    //     TCompletionCode                        - result, *CC_OK* is ok
+    //
     //////////////////////////////////////////////////////////////////////////////
-    void CPrototypeManager::AddEquations( CMetricPrototype& prototype, CMetric& metric, const uint32_t snapshotReportOffset, const uint32_t deltaReportOffset )
+    TCompletionCode CPrototypeManager::AddEquations( CMetricPrototype& prototype, CMetric& metric, const uint32_t snapshotReportOffset, const uint32_t deltaReportOffset )
     {
+        TCompletionCode ret       = CC_OK;
+        const uint32_t  adapterId = m_device.GetAdapter().GetAdapterId();
+
         // Snapshot report read equation.
         std::stringstream snapshotReportReadEquation;
         if( m_snapshotCounterSize == sizeof( uint64_t ) )
         {
             snapshotReportReadEquation << "qw@0x" << std::hex << snapshotReportOffset;
-            metric.SetSnapshotReportDeltaFunction( "DELTA 64" );
+            ret = metric.SetSnapshotReportDeltaFunction( "DELTA 64" );
+            MD_CHECK_CC_RET_A( adapterId, ret );
         }
         else
         {
             snapshotReportReadEquation << "dw@0x" << std::hex << snapshotReportOffset;
-            metric.SetSnapshotReportDeltaFunction( "DELTA 32" );
+            ret = metric.SetSnapshotReportDeltaFunction( "DELTA 32" );
+            MD_CHECK_CC_RET_A( adapterId, ret );
         }
 
         // Delta report read equation.
@@ -596,11 +608,17 @@ namespace MetricsDiscoveryInternal
         deltaReportReadEquation << "qw@0x" << std::hex << deltaReportOffset;
 
         // Get equations for enabled options and workarounds.
-        AppendNormalizationsAndWorkarounds( prototype, metric, snapshotReportReadEquation, deltaReportReadEquation );
+        ret = AppendNormalizationsAndWorkarounds( prototype, metric, snapshotReportReadEquation, deltaReportReadEquation );
+        MD_CHECK_CC_RET_A( adapterId, ret );
 
         // Set snapshot and delta report read equations.
-        metric.SetSnapshotReportReadEquation( ( snapshotReportOffset != 0 ) ? snapshotReportReadEquation.str().c_str() : "" );
-        metric.SetDeltaReportReadEquation( ( deltaReportOffset != 0 ) ? deltaReportReadEquation.str().c_str() : "" );
+        ret = metric.SetSnapshotReportReadEquation( ( snapshotReportOffset != 0 ) ? snapshotReportReadEquation.str().c_str() : "" );
+        MD_CHECK_CC_RET_A( adapterId, ret );
+
+        ret = metric.SetDeltaReportReadEquation( ( deltaReportOffset != 0 ) ? deltaReportReadEquation.str().c_str() : "" );
+        MD_CHECK_CC_RET_A( adapterId, ret );
+
+        return CC_OK;
     }
 
     //////////////////////////////////////////////////////////////////////////////
@@ -620,8 +638,11 @@ namespace MetricsDiscoveryInternal
     //     std::stringstream& snapshotReportReadEquation - snapshot report read equation to be modified.
     //     std::stringstream& deltaReportReadEquation    - delta report read equation to be modified.
     //
+    // Output:
+    //     TCompletionCode                               - result, *CC_OK* is ok
+    //
     //////////////////////////////////////////////////////////////////////////////
-    void CPrototypeManager::AppendNormalizationsAndWorkarounds( CMetricPrototype& prototype, CMetric& metric, std::stringstream& snapshotReportReadEquation, std::stringstream& deltaReportReadEquation )
+    TCompletionCode CPrototypeManager::AppendNormalizationsAndWorkarounds( CMetricPrototype& prototype, CMetric& metric, std::stringstream& snapshotReportReadEquation, std::stringstream& deltaReportReadEquation )
     {
         const uint32_t adapterId = m_device.GetAdapter().GetAdapterId();
 
@@ -681,27 +702,36 @@ namespace MetricsDiscoveryInternal
                 // metric = event * 100% / cycles / instance_count
                 // Metric unit is updated to percent.
                 // Max value is set to 100%.
-                metric.SetMaxValueEquation( "100" );
+                MD_CHECK_CC( metric.SetMaxValueEquation( "100" ) );
 
-                if( isRateEnabled )
+                if( isRateEnabled || isByteEnabled )
                 {
-                    // Utilization and rate normalizations do not make sense. We do not expose prototypes with these both options available.
+                    // Utilization and rate or byte normalizations do not make sense. We do not expose prototypes with these both options available.
                     MD_ASSERT_A( adapterId, false );
                 }
 
                 if( ( instance == "eu" || instance == "thread" ) && !isDisaggregationEnabled )
                 {
                     // Use built-in vector engine normalization equation: $Self $GpuCoreClocks $VectorEngineTotalCount UMUL FDIV 100 FMUL
-                    metric.SetNormalizationEquation( "EuAggrDuration" );
+                    MD_CHECK_CC( metric.SetNormalizationEquation( "EuAggrDuration" ) );
                 }
                 else
                 {
                     // Use standard gpu core clocks normalization equation: $Self $GpuCoreClocks FDIV 100 FMUL
-                    metric.SetNormalizationEquation( "GpuDuration" );
+                    MD_CHECK_CC( metric.SetNormalizationEquation( "GpuDuration" ) );
                 }
             }
             else // Average.
             {
+                if( isByteEnabled )
+                {
+                    // Metric is calculated using the following normalization equation:
+                    // metric = event * 64
+                    // Metric unit is updated to bytes.
+                    // Max value is not used.
+                    MD_CHECK_CC( metric.SetNormalizationEquation( "$Self 64 UMUL" ) );
+                }
+
                 // Metric is calculated using the following normalization equation:
                 // metric = event / instance_count
                 // Metric unit is not updated.
@@ -855,7 +885,7 @@ namespace MetricsDiscoveryInternal
             // metric = event / timestamp
             // Metric unit is updated to per second.
             // Max value is not used.
-            metric.SetNormalizationEquation( "$Self $$GpuTime FDIV" );
+            MD_CHECK_CC( metric.SetNormalizationEquation( "$Self $$GpuTime FDIV" ) );
         }
         else if( isByteEnabled )
         {
@@ -863,8 +893,14 @@ namespace MetricsDiscoveryInternal
             // metric = event * 64
             // Metric unit is updated to bytes.
             // Max value is not used.
-            metric.SetNormalizationEquation( "$Self 64 UMUL" );
+            MD_CHECK_CC( metric.SetNormalizationEquation( "$Self 64 UMUL" ) );
         }
+
+        return CC_OK;
+
+    exception:
+        MD_LOG_A( adapterId, LOG_INFO, "Failed to append normalizations and workarounds" );
+        return CC_ERROR_GENERAL;
     }
 
     //////////////////////////////////////////////////////////////////////////////
@@ -940,7 +976,8 @@ namespace MetricsDiscoveryInternal
         return IsPlatformMatch(
             m_device.GetPlatformIndex(),
             GENERATION_BMG,
-            GENERATION_LNL );
+            GENERATION_LNL,
+            GENERATION_PTL );
     }
 
     //////////////////////////////////////////////////////////////////////////////
@@ -966,7 +1003,8 @@ namespace MetricsDiscoveryInternal
             GENERATION_MTL,
             GENERATION_ARL,
             GENERATION_BMG,
-            GENERATION_LNL );
+            GENERATION_LNL,
+            GENERATION_PTL );
     }
 
     //////////////////////////////////////////////////////////////////////////////
@@ -1137,9 +1175,12 @@ namespace MetricsDiscoveryInternal
     //     uint32_t&          snapshotReportOffsets - snapshot report offset for the metric.
     //     uint32_t&          deltaReportOffsets    - delta report offset for the metric.
     //
+    // Output:
+    //     TCompletionCode                          - result, *CC_OK* is ok
+    //
     //////////////////////////////////////////////////////////////////////////////
     template <>
-    void CMetricPrototypeManager<METRIC_PROTOTYPE_MANAGER_TYPE_OA>::AppendPesConfiguration(
+    TCompletionCode CMetricPrototypeManager<METRIC_PROTOTYPE_MANAGER_TYPE_OA>::AppendPesConfiguration(
         const THwEvent&    hwEvent,
         const uint64_t     pesProgramming,
         std::vector<bool>& pesProgrammed,
@@ -1173,8 +1214,8 @@ namespace MetricsDiscoveryInternal
             {
                 const uint32_t pesProgrammingOffset = pesFirstGroup + sizeof( uint64_t ) * hwEventIndex;
 
-                m_set.AddStartConfigRegister( pesProgrammingOffset, lowerPesProgramming, REGISTER_TYPE_OA );
-                m_set.AddStartConfigRegister( pesProgrammingOffset + 4, upperPesProgramming, REGISTER_TYPE_OA );
+                MD_CHECK_CC( m_set.AddStartConfigRegister( pesProgrammingOffset, lowerPesProgramming, REGISTER_TYPE_OA ) );
+                MD_CHECK_CC( m_set.AddStartConfigRegister( pesProgrammingOffset + 4, upperPesProgramming, REGISTER_TYPE_OA ) );
 
                 pesProgrammed[hwEventIndex] = true;
             }
@@ -1196,12 +1237,12 @@ namespace MetricsDiscoveryInternal
                 const uint32_t pesProgrammingOffset1 = pesSecondGroup1 + sizeof( uint64_t ) * hwEventIndex;
                 const uint32_t pesProgrammingOffset2 = pesSecondGroup2 + sizeof( uint64_t ) * hwEventIndex;
 
-                m_set.AddStartConfigRegister( pesProgrammingOffset0, lowerPesProgramming, REGISTER_TYPE_OA );
-                m_set.AddStartConfigRegister( pesProgrammingOffset0 + 4, upperPesProgramming, REGISTER_TYPE_OA );
-                m_set.AddStartConfigRegister( pesProgrammingOffset1, lowerPesProgramming, REGISTER_TYPE_OA );
-                m_set.AddStartConfigRegister( pesProgrammingOffset1 + 4, upperPesProgramming, REGISTER_TYPE_OA );
-                m_set.AddStartConfigRegister( pesProgrammingOffset2, lowerPesProgramming, REGISTER_TYPE_OA );
-                m_set.AddStartConfigRegister( pesProgrammingOffset2 + 4, upperPesProgramming, REGISTER_TYPE_OA );
+                MD_CHECK_CC( m_set.AddStartConfigRegister( pesProgrammingOffset0, lowerPesProgramming, REGISTER_TYPE_OA ) );
+                MD_CHECK_CC( m_set.AddStartConfigRegister( pesProgrammingOffset0 + 4, upperPesProgramming, REGISTER_TYPE_OA ) );
+                MD_CHECK_CC( m_set.AddStartConfigRegister( pesProgrammingOffset1, lowerPesProgramming, REGISTER_TYPE_OA ) );
+                MD_CHECK_CC( m_set.AddStartConfigRegister( pesProgrammingOffset1 + 4, upperPesProgramming, REGISTER_TYPE_OA ) );
+                MD_CHECK_CC( m_set.AddStartConfigRegister( pesProgrammingOffset2, lowerPesProgramming, REGISTER_TYPE_OA ) );
+                MD_CHECK_CC( m_set.AddStartConfigRegister( pesProgrammingOffset2 + 4, upperPesProgramming, REGISTER_TYPE_OA ) );
 
                 pesProgrammed[hwEventIndex + 32] = true;
             }
@@ -1221,8 +1262,8 @@ namespace MetricsDiscoveryInternal
             {
                 const uint32_t pesProgrammingOffset = pesFirstGroup + sizeof( uint64_t ) * ( hwEventIndex + 7 );
 
-                m_set.AddStartConfigRegister( pesProgrammingOffset, lowerPesProgramming, REGISTER_TYPE_OA );
-                m_set.AddStartConfigRegister( pesProgrammingOffset + 4, upperPesProgramming, REGISTER_TYPE_OA );
+                MD_CHECK_CC( m_set.AddStartConfigRegister( pesProgrammingOffset, lowerPesProgramming, REGISTER_TYPE_OA ) );
+                MD_CHECK_CC( m_set.AddStartConfigRegister( pesProgrammingOffset + 4, upperPesProgramming, REGISTER_TYPE_OA ) );
 
                 // Coarse filters.
                 if( hwEvent.m_filterValue > 0 )
@@ -1240,6 +1281,12 @@ namespace MetricsDiscoveryInternal
                 pesProgrammed[hwEventIndex + 7] = true;
             }
         }
+
+        return CC_OK;
+
+    exception:
+        MD_LOG_A( m_device.GetAdapter().GetAdapterId(), LOG_INFO, "Failed to append PES configuration" );
+        return CC_ERROR_GENERAL;
     }
 
     //////////////////////////////////////////////////////////////////////////////
@@ -1261,9 +1308,12 @@ namespace MetricsDiscoveryInternal
     //     uint32_t&          snapshotReportOffsets - snapshot report offset for the metric.
     //     uint32_t&          deltaReportOffsets    - delta report offset for the metric.
     //
+    // Output:
+    //     TCompletionCode                          - result, *CC_OK* is ok
+    //
     //////////////////////////////////////////////////////////////////////////////
     template <>
-    void CMetricPrototypeManager<METRIC_PROTOTYPE_MANAGER_TYPE_OAM>::AppendPesConfiguration(
+    TCompletionCode CMetricPrototypeManager<METRIC_PROTOTYPE_MANAGER_TYPE_OAM>::AppendPesConfiguration(
         const THwEvent&    hwEvent,
         const uint64_t     pesProgramming,
         std::vector<bool>& pesProgrammed,
@@ -1285,12 +1335,18 @@ namespace MetricsDiscoveryInternal
 
             if( !pesProgrammed[hwEventIndex] )
             {
-                m_set.AddStartConfigRegister( pesProgrammingOffset, lowerPesProgramming, REGISTER_TYPE_OA );
-                m_set.AddStartConfigRegister( pesProgrammingOffset + 4, upperPesProgramming, REGISTER_TYPE_OA );
+                MD_CHECK_CC( m_set.AddStartConfigRegister( pesProgrammingOffset, lowerPesProgramming, REGISTER_TYPE_OA ) );
+                MD_CHECK_CC( m_set.AddStartConfigRegister( pesProgrammingOffset + 4, upperPesProgramming, REGISTER_TYPE_OA ) );
 
                 pesProgrammed[hwEventIndex] = true;
             }
         }
+
+        return CC_OK;
+
+    exception:
+        MD_LOG_A( m_device.GetAdapter().GetAdapterId(), LOG_INFO, "Failed to append PES configuration" );
+        return CC_ERROR_GENERAL;
     }
 
     //////////////////////////////////////////////////////////////////////////////
@@ -1307,9 +1363,12 @@ namespace MetricsDiscoveryInternal
     // Input:
     //     const uint32_t flexProgramming[] - an array with flex programming.
     //
+    // Output:
+    //     TCompletionCode                  - result, *CC_OK* is ok
+    //
     //////////////////////////////////////////////////////////////////////////////
     template <>
-    void CMetricPrototypeManager<METRIC_PROTOTYPE_MANAGER_TYPE_OA>::AppendFlexConfiguration( const uint32_t flexProgramming[] )
+    TCompletionCode CMetricPrototypeManager<METRIC_PROTOTYPE_MANAGER_TYPE_OA>::AppendFlexConfiguration( const uint32_t flexProgramming[] )
     {
         constexpr uint32_t flexEuEventControl0 = 0xE458;
         constexpr uint32_t flexEuEventControl1 = 0xE558;
@@ -1323,8 +1382,14 @@ namespace MetricsDiscoveryInternal
 
         for( uint32_t i = 0; i < sizeof( flexRegisters ) / sizeof( flexRegisters[0] ); ++i )
         {
-            m_set.AddStartConfigRegister( flexRegisters[i], flexProgramming[i], REGISTER_TYPE_FLEX );
+            MD_CHECK_CC( m_set.AddStartConfigRegister( flexRegisters[i], flexProgramming[i], REGISTER_TYPE_FLEX ) );
         }
+
+        return CC_OK;
+
+    exception:
+        MD_LOG_A( m_device.GetAdapter().GetAdapterId(), LOG_INFO, "Failed to append Flex configuration" );
+        return CC_ERROR_GENERAL;
     }
 
     //////////////////////////////////////////////////////////////////////////////
@@ -1341,11 +1406,15 @@ namespace MetricsDiscoveryInternal
     // Input:
     //     const uint32_t flexProgramming[] - an array with flex programming.
     //
+    // Output:
+    //     TCompletionCode                  - result, *CC_OK* is ok
+    //
     //////////////////////////////////////////////////////////////////////////////
     template <TMetricPrototypeManagerType T>
-    void CMetricPrototypeManager<T>::AppendFlexConfiguration( const uint32_t flexProgramming[] )
+    TCompletionCode CMetricPrototypeManager<T>::AppendFlexConfiguration( const uint32_t flexProgramming[] )
     {
         // Flex configuration is supported for OA unit only.
+        return CC_OK;
     }
 
     //////////////////////////////////////////////////////////////////////////////

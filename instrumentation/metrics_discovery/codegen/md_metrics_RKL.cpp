@@ -65,7 +65,7 @@ TCompletionCode CreateMetricTreeRKL_OA( CMetricsDevice* metricsDevice, CConcurre
 
     if( metricsDevice->IsPlatformTypeOf( &platformMask ) )
     {
-        MetricSets_RKL_OA::AddInformationSet( concurrentGroup );
+        MD_CHECK_CC( MetricSets_RKL_OA::AddInformationSet( concurrentGroup ) );
 
         metricSet = concurrentGroup->AddMetricSetExplicit<MetricSets_RKL_OA::CRenderBasicMetricSet>( "RenderBasic", "Render Metrics Basic set", API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
             GPU_RENDER | GPU_COMPUTE, 256, 672, OA_REPORT_TYPE_256B_A45_NOA16, &platformMask, nullptr );
@@ -123,35 +123,35 @@ TCompletionCode CreateMetricTreeRKL_OA( CMetricsDevice* metricsDevice, CConcurre
             GPU_RENDER | GPU_COMPUTE | GPU_MEDIA | GPU_GENERIC, 256, 672, OA_REPORT_TYPE_256B_A45_NOA16, &platformMask, nullptr );
         MD_CHECK_PTR( metricSet );
 
-        metricSet = concurrentGroup->AddMetricSetExplicit<MetricSets_RKL_OA::CEuActivity1MetricSet>( "EuActivity1", "EuActivity1", API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_VULKAN | API_TYPE_IOSTREAM,
+        metricSet = concurrentGroup->AddMetricSetExplicit<MetricSets_RKL_OA::CEuActivity1MetricSet>( "EuActivity1", "EuActivity1", API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_VULKAN | API_TYPE_IOSTREAM,
             GPU_RENDER | GPU_COMPUTE | GPU_MEDIA | GPU_GENERIC, 256, 672, OA_REPORT_TYPE_256B_A45_NOA16, &platformMask, nullptr );
         MD_CHECK_PTR( metricSet );
 
-        metricSet = concurrentGroup->AddMetricSetExplicit<MetricSets_RKL_OA::CEuActivity2MetricSet>( "EuActivity2", "EuActivity2", API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_VULKAN | API_TYPE_IOSTREAM,
+        metricSet = concurrentGroup->AddMetricSetExplicit<MetricSets_RKL_OA::CEuActivity2MetricSet>( "EuActivity2", "EuActivity2", API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_VULKAN | API_TYPE_IOSTREAM,
             GPU_RENDER | GPU_COMPUTE | GPU_MEDIA | GPU_GENERIC, 256, 672, OA_REPORT_TYPE_256B_A45_NOA16, &platformMask, nullptr );
         MD_CHECK_PTR( metricSet );
 
-        metricSet = concurrentGroup->AddMetricSetExplicit<MetricSets_RKL_OA::CEuActivity3MetricSet>( "EuActivity3", "EuActivity3", API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_VULKAN | API_TYPE_IOSTREAM,
+        metricSet = concurrentGroup->AddMetricSetExplicit<MetricSets_RKL_OA::CEuActivity3MetricSet>( "EuActivity3", "EuActivity3", API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_VULKAN | API_TYPE_IOSTREAM,
             GPU_RENDER | GPU_COMPUTE | GPU_MEDIA | GPU_GENERIC, 256, 672, OA_REPORT_TYPE_256B_A45_NOA16, &platformMask, nullptr );
         MD_CHECK_PTR( metricSet );
 
-        metricSet = concurrentGroup->AddMetricSetExplicit<MetricSets_RKL_OA::CEuActivity4MetricSet>( "EuActivity4", "EuActivity4", API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_VULKAN | API_TYPE_IOSTREAM,
+        metricSet = concurrentGroup->AddMetricSetExplicit<MetricSets_RKL_OA::CEuActivity4MetricSet>( "EuActivity4", "EuActivity4", API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_VULKAN | API_TYPE_IOSTREAM,
             GPU_RENDER | GPU_COMPUTE | GPU_MEDIA | GPU_GENERIC, 256, 672, OA_REPORT_TYPE_256B_A45_NOA16, &platformMask, nullptr );
         MD_CHECK_PTR( metricSet );
 
-        metricSet = concurrentGroup->AddMetricSetExplicit<MetricSets_RKL_OA::CEuActivity5MetricSet>( "EuActivity5", "EuActivity5", API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_VULKAN | API_TYPE_IOSTREAM,
+        metricSet = concurrentGroup->AddMetricSetExplicit<MetricSets_RKL_OA::CEuActivity5MetricSet>( "EuActivity5", "EuActivity5", API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_VULKAN | API_TYPE_IOSTREAM,
             GPU_RENDER | GPU_COMPUTE | GPU_MEDIA | GPU_GENERIC, 256, 672, OA_REPORT_TYPE_256B_A45_NOA16, &platformMask, nullptr );
         MD_CHECK_PTR( metricSet );
 
-        metricSet = concurrentGroup->AddMetricSetExplicit<MetricSets_RKL_OA::CEuActivity6MetricSet>( "EuActivity6", "EuActivity6", API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_VULKAN | API_TYPE_IOSTREAM,
+        metricSet = concurrentGroup->AddMetricSetExplicit<MetricSets_RKL_OA::CEuActivity6MetricSet>( "EuActivity6", "EuActivity6", API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_VULKAN | API_TYPE_IOSTREAM,
             GPU_RENDER | GPU_COMPUTE | GPU_MEDIA | GPU_GENERIC, 256, 672, OA_REPORT_TYPE_256B_A45_NOA16, &platformMask, nullptr );
         MD_CHECK_PTR( metricSet );
 
-        metricSet = concurrentGroup->AddMetricSetExplicit<MetricSets_RKL_OA::CEuActivity7MetricSet>( "EuActivity7", "EuActivity7", API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_VULKAN | API_TYPE_IOSTREAM,
+        metricSet = concurrentGroup->AddMetricSetExplicit<MetricSets_RKL_OA::CEuActivity7MetricSet>( "EuActivity7", "EuActivity7", API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_VULKAN | API_TYPE_IOSTREAM,
             GPU_RENDER | GPU_COMPUTE | GPU_MEDIA | GPU_GENERIC, 256, 672, OA_REPORT_TYPE_256B_A45_NOA16, &platformMask, nullptr );
         MD_CHECK_PTR( metricSet );
 
-        metricSet = concurrentGroup->AddMetricSetExplicit<MetricSets_RKL_OA::CEuActivity8MetricSet>( "EuActivity8", "EuActivity8", API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_VULKAN | API_TYPE_IOSTREAM,
+        metricSet = concurrentGroup->AddMetricSetExplicit<MetricSets_RKL_OA::CEuActivity8MetricSet>( "EuActivity8", "EuActivity8", API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_VULKAN | API_TYPE_IOSTREAM,
             GPU_RENDER | GPU_COMPUTE | GPU_MEDIA | GPU_GENERIC, 256, 672, OA_REPORT_TYPE_256B_A45_NOA16, &platformMask, nullptr );
         MD_CHECK_PTR( metricSet );
 
@@ -159,7 +159,7 @@ TCompletionCode CreateMetricTreeRKL_OA( CMetricsDevice* metricsDevice, CConcurre
             GPU_RENDER | GPU_COMPUTE, 256, 672, OA_REPORT_TYPE_256B_A45_NOA16, &platformMask, nullptr );
         MD_CHECK_PTR( metricSet );
 
-        metricSet = concurrentGroup->AddMetricSetExplicit<MetricSets_RKL_OA::CAsyncComputeMetricSet>( "AsyncCompute", "AsyncCompute", API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OGL4_X | API_TYPE_VULKAN | API_TYPE_OCL | API_TYPE_IOSTREAM,
+        metricSet = concurrentGroup->AddMetricSetExplicit<MetricSets_RKL_OA::CAsyncComputeMetricSet>( "AsyncCompute", "AsyncCompute", API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_VULKAN | API_TYPE_OCL | API_TYPE_IOSTREAM,
             GPU_RENDER | GPU_COMPUTE | GPU_MEDIA | GPU_GENERIC, 256, 672, OA_REPORT_TYPE_256B_A45_NOA16, &platformMask, nullptr );
         MD_CHECK_PTR( metricSet );
     }

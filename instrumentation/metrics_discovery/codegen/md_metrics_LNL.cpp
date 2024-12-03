@@ -65,7 +65,7 @@ TCompletionCode CreateMetricTreeLNL_OA( CMetricsDevice* metricsDevice, CConcurre
 
     if( metricsDevice->IsPlatformTypeOf( &platformMask ) )
     {
-        MetricSets_LNL_OA::AddInformationSet( concurrentGroup );
+        MD_CHECK_CC( MetricSets_LNL_OA::AddInformationSet( concurrentGroup ) );
 
         metricSet = concurrentGroup->AddMetricSetExplicit<MetricSets_LNL_OA::CRenderBasicMetricSet>( "RenderBasic", "RenderBasic", API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
             GPU_RENDER | GPU_COMPUTE | GPU_GENERIC, 576, 880, OA_REPORT_TYPE_576B_PEC64LL, &platformMask, nullptr );
@@ -135,7 +135,7 @@ TCompletionCode CreateMetricTreeLNL_OAM0( CMetricsDevice* metricsDevice, CConcur
 
     if( metricsDevice->IsPlatformTypeOf( &platformMask ) )
     {
-        MetricSets_LNL_OAM0::AddInformationSet( concurrentGroup );
+        MD_CHECK_CC( MetricSets_LNL_OAM0::AddInformationSet( concurrentGroup ) );
 
         metricSet = concurrentGroup->AddMetricSetExplicit<MetricSets_LNL_OAM0::CMediaSet1MetricSet>( "MediaSet1", "MediaSet1", API_TYPE_IOSTREAM,
             GPU_MEDIA | GPU_GENERIC, 128, 0, OA_REPORT_TYPE_128B_MPEC8_NOA16, &platformMask, nullptr );
@@ -173,7 +173,7 @@ TCompletionCode CreateMetricTreeLNL_OAMG( CMetricsDevice* metricsDevice, CConcur
 
     if( metricsDevice->IsPlatformTypeOf( &platformMask ) )
     {
-        MetricSets_LNL_OAMG::AddInformationSet( concurrentGroup );
+        MD_CHECK_CC( MetricSets_LNL_OAMG::AddInformationSet( concurrentGroup ) );
 
         metricSet = concurrentGroup->AddMetricSetExplicit<MetricSets_LNL_OAMG::CMediaSet1MetricSet>( "MediaSet1", "MediaSet1", API_TYPE_IOSTREAM,
             GPU_MEDIA | GPU_GENERIC, 128, 0, OA_REPORT_TYPE_128B_MPEC8_NOA16, &platformMask, nullptr );

@@ -254,13 +254,13 @@ namespace MetricsDiscoveryInternal
         TCompletionCode AddComplementaryMetricSet( const char* complementaryMetricSetSymbolicName );
         TCompletionCode AddComplementaryMetricSets( const char* complementarySetsList );
 
-        TCompletionCode AddStartRegisterSet( uint32_t configId, uint32_t configPriority, const char* availabilityEquation = nullptr, TConfigType configType = CONFIG_TYPE_COMMON );
-        TCompletionCode AddStartConfigRegister( uint32_t offset, uint32_t value, TRegisterType type );
-        TCompletionCode RefreshConfigRegisters();
-        TRegister**     GetStartConfiguration( uint32_t& count );
-        TCompletionCode SendStartConfiguration( bool sendQueryConfigFlag );
-        void            AppendToConfiguration( std::vector<TRegister*>& sourceRegs, std::vector<TRegister*>& outPmRegs, std::vector<TRegister*>& outReadRegs );
-        bool            CheckSendConfigRequired( bool sendQueryConfigFlag );
+        virtual TCompletionCode AddStartRegisterSet( uint32_t configId, uint32_t configPriority, const char* availabilityEquation = nullptr, TConfigType configType = CONFIG_TYPE_COMMON );
+        TCompletionCode         AddStartConfigRegister( uint32_t offset, uint32_t value, TRegisterType type );
+        virtual TCompletionCode RefreshConfigRegisters();
+        TRegister**             GetStartConfiguration( uint32_t& count );
+        TCompletionCode         SendStartConfiguration( bool sendQueryConfigFlag );
+        void                    AppendToConfiguration( std::vector<TRegister*>& sourceRegs, std::vector<TRegister*>& outPmRegs, std::vector<TRegister*>& outReadRegs );
+        bool                    CheckSendConfigRequired( bool sendQueryConfigFlag );
 
         TCompletionCode ActivateInternal( bool sendConfigFlag, bool sendQueryConfigFlag );
 
@@ -283,6 +283,8 @@ namespace MetricsDiscoveryInternal
         bool IsOpened();
         void SetToFlexible();
         void DecreasePrototypesReferenceCounters();
+
+        void SetPrototypeManager( CPrototypeManager* prototypeManager );
 
         // Inline function.
         inline CMetric* GetMetricExplicit( const uint32_t index )
@@ -320,7 +322,7 @@ namespace MetricsDiscoveryInternal
         bool     GetStartRegSetHiPriority( uint32_t id, CRegisterSet** registerSet );
 
         // Flexible metric set methods:
-        TCompletionCode AddDefaultMetrics();
+        virtual TCompletionCode AddDefaultMetrics();
 
     private:
         // Variables:

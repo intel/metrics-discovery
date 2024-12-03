@@ -65,7 +65,7 @@ TCompletionCode CreateMetricTreeACM_GT3_OA( CMetricsDevice* metricsDevice, CConc
 
     if( metricsDevice->IsPlatformTypeOf( &platformMask, GT_TYPE_GT3 ) )
     {
-        MetricSets_ACM_GT3_OA::AddInformationSet( concurrentGroup );
+        MD_CHECK_CC( MetricSets_ACM_GT3_OA::AddInformationSet( concurrentGroup ) );
 
         metricSet = concurrentGroup->AddMetricSetExplicit<MetricSets_ACM_GT3_OA::CRenderBasicMetricSet>( "RenderBasic", "Render Metrics Basic", API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
             GPU_RENDER | GPU_COMPUTE, 256, 688, OA_REPORT_TYPE_256B_A45_NOA16, &platformMask, nullptr, GT_TYPE_GT3 );
@@ -79,7 +79,7 @@ TCompletionCode CreateMetricTreeACM_GT3_OA( CMetricsDevice* metricsDevice, CConc
             GPU_RENDER | GPU_COMPUTE | GPU_MEDIA | GPU_GENERIC, 256, 688, OA_REPORT_TYPE_256B_A45_NOA16, &platformMask, nullptr, GT_TYPE_GT3 );
         MD_CHECK_PTR( metricSet );
 
-        metricSet = concurrentGroup->AddMetricSetExplicit<MetricSets_ACM_GT3_OA::CXveActivity1MetricSet>( "XveActivity1", "XveActivity1", API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+        metricSet = concurrentGroup->AddMetricSetExplicit<MetricSets_ACM_GT3_OA::CXveActivity1MetricSet>( "XveActivity1", "XveActivity1", API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
             GPU_RENDER | GPU_COMPUTE | GPU_MEDIA | GPU_GENERIC, 256, 688, OA_REPORT_TYPE_256B_A45_NOA16, &platformMask, nullptr, GT_TYPE_GT3 );
         MD_CHECK_PTR( metricSet );
 
@@ -2619,67 +2619,35 @@ TCompletionCode CreateMetricTreeACM_GT3_OA( CMetricsDevice* metricsDevice, CConc
             GPU_RENDER | GPU_COMPUTE | GPU_GENERIC, 256, 688, OA_REPORT_TYPE_256B_A45_NOA16, &platformMask, nullptr, GT_TYPE_GT3 );
         MD_CHECK_PTR( metricSet );
 
-        metricSet = concurrentGroup->AddMetricSetExplicit<MetricSets_ACM_GT3_OA::CExt591MetricSet_Refresh>( "Ext591", "Ext591", API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
-            GPU_RENDER | GPU_COMPUTE | GPU_GENERIC, 256, 688, OA_REPORT_TYPE_256B_A45_NOA16, &platformMask, "$PlatformVersion 1 UGTE", GT_TYPE_GT3 );
-        MD_CHECK_PTR( metricSet );
-
-        metricSet = concurrentGroup->AddMetricSetExplicit<MetricSets_ACM_GT3_OA::CExt592MetricSet_Refresh>( "Ext592", "Ext592", API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
-            GPU_RENDER | GPU_COMPUTE | GPU_GENERIC, 256, 688, OA_REPORT_TYPE_256B_A45_NOA16, &platformMask, "$PlatformVersion 1 UGTE", GT_TYPE_GT3 );
-        MD_CHECK_PTR( metricSet );
-
-        metricSet = concurrentGroup->AddMetricSetExplicit<MetricSets_ACM_GT3_OA::CExt593MetricSet_Refresh>( "Ext593", "Ext593", API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
-            GPU_RENDER | GPU_COMPUTE | GPU_GENERIC, 256, 688, OA_REPORT_TYPE_256B_A45_NOA16, &platformMask, "$PlatformVersion 1 UGTE", GT_TYPE_GT3 );
-        MD_CHECK_PTR( metricSet );
-
-        metricSet = concurrentGroup->AddMetricSetExplicit<MetricSets_ACM_GT3_OA::CExt594MetricSet_Refresh>( "Ext594", "Ext594", API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
-            GPU_RENDER | GPU_COMPUTE | GPU_GENERIC, 256, 688, OA_REPORT_TYPE_256B_A45_NOA16, &platformMask, "$PlatformVersion 1 UGTE", GT_TYPE_GT3 );
-        MD_CHECK_PTR( metricSet );
-
-        metricSet = concurrentGroup->AddMetricSetExplicit<MetricSets_ACM_GT3_OA::CExt595MetricSet_Refresh>( "Ext595", "Ext595", API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
-            GPU_RENDER | GPU_COMPUTE | GPU_GENERIC, 256, 688, OA_REPORT_TYPE_256B_A45_NOA16, &platformMask, "$PlatformVersion 1 UGTE", GT_TYPE_GT3 );
-        MD_CHECK_PTR( metricSet );
-
-        metricSet = concurrentGroup->AddMetricSetExplicit<MetricSets_ACM_GT3_OA::CExt596MetricSet_Refresh>( "Ext596", "Ext596", API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
-            GPU_RENDER | GPU_COMPUTE | GPU_GENERIC, 256, 688, OA_REPORT_TYPE_256B_A45_NOA16, &platformMask, "$PlatformVersion 1 UGTE", GT_TYPE_GT3 );
-        MD_CHECK_PTR( metricSet );
-
-        metricSet = concurrentGroup->AddMetricSetExplicit<MetricSets_ACM_GT3_OA::CExt597MetricSet_Refresh>( "Ext597", "Ext597", API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
-            GPU_RENDER | GPU_COMPUTE | GPU_GENERIC, 256, 688, OA_REPORT_TYPE_256B_A45_NOA16, &platformMask, "$PlatformVersion 1 UGTE", GT_TYPE_GT3 );
-        MD_CHECK_PTR( metricSet );
-
-        metricSet = concurrentGroup->AddMetricSetExplicit<MetricSets_ACM_GT3_OA::CExt598MetricSet_Refresh>( "Ext598", "Ext598", API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
-            GPU_RENDER | GPU_COMPUTE | GPU_GENERIC, 256, 688, OA_REPORT_TYPE_256B_A45_NOA16, &platformMask, "$PlatformVersion 1 UGTE", GT_TYPE_GT3 );
-        MD_CHECK_PTR( metricSet );
-
-        metricSet = concurrentGroup->AddMetricSetExplicit<MetricSets_ACM_GT3_OA::CExt591MetricSet_FirstVersion>( "Ext591", "Ext591", API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+        metricSet = concurrentGroup->AddMetricSetExplicit<MetricSets_ACM_GT3_OA::CExt591MetricSet>( "Ext591", "Ext591", API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
             GPU_RENDER | GPU_COMPUTE | GPU_GENERIC, 256, 688, OA_REPORT_TYPE_256B_A45_NOA16, &platformMask, nullptr, GT_TYPE_GT3 );
         MD_CHECK_PTR( metricSet );
 
-        metricSet = concurrentGroup->AddMetricSetExplicit<MetricSets_ACM_GT3_OA::CExt592MetricSet_FirstVersion>( "Ext592", "Ext592", API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+        metricSet = concurrentGroup->AddMetricSetExplicit<MetricSets_ACM_GT3_OA::CExt592MetricSet>( "Ext592", "Ext592", API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
             GPU_RENDER | GPU_COMPUTE | GPU_GENERIC, 256, 688, OA_REPORT_TYPE_256B_A45_NOA16, &platformMask, nullptr, GT_TYPE_GT3 );
         MD_CHECK_PTR( metricSet );
 
-        metricSet = concurrentGroup->AddMetricSetExplicit<MetricSets_ACM_GT3_OA::CExt593MetricSet_FirstVersion>( "Ext593", "Ext593", API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+        metricSet = concurrentGroup->AddMetricSetExplicit<MetricSets_ACM_GT3_OA::CExt593MetricSet>( "Ext593", "Ext593", API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
             GPU_RENDER | GPU_COMPUTE | GPU_GENERIC, 256, 688, OA_REPORT_TYPE_256B_A45_NOA16, &platformMask, nullptr, GT_TYPE_GT3 );
         MD_CHECK_PTR( metricSet );
 
-        metricSet = concurrentGroup->AddMetricSetExplicit<MetricSets_ACM_GT3_OA::CExt594MetricSet_FirstVersion>( "Ext594", "Ext594", API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+        metricSet = concurrentGroup->AddMetricSetExplicit<MetricSets_ACM_GT3_OA::CExt594MetricSet>( "Ext594", "Ext594", API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
             GPU_RENDER | GPU_COMPUTE | GPU_GENERIC, 256, 688, OA_REPORT_TYPE_256B_A45_NOA16, &platformMask, nullptr, GT_TYPE_GT3 );
         MD_CHECK_PTR( metricSet );
 
-        metricSet = concurrentGroup->AddMetricSetExplicit<MetricSets_ACM_GT3_OA::CExt595MetricSet_FirstVersion>( "Ext595", "Ext595", API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+        metricSet = concurrentGroup->AddMetricSetExplicit<MetricSets_ACM_GT3_OA::CExt595MetricSet>( "Ext595", "Ext595", API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
             GPU_RENDER | GPU_COMPUTE | GPU_GENERIC, 256, 688, OA_REPORT_TYPE_256B_A45_NOA16, &platformMask, nullptr, GT_TYPE_GT3 );
         MD_CHECK_PTR( metricSet );
 
-        metricSet = concurrentGroup->AddMetricSetExplicit<MetricSets_ACM_GT3_OA::CExt596MetricSet_FirstVersion>( "Ext596", "Ext596", API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+        metricSet = concurrentGroup->AddMetricSetExplicit<MetricSets_ACM_GT3_OA::CExt596MetricSet>( "Ext596", "Ext596", API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
             GPU_RENDER | GPU_COMPUTE | GPU_GENERIC, 256, 688, OA_REPORT_TYPE_256B_A45_NOA16, &platformMask, nullptr, GT_TYPE_GT3 );
         MD_CHECK_PTR( metricSet );
 
-        metricSet = concurrentGroup->AddMetricSetExplicit<MetricSets_ACM_GT3_OA::CExt597MetricSet_FirstVersion>( "Ext597", "Ext597", API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+        metricSet = concurrentGroup->AddMetricSetExplicit<MetricSets_ACM_GT3_OA::CExt597MetricSet>( "Ext597", "Ext597", API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
             GPU_RENDER | GPU_COMPUTE | GPU_GENERIC, 256, 688, OA_REPORT_TYPE_256B_A45_NOA16, &platformMask, nullptr, GT_TYPE_GT3 );
         MD_CHECK_PTR( metricSet );
 
-        metricSet = concurrentGroup->AddMetricSetExplicit<MetricSets_ACM_GT3_OA::CExt598MetricSet_FirstVersion>( "Ext598", "Ext598", API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+        metricSet = concurrentGroup->AddMetricSetExplicit<MetricSets_ACM_GT3_OA::CExt598MetricSet>( "Ext598", "Ext598", API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
             GPU_RENDER | GPU_COMPUTE | GPU_GENERIC, 256, 688, OA_REPORT_TYPE_256B_A45_NOA16, &platformMask, nullptr, GT_TYPE_GT3 );
         MD_CHECK_PTR( metricSet );
 
@@ -2835,259 +2803,131 @@ TCompletionCode CreateMetricTreeACM_GT3_OA( CMetricsDevice* metricsDevice, CConc
             GPU_RENDER | GPU_COMPUTE | GPU_GENERIC, 256, 688, OA_REPORT_TYPE_256B_A45_NOA16, &platformMask, nullptr, GT_TYPE_GT3 );
         MD_CHECK_PTR( metricSet );
 
-        metricSet = concurrentGroup->AddMetricSetExplicit<MetricSets_ACM_GT3_OA::CExt637MetricSet_Refresh>( "Ext637", "Ext637", API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
-            GPU_RENDER | GPU_COMPUTE | GPU_GENERIC, 256, 688, OA_REPORT_TYPE_256B_A45_NOA16, &platformMask, "$PlatformVersion 1 UGTE", GT_TYPE_GT3 );
-        MD_CHECK_PTR( metricSet );
-
-        metricSet = concurrentGroup->AddMetricSetExplicit<MetricSets_ACM_GT3_OA::CExt638MetricSet_Refresh>( "Ext638", "Ext638", API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
-            GPU_RENDER | GPU_COMPUTE | GPU_GENERIC, 256, 688, OA_REPORT_TYPE_256B_A45_NOA16, &platformMask, "$PlatformVersion 1 UGTE", GT_TYPE_GT3 );
-        MD_CHECK_PTR( metricSet );
-
-        metricSet = concurrentGroup->AddMetricSetExplicit<MetricSets_ACM_GT3_OA::CExt639MetricSet_Refresh>( "Ext639", "Ext639", API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
-            GPU_RENDER | GPU_COMPUTE | GPU_GENERIC, 256, 688, OA_REPORT_TYPE_256B_A45_NOA16, &platformMask, "$PlatformVersion 1 UGTE", GT_TYPE_GT3 );
-        MD_CHECK_PTR( metricSet );
-
-        metricSet = concurrentGroup->AddMetricSetExplicit<MetricSets_ACM_GT3_OA::CExt640MetricSet_Refresh>( "Ext640", "Ext640", API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
-            GPU_RENDER | GPU_COMPUTE | GPU_GENERIC, 256, 688, OA_REPORT_TYPE_256B_A45_NOA16, &platformMask, "$PlatformVersion 1 UGTE", GT_TYPE_GT3 );
-        MD_CHECK_PTR( metricSet );
-
-        metricSet = concurrentGroup->AddMetricSetExplicit<MetricSets_ACM_GT3_OA::CExt641MetricSet_Refresh>( "Ext641", "Ext641", API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
-            GPU_RENDER | GPU_COMPUTE | GPU_GENERIC, 256, 688, OA_REPORT_TYPE_256B_A45_NOA16, &platformMask, "$PlatformVersion 1 UGTE", GT_TYPE_GT3 );
-        MD_CHECK_PTR( metricSet );
-
-        metricSet = concurrentGroup->AddMetricSetExplicit<MetricSets_ACM_GT3_OA::CExt642MetricSet_Refresh>( "Ext642", "Ext642", API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
-            GPU_RENDER | GPU_COMPUTE | GPU_GENERIC, 256, 688, OA_REPORT_TYPE_256B_A45_NOA16, &platformMask, "$PlatformVersion 1 UGTE", GT_TYPE_GT3 );
-        MD_CHECK_PTR( metricSet );
-
-        metricSet = concurrentGroup->AddMetricSetExplicit<MetricSets_ACM_GT3_OA::CExt643MetricSet_Refresh>( "Ext643", "Ext643", API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
-            GPU_RENDER | GPU_COMPUTE | GPU_GENERIC, 256, 688, OA_REPORT_TYPE_256B_A45_NOA16, &platformMask, "$PlatformVersion 1 UGTE", GT_TYPE_GT3 );
-        MD_CHECK_PTR( metricSet );
-
-        metricSet = concurrentGroup->AddMetricSetExplicit<MetricSets_ACM_GT3_OA::CExt644MetricSet_Refresh>( "Ext644", "Ext644", API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
-            GPU_RENDER | GPU_COMPUTE | GPU_GENERIC, 256, 688, OA_REPORT_TYPE_256B_A45_NOA16, &platformMask, "$PlatformVersion 1 UGTE", GT_TYPE_GT3 );
-        MD_CHECK_PTR( metricSet );
-
-        metricSet = concurrentGroup->AddMetricSetExplicit<MetricSets_ACM_GT3_OA::CExt645MetricSet_Refresh>( "Ext645", "Ext645", API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
-            GPU_RENDER | GPU_COMPUTE | GPU_GENERIC, 256, 688, OA_REPORT_TYPE_256B_A45_NOA16, &platformMask, "$PlatformVersion 1 UGTE", GT_TYPE_GT3 );
-        MD_CHECK_PTR( metricSet );
-
-        metricSet = concurrentGroup->AddMetricSetExplicit<MetricSets_ACM_GT3_OA::CExt646MetricSet_Refresh>( "Ext646", "Ext646", API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
-            GPU_RENDER | GPU_COMPUTE | GPU_GENERIC, 256, 688, OA_REPORT_TYPE_256B_A45_NOA16, &platformMask, "$PlatformVersion 1 UGTE", GT_TYPE_GT3 );
-        MD_CHECK_PTR( metricSet );
-
-        metricSet = concurrentGroup->AddMetricSetExplicit<MetricSets_ACM_GT3_OA::CExt647MetricSet_Refresh>( "Ext647", "Ext647", API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
-            GPU_RENDER | GPU_COMPUTE | GPU_GENERIC, 256, 688, OA_REPORT_TYPE_256B_A45_NOA16, &platformMask, "$PlatformVersion 1 UGTE", GT_TYPE_GT3 );
-        MD_CHECK_PTR( metricSet );
-
-        metricSet = concurrentGroup->AddMetricSetExplicit<MetricSets_ACM_GT3_OA::CExt648MetricSet_Refresh>( "Ext648", "Ext648", API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
-            GPU_RENDER | GPU_COMPUTE | GPU_GENERIC, 256, 688, OA_REPORT_TYPE_256B_A45_NOA16, &platformMask, "$PlatformVersion 1 UGTE", GT_TYPE_GT3 );
-        MD_CHECK_PTR( metricSet );
-
-        metricSet = concurrentGroup->AddMetricSetExplicit<MetricSets_ACM_GT3_OA::CExt649MetricSet_Refresh>( "Ext649", "Ext649", API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
-            GPU_RENDER | GPU_COMPUTE | GPU_GENERIC, 256, 688, OA_REPORT_TYPE_256B_A45_NOA16, &platformMask, "$PlatformVersion 1 UGTE", GT_TYPE_GT3 );
-        MD_CHECK_PTR( metricSet );
-
-        metricSet = concurrentGroup->AddMetricSetExplicit<MetricSets_ACM_GT3_OA::CExt650MetricSet_Refresh>( "Ext650", "Ext650", API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
-            GPU_RENDER | GPU_COMPUTE | GPU_GENERIC, 256, 688, OA_REPORT_TYPE_256B_A45_NOA16, &platformMask, "$PlatformVersion 1 UGTE", GT_TYPE_GT3 );
-        MD_CHECK_PTR( metricSet );
-
-        metricSet = concurrentGroup->AddMetricSetExplicit<MetricSets_ACM_GT3_OA::CExt651MetricSet_Refresh>( "Ext651", "Ext651", API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
-            GPU_RENDER | GPU_COMPUTE | GPU_GENERIC, 256, 688, OA_REPORT_TYPE_256B_A45_NOA16, &platformMask, "$PlatformVersion 1 UGTE", GT_TYPE_GT3 );
-        MD_CHECK_PTR( metricSet );
-
-        metricSet = concurrentGroup->AddMetricSetExplicit<MetricSets_ACM_GT3_OA::CExt652MetricSet_Refresh>( "Ext652", "Ext652", API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
-            GPU_RENDER | GPU_COMPUTE | GPU_GENERIC, 256, 688, OA_REPORT_TYPE_256B_A45_NOA16, &platformMask, "$PlatformVersion 1 UGTE", GT_TYPE_GT3 );
-        MD_CHECK_PTR( metricSet );
-
-        metricSet = concurrentGroup->AddMetricSetExplicit<MetricSets_ACM_GT3_OA::CExt653MetricSet_Refresh>( "Ext653", "Ext653", API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
-            GPU_RENDER | GPU_COMPUTE | GPU_GENERIC, 256, 688, OA_REPORT_TYPE_256B_A45_NOA16, &platformMask, "$PlatformVersion 1 UGTE", GT_TYPE_GT3 );
-        MD_CHECK_PTR( metricSet );
-
-        metricSet = concurrentGroup->AddMetricSetExplicit<MetricSets_ACM_GT3_OA::CExt654MetricSet_Refresh>( "Ext654", "Ext654", API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
-            GPU_RENDER | GPU_COMPUTE | GPU_GENERIC, 256, 688, OA_REPORT_TYPE_256B_A45_NOA16, &platformMask, "$PlatformVersion 1 UGTE", GT_TYPE_GT3 );
-        MD_CHECK_PTR( metricSet );
-
-        metricSet = concurrentGroup->AddMetricSetExplicit<MetricSets_ACM_GT3_OA::CExt655MetricSet_Refresh>( "Ext655", "Ext655", API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
-            GPU_RENDER | GPU_COMPUTE | GPU_GENERIC, 256, 688, OA_REPORT_TYPE_256B_A45_NOA16, &platformMask, "$PlatformVersion 1 UGTE", GT_TYPE_GT3 );
-        MD_CHECK_PTR( metricSet );
-
-        metricSet = concurrentGroup->AddMetricSetExplicit<MetricSets_ACM_GT3_OA::CExt656MetricSet_Refresh>( "Ext656", "Ext656", API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
-            GPU_RENDER | GPU_COMPUTE | GPU_GENERIC, 256, 688, OA_REPORT_TYPE_256B_A45_NOA16, &platformMask, "$PlatformVersion 1 UGTE", GT_TYPE_GT3 );
-        MD_CHECK_PTR( metricSet );
-
-        metricSet = concurrentGroup->AddMetricSetExplicit<MetricSets_ACM_GT3_OA::CExt657MetricSet_Refresh>( "Ext657", "Ext657", API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
-            GPU_RENDER | GPU_COMPUTE | GPU_GENERIC, 256, 688, OA_REPORT_TYPE_256B_A45_NOA16, &platformMask, "$PlatformVersion 1 UGTE", GT_TYPE_GT3 );
-        MD_CHECK_PTR( metricSet );
-
-        metricSet = concurrentGroup->AddMetricSetExplicit<MetricSets_ACM_GT3_OA::CExt658MetricSet_Refresh>( "Ext658", "Ext658", API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
-            GPU_RENDER | GPU_COMPUTE | GPU_GENERIC, 256, 688, OA_REPORT_TYPE_256B_A45_NOA16, &platformMask, "$PlatformVersion 1 UGTE", GT_TYPE_GT3 );
-        MD_CHECK_PTR( metricSet );
-
-        metricSet = concurrentGroup->AddMetricSetExplicit<MetricSets_ACM_GT3_OA::CExt659MetricSet_Refresh>( "Ext659", "Ext659", API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
-            GPU_RENDER | GPU_COMPUTE | GPU_GENERIC, 256, 688, OA_REPORT_TYPE_256B_A45_NOA16, &platformMask, "$PlatformVersion 1 UGTE", GT_TYPE_GT3 );
-        MD_CHECK_PTR( metricSet );
-
-        metricSet = concurrentGroup->AddMetricSetExplicit<MetricSets_ACM_GT3_OA::CExt660MetricSet_Refresh>( "Ext660", "Ext660", API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
-            GPU_RENDER | GPU_COMPUTE | GPU_GENERIC, 256, 688, OA_REPORT_TYPE_256B_A45_NOA16, &platformMask, "$PlatformVersion 1 UGTE", GT_TYPE_GT3 );
-        MD_CHECK_PTR( metricSet );
-
-        metricSet = concurrentGroup->AddMetricSetExplicit<MetricSets_ACM_GT3_OA::CExt661MetricSet_Refresh>( "Ext661", "Ext661", API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
-            GPU_RENDER | GPU_COMPUTE | GPU_GENERIC, 256, 688, OA_REPORT_TYPE_256B_A45_NOA16, &platformMask, "$PlatformVersion 1 UGTE", GT_TYPE_GT3 );
-        MD_CHECK_PTR( metricSet );
-
-        metricSet = concurrentGroup->AddMetricSetExplicit<MetricSets_ACM_GT3_OA::CExt662MetricSet_Refresh>( "Ext662", "Ext662", API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
-            GPU_RENDER | GPU_COMPUTE | GPU_GENERIC, 256, 688, OA_REPORT_TYPE_256B_A45_NOA16, &platformMask, "$PlatformVersion 1 UGTE", GT_TYPE_GT3 );
-        MD_CHECK_PTR( metricSet );
-
-        metricSet = concurrentGroup->AddMetricSetExplicit<MetricSets_ACM_GT3_OA::CExt663MetricSet_Refresh>( "Ext663", "Ext663", API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
-            GPU_RENDER | GPU_COMPUTE | GPU_GENERIC, 256, 688, OA_REPORT_TYPE_256B_A45_NOA16, &platformMask, "$PlatformVersion 1 UGTE", GT_TYPE_GT3 );
-        MD_CHECK_PTR( metricSet );
-
-        metricSet = concurrentGroup->AddMetricSetExplicit<MetricSets_ACM_GT3_OA::CExt664MetricSet_Refresh>( "Ext664", "Ext664", API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
-            GPU_RENDER | GPU_COMPUTE | GPU_GENERIC, 256, 688, OA_REPORT_TYPE_256B_A45_NOA16, &platformMask, "$PlatformVersion 1 UGTE", GT_TYPE_GT3 );
-        MD_CHECK_PTR( metricSet );
-
-        metricSet = concurrentGroup->AddMetricSetExplicit<MetricSets_ACM_GT3_OA::CExt665MetricSet_Refresh>( "Ext665", "Ext665", API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
-            GPU_RENDER | GPU_COMPUTE | GPU_GENERIC, 256, 688, OA_REPORT_TYPE_256B_A45_NOA16, &platformMask, "$PlatformVersion 1 UGTE", GT_TYPE_GT3 );
-        MD_CHECK_PTR( metricSet );
-
-        metricSet = concurrentGroup->AddMetricSetExplicit<MetricSets_ACM_GT3_OA::CExt666MetricSet_Refresh>( "Ext666", "Ext666", API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
-            GPU_RENDER | GPU_COMPUTE | GPU_GENERIC, 256, 688, OA_REPORT_TYPE_256B_A45_NOA16, &platformMask, "$PlatformVersion 1 UGTE", GT_TYPE_GT3 );
-        MD_CHECK_PTR( metricSet );
-
-        metricSet = concurrentGroup->AddMetricSetExplicit<MetricSets_ACM_GT3_OA::CExt667MetricSet_Refresh>( "Ext667", "Ext667", API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
-            GPU_RENDER | GPU_COMPUTE | GPU_GENERIC, 256, 688, OA_REPORT_TYPE_256B_A45_NOA16, &platformMask, "$PlatformVersion 1 UGTE", GT_TYPE_GT3 );
-        MD_CHECK_PTR( metricSet );
-
-        metricSet = concurrentGroup->AddMetricSetExplicit<MetricSets_ACM_GT3_OA::CExt668MetricSet_Refresh>( "Ext668", "Ext668", API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
-            GPU_RENDER | GPU_COMPUTE | GPU_GENERIC, 256, 688, OA_REPORT_TYPE_256B_A45_NOA16, &platformMask, "$PlatformVersion 1 UGTE", GT_TYPE_GT3 );
-        MD_CHECK_PTR( metricSet );
-
-        metricSet = concurrentGroup->AddMetricSetExplicit<MetricSets_ACM_GT3_OA::CExt637MetricSet_FirstVersion>( "Ext637", "Ext637", API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+        metricSet = concurrentGroup->AddMetricSetExplicit<MetricSets_ACM_GT3_OA::CExt637MetricSet>( "Ext637", "Ext637", API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
             GPU_RENDER | GPU_COMPUTE | GPU_GENERIC, 256, 688, OA_REPORT_TYPE_256B_A45_NOA16, &platformMask, nullptr, GT_TYPE_GT3 );
         MD_CHECK_PTR( metricSet );
 
-        metricSet = concurrentGroup->AddMetricSetExplicit<MetricSets_ACM_GT3_OA::CExt638MetricSet_FirstVersion>( "Ext638", "Ext638", API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+        metricSet = concurrentGroup->AddMetricSetExplicit<MetricSets_ACM_GT3_OA::CExt638MetricSet>( "Ext638", "Ext638", API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
             GPU_RENDER | GPU_COMPUTE | GPU_GENERIC, 256, 688, OA_REPORT_TYPE_256B_A45_NOA16, &platformMask, nullptr, GT_TYPE_GT3 );
         MD_CHECK_PTR( metricSet );
 
-        metricSet = concurrentGroup->AddMetricSetExplicit<MetricSets_ACM_GT3_OA::CExt639MetricSet_FirstVersion>( "Ext639", "Ext639", API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+        metricSet = concurrentGroup->AddMetricSetExplicit<MetricSets_ACM_GT3_OA::CExt639MetricSet>( "Ext639", "Ext639", API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
             GPU_RENDER | GPU_COMPUTE | GPU_GENERIC, 256, 688, OA_REPORT_TYPE_256B_A45_NOA16, &platformMask, nullptr, GT_TYPE_GT3 );
         MD_CHECK_PTR( metricSet );
 
-        metricSet = concurrentGroup->AddMetricSetExplicit<MetricSets_ACM_GT3_OA::CExt640MetricSet_FirstVersion>( "Ext640", "Ext640", API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+        metricSet = concurrentGroup->AddMetricSetExplicit<MetricSets_ACM_GT3_OA::CExt640MetricSet>( "Ext640", "Ext640", API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
             GPU_RENDER | GPU_COMPUTE | GPU_GENERIC, 256, 688, OA_REPORT_TYPE_256B_A45_NOA16, &platformMask, nullptr, GT_TYPE_GT3 );
         MD_CHECK_PTR( metricSet );
 
-        metricSet = concurrentGroup->AddMetricSetExplicit<MetricSets_ACM_GT3_OA::CExt641MetricSet_FirstVersion>( "Ext641", "Ext641", API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+        metricSet = concurrentGroup->AddMetricSetExplicit<MetricSets_ACM_GT3_OA::CExt641MetricSet>( "Ext641", "Ext641", API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
             GPU_RENDER | GPU_COMPUTE | GPU_GENERIC, 256, 688, OA_REPORT_TYPE_256B_A45_NOA16, &platformMask, nullptr, GT_TYPE_GT3 );
         MD_CHECK_PTR( metricSet );
 
-        metricSet = concurrentGroup->AddMetricSetExplicit<MetricSets_ACM_GT3_OA::CExt642MetricSet_FirstVersion>( "Ext642", "Ext642", API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+        metricSet = concurrentGroup->AddMetricSetExplicit<MetricSets_ACM_GT3_OA::CExt642MetricSet>( "Ext642", "Ext642", API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
             GPU_RENDER | GPU_COMPUTE | GPU_GENERIC, 256, 688, OA_REPORT_TYPE_256B_A45_NOA16, &platformMask, nullptr, GT_TYPE_GT3 );
         MD_CHECK_PTR( metricSet );
 
-        metricSet = concurrentGroup->AddMetricSetExplicit<MetricSets_ACM_GT3_OA::CExt643MetricSet_FirstVersion>( "Ext643", "Ext643", API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+        metricSet = concurrentGroup->AddMetricSetExplicit<MetricSets_ACM_GT3_OA::CExt643MetricSet>( "Ext643", "Ext643", API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
             GPU_RENDER | GPU_COMPUTE | GPU_GENERIC, 256, 688, OA_REPORT_TYPE_256B_A45_NOA16, &platformMask, nullptr, GT_TYPE_GT3 );
         MD_CHECK_PTR( metricSet );
 
-        metricSet = concurrentGroup->AddMetricSetExplicit<MetricSets_ACM_GT3_OA::CExt644MetricSet_FirstVersion>( "Ext644", "Ext644", API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+        metricSet = concurrentGroup->AddMetricSetExplicit<MetricSets_ACM_GT3_OA::CExt644MetricSet>( "Ext644", "Ext644", API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
             GPU_RENDER | GPU_COMPUTE | GPU_GENERIC, 256, 688, OA_REPORT_TYPE_256B_A45_NOA16, &platformMask, nullptr, GT_TYPE_GT3 );
         MD_CHECK_PTR( metricSet );
 
-        metricSet = concurrentGroup->AddMetricSetExplicit<MetricSets_ACM_GT3_OA::CExt645MetricSet_FirstVersion>( "Ext645", "Ext645", API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+        metricSet = concurrentGroup->AddMetricSetExplicit<MetricSets_ACM_GT3_OA::CExt645MetricSet>( "Ext645", "Ext645", API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
             GPU_RENDER | GPU_COMPUTE | GPU_GENERIC, 256, 688, OA_REPORT_TYPE_256B_A45_NOA16, &platformMask, nullptr, GT_TYPE_GT3 );
         MD_CHECK_PTR( metricSet );
 
-        metricSet = concurrentGroup->AddMetricSetExplicit<MetricSets_ACM_GT3_OA::CExt646MetricSet_FirstVersion>( "Ext646", "Ext646", API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+        metricSet = concurrentGroup->AddMetricSetExplicit<MetricSets_ACM_GT3_OA::CExt646MetricSet>( "Ext646", "Ext646", API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
             GPU_RENDER | GPU_COMPUTE | GPU_GENERIC, 256, 688, OA_REPORT_TYPE_256B_A45_NOA16, &platformMask, nullptr, GT_TYPE_GT3 );
         MD_CHECK_PTR( metricSet );
 
-        metricSet = concurrentGroup->AddMetricSetExplicit<MetricSets_ACM_GT3_OA::CExt647MetricSet_FirstVersion>( "Ext647", "Ext647", API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+        metricSet = concurrentGroup->AddMetricSetExplicit<MetricSets_ACM_GT3_OA::CExt647MetricSet>( "Ext647", "Ext647", API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
             GPU_RENDER | GPU_COMPUTE | GPU_GENERIC, 256, 688, OA_REPORT_TYPE_256B_A45_NOA16, &platformMask, nullptr, GT_TYPE_GT3 );
         MD_CHECK_PTR( metricSet );
 
-        metricSet = concurrentGroup->AddMetricSetExplicit<MetricSets_ACM_GT3_OA::CExt648MetricSet_FirstVersion>( "Ext648", "Ext648", API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+        metricSet = concurrentGroup->AddMetricSetExplicit<MetricSets_ACM_GT3_OA::CExt648MetricSet>( "Ext648", "Ext648", API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
             GPU_RENDER | GPU_COMPUTE | GPU_GENERIC, 256, 688, OA_REPORT_TYPE_256B_A45_NOA16, &platformMask, nullptr, GT_TYPE_GT3 );
         MD_CHECK_PTR( metricSet );
 
-        metricSet = concurrentGroup->AddMetricSetExplicit<MetricSets_ACM_GT3_OA::CExt649MetricSet_FirstVersion>( "Ext649", "Ext649", API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+        metricSet = concurrentGroup->AddMetricSetExplicit<MetricSets_ACM_GT3_OA::CExt649MetricSet>( "Ext649", "Ext649", API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
             GPU_RENDER | GPU_COMPUTE | GPU_GENERIC, 256, 688, OA_REPORT_TYPE_256B_A45_NOA16, &platformMask, nullptr, GT_TYPE_GT3 );
         MD_CHECK_PTR( metricSet );
 
-        metricSet = concurrentGroup->AddMetricSetExplicit<MetricSets_ACM_GT3_OA::CExt650MetricSet_FirstVersion>( "Ext650", "Ext650", API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+        metricSet = concurrentGroup->AddMetricSetExplicit<MetricSets_ACM_GT3_OA::CExt650MetricSet>( "Ext650", "Ext650", API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
             GPU_RENDER | GPU_COMPUTE | GPU_GENERIC, 256, 688, OA_REPORT_TYPE_256B_A45_NOA16, &platformMask, nullptr, GT_TYPE_GT3 );
         MD_CHECK_PTR( metricSet );
 
-        metricSet = concurrentGroup->AddMetricSetExplicit<MetricSets_ACM_GT3_OA::CExt651MetricSet_FirstVersion>( "Ext651", "Ext651", API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+        metricSet = concurrentGroup->AddMetricSetExplicit<MetricSets_ACM_GT3_OA::CExt651MetricSet>( "Ext651", "Ext651", API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
             GPU_RENDER | GPU_COMPUTE | GPU_GENERIC, 256, 688, OA_REPORT_TYPE_256B_A45_NOA16, &platformMask, nullptr, GT_TYPE_GT3 );
         MD_CHECK_PTR( metricSet );
 
-        metricSet = concurrentGroup->AddMetricSetExplicit<MetricSets_ACM_GT3_OA::CExt652MetricSet_FirstVersion>( "Ext652", "Ext652", API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+        metricSet = concurrentGroup->AddMetricSetExplicit<MetricSets_ACM_GT3_OA::CExt652MetricSet>( "Ext652", "Ext652", API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
             GPU_RENDER | GPU_COMPUTE | GPU_GENERIC, 256, 688, OA_REPORT_TYPE_256B_A45_NOA16, &platformMask, nullptr, GT_TYPE_GT3 );
         MD_CHECK_PTR( metricSet );
 
-        metricSet = concurrentGroup->AddMetricSetExplicit<MetricSets_ACM_GT3_OA::CExt653MetricSet_FirstVersion>( "Ext653", "Ext653", API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+        metricSet = concurrentGroup->AddMetricSetExplicit<MetricSets_ACM_GT3_OA::CExt653MetricSet>( "Ext653", "Ext653", API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
             GPU_RENDER | GPU_COMPUTE | GPU_GENERIC, 256, 688, OA_REPORT_TYPE_256B_A45_NOA16, &platformMask, nullptr, GT_TYPE_GT3 );
         MD_CHECK_PTR( metricSet );
 
-        metricSet = concurrentGroup->AddMetricSetExplicit<MetricSets_ACM_GT3_OA::CExt654MetricSet_FirstVersion>( "Ext654", "Ext654", API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+        metricSet = concurrentGroup->AddMetricSetExplicit<MetricSets_ACM_GT3_OA::CExt654MetricSet>( "Ext654", "Ext654", API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
             GPU_RENDER | GPU_COMPUTE | GPU_GENERIC, 256, 688, OA_REPORT_TYPE_256B_A45_NOA16, &platformMask, nullptr, GT_TYPE_GT3 );
         MD_CHECK_PTR( metricSet );
 
-        metricSet = concurrentGroup->AddMetricSetExplicit<MetricSets_ACM_GT3_OA::CExt655MetricSet_FirstVersion>( "Ext655", "Ext655", API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+        metricSet = concurrentGroup->AddMetricSetExplicit<MetricSets_ACM_GT3_OA::CExt655MetricSet>( "Ext655", "Ext655", API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
             GPU_RENDER | GPU_COMPUTE | GPU_GENERIC, 256, 688, OA_REPORT_TYPE_256B_A45_NOA16, &platformMask, nullptr, GT_TYPE_GT3 );
         MD_CHECK_PTR( metricSet );
 
-        metricSet = concurrentGroup->AddMetricSetExplicit<MetricSets_ACM_GT3_OA::CExt656MetricSet_FirstVersion>( "Ext656", "Ext656", API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+        metricSet = concurrentGroup->AddMetricSetExplicit<MetricSets_ACM_GT3_OA::CExt656MetricSet>( "Ext656", "Ext656", API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
             GPU_RENDER | GPU_COMPUTE | GPU_GENERIC, 256, 688, OA_REPORT_TYPE_256B_A45_NOA16, &platformMask, nullptr, GT_TYPE_GT3 );
         MD_CHECK_PTR( metricSet );
 
-        metricSet = concurrentGroup->AddMetricSetExplicit<MetricSets_ACM_GT3_OA::CExt657MetricSet_FirstVersion>( "Ext657", "Ext657", API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+        metricSet = concurrentGroup->AddMetricSetExplicit<MetricSets_ACM_GT3_OA::CExt657MetricSet>( "Ext657", "Ext657", API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
             GPU_RENDER | GPU_COMPUTE | GPU_GENERIC, 256, 688, OA_REPORT_TYPE_256B_A45_NOA16, &platformMask, nullptr, GT_TYPE_GT3 );
         MD_CHECK_PTR( metricSet );
 
-        metricSet = concurrentGroup->AddMetricSetExplicit<MetricSets_ACM_GT3_OA::CExt658MetricSet_FirstVersion>( "Ext658", "Ext658", API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+        metricSet = concurrentGroup->AddMetricSetExplicit<MetricSets_ACM_GT3_OA::CExt658MetricSet>( "Ext658", "Ext658", API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
             GPU_RENDER | GPU_COMPUTE | GPU_GENERIC, 256, 688, OA_REPORT_TYPE_256B_A45_NOA16, &platformMask, nullptr, GT_TYPE_GT3 );
         MD_CHECK_PTR( metricSet );
 
-        metricSet = concurrentGroup->AddMetricSetExplicit<MetricSets_ACM_GT3_OA::CExt659MetricSet_FirstVersion>( "Ext659", "Ext659", API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+        metricSet = concurrentGroup->AddMetricSetExplicit<MetricSets_ACM_GT3_OA::CExt659MetricSet>( "Ext659", "Ext659", API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
             GPU_RENDER | GPU_COMPUTE | GPU_GENERIC, 256, 688, OA_REPORT_TYPE_256B_A45_NOA16, &platformMask, nullptr, GT_TYPE_GT3 );
         MD_CHECK_PTR( metricSet );
 
-        metricSet = concurrentGroup->AddMetricSetExplicit<MetricSets_ACM_GT3_OA::CExt660MetricSet_FirstVersion>( "Ext660", "Ext660", API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+        metricSet = concurrentGroup->AddMetricSetExplicit<MetricSets_ACM_GT3_OA::CExt660MetricSet>( "Ext660", "Ext660", API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
             GPU_RENDER | GPU_COMPUTE | GPU_GENERIC, 256, 688, OA_REPORT_TYPE_256B_A45_NOA16, &platformMask, nullptr, GT_TYPE_GT3 );
         MD_CHECK_PTR( metricSet );
 
-        metricSet = concurrentGroup->AddMetricSetExplicit<MetricSets_ACM_GT3_OA::CExt661MetricSet_FirstVersion>( "Ext661", "Ext661", API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+        metricSet = concurrentGroup->AddMetricSetExplicit<MetricSets_ACM_GT3_OA::CExt661MetricSet>( "Ext661", "Ext661", API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
             GPU_RENDER | GPU_COMPUTE | GPU_GENERIC, 256, 688, OA_REPORT_TYPE_256B_A45_NOA16, &platformMask, nullptr, GT_TYPE_GT3 );
         MD_CHECK_PTR( metricSet );
 
-        metricSet = concurrentGroup->AddMetricSetExplicit<MetricSets_ACM_GT3_OA::CExt662MetricSet_FirstVersion>( "Ext662", "Ext662", API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+        metricSet = concurrentGroup->AddMetricSetExplicit<MetricSets_ACM_GT3_OA::CExt662MetricSet>( "Ext662", "Ext662", API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
             GPU_RENDER | GPU_COMPUTE | GPU_GENERIC, 256, 688, OA_REPORT_TYPE_256B_A45_NOA16, &platformMask, nullptr, GT_TYPE_GT3 );
         MD_CHECK_PTR( metricSet );
 
-        metricSet = concurrentGroup->AddMetricSetExplicit<MetricSets_ACM_GT3_OA::CExt663MetricSet_FirstVersion>( "Ext663", "Ext663", API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+        metricSet = concurrentGroup->AddMetricSetExplicit<MetricSets_ACM_GT3_OA::CExt663MetricSet>( "Ext663", "Ext663", API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
             GPU_RENDER | GPU_COMPUTE | GPU_GENERIC, 256, 688, OA_REPORT_TYPE_256B_A45_NOA16, &platformMask, nullptr, GT_TYPE_GT3 );
         MD_CHECK_PTR( metricSet );
 
-        metricSet = concurrentGroup->AddMetricSetExplicit<MetricSets_ACM_GT3_OA::CExt664MetricSet_FirstVersion>( "Ext664", "Ext664", API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+        metricSet = concurrentGroup->AddMetricSetExplicit<MetricSets_ACM_GT3_OA::CExt664MetricSet>( "Ext664", "Ext664", API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
             GPU_RENDER | GPU_COMPUTE | GPU_GENERIC, 256, 688, OA_REPORT_TYPE_256B_A45_NOA16, &platformMask, nullptr, GT_TYPE_GT3 );
         MD_CHECK_PTR( metricSet );
 
-        metricSet = concurrentGroup->AddMetricSetExplicit<MetricSets_ACM_GT3_OA::CExt665MetricSet_FirstVersion>( "Ext665", "Ext665", API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+        metricSet = concurrentGroup->AddMetricSetExplicit<MetricSets_ACM_GT3_OA::CExt665MetricSet>( "Ext665", "Ext665", API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
             GPU_RENDER | GPU_COMPUTE | GPU_GENERIC, 256, 688, OA_REPORT_TYPE_256B_A45_NOA16, &platformMask, nullptr, GT_TYPE_GT3 );
         MD_CHECK_PTR( metricSet );
 
-        metricSet = concurrentGroup->AddMetricSetExplicit<MetricSets_ACM_GT3_OA::CExt666MetricSet_FirstVersion>( "Ext666", "Ext666", API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+        metricSet = concurrentGroup->AddMetricSetExplicit<MetricSets_ACM_GT3_OA::CExt666MetricSet>( "Ext666", "Ext666", API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
             GPU_RENDER | GPU_COMPUTE | GPU_GENERIC, 256, 688, OA_REPORT_TYPE_256B_A45_NOA16, &platformMask, nullptr, GT_TYPE_GT3 );
         MD_CHECK_PTR( metricSet );
 
-        metricSet = concurrentGroup->AddMetricSetExplicit<MetricSets_ACM_GT3_OA::CExt667MetricSet_FirstVersion>( "Ext667", "Ext667", API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+        metricSet = concurrentGroup->AddMetricSetExplicit<MetricSets_ACM_GT3_OA::CExt667MetricSet>( "Ext667", "Ext667", API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
             GPU_RENDER | GPU_COMPUTE | GPU_GENERIC, 256, 688, OA_REPORT_TYPE_256B_A45_NOA16, &platformMask, nullptr, GT_TYPE_GT3 );
         MD_CHECK_PTR( metricSet );
 
-        metricSet = concurrentGroup->AddMetricSetExplicit<MetricSets_ACM_GT3_OA::CExt668MetricSet_FirstVersion>( "Ext668", "Ext668", API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+        metricSet = concurrentGroup->AddMetricSetExplicit<MetricSets_ACM_GT3_OA::CExt668MetricSet>( "Ext668", "Ext668", API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
             GPU_RENDER | GPU_COMPUTE | GPU_GENERIC, 256, 688, OA_REPORT_TYPE_256B_A45_NOA16, &platformMask, nullptr, GT_TYPE_GT3 );
         MD_CHECK_PTR( metricSet );
 
@@ -4367,38 +4207,6 @@ TCompletionCode CreateMetricTreeACM_GT3_OA( CMetricsDevice* metricsDevice, CConc
             GPU_RENDER | GPU_COMPUTE | GPU_GENERIC, 256, 688, OA_REPORT_TYPE_256B_A45_NOA16, &platformMask, nullptr, GT_TYPE_GT3 );
         MD_CHECK_PTR( metricSet );
 
-        metricSet = concurrentGroup->AddMetricSetExplicit<MetricSets_ACM_GT3_OA::CExt990MetricSet_Refresh>( "Ext990", "Ext990", API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
-            GPU_RENDER | GPU_COMPUTE | GPU_GENERIC, 256, 688, OA_REPORT_TYPE_256B_A45_NOA16, &platformMask, "$PlatformVersion 1 UGTE", GT_TYPE_GT3 );
-        MD_CHECK_PTR( metricSet );
-
-        metricSet = concurrentGroup->AddMetricSetExplicit<MetricSets_ACM_GT3_OA::CExt991MetricSet_Refresh>( "Ext991", "Ext991", API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
-            GPU_RENDER | GPU_COMPUTE | GPU_GENERIC, 256, 688, OA_REPORT_TYPE_256B_A45_NOA16, &platformMask, "$PlatformVersion 1 UGTE", GT_TYPE_GT3 );
-        MD_CHECK_PTR( metricSet );
-
-        metricSet = concurrentGroup->AddMetricSetExplicit<MetricSets_ACM_GT3_OA::CExt992MetricSet_Refresh>( "Ext992", "Ext992", API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
-            GPU_RENDER | GPU_COMPUTE | GPU_GENERIC, 256, 688, OA_REPORT_TYPE_256B_A45_NOA16, &platformMask, "$PlatformVersion 1 UGTE", GT_TYPE_GT3 );
-        MD_CHECK_PTR( metricSet );
-
-        metricSet = concurrentGroup->AddMetricSetExplicit<MetricSets_ACM_GT3_OA::CExt993MetricSet_Refresh>( "Ext993", "Ext993", API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
-            GPU_RENDER | GPU_COMPUTE | GPU_GENERIC, 256, 688, OA_REPORT_TYPE_256B_A45_NOA16, &platformMask, "$PlatformVersion 1 UGTE", GT_TYPE_GT3 );
-        MD_CHECK_PTR( metricSet );
-
-        metricSet = concurrentGroup->AddMetricSetExplicit<MetricSets_ACM_GT3_OA::CExt994MetricSet_Refresh>( "Ext994", "Ext994", API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
-            GPU_RENDER | GPU_COMPUTE | GPU_GENERIC, 256, 688, OA_REPORT_TYPE_256B_A45_NOA16, &platformMask, "$PlatformVersion 1 UGTE", GT_TYPE_GT3 );
-        MD_CHECK_PTR( metricSet );
-
-        metricSet = concurrentGroup->AddMetricSetExplicit<MetricSets_ACM_GT3_OA::CExt995MetricSet_Refresh>( "Ext995", "Ext995", API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
-            GPU_RENDER | GPU_COMPUTE | GPU_GENERIC, 256, 688, OA_REPORT_TYPE_256B_A45_NOA16, &platformMask, "$PlatformVersion 1 UGTE", GT_TYPE_GT3 );
-        MD_CHECK_PTR( metricSet );
-
-        metricSet = concurrentGroup->AddMetricSetExplicit<MetricSets_ACM_GT3_OA::CExt996MetricSet_Refresh>( "Ext996", "Ext996", API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
-            GPU_RENDER | GPU_COMPUTE | GPU_GENERIC, 256, 688, OA_REPORT_TYPE_256B_A45_NOA16, &platformMask, "$PlatformVersion 1 UGTE", GT_TYPE_GT3 );
-        MD_CHECK_PTR( metricSet );
-
-        metricSet = concurrentGroup->AddMetricSetExplicit<MetricSets_ACM_GT3_OA::CExt997MetricSet_Refresh>( "Ext997", "Ext997", API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
-            GPU_RENDER | GPU_COMPUTE | GPU_GENERIC, 256, 688, OA_REPORT_TYPE_256B_A45_NOA16, &platformMask, "$PlatformVersion 1 UGTE", GT_TYPE_GT3 );
-        MD_CHECK_PTR( metricSet );
-
         metricSet = concurrentGroup->AddMetricSetExplicit<MetricSets_ACM_GT3_OA::CExt1000MetricSet>( "Ext1000", "Ext1000", API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
             GPU_RENDER | GPU_COMPUTE | GPU_GENERIC, 256, 688, OA_REPORT_TYPE_256B_A45_NOA16, &platformMask, nullptr, GT_TYPE_GT3 );
         MD_CHECK_PTR( metricSet );
@@ -4427,76 +4235,40 @@ TCompletionCode CreateMetricTreeACM_GT3_OA( CMetricsDevice* metricsDevice, CConc
             GPU_RENDER | GPU_COMPUTE | GPU_GENERIC, 256, 688, OA_REPORT_TYPE_256B_A45_NOA16, &platformMask, nullptr, GT_TYPE_GT3 );
         MD_CHECK_PTR( metricSet );
 
-        metricSet = concurrentGroup->AddMetricSetExplicit<MetricSets_ACM_GT3_OA::CExt1010MetricSet_Refresh>( "Ext1010", "Ext1010", API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
-            GPU_RENDER | GPU_COMPUTE | GPU_GENERIC, 256, 688, OA_REPORT_TYPE_256B_A45_NOA16, &platformMask, "$PlatformVersion 1 UGTE", GT_TYPE_GT3 );
-        MD_CHECK_PTR( metricSet );
-
-        metricSet = concurrentGroup->AddMetricSetExplicit<MetricSets_ACM_GT3_OA::CExt1010MetricSet_FirstVersion>( "Ext1010", "Ext1010", API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+        metricSet = concurrentGroup->AddMetricSetExplicit<MetricSets_ACM_GT3_OA::CExt1010MetricSet>( "Ext1010", "Ext1010", API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
             GPU_RENDER | GPU_COMPUTE | GPU_GENERIC, 256, 688, OA_REPORT_TYPE_256B_A45_NOA16, &platformMask, nullptr, GT_TYPE_GT3 );
         MD_CHECK_PTR( metricSet );
 
-        metricSet = concurrentGroup->AddMetricSetExplicit<MetricSets_ACM_GT3_OA::CExt1100MetricSet_Refresh>( "Ext1100", "Ext1100", API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
-            GPU_RENDER | GPU_COMPUTE | GPU_GENERIC, 256, 688, OA_REPORT_TYPE_256B_A45_NOA16, &platformMask, "$PlatformVersion 1 UGTE", GT_TYPE_GT3 );
+        metricSet = concurrentGroup->AddMetricSetExplicit<MetricSets_ACM_GT3_OA::CExt1100MetricSet>( "Ext1100", "Ext1100", API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+            GPU_RENDER | GPU_COMPUTE | GPU_GENERIC, 256, 688, OA_REPORT_TYPE_256B_A45_NOA16, &platformMask, nullptr, GT_TYPE_GT3 );
         MD_CHECK_PTR( metricSet );
 
-        metricSet = concurrentGroup->AddMetricSetExplicit<MetricSets_ACM_GT3_OA::CExt1101MetricSet_Refresh>( "Ext1101", "Ext1101", API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
-            GPU_RENDER | GPU_COMPUTE | GPU_GENERIC, 256, 688, OA_REPORT_TYPE_256B_A45_NOA16, &platformMask, "$PlatformVersion 1 UGTE", GT_TYPE_GT3 );
+        metricSet = concurrentGroup->AddMetricSetExplicit<MetricSets_ACM_GT3_OA::CExt1101MetricSet>( "Ext1101", "Ext1101", API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+            GPU_RENDER | GPU_COMPUTE | GPU_GENERIC, 256, 688, OA_REPORT_TYPE_256B_A45_NOA16, &platformMask, nullptr, GT_TYPE_GT3 );
         MD_CHECK_PTR( metricSet );
 
-        metricSet = concurrentGroup->AddMetricSetExplicit<MetricSets_ACM_GT3_OA::CExt1102MetricSet_Refresh>( "Ext1102", "Ext1102", API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
-            GPU_RENDER | GPU_COMPUTE | GPU_GENERIC, 256, 688, OA_REPORT_TYPE_256B_A45_NOA16, &platformMask, "$PlatformVersion 1 UGTE", GT_TYPE_GT3 );
+        metricSet = concurrentGroup->AddMetricSetExplicit<MetricSets_ACM_GT3_OA::CExt1102MetricSet>( "Ext1102", "Ext1102", API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+            GPU_RENDER | GPU_COMPUTE | GPU_GENERIC, 256, 688, OA_REPORT_TYPE_256B_A45_NOA16, &platformMask, nullptr, GT_TYPE_GT3 );
         MD_CHECK_PTR( metricSet );
 
-        metricSet = concurrentGroup->AddMetricSetExplicit<MetricSets_ACM_GT3_OA::CExt1103MetricSet_Refresh>( "Ext1103", "Ext1103", API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
-            GPU_RENDER | GPU_COMPUTE | GPU_GENERIC, 256, 688, OA_REPORT_TYPE_256B_A45_NOA16, &platformMask, "$PlatformVersion 1 UGTE", GT_TYPE_GT3 );
+        metricSet = concurrentGroup->AddMetricSetExplicit<MetricSets_ACM_GT3_OA::CExt1103MetricSet>( "Ext1103", "Ext1103", API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+            GPU_RENDER | GPU_COMPUTE | GPU_GENERIC, 256, 688, OA_REPORT_TYPE_256B_A45_NOA16, &platformMask, nullptr, GT_TYPE_GT3 );
         MD_CHECK_PTR( metricSet );
 
-        metricSet = concurrentGroup->AddMetricSetExplicit<MetricSets_ACM_GT3_OA::CExt1104MetricSet_Refresh>( "Ext1104", "Ext1104", API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
-            GPU_RENDER | GPU_COMPUTE | GPU_GENERIC, 256, 688, OA_REPORT_TYPE_256B_A45_NOA16, &platformMask, "$PlatformVersion 1 UGTE", GT_TYPE_GT3 );
+        metricSet = concurrentGroup->AddMetricSetExplicit<MetricSets_ACM_GT3_OA::CExt1104MetricSet>( "Ext1104", "Ext1104", API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+            GPU_RENDER | GPU_COMPUTE | GPU_GENERIC, 256, 688, OA_REPORT_TYPE_256B_A45_NOA16, &platformMask, nullptr, GT_TYPE_GT3 );
         MD_CHECK_PTR( metricSet );
 
-        metricSet = concurrentGroup->AddMetricSetExplicit<MetricSets_ACM_GT3_OA::CExt1105MetricSet_Refresh>( "Ext1105", "Ext1105", API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
-            GPU_RENDER | GPU_COMPUTE | GPU_GENERIC, 256, 688, OA_REPORT_TYPE_256B_A45_NOA16, &platformMask, "$PlatformVersion 1 UGTE", GT_TYPE_GT3 );
+        metricSet = concurrentGroup->AddMetricSetExplicit<MetricSets_ACM_GT3_OA::CExt1105MetricSet>( "Ext1105", "Ext1105", API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+            GPU_RENDER | GPU_COMPUTE | GPU_GENERIC, 256, 688, OA_REPORT_TYPE_256B_A45_NOA16, &platformMask, nullptr, GT_TYPE_GT3 );
         MD_CHECK_PTR( metricSet );
 
-        metricSet = concurrentGroup->AddMetricSetExplicit<MetricSets_ACM_GT3_OA::CExt1106MetricSet_Refresh>( "Ext1106", "Ext1106", API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
-            GPU_RENDER | GPU_COMPUTE | GPU_GENERIC, 256, 688, OA_REPORT_TYPE_256B_A45_NOA16, &platformMask, "$PlatformVersion 1 UGTE", GT_TYPE_GT3 );
+        metricSet = concurrentGroup->AddMetricSetExplicit<MetricSets_ACM_GT3_OA::CExt1106MetricSet>( "Ext1106", "Ext1106", API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+            GPU_RENDER | GPU_COMPUTE | GPU_GENERIC, 256, 688, OA_REPORT_TYPE_256B_A45_NOA16, &platformMask, nullptr, GT_TYPE_GT3 );
         MD_CHECK_PTR( metricSet );
 
-        metricSet = concurrentGroup->AddMetricSetExplicit<MetricSets_ACM_GT3_OA::CExt1107MetricSet_Refresh>( "Ext1107", "Ext1107", API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
-            GPU_RENDER | GPU_COMPUTE | GPU_GENERIC, 256, 688, OA_REPORT_TYPE_256B_A45_NOA16, &platformMask, "$PlatformVersion 1 UGTE", GT_TYPE_GT3 );
-        MD_CHECK_PTR( metricSet );
-
-        metricSet = concurrentGroup->AddMetricSetExplicit<MetricSets_ACM_GT3_OA::CExt1100MetricSet_FirstVersion>( "Ext1100", "Ext1100", API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
-            GPU_RENDER | GPU_COMPUTE | GPU_GENERIC, 256, 688, OA_REPORT_TYPE_256B_A45_NOA16, &platformMask, "$PlatformVersion 1 ULT", GT_TYPE_GT3 );
-        MD_CHECK_PTR( metricSet );
-
-        metricSet = concurrentGroup->AddMetricSetExplicit<MetricSets_ACM_GT3_OA::CExt1101MetricSet_FirstVersion>( "Ext1101", "Ext1101", API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
-            GPU_RENDER | GPU_COMPUTE | GPU_GENERIC, 256, 688, OA_REPORT_TYPE_256B_A45_NOA16, &platformMask, "$PlatformVersion 1 ULT", GT_TYPE_GT3 );
-        MD_CHECK_PTR( metricSet );
-
-        metricSet = concurrentGroup->AddMetricSetExplicit<MetricSets_ACM_GT3_OA::CExt1102MetricSet_FirstVersion>( "Ext1102", "Ext1102", API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
-            GPU_RENDER | GPU_COMPUTE | GPU_GENERIC, 256, 688, OA_REPORT_TYPE_256B_A45_NOA16, &platformMask, "$PlatformVersion 1 ULT", GT_TYPE_GT3 );
-        MD_CHECK_PTR( metricSet );
-
-        metricSet = concurrentGroup->AddMetricSetExplicit<MetricSets_ACM_GT3_OA::CExt1103MetricSet_FirstVersion>( "Ext1103", "Ext1103", API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
-            GPU_RENDER | GPU_COMPUTE | GPU_GENERIC, 256, 688, OA_REPORT_TYPE_256B_A45_NOA16, &platformMask, "$PlatformVersion 1 ULT", GT_TYPE_GT3 );
-        MD_CHECK_PTR( metricSet );
-
-        metricSet = concurrentGroup->AddMetricSetExplicit<MetricSets_ACM_GT3_OA::CExt1104MetricSet_FirstVersion>( "Ext1104", "Ext1104", API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
-            GPU_RENDER | GPU_COMPUTE | GPU_GENERIC, 256, 688, OA_REPORT_TYPE_256B_A45_NOA16, &platformMask, "$PlatformVersion 1 ULT", GT_TYPE_GT3 );
-        MD_CHECK_PTR( metricSet );
-
-        metricSet = concurrentGroup->AddMetricSetExplicit<MetricSets_ACM_GT3_OA::CExt1105MetricSet_FirstVersion>( "Ext1105", "Ext1105", API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
-            GPU_RENDER | GPU_COMPUTE | GPU_GENERIC, 256, 688, OA_REPORT_TYPE_256B_A45_NOA16, &platformMask, "$PlatformVersion 1 ULT", GT_TYPE_GT3 );
-        MD_CHECK_PTR( metricSet );
-
-        metricSet = concurrentGroup->AddMetricSetExplicit<MetricSets_ACM_GT3_OA::CExt1106MetricSet_FirstVersion>( "Ext1106", "Ext1106", API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
-            GPU_RENDER | GPU_COMPUTE | GPU_GENERIC, 256, 688, OA_REPORT_TYPE_256B_A45_NOA16, &platformMask, "$PlatformVersion 1 ULT", GT_TYPE_GT3 );
-        MD_CHECK_PTR( metricSet );
-
-        metricSet = concurrentGroup->AddMetricSetExplicit<MetricSets_ACM_GT3_OA::CExt1107MetricSet_FirstVersion>( "Ext1107", "Ext1107", API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
-            GPU_RENDER | GPU_COMPUTE | GPU_GENERIC, 256, 688, OA_REPORT_TYPE_256B_A45_NOA16, &platformMask, "$PlatformVersion 1 ULT", GT_TYPE_GT3 );
+        metricSet = concurrentGroup->AddMetricSetExplicit<MetricSets_ACM_GT3_OA::CExt1107MetricSet>( "Ext1107", "Ext1107", API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+            GPU_RENDER | GPU_COMPUTE | GPU_GENERIC, 256, 688, OA_REPORT_TYPE_256B_A45_NOA16, &platformMask, nullptr, GT_TYPE_GT3 );
         MD_CHECK_PTR( metricSet );
 
         metricSet = concurrentGroup->AddMetricSetExplicit<MetricSets_ACM_GT3_OA::CExt1208MetricSet>( "Ext1208", "Ext1208", API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,

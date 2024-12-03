@@ -230,7 +230,7 @@ typedef enum
     GTDI_IFC_VERSION_3_54    = GTDI_MAKE_IFC_VER( GTDI_IFC_VERSION_3, 54 ), // Deprecated DMA sampling
     GTDI_IFC_VERSION_3_55    = GTDI_MAKE_IFC_VER( GTDI_IFC_VERSION_3, 55 ), // New device param: Platform Version
     GTDI_IFC_VERSION_3_56    = GTDI_MAKE_IFC_VER( GTDI_IFC_VERSION_3, 56 ), // New device params: compute and copy engines count
-    GTDI_IFC_VERSION_3_57    = GTDI_MAKE_IFC_VER( GTDI_IFC_VERSION_3, 57 ),
+    GTDI_IFC_VERSION_3_57    = GTDI_MAKE_IFC_VER( GTDI_IFC_VERSION_3, 57 ), // PTL base support
     GTDI_IFC_VERSION_3_58    = GTDI_MAKE_IFC_VER( GTDI_IFC_VERSION_3, 58 ), // ARL base support
     GTDI_IFC_VERSION_3_59    = GTDI_MAKE_IFC_VER( GTDI_IFC_VERSION_3, 59 ),
     GTDI_IFC_VERSION_3_60    = GTDI_MAKE_IFC_VER( GTDI_IFC_VERSION_3, 60 ), // New device params: L3 Bank, L3 Node and Copy Engine masks
@@ -457,7 +457,7 @@ typedef enum GTDI_REPORT_TYPE_ENUM
     GTDI_REPORT_TYPE_MC        = 103 << GTDI_REPORT_TYPE_OA_SHIFT, // memory counters only
     GTDI_REPORT_TYPE_USER      = 104 << GTDI_REPORT_TYPE_OA_SHIFT, // 16 user defined uint32_t counters only
     // media (OAM) report types
-    GTDI_REPORT_TYPE_128B_OAM           = 1 << GTDI_REPORT_TYPE_OAM_SHIFT, //
+    GTDI_REPORT_TYPE_128B_OAM           = 1 << GTDI_REPORT_TYPE_OAM_SHIFT, // obsolete
     GTDI_REPORT_TYPE_192B_MPEC8LL_NOA16 = 2 << GTDI_REPORT_TYPE_OAM_SHIFT, // MTL+ format: 8 PEC(64-bit) + 16 NOA(32-bit)
     GTDI_REPORT_TYPE_128B_MPEC8_NOA16   = 3 << GTDI_REPORT_TYPE_OAM_SHIFT, // MTL+ format: 8 PEC(32-bit) + 16 NOA(32-bit)
 
@@ -513,7 +513,7 @@ typedef enum
     GENERATION_EHL      = 19,
     // 20 reserved
     GENERATION_DG1      = 21,
-    GENERATION_XEHP_SDV = 22,
+    // 22 reserved
     GENERATION_RKL      = 23,
     GENERATION_ACM      = 24,
     GENERATION_PVC      = 25,
@@ -523,7 +523,8 @@ typedef enum
     GENERATION_ADLS     = 29,
     GENERATION_ADLN     = 30,
     GENERATION_LNL      = 31,
-    // 32-33 reserved
+    GENERATION_PTL      = 32,
+    // 33 reserved
     GENERATION_ARL      = 34,
     // ...
     // DO NOT CHANGE ORDER OF THIS ENUM, ADD NEW PLATFORMS AT THE END!
@@ -611,7 +612,7 @@ typedef enum GTDI_DEVICE_PARAM_ENUM
     GTDI_DEVICE_PARAM_L3_NODE_MASK                       = 61,
     GTDI_DEVICE_PARAM_COPY_ENGINE_MASK                   = 62,
 
-    // Maximums which bound all supported GT. The values will change as needed with new GT.
+    // For Xe2+, the values are maximums for a given device.
     // These params are intended for internal use only.
     GTDI_DEVICE_PARAM_MAX_SLICE                  = 1000,
     GTDI_DEVICE_PARAM_MAX_SUBSLICE_PER_SLICE     = 1001,
@@ -1358,7 +1359,7 @@ typedef struct GTDIReadCounterStreamExceptionsStruct
                                           // occurs it will be reported until all available data is read from hardware
                                           // during current or following reads. Whether there is data outstanding
                                           // in the buffer after read is indicated by DataOutstanding flag.
-    uint32_t SliceShutdown : 1;           // slice shutdown occurred
+    uint32_t SliceShutdown : 1;           // (OBSOLETE) slice shutdown occurred
     uint32_t ReportLost : 1;              // Report lost reported by HW. This means that there were some samples lost
                                           // since last Read Stream (not between the first and the last returned sample).
     uint32_t DataOutstanding : 1;         // (OBSOLETE) Read Stream left some of the newest samples unread.

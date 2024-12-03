@@ -97,6 +97,7 @@ namespace MetricsDiscoveryInternal
         {
             case GENERATION_BMG:
             case GENERATION_LNL:
+            case GENERATION_PTL:
                 reportType = DEFAULT_METRIC_SET_REPORT_TYPE_XE2;
                 break;
             default:
@@ -742,27 +743,39 @@ namespace MetricsDiscoveryInternal
             {
                 if( startRegSets[i].StartConfigRegs && startRegSets[i].StartConfigRegsCount )
                 {
-                    set->AddStartRegisterSet(
-                        startRegSets[i].ConfigId,
-                        startRegSets[i].ConfigPriority,
-                        startRegSets[i].AvailabilityEquation,
-                        startRegSets[i].ConfigType );
+                    if( set->AddStartRegisterSet(
+                            startRegSets[i].ConfigId,
+                            startRegSets[i].ConfigPriority,
+                            startRegSets[i].AvailabilityEquation,
+                            startRegSets[i].ConfigType ) != CC_OK )
+                    {
+                        MD_LOG_A( adapterId, LOG_INFO, "Error adding start register set" );
+                        goto customMetricSetCleanup;
+                    }
 
                     for( uint32_t j = 0; j < startRegSets[i].StartConfigRegsCount; j++ )
                     {
-                        set->AddStartConfigRegister(
-                            startRegSets[i].StartConfigRegs[j].offset,
-                            startRegSets[i].StartConfigRegs[j].value,
-                            startRegSets[i].StartConfigRegs[j].type );
+                        if( set->AddStartConfigRegister(
+                                startRegSets[i].StartConfigRegs[j].offset,
+                                startRegSets[i].StartConfigRegs[j].value,
+                                startRegSets[i].StartConfigRegs[j].type ) != CC_OK )
+                        {
+                            MD_LOG_A( adapterId, LOG_INFO, "Error adding start config register" );
+                            goto customMetricSetCleanup;
+                        }
                     }
                 }
             }
         }
-        set->RefreshConfigRegisters();
+        if( set->RefreshConfigRegisters() != CC_OK )
+        {
+            MD_LOG_A( adapterId, LOG_INFO, "Error refreshing config registers" );
+            goto customMetricSetCleanup;
+        }
 
         if( set->SetAvailabilityEquation( availabilityEquation ) != CC_OK )
         {
-            MD_LOG_A( adapterId, LOG_ERROR, "Error setting metric set equations" );
+            MD_LOG_A( adapterId, LOG_INFO, "Error setting metric set equations" );
             goto customMetricSetCleanup;
         }
 

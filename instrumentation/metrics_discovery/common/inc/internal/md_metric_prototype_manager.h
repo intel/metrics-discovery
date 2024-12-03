@@ -51,12 +51,12 @@ namespace MetricsDiscoveryInternal
         CPrototypeManager( CMetricsDevice& device, CMetricSet& metricSet );
         virtual ~CPrototypeManager(){};
 
-        TCompletionCode AddPrototype( CMetricPrototype& prototype );
-        TCompletionCode RemovePrototype( CMetricPrototype& prototype );
-        TCompletionCode CreateMetricsFromPrototypes();
-        void            DecreasePrototypesReferenceCounters();
-        bool            IsEmpty();
-        virtual bool    IsSupported() = 0;
+        TCompletionCode         AddPrototype( CMetricPrototype& prototype );
+        TCompletionCode         RemovePrototype( CMetricPrototype& prototype );
+        virtual TCompletionCode CreateMetricsFromPrototypes();
+        void                    DecreasePrototypesReferenceCounters();
+        bool                    IsEmpty();
+        virtual bool            IsSupported() = 0;
 
     protected:
         // Methods:
@@ -73,13 +73,13 @@ namespace MetricsDiscoveryInternal
         THwEventPairIterator  GetHwEventIteratorFromGroup( THwEventPairVector& group, const THwEvent& hwEvent );
         virtual THwEventGroup GetHwEventGroup( const THwEvent& hwEvent ) = 0;
 
-        CMetric*         AddMetricToSet( const CMetricPrototype& prototype, const uint32_t metricIndex );
-        void             AddEquations( CMetricPrototype& prototype, CMetric& metric, const uint32_t snapshotReportOffset, const uint32_t deltaReportOffset );
-        void             AppendNormalizationsAndWorkarounds( CMetricPrototype& prototype, CMetric& metric, std::stringstream& snapshotReportReadEquation, std::stringstream& deltaReportReadEquation );
-        virtual void     AppendPesConfiguration( const THwEvent& hwEvent, const uint64_t pesProgramming, std::vector<bool>& pesProgrammed, uint32_t flexProgramming[], uint32_t& snapshotReportOffsets, uint32_t& deltaReportOffsets ) = 0;
-        virtual void     AppendFlexConfiguration( const uint32_t flexProgramming[] )                                                                                                                                                   = 0;
-        virtual uint32_t GetMaxPesCount()                                                                                                                                                                                              = 0;
-        virtual uint32_t GetGroupMaxSize( const THwEventGroup group )                                                                                                                                                                  = 0;
+        CMetric*                AddMetricToSet( const CMetricPrototype& prototype, const uint32_t metricIndex );
+        TCompletionCode         AddEquations( CMetricPrototype& prototype, CMetric& metric, const uint32_t snapshotReportOffset, const uint32_t deltaReportOffset );
+        TCompletionCode         AppendNormalizationsAndWorkarounds( CMetricPrototype& prototype, CMetric& metric, std::stringstream& snapshotReportReadEquation, std::stringstream& deltaReportReadEquation );
+        virtual TCompletionCode AppendPesConfiguration( const THwEvent& hwEvent, const uint64_t pesProgramming, std::vector<bool>& pesProgrammed, uint32_t flexProgramming[], uint32_t& snapshotReportOffsets, uint32_t& deltaReportOffsets ) = 0;
+        virtual TCompletionCode AppendFlexConfiguration( const uint32_t flexProgramming[] )                                                                                                                                                   = 0;
+        virtual uint32_t        GetMaxPesCount()                                                                                                                                                                                              = 0;
+        virtual uint32_t        GetGroupMaxSize( const THwEventGroup group )                                                                                                                                                                  = 0;
 
         // Members:
         CMetricsDevice&                m_device;
@@ -118,8 +118,9 @@ namespace MetricsDiscoveryInternal
 
         virtual THwEventGroup GetHwEventGroup( const THwEvent& hwEvent );
 
-        virtual void     AppendPesConfiguration( const THwEvent& hwEvent, const uint64_t pesProgramming, std::vector<bool>& pesProgrammed, uint32_t flexProgramming[], uint32_t& snapshotReportOffsets, uint32_t& deltaReportOffsets );
-        virtual void     AppendFlexConfiguration( const uint32_t flexProgramming[] );
+        virtual TCompletionCode AppendPesConfiguration( const THwEvent& hwEvent, const uint64_t pesProgramming, std::vector<bool>& pesProgrammed, uint32_t flexProgramming[], uint32_t& snapshotReportOffsets, uint32_t& deltaReportOffsets );
+        virtual TCompletionCode AppendFlexConfiguration( const uint32_t flexProgramming[] );
+
         virtual uint32_t GetMaxPesCount();
         virtual uint32_t GetGroupMaxSize( const THwEventGroup group );
 

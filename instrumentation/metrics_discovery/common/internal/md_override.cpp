@@ -390,7 +390,8 @@ namespace MetricsDiscoveryInternal
         else
         {
             // Update Frequency global symbol
-            m_device.GetSymbolSet().RedetectSymbol( "GpuCurrentFrequencyMHz" );
+            ret = m_device.GetSymbolSet().RedetectSymbol( "GpuCurrentFrequencyMHz" );
+            ret = m_device.GetSymbolSet().RedetectSymbol( "GpuFrequencyOverrideEnabled" );
         }
 
         MD_LOG_EXIT_A( adapterId );

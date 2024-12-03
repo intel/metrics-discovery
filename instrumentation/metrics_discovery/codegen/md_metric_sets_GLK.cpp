@@ -140,7 +140,8 @@ namespace MetricsDiscoveryInternal::MetricSets_GLK_PipelineStatistics
             MD_CHECK_CC( ( metric->SetDeltaReportReadEquation( "qw@0x50" ) ) );
         }
 
-        RefreshConfigRegisters();
+        MD_CHECK_CC( RefreshConfigRegisters() );
+
         return CC_OK;
 
     exception:
@@ -151,114 +152,85 @@ namespace MetricsDiscoveryInternal::MetricSets_GLK_PipelineStatistics
 
 namespace MetricsDiscoveryInternal::MetricSets_GLK_OA
 {
-    void AddInformationSet( CConcurrentGroup* concurrentGroup )
+    TCompletionCode AddInformationSet( CConcurrentGroup* concurrentGroup )
     {
         CInformation* information = nullptr;
 
         information = concurrentGroup->AddInformation( "QueryBeginTime", "Query Begin Time", "The measurement begin time.", "Report Meta Data", API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM, INFORMATION_TYPE_TIMESTAMP, "ns", nullptr, 0 );
-        if( information )
-        {
-            information->SetSnapshotReportReadEquation( "dw@0x04 1000000000 UMUL $GpuTimestampFrequency UDIV" );
-            information->SetDeltaReportReadEquation( "qw@0x1b0" );
-            information->SetOverflowFunction( "NS_TIME" );
-        }
+        MD_CHECK_PTR( information );
+        MD_CHECK_CC( information->SetSnapshotReportReadEquation( "dw@0x04 1000000000 UMUL $GpuTimestampFrequency UDIV" ) );
+        MD_CHECK_CC( information->SetDeltaReportReadEquation( "qw@0x1b0" ) );
+        MD_CHECK_CC( information->SetOverflowFunction( "NS_TIME" ) );
 
         information = concurrentGroup->AddInformation( "CoreFrequencyMHz", "GPU Core Frequency", "The last GPU core (unslice) frequency in the measurement.", "Report Meta Data", API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM, INFORMATION_TYPE_VALUE, "MHz", nullptr, 1 );
-        if( information )
-        {
-            information->SetSnapshotReportReadEquation( "dw@0x0 0x1ff AND 16666 UMUL 1000 UDIV" );
-            information->SetDeltaReportReadEquation( "qw@0x208 1000000 UDIV" );
-        }
+        MD_CHECK_PTR( information );
+        MD_CHECK_CC( information->SetSnapshotReportReadEquation( "dw@0x0 0x1ff AND 16666 UMUL 1000 UDIV" ) );
+        MD_CHECK_CC( information->SetDeltaReportReadEquation( "qw@0x208 1000000 UDIV" ) );
 
         information = concurrentGroup->AddInformation( "EuSliceFrequencyMHz", "EU Slice Frequency", "The last GPU Execution Unit slice frequency in the measurement.", "Report Meta Data", API_TYPE_IOSTREAM, INFORMATION_TYPE_VALUE, "MHz", nullptr, 2 );
-        if( information )
-        {
-            information->SetSnapshotReportReadEquation( "dw@0x0 25 >> dw@0x0 9 >> 0x3 AND OR 16666 UMUL 1000 UDIV" );
-        }
+        MD_CHECK_PTR( information );
+        MD_CHECK_CC( information->SetSnapshotReportReadEquation( "dw@0x0 25 >> dw@0x0 9 >> 0x3 AND OR 16666 UMUL 1000 UDIV" ) );
 
         information = concurrentGroup->AddInformation( "ReportReason", "Report Reason", "The reason of the report.", "Report Meta Data", API_TYPE_IOSTREAM, INFORMATION_TYPE_REPORT_REASON, nullptr, nullptr, 3 );
-        if( information )
-        {
-            information->SetSnapshotReportReadEquation( "dw@0x0 19 >> 0x3f AND" );
-        }
+        MD_CHECK_PTR( information );
+        MD_CHECK_CC( information->SetSnapshotReportReadEquation( "dw@0x0 19 >> 0x3f AND" ) );
 
         information = concurrentGroup->AddInformation( "ContextId", "Context ID", "The context tag in which report has been taken.", "Report Meta Data", API_TYPE_IOSTREAM, INFORMATION_TYPE_CONTEXT_ID_TAG, nullptr, nullptr, 4 );
-        if( information )
-        {
-            information->SetSnapshotReportReadEquation( "dw@0x08 0xfffff AND" );
-        }
+        MD_CHECK_PTR( information );
+        MD_CHECK_CC( information->SetSnapshotReportReadEquation( "dw@0x08 0xfffff AND" ) );
 
         information = concurrentGroup->AddInformation( "PreviousContextId", "Previous Context ID", "The context tag in which previous report has been taken.", "Report Meta Data", API_TYPE_IOSTREAM, INFORMATION_TYPE_CONTEXT_ID_TAG, nullptr, nullptr, 5 );
-        if( information )
-        {
-            information->SetSnapshotReportReadEquation( "i$PreviousContextId" );
-        }
+        MD_CHECK_PTR( information );
+        MD_CHECK_CC( information->SetSnapshotReportReadEquation( "i$PreviousContextId" ) );
 
         information = concurrentGroup->AddInformation( "CoreFrequencyChanged", "GPU Core Frequency Changed", "The flag indicating that GPU core frequency has changed.", "Exception", API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL, INFORMATION_TYPE_FLAG, nullptr, nullptr, 6 );
-        if( information )
-        {
-            information->SetDeltaReportReadEquation( "dw@0x204" );
-        }
+        MD_CHECK_PTR( information );
+        MD_CHECK_CC( information->SetDeltaReportReadEquation( "dw@0x204" ) );
 
         information = concurrentGroup->AddInformation( "QuerySplitOccurred", "Query Split Occurred", "The flag indicating that query has been split during execution on the GPU.", "Exception", API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL, INFORMATION_TYPE_FLAG, nullptr, nullptr, 7 );
-        if( information )
-        {
-            information->SetDeltaReportReadEquation( "dw@0x200" );
-        }
+        MD_CHECK_PTR( information );
+        MD_CHECK_CC( information->SetDeltaReportReadEquation( "dw@0x200" ) );
 
         information = concurrentGroup->AddInformation( "ReportId", "Query report id", "Query report identification number.", "Report Meta Data", API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL, INFORMATION_TYPE_VALUE, nullptr, nullptr, 8 );
-        if( information )
-        {
-            information->SetDeltaReportReadEquation( "dw@0x210" );
-        }
+        MD_CHECK_PTR( information );
+        MD_CHECK_CC( information->SetDeltaReportReadEquation( "dw@0x210" ) );
 
         information = concurrentGroup->AddInformation( "ReportsCount", "Query reports count", "The number of available query reports.", "Report Meta Data", API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL, INFORMATION_TYPE_VALUE, nullptr, nullptr, 9 );
-        if( information )
-        {
-            information->SetDeltaReportReadEquation( "dw@0x214" );
-        }
+        MD_CHECK_PTR( information );
+        MD_CHECK_CC( information->SetDeltaReportReadEquation( "dw@0x214" ) );
 
         information = concurrentGroup->AddInformation( "OverrunOccured", "Query Overrun Occurred", "The flag indicating that Oa buffer has been overran.", "Exception", API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL, INFORMATION_TYPE_FLAG, nullptr, nullptr, 10 );
-        if( information )
-        {
-            information->SetDeltaReportReadEquation( "dw@0x1cc" );
-        }
+        MD_CHECK_PTR( information );
+        MD_CHECK_CC( information->SetDeltaReportReadEquation( "dw@0x1cc" ) );
 
         information = concurrentGroup->AddInformation( "MidQueryTimer", "Mid Query Timer", "The flag indicating that timer report was detected during query.", "Report Meta Data", API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL, INFORMATION_TYPE_FLAG, nullptr, nullptr, 11 );
-        if( information )
-        {
-            information->SetDeltaReportReadEquation( "dw@0x1c8 0x01 AND" );
-        }
+        MD_CHECK_PTR( information );
+        MD_CHECK_CC( information->SetDeltaReportReadEquation( "dw@0x1c8 0x01 AND" ) );
 
         information = concurrentGroup->AddInformation( "MidQueryProgramming", "Mid Query Programming", "The flag indicating that counter programming report was detected during query.", "Report Meta Data", API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL, INFORMATION_TYPE_FLAG, nullptr, nullptr, 12 );
-        if( information )
-        {
-            information->SetDeltaReportReadEquation( "dw@0x1c8 0x02 AND" );
-        }
+        MD_CHECK_PTR( information );
+        MD_CHECK_CC( information->SetDeltaReportReadEquation( "dw@0x1c8 0x02 AND" ) );
 
         information = concurrentGroup->AddInformation( "MidQueryMarker", "Mid Query Marker", "The flag indicating that query marker report was detected during query.", "Report Meta Data", API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL, INFORMATION_TYPE_FLAG, nullptr, nullptr, 13 );
-        if( information )
-        {
-            information->SetDeltaReportReadEquation( "dw@0x1c8 0x04 AND" );
-        }
+        MD_CHECK_PTR( information );
+        MD_CHECK_CC( information->SetDeltaReportReadEquation( "dw@0x1c8 0x04 AND" ) );
 
         information = concurrentGroup->AddInformation( "MidQueryCtxSwitch", "Mid Query Context Switch", "The flag indicating that context switch report was detected during query.", "Report Meta Data", API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL, INFORMATION_TYPE_FLAG, nullptr, nullptr, 14 );
-        if( information )
-        {
-            information->SetDeltaReportReadEquation( "dw@0x1c8 0x08 AND" );
-        }
+        MD_CHECK_PTR( information );
+        MD_CHECK_CC( information->SetDeltaReportReadEquation( "dw@0x1c8 0x08 AND" ) );
 
         information = concurrentGroup->AddInformation( "MidQueryC6", "Mid Query C6", "The flag indicating that C6 report was detected during query.", "Report Meta Data", API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL, INFORMATION_TYPE_FLAG, nullptr, nullptr, 15 );
-        if( information )
-        {
-            information->SetDeltaReportReadEquation( "dw@0x1c8 0x10 AND" );
-        }
+        MD_CHECK_PTR( information );
+        MD_CHECK_CC( information->SetDeltaReportReadEquation( "dw@0x1c8 0x10 AND" ) );
 
         information = concurrentGroup->AddInformation( "MidQueryFreqChange", "Mid Query Freq Change", "The flag indicating that frequency change report was detected during query.", "Report Meta Data", API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL, INFORMATION_TYPE_FLAG, nullptr, nullptr, 16 );
-        if( information )
-        {
-            information->SetDeltaReportReadEquation( "dw@0x1c8 0x20 AND" );
-        }
+        MD_CHECK_PTR( information );
+        MD_CHECK_CC( information->SetDeltaReportReadEquation( "dw@0x1c8 0x20 AND" ) );
+
+        return CC_OK;
+
+    exception:
+        return CC_ERROR_GENERAL;
     }
 
     CRenderBasicMetricSet::CRenderBasicMetricSet( CMetricsDevice& device, CConcurrentGroup* concurrentGroup, const char* symbolicName, const char* shortName, uint32_t apiMask, uint32_t category, uint32_t snapshotReportSize, uint32_t deltaReportSize, TReportType reportType, TByteArrayLatest* platformMask, uint32_t gtMask /*= GT_TYPE_ALL*/, bool isCustom /*= false*/ )
@@ -948,101 +920,102 @@ namespace MetricsDiscoveryInternal::MetricSets_GLK_OA
         availabilityEquation = nullptr;
         if( AddStartRegisterSet( 0, 0, availabilityEquation ) == CC_OK )
         {
-            AddStartConfigRegister( 0x00009840, 0x00000080, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x166C00F0, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x12120280, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x12320280, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x11930317, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x159303DF, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x3F900C00, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x419000A0, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x002D1000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x062D4000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x082D5000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x0A2D1000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x0C2E0800, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x0E2E5900, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x0A4C8000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x0C4C8000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x0E4C4000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x064E8000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x084E8000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x0A4E2000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x1C4F0010, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x0A6C0053, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x106C0000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x1C6C0000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x1A0FCC00, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x1C0F0002, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x1C2C0040, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x00101000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x04101000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x00114000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x08114000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x00120020, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x08120021, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x00141000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x08141000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x02308000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x04302000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x06318000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x08318000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x06320800, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x08320840, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x00320000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x06344000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x08344000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x0D931831, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x0F939F3F, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x01939E80, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x039303BC, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x0593000E, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x1993002A, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x07930000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x09930000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x1D900177, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x1F900187, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x35900000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x13904000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x21904000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x23904000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x25904000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x27904000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x2B904000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x2D904000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x2F904000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x31904000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x15904000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x17904000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x19904000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x1B904000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x53901110, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x43900423, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x55900111, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x47900C02, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x57900000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x49900020, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x59901111, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x4B900421, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x37900000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x33900000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x4D900001, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x45900821, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0xE458, 0x00005004, REGISTER_TYPE_FLEX );
-            AddStartConfigRegister( 0xE558, 0x00010003, REGISTER_TYPE_FLEX );
-            AddStartConfigRegister( 0xE658, 0x00012011, REGISTER_TYPE_FLEX );
-            AddStartConfigRegister( 0xE758, 0x00015014, REGISTER_TYPE_FLEX );
-            AddStartConfigRegister( 0xE45c, 0x00051050, REGISTER_TYPE_FLEX );
-            AddStartConfigRegister( 0xE55c, 0x00053052, REGISTER_TYPE_FLEX );
-            AddStartConfigRegister( 0xE65c, 0x00055054, REGISTER_TYPE_FLEX );
-            AddStartConfigRegister( 0x2710, 0x00000000, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x2714, 0x00800000, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x2720, 0x00000000, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x2724, 0x00800000, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x2740, 0x00000000, REGISTER_TYPE_OA );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009840, 0x00000080, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x166C00F0, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x12120280, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x12320280, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x11930317, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x159303DF, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x3F900C00, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x419000A0, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x002D1000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x062D4000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x082D5000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x0A2D1000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x0C2E0800, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x0E2E5900, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x0A4C8000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x0C4C8000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x0E4C4000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x064E8000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x084E8000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x0A4E2000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x1C4F0010, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x0A6C0053, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x106C0000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x1C6C0000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x1A0FCC00, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x1C0F0002, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x1C2C0040, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x00101000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x04101000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x00114000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x08114000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x00120020, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x08120021, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x00141000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x08141000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x02308000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x04302000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x06318000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x08318000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x06320800, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x08320840, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x00320000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x06344000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x08344000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x0D931831, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x0F939F3F, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x01939E80, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x039303BC, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x0593000E, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x1993002A, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x07930000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x09930000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x1D900177, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x1F900187, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x35900000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x13904000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x21904000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x23904000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x25904000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x27904000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x2B904000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x2D904000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x2F904000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x31904000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x15904000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x17904000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x19904000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x1B904000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x53901110, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x43900423, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x55900111, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x47900C02, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x57900000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x49900020, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x59901111, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x4B900421, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x37900000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x33900000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x4D900001, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x45900821, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0xE458, 0x00005004, REGISTER_TYPE_FLEX ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0xE558, 0x00010003, REGISTER_TYPE_FLEX ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0xE658, 0x00012011, REGISTER_TYPE_FLEX ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0xE758, 0x00015014, REGISTER_TYPE_FLEX ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0xE45c, 0x00051050, REGISTER_TYPE_FLEX ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0xE55c, 0x00053052, REGISTER_TYPE_FLEX ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0xE65c, 0x00055054, REGISTER_TYPE_FLEX ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2710, 0x00000000, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2714, 0x00800000, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2720, 0x00000000, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2724, 0x00800000, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2740, 0x00000000, REGISTER_TYPE_OA ) );
         }
 
-        RefreshConfigRegisters();
+        MD_CHECK_CC( RefreshConfigRegisters() );
+
         return CC_OK;
 
     exception:
@@ -1569,93 +1542,94 @@ namespace MetricsDiscoveryInternal::MetricSets_GLK_OA
         availabilityEquation = nullptr;
         if( AddStartRegisterSet( 0, 0, availabilityEquation ) == CC_OK )
         {
-            AddStartConfigRegister( 0xE458, 0x00005004, REGISTER_TYPE_FLEX );
-            AddStartConfigRegister( 0xE558, 0x00000003, REGISTER_TYPE_FLEX );
-            AddStartConfigRegister( 0xE658, 0x00002001, REGISTER_TYPE_FLEX );
-            AddStartConfigRegister( 0xE758, 0x00778008, REGISTER_TYPE_FLEX );
-            AddStartConfigRegister( 0xE45c, 0x00088078, REGISTER_TYPE_FLEX );
-            AddStartConfigRegister( 0xE55c, 0x00808708, REGISTER_TYPE_FLEX );
-            AddStartConfigRegister( 0xE65c, 0x00a08908, REGISTER_TYPE_FLEX );
-            AddStartConfigRegister( 0x2710, 0x00000000, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x2714, 0x00800000, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x2720, 0x00000000, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x2724, 0x00800000, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x2740, 0x00000000, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x00009840, 0x00000080, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x104F00E0, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x124F1C00, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x39900340, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x3F900C00, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x41900000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x002D5000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x062D4000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x082D4000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x0A2D1000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x0C2D5000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x0E2D4000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x0C2E1400, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x0E2E5100, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x102E0114, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x044CC000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x0A4C8000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x0C4C8000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x0E4C4000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x104C8000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x124C8000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x164C2000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x004EA000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x064E8000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x084E8000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x0A4E2000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x0C4EA000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x0E4E8000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x004F6B42, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x064F6200, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x084F4100, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x0A4F0061, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x0C4F6C4C, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x0E4F4B00, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x1A4F0000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x1C4F0000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x180F5000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x1A0F8800, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x1C0F08A2, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x182C4000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x1C2C1451, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x1E2C0001, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x1A2C0010, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x01938000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x0F938000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x19938A28, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x03938000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x19900177, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x1B900178, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x1D900125, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x1F900123, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x35900000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x13904000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x21904000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x25904000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x27904000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x2B904000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x2D904000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x31904000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x15904000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x53901000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x43900000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x55900111, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x47900000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x57900000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x49900000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x59900000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x4B900000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x37900000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x33900000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x4D900000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x45900000, REGISTER_TYPE_NOA );
+            MD_CHECK_CC( AddStartConfigRegister( 0xE458, 0x00005004, REGISTER_TYPE_FLEX ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0xE558, 0x00000003, REGISTER_TYPE_FLEX ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0xE658, 0x00002001, REGISTER_TYPE_FLEX ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0xE758, 0x00778008, REGISTER_TYPE_FLEX ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0xE45c, 0x00088078, REGISTER_TYPE_FLEX ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0xE55c, 0x00808708, REGISTER_TYPE_FLEX ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0xE65c, 0x00a08908, REGISTER_TYPE_FLEX ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2710, 0x00000000, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2714, 0x00800000, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2720, 0x00000000, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2724, 0x00800000, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2740, 0x00000000, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009840, 0x00000080, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x104F00E0, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x124F1C00, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x39900340, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x3F900C00, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x41900000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x002D5000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x062D4000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x082D4000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x0A2D1000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x0C2D5000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x0E2D4000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x0C2E1400, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x0E2E5100, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x102E0114, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x044CC000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x0A4C8000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x0C4C8000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x0E4C4000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x104C8000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x124C8000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x164C2000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x004EA000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x064E8000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x084E8000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x0A4E2000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x0C4EA000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x0E4E8000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x004F6B42, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x064F6200, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x084F4100, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x0A4F0061, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x0C4F6C4C, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x0E4F4B00, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x1A4F0000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x1C4F0000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x180F5000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x1A0F8800, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x1C0F08A2, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x182C4000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x1C2C1451, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x1E2C0001, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x1A2C0010, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x01938000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x0F938000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x19938A28, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x03938000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x19900177, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x1B900178, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x1D900125, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x1F900123, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x35900000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x13904000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x21904000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x25904000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x27904000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x2B904000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x2D904000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x31904000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x15904000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x53901000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x43900000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x55900111, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x47900000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x57900000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x49900000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x59900000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x4B900000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x37900000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x33900000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x4D900000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x45900000, REGISTER_TYPE_NOA ) );
         }
 
-        RefreshConfigRegisters();
+        MD_CHECK_CC( RefreshConfigRegisters() );
+
         return CC_OK;
 
     exception:
@@ -2237,101 +2211,102 @@ namespace MetricsDiscoveryInternal::MetricSets_GLK_OA
         availabilityEquation = nullptr;
         if( AddStartRegisterSet( 0, 0, availabilityEquation ) == CC_OK )
         {
-            AddStartConfigRegister( 0x00009840, 0x00000080, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x166C00F0, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x12120280, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x12320280, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x11930317, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x159303DF, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x3F900C00, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x419000A0, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x002D1000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x062D4000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x082D5000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x0A2D1000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x0C2E0800, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x0E2E5900, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x0A4C8000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x0C4C8000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x0E4C4000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x064E8000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x084E8000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x0A4E2000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x1C4F0010, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x0A6C0053, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x106C0000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x1C6C0000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x1A0FCC00, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x1C0F0002, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x1C2C0040, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x00101000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x04101000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x00114000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x08114000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x00120020, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x08120021, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x00141000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x08141000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x02308000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x04302000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x06318000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x08318000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x06320800, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x08320840, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x00320000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x06344000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x08344000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x0D931831, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x0F939F3F, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x01939E80, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x039303BC, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x0593000E, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x1993002A, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x07930000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x09930000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x1D900177, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x1F900187, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x35900000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x13904000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x21904000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x23904000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x25904000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x27904000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x2B904000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x2D904000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x2F904000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x31904000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x15904000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x17904000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x19904000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x1B904000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x53901110, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x43900423, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x55900111, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x47900C02, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x57900000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x49900020, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x59901111, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x4B900421, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x37900000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x33900000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x4D900001, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x45900821, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0xE458, 0x00005004, REGISTER_TYPE_FLEX );
-            AddStartConfigRegister( 0xE558, 0x00015014, REGISTER_TYPE_FLEX );
-            AddStartConfigRegister( 0xE658, 0x00025024, REGISTER_TYPE_FLEX );
-            AddStartConfigRegister( 0xE758, 0x00035034, REGISTER_TYPE_FLEX );
-            AddStartConfigRegister( 0xE45c, 0x00045044, REGISTER_TYPE_FLEX );
-            AddStartConfigRegister( 0xE55c, 0x00055054, REGISTER_TYPE_FLEX );
-            AddStartConfigRegister( 0xE65c, 0x00065064, REGISTER_TYPE_FLEX );
-            AddStartConfigRegister( 0x2710, 0x00000000, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x2714, 0x00800000, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x2720, 0x00000000, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x2724, 0x00800000, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x2740, 0x00000000, REGISTER_TYPE_OA );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009840, 0x00000080, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x166C00F0, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x12120280, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x12320280, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x11930317, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x159303DF, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x3F900C00, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x419000A0, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x002D1000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x062D4000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x082D5000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x0A2D1000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x0C2E0800, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x0E2E5900, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x0A4C8000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x0C4C8000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x0E4C4000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x064E8000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x084E8000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x0A4E2000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x1C4F0010, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x0A6C0053, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x106C0000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x1C6C0000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x1A0FCC00, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x1C0F0002, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x1C2C0040, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x00101000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x04101000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x00114000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x08114000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x00120020, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x08120021, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x00141000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x08141000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x02308000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x04302000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x06318000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x08318000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x06320800, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x08320840, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x00320000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x06344000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x08344000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x0D931831, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x0F939F3F, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x01939E80, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x039303BC, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x0593000E, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x1993002A, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x07930000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x09930000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x1D900177, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x1F900187, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x35900000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x13904000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x21904000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x23904000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x25904000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x27904000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x2B904000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x2D904000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x2F904000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x31904000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x15904000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x17904000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x19904000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x1B904000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x53901110, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x43900423, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x55900111, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x47900C02, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x57900000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x49900020, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x59901111, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x4B900421, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x37900000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x33900000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x4D900001, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x45900821, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0xE458, 0x00005004, REGISTER_TYPE_FLEX ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0xE558, 0x00015014, REGISTER_TYPE_FLEX ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0xE658, 0x00025024, REGISTER_TYPE_FLEX ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0xE758, 0x00035034, REGISTER_TYPE_FLEX ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0xE45c, 0x00045044, REGISTER_TYPE_FLEX ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0xE55c, 0x00055054, REGISTER_TYPE_FLEX ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0xE65c, 0x00065064, REGISTER_TYPE_FLEX ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2710, 0x00000000, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2714, 0x00800000, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2720, 0x00000000, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2724, 0x00800000, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2740, 0x00000000, REGISTER_TYPE_OA ) );
         }
 
-        RefreshConfigRegisters();
+        MD_CHECK_CC( RefreshConfigRegisters() );
+
         return CC_OK;
 
     exception:
@@ -2901,131 +2876,132 @@ namespace MetricsDiscoveryInternal::MetricSets_GLK_OA
         availabilityEquation = nullptr;
         if( AddStartRegisterSet( 0, 0, availabilityEquation ) == CC_OK )
         {
-            AddStartConfigRegister( 0xE458, 0x00005004, REGISTER_TYPE_FLEX );
-            AddStartConfigRegister( 0xE558, 0x00015014, REGISTER_TYPE_FLEX );
-            AddStartConfigRegister( 0xE658, 0x00025024, REGISTER_TYPE_FLEX );
-            AddStartConfigRegister( 0xE758, 0x00035034, REGISTER_TYPE_FLEX );
-            AddStartConfigRegister( 0xE45c, 0x00045044, REGISTER_TYPE_FLEX );
-            AddStartConfigRegister( 0xE55c, 0x00055054, REGISTER_TYPE_FLEX );
-            AddStartConfigRegister( 0xE65c, 0x00065064, REGISTER_TYPE_FLEX );
-            AddStartConfigRegister( 0x2724, 0xf0800000, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x2720, 0x00000000, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x2714, 0xf0800000, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x2710, 0x00000000, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x2740, 0x00000000, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x2770, 0x0007ffea, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x2774, 0x00007ffc, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x2778, 0x0007affa, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x277c, 0x0000f5fd, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x2780, 0x00079ffa, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x2784, 0x0000f3fb, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x2788, 0x0007bf7a, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x278c, 0x0000f7e7, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x2790, 0x0007fefa, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x2794, 0x0000f7cf, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x2798, 0x00077ffa, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x279c, 0x0000efdf, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x27a0, 0x0006fffa, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x27a4, 0x0000cfbf, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x27a8, 0x0003fffa, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x27ac, 0x00005f7f, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x00009840, 0x00000080, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x0C2E001F, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x0A2F0000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x10186800, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x11810019, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x15810013, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x13820020, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x11830020, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x17840000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x11860007, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x21860000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x178703E0, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x0C2D8000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x042D4000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x062D1000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x022E5400, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x002E0000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x0E2E0080, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x082F0040, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x002F0000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x06143000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x06174000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x06180012, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x00180000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x0D804000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x0F804000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x05804000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x09810200, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x0B810030, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x03810003, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x21819140, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x23819050, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x25810018, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x0B820980, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x03820D80, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x11820000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x0182C000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x07828000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x09824000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x0F828000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x0D830004, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x0583000C, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x0F831000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x01848072, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x11840000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x07848000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x09844000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x0F848000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x07860000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x09860092, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x0F860400, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x01869100, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x0F870065, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x01870000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x19930800, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x0B938000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x0D938000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x1B952000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x1D955055, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x1F951455, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x0992A000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x0F928000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x1192A800, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x1392028A, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x0B92A000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x0D922000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x13908000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x21908000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x23908000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x25908000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x27908000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x29908000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x2B908000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x2D904000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x2F908000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x31908000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x15908000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x17908000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x19908000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x1B908000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x1D904000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x1F904000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x53900000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x43900C01, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x55900000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x47900000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x57900000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x49900863, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x59900000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x4B900061, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x37900000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x33900000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x4D900000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x45900C22, REGISTER_TYPE_NOA );
+            MD_CHECK_CC( AddStartConfigRegister( 0xE458, 0x00005004, REGISTER_TYPE_FLEX ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0xE558, 0x00015014, REGISTER_TYPE_FLEX ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0xE658, 0x00025024, REGISTER_TYPE_FLEX ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0xE758, 0x00035034, REGISTER_TYPE_FLEX ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0xE45c, 0x00045044, REGISTER_TYPE_FLEX ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0xE55c, 0x00055054, REGISTER_TYPE_FLEX ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0xE65c, 0x00065064, REGISTER_TYPE_FLEX ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2724, 0xf0800000, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2720, 0x00000000, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2714, 0xf0800000, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2710, 0x00000000, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2740, 0x00000000, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2770, 0x0007ffea, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2774, 0x00007ffc, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2778, 0x0007affa, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x277c, 0x0000f5fd, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2780, 0x00079ffa, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2784, 0x0000f3fb, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2788, 0x0007bf7a, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x278c, 0x0000f7e7, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2790, 0x0007fefa, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2794, 0x0000f7cf, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2798, 0x00077ffa, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x279c, 0x0000efdf, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x27a0, 0x0006fffa, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x27a4, 0x0000cfbf, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x27a8, 0x0003fffa, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x27ac, 0x00005f7f, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009840, 0x00000080, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x0C2E001F, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x0A2F0000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x10186800, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x11810019, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x15810013, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x13820020, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x11830020, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x17840000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x11860007, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x21860000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x178703E0, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x0C2D8000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x042D4000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x062D1000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x022E5400, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x002E0000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x0E2E0080, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x082F0040, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x002F0000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x06143000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x06174000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x06180012, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x00180000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x0D804000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x0F804000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x05804000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x09810200, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x0B810030, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x03810003, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x21819140, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x23819050, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x25810018, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x0B820980, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x03820D80, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x11820000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x0182C000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x07828000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x09824000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x0F828000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x0D830004, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x0583000C, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x0F831000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x01848072, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x11840000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x07848000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x09844000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x0F848000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x07860000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x09860092, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x0F860400, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x01869100, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x0F870065, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x01870000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x19930800, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x0B938000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x0D938000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x1B952000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x1D955055, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x1F951455, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x0992A000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x0F928000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x1192A800, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x1392028A, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x0B92A000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x0D922000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x13908000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x21908000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x23908000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x25908000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x27908000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x29908000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x2B908000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x2D904000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x2F908000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x31908000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x15908000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x17908000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x19908000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x1B908000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x1D904000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x1F904000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x53900000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x43900C01, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x55900000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x47900000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x57900000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x49900863, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x59900000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x4B900061, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x37900000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x33900000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x4D900000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x45900C22, REGISTER_TYPE_NOA ) );
         }
 
-        RefreshConfigRegisters();
+        MD_CHECK_CC( RefreshConfigRegisters() );
+
         return CC_OK;
 
     exception:
@@ -3555,92 +3531,93 @@ namespace MetricsDiscoveryInternal::MetricSets_GLK_OA
         availabilityEquation = nullptr;
         if( AddStartRegisterSet( 0, 0, availabilityEquation ) == CC_OK )
         {
-            AddStartConfigRegister( 0xE458, 0x00005004, REGISTER_TYPE_FLEX );
-            AddStartConfigRegister( 0xE558, 0x00015014, REGISTER_TYPE_FLEX );
-            AddStartConfigRegister( 0xE658, 0x00025024, REGISTER_TYPE_FLEX );
-            AddStartConfigRegister( 0xE758, 0x00035034, REGISTER_TYPE_FLEX );
-            AddStartConfigRegister( 0xE45c, 0x00045044, REGISTER_TYPE_FLEX );
-            AddStartConfigRegister( 0xE55c, 0x00055054, REGISTER_TYPE_FLEX );
-            AddStartConfigRegister( 0xE65c, 0x00065064, REGISTER_TYPE_FLEX );
-            AddStartConfigRegister( 0x272c, 0xffffffff, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x2728, 0xffffffff, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x2724, 0xf0800000, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x2720, 0x00000000, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x271c, 0xffffffff, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x2718, 0xffffffff, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x2714, 0xf0800000, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x2710, 0x00000000, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x274c, 0x86543210, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x2748, 0x86543210, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x2744, 0x00006667, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x2740, 0x00000000, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x275c, 0x86543210, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x2758, 0x86543210, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x2754, 0x00006465, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x2750, 0x00000000, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x2770, 0x0007f81a, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x2774, 0x0000fe00, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x2778, 0x0007f82a, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x277c, 0x0000fe00, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x2780, 0x0007f872, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x2784, 0x0000fe00, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x2788, 0x0007f8ba, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x278c, 0x0000fe00, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x2790, 0x0007f87a, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x2794, 0x0000fe00, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x2798, 0x0007f8ea, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x279c, 0x0000fe00, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x27a0, 0x0007f8e2, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x27a4, 0x0000fe00, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x27a8, 0x0007f8f2, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x27ac, 0x0000fe00, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x00009840, 0x00000080, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x19800343, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x39900340, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x3F901000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x41900003, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x03803180, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x058035E2, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x0780006A, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x11800000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x2181A000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x2381000A, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x1D950550, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x0B928000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x0D92A000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x0F922000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x13900170, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x21900171, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x23900172, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x25900173, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x27900174, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x29900175, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x2B900176, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x2D900177, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x2F90017F, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x31900125, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x15900123, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x17900121, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x35900000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x19908000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x1B908000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x1D908000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x1F908000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x53900000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x43901084, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x55900000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x47901080, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x57900000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x49901084, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x59900000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x4B901084, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x37900000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x33900000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x4D900004, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x45900000, REGISTER_TYPE_NOA );
+            MD_CHECK_CC( AddStartConfigRegister( 0xE458, 0x00005004, REGISTER_TYPE_FLEX ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0xE558, 0x00015014, REGISTER_TYPE_FLEX ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0xE658, 0x00025024, REGISTER_TYPE_FLEX ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0xE758, 0x00035034, REGISTER_TYPE_FLEX ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0xE45c, 0x00045044, REGISTER_TYPE_FLEX ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0xE55c, 0x00055054, REGISTER_TYPE_FLEX ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0xE65c, 0x00065064, REGISTER_TYPE_FLEX ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x272c, 0xffffffff, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2728, 0xffffffff, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2724, 0xf0800000, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2720, 0x00000000, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x271c, 0xffffffff, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2718, 0xffffffff, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2714, 0xf0800000, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2710, 0x00000000, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x274c, 0x86543210, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2748, 0x86543210, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2744, 0x00006667, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2740, 0x00000000, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x275c, 0x86543210, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2758, 0x86543210, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2754, 0x00006465, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2750, 0x00000000, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2770, 0x0007f81a, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2774, 0x0000fe00, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2778, 0x0007f82a, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x277c, 0x0000fe00, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2780, 0x0007f872, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2784, 0x0000fe00, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2788, 0x0007f8ba, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x278c, 0x0000fe00, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2790, 0x0007f87a, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2794, 0x0000fe00, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2798, 0x0007f8ea, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x279c, 0x0000fe00, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x27a0, 0x0007f8e2, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x27a4, 0x0000fe00, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x27a8, 0x0007f8f2, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x27ac, 0x0000fe00, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009840, 0x00000080, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x19800343, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x39900340, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x3F901000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x41900003, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x03803180, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x058035E2, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x0780006A, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x11800000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x2181A000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x2381000A, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x1D950550, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x0B928000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x0D92A000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x0F922000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x13900170, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x21900171, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x23900172, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x25900173, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x27900174, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x29900175, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x2B900176, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x2D900177, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x2F90017F, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x31900125, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x15900123, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x17900121, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x35900000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x19908000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x1B908000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x1D908000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x1F908000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x53900000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x43901084, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x55900000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x47901080, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x57900000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x49901084, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x59900000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x4B901084, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x37900000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x33900000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x4D900004, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x45900000, REGISTER_TYPE_NOA ) );
         }
 
-        RefreshConfigRegisters();
+        MD_CHECK_CC( RefreshConfigRegisters() );
+
         return CC_OK;
 
     exception:
@@ -4169,92 +4146,93 @@ namespace MetricsDiscoveryInternal::MetricSets_GLK_OA
         availabilityEquation = nullptr;
         if( AddStartRegisterSet( 0, 0, availabilityEquation ) == CC_OK )
         {
-            AddStartConfigRegister( 0xE458, 0x00005004, REGISTER_TYPE_FLEX );
-            AddStartConfigRegister( 0xE558, 0x00015014, REGISTER_TYPE_FLEX );
-            AddStartConfigRegister( 0xE658, 0x00025024, REGISTER_TYPE_FLEX );
-            AddStartConfigRegister( 0xE758, 0x00035034, REGISTER_TYPE_FLEX );
-            AddStartConfigRegister( 0xE45c, 0x00045044, REGISTER_TYPE_FLEX );
-            AddStartConfigRegister( 0xE55c, 0x00055054, REGISTER_TYPE_FLEX );
-            AddStartConfigRegister( 0xE65c, 0x00065064, REGISTER_TYPE_FLEX );
-            AddStartConfigRegister( 0x272c, 0xffffffff, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x2728, 0xffffffff, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x2724, 0xf0800000, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x2720, 0x00000000, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x271c, 0xffffffff, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x2718, 0xffffffff, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x2714, 0xf0800000, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x2710, 0x00000000, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x274c, 0x86543210, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x2748, 0x86543210, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x2744, 0x00006667, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x2740, 0x00000000, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x275c, 0x86543210, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x2758, 0x86543210, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x2754, 0x00006465, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x2750, 0x00000000, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x2770, 0x0007f81a, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x2774, 0x0000fe00, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x2778, 0x0007f82a, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x277c, 0x0000fe00, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x2780, 0x0007f822, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x2784, 0x0000fe00, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x2788, 0x0007f8ba, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x278c, 0x0000fe00, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x2790, 0x0007f87a, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x2794, 0x0000fe00, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x2798, 0x0007f8ea, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x279c, 0x0000fe00, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x27a0, 0x0007f8e2, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x27a4, 0x0000fe00, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x27a8, 0x0007f8f2, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x27ac, 0x0000fe00, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x00009840, 0x00000080, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x19800343, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x39900340, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x3F900000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x41900080, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x03803180, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x058035E2, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x0780006A, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x11800000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x2181A000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x2381000A, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x1D950550, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x0B928000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x0D92A000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x0F922000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x13900180, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x21900181, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x23900182, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x25900183, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x27900184, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x29900185, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x2B900186, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x2D900187, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x2F900170, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x31900125, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x15900123, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x17900121, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x35900000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x19908000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x1B908000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x1D908000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x1F908000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x53900000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x43901084, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x55900000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x47901080, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x57900000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x49901084, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x59900000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x4B901084, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x37900000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x33900000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x4D900004, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x45900000, REGISTER_TYPE_NOA );
+            MD_CHECK_CC( AddStartConfigRegister( 0xE458, 0x00005004, REGISTER_TYPE_FLEX ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0xE558, 0x00015014, REGISTER_TYPE_FLEX ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0xE658, 0x00025024, REGISTER_TYPE_FLEX ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0xE758, 0x00035034, REGISTER_TYPE_FLEX ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0xE45c, 0x00045044, REGISTER_TYPE_FLEX ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0xE55c, 0x00055054, REGISTER_TYPE_FLEX ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0xE65c, 0x00065064, REGISTER_TYPE_FLEX ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x272c, 0xffffffff, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2728, 0xffffffff, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2724, 0xf0800000, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2720, 0x00000000, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x271c, 0xffffffff, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2718, 0xffffffff, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2714, 0xf0800000, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2710, 0x00000000, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x274c, 0x86543210, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2748, 0x86543210, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2744, 0x00006667, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2740, 0x00000000, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x275c, 0x86543210, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2758, 0x86543210, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2754, 0x00006465, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2750, 0x00000000, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2770, 0x0007f81a, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2774, 0x0000fe00, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2778, 0x0007f82a, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x277c, 0x0000fe00, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2780, 0x0007f822, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2784, 0x0000fe00, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2788, 0x0007f8ba, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x278c, 0x0000fe00, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2790, 0x0007f87a, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2794, 0x0000fe00, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2798, 0x0007f8ea, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x279c, 0x0000fe00, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x27a0, 0x0007f8e2, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x27a4, 0x0000fe00, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x27a8, 0x0007f8f2, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x27ac, 0x0000fe00, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009840, 0x00000080, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x19800343, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x39900340, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x3F900000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x41900080, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x03803180, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x058035E2, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x0780006A, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x11800000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x2181A000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x2381000A, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x1D950550, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x0B928000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x0D92A000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x0F922000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x13900180, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x21900181, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x23900182, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x25900183, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x27900184, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x29900185, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x2B900186, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x2D900187, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x2F900170, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x31900125, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x15900123, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x17900121, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x35900000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x19908000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x1B908000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x1D908000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x1F908000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x53900000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x43901084, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x55900000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x47901080, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x57900000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x49901084, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x59900000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x4B901084, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x37900000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x33900000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x4D900004, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x45900000, REGISTER_TYPE_NOA ) );
         }
 
-        RefreshConfigRegisters();
+        MD_CHECK_CC( RefreshConfigRegisters() );
+
         return CC_OK;
 
     exception:
@@ -4738,130 +4716,131 @@ namespace MetricsDiscoveryInternal::MetricSets_GLK_OA
         availabilityEquation = nullptr;
         if( AddStartRegisterSet( 0, 0, availabilityEquation ) == CC_OK )
         {
-            AddStartConfigRegister( 0xE458, 0x00005004, REGISTER_TYPE_FLEX );
-            AddStartConfigRegister( 0xE558, 0x00000003, REGISTER_TYPE_FLEX );
-            AddStartConfigRegister( 0xE658, 0x00002001, REGISTER_TYPE_FLEX );
-            AddStartConfigRegister( 0xE758, 0x00778008, REGISTER_TYPE_FLEX );
-            AddStartConfigRegister( 0xE45c, 0x00088078, REGISTER_TYPE_FLEX );
-            AddStartConfigRegister( 0xE55c, 0x00808708, REGISTER_TYPE_FLEX );
-            AddStartConfigRegister( 0xE65c, 0x00a08908, REGISTER_TYPE_FLEX );
-            AddStartConfigRegister( 0x2724, 0xf0800000, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x2720, 0x00000000, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x2714, 0xf0800000, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x2710, 0x00000000, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x2740, 0x00000000, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x2770, 0x0007fc2a, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x2774, 0x0000bf00, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x2778, 0x0007fc6a, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x277c, 0x0000bf00, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x2780, 0x0007fc92, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x2784, 0x0000bf00, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x2788, 0x0007fca2, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x278c, 0x0000bf00, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x2790, 0x0007fc32, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x2794, 0x0000bf00, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x2798, 0x0007fc9a, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x279c, 0x0000bf00, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x27a0, 0x0007fe6a, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x27a4, 0x0000bf00, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x27a8, 0x0007fe7a, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x27ac, 0x0000bf00, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x00009840, 0x00000080, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x104F00E0, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x141C0160, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x161C0015, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x181C0120, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x002D5000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x062D4000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x082D5000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x0A2D5000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x0C2D5000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x0E2D5000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x022D5000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x042D5000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x0C2E5400, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x0E2E5515, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x102E0155, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x044CC000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x0A4C8000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x0C4CC000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x0E4CC000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x104C8000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x124C8000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x144C8000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x164C2000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x064CC000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x084CC000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x004EA000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x064E8000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x084EA000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x0A4EA000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x0C4EA000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x0E4EA000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x024EA000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x044EA000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x0E4F4B41, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x004F4200, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x024F404C, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x1C4F0000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x1A4F0000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x001B4000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x061B8000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x081BC000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x0A1BC000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x0C1BC000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x041BC000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x001C0031, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x061C1900, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x081C1A33, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x0A1C1B35, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x0C1C3337, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x041C31C7, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x180F5000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x1A0FA8AA, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x1C0F0AAA, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x182C8000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x1C2C6AAA, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x1E2C0001, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x1A2C2950, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x01938000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x0F938000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x1993AAAA, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x03938000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x05938000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x07938000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x09938000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x0B938000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x13904000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x21904000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x23904000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x25904000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x27904000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x29904000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x2B904000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x2D904000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x2F904000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x31904000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x15904000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x17904000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x19904000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x1B904000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x1D904000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x53900000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x43900420, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x55900000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x47900000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x57900000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x49900000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x59900000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x4B900400, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x37900000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x33900000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x4D900001, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x45900001, REGISTER_TYPE_NOA );
+            MD_CHECK_CC( AddStartConfigRegister( 0xE458, 0x00005004, REGISTER_TYPE_FLEX ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0xE558, 0x00000003, REGISTER_TYPE_FLEX ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0xE658, 0x00002001, REGISTER_TYPE_FLEX ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0xE758, 0x00778008, REGISTER_TYPE_FLEX ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0xE45c, 0x00088078, REGISTER_TYPE_FLEX ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0xE55c, 0x00808708, REGISTER_TYPE_FLEX ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0xE65c, 0x00a08908, REGISTER_TYPE_FLEX ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2724, 0xf0800000, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2720, 0x00000000, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2714, 0xf0800000, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2710, 0x00000000, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2740, 0x00000000, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2770, 0x0007fc2a, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2774, 0x0000bf00, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2778, 0x0007fc6a, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x277c, 0x0000bf00, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2780, 0x0007fc92, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2784, 0x0000bf00, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2788, 0x0007fca2, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x278c, 0x0000bf00, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2790, 0x0007fc32, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2794, 0x0000bf00, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2798, 0x0007fc9a, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x279c, 0x0000bf00, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x27a0, 0x0007fe6a, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x27a4, 0x0000bf00, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x27a8, 0x0007fe7a, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x27ac, 0x0000bf00, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009840, 0x00000080, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x104F00E0, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x141C0160, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x161C0015, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x181C0120, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x002D5000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x062D4000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x082D5000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x0A2D5000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x0C2D5000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x0E2D5000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x022D5000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x042D5000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x0C2E5400, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x0E2E5515, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x102E0155, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x044CC000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x0A4C8000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x0C4CC000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x0E4CC000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x104C8000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x124C8000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x144C8000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x164C2000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x064CC000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x084CC000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x004EA000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x064E8000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x084EA000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x0A4EA000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x0C4EA000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x0E4EA000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x024EA000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x044EA000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x0E4F4B41, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x004F4200, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x024F404C, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x1C4F0000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x1A4F0000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x001B4000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x061B8000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x081BC000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x0A1BC000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x0C1BC000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x041BC000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x001C0031, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x061C1900, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x081C1A33, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x0A1C1B35, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x0C1C3337, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x041C31C7, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x180F5000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x1A0FA8AA, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x1C0F0AAA, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x182C8000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x1C2C6AAA, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x1E2C0001, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x1A2C2950, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x01938000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x0F938000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x1993AAAA, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x03938000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x05938000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x07938000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x09938000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x0B938000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x13904000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x21904000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x23904000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x25904000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x27904000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x29904000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x2B904000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x2D904000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x2F904000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x31904000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x15904000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x17904000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x19904000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x1B904000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x1D904000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x53900000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x43900420, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x55900000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x47900000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x57900000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x49900000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x59900000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x4B900400, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x37900000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x33900000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x4D900001, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x45900001, REGISTER_TYPE_NOA ) );
         }
 
-        RefreshConfigRegisters();
+        MD_CHECK_CC( RefreshConfigRegisters() );
+
         return CC_OK;
 
     exception:
@@ -5594,97 +5573,98 @@ namespace MetricsDiscoveryInternal::MetricSets_GLK_OA
         availabilityEquation = nullptr;
         if( AddStartRegisterSet( 0, 0, availabilityEquation ) == CC_OK )
         {
-            AddStartConfigRegister( 0xE458, 0x00005004, REGISTER_TYPE_FLEX );
-            AddStartConfigRegister( 0xE558, 0x00000003, REGISTER_TYPE_FLEX );
-            AddStartConfigRegister( 0xE658, 0x00002001, REGISTER_TYPE_FLEX );
-            AddStartConfigRegister( 0xE758, 0x00101100, REGISTER_TYPE_FLEX );
-            AddStartConfigRegister( 0xE45c, 0x00201200, REGISTER_TYPE_FLEX );
-            AddStartConfigRegister( 0xE55c, 0x00301300, REGISTER_TYPE_FLEX );
-            AddStartConfigRegister( 0xE65c, 0x00401400, REGISTER_TYPE_FLEX );
-            AddStartConfigRegister( 0x2710, 0x00000000, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x2714, 0x30800000, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x2720, 0x00000000, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x2724, 0x30800000, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x2740, 0x00000000, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x2770, 0x0007fffa, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x2774, 0x0000fefe, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x2778, 0x0007fffa, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x277c, 0x0000fefd, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x2790, 0x0007fffa, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x2794, 0x0000fbef, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x2798, 0x0007fffa, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x279c, 0x0000fbdf, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x00009840, 0x00000080, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x166C03B0, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x1593001E, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x3F900C00, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x41900000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x002D1000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x062D4000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x082D5000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x0E2D5000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x0C2E0400, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x0E2E1500, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x102E0140, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x044C4000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x0A4C8000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x0C4CC000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x144C8000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x164C2000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x004E2000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x064E8000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x084EA000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x0E4EA000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x1A4F4001, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x1C4F5005, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x006C0051, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x066C5000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x086C5C5D, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x0E6C5E5F, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x106C0000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x146C0000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x1A6C0000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x1C6C0000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x180F1000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x1A0FA800, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x1C0F0A00, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x182C4000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x1C2C4015, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x1E2C0001, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x03931980, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x05930032, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x11930000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x01938000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x0F938000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x1993A00A, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x07930000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x09930000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x1D900177, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x1F900178, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x35900000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x13904000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x21904000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x23904000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x25904000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x2F904000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x31904000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x19904000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x1B904000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x53901000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x43900000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x55900111, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x47900001, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x57900000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x49900000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x37900000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x33900000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x59900000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x4B900000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x4D900000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x45900400, REGISTER_TYPE_NOA );
+            MD_CHECK_CC( AddStartConfigRegister( 0xE458, 0x00005004, REGISTER_TYPE_FLEX ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0xE558, 0x00000003, REGISTER_TYPE_FLEX ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0xE658, 0x00002001, REGISTER_TYPE_FLEX ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0xE758, 0x00101100, REGISTER_TYPE_FLEX ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0xE45c, 0x00201200, REGISTER_TYPE_FLEX ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0xE55c, 0x00301300, REGISTER_TYPE_FLEX ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0xE65c, 0x00401400, REGISTER_TYPE_FLEX ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2710, 0x00000000, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2714, 0x30800000, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2720, 0x00000000, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2724, 0x30800000, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2740, 0x00000000, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2770, 0x0007fffa, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2774, 0x0000fefe, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2778, 0x0007fffa, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x277c, 0x0000fefd, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2790, 0x0007fffa, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2794, 0x0000fbef, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2798, 0x0007fffa, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x279c, 0x0000fbdf, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009840, 0x00000080, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x166C03B0, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x1593001E, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x3F900C00, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x41900000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x002D1000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x062D4000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x082D5000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x0E2D5000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x0C2E0400, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x0E2E1500, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x102E0140, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x044C4000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x0A4C8000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x0C4CC000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x144C8000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x164C2000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x004E2000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x064E8000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x084EA000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x0E4EA000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x1A4F4001, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x1C4F5005, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x006C0051, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x066C5000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x086C5C5D, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x0E6C5E5F, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x106C0000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x146C0000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x1A6C0000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x1C6C0000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x180F1000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x1A0FA800, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x1C0F0A00, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x182C4000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x1C2C4015, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x1E2C0001, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x03931980, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x05930032, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x11930000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x01938000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x0F938000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x1993A00A, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x07930000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x09930000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x1D900177, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x1F900178, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x35900000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x13904000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x21904000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x23904000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x25904000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x2F904000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x31904000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x19904000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x1B904000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x53901000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x43900000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x55900111, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x47900001, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x57900000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x49900000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x37900000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x33900000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x59900000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x4B900000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x4D900000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x45900400, REGISTER_TYPE_NOA ) );
         }
 
-        RefreshConfigRegisters();
+        MD_CHECK_CC( RefreshConfigRegisters() );
+
         return CC_OK;
 
     exception:
@@ -6200,70 +6180,71 @@ namespace MetricsDiscoveryInternal::MetricSets_GLK_OA
         availabilityEquation = nullptr;
         if( AddStartRegisterSet( 0, 0, availabilityEquation ) == CC_OK )
         {
-            AddStartConfigRegister( 0x9840, 0x00000080, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x104f0251, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x124f4a20, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x11834400, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x002d1000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x062d4000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x082d5000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x0c2e0400, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x0e2e1500, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x044c4000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x0a4c8000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x0c4cc000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x004e2000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x064e8000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x084ea000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x004f0063, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x064f6900, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x084f4943, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x1a4f0000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x1c4f0000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x180f1000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x1a0fa800, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x182c4000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x1c2c0015, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x0b804000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x23810800, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x0b830017, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x01938000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x0f938000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x1993000a, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x1f950004, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x11928000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x13904000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x21904000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x23904000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x25904000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x27908000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x53900000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x43900000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x55900000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x47900000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x57900000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x49900060, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x37900000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x33900000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x2740, 0x00000000, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x2710, 0x00000000, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x2714, 0x70800000, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x2720, 0x00000000, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x2724, 0x00800000, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x2770, 0x0000000a, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x2774, 0x0000fffc, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x2778, 0x00000022, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x277c, 0x0000fff3, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x2780, 0x00000002, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x2784, 0x0000ffef, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0xe458, 0x00005004, REGISTER_TYPE_FLEX );
-            AddStartConfigRegister( 0xe558, 0x00010003, REGISTER_TYPE_FLEX );
-            AddStartConfigRegister( 0xe658, 0x00012011, REGISTER_TYPE_FLEX );
-            AddStartConfigRegister( 0xe45c, 0x00051050, REGISTER_TYPE_FLEX );
-            AddStartConfigRegister( 0xe55c, 0x00053052, REGISTER_TYPE_FLEX );
+            MD_CHECK_CC( AddStartConfigRegister( 0x9840, 0x00000080, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x9888, 0x104f0251, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x9888, 0x124f4a20, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x9888, 0x11834400, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x9888, 0x002d1000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x9888, 0x062d4000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x9888, 0x082d5000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x9888, 0x0c2e0400, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x9888, 0x0e2e1500, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x9888, 0x044c4000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x9888, 0x0a4c8000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x9888, 0x0c4cc000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x9888, 0x004e2000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x9888, 0x064e8000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x9888, 0x084ea000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x9888, 0x004f0063, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x9888, 0x064f6900, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x9888, 0x084f4943, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x9888, 0x1a4f0000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x9888, 0x1c4f0000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x9888, 0x180f1000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x9888, 0x1a0fa800, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x9888, 0x182c4000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x9888, 0x1c2c0015, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x9888, 0x0b804000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x9888, 0x23810800, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x9888, 0x0b830017, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x9888, 0x01938000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x9888, 0x0f938000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x9888, 0x1993000a, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x9888, 0x1f950004, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x9888, 0x11928000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x9888, 0x13904000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x9888, 0x21904000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x9888, 0x23904000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x9888, 0x25904000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x9888, 0x27908000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x9888, 0x53900000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x9888, 0x43900000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x9888, 0x55900000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x9888, 0x47900000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x9888, 0x57900000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x9888, 0x49900060, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x9888, 0x37900000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x9888, 0x33900000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2740, 0x00000000, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2710, 0x00000000, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2714, 0x70800000, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2720, 0x00000000, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2724, 0x00800000, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2770, 0x0000000a, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2774, 0x0000fffc, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2778, 0x00000022, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x277c, 0x0000fff3, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2780, 0x00000002, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2784, 0x0000ffef, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0xe458, 0x00005004, REGISTER_TYPE_FLEX ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0xe558, 0x00010003, REGISTER_TYPE_FLEX ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0xe658, 0x00012011, REGISTER_TYPE_FLEX ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0xe45c, 0x00051050, REGISTER_TYPE_FLEX ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0xe55c, 0x00053052, REGISTER_TYPE_FLEX ) );
         }
 
-        RefreshConfigRegisters();
+        MD_CHECK_CC( RefreshConfigRegisters() );
+
         return CC_OK;
 
     exception:
@@ -6793,115 +6774,116 @@ namespace MetricsDiscoveryInternal::MetricSets_GLK_OA
         availabilityEquation = nullptr;
         if( AddStartRegisterSet( 0, 0, availabilityEquation ) == CC_OK )
         {
-            AddStartConfigRegister( 0x2740, 0x00000000, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x2744, 0x00800000, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x2710, 0x00000000, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x2714, 0xf0800000, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x2720, 0x00000000, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x2724, 0xf0800000, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x2770, 0x00100070, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x2774, 0x0000fff1, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x2778, 0x00014002, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x277c, 0x0000c3ff, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x2780, 0x00010002, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x2784, 0x0000c7ff, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x2788, 0x00004002, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x278c, 0x0000d3ff, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x2790, 0x00100700, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x2794, 0x0000ff1f, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x2798, 0x00001402, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x279c, 0x0000fc3f, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x27a0, 0x00001002, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x27a4, 0x0000fc7f, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x27a8, 0x00000402, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x27ac, 0x0000fd3f, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0xE458, 0x00005004, REGISTER_TYPE_FLEX );
-            AddStartConfigRegister( 0xE558, 0x00010003, REGISTER_TYPE_FLEX );
-            AddStartConfigRegister( 0xE658, 0x00012011, REGISTER_TYPE_FLEX );
-            AddStartConfigRegister( 0xE758, 0x00015014, REGISTER_TYPE_FLEX );
-            AddStartConfigRegister( 0xE45c, 0x00051050, REGISTER_TYPE_FLEX );
-            AddStartConfigRegister( 0xE55c, 0x00053052, REGISTER_TYPE_FLEX );
-            AddStartConfigRegister( 0xE65c, 0x00055054, REGISTER_TYPE_FLEX );
-            AddStartConfigRegister( 0x00009840, 0x00000080, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x12643400, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x12653400, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x106C6800, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x126C001E, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x166C0010, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x0C2D5000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x0E2D5000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x002D4000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x022D5000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x042D5000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x062D1000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x102E0154, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x0C2E5000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x0E2E0055, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x104C8000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x124C8000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x144C8000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x164C2000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x044C8000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x064CC000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x084CC000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x0A4C4000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x0C4EA000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x0E4EA000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x004E8000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x024EA000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x044EA000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x064E2000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x1C4F5500, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x1A4F1554, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x0A640024, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x10640000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x04640000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x0C650024, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x10650000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x06650000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x0C6C5327, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x0E6C5425, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x006C2A00, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x026C285B, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x046C005C, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x1C6C0000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x1A6C0900, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x1C0F0AA0, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x180F4000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x1A0F02AA, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x1C2C5400, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x1E2C0001, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x1A2C5550, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x1993AA00, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x03938000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x05938000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x07938000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x09938000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x0B938000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x0D938000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x2B904000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x2D904000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x2F904000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x31904000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x15904000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x17904000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x19904000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x1B904000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x1D904000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x1F904000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x59900000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x4B900421, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x37900000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x33900000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x4D900001, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x53900000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x43900420, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x45900021, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x55900000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x47900000, REGISTER_TYPE_NOA );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2740, 0x00000000, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2744, 0x00800000, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2710, 0x00000000, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2714, 0xf0800000, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2720, 0x00000000, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2724, 0xf0800000, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2770, 0x00100070, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2774, 0x0000fff1, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2778, 0x00014002, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x277c, 0x0000c3ff, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2780, 0x00010002, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2784, 0x0000c7ff, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2788, 0x00004002, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x278c, 0x0000d3ff, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2790, 0x00100700, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2794, 0x0000ff1f, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2798, 0x00001402, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x279c, 0x0000fc3f, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x27a0, 0x00001002, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x27a4, 0x0000fc7f, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x27a8, 0x00000402, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x27ac, 0x0000fd3f, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0xE458, 0x00005004, REGISTER_TYPE_FLEX ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0xE558, 0x00010003, REGISTER_TYPE_FLEX ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0xE658, 0x00012011, REGISTER_TYPE_FLEX ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0xE758, 0x00015014, REGISTER_TYPE_FLEX ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0xE45c, 0x00051050, REGISTER_TYPE_FLEX ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0xE55c, 0x00053052, REGISTER_TYPE_FLEX ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0xE65c, 0x00055054, REGISTER_TYPE_FLEX ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009840, 0x00000080, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x12643400, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x12653400, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x106C6800, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x126C001E, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x166C0010, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x0C2D5000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x0E2D5000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x002D4000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x022D5000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x042D5000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x062D1000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x102E0154, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x0C2E5000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x0E2E0055, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x104C8000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x124C8000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x144C8000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x164C2000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x044C8000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x064CC000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x084CC000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x0A4C4000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x0C4EA000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x0E4EA000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x004E8000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x024EA000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x044EA000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x064E2000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x1C4F5500, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x1A4F1554, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x0A640024, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x10640000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x04640000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x0C650024, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x10650000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x06650000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x0C6C5327, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x0E6C5425, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x006C2A00, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x026C285B, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x046C005C, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x1C6C0000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x1A6C0900, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x1C0F0AA0, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x180F4000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x1A0F02AA, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x1C2C5400, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x1E2C0001, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x1A2C5550, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x1993AA00, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x03938000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x05938000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x07938000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x09938000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x0B938000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x0D938000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x2B904000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x2D904000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x2F904000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x31904000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x15904000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x17904000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x19904000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x1B904000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x1D904000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x1F904000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x59900000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x4B900421, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x37900000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x33900000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x4D900001, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x53900000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x43900420, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x45900021, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x55900000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x47900000, REGISTER_TYPE_NOA ) );
         }
 
-        RefreshConfigRegisters();
+        MD_CHECK_CC( RefreshConfigRegisters() );
+
         return CC_OK;
 
     exception:
@@ -7445,67 +7427,68 @@ namespace MetricsDiscoveryInternal::MetricSets_GLK_OA
         availabilityEquation = nullptr;
         if( AddStartRegisterSet( 0, 0, availabilityEquation ) == CC_OK )
         {
-            AddStartConfigRegister( 0x2740, 0x00000000, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x2744, 0x00800000, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x2710, 0x00000000, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x2714, 0x30800000, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x2720, 0x00000000, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x2724, 0x00800000, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x2770, 0x00000002, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x2774, 0x0000efff, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x2778, 0x00006000, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x277c, 0x0000f3ff, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0xE458, 0x00005004, REGISTER_TYPE_FLEX );
-            AddStartConfigRegister( 0xE558, 0x00010003, REGISTER_TYPE_FLEX );
-            AddStartConfigRegister( 0xE658, 0x00012011, REGISTER_TYPE_FLEX );
-            AddStartConfigRegister( 0xE758, 0x00015014, REGISTER_TYPE_FLEX );
-            AddStartConfigRegister( 0xE45c, 0x00051050, REGISTER_TYPE_FLEX );
-            AddStartConfigRegister( 0xE55c, 0x00053052, REGISTER_TYPE_FLEX );
-            AddStartConfigRegister( 0xE65c, 0x00055054, REGISTER_TYPE_FLEX );
-            AddStartConfigRegister( 0x00009840, 0x00000080, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x102D7800, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x122D79E0, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x0C2F0004, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x100E3800, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x180F0005, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x002D0940, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x022D802F, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x042D4013, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x062D1000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x0E2E0050, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x022F0010, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x002F0000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x084C8000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x0A4C4000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x044E8000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x064E2000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x040E0480, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x000E0000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x060F0027, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x100F0000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x1A0F0040, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x03938000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x05938000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x07938000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x09938000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x0B938000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x0D938000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x15904000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x17904000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x19904000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x1B904000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x1D904000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x1F904000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x37900000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x53900000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x439014A0, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x459000A4, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x55900000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x47900001, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x33900000, REGISTER_TYPE_NOA );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2740, 0x00000000, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2744, 0x00800000, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2710, 0x00000000, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2714, 0x30800000, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2720, 0x00000000, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2724, 0x00800000, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2770, 0x00000002, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2774, 0x0000efff, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2778, 0x00006000, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x277c, 0x0000f3ff, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0xE458, 0x00005004, REGISTER_TYPE_FLEX ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0xE558, 0x00010003, REGISTER_TYPE_FLEX ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0xE658, 0x00012011, REGISTER_TYPE_FLEX ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0xE758, 0x00015014, REGISTER_TYPE_FLEX ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0xE45c, 0x00051050, REGISTER_TYPE_FLEX ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0xE55c, 0x00053052, REGISTER_TYPE_FLEX ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0xE65c, 0x00055054, REGISTER_TYPE_FLEX ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009840, 0x00000080, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x102D7800, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x122D79E0, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x0C2F0004, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x100E3800, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x180F0005, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x002D0940, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x022D802F, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x042D4013, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x062D1000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x0E2E0050, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x022F0010, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x002F0000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x084C8000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x0A4C4000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x044E8000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x064E2000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x040E0480, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x000E0000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x060F0027, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x100F0000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x1A0F0040, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x03938000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x05938000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x07938000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x09938000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x0B938000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x0D938000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x15904000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x17904000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x19904000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x1B904000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x1D904000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x1F904000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x37900000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x53900000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x439014A0, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x459000A4, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x55900000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x47900001, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x33900000, REGISTER_TYPE_NOA ) );
         }
 
-        RefreshConfigRegisters();
+        MD_CHECK_CC( RefreshConfigRegisters() );
+
         return CC_OK;
 
     exception:
@@ -8063,121 +8046,122 @@ namespace MetricsDiscoveryInternal::MetricSets_GLK_OA
         availabilityEquation = nullptr;
         if( AddStartRegisterSet( 0, 0, availabilityEquation ) == CC_OK )
         {
-            AddStartConfigRegister( 0x2740, 0x00000000, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x2744, 0x00800000, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x2710, 0x00000000, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x2714, 0x70800000, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x2720, 0x00000000, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x2724, 0x00800000, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x2770, 0x0000c000, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x2774, 0x0000e7ff, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x2778, 0x00003000, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x277c, 0x0000f9ff, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x2780, 0x00000c00, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x2784, 0x0000fe7f, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0xE458, 0x00005004, REGISTER_TYPE_FLEX );
-            AddStartConfigRegister( 0xE558, 0x00010003, REGISTER_TYPE_FLEX );
-            AddStartConfigRegister( 0xE658, 0x00012011, REGISTER_TYPE_FLEX );
-            AddStartConfigRegister( 0xE758, 0x00015014, REGISTER_TYPE_FLEX );
-            AddStartConfigRegister( 0xE45c, 0x00051050, REGISTER_TYPE_FLEX );
-            AddStartConfigRegister( 0xE55c, 0x00053052, REGISTER_TYPE_FLEX );
-            AddStartConfigRegister( 0xE65c, 0x00055054, REGISTER_TYPE_FLEX );
-            AddStartConfigRegister( 0x00009840, 0x00000080, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x121300A0, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x141600AB, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x123300A0, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x143600AB, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x125300A0, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x145600AB, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x0C2D4000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x0E2D5000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x002D4000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x022D5000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x042D5000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x062D1000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x102E01A0, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x0C2E5000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x0E2E0065, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x164C2000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x044C8000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x064CC000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x084C4000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x0A4C4000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x0E4E8000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x004E8000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x024EA000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x044E2000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x064E2000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x1C0F0800, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x180F4000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x1A0F023F, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x1E2C0003, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x1A2CC030, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x04132180, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x02130000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x0C148000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x0E142000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x04148000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x1E150140, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x1C150040, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x0C163000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x0E160068, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x10160000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x18160000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x0A164000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x04330043, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x02330000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x0234A000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x04342000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x1C350015, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x02363460, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x10360000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x04360000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x06360000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x08364000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x06530043, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x02530000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x0E548000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x00548000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x06542000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x1E550400, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x1A552000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x1C550100, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x0E563000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x00563400, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x10560000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x18560000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x02560000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x0C564000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x1993A800, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x03938000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x05938000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x07938000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x09938000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x0B938000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x0D938000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x2D904000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x2F904000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x31904000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x15904000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x17904000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x19904000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x1B904000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x1D904000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x1F904000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x59900000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x4B9014A0, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x37900000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x33900000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x4D900001, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x53900000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x43900820, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x45901022, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x55900000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x47900000, REGISTER_TYPE_NOA );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2740, 0x00000000, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2744, 0x00800000, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2710, 0x00000000, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2714, 0x70800000, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2720, 0x00000000, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2724, 0x00800000, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2770, 0x0000c000, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2774, 0x0000e7ff, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2778, 0x00003000, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x277c, 0x0000f9ff, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2780, 0x00000c00, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2784, 0x0000fe7f, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0xE458, 0x00005004, REGISTER_TYPE_FLEX ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0xE558, 0x00010003, REGISTER_TYPE_FLEX ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0xE658, 0x00012011, REGISTER_TYPE_FLEX ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0xE758, 0x00015014, REGISTER_TYPE_FLEX ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0xE45c, 0x00051050, REGISTER_TYPE_FLEX ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0xE55c, 0x00053052, REGISTER_TYPE_FLEX ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0xE65c, 0x00055054, REGISTER_TYPE_FLEX ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009840, 0x00000080, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x121300A0, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x141600AB, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x123300A0, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x143600AB, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x125300A0, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x145600AB, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x0C2D4000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x0E2D5000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x002D4000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x022D5000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x042D5000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x062D1000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x102E01A0, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x0C2E5000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x0E2E0065, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x164C2000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x044C8000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x064CC000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x084C4000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x0A4C4000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x0E4E8000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x004E8000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x024EA000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x044E2000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x064E2000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x1C0F0800, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x180F4000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x1A0F023F, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x1E2C0003, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x1A2CC030, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x04132180, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x02130000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x0C148000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x0E142000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x04148000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x1E150140, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x1C150040, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x0C163000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x0E160068, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x10160000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x18160000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x0A164000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x04330043, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x02330000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x0234A000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x04342000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x1C350015, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x02363460, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x10360000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x04360000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x06360000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x08364000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x06530043, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x02530000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x0E548000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x00548000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x06542000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x1E550400, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x1A552000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x1C550100, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x0E563000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x00563400, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x10560000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x18560000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x02560000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x0C564000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x1993A800, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x03938000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x05938000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x07938000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x09938000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x0B938000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x0D938000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x2D904000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x2F904000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x31904000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x15904000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x17904000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x19904000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x1B904000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x1D904000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x1F904000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x59900000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x4B9014A0, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x37900000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x33900000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x4D900001, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x53900000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x43900820, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x45901022, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x55900000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x47900000, REGISTER_TYPE_NOA ) );
         }
 
-        RefreshConfigRegisters();
+        MD_CHECK_CC( RefreshConfigRegisters() );
+
         return CC_OK;
 
     exception:
@@ -8735,120 +8719,121 @@ namespace MetricsDiscoveryInternal::MetricSets_GLK_OA
         availabilityEquation = nullptr;
         if( AddStartRegisterSet( 0, 0, availabilityEquation ) == CC_OK )
         {
-            AddStartConfigRegister( 0x2740, 0x00000000, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x2744, 0x00800000, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x2710, 0x00000000, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x2714, 0xf0800000, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x2720, 0x00000000, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x2724, 0x30800000, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x2770, 0x00000002, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x2774, 0x00007fff, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x2778, 0x00000000, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x277c, 0x00009fff, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x2780, 0x00000002, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x2784, 0x0000efff, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x2788, 0x00000000, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x278c, 0x0000f3ff, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x2790, 0x00000002, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x2794, 0x0000fdff, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x2798, 0x00000000, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x279c, 0x0000fe7f, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0xE458, 0x00005004, REGISTER_TYPE_FLEX );
-            AddStartConfigRegister( 0xE558, 0x00010003, REGISTER_TYPE_FLEX );
-            AddStartConfigRegister( 0xE658, 0x00012011, REGISTER_TYPE_FLEX );
-            AddStartConfigRegister( 0xE758, 0x00015014, REGISTER_TYPE_FLEX );
-            AddStartConfigRegister( 0xE45c, 0x00051050, REGISTER_TYPE_FLEX );
-            AddStartConfigRegister( 0xE55c, 0x00053052, REGISTER_TYPE_FLEX );
-            AddStartConfigRegister( 0xE65c, 0x00055054, REGISTER_TYPE_FLEX );
-            AddStartConfigRegister( 0x00009840, 0x00000080, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x141A0000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x143A0000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x145A0000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x0C2D4000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x0E2D5000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x002D4000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x022D5000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x042D5000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x062D1000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x102E0150, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x0C2E5000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x0E2E006A, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x124C8000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x144C8000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x164C2000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x044C8000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x064C4000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x0A4C4000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x0C4E8000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x0E4EA000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x004E8000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x024E2000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x064E2000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x1C0F0BC0, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x180F4000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x1A0F0302, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x1E2C0003, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x1A2C00F0, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x021A3080, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x041A31E5, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x02148000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x0414A000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x1C150054, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x06168000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x08168000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x0A168000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x0C3A3280, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x0E3A0063, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x063A0061, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x023A0000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x0C348000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x0E342000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x06342000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x1E350140, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x1C350100, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x18360028, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x0C368000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x0E5A3080, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x005A3280, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x025A0063, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x0E548000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x00548000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x02542000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x1E550400, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x1A552000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x1C550001, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x18560080, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x02568000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x04568000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x1993A800, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x03938000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x05938000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x07938000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x09938000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x0B938000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x0D938000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x2D904000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x2F904000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x31904000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x15904000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x17904000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x19904000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x1B904000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x1D904000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x1F904000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x59900000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x4B900420, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x37900000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x33900000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x4D900000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x53900000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x43900000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x45901084, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x55900000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x47900001, REGISTER_TYPE_NOA );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2740, 0x00000000, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2744, 0x00800000, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2710, 0x00000000, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2714, 0xf0800000, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2720, 0x00000000, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2724, 0x30800000, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2770, 0x00000002, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2774, 0x00007fff, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2778, 0x00000000, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x277c, 0x00009fff, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2780, 0x00000002, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2784, 0x0000efff, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2788, 0x00000000, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x278c, 0x0000f3ff, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2790, 0x00000002, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2794, 0x0000fdff, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2798, 0x00000000, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x279c, 0x0000fe7f, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0xE458, 0x00005004, REGISTER_TYPE_FLEX ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0xE558, 0x00010003, REGISTER_TYPE_FLEX ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0xE658, 0x00012011, REGISTER_TYPE_FLEX ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0xE758, 0x00015014, REGISTER_TYPE_FLEX ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0xE45c, 0x00051050, REGISTER_TYPE_FLEX ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0xE55c, 0x00053052, REGISTER_TYPE_FLEX ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0xE65c, 0x00055054, REGISTER_TYPE_FLEX ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009840, 0x00000080, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x141A0000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x143A0000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x145A0000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x0C2D4000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x0E2D5000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x002D4000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x022D5000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x042D5000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x062D1000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x102E0150, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x0C2E5000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x0E2E006A, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x124C8000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x144C8000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x164C2000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x044C8000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x064C4000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x0A4C4000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x0C4E8000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x0E4EA000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x004E8000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x024E2000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x064E2000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x1C0F0BC0, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x180F4000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x1A0F0302, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x1E2C0003, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x1A2C00F0, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x021A3080, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x041A31E5, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x02148000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x0414A000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x1C150054, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x06168000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x08168000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x0A168000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x0C3A3280, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x0E3A0063, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x063A0061, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x023A0000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x0C348000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x0E342000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x06342000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x1E350140, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x1C350100, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x18360028, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x0C368000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x0E5A3080, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x005A3280, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x025A0063, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x0E548000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x00548000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x02542000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x1E550400, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x1A552000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x1C550001, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x18560080, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x02568000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x04568000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x1993A800, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x03938000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x05938000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x07938000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x09938000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x0B938000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x0D938000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x2D904000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x2F904000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x31904000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x15904000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x17904000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x19904000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x1B904000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x1D904000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x1F904000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x59900000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x4B900420, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x37900000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x33900000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x4D900000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x53900000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x43900000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x45901084, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x55900000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x47900001, REGISTER_TYPE_NOA ) );
         }
 
-        RefreshConfigRegisters();
+        MD_CHECK_CC( RefreshConfigRegisters() );
+
         return CC_OK;
 
     exception:
@@ -9406,80 +9391,81 @@ namespace MetricsDiscoveryInternal::MetricSets_GLK_OA
         availabilityEquation = nullptr;
         if( AddStartRegisterSet( 0, 0, availabilityEquation ) == CC_OK )
         {
-            AddStartConfigRegister( 0x2740, 0x00000000, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x2744, 0x00800000, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x2710, 0x00000000, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x2714, 0x00800000, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x2720, 0x00000000, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x2724, 0x00800000, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0xE458, 0x00005004, REGISTER_TYPE_FLEX );
-            AddStartConfigRegister( 0xE558, 0x00010003, REGISTER_TYPE_FLEX );
-            AddStartConfigRegister( 0xE658, 0x00012011, REGISTER_TYPE_FLEX );
-            AddStartConfigRegister( 0xE758, 0x00015014, REGISTER_TYPE_FLEX );
-            AddStartConfigRegister( 0xE45c, 0x00051050, REGISTER_TYPE_FLEX );
-            AddStartConfigRegister( 0xE55c, 0x00053052, REGISTER_TYPE_FLEX );
-            AddStartConfigRegister( 0xE65c, 0x00055054, REGISTER_TYPE_FLEX );
-            AddStartConfigRegister( 0x00009840, 0x00000080, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x141A026B, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x143A0173, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x145A026B, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x002D4000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x022D5000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x042D5000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x062D1000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x0C2E5000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x0E2E0069, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x044C8000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x064CC000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x0A4C4000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x004E8000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x024EA000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x064E2000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x180F6000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x1A0F030A, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x1A2C03C0, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x041A37E7, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x021A0000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x0414A000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x1C150050, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x08168000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x0A168000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x003A3380, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x063A006F, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x023A0000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x00348000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x06342000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x1A352000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x1C350100, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x02368000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x0C368000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x025A37E7, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x0254A000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x1C550005, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x04568000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x06568000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x03938000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x05938000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x07938000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x09938000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x0B938000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x0D938000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x15904000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x17904000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x19904000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x1B904000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x1D904000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x1F904000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x37900000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x53900000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x43900020, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x45901080, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x55900000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x47900001, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x00009888, 0x33900000, REGISTER_TYPE_NOA );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2740, 0x00000000, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2744, 0x00800000, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2710, 0x00000000, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2714, 0x00800000, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2720, 0x00000000, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2724, 0x00800000, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0xE458, 0x00005004, REGISTER_TYPE_FLEX ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0xE558, 0x00010003, REGISTER_TYPE_FLEX ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0xE658, 0x00012011, REGISTER_TYPE_FLEX ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0xE758, 0x00015014, REGISTER_TYPE_FLEX ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0xE45c, 0x00051050, REGISTER_TYPE_FLEX ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0xE55c, 0x00053052, REGISTER_TYPE_FLEX ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0xE65c, 0x00055054, REGISTER_TYPE_FLEX ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009840, 0x00000080, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x141A026B, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x143A0173, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x145A026B, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x002D4000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x022D5000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x042D5000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x062D1000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x0C2E5000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x0E2E0069, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x044C8000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x064CC000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x0A4C4000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x004E8000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x024EA000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x064E2000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x180F6000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x1A0F030A, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x1A2C03C0, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x041A37E7, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x021A0000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x0414A000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x1C150050, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x08168000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x0A168000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x003A3380, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x063A006F, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x023A0000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x00348000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x06342000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x1A352000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x1C350100, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x02368000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x0C368000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x025A37E7, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x0254A000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x1C550005, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x04568000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x06568000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x03938000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x05938000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x07938000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x09938000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x0B938000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x0D938000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x15904000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x17904000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x19904000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x1B904000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x1D904000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x1F904000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x37900000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x53900000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x43900020, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x45901080, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x55900000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x47900001, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x00009888, 0x33900000, REGISTER_TYPE_NOA ) );
         }
 
-        RefreshConfigRegisters();
+        MD_CHECK_CC( RefreshConfigRegisters() );
+
         return CC_OK;
 
     exception:
@@ -9563,59 +9549,60 @@ namespace MetricsDiscoveryInternal::MetricSets_GLK_OA
         availabilityEquation = nullptr;
         if( AddStartRegisterSet( 0, 0, availabilityEquation ) == CC_OK )
         {
-            AddStartConfigRegister( 0x9840, 0x00000080, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x141a001f, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x143a001f, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x145a001f, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x042d5000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x062d1000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x0e2e0094, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x084cc000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x044ea000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x1a0f00e0, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x1a2c0c00, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x061a0063, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x021a0000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x06142000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x1c150100, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x0c168000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x043a3180, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x023a0000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x04348000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x1c350040, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x0a368000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x045a0063, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x025a0000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x04542000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x1c550010, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x08568000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x09938000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x0b938000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x0d938000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x1b904000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x1d904000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x1f904000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x37900000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x55900000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x45900400, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x47900004, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x33900000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0xe458, 0x00001000, REGISTER_TYPE_FLEX );
-            AddStartConfigRegister( 0xe558, 0x00003002, REGISTER_TYPE_FLEX );
-            AddStartConfigRegister( 0xe658, 0x00005004, REGISTER_TYPE_FLEX );
-            AddStartConfigRegister( 0xe758, 0x00011010, REGISTER_TYPE_FLEX );
-            AddStartConfigRegister( 0xe45c, 0x00050012, REGISTER_TYPE_FLEX );
-            AddStartConfigRegister( 0xe55c, 0x00052051, REGISTER_TYPE_FLEX );
-            AddStartConfigRegister( 0xe65c, 0x00000008, REGISTER_TYPE_FLEX );
-            AddStartConfigRegister( 0x2740, 0x00000000, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x2744, 0x00800000, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x2710, 0x00000000, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x2714, 0x00800000, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x2720, 0x00000000, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x2724, 0x00800000, REGISTER_TYPE_OA );
+            MD_CHECK_CC( AddStartConfigRegister( 0x9840, 0x00000080, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x9888, 0x141a001f, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x9888, 0x143a001f, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x9888, 0x145a001f, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x9888, 0x042d5000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x9888, 0x062d1000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x9888, 0x0e2e0094, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x9888, 0x084cc000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x9888, 0x044ea000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x9888, 0x1a0f00e0, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x9888, 0x1a2c0c00, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x9888, 0x061a0063, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x9888, 0x021a0000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x9888, 0x06142000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x9888, 0x1c150100, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x9888, 0x0c168000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x9888, 0x043a3180, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x9888, 0x023a0000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x9888, 0x04348000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x9888, 0x1c350040, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x9888, 0x0a368000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x9888, 0x045a0063, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x9888, 0x025a0000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x9888, 0x04542000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x9888, 0x1c550010, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x9888, 0x08568000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x9888, 0x09938000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x9888, 0x0b938000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x9888, 0x0d938000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x9888, 0x1b904000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x9888, 0x1d904000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x9888, 0x1f904000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x9888, 0x37900000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x9888, 0x55900000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x9888, 0x45900400, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x9888, 0x47900004, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x9888, 0x33900000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0xe458, 0x00001000, REGISTER_TYPE_FLEX ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0xe558, 0x00003002, REGISTER_TYPE_FLEX ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0xe658, 0x00005004, REGISTER_TYPE_FLEX ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0xe758, 0x00011010, REGISTER_TYPE_FLEX ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0xe45c, 0x00050012, REGISTER_TYPE_FLEX ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0xe55c, 0x00052051, REGISTER_TYPE_FLEX ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0xe65c, 0x00000008, REGISTER_TYPE_FLEX ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2740, 0x00000000, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2744, 0x00800000, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2710, 0x00000000, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2714, 0x00800000, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2720, 0x00000000, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2724, 0x00800000, REGISTER_TYPE_OA ) );
         }
 
-        RefreshConfigRegisters();
+        MD_CHECK_CC( RefreshConfigRegisters() );
+
         return CC_OK;
 
     exception:
@@ -9779,43 +9766,44 @@ namespace MetricsDiscoveryInternal::MetricSets_GLK_OA
         availabilityEquation = nullptr;
         if( AddStartRegisterSet( 0, 0, availabilityEquation ) == CC_OK )
         {
-            AddStartConfigRegister( 0x9840, 0x00000080, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x19800000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x07800063, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x11800000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x23810008, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x1d950400, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x0f922000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x1f908000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x37900000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x55900000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x47900000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x33900000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x2740, 0x00000000, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x2744, 0x00800000, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x2714, 0xf0800000, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x2710, 0x00000000, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x2724, 0xf0800000, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x2720, 0x00000000, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x2770, 0x00000004, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x2774, 0x00000000, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x2778, 0x00000003, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x277c, 0x00000000, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x2780, 0x00000007, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x2784, 0x00000000, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x2788, 0x00100002, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x278c, 0x0000fff7, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x2790, 0x00100002, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x2794, 0x0000ffcf, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x2798, 0x00100082, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x279c, 0x0000ffef, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x27a0, 0x001000c2, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x27a4, 0x0000ffe7, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x27a8, 0x00100001, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x27ac, 0x0000ffe7, REGISTER_TYPE_OA );
+            MD_CHECK_CC( AddStartConfigRegister( 0x9840, 0x00000080, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x9888, 0x19800000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x9888, 0x07800063, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x9888, 0x11800000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x9888, 0x23810008, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x9888, 0x1d950400, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x9888, 0x0f922000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x9888, 0x1f908000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x9888, 0x37900000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x9888, 0x55900000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x9888, 0x47900000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x9888, 0x33900000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2740, 0x00000000, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2744, 0x00800000, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2714, 0xf0800000, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2710, 0x00000000, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2724, 0xf0800000, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2720, 0x00000000, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2770, 0x00000004, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2774, 0x00000000, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2778, 0x00000003, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x277c, 0x00000000, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2780, 0x00000007, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2784, 0x00000000, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2788, 0x00100002, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x278c, 0x0000fff7, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2790, 0x00100002, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2794, 0x0000ffcf, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2798, 0x00100082, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x279c, 0x0000ffef, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x27a0, 0x001000c2, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x27a4, 0x0000ffe7, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x27a8, 0x00100001, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x27ac, 0x0000ffe7, REGISTER_TYPE_OA ) );
         }
 
-        RefreshConfigRegisters();
+        MD_CHECK_CC( RefreshConfigRegisters() );
+
         return CC_OK;
 
     exception:
@@ -9837,7 +9825,7 @@ namespace MetricsDiscoveryInternal::MetricSets_GLK_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "GpuTime", "GPU Time Elapsed",
                           "Time elapsed on the GPU during the measurement.",
-                          "GPU", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_1 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM | API_TYPE_MEDIA,
+                          "GPU", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_1 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
                           METRIC_TYPE_DURATION, RESULT_UINT64, "ns", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, "oa.fixed", 0 );
         if( metric )
         {
@@ -9849,7 +9837,7 @@ namespace MetricsDiscoveryInternal::MetricSets_GLK_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "GpuCoreClocks", "GPU Core Clocks",
                           "The total number of GPU core clocks elapsed during the measurement.",
-                          "GPU", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_1 | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM | API_TYPE_MEDIA,
+                          "GPU", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_1 | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
                           METRIC_TYPE_EVENT, RESULT_UINT64, "cycles", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, "oa.fixed", 1 );
         if( metric )
         {
@@ -9861,7 +9849,7 @@ namespace MetricsDiscoveryInternal::MetricSets_GLK_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "AvgGpuCoreFrequencyMHz", "AVG GPU Core Frequency",
                           "Average GPU Core Frequency in the measurement.",
-                          "GPU", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_1 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM | API_TYPE_MEDIA,
+                          "GPU", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_1 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
                           METRIC_TYPE_EVENT, RESULT_UINT64, "MHz", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, "oa.fixed", 2 );
         if( metric )
         {
@@ -9871,7 +9859,7 @@ namespace MetricsDiscoveryInternal::MetricSets_GLK_OA
         availabilityEquation = "$SliceMask 1 AND";
         metric               = AddMetric( "StcPMAStall", "STC PMA stall",
                           "Percentage of time when stencil cache line and an overlapping pixel are causing stalls",
-                          "GPU/Stencil Cache", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_STC * 0x10000 ), USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM | API_TYPE_MEDIA,
+                          "GPU/Stencil Cache", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_STC * 0x10000 ), USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
                           METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, "pixel|fragment", nullptr, 3 );
         if( metric )
         {
@@ -9885,52 +9873,53 @@ namespace MetricsDiscoveryInternal::MetricSets_GLK_OA
         availabilityEquation = nullptr;
         if( AddStartRegisterSet( 0, 0, availabilityEquation ) == CC_OK )
         {
-            AddStartConfigRegister( 0x9840, 0x00000080, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x124c3080, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x002d1000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x062d4000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x082d5000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x0a2d5000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x0c2e0400, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x0e2e5500, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x102e0001, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x004c0045, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x064c2300, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x084c26c4, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x0a4c264e, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x164c0000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x044c0000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x0c4c0000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x0e4c0000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x01938000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x0f938000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x199300aa, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x13904000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x21904000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x23904000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x25904000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x27904000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x29904000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x53900000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x43900000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x55900000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x47900000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x57900000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x49900000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x37900000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x33900000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x2740, 0x00000000, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x2710, 0x00000000, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x2714, 0x30800000, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x2720, 0x00000000, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x2724, 0x00800000, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x2770, 0x00e00021, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x2774, 0x0007fff8, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x2778, 0x07000101, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x277c, 0x0038ffc7, REGISTER_TYPE_OA );
+            MD_CHECK_CC( AddStartConfigRegister( 0x9840, 0x00000080, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x9888, 0x124c3080, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x9888, 0x002d1000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x9888, 0x062d4000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x9888, 0x082d5000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x9888, 0x0a2d5000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x9888, 0x0c2e0400, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x9888, 0x0e2e5500, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x9888, 0x102e0001, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x9888, 0x004c0045, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x9888, 0x064c2300, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x9888, 0x084c26c4, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x9888, 0x0a4c264e, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x9888, 0x164c0000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x9888, 0x044c0000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x9888, 0x0c4c0000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x9888, 0x0e4c0000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x9888, 0x01938000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x9888, 0x0f938000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x9888, 0x199300aa, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x9888, 0x13904000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x9888, 0x21904000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x9888, 0x23904000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x9888, 0x25904000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x9888, 0x27904000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x9888, 0x29904000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x9888, 0x53900000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x9888, 0x43900000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x9888, 0x55900000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x9888, 0x47900000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x9888, 0x57900000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x9888, 0x49900000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x9888, 0x37900000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x9888, 0x33900000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2740, 0x00000000, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2710, 0x00000000, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2714, 0x30800000, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2720, 0x00000000, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2724, 0x00800000, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2770, 0x00e00021, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2774, 0x0007fff8, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2778, 0x07000101, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x277c, 0x0038ffc7, REGISTER_TYPE_OA ) );
         }
 
-        RefreshConfigRegisters();
+        MD_CHECK_CC( RefreshConfigRegisters() );
+
         return CC_OK;
 
     exception:
@@ -9952,7 +9941,7 @@ namespace MetricsDiscoveryInternal::MetricSets_GLK_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "GpuTime", "GPU Time Elapsed",
                           "Time elapsed on the GPU during the measurement.",
-                          "GPU", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_1 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_VULKAN | API_TYPE_MEDIA | API_TYPE_IOSTREAM,
+                          "GPU", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_1 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_VULKAN | API_TYPE_IOSTREAM,
                           METRIC_TYPE_DURATION, RESULT_UINT64, "ns", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, "oa.fixed", 0 );
         if( metric )
         {
@@ -9964,7 +9953,7 @@ namespace MetricsDiscoveryInternal::MetricSets_GLK_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "GpuCoreClocks", "GPU Core Clocks",
                           "The total number of GPU core clocks elapsed during the measurement.",
-                          "GPU", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_1 | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_VULKAN | API_TYPE_MEDIA | API_TYPE_IOSTREAM,
+                          "GPU", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_1 | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_VULKAN | API_TYPE_IOSTREAM,
                           METRIC_TYPE_EVENT, RESULT_UINT64, "cycles", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, "oa.fixed", 1 );
         if( metric )
         {
@@ -9976,7 +9965,7 @@ namespace MetricsDiscoveryInternal::MetricSets_GLK_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "AvgGpuCoreFrequencyMHz", "AVG GPU Core Frequency",
                           "Average GPU Core Frequency in the measurement.",
-                          "GPU", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_1 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_VULKAN | API_TYPE_MEDIA | API_TYPE_IOSTREAM,
+                          "GPU", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_1 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_VULKAN | API_TYPE_IOSTREAM,
                           METRIC_TYPE_EVENT, RESULT_UINT64, "MHz", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, "oa.fixed", 2 );
         if( metric )
         {
@@ -9986,7 +9975,7 @@ namespace MetricsDiscoveryInternal::MetricSets_GLK_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "GpuBusy", "GPU Busy",
                           "The percentage of time in which the GPU has been processing GPU commands.",
-                          "GPU", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_1 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_VULKAN | API_TYPE_MEDIA | API_TYPE_IOSTREAM,
+                          "GPU", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_1 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_VULKAN | API_TYPE_IOSTREAM,
                           METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, "oa.fixed", 3 );
         if( metric )
         {
@@ -10000,7 +9989,7 @@ namespace MetricsDiscoveryInternal::MetricSets_GLK_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "VsThreads", "VS Threads Dispatched",
                           "The total number of vertex shader hardware threads dispatched.",
-                          "EU Array/Vertex Shader", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_VS * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_VULKAN | API_TYPE_MEDIA | API_TYPE_IOSTREAM,
+                          "EU Array/Vertex Shader", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_VS * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_VULKAN | API_TYPE_IOSTREAM,
                           METRIC_TYPE_EVENT, RESULT_UINT64, "threads", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, "oa.fixed", 4 );
         if( metric )
         {
@@ -10012,7 +10001,7 @@ namespace MetricsDiscoveryInternal::MetricSets_GLK_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "HsThreads", "HS Threads Dispatched",
                           "The total number of hull shader hardware threads dispatched.",
-                          "EU Array/Hull Shader", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_HS * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_VULKAN | API_TYPE_MEDIA | API_TYPE_IOSTREAM,
+                          "EU Array/Hull Shader", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_HS * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_VULKAN | API_TYPE_IOSTREAM,
                           METRIC_TYPE_EVENT, RESULT_UINT64, "threads", 0, 0, HW_UNIT_GPU, availabilityEquation, "Hull|Control,hull|control,HS|TCS", "oa.fixed", 5 );
         if( metric )
         {
@@ -10024,7 +10013,7 @@ namespace MetricsDiscoveryInternal::MetricSets_GLK_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "DsThreads", "DS Threads Dispatched",
                           "The total number of domain shader hardware threads dispatched.",
-                          "EU Array/Domain Shader", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_DS * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_VULKAN | API_TYPE_MEDIA | API_TYPE_IOSTREAM,
+                          "EU Array/Domain Shader", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_DS * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_VULKAN | API_TYPE_IOSTREAM,
                           METRIC_TYPE_EVENT, RESULT_UINT64, "threads", 0, 0, HW_UNIT_GPU, availabilityEquation, "Domain|Evaluation,domain|evaluation,DS|TES", "oa.fixed", 6 );
         if( metric )
         {
@@ -10036,7 +10025,7 @@ namespace MetricsDiscoveryInternal::MetricSets_GLK_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "GsThreads", "GS Threads Dispatched",
                           "The total number of geometry shader hardware threads dispatched.",
-                          "EU Array/Geometry Shader", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_GS * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_VULKAN | API_TYPE_MEDIA | API_TYPE_IOSTREAM,
+                          "EU Array/Geometry Shader", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_GS * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_VULKAN | API_TYPE_IOSTREAM,
                           METRIC_TYPE_EVENT, RESULT_UINT64, "threads", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, "oa.fixed", 7 );
         if( metric )
         {
@@ -10048,7 +10037,7 @@ namespace MetricsDiscoveryInternal::MetricSets_GLK_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "PsThreads", "PS Threads Dispatched",
                           "The total number of pixel shader hardware threads dispatched.",
-                          "EU Array/Pixel Shader", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_PS * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_VULKAN | API_TYPE_MEDIA | API_TYPE_IOSTREAM,
+                          "EU Array/Pixel Shader", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_PS * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_VULKAN | API_TYPE_IOSTREAM,
                           METRIC_TYPE_EVENT, RESULT_UINT64, "threads", 0, 0, HW_UNIT_GPU, availabilityEquation, "Pixel|Fragment,PS|FS,pixel|fragment", "oa.fixed", 8 );
         if( metric )
         {
@@ -10060,7 +10049,7 @@ namespace MetricsDiscoveryInternal::MetricSets_GLK_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "CsThreads", "CS Threads Dispatched",
                           "The total number of compute shader hardware threads dispatched.",
-                          "EU Array/Compute Shader", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_CS * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_VULKAN | API_TYPE_MEDIA | API_TYPE_IOSTREAM,
+                          "EU Array/Compute Shader", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_CS * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_VULKAN | API_TYPE_IOSTREAM,
                           METRIC_TYPE_EVENT, RESULT_UINT64, "threads", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, "oa.fixed", 9 );
         if( metric )
         {
@@ -10072,7 +10061,7 @@ namespace MetricsDiscoveryInternal::MetricSets_GLK_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "Fpu0Active", "EU FPU0 Pipe Active",
                           "The percentage of time in which EU FPU0 pipeline was actively processing.",
-                          "EU Array/Pipes", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_EU_PIPES * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_VULKAN | API_TYPE_MEDIA | API_TYPE_IOSTREAM,
+                          "EU Array/Pipes", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_EU_PIPES * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_VULKAN | API_TYPE_IOSTREAM,
                           METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 10 );
         if( metric )
         {
@@ -10086,7 +10075,7 @@ namespace MetricsDiscoveryInternal::MetricSets_GLK_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "VsFpu0Active", "VS FPU0 Pipe Active",
                           "The percentage of time in which EU FPU0 pipeline was actively processing a vertex shader instruction.",
-                          "EU Array/Vertex Shader", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_VS * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_VULKAN | API_TYPE_MEDIA | API_TYPE_IOSTREAM,
+                          "EU Array/Vertex Shader", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_VS * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_VULKAN | API_TYPE_IOSTREAM,
                           METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 11 );
         if( metric )
         {
@@ -10100,7 +10089,7 @@ namespace MetricsDiscoveryInternal::MetricSets_GLK_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "PsFpu0Active", "PS FPU0 Pipe Active",
                           "The percentage of time in which EU FPU0 pipeline was actively processing a pixel shader instruction.",
-                          "EU Array/Pixel Shader", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_PS * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_VULKAN | API_TYPE_MEDIA | API_TYPE_IOSTREAM,
+                          "EU Array/Pixel Shader", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_PS * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_VULKAN | API_TYPE_IOSTREAM,
                           METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, "Pixel|Fragment,PS|FS,pixel|fragment", nullptr, 12 );
         if( metric )
         {
@@ -10114,7 +10103,7 @@ namespace MetricsDiscoveryInternal::MetricSets_GLK_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "CsFpu0Active", "CS FPU0 Pipe Active",
                           "The percentage of time in which EU FPU0 pipeline was actively processing a compute shader instruction.",
-                          "EU Array", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_VULKAN | API_TYPE_MEDIA | API_TYPE_IOSTREAM,
+                          "EU Array", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_VULKAN | API_TYPE_IOSTREAM,
                           METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 13 );
         if( metric )
         {
@@ -10128,7 +10117,7 @@ namespace MetricsDiscoveryInternal::MetricSets_GLK_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "Fpu1Active", "EU FPU1 Pipe Active",
                           "The percentage of time in which EU FPU1 pipeline was actively processing.",
-                          "EU Array/Pipes", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_EU_PIPES * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_VULKAN | API_TYPE_MEDIA | API_TYPE_IOSTREAM,
+                          "EU Array/Pipes", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_EU_PIPES * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_VULKAN | API_TYPE_IOSTREAM,
                           METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 14 );
         if( metric )
         {
@@ -10142,7 +10131,7 @@ namespace MetricsDiscoveryInternal::MetricSets_GLK_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "VsFpu1Active", "VS FPU1 Pipe Active",
                           "The percentage of time in which EU FPU1 pipeline was actively processing a vertex shader instruction.",
-                          "EU Array/Vertex Shader", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_VS * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_VULKAN | API_TYPE_MEDIA | API_TYPE_IOSTREAM,
+                          "EU Array/Vertex Shader", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_VS * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_VULKAN | API_TYPE_IOSTREAM,
                           METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 15 );
         if( metric )
         {
@@ -10156,7 +10145,7 @@ namespace MetricsDiscoveryInternal::MetricSets_GLK_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "PsFpu1Active", "PS FPU1 Pipe Active",
                           "The percentage of time in which EU FPU1 pipeline was actively processing a pixel shader instruction.",
-                          "EU Array/Pixel Shader", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_PS * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_VULKAN | API_TYPE_MEDIA | API_TYPE_IOSTREAM,
+                          "EU Array/Pixel Shader", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_PS * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_VULKAN | API_TYPE_IOSTREAM,
                           METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, "Pixel|Fragment,PS|FS,pixel|fragment", nullptr, 16 );
         if( metric )
         {
@@ -10170,7 +10159,7 @@ namespace MetricsDiscoveryInternal::MetricSets_GLK_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "CsFpu1Active", "CS FPU1 Pipe Active",
                           "The percentage of time in which EU FPU1 pipeline was actively processing a compute shader instruction.",
-                          "EU Array", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_VULKAN | API_TYPE_MEDIA | API_TYPE_IOSTREAM,
+                          "EU Array", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_VULKAN | API_TYPE_IOSTREAM,
                           METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 17 );
         if( metric )
         {
@@ -10184,7 +10173,7 @@ namespace MetricsDiscoveryInternal::MetricSets_GLK_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "EuThreadOccupancy", "EU Thread Occupancy",
                           "The percentage of time in which hardware threads occupied EUs.",
-                          "EU Array", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ), USAGE_FLAG_TIER_2 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_VULKAN | API_TYPE_MEDIA | API_TYPE_IOSTREAM,
+                          "EU Array", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ), USAGE_FLAG_TIER_2 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_VULKAN | API_TYPE_IOSTREAM,
                           METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 18 );
         if( metric )
         {
@@ -10198,7 +10187,7 @@ namespace MetricsDiscoveryInternal::MetricSets_GLK_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "EuActive", "EU Active",
                           "The percentage of time in which the Execution Units were actively processing.",
-                          "EU Array", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ), USAGE_FLAG_TIER_2 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_VULKAN | API_TYPE_MEDIA | API_TYPE_IOSTREAM,
+                          "EU Array", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ), USAGE_FLAG_TIER_2 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_VULKAN | API_TYPE_IOSTREAM,
                           METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 19 );
         if( metric )
         {
@@ -10212,7 +10201,7 @@ namespace MetricsDiscoveryInternal::MetricSets_GLK_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "EuStall", "EU Stall",
                           "The percentage of time in which the Execution Units were stalled.",
-                          "EU Array", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ), USAGE_FLAG_TIER_2 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_VULKAN | API_TYPE_MEDIA | API_TYPE_IOSTREAM,
+                          "EU Array", ( METRIC_GROUP_NAME_ID_EU_ARRAY * 0x1000000 ), USAGE_FLAG_TIER_2 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_VULKAN | API_TYPE_IOSTREAM,
                           METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 20 );
         if( metric )
         {
@@ -10226,7 +10215,7 @@ namespace MetricsDiscoveryInternal::MetricSets_GLK_OA
         availabilityEquation = nullptr;
         metric               = AddMetric( "GTRequestQueueFull", "SQ is full",
                           "The percentage of time when SQ is filled above a threshold (usually 48 entries)",
-                          "GTI", ( METRIC_GROUP_NAME_ID_GTI * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_VULKAN | API_TYPE_MEDIA | API_TYPE_IOSTREAM,
+                          "GTI", ( METRIC_GROUP_NAME_ID_GTI * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_VULKAN | API_TYPE_IOSTREAM,
                           METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 21 );
         if( metric )
         {
@@ -10240,28 +10229,29 @@ namespace MetricsDiscoveryInternal::MetricSets_GLK_OA
         availabilityEquation = nullptr;
         if( AddStartRegisterSet( 0, 0, availabilityEquation ) == CC_OK )
         {
-            AddStartConfigRegister( 0x9840, 0x00000080, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x27900e00, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x1f900061, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x35900000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x37900000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x55900000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x47900000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x9888, 0x33900000, REGISTER_TYPE_NOA );
-            AddStartConfigRegister( 0x2740, 0x00000000, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x2710, 0x00000000, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x2714, 0x00800000, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x2720, 0x00000000, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0x2724, 0x00800000, REGISTER_TYPE_OA );
-            AddStartConfigRegister( 0xe458, 0x00005004, REGISTER_TYPE_FLEX );
-            AddStartConfigRegister( 0xe558, 0x00001000, REGISTER_TYPE_FLEX );
-            AddStartConfigRegister( 0xe658, 0x00051050, REGISTER_TYPE_FLEX );
-            AddStartConfigRegister( 0xe758, 0x00011010, REGISTER_TYPE_FLEX );
-            AddStartConfigRegister( 0xe45c, 0x00061060, REGISTER_TYPE_FLEX );
-            AddStartConfigRegister( 0xe55c, 0x00000008, REGISTER_TYPE_FLEX );
+            MD_CHECK_CC( AddStartConfigRegister( 0x9840, 0x00000080, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x9888, 0x27900e00, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x9888, 0x1f900061, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x9888, 0x35900000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x9888, 0x37900000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x9888, 0x55900000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x9888, 0x47900000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x9888, 0x33900000, REGISTER_TYPE_NOA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2740, 0x00000000, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2710, 0x00000000, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2714, 0x00800000, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2720, 0x00000000, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0x2724, 0x00800000, REGISTER_TYPE_OA ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0xe458, 0x00005004, REGISTER_TYPE_FLEX ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0xe558, 0x00001000, REGISTER_TYPE_FLEX ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0xe658, 0x00051050, REGISTER_TYPE_FLEX ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0xe758, 0x00011010, REGISTER_TYPE_FLEX ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0xe45c, 0x00061060, REGISTER_TYPE_FLEX ) );
+            MD_CHECK_CC( AddStartConfigRegister( 0xe55c, 0x00000008, REGISTER_TYPE_FLEX ) );
         }
 
-        RefreshConfigRegisters();
+        MD_CHECK_CC( RefreshConfigRegisters() );
+
         return CC_OK;
 
     exception:

@@ -222,7 +222,7 @@ namespace MetricsDiscoveryInternal
 
             if( globalSymbolName != "" )
             {
-                auto globalSymbol = device.GetSymbolSet().GetSymbolValueByName( globalSymbolName );
+                auto globalSymbol = device.GetSymbolSet().GetSymbolByName( globalSymbolName );
                 if( globalSymbol != nullptr )
                 {
                     auto optionDescriptor = new( std::nothrow ) TMetricPrototypeOptionDescriptorLatest;
@@ -236,10 +236,11 @@ namespace MetricsDiscoveryInternal
                     TCompletionCode    ret             = CC_OK;
                     uint32_t           validValueCount = 0;
                     TValidValueLatest* validValues     = nullptr;
+                    TTypedValueLatest& symbolValue     = globalSymbol->symbol.SymbolTypedValue;
 
-                    if( globalSymbol->ValueType == VALUE_TYPE_BYTEARRAY )
+                    if( symbolValue.ValueType == VALUE_TYPE_BYTEARRAY )
                     {
-                        ret = device.GetSymbolSet().UnpackMaskToValidValues( globalSymbolName, globalSymbol->ValueByteArray->Data, validValueCount, validValues );
+                        ret = device.GetSymbolSet().UnpackMaskToValidValues( globalSymbolName, symbolValue.ValueByteArray, validValueCount, validValues );
                     }
                     else
                     {

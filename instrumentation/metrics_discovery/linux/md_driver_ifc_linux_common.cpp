@@ -478,7 +478,7 @@ namespace MetricsDiscoveryInternal
         , m_CachedBoostFrequency( 0 )
         , m_CachedMinFrequency( 0 )
         , m_CachedMaxFrequency( 0 )
-        , m_CachedGfxDeviceInfo{ GTDI_PLATFORM_MAX, GFX_GTTYPE_UNDEFINED, 0 }
+        , m_CachedGfxDeviceInfo{ GTDI_PLATFORM_MAX, GFX_GTTYPE_UNDEFINED, 0, 0 }
         , m_CachedDeviceId( -1 )
         , m_CachedRevisionId( -1 )
     {
@@ -667,7 +667,7 @@ namespace MetricsDiscoveryInternal
             case GTDI_DEVICE_PARAM_MAX_SLICE:
             {
                 out.ValueType   = GTDI_DEVICE_PARAM_VALUE_TYPE_UINT32;
-                out.ValueUint32 = MD_MAX_SLICE;
+                out.ValueUint32 = GetGtMaxSlice();
                 break;
             }
 
@@ -789,6 +789,21 @@ namespace MetricsDiscoveryInternal
                 break;
             }
 
+            case GTDI_DEVICE_PARAM_GPU_STATIC_FREQUENCY_OVERRIDE:
+            {
+                uint64_t minFrequencyOverride = 0;
+                uint64_t maxFrequencyOverride = 0;
+
+                ReadSysFsFile( metricsDevice, SYS_FS_MIN_FREQ_OV, &minFrequencyOverride );
+                ReadSysFsFile( metricsDevice, SYS_FS_MAX_FREQ_OV, &maxFrequencyOverride );
+
+                const bool isFrequencyOverrideEnabled = ( minFrequencyOverride != 0 && maxFrequencyOverride != 0 && minFrequencyOverride == maxFrequencyOverride );
+
+                out.ValueType   = GTDI_DEVICE_PARAM_VALUE_TYPE_UINT32;
+                out.ValueUint32 = isFrequencyOverrideEnabled ? 1 : 0;
+                break;
+            }
+
             case GTDI_DEVICE_PARAM_PCI_DEVICE_ID:
             {
                 int32_t deviceId = -1;
@@ -824,15 +839,10 @@ namespace MetricsDiscoveryInternal
             {
                 // Returning mapped GtType for compatibility reasons
                 out.ValueType = GTDI_DEVICE_PARAM_VALUE_TYPE_UINT32;
-                // GfxVer12 gt values is based of revId and slicesMask
-                if( IsPlatformMatch( platformId, GENERATION_XEHP_SDV, GENERATION_PVC ) )
-                {
-                    out.ValueUint32 = static_cast<uint32_t>( MapDeviceInfoToInstrGtTypeGfxVer12( *gfxDeviceInfo, metricsDevice ) );
-                }
-                else
-                {
-                    out.ValueUint32 = static_cast<uint32_t>( gfxDeviceInfo->GtType );
-                }
+                // PVC GT values is based of revId and slicesMask
+                out.ValueUint32 = ( platformId == GENERATION_PVC )
+                    ? static_cast<uint32_t>( MapDeviceInfoToInstrGtTypeGfxVer12( *gfxDeviceInfo, metricsDevice ) )
+                    : static_cast<uint32_t>( gfxDeviceInfo->GtType );
                 break;
             }
 
@@ -937,13 +947,13 @@ namespace MetricsDiscoveryInternal
 
             case GTDI_DEVICE_PARAM_COPY_ENGINE_TOTAL_COUNT:
             {
-                uint32_t l3NodeCount = 0;
+                uint32_t copyEngineCount = 0;
 
-                ret = GetL3NodeTotalCount( metricsDevice, l3NodeCount );
+                ret = GetCopyEngineTotalCount( metricsDevice, copyEngineCount );
                 MD_CHECK_CC_RET_A( m_adapterId, ret );
 
                 out.ValueType   = GTDI_DEVICE_PARAM_VALUE_TYPE_UINT32;
-                out.ValueUint32 = l3NodeCount / MD_L3_NODE_COUNT_PER_COPY_ENGINE;
+                out.ValueUint32 = copyEngineCount;
                 break;
             }
 
@@ -985,48 +995,23 @@ namespace MetricsDiscoveryInternal
 
             case GTDI_DEVICE_PARAM_MAX_L3_NODE:
                 out.ValueType   = GTDI_DEVICE_PARAM_VALUE_TYPE_UINT32;
-                out.ValueUint32 = MD_MAX_L3_NODE;
+                out.ValueUint32 = GetGtMaxL3Node();
                 break;
 
             case GTDI_DEVICE_PARAM_MAX_L3_BANK_PER_L3_NODE:
                 out.ValueType   = GTDI_DEVICE_PARAM_VALUE_TYPE_UINT32;
-                out.ValueUint32 = MD_MAX_L3_BANK_PER_L3_NODE;
+                out.ValueUint32 = GetGtMaxL3BankPerL3Node();
                 break;
 
             case GTDI_DEVICE_PARAM_MAX_COPY_ENGINE:
                 out.ValueType   = GTDI_DEVICE_PARAM_VALUE_TYPE_UINT32;
-                out.ValueUint32 = MD_MAX_L3_NODE / MD_MAX_L3_NODE_PER_COPY_ENGINE;
+                out.ValueUint32 = GetGtMaxCopyEngine();
                 break;
 
             case GTDI_DEVICE_PARAM_PLATFORM_VERSION:
-            {
                 out.ValueType   = GTDI_DEVICE_PARAM_VALUE_TYPE_UINT32;
-                out.ValueUint32 = 0;
-
-                drmDevicePtr drmDevice = nullptr;
-                if( drmGetDevice( m_DrmDeviceHandle, &drmDevice ) != 0 || drmDevice == nullptr )
-                {
-                    MD_LOG_A( m_adapterId, LOG_ERROR, "PCI device_id not recognized. drmGetDevice failed." );
-                    break;
-                }
-                switch( drmDevice->deviceinfo.pci->device_id )
-                {
-                    // BMG X2
-                    case 0xE202:
-                    case 0xE20B:
-                    case 0xE20C:
-                    case 0xE20D:
-                    case 0xE212:
-                    {
-                        out.ValueUint32 = 2;
-                        break;
-                    }
-                    default:
-                        break;
-                }
-
+                out.ValueUint32 = gfxDeviceInfo->PlatformVersion;
                 break;
-            }
 
             default:
                 ret = CC_ERROR_INVALID_PARAMETER;
@@ -1185,7 +1170,6 @@ namespace MetricsDiscoveryInternal
     //     !READ REGS NOT SUPPORTED ON LINUX YET!
     //
     // Input:
-    //     uint32_t  configId       - config id
     //     uint32_t* oaConfigHandle - (OUT) OA config handle in KMD
     //     uint32_t* gpConfigHandle - (OUT) GP config handle in KMD
     //     uint32_t* rrConfigHandle - (OUT) Read regs config handle in KMD
@@ -1194,7 +1178,7 @@ namespace MetricsDiscoveryInternal
     //     TCompletionCode           - *CC_OK* means succeess
     //
     //////////////////////////////////////////////////////////////////////////////
-    TCompletionCode CDriverInterfaceLinuxCommon::GetPmRegsConfigHandles( uint32_t configId, uint32_t* oaConfigHandle, uint32_t* gpConfigHandle, uint32_t* rrConfigHandle )
+    TCompletionCode CDriverInterfaceLinuxCommon::GetPmRegsConfigHandles( uint32_t* oaConfigHandle, uint32_t* gpConfigHandle, uint32_t* rrConfigHandle )
     {
         // Not supported on Linux - returning CC_OK on purpose
         return CC_OK;
@@ -1255,7 +1239,7 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     //
     // Class:
-    //     CDriverInterfaceLinux
+    //     CDriverInterfaceLinuxCommon
     //
     // Method:
     //     IsOaBufferSupported
@@ -1566,6 +1550,7 @@ namespace MetricsDiscoveryInternal
         // 2. SET PARAMS
         const uint32_t timerPeriodExponent = GetTimerPeriodExponent( nsTimerPeriod );
         const uint32_t oaReportType        = GetOaReportType( metricSet->GetReportType() );
+        const uint32_t oaReportSize        = metricSet->GetParams()->RawReportSize;
         int32_t        oaMetricSetId       = -1;
         uint32_t       regCount            = 0;
         TRegister**    regVector           = metricSet->GetStartConfiguration( regCount );
@@ -1585,7 +1570,7 @@ namespace MetricsDiscoveryInternal
         MD_ASSERT_A( m_adapterId, oaMetricSetId != -1 );
 
         // 4. OPEN STREAM
-        ret = OpenOaStream( metricsDevice, oaMetricSetId, oaReportType, timerPeriodExponent, bufferSize, oaConcurrentGroup.GetOaBufferType() );
+        ret = OpenOaStream( metricsDevice, oaMetricSetId, oaReportType, oaReportSize, timerPeriodExponent, bufferSize, oaConcurrentGroup.GetOaBufferType() );
         if( ret != CC_OK )
         {
             goto remove_config;
@@ -2626,13 +2611,19 @@ namespace MetricsDiscoveryInternal
     {
         TCompletionCode ret = CC_ERROR_NOT_SUPPORTED;
 
-        if( platformIndexMap.find( deviceId ) != platformIndexMap.end() )
+        const auto platformIndexMapIterator = platformIndexMap.find( deviceId );
+
+        if( platformIndexMapIterator != platformIndexMap.end() )
         {
-            gfxDeviceInfo.PlatformIndex = platformIndexMap[deviceId].PlatformIndex;
-            gfxDeviceInfo.GtType        = platformIndexMap[deviceId].GtType;
-            if( threadsPerEuMap.find( gfxDeviceInfo.PlatformIndex ) != threadsPerEuMap.end() )
+            gfxDeviceInfo.PlatformIndex   = platformIndexMapIterator->second.PlatformIndex;
+            gfxDeviceInfo.GtType          = platformIndexMapIterator->second.GtType;
+            gfxDeviceInfo.PlatformVersion = platformIndexMapIterator->second.PlatformVersion;
+
+            const auto threadsPerEuMapIterator = threadsPerEuMap.find( gfxDeviceInfo.PlatformIndex );
+
+            if( threadsPerEuMapIterator != threadsPerEuMap.end() )
             {
-                gfxDeviceInfo.ThreadsPerEu = threadsPerEuMap[gfxDeviceInfo.PlatformIndex];
+                gfxDeviceInfo.ThreadsPerEu = threadsPerEuMapIterator->second;
                 ret                        = CC_OK;
             }
         }
@@ -2666,7 +2657,6 @@ namespace MetricsDiscoveryInternal
         {
             case GENERATION_DG1:
             case GENERATION_ACM:
-            case GENERATION_XEHP_SDV:
             case GENERATION_PVC:
             case GENERATION_BMG:
                 return ADAPTER_TYPE_DISCRETE;
@@ -2999,7 +2989,72 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     //
     // Class:
-    //   CDriverInterfaceLinuxCommon
+    //     CDriverInterfaceLinuxCommon
+    //
+    // Method:
+    //     GetGtMaxSlice
+    //
+    // Description:
+    //     Returns information about max active slices on GPU.
+    //     Based on __InstrGetMaxSlice().
+    //
+    // Output:
+    //     uint32_t - max slice
+    //
+    //////////////////////////////////////////////////////////////////////////////
+    uint32_t CDriverInterfaceLinuxCommon::GetGtMaxSlice()
+    {
+        const TGfxDeviceInfo* gfxDeviceInfo = nullptr;
+        auto                  result        = GetGfxDeviceInfo( gfxDeviceInfo );
+
+        if( result != CC_OK )
+        {
+            MD_LOG_A( m_adapterId, LOG_ERROR, "WARNING: Failed to get platform ID" );
+            return MD_MAX_SLICE;
+        }
+
+        switch( gfxDeviceInfo->PlatformIndex )
+        {
+            case GENERATION_LNL:
+                return MD_MAX_SLICE_LNL;
+
+            case GENERATION_BMG:
+                switch( gfxDeviceInfo->PlatformVersion )
+                {
+                    case 2:
+                        return MD_MAX_SLICE_BMG_G21;
+
+                    default:
+                        // Unsupported BMG device id
+                        MD_ASSERT_A( m_adapterId, false );
+                        return 0;
+                }
+
+            case GENERATION_PTL:
+                switch( gfxDeviceInfo->PlatformVersion )
+                {
+                    case 1:
+                        return MD_MAX_SLICE_PTL_H;
+
+                    case 2:
+                        return MD_MAX_SLICE_PTL_U;
+
+                    default:
+                        // Unsupported PTL device id
+                        MD_ASSERT_A( m_adapterId, false );
+                        return 0;
+                }
+
+            default:
+                // Return the legacy value for pre-Xe2 platforms.
+                return MD_MAX_SLICE;
+        }
+    }
+
+    //////////////////////////////////////////////////////////////////////////////
+    //
+    // Class:
+    //     CDriverInterfaceLinuxCommon
     //
     // Method:
     //     GetGtMaxSubslicePerSlice
@@ -3046,7 +3101,6 @@ namespace MetricsDiscoveryInternal
             case GENERATION_ADLP:
             case GENERATION_ADLS:
             case GENERATION_ADLN:
-            case GENERATION_XEHP_SDV:
             case GENERATION_ACM:
             case GENERATION_MTL:
             case GENERATION_ARL:
@@ -3055,6 +3109,9 @@ namespace MetricsDiscoveryInternal
             case GENERATION_LNL:
             case GENERATION_BMG:
                 return MD_SUBSLICE_PER_SLICE_BMG;
+
+            case GENERATION_PTL:
+                return MD_SUBSLICE_PER_SLICE_PTL;
 
             default:
                 MD_LOG_A( m_adapterId, LOG_WARNING, "WARNING: Unsupported platform, default MaxSubslicePerSlice used" );
@@ -3065,7 +3122,7 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     //
     // Class:
-    //   CDriverInterfaceLinuxCommon
+    //     CDriverInterfaceLinuxCommon
     //
     // Method:
     //     GetGtMaxDualSubslicePerSlice
@@ -3098,7 +3155,6 @@ namespace MetricsDiscoveryInternal
             case GENERATION_RKL:
                 return MD_MAX_DUALSUBSLICE_PER_SLICE;
 
-            case GENERATION_XEHP_SDV:
             case GENERATION_ACM:
             case GENERATION_MTL:
             case GENERATION_ARL:
@@ -3112,7 +3168,137 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     //
     // Class:
-    //   CDriverInterfaceLinuxCommon
+    //     CDriverInterfaceLinuxCommon
+    //
+    // Method:
+    //     GetGtMaxL3Node
+    //
+    // Description:
+    //     Returns information about max active l3 nodes on GPU.
+    //     Based on __InstrGetMaxL3Node().
+    //
+    // Output:
+    //     uint32_t - max l3 nodes
+    //
+    //////////////////////////////////////////////////////////////////////////////
+    uint32_t CDriverInterfaceLinuxCommon::GetGtMaxL3Node()
+    {
+        const TGfxDeviceInfo* gfxDeviceInfo = nullptr;
+        auto                  result        = GetGfxDeviceInfo( gfxDeviceInfo );
+
+        if( result != CC_OK )
+        {
+            MD_LOG_A( m_adapterId, LOG_ERROR, "WARNING: Failed to get platform ID" );
+            return 0;
+        }
+
+        switch( gfxDeviceInfo->PlatformIndex )
+        {
+            case GENERATION_BMG:
+                switch( gfxDeviceInfo->PlatformVersion )
+                {
+                    case 2:
+                        return MD_MAX_L3_NODE_BMG_G21;
+
+                    default:
+                        // Unsupported BMG device id
+                        MD_ASSERT_A( m_adapterId, false );
+                        return 0;
+                }
+
+            case GENERATION_LNL:
+                return MD_MAX_L3_NODE_LNL;
+
+            case GENERATION_PTL:
+                switch( gfxDeviceInfo->PlatformVersion )
+                {
+                    case 1:
+                        return MD_MAX_L3_NODE_PTL_H;
+
+                    case 2:
+                        return MD_MAX_L3_NODE_PTL_U;
+
+                    default:
+                        // Unsupported PTL device id
+                        MD_ASSERT_A( m_adapterId, false );
+                        return 0;
+                }
+
+            default:
+                // Return 0 for pre-Xe2 platforms as unsupported
+                return 0;
+        }
+    }
+
+    //////////////////////////////////////////////////////////////////////////////
+    //
+    // Class:
+    //     CDriverInterfaceLinuxCommon
+    //
+    // Method:
+    //     GetGtMaxL3BankPerL3Node
+    //
+    // Description:
+    //     Returns information about max active l3 banks per l3 node on GPU.
+    //     Based on __InstrGetGtMaxL3BankPerL3Node().
+    //
+    // Output:
+    //     uint32_t - max l3 banks per l3 node
+    //
+    //////////////////////////////////////////////////////////////////////////////
+    uint32_t CDriverInterfaceLinuxCommon::GetGtMaxL3BankPerL3Node()
+    {
+        const TGfxDeviceInfo* gfxDeviceInfo = nullptr;
+        auto                  result        = GetGfxDeviceInfo( gfxDeviceInfo );
+
+        if( result != CC_OK )
+        {
+            MD_LOG_A( m_adapterId, LOG_ERROR, "WARNING: Failed to get platform ID" );
+            return 0;
+        }
+
+        switch( gfxDeviceInfo->PlatformIndex )
+        {
+            case GENERATION_LNL:
+            case GENERATION_BMG:
+            case GENERATION_PTL:
+                return MD_MAX_L3_BANK_PER_L3_NODE;
+
+            default:
+                // Return 0 for pre-Xe2 platforms as unsupported.
+                return 0;
+        }
+    }
+
+    //////////////////////////////////////////////////////////////////////////////
+    //
+    // Class:
+    //     CDriverInterfaceLinuxCommon
+    //
+    // Method:
+    //     GetGtMaxCopyEngine
+    //
+    // Description:
+    //     Returns information about max active copy engines on GPU.
+    //     Based on __InstrGetMaxCopyEngine().
+    //
+    // Output:
+    //     uint32_t - max copy engines
+    //
+    //////////////////////////////////////////////////////////////////////////////
+    uint32_t CDriverInterfaceLinuxCommon::GetGtMaxCopyEngine()
+    {
+        const uint32_t maxL3NodeCount = GetGtMaxL3Node();
+
+        return ( maxL3NodeCount & 1 )
+            ? ( ( maxL3NodeCount + 1 ) / MD_MAX_L3_NODE_PER_COPY_ENGINE )
+            : ( maxL3NodeCount / MD_MAX_L3_NODE_PER_COPY_ENGINE );
+    }
+
+    //////////////////////////////////////////////////////////////////////////////
+    //
+    // Class:
+    //     CDriverInterfaceLinuxCommon
     //
     // Method:
     //     IsDualSubsliceSupported
@@ -3139,7 +3325,6 @@ namespace MetricsDiscoveryInternal
         {
             case GENERATION_TGL:
             case GENERATION_DG1:
-            case GENERATION_XEHP_SDV:
             case GENERATION_ACM:
             case GENERATION_RKL:
             case GENERATION_ADLP:
@@ -3178,36 +3363,7 @@ namespace MetricsDiscoveryInternal
     {
         TGfxGtType gtType = GFX_GTTYPE_UNDEFINED;
 
-        if( IsPlatformMatch( gfxDeviceInfo.PlatformIndex, GENERATION_XEHP_SDV ) )
-        {
-            bool            isAdderWorkaroundValid = false;
-            bool            isAdderWaNeeded        = false;
-            TCompletionCode ret                    = CC_OK;
-            int64_t         sliceMask              = 0;
-
-            ret = GetSubsliceMask( sliceMask, metricsDevice );
-            if( ret != CC_OK )
-            {
-                MD_LOG_A( m_adapterId, LOG_ERROR, "Unable to obtain dual-subslice/subslice mask while defining GT type" );
-                return gtType;
-            }
-
-            if( ( sliceMask & SLICES0TO3 ) && ( sliceMask & SLICES4TO7 ) )
-            {
-                isAdderWorkaroundValid = true;
-                isAdderWaNeeded        = true;
-            }
-            else if( !( ( sliceMask & SLICES4AND5 ) && ( sliceMask & SLICES6AND7 ) ) )
-            {
-                isAdderWorkaroundValid = true;
-            }
-
-            if( isAdderWorkaroundValid )
-            {
-                gtType = isAdderWaNeeded ? GFX_GTTYPE_GT1 : GFX_GTTYPE_GT2;
-            }
-        }
-        else if( IsPlatformMatch( gfxDeviceInfo.PlatformIndex, GENERATION_PVC ) )
+        if( gfxDeviceInfo.PlatformIndex == GENERATION_PVC )
         {
             drmDevicePtr drmDevice = nullptr;
 

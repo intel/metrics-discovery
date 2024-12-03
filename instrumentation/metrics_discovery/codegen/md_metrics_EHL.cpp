@@ -33,7 +33,7 @@ TCompletionCode CreateMetricTreeEHL_MMIO_Regs( CMetricsDevice* metricsDevice, CC
 
     if( metricsDevice->IsPlatformTypeOf( &platformMask ) )
     {
-        MetricSets_EHL_MMIO_Regs::AddInformationSet( concurrentGroup );
+        MD_CHECK_CC( MetricSets_EHL_MMIO_Regs::AddInformationSet( concurrentGroup ) );
 
         metricSet = concurrentGroup->AddMetricSetExplicit<MetricSets_EHL_MMIO_Regs::CMcRequestsMetricSet>( "McRequests", "Memory Controller Request counts", API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X,
             GPU_GENERIC, 0, 672, OA_REPORT_TYPE_256B_A45_NOA16, &platformMask, nullptr );
@@ -103,7 +103,7 @@ TCompletionCode CreateMetricTreeEHL_OA( CMetricsDevice* metricsDevice, CConcurre
 
     if( metricsDevice->IsPlatformTypeOf( &platformMask ) )
     {
-        MetricSets_EHL_OA::AddInformationSet( concurrentGroup );
+        MD_CHECK_CC( MetricSets_EHL_OA::AddInformationSet( concurrentGroup ) );
 
         metricSet = concurrentGroup->AddMetricSetExplicit<MetricSets_EHL_OA::CRenderBasicMetricSet>( "RenderBasic", "Render Metrics Basic set", API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
             GPU_RENDER | GPU_COMPUTE, 256, 672, OA_REPORT_TYPE_256B_A45_NOA16, &platformMask, nullptr );
@@ -113,7 +113,7 @@ TCompletionCode CreateMetricTreeEHL_OA( CMetricsDevice* metricsDevice, CConcurre
             GPU_RENDER | GPU_COMPUTE, 256, 672, OA_REPORT_TYPE_256B_A45_NOA16, &platformMask, nullptr );
         MD_CHECK_PTR( metricSet );
 
-        metricSet = concurrentGroup->AddMetricSetExplicit<MetricSets_EHL_OA::CComputeExtendedMetricSet>( "ComputeExtended", "ComputeExtended metrics set", API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+        metricSet = concurrentGroup->AddMetricSetExplicit<MetricSets_EHL_OA::CComputeExtendedMetricSet>( "ComputeExtended", "ComputeExtended metrics set", API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
             GPU_RENDER | GPU_COMPUTE | GPU_MEDIA | GPU_GENERIC, 256, 672, OA_REPORT_TYPE_256B_A45_NOA16, &platformMask, nullptr );
         MD_CHECK_PTR( metricSet );
 
@@ -137,19 +137,19 @@ TCompletionCode CreateMetricTreeEHL_OA( CMetricsDevice* metricsDevice, CConcurre
             GPU_RENDER | GPU_COMPUTE, 256, 672, OA_REPORT_TYPE_256B_A45_NOA16, &platformMask, nullptr );
         MD_CHECK_PTR( metricSet );
 
-        metricSet = concurrentGroup->AddMetricSetExplicit<MetricSets_EHL_OA::CL3_2MetricSet>( "L3_2", "L2Bank0 stalled metric set", API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+        metricSet = concurrentGroup->AddMetricSetExplicit<MetricSets_EHL_OA::CL3_2MetricSet>( "L3_2", "L2Bank0 stalled metric set", API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
             GPU_RENDER | GPU_COMPUTE | GPU_MEDIA | GPU_GENERIC, 256, 672, OA_REPORT_TYPE_256B_A45_NOA16, &platformMask, nullptr );
         MD_CHECK_PTR( metricSet );
 
-        metricSet = concurrentGroup->AddMetricSetExplicit<MetricSets_EHL_OA::CL3_3MetricSet>( "L3_3", "L2Bank1 stalled metric set", API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+        metricSet = concurrentGroup->AddMetricSetExplicit<MetricSets_EHL_OA::CL3_3MetricSet>( "L3_3", "L2Bank1 stalled metric set", API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
             GPU_RENDER | GPU_COMPUTE | GPU_MEDIA | GPU_GENERIC, 256, 672, OA_REPORT_TYPE_256B_A45_NOA16, &platformMask, nullptr );
         MD_CHECK_PTR( metricSet );
 
-        metricSet = concurrentGroup->AddMetricSetExplicit<MetricSets_EHL_OA::CL3_4MetricSet>( "L3_4", "L2Bank4 stalled metric set", API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+        metricSet = concurrentGroup->AddMetricSetExplicit<MetricSets_EHL_OA::CL3_4MetricSet>( "L3_4", "L2Bank4 stalled metric set", API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
             GPU_RENDER | GPU_COMPUTE | GPU_MEDIA | GPU_GENERIC, 256, 672, OA_REPORT_TYPE_256B_A45_NOA16, &platformMask, nullptr );
         MD_CHECK_PTR( metricSet );
 
-        metricSet = concurrentGroup->AddMetricSetExplicit<MetricSets_EHL_OA::CL3_5MetricSet>( "L3_5", "L2Bank5 stalled metric set", API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+        metricSet = concurrentGroup->AddMetricSetExplicit<MetricSets_EHL_OA::CL3_5MetricSet>( "L3_5", "L2Bank5 stalled metric set", API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
             GPU_RENDER | GPU_COMPUTE | GPU_MEDIA | GPU_GENERIC, 256, 672, OA_REPORT_TYPE_256B_A45_NOA16, &platformMask, nullptr );
         MD_CHECK_PTR( metricSet );
 

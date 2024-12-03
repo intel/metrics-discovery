@@ -126,6 +126,7 @@ namespace MetricsDiscoveryInternal
             {
                 case GENERATION_BMG:
                 case GENERATION_LNL:
+                case GENERATION_PTL:
                     isXe2Plus = true;
                     break;
 
@@ -133,7 +134,7 @@ namespace MetricsDiscoveryInternal
                     break;
             }
 
-#if MD_INCLUDE_BMG_METRICS || MD_INCLUDE_LNL_METRICS
+#if MD_INCLUDE_BMG_METRICS || MD_INCLUDE_LNL_METRICS || MD_INCLUDE_PTL_METRICS
             if( isXe2Plus )
             {
                 // External events.
@@ -153,8 +154,8 @@ namespace MetricsDiscoveryInternal
 
         if( isOamReporting )
         {
-#if MD_INCLUDE_MTL_GT2_METRICS || MD_INCLUDE_MTL_GT3_METRICS || MD_INCLUDE_BMG_METRICS || MD_INCLUDE_LNL_METRICS || MD_INCLUDE_ARL_GT1_METRICS || MD_INCLUDE_ARL_GT2_METRICS
-            if( IsPlatformMatch( platformIndex, GENERATION_MTL, GENERATION_BMG, GENERATION_LNL, GENERATION_ARL ) )
+#if MD_INCLUDE_MTL_GT2_METRICS || MD_INCLUDE_MTL_GT3_METRICS || MD_INCLUDE_BMG_METRICS || MD_INCLUDE_LNL_METRICS || MD_INCLUDE_PTL_METRICS || MD_INCLUDE_ARL_GT1_METRICS || MD_INCLUDE_ARL_GT2_METRICS
+            if( IsPlatformMatch( platformIndex, GENERATION_MTL, GENERATION_BMG, GENERATION_LNL, GENERATION_PTL, GENERATION_ARL ) )
             {
                 // External media events.
                 status = ReadEvents(
@@ -171,7 +172,7 @@ namespace MetricsDiscoveryInternal
 #endif
         }
 
-#if MD_INCLUDE_BMG_METRICS || MD_INCLUDE_LNL_METRICS
+#if MD_INCLUDE_BMG_METRICS || MD_INCLUDE_LNL_METRICS || MD_INCLUDE_PTL_METRICS
         // Read workarounds for external events.
         uint32_t workaroundsSize = sizeof( ExternalEventsWorkarounds::workarounds );
         uint8_t* workarounds     = new( std::nothrow ) uint8_t[workaroundsSize]();
@@ -1216,6 +1217,12 @@ namespace MetricsDiscoveryInternal
             return GENERATION_LNL;
         }
 #endif // MD_INCLUDE_LNL_METRICS
+#if MD_INCLUDE_PTL_METRICS
+        if( platform == "PTL" )
+        {
+            return GENERATION_PTL;
+        }
+#endif // MD_INCLUDE_PTL_METRICS
         if( platform == "ARL" )
         {
             return GENERATION_ARL;

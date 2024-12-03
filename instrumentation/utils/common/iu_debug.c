@@ -179,9 +179,13 @@ void __IuLogPrint(
     // module name
     if( g_IuLogsControl.LogLevel & IU_DBG_SHOW_MODULE )
     {
-        int32_t moduleAlignment = ( g_IuLogsControl.LogLevel & IU_DBG_ALIGNED ) ? IU_MODULE_ALIGNMENT : 0;
-        outFormatOffset         = iu_strnlen_s( outFormat, sizeof( outFormat ) );
-        iu_snprintf( outFormat + outFormatOffset, IU_FORMAT_SIZE - outFormatOffset, ":%*s", moduleAlignment, __IuLogGetModuleInfo() );
+        const char* moduleInfo = __IuLogGetModuleInfo();
+        if( moduleInfo && moduleInfo[0] != '\0' )
+        {
+            int32_t moduleAlignment = ( g_IuLogsControl.LogLevel & IU_DBG_ALIGNED ) ? IU_MODULE_ALIGNMENT : 0;
+            outFormatOffset         = iu_strnlen_s( outFormat, sizeof( outFormat ) );
+            iu_snprintf( outFormat + outFormatOffset, IU_FORMAT_SIZE - outFormatOffset, ":%*s", moduleAlignment, moduleInfo );
+        }
     }
 
 #if IU_DEBUG_LOGS // function names strings cannot be compiled into a release drv

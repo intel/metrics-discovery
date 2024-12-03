@@ -33,7 +33,7 @@ TCompletionCode CreateMetricTreePVC_GT1_OA( CMetricsDevice* metricsDevice, CConc
 
     if( metricsDevice->IsPlatformTypeOf( &platformMask, GT_TYPE_GT1 ) )
     {
-        MetricSets_PVC_GT1_OA::AddInformationSet( concurrentGroup );
+        MD_CHECK_CC( MetricSets_PVC_GT1_OA::AddInformationSet( concurrentGroup ) );
 
         metricSet = concurrentGroup->AddMetricSetExplicit<MetricSets_PVC_GT1_OA::CComputeBasicMetricSet>( "ComputeBasic", "Compute Basic", API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
             GPU_RENDER | GPU_COMPUTE | GPU_GENERIC, 256, 688, OA_REPORT_TYPE_256B_A45_NOA16, &platformMask, nullptr, GT_TYPE_GT1 );

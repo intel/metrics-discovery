@@ -17,7 +17,7 @@ using namespace MetricsDiscovery;
 
 namespace MetricsDiscoveryInternal
 {
-    std::map<int32_t, TPlatformIndexGt> platformIndexMap{
+    const std::map<int32_t, TPlatformIndexGt> platformIndexMap{
         { 0x0402, TPlatformIndexGt( GENERATION_HSW, GFX_GTTYPE_GT1 ) },
         { 0x0412, TPlatformIndexGt( GENERATION_HSW, GFX_GTTYPE_GT2 ) },
         { 0x0422, TPlatformIndexGt( GENERATION_HSW, GFX_GTTYPE_GT3 ) },
@@ -307,23 +307,6 @@ namespace MetricsDiscoveryInternal
         { 0x4908, TPlatformIndexGt( GENERATION_DG1, GFX_GTTYPE_UNDEFINED ) },
         { 0x4909, TPlatformIndexGt( GENERATION_DG1, GFX_GTTYPE_UNDEFINED ) },
 
-        { 0x0201, TPlatformIndexGt( GENERATION_XEHP_SDV, GFX_GTTYPE_UNDEFINED ) },
-        { 0x0202, TPlatformIndexGt( GENERATION_XEHP_SDV, GFX_GTTYPE_UNDEFINED ) },
-        { 0x0203, TPlatformIndexGt( GENERATION_XEHP_SDV, GFX_GTTYPE_UNDEFINED ) },
-        { 0x0204, TPlatformIndexGt( GENERATION_XEHP_SDV, GFX_GTTYPE_UNDEFINED ) },
-        { 0x0205, TPlatformIndexGt( GENERATION_XEHP_SDV, GFX_GTTYPE_UNDEFINED ) },
-        { 0x0206, TPlatformIndexGt( GENERATION_XEHP_SDV, GFX_GTTYPE_UNDEFINED ) },
-        { 0x0207, TPlatformIndexGt( GENERATION_XEHP_SDV, GFX_GTTYPE_UNDEFINED ) },
-        { 0x0208, TPlatformIndexGt( GENERATION_XEHP_SDV, GFX_GTTYPE_UNDEFINED ) },
-        { 0x0209, TPlatformIndexGt( GENERATION_XEHP_SDV, GFX_GTTYPE_UNDEFINED ) },
-        { 0x020A, TPlatformIndexGt( GENERATION_XEHP_SDV, GFX_GTTYPE_UNDEFINED ) },
-        { 0x020B, TPlatformIndexGt( GENERATION_XEHP_SDV, GFX_GTTYPE_UNDEFINED ) },
-        { 0x020C, TPlatformIndexGt( GENERATION_XEHP_SDV, GFX_GTTYPE_UNDEFINED ) },
-        { 0x020D, TPlatformIndexGt( GENERATION_XEHP_SDV, GFX_GTTYPE_UNDEFINED ) },
-        { 0x020E, TPlatformIndexGt( GENERATION_XEHP_SDV, GFX_GTTYPE_UNDEFINED ) },
-        { 0x020F, TPlatformIndexGt( GENERATION_XEHP_SDV, GFX_GTTYPE_UNDEFINED ) },
-        { 0x0210, TPlatformIndexGt( GENERATION_XEHP_SDV, GFX_GTTYPE_UNDEFINED ) },
-
         { 0x0BD0, TPlatformIndexGt( GENERATION_PVC, GFX_GTTYPE_UNDEFINED ) },
         { 0x0BD4, TPlatformIndexGt( GENERATION_PVC, GFX_GTTYPE_UNDEFINED ) },
         { 0x0BD5, TPlatformIndexGt( GENERATION_PVC, GFX_GTTYPE_UNDEFINED ) },
@@ -360,6 +343,7 @@ namespace MetricsDiscoveryInternal
         { 0x56a4, TPlatformIndexGt( GENERATION_ACM, GFX_GTTYPE_GT2 ) },
         { 0x56a5, TPlatformIndexGt( GENERATION_ACM, GFX_GTTYPE_GT1 ) },
         { 0x56a6, TPlatformIndexGt( GENERATION_ACM, GFX_GTTYPE_GT1 ) },
+        { 0x56af, TPlatformIndexGt( GENERATION_ACM, GFX_GTTYPE_GT3 ) },
         { 0x56b0, TPlatformIndexGt( GENERATION_ACM, GFX_GTTYPE_GT1 ) },
         { 0x56b1, TPlatformIndexGt( GENERATION_ACM, GFX_GTTYPE_GT1 ) },
         { 0x56b2, TPlatformIndexGt( GENERATION_ACM, GFX_GTTYPE_GT2 ) },
@@ -384,20 +368,31 @@ namespace MetricsDiscoveryInternal
         { 0x7D51, TPlatformIndexGt( GENERATION_ARL, GFX_GTTYPE_GT2 ) },
         { 0x7D67, TPlatformIndexGt( GENERATION_ARL, GFX_GTTYPE_GT1 ) },
         { 0x7DD1, TPlatformIndexGt( GENERATION_ARL, GFX_GTTYPE_GT2 ) },
+        { 0xB640, TPlatformIndexGt( GENERATION_ARL, GFX_GTTYPE_GT1 ) },
 
-        { 0xE202, TPlatformIndexGt( GENERATION_BMG, GFX_GTTYPE_UNDEFINED ) }, // X2
-        { 0xE20B, TPlatformIndexGt( GENERATION_BMG, GFX_GTTYPE_UNDEFINED ) },
-        { 0xE20C, TPlatformIndexGt( GENERATION_BMG, GFX_GTTYPE_UNDEFINED ) },
-        { 0xE20D, TPlatformIndexGt( GENERATION_BMG, GFX_GTTYPE_UNDEFINED ) },
-        { 0xE212, TPlatformIndexGt( GENERATION_BMG, GFX_GTTYPE_UNDEFINED ) },
+        { 0xE202, TPlatformIndexGt( GENERATION_BMG, GFX_GTTYPE_UNDEFINED, 2 ) }, // G21
+        { 0xE20B, TPlatformIndexGt( GENERATION_BMG, GFX_GTTYPE_UNDEFINED, 2 ) },
+        { 0xE20C, TPlatformIndexGt( GENERATION_BMG, GFX_GTTYPE_UNDEFINED, 2 ) },
+        { 0xE20D, TPlatformIndexGt( GENERATION_BMG, GFX_GTTYPE_UNDEFINED, 2 ) },
+        { 0xE212, TPlatformIndexGt( GENERATION_BMG, GFX_GTTYPE_UNDEFINED, 2 ) },
 
         { 0x64A0, TPlatformIndexGt( GENERATION_LNL, GFX_GTTYPE_UNDEFINED ) },
         { 0x6420, TPlatformIndexGt( GENERATION_LNL, GFX_GTTYPE_UNDEFINED ) },
         { 0x64B0, TPlatformIndexGt( GENERATION_LNL, GFX_GTTYPE_UNDEFINED ) },
 
+        { 0xB080, TPlatformIndexGt( GENERATION_PTL, GFX_GTTYPE_UNDEFINED, 1 ) }, // H
+        { 0xB081, TPlatformIndexGt( GENERATION_PTL, GFX_GTTYPE_UNDEFINED, 1 ) },
+        { 0xB082, TPlatformIndexGt( GENERATION_PTL, GFX_GTTYPE_UNDEFINED, 1 ) },
+        { 0xB083, TPlatformIndexGt( GENERATION_PTL, GFX_GTTYPE_UNDEFINED, 1 ) },
+        { 0xB08F, TPlatformIndexGt( GENERATION_PTL, GFX_GTTYPE_UNDEFINED, 1 ) },
+
+        { 0xB090, TPlatformIndexGt( GENERATION_PTL, GFX_GTTYPE_UNDEFINED, 2 ) }, // U
+
+        { 0xB0A0, TPlatformIndexGt( GENERATION_PTL, GFX_GTTYPE_UNDEFINED, 2 ) }, // H
+        { 0xB0B0, TPlatformIndexGt( GENERATION_PTL, GFX_GTTYPE_UNDEFINED, 1 ) },
     };
 
-    std::map<GTDI_PLATFORM_INDEX, uint32_t> threadsPerEuMap{
+    const std::map<GTDI_PLATFORM_INDEX, uint32_t> threadsPerEuMap{
         { GENERATION_HSW, 7 },
         { GENERATION_BDW, 7 },
         { GENERATION_SKL, 7 },
@@ -413,13 +408,13 @@ namespace MetricsDiscoveryInternal
         { GENERATION_ADLP, 7 },
         { GENERATION_ADLS, 7 },
         { GENERATION_ADLN, 7 },
-        { GENERATION_XEHP_SDV, 8 },
         { GENERATION_ACM, 8 },
         { GENERATION_PVC, 8 },
         { GENERATION_MTL, 8 },
         { GENERATION_ARL, 8 },
         { GENERATION_BMG, 8 },
         { GENERATION_LNL, 8 },
+        { GENERATION_PTL, 10 },
     };
 
 } // namespace MetricsDiscoveryInternal

@@ -174,15 +174,28 @@ namespace MetricsDiscoveryInternal
     //     Returns chosen global symbol or null if not exists.
     //
     // Input:
-    //     uint32_t index      - index of global symbol
+    //     uint32_t index       - index of global symbol
     //
     // Output:
-    //     TGlobalSymbol_1_0*  - pointer to global symbol
+    //     TGlobalSymbolLatest* - pointer to global symbol
     //
     //////////////////////////////////////////////////////////////////////////////
-    TGlobalSymbol_1_0* CMetricsDevice::GetGlobalSymbol( uint32_t index )
+    TGlobalSymbolLatest* CMetricsDevice::GetGlobalSymbol( uint32_t index )
     {
-        return m_symbolSet.GetSymbol( index );
+        TGlobalSymbol* symbol = m_symbolSet.GetSymbol( index );
+
+        if( symbol )
+        {
+            // Redetect global symbol if dynamic.
+            const TCompletionCode result = m_symbolSet.RedetectSymbol( symbol->symbol.SymbolName );
+
+            if( result == CC_OK )
+            {
+                return &( symbol->symbol );
+            }
+        }
+
+        return nullptr;
     }
 
     //////////////////////////////////////////////////////////////////////////////
@@ -209,7 +222,20 @@ namespace MetricsDiscoveryInternal
 
         MD_CHECK_PTR_RET_A( adapterId, name, nullptr );
 
-        return m_symbolSet.GetSymbolValueByName( name );
+        TGlobalSymbol* symbol = m_symbolSet.GetSymbolByName( name );
+
+        if( symbol )
+        {
+            // Redetect global symbol if dynamic.
+            const TCompletionCode result = m_symbolSet.RedetectSymbol( symbol->symbol.SymbolName );
+
+            if( result == CC_OK )
+            {
+                return &( symbol->symbol.SymbolTypedValue );
+            }
+        }
+
+        return nullptr;
     }
 
     //////////////////////////////////////////////////////////////////////////////
@@ -667,9 +693,9 @@ namespace MetricsDiscoveryInternal
 
         for( uint32_t i = 0; i < symbolsCount; ++i )
         {
-            ret = ReadCStringFromFileBuffer( bufferPtr, fileBufferBeginOffset, fileSize, globalSymbol.symbol_1_0.SymbolName, adapterId );
+            ret = ReadCStringFromFileBuffer( bufferPtr, fileBufferBeginOffset, fileSize, globalSymbol.symbol.SymbolName, adapterId );
             MD_CHECK_CC_RET_A( adapterId, ret );
-            ret = ReadTTypedValueFromFileBuffer( bufferPtr, fileBufferBeginOffset, fileSize, fileVersion, globalSymbol.symbol_1_0.SymbolTypedValue, adapterId );
+            ret = ReadTTypedValueFromFileBuffer( bufferPtr, fileBufferBeginOffset, fileSize, fileVersion, globalSymbol.symbol.SymbolTypedValue, adapterId );
             MD_CHECK_CC_RET_A( adapterId, ret );
 
             uint32_t valueSymbolType = 0;
@@ -677,23 +703,23 @@ namespace MetricsDiscoveryInternal
             MD_CHECK_CC_RET_A( adapterId, ret );
             globalSymbol.symbolType = static_cast<TSymbolType>( valueSymbolType );
 
-            if( m_symbolSet.IsSymbolAlreadyAdded( globalSymbol.symbol_1_0.SymbolName ) )
+            if( m_symbolSet.IsSymbolAlreadyAdded( globalSymbol.symbol.SymbolName ) )
             {
-                if( isValidByteArray( globalSymbol.symbol_1_0 ) )
+                if( isValidByteArray( globalSymbol.symbol ) )
                 {
-                    DeleteByteArray( globalSymbol.symbol_1_0.SymbolTypedValue.ValueByteArray, adapterId );
+                    DeleteByteArray( globalSymbol.symbol.SymbolTypedValue.ValueByteArray, adapterId );
                 }
                 continue;
             }
 
             ret = m_symbolSet.AddSymbol(
-                globalSymbol.symbol_1_0.SymbolName,
-                globalSymbol.symbol_1_0.SymbolTypedValue,
+                globalSymbol.symbol.SymbolName,
+                globalSymbol.symbol.SymbolTypedValue,
                 globalSymbol.symbolType );
 
-            if( ret != CC_OK && isValidByteArray( globalSymbol.symbol_1_0 ) )
+            if( ret != CC_OK && isValidByteArray( globalSymbol.symbol ) )
             {
-                DeleteByteArray( globalSymbol.symbol_1_0.SymbolTypedValue.ValueByteArray, adapterId );
+                DeleteByteArray( globalSymbol.symbol.SymbolTypedValue.ValueByteArray, adapterId );
             }
         }
 
@@ -1099,7 +1125,8 @@ namespace MetricsDiscoveryInternal
             MD_CHECK_CC_RET_A( adapterId, ret );
             if( metric )
             {
-                metric->SetSnapshotReportDeltaFunction( deltaFunction );
+                ret = metric->SetSnapshotReportDeltaFunction( deltaFunction );
+                MD_CHECK_CC_RET_A( adapterId, ret );
             }
 
             // Snapshot report read equation
@@ -1107,7 +1134,8 @@ namespace MetricsDiscoveryInternal
             MD_CHECK_CC_RET_A( adapterId, ret );
             if( metric )
             {
-                metric->SetSnapshotReportReadEquation( equationString );
+                ret = metric->SetSnapshotReportReadEquation( equationString );
+                MD_CHECK_CC_RET_A( adapterId, ret );
             }
 
             // Delta report read equation
@@ -1115,7 +1143,8 @@ namespace MetricsDiscoveryInternal
             MD_CHECK_CC_RET_A( adapterId, ret );
             if( metric )
             {
-                metric->SetDeltaReportReadEquation( equationString );
+                ret = metric->SetDeltaReportReadEquation( equationString );
+                MD_CHECK_CC_RET_A( adapterId, ret );
             }
 
             // Normalization equation
@@ -1123,7 +1152,8 @@ namespace MetricsDiscoveryInternal
             MD_CHECK_CC_RET_A( adapterId, ret );
             if( metric )
             {
-                metric->SetNormalizationEquation( equationString );
+                ret = metric->SetNormalizationEquation( equationString );
+                MD_CHECK_CC_RET_A( adapterId, ret );
             }
 
             // Max value equation
@@ -1131,7 +1161,8 @@ namespace MetricsDiscoveryInternal
             MD_CHECK_CC_RET_A( adapterId, ret );
             if( metric )
             {
-                metric->SetMaxValueEquation( equationString );
+                ret = metric->SetMaxValueEquation( equationString );
+                MD_CHECK_CC_RET_A( adapterId, ret );
             }
         }
 
@@ -1226,7 +1257,8 @@ namespace MetricsDiscoveryInternal
             MD_CHECK_CC_RET_A( adapterId, ret );
             if( aInformation )
             {
-                aInformation->SetOverflowFunction( deltaFunction );
+                ret = aInformation->SetOverflowFunction( deltaFunction );
+                MD_CHECK_CC_RET_A( adapterId, ret );
             }
 
             // Snapshot report read equation
@@ -1234,7 +1266,8 @@ namespace MetricsDiscoveryInternal
             MD_CHECK_CC_RET_A( adapterId, ret );
             if( aInformation )
             {
-                aInformation->SetSnapshotReportReadEquation( equationString );
+                ret = aInformation->SetSnapshotReportReadEquation( equationString );
+                MD_CHECK_CC_RET_A( adapterId, ret );
             }
 
             // Delta report read equation
@@ -1242,7 +1275,8 @@ namespace MetricsDiscoveryInternal
             MD_CHECK_CC_RET_A( adapterId, ret );
             if( aInformation )
             {
-                aInformation->SetDeltaReportReadEquation( equationString );
+                ret = aInformation->SetDeltaReportReadEquation( equationString );
+                MD_CHECK_CC_RET_A( adapterId, ret );
             }
         }
 
@@ -1320,7 +1354,8 @@ namespace MetricsDiscoveryInternal
                 if( !skip )
                 {
                     reg = *( (TRegister*) ( bufferPtr ) );
-                    set->AddStartConfigRegister( reg.offset, reg.value, reg.type );
+                    ret = set->AddStartConfigRegister( reg.offset, reg.value, reg.type );
+                    MD_CHECK_CC_RET_A( adapterId, ret );
                 }
                 MD_CHECK_BUFFER_A( adapterId, bufferPtr, fileBufferBeginOffset, sizeof( TRegister ), fileSize );
                 bufferPtr += sizeof( TRegister );
@@ -1353,7 +1388,11 @@ namespace MetricsDiscoveryInternal
 
         if( !skip )
         {
-            set->RefreshConfigRegisters();
+            if( set->RefreshConfigRegisters() != CC_OK )
+            {
+                MD_LOG_A( adapterId, LOG_INFO, "Failed to refresh config registers" );
+                return CC_ERROR_GENERAL;
+            }
         }
         return CC_OK;
     }
@@ -1725,6 +1764,7 @@ namespace MetricsDiscoveryInternal
         {
             case GENERATION_BMG:
             case GENERATION_LNL:
+            case GENERATION_PTL:
             {
                 // Ticks masked to 56bit to get sync with report timestamps.
                 const double oneTickNs                        = static_cast<double>( MD_SECOND_IN_NS ) / gpuTimestampFrequency;
