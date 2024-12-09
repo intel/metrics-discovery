@@ -386,6 +386,11 @@ namespace MetricsDiscoveryInternal
                 engines.emplace_back( oaUnit.oa_unit_id, oaUnit.eci[j] );
             }
 
+            if( oaUnit.oa_unit_type == DRM_XE_OA_UNIT_TYPE_OAG )
+            {
+                m_xeObservationCapabilities.IsConfigurableOaBufferSize = oaUnit.capabilities & DRM_XE_OA_CAPS_OA_BUFFER_SIZE;
+            }
+
             oaUnitOffset += sizeof( oaUnit ) + oaUnit.num_engines * sizeof( oaUnit.eci[0] );
         }
 
@@ -532,6 +537,18 @@ namespace MetricsDiscoveryInternal
         addProperty( DRM_XE_OA_PROPERTY_OA_METRIC_SET, oaMetricSetId );
         addProperty( DRM_XE_OA_PROPERTY_OA_FORMAT, oaReportType );
         addProperty( DRM_XE_OA_PROPERTY_OA_PERIOD_EXPONENT, timerPeriodExponent );
+
+        // Oa buffer size.
+        if( m_xeObservationCapabilities.IsConfigurableOaBufferSize )
+        {
+            bufferSize = CalculateOaBufferSize( bufferSize, metricsDevice );
+            addProperty( DRM_XE_OA_PROPERTY_OA_BUFFER_SIZE, bufferSize );
+        }
+        else
+        {
+            bufferSize = MD_OA_BUFFER_SIZE_MAX;
+            MD_LOG_A( m_adapterId, LOG_DEBUG, "Cannot set oa buffer size. Configurable OA buffer size is not available." );
+        }
 
         param.observation_type = DRM_XE_OBSERVATION_TYPE_OA;
         param.observation_op   = DRM_XE_OBSERVATION_OP_STREAM_OPEN;
@@ -1498,9 +1515,16 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     TCompletionCode CDriverInterfaceLinuxXe::GetOaBufferSupportedSizes( const uint32_t platformId, uint32_t& minSize, uint32_t& maxSize )
     {
-        // 16MB is only supported size in XE KMD now.
-        minSize = MD_OA_BUFFER_SIZE_MAX;
-        maxSize = MD_OA_BUFFER_SIZE_MAX;
+        if( m_xeObservationCapabilities.IsConfigurableOaBufferSize )
+        {
+            minSize = MD_OA_BUFFER_SIZE_MIN;
+            maxSize = MD_OA_BUFFER_SIZE_MAX_XE_HP;
+        }
+        else
+        {
+            minSize = MD_OA_BUFFER_SIZE_MAX;
+            maxSize = MD_OA_BUFFER_SIZE_MAX;
+        }
 
         return CC_OK;
     }
