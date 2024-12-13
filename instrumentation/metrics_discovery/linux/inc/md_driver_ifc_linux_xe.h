@@ -27,6 +27,20 @@ namespace MetricsDiscoveryInternal
 {
     //////////////////////////////////////////////////////////////////////////////
     //
+    // Struct:
+    //     SXeObservationCapabilities
+    //
+    // Description:
+    //     A structure holding information about Xe observation features support in kernel.
+    //
+    //////////////////////////////////////////////////////////////////////////////
+    typedef struct SXeObservationCapabilities
+    {
+        bool IsOaNotifyNumReportsSupported;
+    } TXeObservationCapabilities;
+
+    //////////////////////////////////////////////////////////////////////////////
+    //
     // Class:
     //     CDriverInterfaceLinuxXe
     //
@@ -103,5 +117,7 @@ namespace MetricsDiscoveryInternal
         virtual TCompletionCode GetL3NodeMask( CMetricsDevice& metricsDevice, uint64_t& l3NodeMask );
         virtual TCompletionCode GetCopyEngineMask( CMetricsDevice& metricsDevice, uint64_t& copyEngineMask );
     };
+
+    TXeObservationCapabilities m_xeObservationCapabilities; // Information about Xe observation features supported in current kernel
 
 } // namespace MetricsDiscoveryInternal
