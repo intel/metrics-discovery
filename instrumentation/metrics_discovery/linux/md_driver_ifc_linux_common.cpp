@@ -1,6 +1,6 @@
 /*========================== begin_copyright_notice ============================
 
-Copyright (C) 2023-2024 Intel Corporation
+Copyright (C) 2023-2025 Intel Corporation
 
 SPDX-License-Identifier: MIT
 
@@ -1085,47 +1085,49 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     TCompletionCode CDriverInterfaceLinuxCommon::SendPmRegsConfig( TRegister** regVector, const uint32_t regCount, const uint32_t subDeviceIndex, const GTDI_OA_BUFFER_TYPE oaBufferType )
     {
+        if( regCount == 0 ) // It's ok if regCount is 0, e.g. for PipelineStats metric set, which has no configuration (only QueryId)
+        {
+            return CC_OK;
+        }
+
         MD_LOG_ENTER_A( m_adapterId );
         MD_CHECK_PTR_RET_A( m_adapterId, regVector, CC_ERROR_INVALID_PARAMETER );
 
         TCompletionCode ret = CC_OK;
 
-        if( regCount ) // It's ok if regCount is 0, e.g. for PipelineStats metric set, which has no configuration (only QueryId)
+        int32_t     addedConfigId = -1;
+        std::string guid          = GenerateQueryGuid( subDeviceIndex );
+
+        MD_LOG_A( m_adapterId, LOG_DEBUG, "Generated guid: %s", guid.c_str() );
+
+        // Validate query config GUID
+        static_assert( sizeof( MD_PERF_GUID_FOR_QUERY ) == MD_PERF_GUID_LENGTH, "MD_PERF_GUID_FOR_QUERY must be of size MD_PERF_GUID_LENGTH" );
+        if( guid.size() != MD_PERF_GUID_LENGTH - 1 )
         {
-            int32_t     addedConfigId = -1;
-            std::string guid          = GenerateQueryGuid( subDeviceIndex );
+            MD_LOG_A( m_adapterId, LOG_ERROR, "ERROR: incorrect guid size. Expected: %d, actual: %d", MD_PERF_GUID_LENGTH - 1, guid.size() );
+            return CC_ERROR_GENERAL;
+        }
 
-            MD_LOG_A( m_adapterId, LOG_DEBUG, "Generated guid: %s", guid.c_str() );
+        // 1. REMOVE PREVIOUS QUERY CONFIG IF exists
+        //    WARNING: Config from the latest Activate() call will always be used!
+        RemoveOaConfigQuery( guid.c_str() );
 
-            // Validate query config GUID
-            static_assert( sizeof( MD_PERF_GUID_FOR_QUERY ) == MD_PERF_GUID_LENGTH, "MD_PERF_GUID_FOR_QUERY must be of size MD_PERF_GUID_LENGTH" );
-            if( guid.size() != MD_PERF_GUID_LENGTH - 1 )
+        // 2. ADD CONFIG
+        ret = AddOaConfig( regVector, regCount, subDeviceIndex, guid.c_str(), addedConfigId );
+        MD_ASSERT_A( m_adapterId, addedConfigId != -1 );
+
+        // 3. REMEMBER ADDED CONFIG
+        if( ret == CC_OK )
+        {
+            if( std::find( m_AddedOaConfigs.begin(), m_AddedOaConfigs.end(), addedConfigId ) == m_AddedOaConfigs.end() )
             {
-                MD_LOG_A( m_adapterId, LOG_ERROR, "ERROR: incorrect guid size. Expected: %d, actual: %d", MD_PERF_GUID_LENGTH - 1, guid.size() );
-                return CC_ERROR_GENERAL;
+                m_AddedOaConfigs.push_back( addedConfigId ); // Remember configId for later removal, only if it wasn't added before - may happen when
+                                                             // the config is already added and ID is reused.
             }
-
-            // 1. REMOVE PREVIOUS QUERY CONFIG IF exists
-            //    WARNING: Config from the latest Activate() call will always be used!
-            RemoveOaConfigQuery( guid.c_str() );
-
-            // 2. ADD CONFIG
-            ret = AddOaConfig( regVector, regCount, subDeviceIndex, guid.c_str(), addedConfigId );
-            MD_ASSERT_A( m_adapterId, addedConfigId != -1 );
-
-            // 3. REMEMBER ADDED CONFIG
-            if( ret == CC_OK )
-            {
-                if( std::find( m_AddedOaConfigs.begin(), m_AddedOaConfigs.end(), addedConfigId ) == m_AddedOaConfigs.end() )
-                {
-                    m_AddedOaConfigs.push_back( addedConfigId ); // Remember configId for later removal, only if it wasn't added before - may happen when
-                                                                 // the config is already added and ID is reused.
-                }
-            }
-            else
-            {
-                RemoveOaConfig( addedConfigId );
-            }
+        }
+        else
+        {
+            RemoveOaConfig( addedConfigId );
         }
 
         MD_LOG_EXIT_A( m_adapterId );
@@ -1765,7 +1767,6 @@ namespace MetricsDiscoveryInternal
 
         return WaitForOaStreamReports( oaConcurrentGroup.GetMetricsDevice(), milliseconds );
     }
-
     //////////////////////////////////////////////////////////////////////////////
     //
     // Class:
@@ -3108,10 +3109,10 @@ namespace MetricsDiscoveryInternal
 
             case GENERATION_LNL:
             case GENERATION_BMG:
-                return MD_SUBSLICE_PER_SLICE_BMG;
+                return MD_SUBSLICE_PER_SLICE_XE2;
 
             case GENERATION_PTL:
-                return MD_SUBSLICE_PER_SLICE_PTL;
+                return MD_SUBSLICE_PER_SLICE_XE3;
 
             default:
                 MD_LOG_A( m_adapterId, LOG_WARNING, "WARNING: Unsupported platform, default MaxSubslicePerSlice used" );
@@ -3262,7 +3263,7 @@ namespace MetricsDiscoveryInternal
             case GENERATION_LNL:
             case GENERATION_BMG:
             case GENERATION_PTL:
-                return MD_MAX_L3_BANK_PER_L3_NODE;
+                return MD_MAX_L3_BANK_PER_L3_NODE_XE2;
 
             default:
                 // Return 0 for pre-Xe2 platforms as unsupported.

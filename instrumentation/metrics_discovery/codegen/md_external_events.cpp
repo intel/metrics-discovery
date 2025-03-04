@@ -1,6 +1,6 @@
 /*========================== begin_copyright_notice ============================
 
-Copyright (C) 2024 Intel Corporation
+Copyright (C) 2024-2025 Intel Corporation
 
 SPDX-License-Identifier: MIT
 
@@ -14,7 +14,7 @@ SPDX-License-Identifier: MIT
 
 #if MD_INCLUDE_BMG_METRICS || MD_INCLUDE_LNL_METRICS || MD_INCLUDE_PTL_METRICS
 
-const char ExternalEvents::archEvents[35113] = "Group Mask,Event Encoding,Architectural Event Name,Event Definition,OA Reporting,Disaggregation Mode,Project,Group Name,Instance,Filter,Metric Result Units,Metric Type,Hw Unit Type,Normalization\n"
+const char ExternalEvents::archEvents[33031] = "Group Mask,Event Encoding,Architectural Event Name,Event Definition,OA Reporting,Disaggregation Mode,Project,Group Name,Instance,Filter,Metric Result Units,Metric Type,Hw Unit Type,Normalization\n"
                                                "1,1,SAMPLER_MEMORY_LATENCY_STALL,Number of cycles Sampler stalled due to latency hiding structure full,RG,1,BMG LNL PTL,Sampler,xecore,,cycles,1,2,3\n"
                                                "1,2,SAMPLER_2X2_READ,Number of 2x2 texel block requested from Sampler,RG,1,BMG LNL PTL,Sampler,xecore,,events,1,2,2\n"
                                                "1,3,SAMPLER_INPUT_AVAILABLE,Number of cycles when Sampler input is available,RG,1,BMG LNL PTL,Sampler,xecore,,cycles,1,2,3\n"
@@ -216,22 +216,6 @@ const char ExternalEvents::archEvents[35113] = "Group Mask,Event Encoding,Archit
                                                "2,24602,LOAD_STORE_CACHE_L3_READ,Number of cacheline read requests from the Load Store Cache to Device Cache,G,2,BMG LNL PTL,Device Cache,l3bank,,events,1,3,10\n"
                                                "2,24603,LOAD_STORE_CACHE_L3_WRITE,Number of cacheline write requests from the Load Store Cache to Device Cache,G,2,BMG LNL PTL,Device Cache,l3bank,,events,1,3,10\n"
                                                "2,24604,LOAD_STORE_CACHE_L3_HIT,Number of Load Store Cache requests to Device Cache that are hit,G,2,BMG LNL PTL,Device Cache,l3bank,,events,1,3,2\n"
-                                               "2,25088,SCALEUP_DATA_BYTE_RECEIVE,Number of 64B data received (incoming write read return to GPU),G,,PTL,Memory,,,events,1,0,0\n"
-                                               "2,25089,SCALEUP_DATA_BYTE_TRANSMIT,Number of 64B data sent (outgoing write read return from GPU),G,,PTL,Memory,,,events,1,0,0\n"
-                                               "2,25090,SCALEUP_OUTGOING_READ_REQUEST,Number of outgoing read requests over scaleup fabric from GPU,G,,PTL,Memory,,,events,1,0,0\n"
-                                               "2,25091,SCALEUP_OUTGOING_WRITE_REQUEST,Number of outgoing write requests over scaleup fabric from GPU,G,,PTL,Memory,,,events,1,0,0\n"
-                                               "2,25092,SCALEUP_INCOMING_READ_REQUEST,Number of incoming read requests over scaleup fabric to GPU,G,,PTL,Memory,,,events,1,0,0\n"
-                                               "2,25093,SCALEUP_INCOMING_WRITE_REQUEST,Number of incoming write requests over scaleup fabric to GPU,G,,PTL,Memory,,,events,1,0,0\n"
-                                               "2,25094,SCALEUP_INCOMING_ATOMIC_REQUEST,Number of incoming atomics requests over scaleup fabric to GPU,G,,PTL,Memory,,,events,1,0,0\n"
-                                               "2,25095,SCALEUP_OUTGOING_ATOMIC_REQUEST,Number of outgoing atomics requests over scaleup fabric from GPU,G,,PTL,Memory,,,events,1,0,0\n"
-                                               "2,25096,TILE_TO_TILE_DATA_BYTE_RECEIVE,Number of 64B data received (incoming write read return),G,,PTL,Memory,,,events,1,0,0\n"
-                                               "2,25097,TILE_TO_TILE_DATA_BYTE_TRANSMIT,Number of 64B data sent (outgoing write read return),G,,PTL,Memory,,,events,1,0,0\n"
-                                               "2,25098,TILE_TO_TILE_OUTGOING_READ_REQUEST,Number of outgoing read requests over tile to tile interface,G,,PTL,Memory,,,events,1,0,0\n"
-                                               "2,25099,TILE_TO_TILE_OUTGOING_WRITE_REQUEST,Number of outgoing write requests over tile to tile interface,G,,PTL,Memory,,,events,1,0,0\n"
-                                               "2,25100,TILE_TO_TILE_INCOMING_READ_REQUEST,Number of incoming read requests over tile to tile interface,G,,PTL,Memory,,,events,1,0,0\n"
-                                               "2,25101,TILE_TO_TILE_INCOMING_WRITE_REQUEST,Number of incoming write requests over tile to tile interface,G,,PTL,Memory,,,events,1,0,0\n"
-                                               "2,25102,TILE_TO_TILE_INCOMING_ATOMIC_REQUEST,Number of incoming atomics requests over tile to tile interface,G,,PTL,Memory,,,events,1,0,0\n"
-                                               "2,25103,TILE_TO_TILE_OUTGOING_ATOMIC_REQUEST,Number of outgoing atomics requests over tile to tile interface,G,,PTL,Memory,,,events,1,0,0\n"
                                                "2,25600,HOST_TO_GPUMEM_TRANSACTION_READ,\"Number of host 64B reads to GPU local (HBM) memory (downstream over an interface such as pcie, cxl or an integrated fabric as applicable to the respective product segment)\",G,,BMG,Memory,,,events,1,0,8\n"
                                                "2,25601,HOST_TO_GPUMEM_TRANSACTION_WRITE,\"Number of host 64B writes to GPU local (HBM) memory (downstream over an interface such as pcie, cxl or an integrated fabric as applicable to the respective product segment)\",G,,BMG,Memory,,,events,1,0,8\n"
                                                "2,25602,SYSMEM_TRANSACTION_READ,\"Number of system memory 64B reads (upstream over an interface such as pcie, cxl or an integrated fabric as applicable to the respective product segment)\",G,,BMG,Memory,,,events,1,0,8\n"
@@ -245,7 +229,7 @@ const char ExternalEvents::archEvents[35113] = "Group Mask,Event Encoding,Archit
                                                "2,26118,CLIPPER_PRIMITIVE_FAR_NEAR_CLIP,Number of primitives clipped by Clipper due to near/far planes,RG,,BMG LNL PTL,Geometry,slice,,events,1,1,2\n"
                                                "2,26128,STRIPSFAN_OUTPUT_READY,Number of cycles in which geometry pipeline output is ready,RG,,BMG LNL PTL,Geometry,slice,,cycles,1,1,3\n"
                                                "2,26129,STRIPSFAN_OBJECT_COUNT,Number of objects exiting Stripsfan stage,RG,,BMG LNL PTL,Geometry,slice,,events,1,1,2\n"
-                                               "2,26130,STRIPSFAN_OBJECT_CULL,Number of simple culled objects in Stripsfan stage,RG,,BMG LNL PTL,Geometry,slice,,events,1,1,2\n"
+                                               "2,26130,STRIPSFAN_OBJECT_CULL,Number of simple and complex culled objects in Stripsfan stage,RG,,BMG LNL PTL,Geometry,slice,,events,1,1,2\n"
                                                "2,26624,RASTERIZER_INPUT_AVAILABLE,Number of cycles Rasterizer input is available,RG,3,BMG LNL PTL,Rasterizer,slice,,cycles,1,1,3\n"
                                                "2,26625,PIXEL_2x2_LIT_POST_RASTERIZER_EARLY_DEPTH,Number of promoted 2x2 that are lit from Rasterizer,RG,,BMG LNL PTL,Rasterizer,slice,,events,1,1,2\n"
                                                "2,26626,PIXEL_2x2_LIT_POST_RASTERIZER_LATE_DEPTH,Number of non-promoted 2x2 that are lit from Rasterizer,RG,,BMG LNL PTL,Rasterizer,slice,,events,1,1,2\n"
@@ -258,7 +242,7 @@ const char ExternalEvents::archEvents[35113] = "Group Mask,Event Encoding,Archit
                                                "2,32256,TEST_EVENT2,Number of GPU (gt) clock cycles at every other clock period,G,,BMG LNL PTL,Test,slice,,cycles,1,1,3\n"
                                                "";
 
-const char ExternalEvents::hwEvents[48966] = "Architectural Event Name,Hw Event Name,Hw Event Short Name,Hw Event Description,Filter Value,Project\n"
+const char ExternalEvents::hwEvents[46344] = "Architectural Event Name,Hw Event Name,Hw Event Short Name,Hw Event Description,Filter Value,Project\n"
                                              "SAMPLER_MEMORY_LATENCY_STALL,SAMPLER_MEMORY_LATENCY_STALL_CYCLES,Sampler Memory Latency Stall Cycles,Number of cycles Sampler stalled due to latency hiding structure full,0,BMG LNL PTL\n"
                                              "SAMPLER_2X2_READ,SAMPLER_2X2_READ,Sampler 2x2 Read,Number of 2x2 texel block requested from Sampler,0,BMG LNL PTL\n"
                                              "SAMPLER_INPUT_AVAILABLE,SAMPLER_INPUT_AVAILABLE_CYCLES,Sampler Input Available Cycles,Number of cycles when Sampler input is available,0,BMG LNL PTL\n"
@@ -520,22 +504,6 @@ const char ExternalEvents::hwEvents[48966] = "Architectural Event Name,Hw Event 
                                              "LOAD_STORE_CACHE_L3_READ,LOAD_STORE_CACHE_L3_READ,Load Store Cache L3 Read,Number of cacheline read requests from the Load Store Cache to Device Cache,0,BMG LNL PTL\n"
                                              "LOAD_STORE_CACHE_L3_WRITE,LOAD_STORE_CACHE_L3_WRITE,Load Store Cache L3 Write,Number of cacheline write requests from the Load Store Cache to Device Cache,0,BMG LNL PTL\n"
                                              "LOAD_STORE_CACHE_L3_HIT,LOAD_STORE_CACHE_L3_HIT,Load Store Cache L3 Hit,Number of Load Store Cache requests to Device Cache that are hit,0,BMG LNL PTL\n"
-                                             "SCALEUP_DATA_BYTE_RECEIVE,SCALEUP_DATA_BYTE_RECEIVE,Scaleup Data Byte Receive,Number of 64B data received (incoming write read return to GPU),0,PTL\n"
-                                             "SCALEUP_DATA_BYTE_TRANSMIT,SCALEUP_DATA_BYTE_TRANSMIT,Scaleup Data Byte Transmit,Number of 64B data sent (outgoing write read return from GPU),0,PTL\n"
-                                             "SCALEUP_OUTGOING_READ_REQUEST,SCALEUP_OUTGOING_READ_REQUEST,Scaleup Outgoing Read Request,Number of outgoing read requests over scaleup fabric from GPU,0,PTL\n"
-                                             "SCALEUP_OUTGOING_WRITE_REQUEST,SCALEUP_OUTGOING_WRITE_REQUEST,Scaleup Outgoing Write Request,Number of outgoing write requests over scaleup fabric from GPU,0,PTL\n"
-                                             "SCALEUP_INCOMING_READ_REQUEST,SCALEUP_INCOMING_READ_REQUEST,Scaleup Incoming Read Request,Number of incoming read requests over scaleup fabric to GPU,0,PTL\n"
-                                             "SCALEUP_INCOMING_WRITE_REQUEST,SCALEUP_INCOMING_WRITE_REQUEST,Scaleup Incoming Write Request,Number of incoming write requests over scaleup fabric to GPU,0,PTL\n"
-                                             "SCALEUP_INCOMING_ATOMIC_REQUEST,SCALEUP_INCOMING_ATOMIC_REQUEST,Scaleup Incoming Atomic Request,Number of incoming atomics requests over scaleup fabric to GPU,0,PTL\n"
-                                             "SCALEUP_OUTGOING_ATOMIC_REQUEST,SCALEUP_OUTGOING_ATOMIC_REQUEST,Scaleup Outgoing Atomic Request,Number of outgoing atomics requests over scaleup fabric from GPU,0,PTL\n"
-                                             "TILE_TO_TILE_DATA_BYTE_RECEIVE,TILE_TO_TILE_DATA_BYTE_RECEIVE,Tile To Tile Data Byte Receive,Number of 64B data received (incoming write read return),0,PTL\n"
-                                             "TILE_TO_TILE_DATA_BYTE_TRANSMIT,TILE_TO_TILE_DATA_BYTE_TRANSMIT,Tile To Tile Data Byte Transmit,Number of 64B data sent (outgoing write read return),0,PTL\n"
-                                             "TILE_TO_TILE_OUTGOING_READ_REQUEST,TILE_TO_TILE_OUTGOING_READ_REQUEST,Tile To Tile Outgoing Read Request,Number of outgoing read requests over tile to tile interface,0,PTL\n"
-                                             "TILE_TO_TILE_OUTGOING_WRITE_REQUEST,TILE_TO_TILE_OUTGOING_WRITE_REQUEST,Tile To Tile Outgoing Write Request,Number of outgoing write requests over tile to tile interface,0,PTL\n"
-                                             "TILE_TO_TILE_INCOMING_READ_REQUEST,TILE_TO_TILE_INCOMING_READ_REQUEST,Tile To Tile Incoming Read Request,Number of incoming read requests over tile to tile interface,0,PTL\n"
-                                             "TILE_TO_TILE_INCOMING_WRITE_REQUEST,TILE_TO_TILE_INCOMING_WRITE_REQUEST,Tile To Tile Incoming Write Request,Number of incoming write requests over tile to tile interface,0,PTL\n"
-                                             "TILE_TO_TILE_INCOMING_ATOMIC_REQUEST,TILE_TO_TILE_INCOMING_ATOMIC_REQUEST,Tile To Tile Incoming Atomic Request,Number of incoming atomics requests over tile to tile interface,0,PTL\n"
-                                             "TILE_TO_TILE_OUTGOING_ATOMIC_REQUEST,TILE_TO_TILE_OUTGOING_ATOMIC_REQUEST,Tile To Tile Outgoing Atomic Request,Number of outgoing atomics requests over tile to tile interface,0,PTL\n"
                                              "HOST_TO_GPUMEM_TRANSACTION_READ,HOST_TO_GPUMEM_TRANSACTION_READ,Host To GpuMem Transaction Read,\"Number of host 64B reads to GPU local (HBM) memory (downstream over an interface such as pcie, cxl or an integrated fabric as applicable to the respective product segment)\",0,BMG\n"
                                              "HOST_TO_GPUMEM_TRANSACTION_WRITE,HOST_TO_GPUMEM_TRANSACTION_WRITE,Host To GpuMem Transaction Write,\"Number of host 64B writes to GPU local (HBM) memory (downstream over an interface such as pcie, cxl or an integrated fabric as applicable to the respective product segment)\",0,BMG\n"
                                              "SYSMEM_TRANSACTION_READ,SYSMEM_TRANSACTION_READ,SysMem Transaction Read,\"Number of system memory 64B reads (upstream over an interface such as pcie, cxl or an integrated fabric as applicable to the respective product segment)\",0,BMG\n"
@@ -549,7 +517,7 @@ const char ExternalEvents::hwEvents[48966] = "Architectural Event Name,Hw Event 
                                              "CLIPPER_PRIMITIVE_FAR_NEAR_CLIP,CLIPPER_PRIMITIVE_FAR_NEAR_CLIP,Clipper Primitive Far Near Clip,Number of primitives clipped by Clipper due to near/far planes,0,BMG LNL PTL\n"
                                              "STRIPSFAN_OUTPUT_READY,STRIPSFAN_OUTPUT_READY_CYCLES,Stripsfan Output Ready Cycles,Number of cycles in which geometry pipeline output is ready,0,BMG LNL PTL\n"
                                              "STRIPSFAN_OBJECT_COUNT,STRIPSFAN_OBJECT_COUNT,Stripsfan Object Count,Number of objects exiting Stripsfan stage,0,BMG LNL PTL\n"
-                                             "STRIPSFAN_OBJECT_CULL,STRIPSFAN_OBJECT_CULL,Stripsfan Object Cull,Number of simple culled objects in Stripsfan stage,0,BMG LNL PTL\n"
+                                             "STRIPSFAN_OBJECT_CULL,STRIPSFAN_OBJECT_CULL,Stripsfan Object Cull,Number of simple and complex culled objects in Stripsfan stage,0,BMG LNL PTL\n"
                                              "RASTERIZER_INPUT_AVAILABLE,RASTERIZER_INPUT_AVAILABLE_CYCLES,Rasterizer Input Available Cycles,Number of cycles Rasterizer input is available,0,BMG LNL PTL\n"
                                              "PIXEL_2x2_LIT_POST_RASTERIZER_EARLY_DEPTH,PIXEL_2X2_LIT_POST_RASTERIZER_EARLY_DEPTH,Pixel 2x2 Lit Post Rasterizer Early Depth,Number of promoted 2x2 that are lit from Rasterizer,0,BMG LNL PTL\n"
                                              "PIXEL_2x2_LIT_POST_RASTERIZER_LATE_DEPTH,PIXEL_2X2_LIT_POST_RASTERIZER_LATE_DEPTH,Pixel 2x2 Lit Post Rasterizer Late Depth,Number of non-promoted 2x2 that are lit from Rasterizer,0,BMG LNL PTL\n"

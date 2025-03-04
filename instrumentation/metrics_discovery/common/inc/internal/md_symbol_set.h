@@ -1,6 +1,6 @@
 /*========================== begin_copyright_notice ============================
 
-Copyright (C) 2022-2024 Intel Corporation
+Copyright (C) 2022-2025 Intel Corporation
 
 SPDX-License-Identifier: MIT
 
@@ -58,7 +58,7 @@ namespace MetricsDiscoveryInternal
         TCompletionCode AddSymbolFLOAT( const char* name, float value, TSymbolType symbolType );
         TCompletionCode AddSymbolCSTRING( const char* name, char* value, TSymbolType symbolType );
         TCompletionCode AddSymbolBYTEARRAY( const char* name, TByteArrayLatest* value, TSymbolType symbolType );
-        TCompletionCode WriteSymbolSetToFile( FILE* metricFile );
+        TCompletionCode WriteSymbolSetToBuffer( uint8_t* buffer, uint32_t& bufferSize, uint32_t& bufferOffset );
         bool            IsSymbolAlreadyAdded( std::string_view symbolName );
         TCompletionCode RedetectSymbol( std::string_view name );
         TCompletionCode DetectMaxSlicesInfo();
@@ -83,6 +83,6 @@ namespace MetricsDiscoveryInternal
 
     private:
         // Static variables:
-        static constexpr uint32_t SYMBOLS_MAP_INCREASE = 32;
+        static constexpr uint32_t SYMBOLS_MAP_RESERVE = 32;
     };
 } // namespace MetricsDiscoveryInternal

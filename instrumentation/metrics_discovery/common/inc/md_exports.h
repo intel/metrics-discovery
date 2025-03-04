@@ -1,6 +1,6 @@
 /*========================== begin_copyright_notice ============================
 
-Copyright (C) 2019-2024 Intel Corporation
+Copyright (C) 2019-2025 Intel Corporation
 
 SPDX-License-Identifier: MIT
 
@@ -20,8 +20,8 @@ using namespace MetricsDiscovery;
 #if defined( __linux__ )
     #define DllExport __attribute__( ( visibility( "default" ) ) )
 #else
-    // On Windows exports through project settings (linker commands)
-    // ! WARNING: Windows exports a different set of functions than Linux !
+// On Windows exports through project settings (linker commands)
+// ! WARNING: Windows exports a different set of functions than Linux !
     #define DllExport
 #endif // __linux__
 

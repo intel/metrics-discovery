@@ -1,6 +1,6 @@
 /*========================== begin_copyright_notice ============================
 
-Copyright (C) 2022-2024 Intel Corporation
+Copyright (C) 2022-2025 Intel Corporation
 
 SPDX-License-Identifier: MIT
 
@@ -287,6 +287,12 @@ namespace MetricsDiscoveryInternal
     {
         const uint32_t adapterId = m_device.GetAdapter().GetAdapterId();
         MD_LOG_ENTER_A( adapterId );
+
+        if( processId != 0 )
+        {
+            return CC_ERROR_NOT_SUPPORTED;
+        }
+
         MD_CHECK_PTR_RET_A( adapterId, nsTimerPeriod, CC_ERROR_INVALID_PARAMETER );
         MD_CHECK_PTR_RET_A( adapterId, oaBufferSize, CC_ERROR_INVALID_PARAMETER );
 
@@ -899,9 +905,6 @@ namespace MetricsDiscoveryInternal
         , m_metricEnumeratorVector{ new( std::nothrow ) CMetricEnumerator( *this ) }
         , m_archEventVector()
     {
-        m_ioMeasurementInfoVector.reserve( EXCEPTIONS_VECTOR_INCREASE );
-        m_ioGpuContextInfoVector.reserve( GPU_CONTEXTS_VECTOR_INCREASE );
-
         AddIoMeasurementInfoPredefined();
         m_params.IoMeasurementInformationCount = static_cast<uint32_t>( m_ioMeasurementInfoVector.size() );
     }

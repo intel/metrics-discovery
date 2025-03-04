@@ -1,6 +1,6 @@
 /*========================== begin_copyright_notice ============================
 
-Copyright (C) 2023-2024 Intel Corporation
+Copyright (C) 2023-2025 Intel Corporation
 
 SPDX-License-Identifier: MIT
 
@@ -447,7 +447,7 @@ namespace MetricsDiscoveryInternal::MetricSets_DG1_OA
             MD_CHECK_CC( ( metric->SetMaxValueEquation( "100" ) ) );
         }
 
-        availabilityEquation = "$DualSubsliceMask 1 AND";
+        availabilityEquation = "$GtDualSubsliceMask 1 AND";
         metric               = AddMetric( "Sampler00Busy", "Sampler00 Busy",
                           "The percentage of time in which Slice0 Sampler0 has been processing EU requests.",
                           "Sampler", ( METRIC_GROUP_NAME_ID_SAMPLER * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_BATCH | USAGE_FLAG_FRAME | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
@@ -461,7 +461,7 @@ namespace MetricsDiscoveryInternal::MetricSets_DG1_OA
             MD_CHECK_CC( ( metric->SetMaxValueEquation( "100" ) ) );
         }
 
-        availabilityEquation = "$DualSubsliceMask 1 AND";
+        availabilityEquation = "$GtDualSubsliceMask 1 AND";
         metric               = AddMetric( "Sampler00Bottleneck", "Sampler Slice0 Dualsubslice0 is bottleneck",
                           "The percentage of time when sampler slice0 dualsubslice0 is bottleneck",
                           "GPU/Sampler", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_SAMPLER * 0x10000 ), USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
@@ -475,7 +475,7 @@ namespace MetricsDiscoveryInternal::MetricSets_DG1_OA
             MD_CHECK_CC( ( metric->SetMaxValueEquation( "100" ) ) );
         }
 
-        availabilityEquation = "$DualSubsliceMask 1 AND";
+        availabilityEquation = "$GtDualSubsliceMask 1 AND";
         metric               = AddMetric( "SamplersBusy", "Samplers Busy",
                           "The percentage of time in which samplers have been processing EU requests.",
                           "Sampler", ( METRIC_GROUP_NAME_ID_SAMPLER * 0x1000000 ), USAGE_FLAG_TIER_2 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
@@ -486,7 +486,7 @@ namespace MetricsDiscoveryInternal::MetricSets_DG1_OA
             MD_CHECK_CC( ( metric->SetMaxValueEquation( "100" ) ) );
         }
 
-        availabilityEquation = "$DualSubsliceMask 1 AND";
+        availabilityEquation = "$GtDualSubsliceMask 1 AND";
         metric               = AddMetric( "SamplerBottleneck", "Samplers Bottleneck",
                           "The percentage of time in which samplers have been slowing down the pipe when processing EU requests.",
                           "Sampler", ( METRIC_GROUP_NAME_ID_SAMPLER * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_INDICATE | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
@@ -2356,7 +2356,7 @@ namespace MetricsDiscoveryInternal::MetricSets_DG1_OA
             MD_CHECK_CC( ( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ) ) );
         }
 
-        availabilityEquation = "$DualSubsliceMask 1 AND";
+        availabilityEquation = "$GtDualSubsliceMask 1 AND";
         metric               = AddMetric( "NonSamplerShader00AccessStalledOnL3", "Slice0 Dualsubslice0 Non-sampler Shader Access Stalled On L3",
                           "Percentage of time when HDC has messages to L3, but it's stalled due to lack of credits (Slice0 Dualsubslice0)",
                           "GPU/Data Port", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
@@ -2370,7 +2370,7 @@ namespace MetricsDiscoveryInternal::MetricSets_DG1_OA
             MD_CHECK_CC( ( metric->SetMaxValueEquation( "100" ) ) );
         }
 
-        availabilityEquation = "$DualSubsliceMask 2 AND";
+        availabilityEquation = "$GtDualSubsliceMask 2 AND";
         metric               = AddMetric( "NonSamplerShader01AccessStalledOnL3", "Slice0 Dualsubslice1 Non-sampler Shader Access Stalled On L3",
                           "Percentage of time when HDC has messages to L3, but it's stalled due to lack of credits (Slice0 Dualsubslice1)",
                           "GPU/Data Port", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
@@ -2384,7 +2384,7 @@ namespace MetricsDiscoveryInternal::MetricSets_DG1_OA
             MD_CHECK_CC( ( metric->SetMaxValueEquation( "100" ) ) );
         }
 
-        availabilityEquation = "$DualSubsliceMask 4 AND";
+        availabilityEquation = "$GtDualSubsliceMask 4 AND";
         metric               = AddMetric( "NonSamplerShader02AccessStalledOnL3", "Slice0 Dualsubslice2 Non-sampler Shader Access Stalled On L3",
                           "Percentage of time when HDC has messages to L3, but it's stalled due to lack of credits (Slice0 Dualsubslice2)",
                           "GPU/Data Port", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
@@ -2398,7 +2398,7 @@ namespace MetricsDiscoveryInternal::MetricSets_DG1_OA
             MD_CHECK_CC( ( metric->SetMaxValueEquation( "100" ) ) );
         }
 
-        availabilityEquation = "$DualSubsliceMask 8 AND";
+        availabilityEquation = "$GtDualSubsliceMask 8 AND";
         metric               = AddMetric( "NonSamplerShader03AccessStalledOnL3", "Slice0 Dualsubslice3 Non-sampler Shader Access Stalled On L3",
                           "Percentage of time when HDC has messages to L3, but it's stalled due to lack of credits (Slice0 Dualsubslice3)",
                           "GPU/Data Port", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
@@ -2412,7 +2412,7 @@ namespace MetricsDiscoveryInternal::MetricSets_DG1_OA
             MD_CHECK_CC( ( metric->SetMaxValueEquation( "100" ) ) );
         }
 
-        availabilityEquation = "$DualSubsliceMask 16 AND";
+        availabilityEquation = "$GtDualSubsliceMask 16 AND";
         metric               = AddMetric( "NonSamplerShader04AccessStalledOnL3", "Slice0 Dualsubslice4 Non-sampler Shader Access Stalled On L3",
                           "Percentage of time when HDC has messages to L3, but it's stalled due to lack of credits (Slice0 Dualsubslice4)",
                           "GPU/Data Port", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
@@ -2426,7 +2426,7 @@ namespace MetricsDiscoveryInternal::MetricSets_DG1_OA
             MD_CHECK_CC( ( metric->SetMaxValueEquation( "100" ) ) );
         }
 
-        availabilityEquation = "$DualSubsliceMask 32 AND";
+        availabilityEquation = "$GtDualSubsliceMask 32 AND";
         metric               = AddMetric( "NonSamplerShader05AccessStalledOnL3", "Slice0 Dualsubslice5 Non-sampler Shader Access Stalled On L3",
                           "Percentage of time when HDC has messages to L3, but it's stalled due to lack of credits (Slice0 Dualsubslice5)",
                           "GPU/Data Port", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_DATA_PORT * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
@@ -3026,7 +3026,7 @@ namespace MetricsDiscoveryInternal::MetricSets_DG1_OA
             MD_CHECK_CC( ( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ) ) );
         }
 
-        availabilityEquation = "$SliceMask 1 AND";
+        availabilityEquation = "$GtSliceMask 1 AND";
         metric               = AddMetric( "Rasterizer0InputAvailable", "Slice0 Rasterizer Input Available",
                           "The percentage of time in which slice0 rasterizer input is available",
                           "GPU/Rasterizer", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_WM * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
@@ -3040,7 +3040,7 @@ namespace MetricsDiscoveryInternal::MetricSets_DG1_OA
             MD_CHECK_CC( ( metric->SetMaxValueEquation( "100" ) ) );
         }
 
-        availabilityEquation = "$SliceMask 1 AND";
+        availabilityEquation = "$GtSliceMask 1 AND";
         metric               = AddMetric( "Rasterizer0OutputReady", "Slice0 Rasterizer Output Ready",
                           "The percentage of time in which slice0 rasterizer output is ready",
                           "GPU/Rasterizer", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_WM * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
@@ -3495,7 +3495,7 @@ namespace MetricsDiscoveryInternal::MetricSets_DG1_OA
             MD_CHECK_CC( ( metric->SetSnapshotReportDeltaFunction( "DELTA 40" ) ) );
         }
 
-        availabilityEquation = "$SliceMask 1 AND";
+        availabilityEquation = "$GtSliceMask 1 AND";
         metric               = AddMetric( "L30Bank0InputAvailable", "Slice0 L3 Bank0 Input Available",
                           "The percentage of time in which slice0 L3 bank0 has input available",
                           "GTI/L3", ( METRIC_GROUP_NAME_ID_GTI * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_L3 * 0x10000 ), USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
@@ -3509,7 +3509,7 @@ namespace MetricsDiscoveryInternal::MetricSets_DG1_OA
             MD_CHECK_CC( ( metric->SetMaxValueEquation( "100" ) ) );
         }
 
-        availabilityEquation = "$SliceMask 1 AND";
+        availabilityEquation = "$GtSliceMask 1 AND";
         metric               = AddMetric( "L30Bank1InputAvailable", "Slice0 L3 Bank1 Input Available",
                           "The percentage of time in which slice0 L3 bank1 has input available",
                           "GTI/L3", ( METRIC_GROUP_NAME_ID_GTI * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_L3 * 0x10000 ), USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
@@ -3523,7 +3523,7 @@ namespace MetricsDiscoveryInternal::MetricSets_DG1_OA
             MD_CHECK_CC( ( metric->SetMaxValueEquation( "100" ) ) );
         }
 
-        availabilityEquation = "$SliceMask 1 AND";
+        availabilityEquation = "$GtSliceMask 1 AND";
         metric               = AddMetric( "L30Bank4InputAvailable", "Slice0 L3 Bank4 Input Available",
                           "The percentage of time in which slice0 L3 bank4 has input available",
                           "GTI/L3", ( METRIC_GROUP_NAME_ID_GTI * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_L3 * 0x10000 ), USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
@@ -3537,7 +3537,7 @@ namespace MetricsDiscoveryInternal::MetricSets_DG1_OA
             MD_CHECK_CC( ( metric->SetMaxValueEquation( "100" ) ) );
         }
 
-        availabilityEquation = "$SliceMask 1 AND";
+        availabilityEquation = "$GtSliceMask 1 AND";
         metric               = AddMetric( "L30Bank5InputAvailable", "Slice0 L3 Bank5 Input Available",
                           "The percentage of time in which slice0 L3 bank5 has input available",
                           "GTI/L3", ( METRIC_GROUP_NAME_ID_GTI * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_L3 * 0x10000 ), USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
@@ -3840,7 +3840,7 @@ namespace MetricsDiscoveryInternal::MetricSets_DG1_OA
             MD_CHECK_CC( ( metric->SetMaxValueEquation( "100" ) ) );
         }
 
-        availabilityEquation = "$SliceMask 1 AND";
+        availabilityEquation = "$GtSliceMask 1 AND";
         metric               = AddMetric( "L30Bank2InputAvailable", "Slice0 L3 Bank2 Input Available",
                           "The percentage of time in which slice0 L3 bank2 has input available",
                           "GTI/L3", ( METRIC_GROUP_NAME_ID_GTI * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_L3 * 0x10000 ), USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
@@ -3854,7 +3854,7 @@ namespace MetricsDiscoveryInternal::MetricSets_DG1_OA
             MD_CHECK_CC( ( metric->SetMaxValueEquation( "100" ) ) );
         }
 
-        availabilityEquation = "$SliceMask 1 AND";
+        availabilityEquation = "$GtSliceMask 1 AND";
         metric               = AddMetric( "L30Bank3InputAvailable", "Slice0 L3 Bank3 Input Available",
                           "The percentage of time in which slice0 L3 bank3 has input available",
                           "GTI/L3", ( METRIC_GROUP_NAME_ID_GTI * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_L3 * 0x10000 ), USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
@@ -3868,7 +3868,7 @@ namespace MetricsDiscoveryInternal::MetricSets_DG1_OA
             MD_CHECK_CC( ( metric->SetMaxValueEquation( "100" ) ) );
         }
 
-        availabilityEquation = "$SliceMask 1 AND";
+        availabilityEquation = "$GtSliceMask 1 AND";
         metric               = AddMetric( "L30Bank6InputAvailable", "Slice0 L3 Bank6 Input Available",
                           "The percentage of time in which slice0 L3 bank6 has input available",
                           "GTI/L3", ( METRIC_GROUP_NAME_ID_GTI * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_L3 * 0x10000 ), USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
@@ -3882,7 +3882,7 @@ namespace MetricsDiscoveryInternal::MetricSets_DG1_OA
             MD_CHECK_CC( ( metric->SetMaxValueEquation( "100" ) ) );
         }
 
-        availabilityEquation = "$SliceMask 1 AND";
+        availabilityEquation = "$GtSliceMask 1 AND";
         metric               = AddMetric( "L30Bank7InputAvailable", "Slice0 L3 Bank7 Input Available",
                           "The percentage of time in which slice0 L3 bank7 has input available",
                           "GTI/L3", ( METRIC_GROUP_NAME_ID_GTI * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_L3 * 0x10000 ), USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
@@ -4190,7 +4190,7 @@ namespace MetricsDiscoveryInternal::MetricSets_DG1_OA
             MD_CHECK_CC( ( metric->SetMaxValueEquation( "100" ) ) );
         }
 
-        availabilityEquation = "$SliceMask 1 AND";
+        availabilityEquation = "$GtSliceMask 1 AND";
         metric               = AddMetric( "L30Bank0OutputReady", "Slice0 L3 Bank0 Output Ready",
                           "The percentage of time in which slice0 L3 bank0 output is ready",
                           "GTI/L3", ( METRIC_GROUP_NAME_ID_GTI * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_L3 * 0x10000 ), USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
@@ -4204,7 +4204,7 @@ namespace MetricsDiscoveryInternal::MetricSets_DG1_OA
             MD_CHECK_CC( ( metric->SetMaxValueEquation( "100" ) ) );
         }
 
-        availabilityEquation = "$SliceMask 1 AND";
+        availabilityEquation = "$GtSliceMask 1 AND";
         metric               = AddMetric( "L30Bank4OutputReady", "Slice0 L3 Bank4 Output Ready",
                           "The percentage of time in which slice0 L3 bank4 output is ready",
                           "GTI/L3", ( METRIC_GROUP_NAME_ID_GTI * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_L3 * 0x10000 ), USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
@@ -4457,7 +4457,7 @@ namespace MetricsDiscoveryInternal::MetricSets_DG1_OA
             MD_CHECK_CC( ( metric->SetMaxValueEquation( "100" ) ) );
         }
 
-        availabilityEquation = "$SliceMask 1 AND";
+        availabilityEquation = "$GtSliceMask 1 AND";
         metric               = AddMetric( "L30Bank1OutputReady", "Slice0 L3 Bank1 Output Ready",
                           "The percentage of time in which slice0 L3 bank1 output is ready",
                           "GTI/L3", ( METRIC_GROUP_NAME_ID_GTI * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_L3 * 0x10000 ), USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
@@ -4471,7 +4471,7 @@ namespace MetricsDiscoveryInternal::MetricSets_DG1_OA
             MD_CHECK_CC( ( metric->SetMaxValueEquation( "100" ) ) );
         }
 
-        availabilityEquation = "$SliceMask 1 AND";
+        availabilityEquation = "$GtSliceMask 1 AND";
         metric               = AddMetric( "L30Bank5OutputReady", "Slice0 L3 Bank5 Output Ready",
                           "The percentage of time in which slice0 L3 bank5 output is ready",
                           "GTI/L3", ( METRIC_GROUP_NAME_ID_GTI * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_L3 * 0x10000 ), USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
@@ -4725,7 +4725,7 @@ namespace MetricsDiscoveryInternal::MetricSets_DG1_OA
             MD_CHECK_CC( ( metric->SetMaxValueEquation( "100" ) ) );
         }
 
-        availabilityEquation = "$SliceMask 1 AND";
+        availabilityEquation = "$GtSliceMask 1 AND";
         metric               = AddMetric( "L30Bank2OutputReady", "Slice0 L3 Bank2 Output Ready",
                           "The percentage of time in which slice0 L3 bank2 output is ready",
                           "GTI/L3", ( METRIC_GROUP_NAME_ID_GTI * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_L3 * 0x10000 ), USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
@@ -4739,7 +4739,7 @@ namespace MetricsDiscoveryInternal::MetricSets_DG1_OA
             MD_CHECK_CC( ( metric->SetMaxValueEquation( "100" ) ) );
         }
 
-        availabilityEquation = "$SliceMask 1 AND";
+        availabilityEquation = "$GtSliceMask 1 AND";
         metric               = AddMetric( "L30Bank6OutputReady", "Slice0 L3 Bank6 Output Ready",
                           "The percentage of time in which slice0 L3 bank6 output is ready",
                           "GTI/L3", ( METRIC_GROUP_NAME_ID_GTI * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_L3 * 0x10000 ), USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
@@ -4993,7 +4993,7 @@ namespace MetricsDiscoveryInternal::MetricSets_DG1_OA
             MD_CHECK_CC( ( metric->SetMaxValueEquation( "100" ) ) );
         }
 
-        availabilityEquation = "$SliceMask 1 AND";
+        availabilityEquation = "$GtSliceMask 1 AND";
         metric               = AddMetric( "L30Bank3OutputReady", "Slice0 L3 Bank3 Output Ready",
                           "The percentage of time in which slice0 L3 bank3 output is ready",
                           "GTI/L3", ( METRIC_GROUP_NAME_ID_GTI * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_L3 * 0x10000 ), USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
@@ -5007,7 +5007,7 @@ namespace MetricsDiscoveryInternal::MetricSets_DG1_OA
             MD_CHECK_CC( ( metric->SetMaxValueEquation( "100" ) ) );
         }
 
-        availabilityEquation = "$SliceMask 1 AND";
+        availabilityEquation = "$GtSliceMask 1 AND";
         metric               = AddMetric( "L30Bank7OutputReady", "Slice0 L3 Bank7 Output Ready",
                           "The percentage of time in which slice0 L3 bank7 output is ready",
                           "GTI/L3", ( METRIC_GROUP_NAME_ID_GTI * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_L3 * 0x10000 ), USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
@@ -5261,7 +5261,7 @@ namespace MetricsDiscoveryInternal::MetricSets_DG1_OA
             MD_CHECK_CC( ( metric->SetMaxValueEquation( "100" ) ) );
         }
 
-        availabilityEquation = "$DualSubsliceMask 1 AND";
+        availabilityEquation = "$GtDualSubsliceMask 1 AND";
         metric               = AddMetric( "Sampler00InputAvailable", "Slice0 DualSubslice0 Input Available",
                           "The percentage of time in which slice0 dualsubslice0 sampler input is available",
                           "GPU/Sampler", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_SAMPLER * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
@@ -5275,7 +5275,7 @@ namespace MetricsDiscoveryInternal::MetricSets_DG1_OA
             MD_CHECK_CC( ( metric->SetMaxValueEquation( "100" ) ) );
         }
 
-        availabilityEquation = "$DualSubsliceMask 2 AND";
+        availabilityEquation = "$GtDualSubsliceMask 2 AND";
         metric               = AddMetric( "Sampler01InputAvailable", "Slice0 DualSubslice1 Input Available",
                           "The percentage of time in which slice0 dualsubslice1 sampler input is available",
                           "GPU/Sampler", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_SAMPLER * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
@@ -5289,7 +5289,7 @@ namespace MetricsDiscoveryInternal::MetricSets_DG1_OA
             MD_CHECK_CC( ( metric->SetMaxValueEquation( "100" ) ) );
         }
 
-        availabilityEquation = "$DualSubsliceMask 4 AND";
+        availabilityEquation = "$GtDualSubsliceMask 4 AND";
         metric               = AddMetric( "Sampler02InputAvailable", "Slice0 DualSubslice2 Input Available",
                           "The percentage of time in which slice0 dualsubslice2 sampler input is available",
                           "GPU/Sampler", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_SAMPLER * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
@@ -5303,7 +5303,7 @@ namespace MetricsDiscoveryInternal::MetricSets_DG1_OA
             MD_CHECK_CC( ( metric->SetMaxValueEquation( "100" ) ) );
         }
 
-        availabilityEquation = "$DualSubsliceMask 8 AND";
+        availabilityEquation = "$GtDualSubsliceMask 8 AND";
         metric               = AddMetric( "Sampler03InputAvailable", "Slice0 DualSubslice3 Input Available",
                           "The percentage of time in which slice0 dualsubslice3 sampler input is available",
                           "GPU/Sampler", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_SAMPLER * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
@@ -5317,7 +5317,7 @@ namespace MetricsDiscoveryInternal::MetricSets_DG1_OA
             MD_CHECK_CC( ( metric->SetMaxValueEquation( "100" ) ) );
         }
 
-        availabilityEquation = "$DualSubsliceMask 16 AND";
+        availabilityEquation = "$GtDualSubsliceMask 16 AND";
         metric               = AddMetric( "Sampler04InputAvailable", "Slice0 DualSubslice4 Input Available",
                           "The percentage of time in which slice0 dualsubslice4 sampler input is available",
                           "GPU/Sampler", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_SAMPLER * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
@@ -5331,7 +5331,7 @@ namespace MetricsDiscoveryInternal::MetricSets_DG1_OA
             MD_CHECK_CC( ( metric->SetMaxValueEquation( "100" ) ) );
         }
 
-        availabilityEquation = "$DualSubsliceMask 32 AND";
+        availabilityEquation = "$GtDualSubsliceMask 32 AND";
         metric               = AddMetric( "Sampler05InputAvailable", "Slice0 DualSubslice5 Input Available",
                           "The percentage of time in which slice0 dualsubslice5 sampler input is available",
                           "GPU/Sampler", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_SAMPLER * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
@@ -5697,7 +5697,7 @@ namespace MetricsDiscoveryInternal::MetricSets_DG1_OA
             MD_CHECK_CC( ( metric->SetMaxValueEquation( "100" ) ) );
         }
 
-        availabilityEquation = "$DualSubsliceMask 1 AND";
+        availabilityEquation = "$GtDualSubsliceMask 1 AND";
         metric               = AddMetric( "Sampler00OutputReady", "Slice0 DualSubslice0 Sampler Output Ready",
                           "The percentage of time in which slice0 dualsubslice0 sampler output is ready",
                           "GPU/Sampler", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_SAMPLER * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
@@ -5711,7 +5711,7 @@ namespace MetricsDiscoveryInternal::MetricSets_DG1_OA
             MD_CHECK_CC( ( metric->SetMaxValueEquation( "100" ) ) );
         }
 
-        availabilityEquation = "$DualSubsliceMask 2 AND";
+        availabilityEquation = "$GtDualSubsliceMask 2 AND";
         metric               = AddMetric( "Sampler01OutputReady", "Slice0 DualSubslice1 Sampler Output Ready",
                           "The percentage of time in which slice0 dualsubslice1 sampler output is ready",
                           "GPU/Sampler", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_SAMPLER * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
@@ -5725,7 +5725,7 @@ namespace MetricsDiscoveryInternal::MetricSets_DG1_OA
             MD_CHECK_CC( ( metric->SetMaxValueEquation( "100" ) ) );
         }
 
-        availabilityEquation = "$DualSubsliceMask 4 AND";
+        availabilityEquation = "$GtDualSubsliceMask 4 AND";
         metric               = AddMetric( "Sampler02OutputReady", "Slice0 DualSubslice2 Sampler Output Ready",
                           "The percentage of time in which slice0 dualsubslice2 sampler output is ready",
                           "GPU/Sampler", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_SAMPLER * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
@@ -5739,7 +5739,7 @@ namespace MetricsDiscoveryInternal::MetricSets_DG1_OA
             MD_CHECK_CC( ( metric->SetMaxValueEquation( "100" ) ) );
         }
 
-        availabilityEquation = "$DualSubsliceMask 8 AND";
+        availabilityEquation = "$GtDualSubsliceMask 8 AND";
         metric               = AddMetric( "Sampler03OutputReady", "Slice0 DualSubslice3 Sampler Output Ready",
                           "The percentage of time in which slice0 dualsubslice3 sampler output is ready",
                           "GPU/Sampler", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_SAMPLER * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
@@ -5753,7 +5753,7 @@ namespace MetricsDiscoveryInternal::MetricSets_DG1_OA
             MD_CHECK_CC( ( metric->SetMaxValueEquation( "100" ) ) );
         }
 
-        availabilityEquation = "$DualSubsliceMask 16 AND";
+        availabilityEquation = "$GtDualSubsliceMask 16 AND";
         metric               = AddMetric( "Sampler04OutputReady", "Slice0 DualSubslice4 Sampler Output Ready",
                           "The percentage of time in which slice0 dualsubslice4 sampler output is ready",
                           "GPU/Sampler", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_SAMPLER * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
@@ -5767,7 +5767,7 @@ namespace MetricsDiscoveryInternal::MetricSets_DG1_OA
             MD_CHECK_CC( ( metric->SetMaxValueEquation( "100" ) ) );
         }
 
-        availabilityEquation = "$DualSubsliceMask 32 AND";
+        availabilityEquation = "$GtDualSubsliceMask 32 AND";
         metric               = AddMetric( "Sampler05OutputReady", "Slice0 DualSubslice5 Sampler Output Ready",
                           "The percentage of time in which slice0 dualsubslice5 sampler output is ready",
                           "GPU/Sampler", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_SAMPLER * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
@@ -6135,7 +6135,7 @@ namespace MetricsDiscoveryInternal::MetricSets_DG1_OA
             MD_CHECK_CC( ( metric->SetMaxValueEquation( "100" ) ) );
         }
 
-        availabilityEquation = "$DualSubsliceMask 1 AND";
+        availabilityEquation = "$GtDualSubsliceMask 1 AND";
         metric               = AddMetric( "NonPSThread00ReadyForDispatch", "Non-PS Thread Ready For Dispatch on Slice0 DualSubslice0 Thread Dispatcher",
                           "The percentage of time in which non-PS thread is ready for dispatch on slice0 dualsubslice0 thread dispatcher",
                           "GPU/Thread Dispatcher", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_TD * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
@@ -6149,7 +6149,7 @@ namespace MetricsDiscoveryInternal::MetricSets_DG1_OA
             MD_CHECK_CC( ( metric->SetMaxValueEquation( "100" ) ) );
         }
 
-        availabilityEquation = "$DualSubsliceMask 2 AND";
+        availabilityEquation = "$GtDualSubsliceMask 2 AND";
         metric               = AddMetric( "NonPSThread01ReadyForDispatch", "Non-PS Thread Ready For Dispatch on Slice0 DualSubslice1 Thread Dispatcher",
                           "The percentage of time in which non-PS thread is ready for dispatch on slice0 dualsubslice1 thread dispatcher",
                           "GPU/Thread Dispatcher", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_TD * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
@@ -6163,7 +6163,7 @@ namespace MetricsDiscoveryInternal::MetricSets_DG1_OA
             MD_CHECK_CC( ( metric->SetMaxValueEquation( "100" ) ) );
         }
 
-        availabilityEquation = "$DualSubsliceMask 4 AND";
+        availabilityEquation = "$GtDualSubsliceMask 4 AND";
         metric               = AddMetric( "NonPSThread02ReadyForDispatch", "Non-PS Thread Ready For Dispatch on Slice0 DualSubslice2 Thread Dispatcher",
                           "The percentage of time in which non-PS thread is ready for dispatch on slice0 dualsubslice2 thread dispatcher",
                           "GPU/Thread Dispatcher", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_TD * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
@@ -6177,7 +6177,7 @@ namespace MetricsDiscoveryInternal::MetricSets_DG1_OA
             MD_CHECK_CC( ( metric->SetMaxValueEquation( "100" ) ) );
         }
 
-        availabilityEquation = "$DualSubsliceMask 8 AND";
+        availabilityEquation = "$GtDualSubsliceMask 8 AND";
         metric               = AddMetric( "NonPSThread03ReadyForDispatch", "Non-PS Thread Ready For Dispatch on Slice0 DualSubslice3 Thread Dispatcher",
                           "The percentage of time in which non-PS thread is ready for dispatch on slice0 dualsubslice3 thread dispatcher",
                           "GPU/Thread Dispatcher", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_TD * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
@@ -6191,7 +6191,7 @@ namespace MetricsDiscoveryInternal::MetricSets_DG1_OA
             MD_CHECK_CC( ( metric->SetMaxValueEquation( "100" ) ) );
         }
 
-        availabilityEquation = "$DualSubsliceMask 16 AND";
+        availabilityEquation = "$GtDualSubsliceMask 16 AND";
         metric               = AddMetric( "NonPSThread04ReadyForDispatch", "Non-PS Thread Ready For Dispatch on Slice0 DualSubslice4 Thread Dispatcher",
                           "The percentage of time in which non-PS thread is ready for dispatch on slice0 dualsubslice4 thread dispatcher",
                           "GPU/Thread Dispatcher", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_TD * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
@@ -6205,7 +6205,7 @@ namespace MetricsDiscoveryInternal::MetricSets_DG1_OA
             MD_CHECK_CC( ( metric->SetMaxValueEquation( "100" ) ) );
         }
 
-        availabilityEquation = "$DualSubsliceMask 32 AND";
+        availabilityEquation = "$GtDualSubsliceMask 32 AND";
         metric               = AddMetric( "NonPSThread05ReadyForDispatch", "Non-PS Thread Ready For Dispatch on Slice0 DualSubslice5 Thread Dispatcher",
                           "The percentage of time in which non-PS thread is ready for dispatch on slice0 dualsubslice5 thread dispatcher",
                           "GPU/Thread Dispatcher", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_TD * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
@@ -6219,7 +6219,7 @@ namespace MetricsDiscoveryInternal::MetricSets_DG1_OA
             MD_CHECK_CC( ( metric->SetMaxValueEquation( "100" ) ) );
         }
 
-        availabilityEquation = "$DualSubsliceMask 1 AND";
+        availabilityEquation = "$GtDualSubsliceMask 1 AND";
         metric               = AddMetric( "ThreadHeader00ReadyPort0", "Thread Header Ready on Slice0 DualSubslice0 Thread Dispatcher Port 0",
                           "The percentage of time in which thread header is ready on slice0 dualsubslice0 thread dispatcher port 0",
                           "GPU/Thread Dispatcher", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_TD * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
@@ -6233,7 +6233,7 @@ namespace MetricsDiscoveryInternal::MetricSets_DG1_OA
             MD_CHECK_CC( ( metric->SetMaxValueEquation( "100" ) ) );
         }
 
-        availabilityEquation = "$DualSubsliceMask 1 AND";
+        availabilityEquation = "$GtDualSubsliceMask 1 AND";
         metric               = AddMetric( "ThreadHeader00ReadyPort1", "Thread Header Ready on Slice0 DualSubslice0 Thread Dispatcher Port 1",
                           "The percentage of time in which thread header is ready on slice0 dualsubslice0 thread dispatcher port 1",
                           "GPU/Thread Dispatcher", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_TD * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
@@ -6247,7 +6247,7 @@ namespace MetricsDiscoveryInternal::MetricSets_DG1_OA
             MD_CHECK_CC( ( metric->SetMaxValueEquation( "100" ) ) );
         }
 
-        availabilityEquation = "$DualSubsliceMask 1 AND";
+        availabilityEquation = "$GtDualSubsliceMask 1 AND";
         metric               = AddMetric( "ThreadHeader00ReadyPort2", "Thread Header Ready on Slice0 DualSubslice0 Thread Dispatcher Port 2",
                           "The percentage of time in which thread header is ready on slice0 dualsubslice0 thread dispatcher port 2",
                           "GPU/Thread Dispatcher", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_TD * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
@@ -6261,7 +6261,7 @@ namespace MetricsDiscoveryInternal::MetricSets_DG1_OA
             MD_CHECK_CC( ( metric->SetMaxValueEquation( "100" ) ) );
         }
 
-        availabilityEquation = "$DualSubsliceMask 1 AND";
+        availabilityEquation = "$GtDualSubsliceMask 1 AND";
         metric               = AddMetric( "ThreadHeader00ReadyPort3", "Thread Header Ready on Slice0 DualSubslice0 Thread Dispatcher Port 3",
                           "The percentage of time in which thread header is ready on slice0 dualsubslice0 thread dispatcher port 3",
                           "GPU/Thread Dispatcher", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_TD * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
@@ -6275,7 +6275,7 @@ namespace MetricsDiscoveryInternal::MetricSets_DG1_OA
             MD_CHECK_CC( ( metric->SetMaxValueEquation( "100" ) ) );
         }
 
-        availabilityEquation = "$DualSubsliceMask 2 AND";
+        availabilityEquation = "$GtDualSubsliceMask 2 AND";
         metric               = AddMetric( "ThreadHeader01ReadyPort0", "Thread Header Ready on Slice0 DualSubslice1 Thread Dispatcher Port 0",
                           "The percentage of time in which thread header is ready on slice0 dualsubslice1 thread dispatcher port 0",
                           "GPU/Thread Dispatcher", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_TD * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
@@ -6289,7 +6289,7 @@ namespace MetricsDiscoveryInternal::MetricSets_DG1_OA
             MD_CHECK_CC( ( metric->SetMaxValueEquation( "100" ) ) );
         }
 
-        availabilityEquation = "$DualSubsliceMask 2 AND";
+        availabilityEquation = "$GtDualSubsliceMask 2 AND";
         metric               = AddMetric( "ThreadHeader01ReadyPort1", "Thread Header Ready on Slice0 DualSubslice1 Thread Dispatcher Port 1",
                           "The percentage of time in which thread header is ready on slice0 dualsubslice1 thread dispatcher port 1",
                           "GPU/Thread Dispatcher", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_TD * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
@@ -6303,7 +6303,7 @@ namespace MetricsDiscoveryInternal::MetricSets_DG1_OA
             MD_CHECK_CC( ( metric->SetMaxValueEquation( "100" ) ) );
         }
 
-        availabilityEquation = "$DualSubsliceMask 2 AND";
+        availabilityEquation = "$GtDualSubsliceMask 2 AND";
         metric               = AddMetric( "ThreadHeader01ReadyPort2", "Thread Header Ready on Slice0 DualSubslice1 Thread Dispatcher Port 2",
                           "The percentage of time in which thread header is ready on slice0 dualsubslice1 thread dispatcher port 2",
                           "GPU/Thread Dispatcher", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_TD * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
@@ -6317,7 +6317,7 @@ namespace MetricsDiscoveryInternal::MetricSets_DG1_OA
             MD_CHECK_CC( ( metric->SetMaxValueEquation( "100" ) ) );
         }
 
-        availabilityEquation = "$DualSubsliceMask 2 AND";
+        availabilityEquation = "$GtDualSubsliceMask 2 AND";
         metric               = AddMetric( "ThreadHeader01ReadyPort3", "Thread Header Ready on Slice0 DualSubslice1 Thread Dispatcher Port 3",
                           "The percentage of time in which thread header is ready on slice0 dualsubslice1 thread dispatcher port 3",
                           "GPU/Thread Dispatcher", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_TD * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
@@ -6331,7 +6331,7 @@ namespace MetricsDiscoveryInternal::MetricSets_DG1_OA
             MD_CHECK_CC( ( metric->SetMaxValueEquation( "100" ) ) );
         }
 
-        availabilityEquation = "$DualSubsliceMask 1 AND";
+        availabilityEquation = "$GtDualSubsliceMask 1 AND";
         metric               = AddMetric( "ThreadHeader00Ready", "Thread Header Ready on Slice0 DualSubslice0 Thread Dispatcher",
                           "The percentage of time in which thread header is ready on slice0 dualsubslice0 thread dispatcher",
                           "GPU/Thread Dispatcher", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_TD * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
@@ -6345,7 +6345,7 @@ namespace MetricsDiscoveryInternal::MetricSets_DG1_OA
             MD_CHECK_CC( ( metric->SetMaxValueEquation( "100" ) ) );
         }
 
-        availabilityEquation = "$DualSubsliceMask 2 AND";
+        availabilityEquation = "$GtDualSubsliceMask 2 AND";
         metric               = AddMetric( "ThreadHeader01Ready", "Thread Header Ready on Slice0 DualSubslice1 Thread Dispatcher",
                           "The percentage of time in which thread header is ready on slice0 dualsubslice1 thread dispatcher",
                           "GPU/Thread Dispatcher", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_TD * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
@@ -6724,7 +6724,7 @@ namespace MetricsDiscoveryInternal::MetricSets_DG1_OA
             MD_CHECK_CC( ( metric->SetMaxValueEquation( "100" ) ) );
         }
 
-        availabilityEquation = "$DualSubsliceMask 1 AND";
+        availabilityEquation = "$GtDualSubsliceMask 1 AND";
         metric               = AddMetric( "PSThread00ReadyForDispatch", "PS Thread Ready For Dispatch on Slice0 Dualsubslice0 Thread Dispatcher",
                           "The percentage of time in which PS thread is ready for dispatch on slice0 dualsubslice0 thread dispatcher",
                           "GPU/Thread Dispatcher", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_TD * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
@@ -6738,7 +6738,7 @@ namespace MetricsDiscoveryInternal::MetricSets_DG1_OA
             MD_CHECK_CC( ( metric->SetMaxValueEquation( "100" ) ) );
         }
 
-        availabilityEquation = "$DualSubsliceMask 2 AND";
+        availabilityEquation = "$GtDualSubsliceMask 2 AND";
         metric               = AddMetric( "PSThread01ReadyForDispatch", "PS Thread Ready For Dispatch on Slice0 Dualsubslice1 Thread Dispatcher",
                           "The percentage of time in which PS thread is ready for dispatch on slice0 dualsubslice1 thread dispatcher",
                           "GPU/Thread Dispatcher", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_TD * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
@@ -6752,7 +6752,7 @@ namespace MetricsDiscoveryInternal::MetricSets_DG1_OA
             MD_CHECK_CC( ( metric->SetMaxValueEquation( "100" ) ) );
         }
 
-        availabilityEquation = "$DualSubsliceMask 4 AND";
+        availabilityEquation = "$GtDualSubsliceMask 4 AND";
         metric               = AddMetric( "PSThread02ReadyForDispatch", "PS Thread Ready For Dispatch on Slice0 Dualsubslice2 Thread Dispatcher",
                           "The percentage of time in which PS thread is ready for dispatch on slice0 dualsubslice2 thread dispatcher",
                           "GPU/Thread Dispatcher", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_TD * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
@@ -6766,7 +6766,7 @@ namespace MetricsDiscoveryInternal::MetricSets_DG1_OA
             MD_CHECK_CC( ( metric->SetMaxValueEquation( "100" ) ) );
         }
 
-        availabilityEquation = "$DualSubsliceMask 8 AND";
+        availabilityEquation = "$GtDualSubsliceMask 8 AND";
         metric               = AddMetric( "PSThread03ReadyForDispatch", "PS Thread Ready For Dispatch on Slice0 Dualsubslice3 Thread Dispatcher",
                           "The percentage of time in which PS thread is ready for dispatch on slice0 dualsubslice3 thread dispatcher",
                           "GPU/Thread Dispatcher", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_TD * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
@@ -6780,7 +6780,7 @@ namespace MetricsDiscoveryInternal::MetricSets_DG1_OA
             MD_CHECK_CC( ( metric->SetMaxValueEquation( "100" ) ) );
         }
 
-        availabilityEquation = "$DualSubsliceMask 16 AND";
+        availabilityEquation = "$GtDualSubsliceMask 16 AND";
         metric               = AddMetric( "PSThread04ReadyForDispatch", "PS Thread Ready For Dispatch on Slice0 Dualsubslice4 Thread Dispatcher",
                           "The percentage of time in which PS thread is ready for dispatch on slice0 dualsubslice4 thread dispatcher",
                           "GPU/Thread Dispatcher", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_TD * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
@@ -6794,7 +6794,7 @@ namespace MetricsDiscoveryInternal::MetricSets_DG1_OA
             MD_CHECK_CC( ( metric->SetMaxValueEquation( "100" ) ) );
         }
 
-        availabilityEquation = "$DualSubsliceMask 32 AND";
+        availabilityEquation = "$GtDualSubsliceMask 32 AND";
         metric               = AddMetric( "PSThread05ReadyForDispatch", "PS Thread Ready For Dispatch on Slice0 Dualsubslice5 Thread Dispatcher",
                           "The percentage of time in which PS thread is ready for dispatch on slice0 dualsubslice5 thread dispatcher",
                           "GPU/Thread Dispatcher", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_TD * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
@@ -6808,7 +6808,7 @@ namespace MetricsDiscoveryInternal::MetricSets_DG1_OA
             MD_CHECK_CC( ( metric->SetMaxValueEquation( "100" ) ) );
         }
 
-        availabilityEquation = "$DualSubsliceMask 32 AND";
+        availabilityEquation = "$GtDualSubsliceMask 32 AND";
         metric               = AddMetric( "ThreadHeader05Ready", "Thread Header Ready on Slice0 DualSubslice5 Thread Dispatcher",
                           "The percentage of time in which thread header is ready on slice0 dualsubslice5 thread dispatcher",
                           "GPU/Thread Dispatcher", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_TD * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
@@ -6822,7 +6822,7 @@ namespace MetricsDiscoveryInternal::MetricSets_DG1_OA
             MD_CHECK_CC( ( metric->SetMaxValueEquation( "100" ) ) );
         }
 
-        availabilityEquation = "$DualSubsliceMask 32 AND";
+        availabilityEquation = "$GtDualSubsliceMask 32 AND";
         metric               = AddMetric( "ThreadHeader05ReadyPort0", "Thread Header Ready on Slice0 DualSubslice5 Thread Dispatcher Port 0",
                           "The percentage of time in which thread header is ready on slice0 dualsubslice5 thread dispatcher port 0",
                           "GPU/Thread Dispatcher", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_TD * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
@@ -6836,7 +6836,7 @@ namespace MetricsDiscoveryInternal::MetricSets_DG1_OA
             MD_CHECK_CC( ( metric->SetMaxValueEquation( "100" ) ) );
         }
 
-        availabilityEquation = "$DualSubsliceMask 32 AND";
+        availabilityEquation = "$GtDualSubsliceMask 32 AND";
         metric               = AddMetric( "ThreadHeader05ReadyPort1", "Thread Header Ready on Slice0 DualSubslice5 Thread Dispatcher Port 1",
                           "The percentage of time in which thread header is ready on slice0 dualsubslice5 thread dispatcher port 1",
                           "GPU/Thread Dispatcher", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_TD * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
@@ -6850,7 +6850,7 @@ namespace MetricsDiscoveryInternal::MetricSets_DG1_OA
             MD_CHECK_CC( ( metric->SetMaxValueEquation( "100" ) ) );
         }
 
-        availabilityEquation = "$DualSubsliceMask 32 AND";
+        availabilityEquation = "$GtDualSubsliceMask 32 AND";
         metric               = AddMetric( "ThreadHeader05ReadyPort2", "Thread Header Ready on Slice0 DualSubslice5 Thread Dispatcher Port 2",
                           "The percentage of time in which thread header is ready on slice0 dualsubslice5 thread dispatcher port 2",
                           "GPU/Thread Dispatcher", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_TD * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
@@ -6864,7 +6864,7 @@ namespace MetricsDiscoveryInternal::MetricSets_DG1_OA
             MD_CHECK_CC( ( metric->SetMaxValueEquation( "100" ) ) );
         }
 
-        availabilityEquation = "$DualSubsliceMask 32 AND";
+        availabilityEquation = "$GtDualSubsliceMask 32 AND";
         metric               = AddMetric( "ThreadHeader05ReadyPort3", "Thread Header Ready on Slice0 DualSubslice5 Thread Dispatcher Port 3",
                           "The percentage of time in which thread header is ready on slice0 dualsubslice5 thread dispatcher port 3",
                           "GPU/Thread Dispatcher", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_TD * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
@@ -7257,7 +7257,7 @@ namespace MetricsDiscoveryInternal::MetricSets_DG1_OA
             MD_CHECK_CC( ( metric->SetMaxValueEquation( "100" ) ) );
         }
 
-        availabilityEquation = "$DualSubsliceMask 4 AND";
+        availabilityEquation = "$GtDualSubsliceMask 4 AND";
         metric               = AddMetric( "ThreadHeader02Ready", "Thread Header Ready on Slice0 DualSubslice2 Thread Dispatcher",
                           "The percentage of time in which thread header is ready on slice0 dualsubslice2 thread dispatcher",
                           "GPU/Thread Dispatcher", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_TD * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
@@ -7271,7 +7271,7 @@ namespace MetricsDiscoveryInternal::MetricSets_DG1_OA
             MD_CHECK_CC( ( metric->SetMaxValueEquation( "100" ) ) );
         }
 
-        availabilityEquation = "$DualSubsliceMask 8 AND";
+        availabilityEquation = "$GtDualSubsliceMask 8 AND";
         metric               = AddMetric( "ThreadHeader03Ready", "Thread Header Ready on Slice0 DualSubslice3 Thread Dispatcher",
                           "The percentage of time in which thread header is ready on slice0 dualsubslice3 thread dispatcher",
                           "GPU/Thread Dispatcher", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_TD * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
@@ -7285,7 +7285,7 @@ namespace MetricsDiscoveryInternal::MetricSets_DG1_OA
             MD_CHECK_CC( ( metric->SetMaxValueEquation( "100" ) ) );
         }
 
-        availabilityEquation = "$DualSubsliceMask 16 AND";
+        availabilityEquation = "$GtDualSubsliceMask 16 AND";
         metric               = AddMetric( "ThreadHeader04Ready", "Thread Header Ready on Slice0 DualSubslice4 Thread Dispatcher",
                           "The percentage of time in which thread header is ready on slice0 dualsubslice4 thread dispatcher",
                           "GPU/Thread Dispatcher", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_TD * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
@@ -7299,7 +7299,7 @@ namespace MetricsDiscoveryInternal::MetricSets_DG1_OA
             MD_CHECK_CC( ( metric->SetMaxValueEquation( "100" ) ) );
         }
 
-        availabilityEquation = "$DualSubsliceMask 4 AND";
+        availabilityEquation = "$GtDualSubsliceMask 4 AND";
         metric               = AddMetric( "ThreadHeader02ReadyPort0", "Thread Header Ready on Slice0 DualSubslice2 Thread Dispatcher Port 0",
                           "The percentage of time in which thread header is ready on slice0 dualsubslice2 thread dispatcher port 0",
                           "GPU/Thread Dispatcher", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_TD * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
@@ -7313,7 +7313,7 @@ namespace MetricsDiscoveryInternal::MetricSets_DG1_OA
             MD_CHECK_CC( ( metric->SetMaxValueEquation( "100" ) ) );
         }
 
-        availabilityEquation = "$DualSubsliceMask 4 AND";
+        availabilityEquation = "$GtDualSubsliceMask 4 AND";
         metric               = AddMetric( "ThreadHeader02ReadyPort1", "Thread Header Ready on Slice0 DualSubslice2 Thread Dispatcher Port 1",
                           "The percentage of time in which thread header is ready on slice0 dualsubslice2 thread dispatcher port 1",
                           "GPU/Thread Dispatcher", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_TD * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
@@ -7327,7 +7327,7 @@ namespace MetricsDiscoveryInternal::MetricSets_DG1_OA
             MD_CHECK_CC( ( metric->SetMaxValueEquation( "100" ) ) );
         }
 
-        availabilityEquation = "$DualSubsliceMask 4 AND";
+        availabilityEquation = "$GtDualSubsliceMask 4 AND";
         metric               = AddMetric( "ThreadHeader02ReadyPort2", "Thread Header Ready on Slice0 DualSubslice2 Thread Dispatcher Port 2",
                           "The percentage of time in which thread header is ready on slice0 dualsubslice2 thread dispatcher port 2",
                           "GPU/Thread Dispatcher", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_TD * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
@@ -7341,7 +7341,7 @@ namespace MetricsDiscoveryInternal::MetricSets_DG1_OA
             MD_CHECK_CC( ( metric->SetMaxValueEquation( "100" ) ) );
         }
 
-        availabilityEquation = "$DualSubsliceMask 4 AND";
+        availabilityEquation = "$GtDualSubsliceMask 4 AND";
         metric               = AddMetric( "ThreadHeader02ReadyPort3", "Thread Header Ready on Slice0 DualSubslice2 Thread Dispatcher Port 3",
                           "The percentage of time in which thread header is ready on slice0 dualsubslice2 thread dispatcher port 3",
                           "GPU/Thread Dispatcher", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_TD * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
@@ -7355,7 +7355,7 @@ namespace MetricsDiscoveryInternal::MetricSets_DG1_OA
             MD_CHECK_CC( ( metric->SetMaxValueEquation( "100" ) ) );
         }
 
-        availabilityEquation = "$DualSubsliceMask 8 AND";
+        availabilityEquation = "$GtDualSubsliceMask 8 AND";
         metric               = AddMetric( "ThreadHeader03ReadyPort0", "Thread Header Ready on Slice0 DualSubslice3 Thread Dispatcher Port 0",
                           "The percentage of time in which thread header is ready on slice0 dualsubslice3 thread dispatcher port 0",
                           "GPU/Thread Dispatcher", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_TD * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
@@ -7369,7 +7369,7 @@ namespace MetricsDiscoveryInternal::MetricSets_DG1_OA
             MD_CHECK_CC( ( metric->SetMaxValueEquation( "100" ) ) );
         }
 
-        availabilityEquation = "$DualSubsliceMask 8 AND";
+        availabilityEquation = "$GtDualSubsliceMask 8 AND";
         metric               = AddMetric( "ThreadHeader03ReadyPort1", "Thread Header Ready on Slice0 DualSubslice3 Thread Dispatcher Port 1",
                           "The percentage of time in which thread header is ready on slice0 dualsubslice3 thread dispatcher port 1",
                           "GPU/Thread Dispatcher", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_TD * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
@@ -7383,7 +7383,7 @@ namespace MetricsDiscoveryInternal::MetricSets_DG1_OA
             MD_CHECK_CC( ( metric->SetMaxValueEquation( "100" ) ) );
         }
 
-        availabilityEquation = "$DualSubsliceMask 8 AND";
+        availabilityEquation = "$GtDualSubsliceMask 8 AND";
         metric               = AddMetric( "ThreadHeader03ReadyPort2", "Thread Header Ready on Slice0 DualSubslice3 Thread Dispatcher Port 2",
                           "The percentage of time in which thread header is ready on slice0 dualsubslice3 thread dispatcher port 2",
                           "GPU/Thread Dispatcher", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_TD * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
@@ -7397,7 +7397,7 @@ namespace MetricsDiscoveryInternal::MetricSets_DG1_OA
             MD_CHECK_CC( ( metric->SetMaxValueEquation( "100" ) ) );
         }
 
-        availabilityEquation = "$DualSubsliceMask 8 AND";
+        availabilityEquation = "$GtDualSubsliceMask 8 AND";
         metric               = AddMetric( "ThreadHeader03ReadyPort3", "Thread Header Ready on Slice0 DualSubslice3 Thread Dispatcher Port 3",
                           "The percentage of time in which thread header is ready on slice0 dualsubslice3 thread dispatcher port 3",
                           "GPU/Thread Dispatcher", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_TD * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
@@ -7411,7 +7411,7 @@ namespace MetricsDiscoveryInternal::MetricSets_DG1_OA
             MD_CHECK_CC( ( metric->SetMaxValueEquation( "100" ) ) );
         }
 
-        availabilityEquation = "$DualSubsliceMask 16 AND";
+        availabilityEquation = "$GtDualSubsliceMask 16 AND";
         metric               = AddMetric( "ThreadHeader04ReadyPort0", "Thread Header Ready on Slice0 DualSubslice4 Thread Dispatcher Port 0",
                           "The percentage of time in which thread header is ready on slice0 dualsubslice4 thread dispatcher port 0",
                           "GPU/Thread Dispatcher", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_TD * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
@@ -7425,7 +7425,7 @@ namespace MetricsDiscoveryInternal::MetricSets_DG1_OA
             MD_CHECK_CC( ( metric->SetMaxValueEquation( "100" ) ) );
         }
 
-        availabilityEquation = "$DualSubsliceMask 16 AND";
+        availabilityEquation = "$GtDualSubsliceMask 16 AND";
         metric               = AddMetric( "ThreadHeader04ReadyPort1", "Thread Header Ready on Slice0 DualSubslice4 Thread Dispatcher Port 1",
                           "The percentage of time in which thread header is ready on slice0 dualsubslice4 thread dispatcher port 1",
                           "GPU/Thread Dispatcher", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_TD * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
@@ -7439,7 +7439,7 @@ namespace MetricsDiscoveryInternal::MetricSets_DG1_OA
             MD_CHECK_CC( ( metric->SetMaxValueEquation( "100" ) ) );
         }
 
-        availabilityEquation = "$DualSubsliceMask 16 AND";
+        availabilityEquation = "$GtDualSubsliceMask 16 AND";
         metric               = AddMetric( "ThreadHeader04ReadyPort2", "Thread Header Ready on Slice0 DualSubslice4 Thread Dispatcher Port 2",
                           "The percentage of time in which thread header is ready on slice0 dualsubslice4 thread dispatcher port 2",
                           "GPU/Thread Dispatcher", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_TD * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
@@ -7453,7 +7453,7 @@ namespace MetricsDiscoveryInternal::MetricSets_DG1_OA
             MD_CHECK_CC( ( metric->SetMaxValueEquation( "100" ) ) );
         }
 
-        availabilityEquation = "$DualSubsliceMask 16 AND";
+        availabilityEquation = "$GtDualSubsliceMask 16 AND";
         metric               = AddMetric( "ThreadHeader04ReadyPort3", "Thread Header Ready on Slice0 DualSubslice4 Thread Dispatcher Port 3",
                           "The percentage of time in which thread header is ready on slice0 dualsubslice4 thread dispatcher port 3",
                           "GPU/Thread Dispatcher", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_TD * 0x10000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,

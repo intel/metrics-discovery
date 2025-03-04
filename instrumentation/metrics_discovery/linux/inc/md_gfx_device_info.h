@@ -1,6 +1,6 @@
 /*========================== begin_copyright_notice ============================
 
-Copyright (C) 2021-2024 Intel Corporation
+Copyright (C) 2021-2025 Intel Corporation
 
 SPDX-License-Identifier: MIT
 
@@ -374,7 +374,10 @@ namespace MetricsDiscoveryInternal
         { 0xE20B, TPlatformIndexGt( GENERATION_BMG, GFX_GTTYPE_UNDEFINED, 2 ) },
         { 0xE20C, TPlatformIndexGt( GENERATION_BMG, GFX_GTTYPE_UNDEFINED, 2 ) },
         { 0xE20D, TPlatformIndexGt( GENERATION_BMG, GFX_GTTYPE_UNDEFINED, 2 ) },
+        { 0xE210, TPlatformIndexGt( GENERATION_BMG, GFX_GTTYPE_UNDEFINED, 2 ) },
         { 0xE212, TPlatformIndexGt( GENERATION_BMG, GFX_GTTYPE_UNDEFINED, 2 ) },
+        { 0xE215, TPlatformIndexGt( GENERATION_BMG, GFX_GTTYPE_UNDEFINED, 2 ) },
+        { 0xE216, TPlatformIndexGt( GENERATION_BMG, GFX_GTTYPE_UNDEFINED, 2 ) },
 
         { 0x64A0, TPlatformIndexGt( GENERATION_LNL, GFX_GTTYPE_UNDEFINED ) },
         { 0x6420, TPlatformIndexGt( GENERATION_LNL, GFX_GTTYPE_UNDEFINED ) },

@@ -1,6 +1,6 @@
 /*========================== begin_copyright_notice ============================
 
-Copyright (C) 2019-2024 Intel Corporation
+Copyright (C) 2019-2025 Intel Corporation
 
 SPDX-License-Identifier: MIT
 
@@ -126,7 +126,7 @@ namespace MetricsDiscoveryInternal
         sc->LastRawDataPtr      = sc->RawData;
         sc->LastRawReportNumber = 0;
 
-        sc->Calculator->Reset( sc->RawReportSize );
+        sc->Calculator->Reset( sc->RawReportSize, sc->MetricsAndInformationCount );
 
         return CC_OK;
     }
@@ -252,6 +252,12 @@ namespace MetricsDiscoveryInternal
         {
             sc->Calculator->CalculateMaxValues( sc->DeltaValues, sc->OutPtr, sc->OutMaxValuesPtr, *sc->MetricSet );
             sc->OutMaxValuesPtr += sc->MetricSet->GetParams()->MetricsCount;
+        }
+
+        // Save calculated report for reuse
+        if( CC_OK != sc->Calculator->SaveCalculatedReport( sc->OutPtr ) )
+        {
+            MD_LOG_A( adapterId, LOG_DEBUG, "Unable to store previous calculated report for reuse." );
         }
 
         sc->OutPtr += sc->MetricsAndInformationCount;

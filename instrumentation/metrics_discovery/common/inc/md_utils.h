@@ -1,6 +1,6 @@
 /*========================== begin_copyright_notice ============================
 
-Copyright (C) 2019-2024 Intel Corporation
+Copyright (C) 2019-2025 Intel Corporation
 
 SPDX-License-Identifier: MIT
 
@@ -28,8 +28,11 @@ SPDX-License-Identifier: MIT
 #define MD_EMPTY
 
 #define MD_SAFE_DELETE( object ) \
-    delete object;               \
-    object = nullptr;
+    if( ( object ) != nullptr )  \
+    {                            \
+        delete object;           \
+        object = nullptr;        \
+    }
 
 #define MD_SAFE_DELETE_ARRAY( object ) \
     if( ( object ) != nullptr )        \
@@ -78,12 +81,12 @@ SPDX-License-Identifier: MIT
         return ( object );                                                 \
     }
 
-#define MD_CHECK_BUFFER_A( adapterId, fileBufferPtr, fileBufferBeginOffset, valueSize, fileSize )                                                           \
-    if( const bool bufferOverflow = ( ( static_cast<uint32_t>( fileBufferPtr - fileBufferBeginOffset ) + static_cast<uint32_t>( valueSize ) ) > fileSize ); \
-        bufferOverflow )                                                                                                                                    \
-    {                                                                                                                                                       \
-        MD_ASSERT_A( adapterId, !bufferOverflow );                                                                                                          \
-        return CC_ERROR_GENERAL;                                                                                                                            \
+#define MD_CHECK_BUFFER_A( adapterId, bufferPtr, bufferBeginOffset, valueSize, size )                                                           \
+    if( const bool bufferOverflow = ( ( static_cast<uint32_t>( bufferPtr - bufferBeginOffset ) + static_cast<uint32_t>( valueSize ) ) > size ); \
+        bufferOverflow )                                                                                                                        \
+    {                                                                                                                                           \
+        MD_ASSERT_A( adapterId, !bufferOverflow );                                                                                              \
+        return CC_ERROR_GENERAL;                                                                                                                \
     }
 
 #define MD_CHECK_CC_RET( object ) MD_CHECK_CC_RET_A( IU_ADAPTER_ID_UNKNOWN, object )
@@ -118,7 +121,7 @@ namespace MetricsDiscoveryInternal
     class CEquation;
     class CMetricsDevice;
 
-    TCompletionCode WriteEquationToFile( CEquation* equation, FILE* metricFile, const uint32_t adapterId );
+    TCompletionCode WriteEquationToBuffer( CEquation* equation, uint8_t* buffer, uint32_t& bufferSize, uint32_t& bufferOffset, const uint32_t adapterId );
     TCompletionCode SetDeltaFunction( const char* equationString, TDeltaFunction_1_0* deltaFunction, const uint32_t adapterId );
     TCompletionCode SetEquation( CMetricsDevice& device, CEquation*& equation, const char* equationString );
 
@@ -135,16 +138,17 @@ namespace MetricsDiscoveryInternal
     char*             GetCopiedCString( const char* cstring, const uint32_t adapterId );
     char*             GetCopiedCStringFromWcString( const wchar_t* wcstring, const uint32_t adapterId );
 
-    void WriteByteArrayToFile( const TByteArrayLatest* byteArray, FILE* pFile, const uint32_t adapterId );
-    void WriteCStringToFile( const char* cstring, FILE* pFile, const uint32_t adapterId );
-    void WriteTTypedValueToFile( TTypedValue_1_0* typedValue, FILE* pFile, const uint32_t adapterId );
+    TCompletionCode WriteByteArrayToBuffer( const TByteArrayLatest* byteArray, uint8_t* buffer, uint32_t& bufferSize, uint32_t& bufferOffset, const uint32_t adapterId );
+    TCompletionCode WriteCStringToBuffer( const char* cstring, uint8_t* buffer, uint32_t& bufferSize, uint32_t& bufferOffset, const uint32_t adapterId );
+    TCompletionCode WriteTTypedValueToBuffer( const TTypedValue_1_0* typedValue, uint8_t* buffer, uint32_t& bufferSize, uint32_t& bufferOffset, const uint32_t adapterId );
+    TCompletionCode WriteDataToBuffer( void* data, const uint32_t dataSize, uint8_t* buffer, uint32_t& bufferSize, uint32_t& bufferOffset, const uint32_t adapterId );
 
-    TCompletionCode ReadByteArrayFromFileBuffer( uint8_t*& fileBuffer, const uint8_t* fileBufferBeginOffset, const uint32_t fileSize, TByteArrayLatest*& byteArray, const uint32_t adapterId );
-    TCompletionCode ReadCStringFromFileBuffer( uint8_t*& fileBuffer, const uint8_t* fileBufferBeginOffset, const uint32_t fileSize, const char*& cstring, const uint32_t adapterId );
-    TCompletionCode ReadUInt32FromFileBuffer( uint8_t*& fileBuffer, const uint8_t* fileBufferBeginOffset, const uint32_t fileSize, uint32_t& value, const uint32_t adapterId );
-    TCompletionCode ReadInt64FromFileBuffer( uint8_t*& fileBuffer, const uint8_t* fileBufferBeginOffset, const uint32_t fileSize, int64_t& value, const uint32_t adapterId );
-    TCompletionCode ReadTTypedValueFromFileBuffer( uint8_t*& fileBuffer, const uint8_t* fileBufferBeginOffset, const uint32_t fileSize, const uint32_t fileVersion, TTypedValue_1_0& typedValue, const uint32_t adapterId );
-    TCompletionCode ReadEquationStringFromFile( uint8_t*& fileBuffer, const uint8_t* fileBufferBeginOffset, const uint32_t fileSize, const char*& cstring, const uint32_t adapterId );
+    TCompletionCode ReadByteArrayFromBuffer( uint8_t*& buffer, const uint8_t* bufferBeginOffset, const uint32_t bufferSize, TByteArrayLatest*& byteArray, const uint32_t adapterId );
+    TCompletionCode ReadCStringFromBuffer( uint8_t*& buffer, const uint8_t* bufferBeginOffset, const uint32_t bufferSize, const char*& cstring, const uint32_t adapterId );
+    TCompletionCode ReadUInt32FromBuffer( uint8_t*& buffer, const uint8_t* bufferBeginOffset, const uint32_t bufferSize, uint32_t& value, const uint32_t adapterId );
+    TCompletionCode ReadInt64FromBuffer( uint8_t*& buffer, const uint8_t* bufferBeginOffset, const uint32_t bufferSize, int64_t& value, const uint32_t adapterId );
+    TCompletionCode ReadTTypedValueFromBuffer( uint8_t*& buffer, const uint8_t* bufferBeginOffset, const uint32_t bufferSize, const uint32_t bufferVersion, TTypedValue_1_0& typedValue, const uint32_t adapterId );
+    TCompletionCode ReadEquationStringFromBuffer( uint8_t*& buffer, const uint8_t* bufferBeginOffset, const uint32_t bufferSize, const char*& cstring, const uint32_t adapterId );
 
     TCompletionCode SetBitInByteArray( TByteArrayLatest* byteArray, const uint32_t bitIndex, const uint32_t adapterId );
 

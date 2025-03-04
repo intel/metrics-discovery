@@ -1,6 +1,6 @@
 /*========================== begin_copyright_notice ============================
 
-Copyright (C) 2022-2024 Intel Corporation
+Copyright (C) 2022-2025 Intel Corporation
 
 SPDX-License-Identifier: MIT
 
@@ -203,6 +203,7 @@ namespace MetricsDiscoveryInternal
             case EQUATION_ELEM_LOCAL_METRIC_SYMBOL:
             case EQUATION_ELEM_OTHER_SET_METRIC_SYMBOL:
             case EQUATION_ELEM_INFORMATION_SYMBOL:
+            case EQUATION_ELEM_PREV_METRIC_SYMBOL:
                 // Handled in CopyMembers or MoveMembers.
             case EQUATION_ELEM_SELF_COUNTER_VALUE:
             case EQUATION_ELEM_STD_NORM_GPU_DURATION:
@@ -331,7 +332,6 @@ namespace MetricsDiscoveryInternal
         , m_equationString( nullptr )
         , m_device( device )
     {
-        m_elementsVector.reserve( EQUATION_VECTOR_INCREASE );
     }
 
     //////////////////////////////////////////////////////////////////////////////
@@ -894,6 +894,16 @@ namespace MetricsDiscoveryInternal
             element.Type                  = EQUATION_ELEM_RD_UINT64;
             element.ReadParams.ByteOffset = strtoul( &equationString[3], nullptr, 0 );
         }
+        else if( strncmp( equationString, "rd8@", sizeof( "rd8@" ) - 1 ) == 0 )
+        {
+            element.Type                  = EQUATION_ELEM_RD_UINT8;
+            element.ReadParams.ByteOffset = strtoul( &equationString[4], nullptr, 0 );
+        }
+        else if( strncmp( equationString, "rd16@", sizeof( "rd16@" ) - 1 ) == 0 )
+        {
+            element.Type                  = EQUATION_ELEM_RD_UINT16;
+            element.ReadParams.ByteOffset = strtoul( &equationString[5], nullptr, 0 );
+        }
         else if( strncmp( equationString, "rd40@", sizeof( "rd40@" ) - 1 ) == 0 )
         {
             char* pEnd                    = (char*) &equationString[5];
@@ -931,12 +941,26 @@ namespace MetricsDiscoveryInternal
             element.SymbolName = GetCopiedCString( &equationString[2], adapterId );
             element.Type       = EQUATION_ELEM_LOCAL_METRIC_SYMBOL;
         }
+        else if( strncmp( equationString, "prev$$", sizeof( "prev$$" ) - 1 ) == 0 )
+        {
+            MD_SAFE_DELETE_ARRAY( element.SymbolName );
+            element.SymbolName = GetCopiedCString( &equationString[6], adapterId );
+            element.Type       = EQUATION_ELEM_PREV_METRIC_SYMBOL;
+        }
         else if( ( equationString[0] == '$' ) && ( equationString[1] != 0 ) )
         {
-            auto value = m_device.GetGlobalSymbolValueByName( &equationString[1] );
+            std::string symbolName = &equationString[1];
+
+            if( IsLegacyMaskGlobalSymbol( symbolName.c_str() ) )
+            {
+                // Legacy mask global symbol needs to be prefixed with "Gt"
+                symbolName.insert( 0, "Gt" );
+            }
+
+            auto value = m_device.GetGlobalSymbolValueByName( symbolName.c_str() );
 
             MD_SAFE_DELETE_ARRAY( element.SymbolName );
-            element.SymbolName = GetCopiedCString( &equationString[1], adapterId );
+            element.SymbolName = GetCopiedCString( symbolName.c_str(), adapterId );
 
             element.Type = ( value == nullptr )
                 ? EQUATION_ELEM_LOCAL_COUNTER_SYMBOL // Finish element as local counter symbol
@@ -986,30 +1010,62 @@ namespace MetricsDiscoveryInternal
     //     CEquation
     //
     // Method:
-    //     WriteCEquationToFile
+    //     WriteCEquationToBuffer
     //
     // Description:
-    //     Writes equation string to file.
+    //     Writes equation string to buffer.
     //
     // Input:
-    //     FILE* metricFile - handle to a metric file
+    //     uint8_t*  buffer       - pointer to a buffer
+    //     uint32_t& bufferSize   - size of the buffer
+    //     uint32_t& bufferOffset - the current offset of the buffer
     //
     // Output:
-    //     TCompletionCode  - result of the operation
+    //     TCompletionCode        - result of the operation
     //
     //////////////////////////////////////////////////////////////////////////////
-    TCompletionCode CEquation::WriteCEquationToFile( FILE* metricFile )
+    TCompletionCode CEquation::WriteCEquationToBuffer( uint8_t* buffer, uint32_t& bufferSize, uint32_t& bufferOffset )
     {
         const uint32_t adapterId = m_device.GetAdapter().GetAdapterId();
 
-        if( metricFile == nullptr )
-        {
-            MD_ASSERT_A( adapterId, metricFile != nullptr );
-            return CC_ERROR_INVALID_PARAMETER;
-        }
-
-        WriteCStringToFile( m_equationString, metricFile, adapterId );
+        TCompletionCode result = WriteCStringToBuffer( m_equationString, buffer, bufferSize, bufferOffset, adapterId );
+        MD_CHECK_CC_RET_A( adapterId, result );
 
         return CC_OK;
+    }
+
+    //////////////////////////////////////////////////////////////////////////////
+    //
+    // Class:
+    //     CEquation
+    //
+    // Method:
+    //     IsLegacyMaskGlobalSymbol
+    //
+    // Description:
+    //     Checks if given symbol name is a legacy mask global symbol
+    //     (not prefixed with "Gt" and suffixed with "Mask").
+    //
+    // Input:
+    //     const char* name            - symbol name
+    //
+    // Output:
+    //     bool                        - true if name is a legacy mask global symbol
+    //
+    //////////////////////////////////////////////////////////////////////////////
+    bool CEquation::IsLegacyMaskGlobalSymbol( const char* name )
+    {
+        const char* suffix = "Mask";
+        const char* prefix = "Gt";
+
+        size_t nameLength   = strlen( name );
+        size_t suffixLength = strlen( suffix );
+
+        if( nameLength >= suffixLength && strcmp( name + nameLength - suffixLength, suffix ) == 0 )
+        {
+            return strncmp( name, prefix, 2 ) != 0;
+        }
+
+        return false;
     }
 } // namespace MetricsDiscoveryInternal

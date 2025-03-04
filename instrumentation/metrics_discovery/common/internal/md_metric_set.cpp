@@ -1,6 +1,6 @@
 /*========================== begin_copyright_notice ============================
 
-Copyright (C) 2022-2024 Intel Corporation
+Copyright (C) 2022-2025 Intel Corporation
 
 SPDX-License-Identifier: MIT
 
@@ -109,18 +109,6 @@ namespace MetricsDiscoveryInternal
         m_pmRegsConfigInfo.OaConfigHandle = 0;
         m_pmRegsConfigInfo.GpConfigHandle = 0;
         m_pmRegsConfigInfo.RrConfigHandle = 0;
-
-        m_metricsVector.reserve( METRICS_VECTOR_INCREASE );
-        m_informationVector.reserve( INFORMATION_VECTOR_INCREASE );
-        m_complementarySetsVector.reserve( COMPLEMENTARY_SETS_VECTOR_INCREASE );
-        m_startRegsVector.reserve( START_REGS_VECTOR_INCREASE );
-        m_startRegsQueryVector.reserve( START_REGS_QUERY_VECTOR_INCREASE );
-
-        m_otherMetricsVector.reserve( METRICS_VECTOR_INCREASE );
-        m_otherInformationVector.reserve( INFORMATION_VECTOR_INCREASE );
-
-        m_filteredMetricsVector.reserve( METRICS_VECTOR_INCREASE );
-        m_filteredInformationVector.reserve( INFORMATION_VECTOR_INCREASE );
 
         // Set 'current' variables and mark 'filtered' params as uninitialized
         UseApiFilteredVariables( false );
@@ -444,10 +432,6 @@ namespace MetricsDiscoveryInternal
         while( token != nullptr )
         {
             uint32_t partialGroupId = GetPartialGroupId( token, tokenNo++ );
-            if( partialGroupId == METRIC_GROUP_NAME_ID_INVALID )
-            {
-                partialGroupId = METRIC_GROUP_NAME_ID_GPU; // Use default group name ID
-            }
 
             groupId += partialGroupId;
             token = iu_strtok_s( nullptr, "/", &tokenNext );
@@ -505,7 +489,10 @@ namespace MetricsDiscoveryInternal
         if( groupId == METRIC_GROUP_NAME_ID_INVALID )
         {
             MD_LOG_A( adapterId, LOG_WARNING, "invalid group name: %s at level: %u", groupName, level );
+
+            groupId = METRIC_GROUP_NAME_ID_GPU; // Use default group name ID
         }
+
         return groupId;
     }
 
@@ -1624,8 +1611,7 @@ namespace MetricsDiscoveryInternal
             // Prepare register reference lists to sent
             std::vector<TRegister*> pmRegs;
             std::vector<TRegister*> readRegs;
-            pmRegs.reserve( START_REGS_VECTOR_INCREASE );
-            readRegs.reserve( START_REGS_VECTOR_INCREASE );
+            pmRegs.reserve( m_startRegsVector.size() );
 
             AppendToConfiguration( m_startRegsVector, pmRegs, readRegs );
             if( sendQueryConfigFlag )
@@ -1776,56 +1762,97 @@ namespace MetricsDiscoveryInternal
     //     CMetricSet
     //
     // Method:
-    //     WriteCMetricSetToFile
+    //     WriteCMetricSetToBuffer
     //
     // Description:
-    //     Writes metric set to file.
+    //     Writes metric set to buffer.
     //
     // Input:
-    //     FILE* metricFile - handle to metric file
+    //     uint8_t*  buffer                   - pointer to a buffer
+    //     uint32_t& bufferSize               - size of the buffer
+    //     uint32_t& bufferOffset             - the current offset of the buffer
+    //     bool      copyInformationFromGroup - true if information should be copied from the group
     //
     // Output:
-    //     TCompletionCode  - result of the operation
+    //     TCompletionCode                    - result of the operation
     //
     //////////////////////////////////////////////////////////////////////////////
-    TCompletionCode CMetricSet::WriteCMetricSetToFile( FILE* metricFile )
+    TCompletionCode CMetricSet::WriteCMetricSetToBuffer( uint8_t* buffer, uint32_t& bufferSize, uint32_t& bufferOffset, bool copyInformationFromGroup )
     {
-        uint32_t       count     = 0;
-        const uint32_t adapterId = m_device.GetAdapter().GetAdapterId();
-
-        if( metricFile == nullptr )
-        {
-            MD_ASSERT_A( adapterId, metricFile != nullptr );
-            return CC_ERROR_INVALID_PARAMETER;
-        }
+        const uint32_t  adapterId = m_device.GetAdapter().GetAdapterId();
+        TCompletionCode result    = CC_OK;
 
         // m_params
-        WriteCStringToFile( m_params.SymbolName, metricFile, adapterId );
-        WriteCStringToFile( m_params.ShortName, metricFile, adapterId );
-        fwrite( &m_params.ApiMask, sizeof( m_params.ApiMask ), 1, metricFile );
-        fwrite( &m_params.CategoryMask, sizeof( m_params.CategoryMask ), 1, metricFile );
-        fwrite( &m_params.RawReportSize, sizeof( m_params.RawReportSize ), 1, metricFile );
-        fwrite( &m_params.QueryReportSize, sizeof( m_params.QueryReportSize ), 1, metricFile );
-        fwrite( &m_params.PlatformMask, sizeof( m_params.PlatformMask ), 1, metricFile );
-        fwrite( &m_params.GtMask, sizeof( m_params.GtMask ), 1, metricFile );
-        WriteEquationToFile( m_availabilityEquation, metricFile, adapterId );
-        fwrite( &m_reportType, sizeof( m_reportType ), 1, metricFile );
-        WriteByteArrayToFile( m_platformMask, metricFile, adapterId );
+        result = WriteCStringToBuffer( m_params.SymbolName, buffer, bufferSize, bufferOffset, adapterId );
+        MD_CHECK_CC_RET_A( adapterId, result );
+
+        result = WriteCStringToBuffer( m_params.ShortName, buffer, bufferSize, bufferOffset, adapterId );
+        MD_CHECK_CC_RET_A( adapterId, result );
+
+        result = WriteDataToBuffer( &m_params.ApiMask, sizeof( m_params.ApiMask ), buffer, bufferSize, bufferOffset, adapterId );
+        MD_CHECK_CC_RET_A( adapterId, result );
+
+        result = WriteDataToBuffer( &m_params.CategoryMask, sizeof( m_params.CategoryMask ), buffer, bufferSize, bufferOffset, adapterId );
+        MD_CHECK_CC_RET_A( adapterId, result );
+
+        result = WriteDataToBuffer( &m_params.RawReportSize, sizeof( m_params.RawReportSize ), buffer, bufferSize, bufferOffset, adapterId );
+        MD_CHECK_CC_RET_A( adapterId, result );
+
+        result = WriteDataToBuffer( &m_params.QueryReportSize, sizeof( m_params.QueryReportSize ), buffer, bufferSize, bufferOffset, adapterId );
+        MD_CHECK_CC_RET_A( adapterId, result );
+
+        result = WriteDataToBuffer( &m_params.PlatformMask, sizeof( m_params.PlatformMask ), buffer, bufferSize, bufferOffset, adapterId );
+        MD_CHECK_CC_RET_A( adapterId, result );
+
+        result = WriteDataToBuffer( &m_params.GtMask, sizeof( m_params.GtMask ), buffer, bufferSize, bufferOffset, adapterId );
+        MD_CHECK_CC_RET_A( adapterId, result );
+
+        result = WriteEquationToBuffer( m_availabilityEquation, buffer, bufferSize, bufferOffset, adapterId );
+        MD_CHECK_CC_RET_A( adapterId, result );
+
+        result = WriteDataToBuffer( &m_reportType, sizeof( m_reportType ), buffer, bufferSize, bufferOffset, adapterId );
+        MD_CHECK_CC_RET_A( adapterId, result );
+
+        result = WriteByteArrayToBuffer( m_platformMask, buffer, bufferSize, bufferOffset, adapterId );
+        MD_CHECK_CC_RET_A( adapterId, result );
+
         // m_params.ApiSpecificId (placeholder is not saved!)
-        fwrite( &m_params.ApiSpecificId.D3D9QueryId, sizeof( m_params.ApiSpecificId.D3D9QueryId ), 1, metricFile );
-        fwrite( &m_params.ApiSpecificId.D3D9Fourcc, sizeof( m_params.ApiSpecificId.D3D9Fourcc ), 1, metricFile );
-        fwrite( &m_params.ApiSpecificId.D3D1XQueryId, sizeof( m_params.ApiSpecificId.D3D1XQueryId ), 1, metricFile );
-        fwrite( &m_params.ApiSpecificId.D3D1XDevDependentId, sizeof( m_params.ApiSpecificId.D3D1XDevDependentId ), 1, metricFile );
-        WriteCStringToFile( m_params.ApiSpecificId.D3D1XDevDependentName, metricFile, adapterId );
-        fwrite( &m_params.ApiSpecificId.OGLQueryIntelId, sizeof( m_params.ApiSpecificId.OGLQueryIntelId ), 1, metricFile );
-        WriteCStringToFile( m_params.ApiSpecificId.OGLQueryIntelName, metricFile, adapterId );
-        fwrite( &m_params.ApiSpecificId.OGLQueryARBTargetId, sizeof( m_params.ApiSpecificId.OGLQueryARBTargetId ), 1, metricFile );
-        fwrite( &m_params.ApiSpecificId.OCL, sizeof( m_params.ApiSpecificId.OCL ), 1, metricFile );
-        fwrite( &m_params.ApiSpecificId.HwConfigId, sizeof( m_params.ApiSpecificId.HwConfigId ), 1, metricFile );
+        result = WriteDataToBuffer( &m_params.ApiSpecificId.D3D9QueryId, sizeof( m_params.ApiSpecificId.D3D9QueryId ), buffer, bufferSize, bufferOffset, adapterId );
+        MD_CHECK_CC_RET_A( adapterId, result );
+
+        result = WriteDataToBuffer( &m_params.ApiSpecificId.D3D9Fourcc, sizeof( m_params.ApiSpecificId.D3D9Fourcc ), buffer, bufferSize, bufferOffset, adapterId );
+        MD_CHECK_CC_RET_A( adapterId, result );
+
+        result = WriteDataToBuffer( &m_params.ApiSpecificId.D3D1XQueryId, sizeof( m_params.ApiSpecificId.D3D1XQueryId ), buffer, bufferSize, bufferOffset, adapterId );
+        MD_CHECK_CC_RET_A( adapterId, result );
+
+        result = WriteDataToBuffer( &m_params.ApiSpecificId.D3D1XDevDependentId, sizeof( m_params.ApiSpecificId.D3D1XDevDependentId ), buffer, bufferSize, bufferOffset, adapterId );
+        MD_CHECK_CC_RET_A( adapterId, result );
+
+        result = WriteCStringToBuffer( m_params.ApiSpecificId.D3D1XDevDependentName, buffer, bufferSize, bufferOffset, adapterId );
+        MD_CHECK_CC_RET_A( adapterId, result );
+
+        result = WriteDataToBuffer( &m_params.ApiSpecificId.OGLQueryIntelId, sizeof( m_params.ApiSpecificId.OGLQueryIntelId ), buffer, bufferSize, bufferOffset, adapterId );
+        MD_CHECK_CC_RET_A( adapterId, result );
+
+        result = WriteCStringToBuffer( m_params.ApiSpecificId.OGLQueryIntelName, buffer, bufferSize, bufferOffset, adapterId );
+        MD_CHECK_CC_RET_A( adapterId, result );
+
+        result = WriteDataToBuffer( &m_params.ApiSpecificId.OGLQueryARBTargetId, sizeof( m_params.ApiSpecificId.OGLQueryARBTargetId ), buffer, bufferSize, bufferOffset, adapterId );
+        MD_CHECK_CC_RET_A( adapterId, result );
+
+        result = WriteDataToBuffer( &m_params.ApiSpecificId.OCL, sizeof( m_params.ApiSpecificId.OCL ), buffer, bufferSize, bufferOffset, adapterId );
+        MD_CHECK_CC_RET_A( adapterId, result );
+
+        result = WriteDataToBuffer( &m_params.ApiSpecificId.HwConfigId, sizeof( m_params.ApiSpecificId.HwConfigId ), buffer, bufferSize, bufferOffset, adapterId );
+        MD_CHECK_CC_RET_A( adapterId, result );
 
         // m_metricsVector & m_otherMetricsVector
-        count = static_cast<uint32_t>( m_metricsVector.size() + m_otherMetricsVector.size() );
-        fwrite( &count, sizeof( uint32_t ), 1, metricFile );
+        uint32_t count = static_cast<uint32_t>( m_metricsVector.size() + m_otherMetricsVector.size() );
+
+        result = WriteDataToBuffer( (void*) &count, sizeof( count ), buffer, bufferSize, bufferOffset, adapterId );
+        MD_CHECK_CC_RET_A( adapterId, result );
+
         uint32_t i = 0;
         uint32_t j = 0;
         while( i < m_metricsVector.size() || j < m_otherMetricsVector.size() )
@@ -1835,7 +1862,8 @@ namespace MetricsDiscoveryInternal
             {
                 for( uint32_t k = j; k < m_otherMetricsVector.size(); ++k )
                 {
-                    m_otherMetricsVector[k]->WriteCMetricToFile( metricFile );
+                    result = m_otherMetricsVector[k]->WriteCMetricToBuffer( buffer, bufferSize, bufferOffset );
+                    MD_CHECK_CC_RET_A( adapterId, result );
                 }
                 break;
             }
@@ -1843,7 +1871,8 @@ namespace MetricsDiscoveryInternal
             {
                 for( uint32_t k = i; k < m_metricsVector.size(); ++k )
                 {
-                    m_metricsVector[k]->WriteCMetricToFile( metricFile );
+                    result = m_metricsVector[k]->WriteCMetricToBuffer( buffer, bufferSize, bufferOffset );
+                    MD_CHECK_CC_RET_A( adapterId, result );
                 }
                 break;
             }
@@ -1851,17 +1880,43 @@ namespace MetricsDiscoveryInternal
             // Write in the correct order
             if( m_metricsVector[i]->GetId() < m_otherMetricsVector[j]->GetId() )
             {
-                m_metricsVector[i++]->WriteCMetricToFile( metricFile );
+                result = m_metricsVector[i++]->WriteCMetricToBuffer( buffer, bufferSize, bufferOffset );
+                MD_CHECK_CC_RET_A( adapterId, result );
             }
             else
             {
-                m_otherMetricsVector[j++]->WriteCMetricToFile( metricFile );
+                result = m_otherMetricsVector[j++]->WriteCMetricToBuffer( buffer, bufferSize, bufferOffset );
+                MD_CHECK_CC_RET_A( adapterId, result );
             }
         }
 
         // m_informationVector & m_otherInformationVector
-        count = static_cast<uint32_t>( m_informationVector.size() + m_otherInformationVector.size() );
-        fwrite( &count, sizeof( uint32_t ), 1, metricFile );
+        if( m_concurrentGroup && copyInformationFromGroup )
+        {
+            count = static_cast<uint32_t>( m_concurrentGroup->GetInformationCount() + m_informationVector.size() + m_otherInformationVector.size() );
+        }
+        else
+        {
+            count = static_cast<uint32_t>( m_informationVector.size() + m_otherInformationVector.size() );
+        }
+
+        result = WriteDataToBuffer( &count, sizeof( count ), buffer, bufferSize, bufferOffset, adapterId );
+        MD_CHECK_CC_RET_A( adapterId, result );
+
+        // Write informations from concurrent group
+        if( m_concurrentGroup && copyInformationFromGroup )
+        {
+            for( i = 0; i < m_concurrentGroup->GetInformationCount(); ++i )
+            {
+                CInformation* information = static_cast<CInformation*>( m_concurrentGroup->GetInformation( i ) );
+
+                result = information
+                    ? information->WriteCInformationToBuffer( buffer, bufferSize, bufferOffset )
+                    : CC_ERROR_GENERAL;
+                MD_CHECK_CC_RET_A( adapterId, result );
+            }
+        }
+
         i = 0;
         j = 0;
         while( i < m_informationVector.size() || j < m_otherInformationVector.size() )
@@ -1871,7 +1926,8 @@ namespace MetricsDiscoveryInternal
             {
                 for( uint32_t k = j; k < m_otherInformationVector.size(); ++k )
                 {
-                    m_otherInformationVector[k]->WriteCInformationToFile( metricFile );
+                    result = m_otherInformationVector[k]->WriteCInformationToBuffer( buffer, bufferSize, bufferOffset );
+                    MD_CHECK_CC_RET_A( adapterId, result );
                 }
                 break;
             }
@@ -1879,7 +1935,8 @@ namespace MetricsDiscoveryInternal
             {
                 for( uint32_t k = i; k < m_informationVector.size(); ++k )
                 {
-                    m_informationVector[k]->WriteCInformationToFile( metricFile );
+                    result = m_informationVector[k]->WriteCInformationToBuffer( buffer, bufferSize, bufferOffset );
+                    MD_CHECK_CC_RET_A( adapterId, result );
                 }
                 break;
             }
@@ -1887,32 +1944,44 @@ namespace MetricsDiscoveryInternal
             // Write in the correct order
             if( m_informationVector[i]->GetId() < m_otherInformationVector[j]->GetId() )
             {
-                m_informationVector[i++]->WriteCInformationToFile( metricFile );
+                result = m_informationVector[i++]->WriteCInformationToBuffer( buffer, bufferSize, bufferOffset );
+                MD_CHECK_CC_RET_A( adapterId, result );
             }
             else
             {
-                m_otherInformationVector[j++]->WriteCInformationToFile( metricFile );
+                result = m_otherInformationVector[j++]->WriteCInformationToBuffer( buffer, bufferSize, bufferOffset );
+                MD_CHECK_CC_RET_A( adapterId, result );
             }
         }
 
         // m_startRegisterSetList
         count = static_cast<uint32_t>( m_startRegisterSetList.size() );
-        fwrite( &count, sizeof( uint32_t ), 1, metricFile );
+
+        result = WriteDataToBuffer( &count, sizeof( count ), buffer, bufferSize, bufferOffset, adapterId );
+        MD_CHECK_CC_RET_A( adapterId, result );
+
         for( auto& registerSet : m_startRegisterSetList )
         {
-            registerSet->WriteCRegisterSetToFile( metricFile );
+            result = registerSet->WriteCRegisterSetToBuffer( buffer, bufferSize, bufferOffset );
+            MD_CHECK_CC_RET_A( adapterId, result );
         }
 
         // m_stopRegisterSetList - remains to be backward compatible, count is always 0
         count = 0;
-        fwrite( &count, sizeof( uint32_t ), 1, metricFile );
+
+        result = WriteDataToBuffer( &count, sizeof( count ), buffer, bufferSize, bufferOffset, adapterId );
+        MD_CHECK_CC_RET_A( adapterId, result );
 
         // m_complementarySetsVector
         count = static_cast<uint32_t>( m_complementarySetsVector.size() );
-        fwrite( &count, sizeof( uint32_t ), 1, metricFile );
+
+        result = WriteDataToBuffer( &count, sizeof( count ), buffer, bufferSize, bufferOffset, adapterId );
+        MD_CHECK_CC_RET_A( adapterId, result );
+
         for( i = 0; i < count; ++i )
         {
-            WriteCStringToFile( m_complementarySetsVector[i], metricFile, adapterId );
+            result = WriteCStringToBuffer( m_complementarySetsVector[i], buffer, bufferSize, bufferOffset, adapterId );
+            MD_CHECK_CC_RET_A( adapterId, result );
         }
 
         return CC_OK;
@@ -2282,7 +2351,7 @@ namespace MetricsDiscoveryInternal
                     {
                         const auto internalElement = static_cast<CEquationElementInternal*>( equation->GetEquationElement( j ) );
 
-                        if( internalElement->Type == EQUATION_ELEM_LOCAL_COUNTER_SYMBOL || internalElement->Type == EQUATION_ELEM_LOCAL_METRIC_SYMBOL )
+                        if( internalElement->Type == EQUATION_ELEM_LOCAL_COUNTER_SYMBOL || internalElement->Type == EQUATION_ELEM_LOCAL_METRIC_SYMBOL || internalElement->Type == EQUATION_ELEM_PREV_METRIC_SYMBOL )
                         {
                             // Find if symbol name is in the index map
                             const auto foundMetric = metricsIndexMap.find( internalElement->SymbolName );

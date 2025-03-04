@@ -1,6 +1,6 @@
 /*========================== begin_copyright_notice ============================
 
-Copyright (C) 2022-2024 Intel Corporation
+Copyright (C) 2022-2025 Intel Corporation
 
 SPDX-License-Identifier: MIT
 
@@ -209,39 +209,48 @@ namespace MetricsDiscoveryInternal
     //     CRegisterSet
     //
     // Method:
-    //     WriteCRegisterSetToFile
+    //     WriteCRegisterSetToBuffer
     //
     // Description:
-    //     Writes CRegisterSet object to a file.
+    //     Writes CRegisterSet object to a buffer.
     //
     // Input:
-    //     FILE* metricFile - handle to a metric file
+    //     uint8_t*  buffer       - pointer to a buffer
+    //     uint32_t& bufferSize   - size of the buffer
+    //     uint32_t& bufferOffset - the current offset of the buffer
     //
     // Output:
-    //     TCompletionCode  - result of the operation, *CC_OK* is ok
+    //     TCompletionCode        - result of the operation, *CC_OK* is ok
     //
     //////////////////////////////////////////////////////////////////////////////
-    TCompletionCode CRegisterSet::WriteCRegisterSetToFile( FILE* metricFile )
+    TCompletionCode CRegisterSet::WriteCRegisterSetToBuffer( uint8_t* buffer, uint32_t& bufferSize, uint32_t& bufferOffset )
     {
-        const uint32_t adapterId = m_device.GetAdapter().GetAdapterId();
-
-        MD_CHECK_PTR_RET_A( adapterId, metricFile, CC_ERROR_INVALID_PARAMETER );
-
-        uint32_t count = 0;
+        const uint32_t  adapterId = m_device.GetAdapter().GetAdapterId();
+        TCompletionCode result    = CC_OK;
 
         // m_params and availability equation
-        fwrite( &m_params.ConfigId, sizeof( m_params.ConfigId ), 1, metricFile );
-        fwrite( &m_params.ConfigPriority, sizeof( m_params.ConfigPriority ), 1, metricFile );
-        fwrite( &m_params.ConfigType, sizeof( m_params.ConfigType ), 1, metricFile );
-        WriteEquationToFile( m_availabilityEquation, metricFile, adapterId );
+        result = WriteDataToBuffer( &m_params.ConfigId, sizeof( m_params.ConfigId ), buffer, bufferSize, bufferOffset, adapterId );
+        MD_CHECK_CC_RET_A( adapterId, result );
+
+        result = WriteDataToBuffer( &m_params.ConfigPriority, sizeof( m_params.ConfigPriority ), buffer, bufferSize, bufferOffset, adapterId );
+        MD_CHECK_CC_RET_A( adapterId, result );
+
+        result = WriteDataToBuffer( &m_params.ConfigType, sizeof( m_params.ConfigType ), buffer, bufferSize, bufferOffset, adapterId );
+        MD_CHECK_CC_RET_A( adapterId, result );
+
+        result = WriteEquationToBuffer( m_availabilityEquation, buffer, bufferSize, bufferOffset, adapterId );
+        MD_CHECK_CC_RET_A( adapterId, result );
 
         // Registers
-        count = static_cast<uint32_t>( m_regList.size() );
-        fwrite( &count, sizeof( uint32_t ), 1, metricFile );
+        const uint32_t count = static_cast<uint32_t>( m_regList.size() );
+
+        result = WriteDataToBuffer( (void*) &count, sizeof( count ), buffer, bufferSize, bufferOffset, adapterId );
+        MD_CHECK_CC_RET_A( adapterId, result );
 
         for( TRegister& reg : m_regList )
         {
-            fwrite( &reg, sizeof( reg ), 1, metricFile );
+            result = WriteDataToBuffer( &reg, sizeof( reg ), buffer, bufferSize, bufferOffset, adapterId );
+            MD_CHECK_CC_RET_A( adapterId, result );
         }
 
         return CC_OK;

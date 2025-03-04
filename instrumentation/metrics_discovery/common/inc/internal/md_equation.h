@@ -1,6 +1,6 @@
 /*========================== begin_copyright_notice ============================
 
-Copyright (C) 2022-2024 Intel Corporation
+Copyright (C) 2022-2025 Intel Corporation
 
 SPDX-License-Identifier: MIT
 
@@ -82,7 +82,7 @@ namespace MetricsDiscoveryInternal
         bool ParseEquationString( const char* equationString );
         bool ParseEquationElement( const char* equationString );
 
-        TCompletionCode WriteCEquationToFile( FILE* metricFile );
+        TCompletionCode WriteCEquationToBuffer( uint8_t* buffer, uint32_t& bufferSize, uint32_t& bufferOffset );
 
         // Inline function.
         inline std::vector<CEquationElementInternal>& GetElementsVector()
@@ -91,13 +91,13 @@ namespace MetricsDiscoveryInternal
         }
 
     private:
+        // Non-API:
+        bool IsLegacyMaskGlobalSymbol( const char* symbolName );
+
+    private:
         // Variables:
         std::vector<CEquationElementInternal> m_elementsVector;
         const char*                           m_equationString;
         CMetricsDevice&                       m_device;
-
-    private:
-        // Static variables:
-        static constexpr uint32_t EQUATION_VECTOR_INCREASE = 32;
     };
 } // namespace MetricsDiscoveryInternal

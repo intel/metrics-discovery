@@ -1,6 +1,6 @@
 /*========================== begin_copyright_notice ============================
 
-Copyright (C) 2023-2024 Intel Corporation
+Copyright (C) 2023-2025 Intel Corporation
 
 SPDX-License-Identifier: MIT
 
@@ -80,11 +80,11 @@ SPDX-License-Identifier: MIT
 #define MD_MAX_DUALSUBSLICE_PER_SLICE  6  // Currently max value
 #define MD_MAX_SUBSLICE_PER_DSS        2  // Currently max value
 #define MD_MAX_L3_NODE                 16 // Currently max value
-#define MD_MAX_L3_BANK_PER_L3_NODE     4  // Currently max value
+#define MD_MAX_L3_BANK_PER_L3_NODE_XE2 4  // Currently Xe2 value
 #define MD_MAX_L3_NODE_PER_COPY_ENGINE 2  // Currently max value
 #define MD_DUALSUBSLICE_PER_SLICE      4  // Current value
-#define MD_SUBSLICE_PER_SLICE_BMG      4  // Current Xe2 value
-#define MD_SUBSLICE_PER_SLICE_PTL      6  // Current Xe3 value
+#define MD_SUBSLICE_PER_SLICE_XE2      4  // Current Xe2 value
+#define MD_SUBSLICE_PER_SLICE_XE3      6  // Current Xe3 value
 #define MD_MAX_SLICE_BMG_G21           5  // Currently BMG G21 value
 #define MD_MAX_SLICE_LNL               2  // Currently LNL value
 #define MD_MAX_SLICE_PTL_H             2  // Currently PTL H value

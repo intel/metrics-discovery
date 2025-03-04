@@ -1,6 +1,6 @@
 /*========================== begin_copyright_notice ============================
 
-Copyright (C) 2022-2024 Intel Corporation
+Copyright (C) 2022-2025 Intel Corporation
 
 SPDX-License-Identifier: MIT
 
@@ -34,12 +34,12 @@ namespace MetricsDiscoveryInternal
     //     params memory (strings).
     //
     // Input:
-    //     CAdapterGroup&            adapterGroup  - parent adapter group object
-    //     const TAdapterParams_1_9& params        - filled adapter params
-    //     CAdapterHandle&           adapterHandle - adapter handle connected with this adapter
+    //     CAdapterGroup&              adapterGroup  - parent adapter group object
+    //     const TAdapterParamsLatest& params        - filled adapter params
+    //     CAdapterHandle&             adapterHandle - adapter handle connected with this adapter
     //
     //////////////////////////////////////////////////////////////////////////////
-    CAdapter::CAdapter( CAdapterGroup& adapterGroup, const TAdapterParams_1_9& params, CAdapterHandle& adapterHandle )
+    CAdapter::CAdapter( CAdapterGroup& adapterGroup, const TAdapterParamsLatest& params, CAdapterHandle& adapterHandle )
         : m_adapterId( IU_ADAPTER_ID_UNKNOWN )
         , m_params( params )
         , m_adapterHandle( &adapterHandle )
@@ -60,6 +60,35 @@ namespace MetricsDiscoveryInternal
         {
             MD_LOG( LOG_ERROR, "Failed to create driver interface for an adapter" );
         }
+    }
+
+    //////////////////////////////////////////////////////////////////////////////
+    //
+    // Class:
+    //     CAdapter
+    //
+    // Method:
+    //     CAdapter constructor
+    //
+    // Description:
+    //     Constructor.
+    //
+    // Input:
+    //     CAdapterGroup& adapterGroup - parent adapter group object
+    //
+    //////////////////////////////////////////////////////////////////////////////
+    CAdapter::CAdapter( CAdapterGroup& adapterGroup )
+        : m_adapterId( IU_ADAPTER_ID_UNKNOWN )
+        , m_params{}
+        , m_adapterHandle( nullptr )
+        , m_driverInterface( nullptr )
+        , m_openCloseSemaphore( nullptr )
+        , m_subDevices( *this )
+        , m_subDeviceParams{}
+        , m_engineParams{}
+        , m_adapterGroup( adapterGroup )
+    {
+        MD_LOG( LOG_INFO, "Offline adapter" );
     }
 
     //////////////////////////////////////////////////////////////////////////////

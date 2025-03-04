@@ -1,6 +1,6 @@
 /*========================== begin_copyright_notice ============================
 
-Copyright (C) 2022-2024 Intel Corporation
+Copyright (C) 2022-2025 Intel Corporation
 
 SPDX-License-Identifier: MIT
 
@@ -80,8 +80,9 @@ namespace MetricsDiscoveryInternal
         virtual TCompletionCode SaveMetricsDeviceToFile( const char* fileName, void* saveParams, IMetricsDevice_1_5* metricsDevice );
 
     public:
-        // Constructor & Destructor:
+        // Constructors & Destructor:
         CAdapter( CAdapterGroup& adapterGroup, const TAdapterParamsLatest& params, CAdapterHandle& adapterHandle );
+        CAdapter( CAdapterGroup& adapterGroup );
         virtual ~CAdapter();
 
         CAdapter( const CAdapter& )            = delete; // Delete copy-constructor

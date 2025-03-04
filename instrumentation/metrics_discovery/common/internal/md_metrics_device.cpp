@@ -1,6 +1,6 @@
 /*========================== begin_copyright_notice ============================
 
-Copyright (C) 2022-2024 Intel Corporation
+Copyright (C) 2022-2025 Intel Corporation
 
 SPDX-License-Identifier: MIT
 
@@ -40,8 +40,14 @@ namespace MetricsDiscoveryInternal
     // Description:
     //     Constructor. Sends DeviceInfoParam escape.
     //
+    // Input:
+    //     CAdapter&         adapter         - parent adapter object
+    //     CDriverInterface& driverInterface - driver interface tied to the device
+    //     const uint32_t    subDeviceIndex  - sub device index (0 by default)
+    //     const bool        isOffline       - offline mode flag (false by default)
+    //
     //////////////////////////////////////////////////////////////////////////////
-    CMetricsDevice::CMetricsDevice( CAdapter& adapter, CDriverInterface& driverInterface, const uint32_t subDeviceIndex /* = 0 */ )
+    CMetricsDevice::CMetricsDevice( CAdapter& adapter, CDriverInterface& driverInterface, const uint32_t subDeviceIndex /* = 0 */, const bool isOffline /* = false */ )
         : m_params{}
         , m_groupsVector()
         , m_overridesVector()
@@ -54,29 +60,40 @@ namespace MetricsDiscoveryInternal
         , m_platformIndex( 0 )
         , m_gtType( GT_TYPE_UNKNOWN )
         , m_isOpenedFromFile( false )
+        , m_isOffline( isOffline )
         , m_referenceCounter( 0 )
-        , m_oaBuferCount( 0 )
+        , m_oaBuferCount( m_isOffline ? 0xFFFFFFFF : 0 )
         , m_queryModeRequested( QUERY_MODE_NONE )
         , m_queryModeDefault( m_driverInterface.GetQueryModeOverride() )
     {
         const uint32_t adapterId = m_adapter.GetAdapterId();
 
-        GTDIDeviceInfoParamExtOut out = {};
+        if( !m_isOffline )
+        {
+            GTDIDeviceInfoParamExtOut out = {};
 
-        if( m_driverInterface.SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_PLATFORM_INDEX, out, *this ) == CC_OK )
-        {
-            m_platformIndex = out.ValueUint32;
-            MD_LOG_A( adapterId, LOG_INFO, "Metrics device platform index: %u", m_platformIndex );
-        }
-        if( m_driverInterface.SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_GT_TYPE, out, *this ) == CC_OK )
-        {
-            m_gtType = static_cast<TGTType>( 1 << out.ValueUint32 );
-            MD_LOG_A( adapterId, LOG_INFO, "GT_TYPE is %u", m_gtType );
-        }
+            if( m_driverInterface.SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_PLATFORM_INDEX, out, *this ) == CC_OK )
+            {
+                m_platformIndex = out.ValueUint32;
+                MD_LOG_A( adapterId, LOG_INFO, "Metrics device platform index: %u", m_platformIndex );
+            }
+            if( m_driverInterface.SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_GT_TYPE, out, *this ) == CC_OK )
+            {
+                m_gtType = static_cast<TGTType>( 1 << out.ValueUint32 );
+                MD_LOG_A( adapterId, LOG_INFO, "GT_TYPE is %u", m_gtType );
+            }
 
-        if( m_symbolSet.DetectMaxSlicesInfo() != CC_OK )
+            if( m_symbolSet.DetectMaxSlicesInfo() != CC_OK )
+            {
+                MD_LOG_A( adapterId, LOG_ERROR, "Cannot detect max slices, subslices per slice or dual subslices per slice" );
+            }
+
+            m_params.DeviceName = GetCopiedCString( m_adapter.GetParams()->ShortName, adapterId );
+        }
+        else
         {
-            MD_LOG_A( adapterId, LOG_ERROR, "Cannot detect max slices, subslices per slice or dual subslices per slice" );
+            m_gtType            = GT_TYPE_GT1;
+            m_params.DeviceName = GetCopiedCString( "Offline Metrics Device", adapterId );
         }
 
         m_params.DeltaFunctionsCount       = DELTA_FUNCTION_LAST_1_0;
@@ -87,14 +104,7 @@ namespace MetricsDiscoveryInternal
         m_params.Version.MinorNumber = MD_API_MINOR_NUMBER_CURRENT;
         m_params.Version.BuildNumber = MD_API_BUILD_NUMBER_CURRENT;
 
-        m_params.GlobalSymbolsCount    = m_symbolSet.GetSymbolCount();
-        m_params.ConcurrentGroupsCount = 0;
-        m_params.OverrideCount         = 0;
-
-        m_params.DeviceName = GetCopiedCString( m_adapter.GetParams()->ShortName, adapterId );
-
-        m_groupsVector.reserve( GROUPS_VECTOR_INCREASE );
-        m_overridesVector.reserve( OVERRIDES_VECTOR_INCREASE );
+        m_params.GlobalSymbolsCount = m_symbolSet.GetSymbolCount();
     }
 
     //////////////////////////////////////////////////////////////////////////////
@@ -601,50 +611,38 @@ namespace MetricsDiscoveryInternal
     //     Saves a custom part of MetricsDevice to file.
     //
     // Input:
-    //     const char *    fileName        - file name
-    //     const uint32_t  minMajorVersion - required major MDAPI version to save to file
-    //     const uint32_t  minMinorVersion - required minor MDAPI version to save to file
+    //     const char*     fileName           - file name
+    //     const uint32_t  minMajorApiVersion - required major MDAPI version to save to file
+    //     const uint32_t  minMinorApiVersion - required minor MDAPI version to save to file
     //
     // Output:
-    //     TCompletionCode             - result
+    //     TCompletionCode                    - result
     //
     //////////////////////////////////////////////////////////////////////////////
-    TCompletionCode CMetricsDevice::SaveToFile( const char* fileName, const uint32_t minMajorApiVersion /* =0*/, const uint32_t minMinorApiVersion /* =0*/ )
+    TCompletionCode CMetricsDevice::SaveToFile( const char* fileName, const uint32_t minMajorApiVersion, const uint32_t minMinorApiVersion )
     {
         TCompletionCode retVal     = CC_OK;
         FILE*           metricFile = nullptr;
+        uint8_t*        buffer     = nullptr;
         const uint32_t  adapterId  = m_adapter.GetAdapterId();
 
         iu_fopen_s( &metricFile, fileName, "wb" );
         MD_CHECK_PTR_RET_A( adapterId, metricFile, CC_ERROR_FILE_NOT_FOUND );
 
-        // Specific key indicating plain text MDAPI file
-        fwrite( MD_METRICS_FILE_KEY_3_0, sizeof( char ), sizeof( MD_METRICS_FILE_KEY_3_0 ), metricFile );
+        uint32_t bufferSize = 0;
+        retVal              = WriteToBuffer( nullptr, bufferSize, nullptr, 0, minMajorApiVersion, minMinorApiVersion );
+        MD_CHECK_CC( retVal );
 
-        // Minimal api vesrion
-        fwrite( &minMajorApiVersion, sizeof( uint32_t ), 1, metricFile );
-        fwrite( &minMinorApiVersion, sizeof( uint32_t ), 1, metricFile );
+        buffer = new( std::nothrow ) uint8_t[bufferSize];
+        MD_CHECK_PTR( buffer );
 
-        // m_platformIndex
-        fwrite( &m_platformIndex, sizeof( m_platformIndex ), 1, metricFile );
+        retVal = WriteToBuffer( buffer, bufferSize, nullptr, 0, minMajorApiVersion, minMinorApiVersion );
+        MD_CHECK_CC( retVal );
 
-        // m_params
-        fwrite( &m_params.Version, sizeof( m_params.Version ), 1, metricFile );
+        fwrite( buffer, sizeof( uint8_t ), bufferSize, metricFile );
 
-        // m_symbolsVector
-        m_symbolSet.WriteSymbolSetToFile( metricFile );
-
-        // m_groupsVector
-        uint32_t groupsCount = static_cast<uint32_t>( m_groupsVector.size() );
-        fwrite( &groupsCount, sizeof( groupsCount ), 1, metricFile );
-        for( auto& group : m_groupsVector )
-        {
-            retVal = group->WriteCConcurrentGroupToFile( metricFile );
-            if( retVal != CC_OK )
-            {
-                break;
-            }
-        }
+    exception:
+        MD_SAFE_DELETE_ARRAY( buffer );
 
         fclose( metricFile );
 
@@ -657,27 +655,107 @@ namespace MetricsDiscoveryInternal
     //     CMetricsDevice
     //
     // Method:
-    //     ReadGlobalSymbolsFromFileBuffer
+    //     WriteToBuffer
     //
     // Description:
-    //     Reads global symbols from file buffer and advances the pointer.
+    //     Saves a custom part of MetricsDevice to buffer.
     //
     // Input:
-    //     uint8_t*&       bufferPtr             - file buffer
-    //     const uint8_t*  fileBufferBeginOffset - file buffer begin offset
-    //     const uint32_t  fileSize              - file size
-    //     const uint32_t  fileVersion           - file version
+    //     uint8_t*          buffer             - pointer to a buffer
+    //     uint32_t&         bufferSize         - size of the buffer
+    //     IMetricSet_1_13** metricSets         - metric sets to write to the buffer
+    //     uint32_t          metricSetCount     - number of metric sets
+    //     const uint32_t    minMajorApiVersion - required major MDAPI version to save to buffer
+    //     const uint32_t    minMinorApiVersion - required minor MDAPI version to save to buffer
+    //
+    // Output:
+    //     TCompletionCode                      - result
+    //
+    //////////////////////////////////////////////////////////////////////////////
+    TCompletionCode CMetricsDevice::WriteToBuffer( uint8_t* buffer, uint32_t& bufferSize, IMetricSet_1_13** metricSets, uint32_t metricSetCount, const uint32_t minMajorApiVersion, const uint32_t minMinorApiVersion )
+    {
+        const uint32_t  adapterId = m_adapter.GetAdapterId();
+        TCompletionCode result    = CC_OK;
+
+        if( buffer == nullptr )
+        {
+            bufferSize = 0;
+        }
+
+        uint32_t bufferOffset = 0;
+
+        // Specific key indicating plain text MDAPI file
+        result = WriteCStringToBuffer( MD_METRICS_FILE_KEY_3_0, buffer, bufferSize, bufferOffset, adapterId );
+        MD_CHECK_CC_RET_A( adapterId, result );
+
+        // Minimal api version
+        result = WriteDataToBuffer( (void*) &minMajorApiVersion, sizeof( minMajorApiVersion ), buffer, bufferSize, bufferOffset, adapterId );
+        MD_CHECK_CC_RET_A( adapterId, result );
+
+        result = WriteDataToBuffer( (void*) &minMinorApiVersion, sizeof( minMinorApiVersion ), buffer, bufferSize, bufferOffset, adapterId );
+        MD_CHECK_CC_RET_A( adapterId, result );
+
+        // m_platformIndex
+        result = WriteDataToBuffer( (void*) &m_platformIndex, sizeof( m_platformIndex ), buffer, bufferSize, bufferOffset, adapterId );
+        MD_CHECK_CC_RET_A( adapterId, result );
+
+        // m_params
+        result = WriteDataToBuffer( (void*) &m_params.Version, sizeof( m_params.Version ), buffer, bufferSize, bufferOffset, adapterId );
+        MD_CHECK_CC_RET_A( adapterId, result );
+
+        // m_symbolsVector
+        result = m_symbolSet.WriteSymbolSetToBuffer( buffer, bufferSize, bufferOffset );
+        MD_CHECK_CC_RET_A( adapterId, result );
+
+        // m_groupsVector
+        const uint32_t groupsCount = static_cast<uint32_t>( m_groupsVector.size() );
+
+        result = WriteDataToBuffer( (void*) &groupsCount, sizeof( groupsCount ), buffer, bufferSize, bufferOffset, adapterId );
+        MD_CHECK_CC_RET_A( adapterId, result );
+
+        for( auto& group : m_groupsVector )
+        {
+            result = group->WriteCConcurrentGroupToBuffer( buffer, bufferSize, bufferOffset, metricSets, metricSetCount );
+            MD_CHECK_CC_RET_A( adapterId, result );
+        }
+
+        if( buffer != nullptr )
+        {
+            const bool validWrite = ( bufferOffset == bufferSize );
+            MD_ASSERT_A( adapterId, validWrite );
+            return validWrite ? CC_OK : CC_ERROR_GENERAL;
+        }
+
+        return CC_OK;
+    }
+
+    //////////////////////////////////////////////////////////////////////////////
+    //
+    // Class:
+    //     CMetricsDevice
+    //
+    // Method:
+    //     ReadGlobalSymbolsFromBuffer
+    //
+    // Description:
+    //     Reads global symbols from buffer and advances the pointer.
+    //
+    // Input:
+    //     uint8_t*&       bufferPtr         - buffer
+    //     const uint8_t*  bufferBeginOffset - buffer begin offset
+    //     const uint32_t  bufferSize        - buffer size
+    //     const uint32_t  bufferVersion     - buffer or file version
     //
     // Output:
     //     TCompletionCode - result of the operation
     //
     //////////////////////////////////////////////////////////////////////////////
-    TCompletionCode CMetricsDevice::ReadGlobalSymbolsFromFileBuffer( uint8_t*& bufferPtr, const uint8_t* fileBufferBeginOffset, const uint32_t fileSize, const uint32_t fileVersion )
+    TCompletionCode CMetricsDevice::ReadGlobalSymbolsFromBuffer( uint8_t*& bufferPtr, const uint8_t* bufferBeginOffset, const uint32_t bufferSize, const uint32_t bufferVersion )
     {
         const uint32_t adapterId = m_adapter.GetAdapterId();
 
         MD_CHECK_PTR_RET_A( adapterId, bufferPtr, CC_ERROR_INVALID_PARAMETER );
-        MD_CHECK_PTR_RET_A( adapterId, fileBufferBeginOffset, CC_ERROR_INVALID_PARAMETER );
+        MD_CHECK_PTR_RET_A( adapterId, bufferBeginOffset, CC_ERROR_INVALID_PARAMETER );
 
         auto isValidByteArray = []( const TGlobalSymbolLatest& globalSymbol )
         {
@@ -688,20 +766,21 @@ namespace MetricsDiscoveryInternal
         TCompletionCode ret          = CC_OK;
         uint32_t        symbolsCount = 0;
 
-        ret = ReadUInt32FromFileBuffer( bufferPtr, fileBufferBeginOffset, fileSize, symbolsCount, adapterId );
+        ret = ReadUInt32FromBuffer( bufferPtr, bufferBeginOffset, bufferSize, symbolsCount, adapterId );
         MD_CHECK_CC_RET_A( adapterId, ret );
 
         for( uint32_t i = 0; i < symbolsCount; ++i )
         {
-            ret = ReadCStringFromFileBuffer( bufferPtr, fileBufferBeginOffset, fileSize, globalSymbol.symbol.SymbolName, adapterId );
+            ret = ReadCStringFromBuffer( bufferPtr, bufferBeginOffset, bufferSize, globalSymbol.symbol.SymbolName, adapterId );
             MD_CHECK_CC_RET_A( adapterId, ret );
-            ret = ReadTTypedValueFromFileBuffer( bufferPtr, fileBufferBeginOffset, fileSize, fileVersion, globalSymbol.symbol.SymbolTypedValue, adapterId );
+            ret = ReadTTypedValueFromBuffer( bufferPtr, bufferBeginOffset, bufferSize, bufferVersion, globalSymbol.symbol.SymbolTypedValue, adapterId );
             MD_CHECK_CC_RET_A( adapterId, ret );
 
             uint32_t valueSymbolType = 0;
-            ret                      = ReadUInt32FromFileBuffer( bufferPtr, fileBufferBeginOffset, fileSize, valueSymbolType, adapterId );
+            ret                      = ReadUInt32FromBuffer( bufferPtr, bufferBeginOffset, bufferSize, valueSymbolType, adapterId );
             MD_CHECK_CC_RET_A( adapterId, ret );
-            globalSymbol.symbolType = static_cast<TSymbolType>( valueSymbolType );
+            globalSymbol.symbolType = m_isOffline ? SYMBOL_TYPE_IMMEDIATE // Only immediate symbols are supported in offline mode
+                                                  : static_cast<TSymbolType>( valueSymbolType );
 
             if( m_symbolSet.IsSymbolAlreadyAdded( globalSymbol.symbol.SymbolName ) )
             {
@@ -734,27 +813,27 @@ namespace MetricsDiscoveryInternal
     //     CMetricsDevice
     //
     // Method:
-    //     ReadConcurrentGroupsFromFileBuffer
+    //     ReadConcurrentGroupsFromBuffer
     //
     // Description:
-    //     Reads concurrent groups from file buffer and advances the pointer.
+    //     Reads concurrent groups from buffer and advances the pointer.
     //
     // Input:
-    //     uint8_t*&               bufferPtr             - file buffer
-    //     const uint8_t*          fileBufferBeginOffset - file buffer begin offset
-    //     const uint32_t          fileSize              - file size
-    //     TApiVersion_1_0*        apiVersion            - API version
-    //     const uint32_t          fileVersion           - custom metric file version
+    //     uint8_t*&        bufferPtr         - buffer
+    //     const uint8_t*   bufferBeginOffset - buffer begin offset
+    //     const uint32_t   bufferSize        - buffer size
+    //     TApiVersion_1_0* apiVersion        - API version
+    //     const uint32_t   bufferVersion     - buffer or file version
     // Output:
     //     TCompletionCode - result of the operation
     //
     //////////////////////////////////////////////////////////////////////////////
-    TCompletionCode CMetricsDevice::ReadConcurrentGroupsFromFileBuffer( uint8_t*& bufferPtr, const uint8_t* fileBufferBeginOffset, const uint32_t fileSize, TApiVersion_1_0* apiVersion, const uint32_t fileVersion )
+    TCompletionCode CMetricsDevice::ReadConcurrentGroupsFromBuffer( uint8_t*& bufferPtr, const uint8_t* bufferBeginOffset, const uint32_t bufferSize, TApiVersion_1_0* apiVersion, const uint32_t bufferVersion )
     {
         const uint32_t adapterId = m_adapter.GetAdapterId();
 
         MD_CHECK_PTR_RET_A( adapterId, bufferPtr, CC_ERROR_INVALID_PARAMETER );
-        MD_CHECK_PTR_RET_A( adapterId, fileBufferBeginOffset, CC_ERROR_INVALID_PARAMETER );
+        MD_CHECK_PTR_RET_A( adapterId, bufferBeginOffset, CC_ERROR_INVALID_PARAMETER );
 
         TCompletionCode ret                 = CC_OK;
         const char*     symbolicName        = nullptr;
@@ -763,17 +842,17 @@ namespace MetricsDiscoveryInternal
         bool            isSupported         = false;
         uint32_t        groupsCount         = 0;
 
-        ret = ReadUInt32FromFileBuffer( bufferPtr, fileBufferBeginOffset, fileSize, groupsCount, adapterId );
+        ret = ReadUInt32FromBuffer( bufferPtr, bufferBeginOffset, bufferSize, groupsCount, adapterId );
         MD_CHECK_CC_RET_A( adapterId, ret );
 
         for( uint32_t i = 0; i < groupsCount; ++i )
         {
             // ConcurrentGroupParams
-            ret = ReadCStringFromFileBuffer( bufferPtr, fileBufferBeginOffset, fileSize, symbolicName, adapterId );
+            ret = ReadCStringFromBuffer( bufferPtr, bufferBeginOffset, bufferSize, symbolicName, adapterId );
             MD_CHECK_CC_RET_A( adapterId, ret );
-            ret = ReadCStringFromFileBuffer( bufferPtr, fileBufferBeginOffset, fileSize, shortName, adapterId );
+            ret = ReadCStringFromBuffer( bufferPtr, bufferBeginOffset, bufferSize, shortName, adapterId );
             MD_CHECK_CC_RET_A( adapterId, ret );
-            ret = ReadUInt32FromFileBuffer( bufferPtr, fileBufferBeginOffset, fileSize, measurementTypeMask, adapterId );
+            ret = ReadUInt32FromBuffer( bufferPtr, bufferBeginOffset, bufferSize, measurementTypeMask, adapterId );
             MD_CHECK_CC_RET_A( adapterId, ret );
 
             auto concurrentGroup = GetConcurrentGroupByName( symbolicName );
@@ -796,7 +875,7 @@ namespace MetricsDiscoveryInternal
             }
 
             // MetricSets
-            ret = ReadMetricSetsFromFileBuffer( bufferPtr, fileBufferBeginOffset, fileSize, concurrentGroup, apiVersion, fileVersion );
+            ret = ReadMetricSetsFromBuffer( bufferPtr, bufferBeginOffset, bufferSize, concurrentGroup, apiVersion, bufferVersion );
             MD_CHECK_CC_RET_A( adapterId, ret );
         }
 
@@ -809,29 +888,29 @@ namespace MetricsDiscoveryInternal
     //     CMetricsDevice
     //
     // Method:
-    //     ReadMetricSetsFromFileBuffer
+    //     ReadMetricSetsFromBuffer
     //
     // Description:
-    //     Reads metric sets from file buffer, adds them to the group and advances the pointer.
+    //     Reads metric sets from buffer, adds them to the group and advances the pointer.
     //
     // Input:
-    //     uint8_t*&                bufferPtr             - file buffer
-    //     const uint8_t*           fileBufferBeginOffset - file buffer begin offset
-    //     const uint32_t           fileSize              - file size
-    //     CConcurrentGroup*        group                 - parent concurrent group
-    //     TApiVersion_1_0*         apiVersion            - API version
-    //     const uint32_t           fileVersion           - custom metric file version
+    //     uint8_t*&         bufferPtr         - buffer
+    //     const uint8_t*    bufferBeginOffset - buffer begin offset
+    //     const uint32_t    bufferSize        - buffer size
+    //     CConcurrentGroup* group             - parent concurrent group
+    //     TApiVersion_1_0*  apiVersion        - API version
+    //     const uint32_t    bufferVersion     - buffer or file version
     //
     // Output:
     //     TCompletionCode - result of the operation
     //
     //////////////////////////////////////////////////////////////////////////////
-    TCompletionCode CMetricsDevice::ReadMetricSetsFromFileBuffer( uint8_t*& bufferPtr, const uint8_t* fileBufferBeginOffset, const uint32_t fileSize, CConcurrentGroup* group, TApiVersion_1_0* apiVersion, const uint32_t fileVersion )
+    TCompletionCode CMetricsDevice::ReadMetricSetsFromBuffer( uint8_t*& bufferPtr, const uint8_t* bufferBeginOffset, const uint32_t bufferSize, CConcurrentGroup* group, TApiVersion_1_0* apiVersion, const uint32_t bufferVersion )
     {
         const uint32_t adapterId = m_adapter.GetAdapterId();
 
         MD_CHECK_PTR_RET_A( adapterId, bufferPtr, CC_ERROR_INVALID_PARAMETER );
-        MD_CHECK_PTR_RET_A( adapterId, fileBufferBeginOffset, CC_ERROR_INVALID_PARAMETER );
+        MD_CHECK_PTR_RET_A( adapterId, bufferBeginOffset, CC_ERROR_INVALID_PARAMETER );
         MD_CHECK_PTR_RET_A( adapterId, group, CC_ERROR_INVALID_PARAMETER );
 
         TCompletionCode ret                  = CC_OK;
@@ -847,7 +926,7 @@ namespace MetricsDiscoveryInternal
         TReportType           reportType;
 
         // MetricSets
-        ret = ReadUInt32FromFileBuffer( bufferPtr, fileBufferBeginOffset, fileSize, metricSetsCount, adapterId );
+        ret = ReadUInt32FromBuffer( bufferPtr, bufferBeginOffset, bufferSize, metricSetsCount, adapterId );
         MD_CHECK_CC_RET_A( adapterId, ret );
 
         for( uint32_t j = 0; j < metricSetsCount; ++j )
@@ -856,24 +935,24 @@ namespace MetricsDiscoveryInternal
             existingSet = nullptr;
 
             // MetricSetParams
-            ret = ReadCStringFromFileBuffer( bufferPtr, fileBufferBeginOffset, fileSize, metricSetParams.SymbolName, adapterId );
+            ret = ReadCStringFromBuffer( bufferPtr, bufferBeginOffset, bufferSize, metricSetParams.SymbolName, adapterId );
             MD_CHECK_CC_RET_A( adapterId, ret );
-            ret = ReadCStringFromFileBuffer( bufferPtr, fileBufferBeginOffset, fileSize, metricSetParams.ShortName, adapterId );
+            ret = ReadCStringFromBuffer( bufferPtr, bufferBeginOffset, bufferSize, metricSetParams.ShortName, adapterId );
             MD_CHECK_CC_RET_A( adapterId, ret );
-            ret = ReadUInt32FromFileBuffer( bufferPtr, fileBufferBeginOffset, fileSize, metricSetParams.ApiMask, adapterId );
+            ret = ReadUInt32FromBuffer( bufferPtr, bufferBeginOffset, bufferSize, metricSetParams.ApiMask, adapterId );
             MD_CHECK_CC_RET_A( adapterId, ret );
-            ret = ReadUInt32FromFileBuffer( bufferPtr, fileBufferBeginOffset, fileSize, metricSetParams.CategoryMask, adapterId );
+            ret = ReadUInt32FromBuffer( bufferPtr, bufferBeginOffset, bufferSize, metricSetParams.CategoryMask, adapterId );
             MD_CHECK_CC_RET_A( adapterId, ret );
-            ret = ReadUInt32FromFileBuffer( bufferPtr, fileBufferBeginOffset, fileSize, metricSetParams.RawReportSize, adapterId );
+            ret = ReadUInt32FromBuffer( bufferPtr, bufferBeginOffset, bufferSize, metricSetParams.RawReportSize, adapterId );
             MD_CHECK_CC_RET_A( adapterId, ret );
-            ret = ReadUInt32FromFileBuffer( bufferPtr, fileBufferBeginOffset, fileSize, metricSetParams.QueryReportSize, adapterId );
+            ret = ReadUInt32FromBuffer( bufferPtr, bufferBeginOffset, bufferSize, metricSetParams.QueryReportSize, adapterId );
             MD_CHECK_CC_RET_A( adapterId, ret );
-            ret = ReadUInt32FromFileBuffer( bufferPtr, fileBufferBeginOffset, fileSize, metricSetParams.PlatformMask, adapterId );
+            ret = ReadUInt32FromBuffer( bufferPtr, bufferBeginOffset, bufferSize, metricSetParams.PlatformMask, adapterId );
             MD_CHECK_CC_RET_A( adapterId, ret );
 
             if( ( apiVersion->MajorNumber == MD_API_MAJOR_NUMBER_1 && apiVersion->MinorNumber >= MD_API_MINOR_NUMBER_4 ) || ( apiVersion->MajorNumber > MD_API_MAJOR_NUMBER_1 ) )
             {
-                ret = ReadUInt32FromFileBuffer( bufferPtr, fileBufferBeginOffset, fileSize, metricSetParams.GtMask, adapterId );
+                ret = ReadUInt32FromBuffer( bufferPtr, bufferBeginOffset, bufferSize, metricSetParams.GtMask, adapterId );
                 MD_CHECK_CC_RET_A( adapterId, ret );
             }
             else
@@ -883,19 +962,19 @@ namespace MetricsDiscoveryInternal
 
             if( ( apiVersion->MajorNumber == MD_API_MAJOR_NUMBER_1 && apiVersion->MinorNumber >= MD_API_MINOR_NUMBER_11 ) || ( apiVersion->MajorNumber > MD_API_MAJOR_NUMBER_1 ) )
             {
-                ret = ReadEquationStringFromFile( bufferPtr, fileBufferBeginOffset, fileSize, availabilityEquation, adapterId );
+                ret = ReadEquationStringFromBuffer( bufferPtr, bufferBeginOffset, bufferSize, availabilityEquation, adapterId );
                 MD_CHECK_CC_RET_A( adapterId, ret );
             }
 
             uint32_t valueReportType = 0;
-            ret                      = ReadUInt32FromFileBuffer( bufferPtr, fileBufferBeginOffset, fileSize, valueReportType, adapterId );
+            ret                      = ReadUInt32FromBuffer( bufferPtr, bufferBeginOffset, bufferSize, valueReportType, adapterId );
             MD_CHECK_CC_RET_A( adapterId, ret );
             reportType = static_cast<TReportType>( valueReportType );
 
             TByteArrayLatest* platformMask = nullptr;
-            if( fileVersion >= CUSTOM_METRICS_FILE_VERSION_3 )
+            if( bufferVersion >= CUSTOM_METRICS_FILE_VERSION_3 )
             {
-                ret = ReadByteArrayFromFileBuffer( bufferPtr, fileBufferBeginOffset, fileSize, platformMask, adapterId );
+                ret = ReadByteArrayFromBuffer( bufferPtr, bufferBeginOffset, bufferSize, platformMask, adapterId );
                 MD_CHECK_CC_RET_A( adapterId, ret );
             }
             else
@@ -935,25 +1014,25 @@ namespace MetricsDiscoveryInternal
             DeleteByteArray( platformMask, adapterId );
 
             // ApiSpecificId
-            ret = ReadUInt32FromFileBuffer( bufferPtr, fileBufferBeginOffset, fileSize, apiSpecificId.D3D9QueryId, adapterId );
+            ret = ReadUInt32FromBuffer( bufferPtr, bufferBeginOffset, bufferSize, apiSpecificId.D3D9QueryId, adapterId );
             MD_CHECK_CC_RET_A( adapterId, ret );
-            ret = ReadUInt32FromFileBuffer( bufferPtr, fileBufferBeginOffset, fileSize, apiSpecificId.D3D9Fourcc, adapterId );
+            ret = ReadUInt32FromBuffer( bufferPtr, bufferBeginOffset, bufferSize, apiSpecificId.D3D9Fourcc, adapterId );
             MD_CHECK_CC_RET_A( adapterId, ret );
-            ret = ReadUInt32FromFileBuffer( bufferPtr, fileBufferBeginOffset, fileSize, apiSpecificId.D3D1XQueryId, adapterId );
+            ret = ReadUInt32FromBuffer( bufferPtr, bufferBeginOffset, bufferSize, apiSpecificId.D3D1XQueryId, adapterId );
             MD_CHECK_CC_RET_A( adapterId, ret );
-            ret = ReadUInt32FromFileBuffer( bufferPtr, fileBufferBeginOffset, fileSize, apiSpecificId.D3D1XDevDependentId, adapterId );
+            ret = ReadUInt32FromBuffer( bufferPtr, bufferBeginOffset, bufferSize, apiSpecificId.D3D1XDevDependentId, adapterId );
             MD_CHECK_CC_RET_A( adapterId, ret );
-            ret = ReadCStringFromFileBuffer( bufferPtr, fileBufferBeginOffset, fileSize, apiSpecificId.D3D1XDevDependentName, adapterId );
+            ret = ReadCStringFromBuffer( bufferPtr, bufferBeginOffset, bufferSize, apiSpecificId.D3D1XDevDependentName, adapterId );
             MD_CHECK_CC_RET_A( adapterId, ret );
-            ret = ReadUInt32FromFileBuffer( bufferPtr, fileBufferBeginOffset, fileSize, apiSpecificId.OGLQueryIntelId, adapterId );
+            ret = ReadUInt32FromBuffer( bufferPtr, bufferBeginOffset, bufferSize, apiSpecificId.OGLQueryIntelId, adapterId );
             MD_CHECK_CC_RET_A( adapterId, ret );
-            ret = ReadCStringFromFileBuffer( bufferPtr, fileBufferBeginOffset, fileSize, apiSpecificId.OGLQueryIntelName, adapterId );
+            ret = ReadCStringFromBuffer( bufferPtr, bufferBeginOffset, bufferSize, apiSpecificId.OGLQueryIntelName, adapterId );
             MD_CHECK_CC_RET_A( adapterId, ret )
-            ret = ReadUInt32FromFileBuffer( bufferPtr, fileBufferBeginOffset, fileSize, apiSpecificId.OGLQueryARBTargetId, adapterId );
+            ret = ReadUInt32FromBuffer( bufferPtr, bufferBeginOffset, bufferSize, apiSpecificId.OGLQueryARBTargetId, adapterId );
             MD_CHECK_CC_RET_A( adapterId, ret );
-            ret = ReadUInt32FromFileBuffer( bufferPtr, fileBufferBeginOffset, fileSize, apiSpecificId.OCL, adapterId );
+            ret = ReadUInt32FromBuffer( bufferPtr, bufferBeginOffset, bufferSize, apiSpecificId.OCL, adapterId );
             MD_CHECK_CC_RET_A( adapterId, ret );
-            ret = ReadUInt32FromFileBuffer( bufferPtr, fileBufferBeginOffset, fileSize, apiSpecificId.HwConfigId, adapterId );
+            ret = ReadUInt32FromBuffer( bufferPtr, bufferBeginOffset, bufferSize, apiSpecificId.HwConfigId, adapterId );
             MD_CHECK_CC_RET_A( adapterId, ret );
             if( set )
             {
@@ -961,23 +1040,23 @@ namespace MetricsDiscoveryInternal
             }
 
             // Metrics - if set's been existing, add only missing metrics
-            ret = ReadMetricsFromFileBuffer( bufferPtr, fileBufferBeginOffset, fileSize, existingSet ? existingSet : set, existingSet == nullptr );
+            ret = ReadMetricsFromBuffer( bufferPtr, bufferBeginOffset, bufferSize, existingSet ? existingSet : set, existingSet == nullptr );
             MD_CHECK_CC_RET_A( adapterId, ret );
 
             // Information
-            ret = ReadInformationFromFileBuffer( bufferPtr, fileBufferBeginOffset, fileSize, set );
+            ret = ReadInformationFromBuffer( bufferPtr, bufferBeginOffset, bufferSize, set );
             MD_CHECK_CC_RET_A( adapterId, ret );
 
             // Start and stop registers
-            ret = ReadRegistersFromFileBuffer( bufferPtr, fileBufferBeginOffset, fileSize, set );
+            ret = ReadRegistersFromBuffer( bufferPtr, bufferBeginOffset, bufferSize, set );
             MD_CHECK_CC_RET_A( adapterId, ret );
 
             // ComplementaryMetricSets
-            ret = ReadUInt32FromFileBuffer( bufferPtr, fileBufferBeginOffset, fileSize, count, adapterId );
+            ret = ReadUInt32FromBuffer( bufferPtr, bufferBeginOffset, bufferSize, count, adapterId );
             MD_CHECK_CC_RET_A( adapterId, ret );
             for( uint32_t k = 0; k < count; ++k )
             {
-                ret = ReadCStringFromFileBuffer( bufferPtr, fileBufferBeginOffset, fileSize, symbolicName, adapterId );
+                ret = ReadCStringFromBuffer( bufferPtr, bufferBeginOffset, bufferSize, symbolicName, adapterId );
                 MD_CHECK_CC_RET_A( adapterId, ret );
                 if( set )
                 {
@@ -995,31 +1074,31 @@ namespace MetricsDiscoveryInternal
     //     CMetricSet
     //
     // Method:
-    //     ReadMetricsFromFileBuffer
+    //     ReadMetricsFromBuffer
     //
     // Description:
-    //     Reads metrics from file buffer, adds them to the set and advances the pointer.
+    //     Reads metrics from buffer, adds them to the set and advances the pointer.
     //
     // Input:
-    //     uint8_t*&                bufferPtr             - file buffer
-    //     const uint8_t*           fileBufferBeginOffset - file buffer begin offset
-    //     const uint32_t           fileSize              - file size
-    //     CMetricSet*              set                   - parent metric set
-    //     const bool               isSetNew              - if true, add all metrics, otherwise add only metrics that
-    //                                                      don't exist in the set. It's to prevent adding duplicated
-    //                                                      metrics when reading existing set (e.g. default RenderBasic)
-    //                                                      with added custom metrics.
+    //     uint8_t*&      bufferPtr         - buffer
+    //     const uint8_t* bufferBeginOffset - buffer begin offset
+    //     const uint32_t bufferSize        - buffer size
+    //     CMetricSet*    set               - parent metric set
+    //     const bool     isSetNew          - if true, add all metrics, otherwise add only metrics that
+    //                                        don't exist in the set. It's to prevent adding duplicated
+    //                                        metrics when reading existing set (e.g. default RenderBasic)
+    //                                        with added custom metrics.
     //
     // Output:
     //     TCompletionCode - result of the operation
     //
     //////////////////////////////////////////////////////////////////////////////
-    TCompletionCode CMetricsDevice::ReadMetricsFromFileBuffer( uint8_t*& bufferPtr, const uint8_t* fileBufferBeginOffset, const uint32_t fileSize, CMetricSet* set, const bool isSetNew )
+    TCompletionCode CMetricsDevice::ReadMetricsFromBuffer( uint8_t*& bufferPtr, const uint8_t* bufferBeginOffset, const uint32_t bufferSize, CMetricSet* set, const bool isSetNew )
     {
         const uint32_t adapterId = m_adapter.GetAdapterId();
 
         MD_CHECK_PTR_RET_A( adapterId, bufferPtr, CC_ERROR_INVALID_PARAMETER );
-        MD_CHECK_PTR_RET_A( adapterId, fileBufferBeginOffset, CC_ERROR_INVALID_PARAMETER );
+        MD_CHECK_PTR_RET_A( adapterId, bufferBeginOffset, CC_ERROR_INVALID_PARAMETER );
 
         CMetric*           metric         = nullptr;
         const char*        equationString = nullptr;
@@ -1033,7 +1112,7 @@ namespace MetricsDiscoveryInternal
         int64_t            valueHighWatermark = 0;
 
         // Metrics
-        ret = ReadUInt32FromFileBuffer( bufferPtr, fileBufferBeginOffset, fileSize, metricsCount, adapterId );
+        ret = ReadUInt32FromBuffer( bufferPtr, bufferBeginOffset, bufferSize, metricsCount, adapterId );
         MD_CHECK_CC_RET_A( adapterId, ret );
         for( uint32_t i = 0; i < metricsCount; ++i )
         {
@@ -1043,47 +1122,47 @@ namespace MetricsDiscoveryInternal
             uint32_t valueHwUnitType = 0;
 
             // MetricParams
-            ret = ReadUInt32FromFileBuffer( bufferPtr, fileBufferBeginOffset, fileSize, metricParams.GroupId, adapterId );
+            ret = ReadUInt32FromBuffer( bufferPtr, bufferBeginOffset, bufferSize, metricParams.GroupId, adapterId );
             MD_CHECK_CC_RET_A( adapterId, ret );
-            ret = ReadCStringFromFileBuffer( bufferPtr, fileBufferBeginOffset, fileSize, metricParams.SymbolName, adapterId );
+            ret = ReadCStringFromBuffer( bufferPtr, bufferBeginOffset, bufferSize, metricParams.SymbolName, adapterId );
             MD_CHECK_CC_RET_A( adapterId, ret );
-            ret = ReadCStringFromFileBuffer( bufferPtr, fileBufferBeginOffset, fileSize, metricParams.ShortName, adapterId );
+            ret = ReadCStringFromBuffer( bufferPtr, bufferBeginOffset, bufferSize, metricParams.ShortName, adapterId );
             MD_CHECK_CC_RET_A( adapterId, ret );
-            ret = ReadCStringFromFileBuffer( bufferPtr, fileBufferBeginOffset, fileSize, metricParams.GroupName, adapterId );
+            ret = ReadCStringFromBuffer( bufferPtr, bufferBeginOffset, bufferSize, metricParams.GroupName, adapterId );
             MD_CHECK_CC_RET_A( adapterId, ret );
-            ret = ReadCStringFromFileBuffer( bufferPtr, fileBufferBeginOffset, fileSize, metricParams.LongName, adapterId );
+            ret = ReadCStringFromBuffer( bufferPtr, bufferBeginOffset, bufferSize, metricParams.LongName, adapterId );
             MD_CHECK_CC_RET_A( adapterId, ret );
-            ret = ReadCStringFromFileBuffer( bufferPtr, fileBufferBeginOffset, fileSize, metricParams.DxToOglAlias, adapterId );
+            ret = ReadCStringFromBuffer( bufferPtr, bufferBeginOffset, bufferSize, metricParams.DxToOglAlias, adapterId );
             MD_CHECK_CC_RET_A( adapterId, ret );
-            ret = ReadUInt32FromFileBuffer( bufferPtr, fileBufferBeginOffset, fileSize, metricParams.UsageFlagsMask, adapterId );
+            ret = ReadUInt32FromBuffer( bufferPtr, bufferBeginOffset, bufferSize, metricParams.UsageFlagsMask, adapterId );
             MD_CHECK_CC_RET_A( adapterId, ret );
-            ret = ReadUInt32FromFileBuffer( bufferPtr, fileBufferBeginOffset, fileSize, metricParams.ApiMask, adapterId );
+            ret = ReadUInt32FromBuffer( bufferPtr, bufferBeginOffset, bufferSize, metricParams.ApiMask, adapterId );
             MD_CHECK_CC_RET_A( adapterId, ret );
-            ret = ReadUInt32FromFileBuffer( bufferPtr, fileBufferBeginOffset, fileSize, valueResultType, adapterId );
+            ret = ReadUInt32FromBuffer( bufferPtr, bufferBeginOffset, bufferSize, valueResultType, adapterId );
             MD_CHECK_CC_RET_A( adapterId, ret );
             metricParams.ResultType = static_cast<TMetricResultType>( valueResultType );
 
-            ret = ReadCStringFromFileBuffer( bufferPtr, fileBufferBeginOffset, fileSize, metricParams.MetricResultUnits, adapterId );
+            ret = ReadCStringFromBuffer( bufferPtr, bufferBeginOffset, bufferSize, metricParams.MetricResultUnits, adapterId );
             MD_CHECK_CC_RET_A( adapterId, ret );
-            ret = ReadUInt32FromFileBuffer( bufferPtr, fileBufferBeginOffset, fileSize, valueMetricType, adapterId );
+            ret = ReadUInt32FromBuffer( bufferPtr, bufferBeginOffset, bufferSize, valueMetricType, adapterId );
             MD_CHECK_CC_RET_A( adapterId, ret );
             metricParams.MetricType = static_cast<TMetricType>( valueMetricType );
 
-            ret = ReadUInt32FromFileBuffer( bufferPtr, fileBufferBeginOffset, fileSize, valueHwUnitType, adapterId );
+            ret = ReadUInt32FromBuffer( bufferPtr, bufferBeginOffset, bufferSize, valueHwUnitType, adapterId );
             MD_CHECK_CC_RET_A( adapterId, ret );
             metricParams.HwUnitType = static_cast<THwUnitType>( valueHwUnitType );
 
-            ret = ReadInt64FromFileBuffer( bufferPtr, fileBufferBeginOffset, fileSize, valueLowWatermark, adapterId );
+            ret = ReadInt64FromBuffer( bufferPtr, bufferBeginOffset, bufferSize, valueLowWatermark, adapterId );
             MD_CHECK_CC_RET_A( adapterId, ret );
             metricParams.LowWatermark = static_cast<uint64_t>( valueLowWatermark );
 
-            ret = ReadInt64FromFileBuffer( bufferPtr, fileBufferBeginOffset, fileSize, valueHighWatermark, adapterId );
+            ret = ReadInt64FromBuffer( bufferPtr, bufferBeginOffset, bufferSize, valueHighWatermark, adapterId );
             MD_CHECK_CC_RET_A( adapterId, ret );
             metricParams.HighWatermark = static_cast<uint64_t>( valueHighWatermark );
 
-            ret = ReadCStringFromFileBuffer( bufferPtr, fileBufferBeginOffset, fileSize, signalName, adapterId );
+            ret = ReadCStringFromBuffer( bufferPtr, bufferBeginOffset, bufferSize, signalName, adapterId );
             MD_CHECK_CC_RET_A( adapterId, ret );
-            ret = ReadEquationStringFromFile( bufferPtr, fileBufferBeginOffset, fileSize, equationString, adapterId );
+            ret = ReadEquationStringFromBuffer( bufferPtr, bufferBeginOffset, bufferSize, equationString, adapterId );
             MD_CHECK_CC_RET_A( adapterId, ret );
 
             if( !skip )
@@ -1117,11 +1196,11 @@ namespace MetricsDiscoveryInternal
             uint32_t valueFunctionType = 0;
 
             // Delta function
-            ret = ReadUInt32FromFileBuffer( bufferPtr, fileBufferBeginOffset, fileSize, valueFunctionType, adapterId );
+            ret = ReadUInt32FromBuffer( bufferPtr, bufferBeginOffset, bufferSize, valueFunctionType, adapterId );
             MD_CHECK_CC_RET_A( adapterId, ret );
             deltaFunction.FunctionType = static_cast<TDeltaFunctionType>( valueFunctionType );
 
-            ret = ReadUInt32FromFileBuffer( bufferPtr, fileBufferBeginOffset, fileSize, deltaFunction.BitsCount, adapterId );
+            ret = ReadUInt32FromBuffer( bufferPtr, bufferBeginOffset, bufferSize, deltaFunction.BitsCount, adapterId );
             MD_CHECK_CC_RET_A( adapterId, ret );
             if( metric )
             {
@@ -1130,7 +1209,7 @@ namespace MetricsDiscoveryInternal
             }
 
             // Snapshot report read equation
-            ret = ReadEquationStringFromFile( bufferPtr, fileBufferBeginOffset, fileSize, equationString, adapterId );
+            ret = ReadEquationStringFromBuffer( bufferPtr, bufferBeginOffset, bufferSize, equationString, adapterId );
             MD_CHECK_CC_RET_A( adapterId, ret );
             if( metric )
             {
@@ -1139,7 +1218,7 @@ namespace MetricsDiscoveryInternal
             }
 
             // Delta report read equation
-            ret = ReadEquationStringFromFile( bufferPtr, fileBufferBeginOffset, fileSize, equationString, adapterId );
+            ret = ReadEquationStringFromBuffer( bufferPtr, bufferBeginOffset, bufferSize, equationString, adapterId );
             MD_CHECK_CC_RET_A( adapterId, ret );
             if( metric )
             {
@@ -1148,7 +1227,7 @@ namespace MetricsDiscoveryInternal
             }
 
             // Normalization equation
-            ret = ReadEquationStringFromFile( bufferPtr, fileBufferBeginOffset, fileSize, equationString, adapterId );
+            ret = ReadEquationStringFromBuffer( bufferPtr, bufferBeginOffset, bufferSize, equationString, adapterId );
             MD_CHECK_CC_RET_A( adapterId, ret );
             if( metric )
             {
@@ -1157,7 +1236,7 @@ namespace MetricsDiscoveryInternal
             }
 
             // Max value equation
-            ret = ReadEquationStringFromFile( bufferPtr, fileBufferBeginOffset, fileSize, equationString, adapterId );
+            ret = ReadEquationStringFromBuffer( bufferPtr, bufferBeginOffset, bufferSize, equationString, adapterId );
             MD_CHECK_CC_RET_A( adapterId, ret );
             if( metric )
             {
@@ -1175,27 +1254,27 @@ namespace MetricsDiscoveryInternal
     //     CMetricsDevice
     //
     // Method:
-    //     ReadInformationFromFileBuffer
+    //     ReadInformationFromBuffer
     //
     // Description:
-    //     Reads information from file buffer, adds them to the set and advances the pointer.
+    //     Reads information from buffer, adds them to the set and advances the pointer.
     //
     // Input:
-    //     uint8_t*&          bufferPtr             - file buffer
-    //     const uint8_t*     fileBufferBeginOffset - file buffer begin offset
-    //     const uint32_t     fileSize              - file size
-    //     CMetricSet*        set                   - parent metric set
+    //     uint8_t*&      bufferPtr         - buffer
+    //     const uint8_t* bufferBeginOffset - buffer begin offset
+    //     const uint32_t bufferSize        - buffer size
+    //     CMetricSet*    set               - parent metric set
     //
     // Output:
     //     TCompletionCode - result of the operation
     //
     //////////////////////////////////////////////////////////////////////////////
-    TCompletionCode CMetricsDevice::ReadInformationFromFileBuffer( uint8_t*& bufferPtr, const uint8_t* fileBufferBeginOffset, const uint32_t fileSize, CMetricSet* set )
+    TCompletionCode CMetricsDevice::ReadInformationFromBuffer( uint8_t*& bufferPtr, const uint8_t* bufferBeginOffset, const uint32_t bufferSize, CMetricSet* set )
     {
         const uint32_t adapterId = m_adapter.GetAdapterId();
 
         MD_CHECK_PTR_RET_A( adapterId, bufferPtr, CC_ERROR_INVALID_PARAMETER );
-        MD_CHECK_PTR_RET_A( adapterId, fileBufferBeginOffset, CC_ERROR_INVALID_PARAMETER );
+        MD_CHECK_PTR_RET_A( adapterId, bufferBeginOffset, CC_ERROR_INVALID_PARAMETER );
 
         CInformation*          aInformation   = nullptr;
         const char*            equationString = nullptr;
@@ -1208,29 +1287,29 @@ namespace MetricsDiscoveryInternal
         uint32_t               valueFunctionType = 0;
 
         // Information
-        ret = ReadUInt32FromFileBuffer( bufferPtr, fileBufferBeginOffset, fileSize, informationCount, adapterId );
+        ret = ReadUInt32FromBuffer( bufferPtr, bufferBeginOffset, bufferSize, informationCount, adapterId );
         MD_CHECK_CC_RET_A( adapterId, ret );
         for( uint32_t k = 0; k < informationCount; ++k )
         {
             aInformation = nullptr;
 
             // InformationParams
-            ret = ReadCStringFromFileBuffer( bufferPtr, fileBufferBeginOffset, fileSize, informationParams.SymbolName, adapterId );
+            ret = ReadCStringFromBuffer( bufferPtr, bufferBeginOffset, bufferSize, informationParams.SymbolName, adapterId );
             MD_CHECK_CC_RET_A( adapterId, ret );
-            ret = ReadCStringFromFileBuffer( bufferPtr, fileBufferBeginOffset, fileSize, informationParams.ShortName, adapterId );
+            ret = ReadCStringFromBuffer( bufferPtr, bufferBeginOffset, bufferSize, informationParams.ShortName, adapterId );
             MD_CHECK_CC_RET_A( adapterId, ret );
-            ret = ReadCStringFromFileBuffer( bufferPtr, fileBufferBeginOffset, fileSize, informationParams.GroupName, adapterId );
+            ret = ReadCStringFromBuffer( bufferPtr, bufferBeginOffset, bufferSize, informationParams.GroupName, adapterId );
             MD_CHECK_CC_RET_A( adapterId, ret );
-            ret = ReadCStringFromFileBuffer( bufferPtr, fileBufferBeginOffset, fileSize, informationParams.LongName, adapterId );
+            ret = ReadCStringFromBuffer( bufferPtr, bufferBeginOffset, bufferSize, informationParams.LongName, adapterId );
             MD_CHECK_CC_RET_A( adapterId, ret );
-            ret = ReadUInt32FromFileBuffer( bufferPtr, fileBufferBeginOffset, fileSize, informationParams.ApiMask, adapterId );
+            ret = ReadUInt32FromBuffer( bufferPtr, bufferBeginOffset, bufferSize, informationParams.ApiMask, adapterId );
             MD_CHECK_CC_RET_A( adapterId, ret );
-            ret                        = ReadUInt32FromFileBuffer( bufferPtr, fileBufferBeginOffset, fileSize, valueInfoType, adapterId );
+            ret                        = ReadUInt32FromBuffer( bufferPtr, bufferBeginOffset, bufferSize, valueInfoType, adapterId );
             informationParams.InfoType = static_cast<TInformationType>( valueInfoType );
             MD_CHECK_CC_RET_A( adapterId, ret );
-            ret = ReadCStringFromFileBuffer( bufferPtr, fileBufferBeginOffset, fileSize, informationParams.InfoUnits, adapterId );
+            ret = ReadCStringFromBuffer( bufferPtr, bufferBeginOffset, bufferSize, informationParams.InfoUnits, adapterId );
             MD_CHECK_CC_RET_A( adapterId, ret );
-            ret = ReadEquationStringFromFile( bufferPtr, fileBufferBeginOffset, fileSize, equationString, adapterId );
+            ret = ReadEquationStringFromBuffer( bufferPtr, bufferBeginOffset, bufferSize, equationString, adapterId );
             MD_CHECK_CC_RET_A( adapterId, ret );
 
             if( !skip )
@@ -1249,11 +1328,11 @@ namespace MetricsDiscoveryInternal
             }
 
             // Delta function
-            ret = ReadUInt32FromFileBuffer( bufferPtr, fileBufferBeginOffset, fileSize, valueFunctionType, adapterId );
+            ret = ReadUInt32FromBuffer( bufferPtr, bufferBeginOffset, bufferSize, valueFunctionType, adapterId );
             MD_CHECK_CC_RET_A( adapterId, ret );
             deltaFunction.FunctionType = static_cast<TDeltaFunctionType>( valueFunctionType );
 
-            ret = ReadUInt32FromFileBuffer( bufferPtr, fileBufferBeginOffset, fileSize, deltaFunction.BitsCount, adapterId );
+            ret = ReadUInt32FromBuffer( bufferPtr, bufferBeginOffset, bufferSize, deltaFunction.BitsCount, adapterId );
             MD_CHECK_CC_RET_A( adapterId, ret );
             if( aInformation )
             {
@@ -1262,7 +1341,7 @@ namespace MetricsDiscoveryInternal
             }
 
             // Snapshot report read equation
-            ret = ReadEquationStringFromFile( bufferPtr, fileBufferBeginOffset, fileSize, equationString, adapterId );
+            ret = ReadEquationStringFromBuffer( bufferPtr, bufferBeginOffset, bufferSize, equationString, adapterId );
             MD_CHECK_CC_RET_A( adapterId, ret );
             if( aInformation )
             {
@@ -1271,7 +1350,7 @@ namespace MetricsDiscoveryInternal
             }
 
             // Delta report read equation
-            ret = ReadEquationStringFromFile( bufferPtr, fileBufferBeginOffset, fileSize, equationString, adapterId );
+            ret = ReadEquationStringFromBuffer( bufferPtr, bufferBeginOffset, bufferSize, equationString, adapterId );
             MD_CHECK_CC_RET_A( adapterId, ret );
             if( aInformation )
             {
@@ -1289,28 +1368,28 @@ namespace MetricsDiscoveryInternal
     //     CMetricsDevice
     //
     // Method:
-    //     ReadRegistersFromFileBuffer
+    //     ReadRegistersFromBuffer
     //
     // Description:
-    //     Reads start and stop registers from file buffer, adds them to the set and
+    //     Reads start and stop registers from buffer, adds them to the set and
     //     advances the pointer.
     //
     // Input:
-    //     uint8_t*&          bufferPtr             - file buffer
-    //     const uint8_t*     fileBufferBeginOffset - file buffer begin offset
-    //     const uint32_t     fileSize              - file size
-    //     CMetricSet*        set                   - parent metric set
+    //     uint8_t*&      bufferPtr         - buffer
+    //     const uint8_t* bufferBeginOffset - buffer begin offset
+    //     const uint32_t bufferSize        - buffer size
+    //     CMetricSet*    set               - parent metric set
     //
     // Output:
     //     TCompletionCode - result of the operation
     //
     //////////////////////////////////////////////////////////////////////////////
-    TCompletionCode CMetricsDevice::ReadRegistersFromFileBuffer( uint8_t*& bufferPtr, const uint8_t* fileBufferBeginOffset, const uint32_t fileSize, CMetricSet* set )
+    TCompletionCode CMetricsDevice::ReadRegistersFromBuffer( uint8_t*& bufferPtr, const uint8_t* bufferBeginOffset, const uint32_t bufferSize, CMetricSet* set )
     {
         const uint32_t adapterId = m_adapter.GetAdapterId();
 
         MD_CHECK_PTR_RET_A( adapterId, bufferPtr, CC_ERROR_INVALID_PARAMETER );
-        MD_CHECK_PTR_RET_A( adapterId, fileBufferBeginOffset, CC_ERROR_INVALID_PARAMETER );
+        MD_CHECK_PTR_RET_A( adapterId, bufferBeginOffset, CC_ERROR_INVALID_PARAMETER );
 
         TRegister          reg;
         const char*        equationString = nullptr;
@@ -1322,19 +1401,19 @@ namespace MetricsDiscoveryInternal
         uint32_t           valueConfigType = 0;
 
         // Start register sets
-        ret = ReadUInt32FromFileBuffer( bufferPtr, fileBufferBeginOffset, fileSize, regSetCount, adapterId );
+        ret = ReadUInt32FromBuffer( bufferPtr, bufferBeginOffset, bufferSize, regSetCount, adapterId );
         MD_CHECK_CC_RET_A( adapterId, ret );
         for( uint32_t i = 0; i < regSetCount; ++i )
         {
             // RegisterSetParams
-            ret = ReadUInt32FromFileBuffer( bufferPtr, fileBufferBeginOffset, fileSize, registerSetParams.ConfigId, adapterId );
+            ret = ReadUInt32FromBuffer( bufferPtr, bufferBeginOffset, bufferSize, registerSetParams.ConfigId, adapterId );
             MD_CHECK_CC_RET_A( adapterId, ret );
-            ret = ReadUInt32FromFileBuffer( bufferPtr, fileBufferBeginOffset, fileSize, registerSetParams.ConfigPriority, adapterId );
+            ret = ReadUInt32FromBuffer( bufferPtr, bufferBeginOffset, bufferSize, registerSetParams.ConfigPriority, adapterId );
             MD_CHECK_CC_RET_A( adapterId, ret );
-            ret = ReadUInt32FromFileBuffer( bufferPtr, fileBufferBeginOffset, fileSize, valueConfigType, adapterId );
+            ret = ReadUInt32FromBuffer( bufferPtr, bufferBeginOffset, bufferSize, valueConfigType, adapterId );
             MD_CHECK_CC_RET_A( adapterId, ret );
             registerSetParams.ConfigType = static_cast<TConfigType>( valueConfigType );
-            ret                          = ReadEquationStringFromFile( bufferPtr, fileBufferBeginOffset, fileSize, equationString, adapterId );
+            ret                          = ReadEquationStringFromBuffer( bufferPtr, bufferBeginOffset, bufferSize, equationString, adapterId );
             MD_CHECK_CC_RET_A( adapterId, ret );
 
             if( !skip )
@@ -1347,7 +1426,7 @@ namespace MetricsDiscoveryInternal
                 MD_CHECK_CC_RET_A( adapterId, ret );
             }
 
-            ret = ReadUInt32FromFileBuffer( bufferPtr, fileBufferBeginOffset, fileSize, regCount, adapterId );
+            ret = ReadUInt32FromBuffer( bufferPtr, bufferBeginOffset, bufferSize, regCount, adapterId );
             MD_CHECK_CC_RET_A( adapterId, ret );
             for( uint32_t j = 0; j < regCount; j++ )
             {
@@ -1357,32 +1436,32 @@ namespace MetricsDiscoveryInternal
                     ret = set->AddStartConfigRegister( reg.offset, reg.value, reg.type );
                     MD_CHECK_CC_RET_A( adapterId, ret );
                 }
-                MD_CHECK_BUFFER_A( adapterId, bufferPtr, fileBufferBeginOffset, sizeof( TRegister ), fileSize );
+                MD_CHECK_BUFFER_A( adapterId, bufferPtr, bufferBeginOffset, sizeof( TRegister ), bufferSize );
                 bufferPtr += sizeof( TRegister );
             }
         }
 
         // Stop register sets - !StopRegisters are obsolete, remains to be backward compatible (in new versions count is always 0)!
-        ret = ReadUInt32FromFileBuffer( bufferPtr, fileBufferBeginOffset, fileSize, regSetCount, adapterId );
+        ret = ReadUInt32FromBuffer( bufferPtr, bufferBeginOffset, bufferSize, regSetCount, adapterId );
         MD_CHECK_CC_RET_A( adapterId, ret );
         for( uint32_t i = 0; i < regSetCount; ++i )
         {
             // RegisterSetParams
-            ret = ReadUInt32FromFileBuffer( bufferPtr, fileBufferBeginOffset, fileSize, registerSetParams.ConfigId, adapterId );
+            ret = ReadUInt32FromBuffer( bufferPtr, bufferBeginOffset, bufferSize, registerSetParams.ConfigId, adapterId );
             MD_CHECK_CC_RET_A( adapterId, ret );
-            ret = ReadUInt32FromFileBuffer( bufferPtr, fileBufferBeginOffset, fileSize, registerSetParams.ConfigPriority, adapterId );
+            ret = ReadUInt32FromBuffer( bufferPtr, bufferBeginOffset, bufferSize, registerSetParams.ConfigPriority, adapterId );
             MD_CHECK_CC_RET_A( adapterId, ret );
-            ret = ReadUInt32FromFileBuffer( bufferPtr, fileBufferBeginOffset, fileSize, valueConfigType, adapterId );
+            ret = ReadUInt32FromBuffer( bufferPtr, bufferBeginOffset, bufferSize, valueConfigType, adapterId );
             MD_CHECK_CC_RET_A( adapterId, ret );
             registerSetParams.ConfigType = static_cast<TConfigType>( valueConfigType );
-            ret                          = ReadEquationStringFromFile( bufferPtr, fileBufferBeginOffset, fileSize, equationString, adapterId );
+            ret                          = ReadEquationStringFromBuffer( bufferPtr, bufferBeginOffset, bufferSize, equationString, adapterId );
             MD_CHECK_CC_RET_A( adapterId, ret );
 
-            ret = ReadUInt32FromFileBuffer( bufferPtr, fileBufferBeginOffset, fileSize, regCount, adapterId );
+            ret = ReadUInt32FromBuffer( bufferPtr, bufferBeginOffset, bufferSize, regCount, adapterId );
             MD_CHECK_CC_RET_A( adapterId, ret );
 
             const uint32_t regTotalSize = sizeof( TRegister ) * regCount;
-            MD_CHECK_BUFFER_A( adapterId, bufferPtr, fileBufferBeginOffset, regTotalSize, fileSize );
+            MD_CHECK_BUFFER_A( adapterId, bufferPtr, bufferBeginOffset, regTotalSize, bufferSize );
             bufferPtr += regTotalSize;
         }
 
@@ -1483,15 +1562,15 @@ namespace MetricsDiscoveryInternal
                 uint32_t majorApiVersion = 0;
                 uint32_t minorApiVersion = 0;
 
-                retVal = ReadUInt32FromFileBuffer( bufferPtr, metricFileBuffer, fileSize, majorApiVersion, adapterId );
+                retVal = ReadUInt32FromBuffer( bufferPtr, metricFileBuffer, fileSize, majorApiVersion, adapterId );
                 MD_CHECK_CC( retVal );
 
-                retVal = ReadUInt32FromFileBuffer( bufferPtr, metricFileBuffer, fileSize, minorApiVersion, adapterId );
+                retVal = ReadUInt32FromBuffer( bufferPtr, metricFileBuffer, fileSize, minorApiVersion, adapterId );
                 MD_CHECK_CC( retVal );
 
                 if( ( majorApiVersion == MD_API_MAJOR_NUMBER_CURRENT && minorApiVersion > MD_API_MINOR_NUMBER_CURRENT ) || majorApiVersion > MD_API_MAJOR_NUMBER_CURRENT )
                 {
-                    MD_LOG_A( adapterId, LOG_ERROR, "Requered MDAPI version %d.%d, current version %d.%d", majorApiVersion, minorApiVersion, MD_API_MAJOR_NUMBER_CURRENT, MD_API_MINOR_NUMBER_CURRENT );
+                    MD_LOG_A( adapterId, LOG_ERROR, "Required MDAPI version %d.%d, current version %d.%d", majorApiVersion, minorApiVersion, MD_API_MAJOR_NUMBER_CURRENT, MD_API_MINOR_NUMBER_CURRENT );
                     m_isOpenedFromFile = false;
                     MD_SAFE_DELETE_ARRAY( metricFileBuffer );
                     return CC_ERROR_NOT_SUPPORTED;
@@ -1531,23 +1610,23 @@ namespace MetricsDiscoveryInternal
             // MetricsDeviceParams
             TApiVersion_1_0 apiVersion = {};
 
-            retVal = ReadUInt32FromFileBuffer( bufferPtr, metricFileBuffer, fileSize, apiVersion.MajorNumber, adapterId );
+            retVal = ReadUInt32FromBuffer( bufferPtr, metricFileBuffer, fileSize, apiVersion.MajorNumber, adapterId );
             MD_CHECK_CC( retVal );
-            retVal = ReadUInt32FromFileBuffer( bufferPtr, metricFileBuffer, fileSize, apiVersion.MinorNumber, adapterId );
+            retVal = ReadUInt32FromBuffer( bufferPtr, metricFileBuffer, fileSize, apiVersion.MinorNumber, adapterId );
             MD_CHECK_CC( retVal );
-            retVal = ReadUInt32FromFileBuffer( bufferPtr, metricFileBuffer, fileSize, apiVersion.BuildNumber, adapterId );
+            retVal = ReadUInt32FromBuffer( bufferPtr, metricFileBuffer, fileSize, apiVersion.BuildNumber, adapterId );
             MD_CHECK_CC( retVal );
 
             MD_LOG_A( adapterId, LOG_DEBUG, "Metrics device file saved with MDAPI v. %d.%d.%d, current v: %d.%d.%d", apiVersion.MajorNumber, apiVersion.MinorNumber, apiVersion.BuildNumber, MD_API_MAJOR_NUMBER_CURRENT, MD_API_MINOR_NUMBER_CURRENT, MD_API_BUILD_NUMBER_CURRENT );
 
             // GlobalSymbols
-            retVal = ReadGlobalSymbolsFromFileBuffer( bufferPtr, metricFileBuffer, fileSize, fileVersion );
+            retVal = ReadGlobalSymbolsFromBuffer( bufferPtr, metricFileBuffer, fileSize, fileVersion );
             MD_CHECK_CC( retVal );
 
             // ConcurrentGroup tree
             if( retVal == CC_OK )
             {
-                retVal = ReadConcurrentGroupsFromFileBuffer( bufferPtr, metricFileBuffer, fileSize, &apiVersion, fileVersion );
+                retVal = ReadConcurrentGroupsFromBuffer( bufferPtr, metricFileBuffer, fileSize, &apiVersion, fileVersion );
                 MD_CHECK_CC( retVal );
             }
         }
@@ -1555,6 +1634,88 @@ namespace MetricsDiscoveryInternal
 
     exception:
         MD_SAFE_DELETE_ARRAY( metricFileBuffer );
+        return retVal;
+    }
+
+    //////////////////////////////////////////////////////////////////////////////
+    //
+    // Class:
+    //     CMetricsDevice
+    //
+    // Method:
+    //     OpenOfflineFromBuffer
+    //
+    // Description:
+    //     Opens an offline metrics device from a buffer
+    //
+    // Input:
+    //     uint8_t* buffer     - a buffer containing device data and metrics
+    //     uint32_t bufferSize - the size of a buffer
+    //
+    // Output:
+    //     TCompletionCode     - result
+    //
+    //////////////////////////////////////////////////////////////////////////////
+    TCompletionCode CMetricsDevice::OpenOfflineFromBuffer( uint8_t* buffer, uint32_t bufferSize )
+    {
+        const uint32_t            adapterId                 = m_adapter.GetAdapterId();
+        TCompletionCode           retVal                    = CC_OK;
+        uint8_t*                  bufferPtr                 = buffer;
+        const char*               metricBufferVersionString = nullptr;
+        TCustomMetricsFileVersion metricBufferVersion       = CUSTOM_METRICS_FILE_VERSION_0;
+        uint32_t                  majorApiVersion           = 0;
+        uint32_t                  minorApiVersion           = 0;
+        uint32_t                  platformIndex             = 0;
+        TApiVersion_1_0           apiVersion                = {};
+
+        retVal = ReadCStringFromBuffer( bufferPtr, buffer, bufferSize, metricBufferVersionString, adapterId );
+        MD_CHECK_CC_RET( retVal );
+
+        size_t metricBufferVersionStringLength = strlen( metricBufferVersionString );
+
+        if( iu_strncmp( MD_METRICS_FILE_KEY, metricBufferVersionString, metricBufferVersionStringLength ) == 0 )
+        {
+            metricBufferVersion = CUSTOM_METRICS_FILE_VERSION_1;
+        }
+        else if( iu_strncmp( MD_METRICS_FILE_KEY_2_0, metricBufferVersionString, metricBufferVersionStringLength ) == 0 )
+        {
+            metricBufferVersion = CUSTOM_METRICS_FILE_VERSION_2;
+        }
+        else if( iu_strncmp( MD_METRICS_FILE_KEY_3_0, metricBufferVersionString, metricBufferVersionStringLength ) == 0 )
+        {
+            metricBufferVersion = CUSTOM_METRICS_FILE_VERSION_3;
+        }
+
+        retVal = ReadUInt32FromBuffer( bufferPtr, buffer, bufferSize, majorApiVersion, adapterId );
+        MD_CHECK_CC_RET( retVal );
+
+        retVal = ReadUInt32FromBuffer( bufferPtr, buffer, bufferSize, minorApiVersion, adapterId );
+        MD_CHECK_CC_RET( retVal );
+
+        retVal = ReadUInt32FromBuffer( bufferPtr, buffer, bufferSize, platformIndex, adapterId );
+        MD_CHECK_CC_RET( retVal );
+        m_platformIndex = platformIndex;
+
+        retVal = ReadUInt32FromBuffer( bufferPtr, buffer, bufferSize, apiVersion.MajorNumber, adapterId );
+        MD_CHECK_CC_RET( retVal );
+
+        retVal = ReadUInt32FromBuffer( bufferPtr, buffer, bufferSize, apiVersion.MinorNumber, adapterId );
+        MD_CHECK_CC_RET( retVal );
+
+        retVal = ReadUInt32FromBuffer( bufferPtr, buffer, bufferSize, apiVersion.BuildNumber, adapterId );
+        MD_CHECK_CC_RET( retVal );
+
+        // GlobalSymbols
+        retVal = ReadGlobalSymbolsFromBuffer( bufferPtr, buffer, bufferSize, metricBufferVersion );
+        MD_CHECK_CC_RET( retVal );
+
+        // ConcurrentGroup tree
+        if( retVal == CC_OK )
+        {
+            retVal = ReadConcurrentGroupsFromBuffer( bufferPtr, buffer, bufferSize, &apiVersion, metricBufferVersion );
+            MD_CHECK_CC_RET( retVal );
+        }
+
         return retVal;
     }
 

@@ -1,6 +1,6 @@
 /*========================== begin_copyright_notice ============================
 
-Copyright (C) 2022-2024 Intel Corporation
+Copyright (C) 2022-2025 Intel Corporation
 
 SPDX-License-Identifier: MIT
 
@@ -144,7 +144,7 @@ namespace MetricsDiscoveryInternal
 
         TCompletionCode Lock();
         TCompletionCode Unlock();
-        TCompletionCode WriteCConcurrentGroupToFile( FILE* metricFile );
+        TCompletionCode WriteCConcurrentGroupToBuffer( uint8_t* buffer, uint32_t& bufferSize, uint32_t& bufferOffset, IMetricSet_1_13** metricSets, uint32_t metricSetCount );
 
     protected:
         IMetricSetLatest* AddCustomMetricSet( CMetricSet* referenceMetricSet, const char* signalName, const char* symbolName, const char* shortName, uint32_t apiMask, uint32_t categoryMask, TByteArrayLatest* platformMask, uint32_t gtMask, uint32_t rawReportSize, uint32_t queryReportSize, const char* complementarySetsList, TApiSpecificId_1_0 apiSpecificId, TRegisterSet* startRegSets, uint32_t startRegSetsCount, const char* availabilityEquation, TReportType reportType, bool copyInformationOnly = false );
@@ -171,8 +171,6 @@ namespace MetricsDiscoveryInternal
 
     protected:
         // Static variables:
-        static constexpr uint32_t    SETS_VECTOR_INCREASE               = 16;
-        static constexpr uint32_t    INFORMATION_VECTOR_INCREASE        = 16;
         static constexpr TReportType DEFAULT_METRIC_SET_REPORT_TYPE     = OA_REPORT_TYPE_256B_A45_NOA16;
         static constexpr TReportType DEFAULT_METRIC_SET_REPORT_TYPE_XE2 = OA_REPORT_TYPE_576B_PEC64LL;
     };

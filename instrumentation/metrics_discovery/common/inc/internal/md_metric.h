@@ -1,6 +1,6 @@
 /*========================== begin_copyright_notice ============================
 
-Copyright (C) 2022-2024 Intel Corporation
+Copyright (C) 2022-2025 Intel Corporation
 
 SPDX-License-Identifier: MIT
 
@@ -81,7 +81,7 @@ namespace MetricsDiscoveryInternal
         const char* GetSignalName();
         bool        IsAvailabilityEquationTrue();
 
-        TCompletionCode WriteCMetricToFile( FILE* metricFile );
+        TCompletionCode WriteCMetricToBuffer( uint8_t* buffer, uint32_t& bufferSize, uint32_t& bufferOffset );
 
     private:
         // Variables:

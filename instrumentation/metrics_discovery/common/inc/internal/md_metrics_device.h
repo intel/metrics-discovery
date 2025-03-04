@@ -1,6 +1,6 @@
 /*========================== begin_copyright_notice ============================
 
-Copyright (C) 2022-2024 Intel Corporation
+Copyright (C) 2022-2025 Intel Corporation
 
 SPDX-License-Identifier: MIT
 
@@ -76,7 +76,7 @@ namespace MetricsDiscoveryInternal
 
     public:
         // Constructor & Destructor:
-        CMetricsDevice( CAdapter& adapter, CDriverInterface& driverInterface, const uint32_t subDeviceIndex = 0 );
+        CMetricsDevice( CAdapter& adapter, CDriverInterface& driverInterface, const uint32_t subDeviceIndex = 0, const bool isOffline = false );
         virtual ~CMetricsDevice();
 
         CMetricsDevice( const CMetricsDevice& )            = delete; // Delete copy-constructor
@@ -88,8 +88,10 @@ namespace MetricsDiscoveryInternal
         TCompletionCode AddOverrides();
         bool            IsPlatformTypeOf( TByteArrayLatest* platformMask, uint32_t gtMask = GT_TYPE_ALL );
 
-        TCompletionCode   SaveToFile( const char* fileName, const uint32_t minMajorApiVersion = 0, const uint32_t minMinorApiVersion = 0 );
+        TCompletionCode   SaveToFile( const char* fileName, const uint32_t minMajorApiVersion, const uint32_t minMinorApiVersion );
+        TCompletionCode   WriteToBuffer( uint8_t* buffer, uint32_t& bufferSize, IMetricSet_1_13** metricSets, uint32_t metricSetCount, const uint32_t minMajorApiVersion, const uint32_t minMinorApiVersion );
         TCompletionCode   OpenFromFile( const char* fileName );
+        TCompletionCode   OpenOfflineFromBuffer( uint8_t* buffer, uint32_t bufferSize );
         TQueryMode        GetQueryMode() const;
         CConcurrentGroup* GetConcurrentGroupByName( const char* symbolicName );
         CDriverInterface& GetDriverInterface();
@@ -115,13 +117,13 @@ namespace MetricsDiscoveryInternal
         std::vector<uint8_t>& GetStreamBuffer();
 
     private:
-        // Methods to read from file must be used in correct order
-        TCompletionCode ReadGlobalSymbolsFromFileBuffer( uint8_t*& bufferPtr, const uint8_t* fileBufferBeginOffset, const uint32_t fileSize, const uint32_t fileVersion );
-        TCompletionCode ReadConcurrentGroupsFromFileBuffer( uint8_t*& bufferPtr, const uint8_t* fileBufferBeginOffset, const uint32_t fileSize, TApiVersion_1_0* apiVersion, const uint32_t fileVersion );
-        TCompletionCode ReadMetricSetsFromFileBuffer( uint8_t*& bufferPtr, const uint8_t* fileBufferBeginOffset, const uint32_t fileSize, CConcurrentGroup* group, TApiVersion_1_0* apiVersion, const uint32_t fileVersion );
-        TCompletionCode ReadMetricsFromFileBuffer( uint8_t*& bufferPtr, const uint8_t* fileBufferBeginOffset, const uint32_t fileSize, CMetricSet* set, const bool isSetNew );
-        TCompletionCode ReadInformationFromFileBuffer( uint8_t*& bufferPtr, const uint8_t* fileBufferBeginOffset, const uint32_t fileSize, CMetricSet* set );
-        TCompletionCode ReadRegistersFromFileBuffer( uint8_t*& bufferPtr, const uint8_t* fileBufferBeginOffset, const uint32_t fileSize, CMetricSet* set );
+        // Methods to read from buffer must be used in correct order
+        TCompletionCode ReadGlobalSymbolsFromBuffer( uint8_t*& bufferPtr, const uint8_t* bufferBeginOffset, const uint32_t bufferSize, const uint32_t bufferVersion );
+        TCompletionCode ReadConcurrentGroupsFromBuffer( uint8_t*& bufferPtr, const uint8_t* bufferBeginOffset, const uint32_t bufferSize, TApiVersion_1_0* apiVersion, const uint32_t bufferVersion );
+        TCompletionCode ReadMetricSetsFromBuffer( uint8_t*& bufferPtr, const uint8_t* bufferBeginOffset, const uint32_t bufferSize, CConcurrentGroup* group, TApiVersion_1_0* apiVersion, const uint32_t bufferVersion );
+        TCompletionCode ReadMetricsFromBuffer( uint8_t*& bufferPtr, const uint8_t* bufferBeginOffset, const uint32_t bufferSize, CMetricSet* set, const bool isSetNew );
+        TCompletionCode ReadInformationFromBuffer( uint8_t*& bufferPtr, const uint8_t* bufferBeginOffset, const uint32_t bufferSize, CMetricSet* set );
+        TCompletionCode ReadRegistersFromBuffer( uint8_t*& bufferPtr, const uint8_t* bufferBeginOffset, const uint32_t bufferSize, CMetricSet* set );
 
         IOverrideLatest* AddOverride( TOverrideType overrideType );
         bool             IsMetricsFileInPlainTextFormat( FILE* metricFile, uint32_t& fileVersion );
@@ -146,16 +148,12 @@ namespace MetricsDiscoveryInternal
         uint32_t m_platformIndex;
         TGTType  m_gtType;
         bool     m_isOpenedFromFile;
+        bool     m_isOffline;
         uint32_t m_referenceCounter;
 
         uint32_t m_oaBuferCount;
 
         TQueryMode       m_queryModeRequested;
         const TQueryMode m_queryModeDefault;
-
-    private:
-        // Static variables:
-        static constexpr uint32_t GROUPS_VECTOR_INCREASE    = 16;
-        static constexpr uint32_t OVERRIDES_VECTOR_INCREASE = 8;
     };
 } // namespace MetricsDiscoveryInternal

@@ -1,6 +1,6 @@
 /*========================== begin_copyright_notice ============================
 
-Copyright (C) 2019-2024 Intel Corporation
+Copyright (C) 2019-2025 Intel Corporation
 
 SPDX-License-Identifier: MIT
 
@@ -221,7 +221,7 @@ typedef enum
     GTDI_IFC_VERSION_3_45    = GTDI_MAKE_IFC_VER( GTDI_IFC_VERSION_3, 45 ), // New error code has been introduced
     GTDI_IFC_VERSION_3_46    = GTDI_MAKE_IFC_VER( GTDI_IFC_VERSION_3, 46 ), // GTDIGetGpuCpuTimestampsExtOut added with timestamp correlation indicator
     GTDI_IFC_VERSION_3_47    = GTDI_MAKE_IFC_VER( GTDI_IFC_VERSION_3, 47 ), // MTL base support
-    GTDI_IFC_VERSION_3_48    = GTDI_MAKE_IFC_VER( GTDI_IFC_VERSION_3, 48 ),
+    GTDI_IFC_VERSION_3_48    = GTDI_MAKE_IFC_VER( GTDI_IFC_VERSION_3, 48 ), // BMG base support
     GTDI_IFC_VERSION_3_49    = GTDI_MAKE_IFC_VER( GTDI_IFC_VERSION_3, 49 ), // Samedia support
     GTDI_IFC_VERSION_3_50    = GTDI_MAKE_IFC_VER( GTDI_IFC_VERSION_3, 50 ), // New device parameters related to OA buffer
     GTDI_IFC_VERSION_3_51    = GTDI_MAKE_IFC_VER( GTDI_IFC_VERSION_3, 51 ), // Removal of support of some IOstream read exceptions

@@ -1,6 +1,6 @@
 /*========================== begin_copyright_notice ============================
 
-Copyright (C) 2022-2024 Intel Corporation
+Copyright (C) 2022-2025 Intel Corporation
 
 SPDX-License-Identifier: MIT
 
@@ -14,6 +14,7 @@ SPDX-License-Identifier: MIT
 #include "md_adapter.h"
 
 #include "md_driver_ifc.h"
+#include "md_driver_ifc_offline.h"
 #include "md_utils.h"
 
 namespace MetricsDiscoveryInternal
@@ -34,12 +35,13 @@ namespace MetricsDiscoveryInternal
         : m_params{}
         , m_defaultAdapter( nullptr )
         , m_adapterVector()
+        , m_offlineAdapter( nullptr )
+        , m_offlineDriverInterface( nullptr )
+        , m_offlineDevicesVector()
     {
         m_params.Version.MajorNumber = MD_API_MAJOR_NUMBER_CURRENT;
         m_params.Version.MinorNumber = MD_API_MINOR_NUMBER_CURRENT;
         m_params.Version.BuildNumber = MD_API_BUILD_NUMBER_CURRENT;
-
-        m_adapterVector.reserve( ADAPTER_VECTOR_INCREASE );
     }
 
     //////////////////////////////////////////////////////////////////////////////
@@ -57,6 +59,10 @@ namespace MetricsDiscoveryInternal
     CAdapterGroup::~CAdapterGroup()
     {
         CleanupAdapters();
+
+        ClearVector( m_offlineDevicesVector );
+        MD_SAFE_DELETE( m_offlineDriverInterface );
+        MD_SAFE_DELETE( m_offlineAdapter );
     }
 
     //////////////////////////////////////////////////////////////////////////////
@@ -218,6 +224,147 @@ namespace MetricsDiscoveryInternal
 
         MD_LOG_EXIT();
         return retVal;
+    }
+
+    //////////////////////////////////////////////////////////////////////////////
+    //
+    // Class:
+    //     CAdapterGroup
+    //
+    // Method:
+    //     OpenOfflineMetricsDeviceFromBuffer
+    //
+    // Description:
+    //     Opens offline metrics device object.
+    //     Multiple instances of offline metric devices may be created at once.
+    //
+    // Input:
+    //     uint8_t*              buffer        - a buffer that an offline device is created from
+    //     uint32_t              bufferSize    - the size of a buffer
+    //     IMetricsDevice_1_13** metricsDevice - [out] created / retrieved metrics device
+    //
+    // Output:
+    //     TCompletionCode                     - CC_OK or CC_ALREADY_INITIALIZED means success
+    //
+    //////////////////////////////////////////////////////////////////////////////
+    TCompletionCode CAdapterGroup::OpenOfflineMetricsDeviceFromBuffer( uint8_t* buffer, uint32_t bufferSize, IMetricsDevice_1_13** metricsDevice )
+    {
+        MD_CHECK_PTR_RET( buffer, CC_ERROR_INVALID_PARAMETER );
+        MD_CHECK_PTR_RET( metricsDevice, CC_ERROR_INVALID_PARAMETER );
+
+        CMetricsDevice* offlineDevice = nullptr;
+        TCompletionCode result        = CC_OK;
+
+        if( !m_offlineAdapter )
+        {
+            m_offlineAdapter = new( std::nothrow ) CAdapter( *this );
+            MD_CHECK_PTR( m_offlineAdapter );
+        }
+
+        if( !m_offlineDriverInterface )
+        {
+            m_offlineDriverInterface = new( std::nothrow ) CDriverInterfaceOffline();
+            MD_CHECK_PTR( m_offlineDriverInterface );
+        }
+
+        offlineDevice = new( std::nothrow ) CMetricsDevice( *m_offlineAdapter, *m_offlineDriverInterface, 0, true );
+        MD_CHECK_PTR( offlineDevice );
+
+        result = offlineDevice->OpenOfflineFromBuffer( buffer, bufferSize );
+        MD_CHECK_CC( result );
+
+        *metricsDevice = offlineDevice;
+
+        m_offlineDevicesVector.push_back( offlineDevice );
+
+        return result;
+
+    exception:
+        MD_SAFE_DELETE( offlineDevice );
+
+        if( m_offlineDevicesVector.size() == 0 )
+        {
+            MD_SAFE_DELETE( m_offlineDriverInterface );
+            MD_SAFE_DELETE( m_offlineAdapter );
+        }
+
+        return CC_ERROR_NO_MEMORY;
+    }
+
+    //////////////////////////////////////////////////////////////////////////////
+    //
+    // Class:
+    //     CAdapterGroup
+    //
+    // Method:
+    //     CloseOfflineMetricsDevice
+    //
+    // Description:
+    //     Close offline metrics device object and free resources.
+    //
+    // Input:
+    //     IMetricsDevice_1_13* metricsDevice - a pointer to offline metrics device to close
+    //
+    // Output:
+    //     TCompletionCode                    - CC_OK means success
+    //
+    //////////////////////////////////////////////////////////////////////////////
+    TCompletionCode CAdapterGroup::CloseOfflineMetricsDevice( IMetricsDevice_1_13* metricsDevice )
+    {
+        auto deviceIterator = std::find( m_offlineDevicesVector.begin(), m_offlineDevicesVector.end(), metricsDevice );
+
+        if( deviceIterator == m_offlineDevicesVector.end() )
+        {
+            return CC_ERROR_INVALID_PARAMETER;
+        }
+
+        auto offlineDevice = static_cast<CMetricsDevice*>( *deviceIterator );
+
+        MD_SAFE_DELETE( offlineDevice );
+        m_offlineDevicesVector.erase( deviceIterator );
+
+        if( m_offlineDevicesVector.size() == 0 )
+        {
+            MD_SAFE_DELETE( m_offlineDriverInterface );
+            MD_SAFE_DELETE( m_offlineAdapter );
+        }
+
+        return CC_OK;
+    }
+
+    //////////////////////////////////////////////////////////////////////////////
+    //
+    // Class:
+    //     CAdapterGroup
+    //
+    // Method:
+    //     SaveMetricsDeviceToBuffer
+    //
+    // Description:
+    //     Saves metrics device to buffer. Then the buffer can be used for offline calculation.
+    //
+    // Input:
+    //     IMetricsDevice_1_13* metricsDevice      - a buffer that an offline device is created from
+    //     IMetricSet_1_13**    metricSets         - an array of metric sets that will be written to the buffer
+    //     uint32_t             metricSetCount     - a number of metric sets in the array
+    //     uint8_t*             buffer             - a buffer that an offline device is created from
+    //     uint32_t             bufferSize         - the size of a buffer
+    //     const uint32_t       minMajorApiVersion - required MDAPI major version to open the buffer
+    //     const uint32_t       minMinorApiVersion - required MDAPI minor version to open the buffer
+    //
+    // Output:
+    //     TCompletionCode                         - CC_OK means success
+    //
+    //////////////////////////////////////////////////////////////////////////////
+    TCompletionCode CAdapterGroup::SaveMetricsDeviceToBuffer( IMetricsDevice_1_13* metricsDevice, IMetricSet_1_13** metricSets, uint32_t metricSetCount, uint8_t* buffer, uint32_t* bufferSize, const uint32_t minMajorApiVersion, const uint32_t minMinorApiVersion )
+    {
+        MD_CHECK_PTR_RET( metricsDevice, CC_ERROR_INVALID_PARAMETER );
+        MD_CHECK_PTR_RET( metricSets, CC_ERROR_INVALID_PARAMETER );
+        MD_CHECK_PTR_RET( bufferSize, CC_ERROR_INVALID_PARAMETER );
+
+        CMetricsDevice* device = static_cast<CMetricsDevice*>( metricsDevice );
+
+        return device->WriteToBuffer( buffer, *bufferSize, metricSets, metricSetCount, minMajorApiVersion, minMinorApiVersion );
     }
 
     //////////////////////////////////////////////////////////////////////////////

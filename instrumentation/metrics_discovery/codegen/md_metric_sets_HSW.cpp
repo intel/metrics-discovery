@@ -1,6 +1,6 @@
 /*========================== begin_copyright_notice ============================
 
-Copyright (C) 2023-2024 Intel Corporation
+Copyright (C) 2023-2025 Intel Corporation
 
 SPDX-License-Identifier: MIT
 
@@ -644,7 +644,7 @@ namespace MetricsDiscoveryInternal::MetricSets_HSW_OA
             MD_CHECK_CC( ( metric->SetMaxValueEquation( "100" ) ) );
         }
 
-        availabilityEquation = "$SubsliceMask 0x1 AND";
+        availabilityEquation = "$GtSubsliceMask 0x1 AND";
         metric               = AddMetric( "Sampler0Busy", "Sampler 0 Busy",
                           "The percentage of time in which sampler 0 was busy.",
                           "Sampler", ( METRIC_GROUP_NAME_ID_SAMPLER * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_BATCH | USAGE_FLAG_FRAME | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
@@ -658,7 +658,7 @@ namespace MetricsDiscoveryInternal::MetricSets_HSW_OA
             MD_CHECK_CC( ( metric->SetMaxValueEquation( "100" ) ) );
         }
 
-        availabilityEquation = "$SubsliceMask 0x2 AND";
+        availabilityEquation = "$GtSubsliceMask 0x2 AND";
         metric               = AddMetric( "Sampler1Busy", "Sampler 1 Busy",
                           "The percentage of time in which sampler 1 was busy.",
                           "Sampler", ( METRIC_GROUP_NAME_ID_SAMPLER * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_BATCH | USAGE_FLAG_FRAME | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
@@ -683,7 +683,7 @@ namespace MetricsDiscoveryInternal::MetricSets_HSW_OA
             MD_CHECK_CC( ( metric->SetMaxValueEquation( "100" ) ) );
         }
 
-        availabilityEquation = "$SubsliceMask 0x1 AND";
+        availabilityEquation = "$GtSubsliceMask 0x1 AND";
         metric               = AddMetric( "Sampler0Bottleneck", "Sampler 0 Bottleneck",
                           "The percentage of time in which sampler 0 was bottlenecks.",
                           "Sampler", ( METRIC_GROUP_NAME_ID_SAMPLER * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_INDICATE | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
@@ -697,7 +697,7 @@ namespace MetricsDiscoveryInternal::MetricSets_HSW_OA
             MD_CHECK_CC( ( metric->SetMaxValueEquation( "100" ) ) );
         }
 
-        availabilityEquation = "$SubsliceMask 0x2 AND";
+        availabilityEquation = "$GtSubsliceMask 0x2 AND";
         metric               = AddMetric( "Sampler1Bottleneck", "Sampler 1 Bottleneck",
                           "The percentage of time in which sampler 1 was bottlenecks.",
                           "Sampler", ( METRIC_GROUP_NAME_ID_SAMPLER * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_INDICATE | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
@@ -711,7 +711,7 @@ namespace MetricsDiscoveryInternal::MetricSets_HSW_OA
             MD_CHECK_CC( ( metric->SetMaxValueEquation( "100" ) ) );
         }
 
-        availabilityEquation = "$SubsliceMask 0x1 AND";
+        availabilityEquation = "$GtSubsliceMask 0x1 AND";
         metric               = AddMetric( "Sampler0Texels", "Sampler 0 Texels LOD0",
                           "The total number of texels lookups in LOD0 in sampler 0 unit.",
                           "Sampler", ( METRIC_GROUP_NAME_ID_SAMPLER * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
@@ -724,7 +724,7 @@ namespace MetricsDiscoveryInternal::MetricSets_HSW_OA
             MD_CHECK_CC( ( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ) ) );
         }
 
-        availabilityEquation = "$SubsliceMask 0x2 AND";
+        availabilityEquation = "$GtSubsliceMask 0x2 AND";
         metric               = AddMetric( "Sampler1Texels", "Sampler 1 Texels LOD0",
                           "The total number of texels lookups in LOD0 in sampler 1 unit.",
                           "Sampler", ( METRIC_GROUP_NAME_ID_SAMPLER * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
@@ -2960,7 +2960,7 @@ namespace MetricsDiscoveryInternal::MetricSets_HSW_OA
             MD_CHECK_CC( ( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ) ) );
         }
 
-        availabilityEquation = "$SubsliceMask 0x01 AND";
+        availabilityEquation = "$GtSubsliceMask 0x01 AND";
         metric               = AddMetric( "Sampler0Texels", "Sampler 0 Texels",
                           "The total number of texels processed by Sampler 0 unit.",
                           "Sampler", ( METRIC_GROUP_NAME_ID_SAMPLER * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_IOSTREAM,
@@ -2973,7 +2973,7 @@ namespace MetricsDiscoveryInternal::MetricSets_HSW_OA
             MD_CHECK_CC( ( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ) ) );
         }
 
-        availabilityEquation = "$SubsliceMask 0x02 AND";
+        availabilityEquation = "$GtSubsliceMask 0x02 AND";
         metric               = AddMetric( "Sampler1Texels", "Sampler 1 Texels",
                           "The total number of texels processed by Sampler 1 unit.",
                           "Sampler", ( METRIC_GROUP_NAME_ID_SAMPLER * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_IOSTREAM,
@@ -2986,7 +2986,7 @@ namespace MetricsDiscoveryInternal::MetricSets_HSW_OA
             MD_CHECK_CC( ( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ) ) );
         }
 
-        availabilityEquation = "$SubsliceMask 0x04 AND";
+        availabilityEquation = "$GtSubsliceMask 0x04 AND";
         metric               = AddMetric( "Sampler2Texels", "Sampler 2 Texels",
                           "The total number of texels processed by Sampler 2 unit.",
                           "Sampler", ( METRIC_GROUP_NAME_ID_SAMPLER * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_IOSTREAM,
@@ -2999,7 +2999,7 @@ namespace MetricsDiscoveryInternal::MetricSets_HSW_OA
             MD_CHECK_CC( ( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ) ) );
         }
 
-        availabilityEquation = "$SubsliceMask 0x08 AND";
+        availabilityEquation = "$GtSubsliceMask 0x08 AND";
         metric               = AddMetric( "Sampler3Texels", "Sampler 3 Texels",
                           "The total number of texels processed by Sampler 3 unit.",
                           "Sampler", ( METRIC_GROUP_NAME_ID_SAMPLER * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_IOSTREAM,
@@ -3023,7 +3023,7 @@ namespace MetricsDiscoveryInternal::MetricSets_HSW_OA
             MD_CHECK_CC( ( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ) ) );
         }
 
-        availabilityEquation = "$SubsliceMask 0x01 AND";
+        availabilityEquation = "$GtSubsliceMask 0x01 AND";
         metric               = AddMetric( "Sampler0Busy", "Sampler 0 Busy",
                           "The percentage of time in which Sampler 0 has been processing EU requests.",
                           "Sampler", ( METRIC_GROUP_NAME_ID_SAMPLER * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_BATCH | USAGE_FLAG_FRAME | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_IOSTREAM,
@@ -3037,7 +3037,7 @@ namespace MetricsDiscoveryInternal::MetricSets_HSW_OA
             MD_CHECK_CC( ( metric->SetMaxValueEquation( "100" ) ) );
         }
 
-        availabilityEquation = "$SubsliceMask 0x02 AND";
+        availabilityEquation = "$GtSubsliceMask 0x02 AND";
         metric               = AddMetric( "Sampler1Busy", "Sampler 1 Busy",
                           "The percentage of time in which Sampler 1 has been processing EU requests.",
                           "Sampler", ( METRIC_GROUP_NAME_ID_SAMPLER * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_BATCH | USAGE_FLAG_FRAME | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_IOSTREAM,
@@ -3051,7 +3051,7 @@ namespace MetricsDiscoveryInternal::MetricSets_HSW_OA
             MD_CHECK_CC( ( metric->SetMaxValueEquation( "100" ) ) );
         }
 
-        availabilityEquation = "$SubsliceMask 0x04 AND";
+        availabilityEquation = "$GtSubsliceMask 0x04 AND";
         metric               = AddMetric( "Sampler2Busy", "Sampler 2 Busy",
                           "The percentage of time in which Sampler 2 has been processing EU requests.",
                           "Sampler", ( METRIC_GROUP_NAME_ID_SAMPLER * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_BATCH | USAGE_FLAG_FRAME | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_IOSTREAM,
@@ -3065,7 +3065,7 @@ namespace MetricsDiscoveryInternal::MetricSets_HSW_OA
             MD_CHECK_CC( ( metric->SetMaxValueEquation( "100" ) ) );
         }
 
-        availabilityEquation = "$SubsliceMask 0x08 AND";
+        availabilityEquation = "$GtSubsliceMask 0x08 AND";
         metric               = AddMetric( "Sampler3Busy", "Sampler 3 Busy",
                           "The percentage of time in which Sampler 3 has been processing EU requests.",
                           "Sampler", ( METRIC_GROUP_NAME_ID_SAMPLER * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_BATCH | USAGE_FLAG_FRAME | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_IOSTREAM,
@@ -3091,7 +3091,7 @@ namespace MetricsDiscoveryInternal::MetricSets_HSW_OA
             MD_CHECK_CC( ( metric->SetMaxValueEquation( "100" ) ) );
         }
 
-        availabilityEquation = "$SubsliceMask 0x01 AND";
+        availabilityEquation = "$GtSubsliceMask 0x01 AND";
         metric               = AddMetric( "Sampler0Bottleneck", "Sampler 0 Bottleneck",
                           "The percentage of time in which Sampler 0 has been slowing down.",
                           "Sampler", ( METRIC_GROUP_NAME_ID_SAMPLER * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_INDICATE | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_IOSTREAM,
@@ -3105,7 +3105,7 @@ namespace MetricsDiscoveryInternal::MetricSets_HSW_OA
             MD_CHECK_CC( ( metric->SetMaxValueEquation( "100" ) ) );
         }
 
-        availabilityEquation = "$SubsliceMask 0x02 AND";
+        availabilityEquation = "$GtSubsliceMask 0x02 AND";
         metric               = AddMetric( "Sampler1Bottleneck", "Sampler 1 Bottleneck",
                           "The percentage of time in which Sampler 1 has been slowing down.",
                           "Sampler", ( METRIC_GROUP_NAME_ID_SAMPLER * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_INDICATE | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_IOSTREAM,
@@ -3119,7 +3119,7 @@ namespace MetricsDiscoveryInternal::MetricSets_HSW_OA
             MD_CHECK_CC( ( metric->SetMaxValueEquation( "100" ) ) );
         }
 
-        availabilityEquation = "$SubsliceMask 0x04 AND";
+        availabilityEquation = "$GtSubsliceMask 0x04 AND";
         metric               = AddMetric( "Sampler2Bottleneck", "Sampler 2 Bottleneck",
                           "The percentage of time in which Sampler 2 has been slowing down.",
                           "Sampler", ( METRIC_GROUP_NAME_ID_SAMPLER * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_INDICATE | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_IOSTREAM,
@@ -3133,7 +3133,7 @@ namespace MetricsDiscoveryInternal::MetricSets_HSW_OA
             MD_CHECK_CC( ( metric->SetMaxValueEquation( "100" ) ) );
         }
 
-        availabilityEquation = "$SubsliceMask 0x08 AND";
+        availabilityEquation = "$GtSubsliceMask 0x08 AND";
         metric               = AddMetric( "Sampler3Bottleneck", "Sampler 3 Bottleneck",
                           "The percentage of time in which Sampler 3 has been slowing down.",
                           "Sampler", ( METRIC_GROUP_NAME_ID_SAMPLER * 0x1000000 ), USAGE_FLAG_TIER_3 | USAGE_FLAG_INDICATE | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_IOSTREAM,
@@ -5591,7 +5591,7 @@ namespace MetricsDiscoveryInternal::MetricSets_HSW_OA
             MD_CHECK_CC( ( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ) ) );
         }
 
-        availabilityEquation = "$SubsliceMask 0x1 AND";
+        availabilityEquation = "$GtSubsliceMask 0x1 AND";
         metric               = AddMetric( "Sampler0L2CacheMisses", "Sampler L2 cache misses (ss0)",
                           "Number of sampler L2 cache misses (ss0)",
                           "Sampler/Sampler Cache", ( METRIC_GROUP_NAME_ID_SAMPLER * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_SAMPLER_CACHE * 0x10000 ), USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
@@ -5603,7 +5603,7 @@ namespace MetricsDiscoveryInternal::MetricSets_HSW_OA
             MD_CHECK_CC( ( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ) ) );
         }
 
-        availabilityEquation = "$SubsliceMask 0x2 AND";
+        availabilityEquation = "$GtSubsliceMask 0x2 AND";
         metric               = AddMetric( "Sampler1L2CacheMisses", "Sampler L2 cache misses (ss1)",
                           "Number of sampler L2 cache misses (ss1)",
                           "Sampler/Sampler Cache", ( METRIC_GROUP_NAME_ID_SAMPLER * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_SAMPLER_CACHE * 0x10000 ), USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
@@ -5615,7 +5615,7 @@ namespace MetricsDiscoveryInternal::MetricSets_HSW_OA
             MD_CHECK_CC( ( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ) ) );
         }
 
-        availabilityEquation = "$SubsliceMask 0x4 AND";
+        availabilityEquation = "$GtSubsliceMask 0x4 AND";
         metric               = AddMetric( "Sampler2L2CacheMisses", "Sampler L2 cache misses (ss2)",
                           "Number of sampler L2 cache misses (ss2)",
                           "Sampler/Sampler Cache", ( METRIC_GROUP_NAME_ID_SAMPLER * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_SAMPLER_CACHE * 0x10000 ), USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
@@ -5627,7 +5627,7 @@ namespace MetricsDiscoveryInternal::MetricSets_HSW_OA
             MD_CHECK_CC( ( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ) ) );
         }
 
-        availabilityEquation = "$SubsliceMask 0x8 AND";
+        availabilityEquation = "$GtSubsliceMask 0x8 AND";
         metric               = AddMetric( "Sampler3L2CacheMisses", "Sampler L2 cache misses (ss3)",
                           "Number of sampler L2 cache misses (ss3)",
                           "Sampler/Sampler Cache", ( METRIC_GROUP_NAME_ID_SAMPLER * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_SAMPLER_CACHE * 0x10000 ), USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,

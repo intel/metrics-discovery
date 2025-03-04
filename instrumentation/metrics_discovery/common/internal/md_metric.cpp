@@ -1,6 +1,6 @@
 /*========================== begin_copyright_notice ============================
 
-Copyright (C) 2022-2024 Intel Corporation
+Copyright (C) 2022-2025 Intel Corporation
 
 SPDX-License-Identifier: MIT
 
@@ -495,58 +495,94 @@ namespace MetricsDiscoveryInternal
     //     CMetric
     //
     // Method:
-    //     WriteCMetricToFile
+    //     WriteCMetricToBuffer
     //
     // Description:
-    //     Writes the metric object to file.
+    //     Writes the metric object to buffer.
     //
     // Input:
-    //     FILE* metricFile - handle to a metric file
+    //     uint8_t*  buffer       - pointer to a buffer
+    //     uint32_t& bufferSize   - size of the buffer
+    //     uint32_t& bufferOffset - the current offset of the buffer
     //
     // Output:
-    //     TCompletionCode  - result of the operation
+    //     TCompletionCode        - result of the operation
     //
     //////////////////////////////////////////////////////////////////////////////
-    TCompletionCode CMetric::WriteCMetricToFile( FILE* metricFile )
+    TCompletionCode CMetric::WriteCMetricToBuffer( uint8_t* buffer, uint32_t& bufferSize, uint32_t& bufferOffset )
     {
-        const uint32_t adapterId = m_device.GetAdapter().GetAdapterId();
-
-        if( metricFile == nullptr )
-        {
-            MD_ASSERT_A( adapterId, metricFile != nullptr );
-            return CC_ERROR_INVALID_PARAMETER;
-        }
+        const uint32_t  adapterId = m_device.GetAdapter().GetAdapterId();
+        TCompletionCode result    = CC_OK;
 
         // m_params
-        fwrite( &m_params.GroupId, sizeof( m_params.GroupId ), 1, metricFile );
-        WriteCStringToFile( m_params.SymbolName, metricFile, adapterId );
-        WriteCStringToFile( m_params.ShortName, metricFile, adapterId );
-        WriteCStringToFile( m_params.GroupName, metricFile, adapterId );
-        WriteCStringToFile( m_params.LongName, metricFile, adapterId );
-        WriteCStringToFile( m_params.DxToOglAlias, metricFile, adapterId );
-        fwrite( &m_params.UsageFlagsMask, sizeof( m_params.UsageFlagsMask ), 1, metricFile );
-        fwrite( &m_params.ApiMask, sizeof( m_params.ApiMask ), 1, metricFile );
-        fwrite( &m_params.ResultType, sizeof( m_params.ResultType ), 1, metricFile );
-        WriteCStringToFile( m_params.MetricResultUnits, metricFile, adapterId );
-        fwrite( &m_params.MetricType, sizeof( m_params.MetricType ), 1, metricFile );
-        fwrite( &m_params.HwUnitType, sizeof( m_params.HwUnitType ), 1, metricFile );
-        fwrite( &m_params.LowWatermark, sizeof( m_params.LowWatermark ), 1, metricFile );
-        fwrite( &m_params.HighWatermark, sizeof( m_params.HighWatermark ), 1, metricFile );
+        result = WriteDataToBuffer( &m_params.GroupId, sizeof( m_params.GroupId ), buffer, bufferSize, bufferOffset, adapterId );
+        MD_CHECK_CC_RET_A( adapterId, result );
 
-        WriteCStringToFile( m_signalName, metricFile, adapterId );
+        result = WriteCStringToBuffer( m_params.SymbolName, buffer, bufferSize, bufferOffset, adapterId );
+        MD_CHECK_CC_RET_A( adapterId, result );
+
+        result = WriteCStringToBuffer( m_params.ShortName, buffer, bufferSize, bufferOffset, adapterId );
+        MD_CHECK_CC_RET_A( adapterId, result );
+
+        result = WriteCStringToBuffer( m_params.GroupName, buffer, bufferSize, bufferOffset, adapterId );
+        MD_CHECK_CC_RET_A( adapterId, result );
+
+        result = WriteCStringToBuffer( m_params.LongName, buffer, bufferSize, bufferOffset, adapterId );
+        MD_CHECK_CC_RET_A( adapterId, result );
+
+        result = WriteCStringToBuffer( m_params.DxToOglAlias, buffer, bufferSize, bufferOffset, adapterId );
+        MD_CHECK_CC_RET_A( adapterId, result );
+
+        result = WriteDataToBuffer( &m_params.UsageFlagsMask, sizeof( m_params.UsageFlagsMask ), buffer, bufferSize, bufferOffset, adapterId );
+        MD_CHECK_CC_RET_A( adapterId, result );
+
+        result = WriteDataToBuffer( &m_params.ApiMask, sizeof( m_params.ApiMask ), buffer, bufferSize, bufferOffset, adapterId );
+        MD_CHECK_CC_RET_A( adapterId, result );
+
+        result = WriteDataToBuffer( &m_params.ResultType, sizeof( m_params.ResultType ), buffer, bufferSize, bufferOffset, adapterId );
+        MD_CHECK_CC_RET_A( adapterId, result );
+
+        result = WriteCStringToBuffer( m_params.MetricResultUnits, buffer, bufferSize, bufferOffset, adapterId );
+        MD_CHECK_CC_RET_A( adapterId, result );
+
+        result = WriteDataToBuffer( &m_params.MetricType, sizeof( m_params.MetricType ), buffer, bufferSize, bufferOffset, adapterId );
+        MD_CHECK_CC_RET_A( adapterId, result );
+
+        result = WriteDataToBuffer( &m_params.HwUnitType, sizeof( m_params.HwUnitType ), buffer, bufferSize, bufferOffset, adapterId );
+        MD_CHECK_CC_RET_A( adapterId, result );
+
+        result = WriteDataToBuffer( &m_params.LowWatermark, sizeof( m_params.LowWatermark ), buffer, bufferSize, bufferOffset, adapterId );
+        MD_CHECK_CC_RET_A( adapterId, result );
+
+        result = WriteDataToBuffer( &m_params.HighWatermark, sizeof( m_params.HighWatermark ), buffer, bufferSize, bufferOffset, adapterId );
+        MD_CHECK_CC_RET_A( adapterId, result );
+
+        result = WriteCStringToBuffer( m_signalName, buffer, bufferSize, bufferOffset, adapterId );
+        MD_CHECK_CC_RET_A( adapterId, result );
 
         // Availability equation
-        WriteEquationToFile( m_availabilityEquation, metricFile, adapterId );
+        result = WriteEquationToBuffer( m_availabilityEquation, buffer, bufferSize, bufferOffset, adapterId );
+        MD_CHECK_CC_RET_A( adapterId, result );
+
         // DeltaFunction
-        fwrite( &m_params.DeltaFunction.FunctionType, sizeof( m_params.DeltaFunction.FunctionType ), 1, metricFile );
-        fwrite( &m_params.DeltaFunction.BitsCount, sizeof( m_params.DeltaFunction.BitsCount ), 1, metricFile );
+        result = WriteDataToBuffer( &m_params.DeltaFunction.FunctionType, sizeof( m_params.DeltaFunction.FunctionType ), buffer, bufferSize, bufferOffset, adapterId );
+        MD_CHECK_CC_RET_A( adapterId, result );
+
+        result = WriteDataToBuffer( &m_params.DeltaFunction.BitsCount, sizeof( m_params.DeltaFunction.BitsCount ), buffer, bufferSize, bufferOffset, adapterId );
+        MD_CHECK_CC_RET_A( adapterId, result );
 
         // Equations
-        WriteEquationToFile( m_ioReadEquation, metricFile, adapterId );
-        WriteEquationToFile( m_queryReadEquation, metricFile, adapterId );
-        WriteEquationToFile( m_normEquation, metricFile, adapterId );
+        result = WriteEquationToBuffer( m_ioReadEquation, buffer, bufferSize, bufferOffset, adapterId );
+        MD_CHECK_CC_RET_A( adapterId, result );
 
-        WriteEquationToFile( m_maxValueEquation, metricFile, adapterId );
+        result = WriteEquationToBuffer( m_queryReadEquation, buffer, bufferSize, bufferOffset, adapterId );
+        MD_CHECK_CC_RET_A( adapterId, result );
+
+        result = WriteEquationToBuffer( m_normEquation, buffer, bufferSize, bufferOffset, adapterId );
+        MD_CHECK_CC_RET_A( adapterId, result );
+
+        result = WriteEquationToBuffer( m_maxValueEquation, buffer, bufferSize, bufferOffset, adapterId );
+        MD_CHECK_CC_RET_A( adapterId, result );
 
         return CC_OK;
     }

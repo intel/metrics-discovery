@@ -1,6 +1,6 @@
 /*========================== begin_copyright_notice ============================
 
-Copyright (C) 2024 Intel Corporation
+Copyright (C) 2024-2025 Intel Corporation
 
 SPDX-License-Identifier: MIT
 
@@ -25,6 +25,21 @@ using namespace MetricsDiscovery;
 
 namespace MetricsDiscoveryInternal
 {
+    //////////////////////////////////////////////////////////////////////////////
+    //
+    // Struct:
+    //     SXeObservationCapabilities
+    //
+    // Description:
+    //     A structure holding information about Xe observation features support in kernel.
+    //
+    //////////////////////////////////////////////////////////////////////////////
+    typedef struct SXeObservationCapabilities
+    {
+        bool IsConfigurableOaBufferSize;
+        bool IsOaNotifyNumReportsSupported;
+    } TXeObservationCapabilities;
+
     //////////////////////////////////////////////////////////////////////////////
     //
     // Class:
@@ -83,6 +98,9 @@ namespace MetricsDiscoveryInternal
         virtual TCompletionCode GetCsTimestampFrequency( uint64_t& frequency );
         bool                    IsOamRequested( const uint32_t reportType );
 
+        // Xe observation capabilities
+        TCompletionCode ReadXeObservationCapabilities();
+
         // Read global symbols per tile.
         TCompletionCode GetGeometryTopology( std::vector<uint8_t>& buffer, CMetricsDevice& metricsDevice );
 
@@ -102,6 +120,8 @@ namespace MetricsDiscoveryInternal
         virtual TCompletionCode GetL3BankMask( CMetricsDevice& metricsDevice, uint64_t& l3BankMask );
         virtual TCompletionCode GetL3NodeMask( CMetricsDevice& metricsDevice, uint64_t& l3NodeMask );
         virtual TCompletionCode GetCopyEngineMask( CMetricsDevice& metricsDevice, uint64_t& copyEngineMask );
+
+        TXeObservationCapabilities m_xeObservationCapabilities; // Information about Xe observation features supported in current kernel
     };
 
 } // namespace MetricsDiscoveryInternal

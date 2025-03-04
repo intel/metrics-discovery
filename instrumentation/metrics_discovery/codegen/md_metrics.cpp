@@ -1,6 +1,6 @@
 ﻿/*========================== begin_copyright_notice ============================
 
-Copyright (C) 2019-2024 Intel Corporation
+Copyright (C) 2019-2025 Intel Corporation
 
 SPDX-License-Identifier: MIT
 
@@ -407,15 +407,6 @@ inline TCompletionCode AddGlobalSymbols( CMetricsDevice* metricsDevice )
     ret = symbolSet.AddSymbolUINT32( "EuThreadsCount", 8, SYMBOL_TYPE_DETECT );
     MD_CHECK_CC_RET_A( adapterId, ret );
 
-    ret = symbolSet.AddSymbolUINT32( "SliceMask", 0x7, SYMBOL_TYPE_DETECT );
-    MD_CHECK_CC_RET_A( adapterId, ret );
-
-    ret = symbolSet.AddSymbolUINT64( "SubsliceMask", 0x1FF, SYMBOL_TYPE_DETECT );
-    MD_CHECK_CC_RET_A( adapterId, ret );
-
-    ret = symbolSet.AddSymbolUINT64( "DualSubsliceMask", 0x0, SYMBOL_TYPE_DETECT );
-    MD_CHECK_CC_RET_A( adapterId, ret );
-
     ret = symbolSet.AddSymbolBYTEARRAY( "GtSliceMask", nullptr, SYMBOL_TYPE_DETECT );
     MD_CHECK_CC_RET_A( adapterId, ret );
 
@@ -507,9 +498,6 @@ inline TCompletionCode AddGlobalSymbols( CMetricsDevice* metricsDevice )
     MD_CHECK_CC_RET_A( adapterId, ret );
 
     ret = symbolSet.AddSymbolUINT32( "VectorEngineThreadsCount", 8, SYMBOL_TYPE_DETECT );
-    MD_CHECK_CC_RET_A( adapterId, ret );
-
-    ret = symbolSet.AddSymbolUINT64( "XeCoreMask", 0x0, SYMBOL_TYPE_DETECT );
     MD_CHECK_CC_RET_A( adapterId, ret );
 
     ret = symbolSet.AddSymbolBYTEARRAY( "GtXeCoreMask", nullptr, SYMBOL_TYPE_DETECT );

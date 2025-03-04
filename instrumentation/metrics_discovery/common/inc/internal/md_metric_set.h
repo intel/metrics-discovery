@@ -1,6 +1,6 @@
 /*========================== begin_copyright_notice ============================
 
-Copyright (C) 2022-2024 Intel Corporation
+Copyright (C) 2022-2025 Intel Corporation
 
 SPDX-License-Identifier: MIT
 
@@ -71,6 +71,7 @@ namespace MetricsDiscoveryInternal
         { "EDRAM", METRIC_GROUP_NAME_ID_EDRAM, METRIC_GROUP_LEVEL_0 },
         { "DRAM", METRIC_GROUP_NAME_ID_DRAM, METRIC_GROUP_LEVEL_0 },
         { "EU Array", METRIC_GROUP_NAME_ID_EU_ARRAY, METRIC_GROUP_LEVEL_0 },
+        { "VectorEngine", METRIC_GROUP_NAME_ID_EU_ARRAY, METRIC_GROUP_LEVEL_0 },
         { "Sampler", METRIC_GROUP_NAME_ID_SAMPLER, METRIC_GROUP_LEVEL_0 },
         { "Uncore", METRIC_GROUP_NAME_UNCORE, METRIC_GROUP_LEVEL_0 },
         { "Memory Controller", METRIC_GROUP_NAME_UNCORE_MC, METRIC_GROUP_LEVEL_0 },
@@ -266,7 +267,7 @@ namespace MetricsDiscoveryInternal
 
         TReportType     GetReportType();
         TCompletionCode InheritFromMetricSet( CMetricSet* referenceMetricSet, const char* signalName, bool copyInformationOnly );
-        TCompletionCode WriteCMetricSetToFile( FILE* metricFile );
+        TCompletionCode WriteCMetricSetToBuffer( uint8_t* buffer, uint32_t& bufferSize, uint32_t& bufferOffset, bool copyInformationFromGroup );
         bool            IsMetricAlreadyAdded( const char* symbolName );
         bool            IsCustom();
 
@@ -365,14 +366,5 @@ namespace MetricsDiscoveryInternal
         bool               m_isFlexible;
         bool               m_isOpened;
         CPrototypeManager* m_prototypeManager;
-
-    private:
-        // Static variables:
-        static constexpr uint32_t METRICS_VECTOR_INCREASE            = 64;
-        static constexpr uint32_t INFORMATION_VECTOR_INCREASE        = 16;
-        static constexpr uint32_t COMPLEMENTARY_SETS_VECTOR_INCREASE = 16;
-        static constexpr uint32_t START_REGS_VECTOR_INCREASE         = 128;
-        static constexpr uint32_t START_REGS_QUERY_VECTOR_INCREASE   = 16;
-        static constexpr uint32_t STOP_REGS_VECTOR_INCREASE          = 32;
     };
 } // namespace MetricsDiscoveryInternal

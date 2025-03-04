@@ -1,6 +1,6 @@
 /*========================== begin_copyright_notice ============================
 
-Copyright (C) 2022-2024 Intel Corporation
+Copyright (C) 2022-2025 Intel Corporation
 
 SPDX-License-Identifier: MIT
 
@@ -67,7 +67,7 @@ namespace MetricsDiscoveryInternal
         TCompletionCode SetOverflowFunction( const char* equationString );
         TCompletionCode SetOverflowFunction( TDeltaFunction_1_0 overflowFunction );
 
-        TCompletionCode WriteCInformationToFile( FILE* metricFile );
+        TCompletionCode WriteCInformationToBuffer( uint8_t* buffer, uint32_t& bufferSize, uint32_t& bufferOffset );
         TCompletionCode SetInformationValue( const uint32_t value, const TEquationType equationType );
         void            SetIdInSetParam( uint32_t id );
 

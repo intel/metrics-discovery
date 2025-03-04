@@ -1,6 +1,6 @@
 /*========================== begin_copyright_notice ============================
 
-Copyright (C) 2022-2024 Intel Corporation
+Copyright (C) 2022-2025 Intel Corporation
 
 SPDX-License-Identifier: MIT
 
@@ -266,9 +266,6 @@ namespace MetricsDiscoveryInternal
         m_params.MetricSetsCount               = 0;
         m_params.IoMeasurementInformationCount = 0;
         m_params.IoGpuContextInformationCount  = 0;
-        m_setsVector.reserve( SETS_VECTOR_INCREASE );
-        m_informationVector.reserve( INFORMATION_VECTOR_INCREASE );
-        m_otherInformationVector.reserve( INFORMATION_VECTOR_INCREASE );
     }
 
     //////////////////////////////////////////////////////////////////////////////
@@ -614,49 +611,91 @@ namespace MetricsDiscoveryInternal
     //     CConcurrentGroup
     //
     // Method:
-    //     WriteCConcurrentGroupToFile
+    //     WriteCConcurrentGroupToBuffer
     //
     // Description:
-    //     Writes concurrent group to file.
+    //     Writes concurrent group to buffer.
     //
     // Input:
-    //     FILE* metricFile - handle to metric file file
+    //     uint8_t*          buffer         - pointer to a buffer
+    //     uint32_t&         bufferSize     - size of the buffer
+    //     uint32_t&         bufferOffset   - the current offset of the buffer
+    //     IMetricSet_1_13** metricSets     - an array of metric sets to be written
+    //     uint32_t          metricSetCount - a number of metric sets to be written
     //
     // Output:
-    //     TCompletionCode  - result of operation
+    //     TCompletionCode                  - result of operation
     //
     //////////////////////////////////////////////////////////////////////////////
-    TCompletionCode CConcurrentGroup::WriteCConcurrentGroupToFile( FILE* metricFile )
+    TCompletionCode CConcurrentGroup::WriteCConcurrentGroupToBuffer( uint8_t* buffer, uint32_t& bufferSize, uint32_t& bufferOffset, IMetricSet_1_13** metricSets, uint32_t metricSetCount )
     {
-        const uint32_t adapterId = m_device.GetAdapter().GetAdapterId();
-        if( metricFile == nullptr )
-        {
-            MD_ASSERT_A( adapterId, metricFile != nullptr );
-            return CC_ERROR_INVALID_PARAMETER;
-        }
+        const uint32_t  adapterId = m_device.GetAdapter().GetAdapterId();
+        TCompletionCode result    = CC_OK;
 
         // m_params
-        WriteCStringToFile( m_params.SymbolName, metricFile, adapterId );
-        WriteCStringToFile( m_params.Description, metricFile, adapterId );
-        fwrite( &m_params.MeasurementTypeMask, sizeof( m_params.MeasurementTypeMask ), 1, metricFile );
+        result = WriteCStringToBuffer( m_params.SymbolName, buffer, bufferSize, bufferOffset, adapterId );
+        MD_CHECK_CC_RET_A( adapterId, result );
 
-        // m_setsVector & m_otherSetsList
-        uint32_t count = GetCustomSetCount();
-        fwrite( &count, sizeof( count ), 1, metricFile );
+        result = WriteCStringToBuffer( m_params.Description, buffer, bufferSize, bufferOffset, adapterId );
+        MD_CHECK_CC_RET_A( adapterId, result );
 
-        for( auto& metricSet : m_setsVector )
+        result = WriteDataToBuffer( &m_params.MeasurementTypeMask, sizeof( m_params.MeasurementTypeMask ), buffer, bufferSize, bufferOffset, adapterId );
+        MD_CHECK_CC_RET_A( adapterId, result );
+
+        if( metricSets == nullptr || metricSetCount == 0 )
         {
-            if( metricSet->IsCustom() )
+            // Custom metric sets
+            const uint32_t count = GetCustomSetCount();
+
+            result = WriteDataToBuffer( (void*) &count, sizeof( count ), buffer, bufferSize, bufferOffset, adapterId );
+            MD_CHECK_CC_RET_A( adapterId, result );
+
+            // m_setsVector & m_otherSetsList
+            for( auto& metricSet : m_setsVector )
             {
-                metricSet->WriteCMetricSetToFile( metricFile );
+                if( metricSet->IsCustom() )
+                {
+                    result = metricSet->WriteCMetricSetToBuffer( buffer, bufferSize, bufferOffset, false );
+                    MD_CHECK_CC_RET_A( adapterId, result );
+                }
+            }
+
+            for( auto& otherMetricSet : m_otherSetsList )
+            {
+                if( otherMetricSet->IsCustom() )
+                {
+                    result = otherMetricSet->WriteCMetricSetToBuffer( buffer, bufferSize, bufferOffset, false );
+                    MD_CHECK_CC_RET_A( adapterId, result );
+                }
             }
         }
-
-        for( auto& otherMetricSet : m_otherSetsList )
+        else
         {
-            if( otherMetricSet->IsCustom() )
+            // Count requested metric sets in the current concurrent group
+            std::vector<CMetricSet*> foundMetricSets;
+
+            for( uint32_t i = 0; i < metricSetCount; ++i )
             {
-                otherMetricSet->WriteCMetricSetToFile( metricFile );
+                if( metricSets[i] != nullptr )
+                {
+                    if( auto foundMetricSet = std::find( m_setsVector.begin(), m_setsVector.end(), metricSets[i] );
+                        foundMetricSet != m_setsVector.end() )
+                    {
+                        foundMetricSets.push_back( *foundMetricSet );
+                    }
+                }
+            }
+
+            // Requested metric sets in the current concurrent group
+            const uint32_t count = static_cast<uint32_t>( foundMetricSets.size() );
+
+            result = WriteDataToBuffer( (void*) &count, sizeof( count ), buffer, bufferSize, bufferOffset, adapterId );
+            MD_CHECK_CC_RET_A( adapterId, result );
+
+            for( auto& foundMetricSet : foundMetricSets )
+            {
+                result = foundMetricSet->WriteCMetricSetToBuffer( buffer, bufferSize, bufferOffset, true );
+                MD_CHECK_CC_RET_A( adapterId, result );
             }
         }
 

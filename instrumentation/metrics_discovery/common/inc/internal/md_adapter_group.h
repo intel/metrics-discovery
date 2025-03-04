@@ -1,6 +1,6 @@
 /*========================== begin_copyright_notice ============================
 
-Copyright (C) 2022-2024 Intel Corporation
+Copyright (C) 2022-2025 Intel Corporation
 
 SPDX-License-Identifier: MIT
 
@@ -27,6 +27,8 @@ namespace MetricsDiscoveryInternal
     using TAdapterData = SAdapterData;
 
     class CAdapter;
+    class CDriverInterfaceOffline;
+    class CMetricsDevice;
 
     //////////////////////////////////////////////////////////////////////////////
     //
@@ -44,6 +46,9 @@ namespace MetricsDiscoveryInternal
         virtual IAdapterLatest*                  GetAdapter( uint32_t index );
         virtual const TAdapterGroupParamsLatest* GetParams() const;
         virtual TCompletionCode                  Close();
+        virtual TCompletionCode                  OpenOfflineMetricsDeviceFromBuffer( uint8_t* buffer, uint32_t bufferSize, IMetricsDevice_1_13** metricsDevice );
+        virtual TCompletionCode                  CloseOfflineMetricsDevice( IMetricsDevice_1_13* metricsDevice );
+        virtual TCompletionCode                  SaveMetricsDeviceToBuffer( IMetricsDevice_1_13* metricsDevice, IMetricSet_1_13** metricSets, uint32_t metricSetCount, uint8_t* buffer, uint32_t* bufferSize, const uint32_t minMajorApiVersion, const uint32_t minMinorApiVersion );
 
     public:
         // Non-API:
@@ -76,16 +81,17 @@ namespace MetricsDiscoveryInternal
 
     private:
         // Variables:
-        TAdapterGroupParamsLatest m_params;
-        CAdapter*                 m_defaultAdapter;
-        std::vector<CAdapter*>    m_adapterVector;
+        TAdapterGroupParamsLatest    m_params;
+        CAdapter*                    m_defaultAdapter;
+        std::vector<CAdapter*>       m_adapterVector;
+        CAdapter*                    m_offlineAdapter;
+        CDriverInterfaceOffline*     m_offlineDriverInterface;
+        std::vector<CMetricsDevice*> m_offlineDevicesVector;
 
     private:
         // Static Variables:
         inline static void*          m_openCloseSemaphore = nullptr;
         inline static uint32_t       m_agRefCounter       = 0;
         inline static CAdapterGroup* m_adapterGroup       = nullptr;
-
-        static constexpr uint32_t ADAPTER_VECTOR_INCREASE = 8;
     };
 } // namespace MetricsDiscoveryInternal

@@ -36,7 +36,7 @@ RenderBasic	CLIPPER_PRIMITIVE_OUTPUT	Clipper Primitive Output	Geometry	Number of
 RenderBasic	IA_PRIMITIVE	IA Primitive	Geometry	Number of primitives in a draw
 RenderBasic	STREAMOUT_OUTPUT_VERTEX_COUNT	Streamout Output Vertex Count	Geometry	Number of vertices written by SOL
 RenderBasic	STRIPSFAN_OBJECT_COUNT	Stripsfan Object Count	Geometry	Number of objects exiting Stripsfan stage
-RenderBasic	STRIPSFAN_OBJECT_CULL	Stripsfan Object Cull	Geometry	Number of simple culled objects in Stripsfan stage
+RenderBasic	STRIPSFAN_OBJECT_CULL	Stripsfan Object Cull	Geometry	Number of simple and complex culled objects in Stripsfan stage
 RenderBasic	STREAMOUT_PRIMITIVE_WRITE_COUNT	Streamout Primitive Write Count	Geometry	Number of objects data written to memory, read from pipe 0 only
 RenderBasic	SLM_BANK_CONFLICT_COUNT	SLM Bank Conflict Count	L1 Cache	Number of SLM accesses resulting in a bank conflict
 RenderBasic	COMPRESSOR_INPUT	Compressor Input	Memory	Number of 256B writes to compressible surfaces at the input of the compressor

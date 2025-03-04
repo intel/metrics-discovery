@@ -1,6 +1,6 @@
 /*========================== begin_copyright_notice ============================
 
-Copyright (C) 2024 Intel Corporation
+Copyright (C) 2024-2025 Intel Corporation
 
 SPDX-License-Identifier: MIT
 
@@ -18,8 +18,8 @@ SPDX-License-Identifier: MIT
 
 struct ExternalEvents
 {
-    static const char archEvents[35113];
-    static const char hwEvents[48966];
+    static const char archEvents[33031];
+    static const char hwEvents[46344];
 };
 
 #endif

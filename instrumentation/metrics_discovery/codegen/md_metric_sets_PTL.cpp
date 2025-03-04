@@ -1,6 +1,6 @@
 /*========================== begin_copyright_notice ============================
 
-Copyright (C) 2024 Intel Corporation
+Copyright (C) 2024-2025 Intel Corporation
 
 SPDX-License-Identifier: MIT
 
@@ -621,7 +621,7 @@ namespace MetricsDiscoveryInternal::MetricSets_PTL_OA
 
         availabilityEquation = nullptr;
         metric               = AddMetric( "STRIPSFAN_OBJECT_CULL", "Stripsfan Object Cull",
-                          "Number of simple culled objects in Stripsfan stage",
+                          "Number of simple and complex culled objects in Stripsfan stage",
                           "Geometry", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
                           METRIC_TYPE_EVENT, RESULT_UINT64, "events", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 25 );
         if( metric )

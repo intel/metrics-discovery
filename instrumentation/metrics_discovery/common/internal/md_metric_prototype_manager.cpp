@@ -1,6 +1,6 @@
 /*========================== begin_copyright_notice ============================
 
-Copyright (C) 2024 Intel Corporation
+Copyright (C) 2024-2025 Intel Corporation
 
 SPDX-License-Identifier: MIT
 
@@ -924,10 +924,6 @@ namespace MetricsDiscoveryInternal
         : CPrototypeManager( device, metricSet )
         , m_mediaPesOffset( 0 )
     {
-        m_firstEventGroup.reserve( FIRST_EVENT_GROUP_VECTOR_INCREASE );
-        m_secondEventGroup.reserve( SECOND_EVENT_GROUP_VECTOR_INCREASE );
-        m_flexEventGroup.reserve( FLEX_EVENT_GROUP_VECTOR_INCREASE );
-        m_metricPrototypes.reserve( METRIC_PROTOTYPES_VECTOR_INCREASE );
     }
 
     //////////////////////////////////////////////////////////////////////////////
@@ -951,8 +947,6 @@ namespace MetricsDiscoveryInternal
         : CPrototypeManager( device, metricSet )
         , m_mediaPesOffset( GetMediaPesOffset( *metricSet.GetConcurrentGroup() ) )
     {
-        m_firstEventGroup.reserve( FIRST_EVENT_GROUP_VECTOR_INCREASE );
-        m_metricPrototypes.reserve( METRIC_PROTOTYPES_VECTOR_INCREASE );
     }
 
     //////////////////////////////////////////////////////////////////////////////

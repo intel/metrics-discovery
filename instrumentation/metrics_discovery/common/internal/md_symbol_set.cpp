@@ -1,6 +1,6 @@
 /*========================== begin_copyright_notice ============================
 
-Copyright (C) 2022-2024 Intel Corporation
+Copyright (C) 2022-2025 Intel Corporation
 
 SPDX-License-Identifier: MIT
 
@@ -47,7 +47,7 @@ namespace MetricsDiscoveryInternal
         , m_maxL3BankPerL3Node( 0 )
         , m_maxCopyEngine( 0 )
     {
-        m_symbolMap.reserve( SYMBOLS_MAP_INCREASE );
+        m_symbolMap.reserve( SYMBOLS_MAP_RESERVE );
     }
 
     //////////////////////////////////////////////////////////////////////////////
@@ -341,10 +341,10 @@ namespace MetricsDiscoveryInternal
             ret                    = m_driverInterface.SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_EU_THREADS_COUNT, out, m_metricsDevice );
             typedValue.ValueUInt32 = out.ValueUint32;
         }
-        else if( name == "SliceMask" || name == "GtSliceMask" )
+        else if( name == "GtSliceMask" )
         {
             ret = m_driverInterface.SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_SLICES_MASK, out, m_metricsDevice );
-            if( ret == CC_OK && typedValue.ValueType == VALUE_TYPE_BYTEARRAY )
+            if( ret == CC_OK )
             {
                 if( typedValue.ValueByteArray != nullptr )
                 {
@@ -355,15 +355,11 @@ namespace MetricsDiscoveryInternal
                 TByteArray_1_0 byteArray     = { byteArraySize, out.ValueByteArray };
                 typedValue.ValueByteArray    = GetCopiedByteArray( &byteArray, adapterId );
             }
-            else
-            {
-                typedValue.ValueUInt32 = out.ValueUint32;
-            }
         }
-        else if( ( name == "SubsliceMask" ) || ( name == "GtSubsliceMask" ) || ( !useDualSubslice && ( ( name == "XeCoreMask" ) || ( name == "GtXeCoreMask" ) ) ) )
+        else if( name == "GtSubsliceMask" || ( !useDualSubslice && ( name == "GtXeCoreMask" ) ) )
         {
             ret = m_driverInterface.SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_SUBSLICES_MASK, out, m_metricsDevice );
-            if( ret == CC_OK && typedValue.ValueType == VALUE_TYPE_BYTEARRAY )
+            if( ret == CC_OK )
             {
                 if( typedValue.ValueByteArray != nullptr )
                 {
@@ -374,15 +370,11 @@ namespace MetricsDiscoveryInternal
                 TByteArray_1_0 byteArray     = { byteArraySize, out.ValueByteArray };
                 typedValue.ValueByteArray    = GetCopiedByteArray( &byteArray, adapterId );
             }
-            else
-            {
-                typedValue.ValueUInt64 = out.ValueUint64;
-            }
         }
-        else if( ( name == "DualSubsliceMask" ) || ( name == "GtDualSubsliceMask" ) || ( useDualSubslice && ( ( name == "XeCoreMask" ) || ( name == "GtXeCoreMask" ) ) ) )
+        else if( name == "GtDualSubsliceMask" || ( useDualSubslice && ( name == "GtXeCoreMask" ) ) )
         {
             ret = m_driverInterface.SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_DUALSUBSLICES_MASK, out, m_metricsDevice );
-            if( ret == CC_OK && typedValue.ValueType == VALUE_TYPE_BYTEARRAY )
+            if( ret == CC_OK )
             {
                 if( typedValue.ValueByteArray != nullptr )
                 {
@@ -392,10 +384,6 @@ namespace MetricsDiscoveryInternal
                 const uint32_t byteArraySize = RoundUp( m_maxDualSubslicePerSlice * m_maxSlice / MD_BITS_PER_BYTE, MD_BYTE_ARRAY_MIN_SIZE );
                 TByteArray_1_0 byteArray     = { byteArraySize, out.ValueByteArray };
                 typedValue.ValueByteArray    = GetCopiedByteArray( &byteArray, adapterId );
-            }
-            else
-            {
-                typedValue.ValueUInt64 = out.ValueUint64;
             }
         }
         else if( name == "SamplersTotalCount" )
@@ -775,9 +763,6 @@ namespace MetricsDiscoveryInternal
             globalSymbolMap.emplace( "EuSubslicesTotalCount", "" );
             globalSymbolMap.emplace( "EuDualSubslicesTotalCount", "XeCoreTotalCount" );
 
-            globalSymbolMap.emplace( "SubsliceMask", "" );
-            globalSymbolMap.emplace( "DualSubsliceMask", "XeCoreMask" );
-
             globalSymbolMap.emplace( "GtSubsliceMask", "" );
             globalSymbolMap.emplace( "GtDualSubsliceMask", "GtXeCoreMask" );
         }
@@ -785,9 +770,6 @@ namespace MetricsDiscoveryInternal
         {
             globalSymbolMap.emplace( "EuSubslicesTotalCount", "XeCoreTotalCount" );
             globalSymbolMap.emplace( "EuDualSubslicesTotalCount", "" );
-
-            globalSymbolMap.emplace( "SubsliceMask", "XeCoreMask" );
-            globalSymbolMap.emplace( "DualSubsliceMask", "" );
 
             globalSymbolMap.emplace( "GtSubsliceMask", "GtXeCoreMask" );
             globalSymbolMap.emplace( "GtDualSubsliceMask", "" );
@@ -1036,35 +1018,40 @@ namespace MetricsDiscoveryInternal
     //     CSymbolSet
     //
     // Method:
-    //     WriteSymbolSetToFile
+    //     WriteSymbolSetToBuffer
     //
     // Description:
-    //     Writes symbol set to a file.
+    //     Writes symbol set to a buffer.
     //
     // Input:
-    //     FILE* metricFile - handle to a metric file
+    //     uint8_t*  buffer       - pointer to a buffer
+    //     uint32_t& bufferSize   - size of the buffer
+    //     uint32_t& bufferOffset - the current offset of the buffer
     //
     // Output:
-    //     TCompletionCode  - result of operation
+    //     TCompletionCode        - result of operation
     //
     //////////////////////////////////////////////////////////////////////////////
-    TCompletionCode CSymbolSet::WriteSymbolSetToFile( FILE* metricFile )
+    TCompletionCode CSymbolSet::WriteSymbolSetToBuffer( uint8_t* buffer, uint32_t& bufferSize, uint32_t& bufferOffset )
     {
-        const uint32_t adapterId = m_metricsDevice.GetAdapter().GetAdapterId();
-        if( metricFile == nullptr )
-        {
-            MD_ASSERT_A( adapterId, metricFile != nullptr );
-            return CC_ERROR_INVALID_PARAMETER;
-        }
+        const uint32_t  adapterId = m_metricsDevice.GetAdapter().GetAdapterId();
+        TCompletionCode result    = CC_OK;
 
-        uint32_t symbolCount = static_cast<uint32_t>( m_symbolMap.size() );
-        fwrite( &symbolCount, sizeof( symbolCount ), 1, metricFile );
+        const uint32_t symbolCount = static_cast<uint32_t>( m_symbolMap.size() );
+
+        result = WriteDataToBuffer( (void*) &symbolCount, sizeof( symbolCount ), buffer, bufferSize, bufferOffset, adapterId );
+        MD_CHECK_CC_RET_A( adapterId, result );
+
         for( auto& symbol : m_symbolMap )
         {
-            // symbol_1_0
-            WriteCStringToFile( symbol.second->symbol.SymbolName, metricFile, adapterId );
-            WriteTTypedValueToFile( &symbol.second->symbol.SymbolTypedValue, metricFile, adapterId );
-            fwrite( &symbol.second->symbolType, sizeof( symbol.second->symbolType ), 1, metricFile );
+            result = WriteCStringToBuffer( symbol.second->symbol.SymbolName, buffer, bufferSize, bufferOffset, adapterId );
+            MD_CHECK_CC_RET_A( adapterId, result );
+
+            result = WriteTTypedValueToBuffer( &symbol.second->symbol.SymbolTypedValue, buffer, bufferSize, bufferOffset, adapterId );
+            MD_CHECK_CC_RET_A( adapterId, result );
+
+            result = WriteDataToBuffer( &symbol.second->symbolType, sizeof( symbol.second->symbolType ), buffer, bufferSize, bufferOffset, adapterId );
+            MD_CHECK_CC_RET_A( adapterId, result );
         }
 
         return CC_OK;

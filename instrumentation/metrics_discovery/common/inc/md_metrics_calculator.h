@@ -1,6 +1,6 @@
 /*========================== begin_copyright_notice ============================
 
-Copyright (C) 2023-2024 Intel Corporation
+Copyright (C) 2023-2025 Intel Corporation
 
 SPDX-License-Identifier: MIT
 
@@ -66,6 +66,8 @@ namespace MetricsDiscoveryInternal
             , m_savedReportSize( 0 )
             , m_contextIdPrev( 0 )
             , m_savedReportPresent( false )
+            , m_prevValues( nullptr )
+            , m_prevValuesCount( 0 )
         {
             TTypedValue_1_0* euCoresTotalCount = GetGlobalSymbolValue( "VectorEngineTotalCount" );
             // Get old global symbol if new one is not available
@@ -91,6 +93,7 @@ namespace MetricsDiscoveryInternal
         inline ~CMetricsCalculator()
         {
             MD_SAFE_DELETE_ARRAY( m_savedReport );
+            MD_SAFE_DELETE_ARRAY( m_prevValues );
         }
 
         //////////////////////////////////////////////////////////////////////////////
@@ -131,13 +134,14 @@ namespace MetricsDiscoveryInternal
         //
         // Description:
         //     Reset Calculator to the initial state.
-        //     Allocate memory to store last raw report for future calculation.
+        //     Allocate memory to store last raw and previous calculated report for future calculation.
         //
         // Input:
-        //     uint32_t rawReportSize - Raw report size to allocate memory for report to save.
+        //     uint32_t rawReportSize              - Raw report size to allocate memory for report to save.
+        //     uint32_t metricsAndInformationCount - Metrics and information count to allocate memory for previous calculated report.
         //
         //////////////////////////////////////////////////////////////////////////////
-        inline void Reset( uint32_t rawReportSize = 0 )
+        inline void Reset( uint32_t rawReportSize = 0, uint32_t metricsAndInformationCount = 0 )
         {
             m_gpuCoreClocks = 0;
 
@@ -155,6 +159,21 @@ namespace MetricsDiscoveryInternal
                     m_savedReportSize = rawReportSize;
                 }
                 m_savedReportPresent = false;
+            }
+
+            if( m_prevValuesCount != metricsAndInformationCount && metricsAndInformationCount > 0 )
+            {
+                MD_SAFE_DELETE_ARRAY( m_prevValues );
+                m_prevValues = new( std::nothrow ) TTypedValue_1_0[metricsAndInformationCount]();
+                if( m_prevValues == nullptr )
+                {
+                    MD_LOG_A( m_device.GetAdapter().GetAdapterId(), LOG_ERROR, "error allocating prev values memory" );
+                    m_prevValuesCount = 0;
+                }
+                else
+                {
+                    m_prevValuesCount = metricsAndInformationCount;
+                }
             }
         }
 
@@ -656,6 +675,36 @@ namespace MetricsDiscoveryInternal
         //    CMetricsCalculator
         //
         // Method:
+        //     SaveCalculatedReport
+        //
+        // Description:
+        //     Stores calculated report for next calculations
+        //
+        // Input:
+        //     const TTypedValue_1_0* reportToSave - (IN) single calculated report to save
+        //
+        // Output:
+        //     TCompletionCode - CC_OK on success
+        //
+        //////////////////////////////////////////////////////////////////////////////
+        inline TCompletionCode SaveCalculatedReport( const TTypedValue_1_0* reportToSave )
+        {
+            const uint32_t adapterId = m_device.GetAdapter().GetAdapterId();
+
+            MD_CHECK_PTR_RET_A( adapterId, reportToSave, CC_ERROR_INVALID_PARAMETER );
+            MD_CHECK_PTR_RET_A( adapterId, m_prevValues, CC_ERROR_INVALID_PARAMETER );
+
+            const uint32_t reportSize = m_prevValuesCount * sizeof( TTypedValue_1_0 );
+
+            return iu_memcpy_s( m_prevValues, reportSize, reportToSave, reportSize ) ? CC_OK : CC_ERROR_GENERAL;
+        }
+
+        //////////////////////////////////////////////////////////////////////////////
+        //
+        // Class:
+        //    CMetricsCalculator
+        //
+        // Method:
         //     SavedReportPresent
         //
         // Description:
@@ -781,7 +830,7 @@ namespace MetricsDiscoveryInternal
                     return static_cast<uint64_t>( value.ValueFloat );
 
                 default:
-                    return 0LL;
+                    return 0ULL;
             }
         }
 
@@ -853,7 +902,7 @@ namespace MetricsDiscoveryInternal
                     return value.ValueUInt32 != 0U;
 
                 case VALUE_TYPE_UINT64:
-                    return value.ValueUInt64 != 0LL;
+                    return value.ValueUInt64 != 0ULL;
 
                 case VALUE_TYPE_FLOAT:
                     return value.ValueFloat != 0.0f;
@@ -898,10 +947,10 @@ namespace MetricsDiscoveryInternal
             }
 
             // Build mask
-            uint32_t mask = MD_BITMASK_RANGE( bitOffset, bitOffset + bitCount );
+            const uint32_t mask = MD_BITMASK_RANGE( bitOffset, bitOffset + bitCount - 1 );
 
             // Get integer in the way in is alignment safe
-            uint32_t data = *reinterpret_cast<const uint32_t*>( rawReport );
+            const uint32_t data = *reinterpret_cast<const uint32_t*>( rawReport );
 
             return static_cast<uint64_t>( ( data & mask ) >> bitOffset );
         }
@@ -1600,6 +1649,23 @@ namespace MetricsDiscoveryInternal
                         break;
                     }
 
+                    case EQUATION_ELEM_PREV_METRIC_SYMBOL:
+                    {
+                        // The index is higher than or equals 0 if the symbol name was found, otherwise it equals -1
+                        if( m_prevValues && equationElements[i].MetricIndexInternal >= 0 )
+                        {
+                            typedValue = m_prevValues[equationElements[i].MetricIndexInternal];
+                        }
+                        else
+                        {
+                            typedValue.ValueUInt64 = 0;
+                            typedValue.ValueType   = VALUE_TYPE_UINT64;
+                        }
+
+                        isValid = EquationStackPush( m_normalizationEquationStack, typedValue, algorithmCheck );
+                        break;
+                    }
+
                     case EQUATION_ELEM_GLOBAL_SYMBOL:
                     {
                         TTypedValue_1_0* pValue = GetGlobalSymbolValue( element.SymbolName );
@@ -1945,5 +2011,7 @@ namespace MetricsDiscoveryInternal
         uint32_t                    m_savedReportSize;
         uint64_t                    m_contextIdPrev;
         bool                        m_savedReportPresent;
+        TTypedValue_1_0*            m_prevValues;
+        uint32_t                    m_prevValuesCount;
     };
 } // namespace MetricsDiscoveryInternal

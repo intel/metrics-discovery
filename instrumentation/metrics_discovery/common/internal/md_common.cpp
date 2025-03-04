@@ -1,6 +1,6 @@
 /*========================== begin_copyright_notice ============================
 
-Copyright (C) 2022-2024 Intel Corporation
+Copyright (C) 2022-2025 Intel Corporation
 
 SPDX-License-Identifier: MIT
 
@@ -389,6 +389,18 @@ namespace MetricsDiscovery
     IAdapter_1_13* IAdapterGroup_1_13::GetAdapter( [[maybe_unused]] uint32_t index )
     {
         return nullptr;
+    }
+    TCompletionCode IAdapterGroup_1_14::OpenOfflineMetricsDeviceFromBuffer( [[maybe_unused]] uint8_t* buffer, [[maybe_unused]] uint32_t bufferSize, [[maybe_unused]] IMetricsDevice_1_13** metricsDevice )
+    {
+        return CC_ERROR_NOT_SUPPORTED;
+    }
+    TCompletionCode IAdapterGroup_1_14::CloseOfflineMetricsDevice( [[maybe_unused]] IMetricsDevice_1_13* metricsDevice )
+    {
+        return CC_ERROR_NOT_SUPPORTED;
+    }
+    TCompletionCode IAdapterGroup_1_14::SaveMetricsDeviceToBuffer( [[maybe_unused]] IMetricsDevice_1_13* metricsDevice, [[maybe_unused]] IMetricSet_1_13** metricSets, [[maybe_unused]] uint32_t metricSetCount, [[maybe_unused]] uint8_t* buffer, [[maybe_unused]] uint32_t* bufferSize, [[maybe_unused]] const uint32_t minMajorApiVersion, [[maybe_unused]] const uint32_t minMinorApiVersion )
+    {
+        return CC_ERROR_NOT_SUPPORTED;
     }
 
     IAdapter_1_6::~IAdapter_1_6()
