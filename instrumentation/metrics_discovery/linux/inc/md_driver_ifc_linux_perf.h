@@ -151,7 +151,7 @@ namespace MetricsDiscoveryInternal
 
         virtual TCompletionCode GetOaBufferSize( const int32_t streamId, uint32_t& oaBufferSize );
         virtual TCompletionCode GetOaBufferSupportedSizes( const uint32_t platformId, uint32_t& minSize, uint32_t& maxSize );
-        virtual TCompletionCode GetOaBufferCount( CMetricsDevice& metricsDevice, uint32_t& oaBufferCount );
+        virtual uint32_t        GetOaBufferCount( CMetricsDevice& metricsDevice );
         virtual TCompletionCode GetL3NodeTotalCount( CMetricsDevice& metricsDevice, uint32_t& l3NodeCount );
         virtual TCompletionCode GetL3BankTotalCount( CMetricsDevice& metricsDevice, uint32_t& l3BankCount );
         virtual TCompletionCode GetCopyEngineTotalCount( CMetricsDevice& metricsDevice, uint32_t& copyEngineCount );

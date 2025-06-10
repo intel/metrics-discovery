@@ -897,16 +897,9 @@ namespace MetricsDiscoveryInternal
                 break;
 
             case GTDI_DEVICE_PARAM_OA_BUFFERS_COUNT:
-            {
-                uint32_t oaBufferCount = 0;
-
-                ret = GetOaBufferCount( metricsDevice, oaBufferCount );
-                MD_CHECK_CC_RET_A( m_adapterId, ret );
-
                 out.ValueType   = GTDI_DEVICE_PARAM_VALUE_TYPE_UINT32;
-                out.ValueUint32 = oaBufferCount;
+                out.ValueUint32 = GetOaBufferCount( metricsDevice );
                 break;
-            }
 
             case GTDI_DEVICE_PARAM_L3_BANK_TOTAL_COUNT:
             {

@@ -710,7 +710,7 @@ namespace MetricsDiscoveryInternal
                         break;
 
                     default:
-                        MD_LOG_A( m_adapterId, LOG_ERROR, "Unknown engine type" );
+                        MD_LOG_A( m_adapterId, LOG_ERROR, "Unknown engine type: %u", engine.engine_class );
                         MD_ASSERT_A( m_adapterId, 0 );
                         break;
                 }
@@ -2425,16 +2425,15 @@ namespace MetricsDiscoveryInternal
     //     Returns oa buffer count for current platform.
     //
     // Input:
-    //     CMetricsDevice& metricsDevice - (IN) metrics device
-    //     uint32_t&       oaBufferCount - (OUT) oa buffer count
+    //     CMetricsDevice& metricsDevice - metrics device
     //
     // Output:
-    //     TCompletionCode               - *CC_OK* means success
+    //     uint32_t                      - oa buffer count
     //
     //////////////////////////////////////////////////////////////////////////////
-    TCompletionCode CDriverInterfaceLinuxPerf::GetOaBufferCount( CMetricsDevice& metricsDevice, uint32_t& oaBufferCount )
+    uint32_t CDriverInterfaceLinuxPerf::GetOaBufferCount( CMetricsDevice& metricsDevice )
     {
-        oaBufferCount = 1; // OAG/OA buffer
+        uint32_t oaBufferCount = 1; // OAG/OA buffer
 
         if( IsOamSupported() && IsSubDeviceSupported() )
         {
@@ -2452,7 +2451,7 @@ namespace MetricsDiscoveryInternal
             oaBufferCount += videoEngineCount;
         }
 
-        return CC_OK;
+        return oaBufferCount;
     }
 
     //////////////////////////////////////////////////////////////////////////////

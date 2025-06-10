@@ -40,6 +40,9 @@ using namespace MetricsDiscovery;
 
 namespace MetricsDiscoveryInternal
 {
+#define DRM_XE_ENGINE_CLASS_GSC    65535
+#define DRM_XE_ENGINE_INSTANCE_GSC 65535
+
     //////////////////////////////////////////////////////////////////////////////
     //
     // Struct:
@@ -277,11 +280,11 @@ namespace MetricsDiscoveryInternal
     {
         const bool isRenderEngine       = engineParams.EngineId.ClassInstance.Class == DRM_XE_ENGINE_CLASS_RENDER;
         const bool isComputeEngine      = engineParams.EngineId.ClassInstance.Class == DRM_XE_ENGINE_CLASS_COMPUTE;
-        const bool isVideoEngine        = engineParams.EngineId.ClassInstance.Class == DRM_XE_ENGINE_CLASS_VIDEO_DECODE;
         const bool isVideoEnhanceEngine = engineParams.EngineId.ClassInstance.Class == DRM_XE_ENGINE_CLASS_VIDEO_ENHANCE;
+        const bool isGscEngine          = engineParams.EngineId.ClassInstance.Class == DRM_XE_ENGINE_CLASS_GSC;
         bool       isValidInstance      = ( requestedInstance == static_cast<uint32_t>( -1 ) ) || ( engineParams.EngineId.ClassInstance.Instance == requestedInstance );
 
-        if( isValidInstance && ( ( isOam && ( isVideoEngine || isVideoEnhanceEngine ) ) || ( !isOam && ( isRenderEngine || isComputeEngine ) ) ) )
+        if( isValidInstance && ( ( isOam && ( isVideoEnhanceEngine || isGscEngine ) ) || ( !isOam && ( isRenderEngine || isComputeEngine ) ) ) )
         {
             return true;
         }
@@ -378,13 +381,36 @@ namespace MetricsDiscoveryInternal
         const auto oaData       = reinterpret_cast<drm_xe_query_oa_units*>( buffer.data() );
         auto       oaUnitOffset = reinterpret_cast<uint8_t*>( oaData->oa_units );
 
+        uint32_t currentGtId = 0;
+
         for( uint32_t i = 0; i < oaData->num_oa_units; ++i )
         {
             const auto& oaUnit = *reinterpret_cast<drm_xe_oa_unit*>( oaUnitOffset );
 
-            for( uint32_t j = 0; j < oaUnit.num_engines; ++j )
+            if( oaUnit.oa_unit_type == DRM_XE_OA_UNIT_TYPE_OAM_SAG && oaUnit.num_engines == 0 )
             {
-                engines.emplace_back( oaUnit.oa_unit_id, oaUnit.eci[j] );
+                drm_xe_engine_class_instance eci = {};
+                eci.engine_class                 = DRM_XE_ENGINE_CLASS_GSC;
+                eci.engine_instance              = DRM_XE_ENGINE_INSTANCE_GSC;
+                eci.gt_id                        = currentGtId + 1;
+
+                engines.emplace_back( oaUnit.oa_unit_id, eci );
+            }
+            else
+            {
+                for( uint32_t j = 0; j < oaUnit.num_engines; ++j )
+                {
+                    switch( oaUnit.eci[j].engine_class )
+                    {
+                        case DRM_XE_ENGINE_CLASS_RENDER:
+                        case DRM_XE_ENGINE_CLASS_COMPUTE:
+                        case DRM_XE_ENGINE_CLASS_VIDEO_ENHANCE:
+                            engines.emplace_back( oaUnit.oa_unit_id, oaUnit.eci[j] );
+                            currentGtId = oaUnit.eci[j].gt_id;
+                        default:
+                            break;
+                    }
+                }
             }
 
             oaUnitOffset += sizeof( oaUnit ) + oaUnit.num_engines * sizeof( oaUnit.eci[0] );
@@ -432,7 +458,9 @@ namespace MetricsDiscoveryInternal
             // Video engines have different gt_ids than render, compute and copy engines, so a different gt_id does not mean a new sub device.
             const bool newDevice =
                 ( engine.gt_id != previousGtId ) &&
-                ( engine.engine_class != DRM_XE_ENGINE_CLASS_VIDEO_DECODE && engine.engine_class != DRM_XE_ENGINE_CLASS_VIDEO_ENHANCE );
+                ( engine.engine_class != DRM_XE_ENGINE_CLASS_VIDEO_DECODE &&
+                    engine.engine_class != DRM_XE_ENGINE_CLASS_VIDEO_ENHANCE &&
+                    engine.engine_class != DRM_XE_ENGINE_CLASS_GSC );
 
             if( newDevice )
             {
@@ -442,16 +470,15 @@ namespace MetricsDiscoveryInternal
             switch( engine.engine_class )
             {
                 case DRM_XE_ENGINE_CLASS_RENDER:
-                case DRM_XE_ENGINE_CLASS_COPY:
-                case DRM_XE_ENGINE_CLASS_VIDEO_DECODE:
                 case DRM_XE_ENGINE_CLASS_VIDEO_ENHANCE:
                 case DRM_XE_ENGINE_CLASS_COMPUTE:
+                case DRM_XE_ENGINE_CLASS_GSC:
                     MD_LOG_A( m_adapterId, LOG_DEBUG, "Sub device %u / engine %u:%u / GT ID: %u / OA unit: %u", subDevices.GetAllEnginesCount() - 1, engine.engine_class, engine.engine_instance, engine.gt_id, oaUnit );
                     subDevices.AddEngine( engine.engine_class, engine.engine_instance, engine.gt_id, oaUnit );
                     break;
 
                 default:
-                    MD_LOG_A( m_adapterId, LOG_ERROR, "Unknown engine type" );
+                    MD_LOG_A( m_adapterId, LOG_ERROR, "Unknown engine type: %u", engine.engine_class );
                     MD_ASSERT_A( m_adapterId, 0 );
                     break;
             }
@@ -496,6 +523,7 @@ namespace MetricsDiscoveryInternal
     {
         TCompletionCode         ret                                                                          = CC_ERROR_GENERAL;
         int32_t                 oaEventFd                                                                    = -1;
+        uint32_t                requiredEngineInstance                                                       = -1;
         const bool              isOamRequested                                                               = IsOamRequested( oaReportType );
         const uint32_t          subDeviceIndex                                                               = metricsDevice.GetSubDeviceIndex();
         auto                    subDevices                                                                   = metricsDevice.GetAdapter().GetSubDevices();
@@ -503,6 +531,11 @@ namespace MetricsDiscoveryInternal
         auto                    param                                                                        = drm_xe_observation_param{};
         drm_xe_ext_set_property properties[DRM_XE_OA_PROPERTY_NO_PREEMPT - DRM_XE_OA_EXTENSION_SET_PROPERTY] = {};
         uint32_t                currentIndex                                                                 = 0;
+
+        auto isValidValue = []( uint32_t value )
+        {
+            return value != static_cast<uint32_t>( -1 );
+        };
 
         auto addProperty = [&]( const uint64_t key, const uint64_t value )
         {
@@ -520,7 +553,40 @@ namespace MetricsDiscoveryInternal
             ++currentIndex;
         };
 
-        ret = subDevices.GetTbsEngineParams( subDeviceIndex, engine, -1, isOamRequested ); // Currently XE KMD supports only one media slice
+        if( oaBufferType != GTDI_OA_BUFFER_TYPE_OAG )
+        {
+            if( const uint32_t oaBufferCount = GetOaBufferCount( metricsDevice );
+                m_xeObservationCapabilities.IsOamSagSupported && oaBufferType == oaBufferCount - 1 )
+            {
+                requiredEngineInstance = DRM_XE_ENGINE_INSTANCE_GSC;
+            }
+            else
+            {
+                const uint32_t oamBufferSlice = static_cast<uint32_t>( oaBufferType ) - 1;
+                if( !isValidValue( oamBufferSlice ) )
+                {
+                    MD_LOG_A( m_adapterId, LOG_ERROR, "ERROR: Incorrect oa buffer type for OAM. oaBufferType: %d, oamBufferSlice: %d", static_cast<uint32_t>( oaBufferType ), oamBufferSlice );
+                    return CC_ERROR_INVALID_PARAMETER;
+                }
+
+                uint32_t baseEngineInstance = 0;
+                for( uint32_t i = 0; i < subDeviceIndex; ++i )
+                {
+                    const uint32_t videoEnhanceEngineCount = subDevices.GetClassInstancesCount( i, DRM_XE_ENGINE_CLASS_VIDEO_ENHANCE );
+
+                    ret = isValidValue( videoEnhanceEngineCount )
+                        ? CC_ERROR_GENERAL
+                        : CC_OK;
+                    MD_CHECK_CC_RET_A( m_adapterId, ret );
+
+                    baseEngineInstance += videoEnhanceEngineCount;
+                }
+
+                requiredEngineInstance = baseEngineInstance + oamBufferSlice;
+            }
+        }
+
+        ret = subDevices.GetTbsEngineParams( subDeviceIndex, engine, requiredEngineInstance, isOamRequested );
         if( ret != CC_OK )
         {
             MD_LOG_A( m_adapterId, LOG_ERROR, "Error: No requested engine found, unable to open tbs on sub device. subDeviceIndex: %d, isOam: %d", subDeviceIndex, isOamRequested );
@@ -560,7 +626,7 @@ namespace MetricsDiscoveryInternal
         param.observation_op   = DRM_XE_OBSERVATION_OP_STREAM_OPEN;
         param.param            = reinterpret_cast<uint64_t>( properties );
 
-        MD_LOG_A( m_adapterId, LOG_DEBUG, "Opening XE OA stream with params: oaMetricSetId: %u, oaReportType: %u, timerPeriodExponent: %u, bufferSize: %u", oaMetricSetId, oaReportType, timerPeriodExponent, bufferSize );
+        MD_LOG_A( m_adapterId, LOG_DEBUG, "Opening XE OA stream with params: oaUnit: %u, oaMetricSetId: %u, oaReportType: %u, timerPeriodExponent: %u, bufferSize: %u", engine.OaUnit, oaMetricSetId, oaReportType, timerPeriodExponent, bufferSize );
 
         oaEventFd = SendIoctl( m_DrmDeviceHandle, DRM_IOCTL_XE_OBSERVATION, &param );
 
@@ -1042,14 +1108,27 @@ namespace MetricsDiscoveryInternal
         {
             const auto& oaUnit = *reinterpret_cast<drm_xe_oa_unit*>( oaUnitOffset );
 
-            if( oaUnit.oa_unit_type == DRM_XE_OA_UNIT_TYPE_OAG )
+            switch( oaUnit.oa_unit_type )
             {
-                m_xeObservationCapabilities.IsConfigurableOaBufferSize    = oaUnit.capabilities & DRM_XE_OA_CAPS_OA_BUFFER_SIZE;
-                m_xeObservationCapabilities.IsOaNotifyNumReportsSupported = oaUnit.capabilities & DRM_XE_OA_CAPS_WAIT_NUM_REPORTS;
+                case DRM_XE_OA_UNIT_TYPE_OAG:
+                    m_xeObservationCapabilities.IsConfigurableOaBufferSize    = oaUnit.capabilities & DRM_XE_OA_CAPS_OA_BUFFER_SIZE;
+                    m_xeObservationCapabilities.IsOaNotifyNumReportsSupported = oaUnit.capabilities & DRM_XE_OA_CAPS_WAIT_NUM_REPORTS;
 
-                MD_LOG_A( m_adapterId, LOG_INFO, "Configurable OA buffer size is%s supported", m_xeObservationCapabilities.IsConfigurableOaBufferSize ? "" : " not" );
-                MD_LOG_A( m_adapterId, LOG_INFO, "Oa notify num reports is%s supported", m_xeObservationCapabilities.IsOaNotifyNumReportsSupported ? "" : " not" );
-                break;
+                    MD_LOG_A( m_adapterId, LOG_INFO, "Configurable OA buffer size is%s supported", m_xeObservationCapabilities.IsConfigurableOaBufferSize ? "" : " not" );
+                    MD_LOG_A( m_adapterId, LOG_INFO, "Oa notify num reports is%s supported", m_xeObservationCapabilities.IsOaNotifyNumReportsSupported ? "" : " not" );
+                    break;
+
+                case DRM_XE_OA_UNIT_TYPE_OAM:
+                    m_xeObservationCapabilities.IsOamScmiSupported = oaUnit.capabilities & DRM_XE_OA_CAPS_OAM;
+
+                    MD_LOG_A( m_adapterId, LOG_INFO, "OAM SCMI is%s supported", m_xeObservationCapabilities.IsOamScmiSupported ? "" : " not" );
+                    break;
+
+                case DRM_XE_OA_UNIT_TYPE_OAM_SAG:
+                    m_xeObservationCapabilities.IsOamSagSupported = oaUnit.capabilities & DRM_XE_OA_CAPS_OAM;
+
+                    MD_LOG_A( m_adapterId, LOG_INFO, "OAM SAG is%s supported", m_xeObservationCapabilities.IsOamSagSupported ? "" : " not" );
+                    break;
             }
 
             oaUnitOffset += sizeof( oaUnit ) + oaUnit.num_engines * sizeof( oaUnit.eci[0] );
@@ -1594,31 +1673,34 @@ namespace MetricsDiscoveryInternal
     //     Returns oa buffer count for current platform.
     //
     // Input:
-    //     CMetricsDevice& metricsDevice - (IN) metrics device
-    //     uint32_t&       oaBufferCount - (OUT) oa buffer count
+    //     CMetricsDevice& metricsDevice - metrics device
     //
     // Output:
-    //     TCompletionCode               - *CC_OK* means success
+    //     uint32_t                      - oa buffer count
     //
     //////////////////////////////////////////////////////////////////////////////
-    TCompletionCode CDriverInterfaceLinuxXe::GetOaBufferCount( CMetricsDevice& metricsDevice, uint32_t& oaBufferCount )
+    uint32_t CDriverInterfaceLinuxXe::GetOaBufferCount( CMetricsDevice& metricsDevice )
     {
-        oaBufferCount = 1; // OAG/OA buffer
+        uint32_t oaBufferCount = 1; // OAG/OA buffer
 
-        auto           subDevices              = metricsDevice.GetAdapter().GetSubDevices();
-        const uint32_t subDeviceIndex          = metricsDevice.GetSubDeviceIndex();
-        const uint32_t videoEngineCount        = subDevices.GetClassInstancesCount( subDeviceIndex, DRM_XE_ENGINE_CLASS_VIDEO_DECODE );
-        const uint32_t videoEnhanceEngineCount = subDevices.GetClassInstancesCount( subDeviceIndex, DRM_XE_ENGINE_CLASS_VIDEO_ENHANCE );
+        auto           subDevices     = metricsDevice.GetAdapter().GetSubDevices();
+        const uint32_t subDeviceIndex = metricsDevice.GetSubDeviceIndex();
 
-        if( videoEngineCount != videoEnhanceEngineCount )
+        if( m_xeObservationCapabilities.IsOamScmiSupported )
         {
-            MD_LOG_A( m_adapterId, LOG_ERROR, "Video engine count (%u) and video enhance engine count (%u) mismatch.", videoEngineCount, videoEnhanceEngineCount );
-            return CC_ERROR_GENERAL;
+            const uint32_t videoEnhanceEngineCount = subDevices.GetClassInstancesCount( subDeviceIndex, DRM_XE_ENGINE_CLASS_VIDEO_ENHANCE );
+
+            oaBufferCount += videoEnhanceEngineCount; // Video enhance engines map to media slices (OAM SCMI).
         }
 
-        oaBufferCount += videoEngineCount;
+        if( m_xeObservationCapabilities.IsOamSagSupported )
+        {
+            const uint32_t gscEngineCount = subDevices.GetClassInstancesCount( subDeviceIndex, DRM_XE_ENGINE_CLASS_GSC );
 
-        return CC_OK;
+            oaBufferCount += gscEngineCount; // OAM SAG
+        }
+
+        return oaBufferCount;
     }
 
     //////////////////////////////////////////////////////////////////////////////
