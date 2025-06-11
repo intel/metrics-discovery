@@ -10,6 +10,7 @@ SPDX-License-Identifier: MIT
 //
 //     Abstract:   C++ Metrics Discovery internal metric enumerator implementation
 
+#include "md_adapter.h"
 #include "md_metric_enumerator.h"
 #include "md_oam_concurrent_group.h"
 #include "md_metric_prototype.h"
@@ -1151,7 +1152,19 @@ namespace MetricsDiscoveryInternal
     {
         const uint32_t adapterId = m_device.GetAdapter().GetAdapterId();
 
-        auto platformMask = new( std::nothrow ) TByteArrayLatest{ MD_PLATFORM_MASK_BYTE_ARRAY_SIZE, new( std::nothrow ) uint8_t[MD_PLATFORM_MASK_BYTE_ARRAY_SIZE]() };
+        auto platformMask = new( std::nothrow ) TByteArrayLatest();
+        MD_CHECK_PTR_RET_A( adapterId, platformMask, nullptr );
+
+        platformMask->Size = MD_PLATFORM_MASK_BYTE_ARRAY_SIZE;
+        platformMask->Data = new( std::nothrow ) uint8_t[platformMask->Size]();
+
+        if( platformMask->Data == nullptr )
+        {
+            MD_SAFE_DELETE( platformMask );
+
+            MD_LOG_A( adapterId, LOG_DEBUG, "ERROR: null pointer: platformMask->Data" );
+            return nullptr;
+        }
 
         if( platformString == nullptr )
         {
@@ -1165,7 +1178,7 @@ namespace MetricsDiscoveryInternal
 
             if( platformIndex == GTDI_PLATFORM_MAX )
             {
-                MD_LOG_A( adapterId, LOG_WARNING, "WARNING: Incorrect platform - %s", platform.c_str() );
+                MD_LOG_A( adapterId, LOG_INFO, "INFO: Unknown platform - %s", platform.c_str() );
                 continue;
             }
 

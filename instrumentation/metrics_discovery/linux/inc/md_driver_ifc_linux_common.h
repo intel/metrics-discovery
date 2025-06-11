@@ -40,14 +40,6 @@ SPDX-License-Identifier: MIT
 //////////////////////////////////////////////////////////////////////////////
 //
 // Description:
-//     Default GpuTimestampFrequency, used if value obtained from drm is invalid.
-//
-//////////////////////////////////////////////////////////////////////////////
-#define MD_DEFAULT_GPU_TIMESTAMP_FREQUENCY 12000000; // Default, one tick per 83.333ns.
-
-//////////////////////////////////////////////////////////////////////////////
-//
-// Description:
 //     Hardware info used in number of shading units and number of render output
 //     units calculation. Based on Intel driver instrumentation files.
 //
@@ -57,16 +49,9 @@ SPDX-License-Identifier: MIT
 #define MD_L3_BANK_COUNT_PER_L3_NODE        ( 4 )
 #define MD_L3_NODE_COUNT_PER_COPY_ENGINE    ( 2 )
 #define MD_L3_NODE_COUNT_PER_PAIR_OF_SLICES ( 2 )
-
-//////////////////////////////////////////////////////////////////////////////
-//
-// Description:
-//     For platforms <= SKL mask of size '3' is used to preserve backward compatibility
-//     with MDAPI metric equation definitions. Based on Intel driver instrumentation
-//     files.
-//
-//////////////////////////////////////////////////////////////////////////////
-#define MD_MAX_SUBSLICE_PER_SLICE_OLD 3
+#define MD_ZPIXEL_GEOM_PIPE_PER_SLICE_1_2   ( 1 )
+#define MD_ZPIXEL_PIPE_PER_SLICE            ( 2 )
+#define MD_GEOMETRY_PIPE_PER_SLICE          ( 1 )
 
 //////////////////////////////////////////////////////////////////////////////
 //
@@ -85,11 +70,13 @@ SPDX-License-Identifier: MIT
 #define MD_DUALSUBSLICE_PER_SLICE      4  // Current value
 #define MD_SUBSLICE_PER_SLICE_XE2      4  // Current Xe2 value
 #define MD_SUBSLICE_PER_SLICE_XE3      6  // Current Xe3 value
-#define MD_MAX_SLICE_BMG_G21           5  // Currently BMG G21 value
+#define MD_MAX_SLICE_BMG_VER_2         5  // Currently BMG (ver.2) value
+#define MD_MAX_SLICE_BMG_VER_3         8  // Currently BMG (ver.3) value
 #define MD_MAX_SLICE_LNL               2  // Currently LNL value
 #define MD_MAX_SLICE_PTL_H             2  // Currently PTL H value
 #define MD_MAX_SLICE_PTL_U             1  // Currently PTL U value
-#define MD_MAX_L3_NODE_BMG_G21         6  // Currently BMG G21 value
+#define MD_MAX_L3_NODE_BMG_VER_2       6  // Currently BMG (ver.2) value
+#define MD_MAX_L3_NODE_BMG_VER_3       8  // Currently BMG (ver.3) value
 #define MD_MAX_L3_NODE_LNL             2  // Currently LNL value
 #define MD_MAX_L3_NODE_PTL_H           2  // Currently PTL H value
 #define MD_MAX_L3_NODE_PTL_U           1  // Currently PTL U value

@@ -12,6 +12,8 @@ SPDX-License-Identifier: MIT
 
 #pragma once
 
+#include <string>
+
 using namespace MetricsDiscovery;
 
 namespace MetricsDiscoveryInternal

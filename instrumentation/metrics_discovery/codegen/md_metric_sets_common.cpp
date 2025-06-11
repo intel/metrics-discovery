@@ -11,7 +11,12 @@ SPDX-License-Identifier: MIT
 //     Abstract:   C++ automated generated file that defines Metric Sets
 //                 for each Concurrent Group
 
+#include "md_concurrent_group.h"
+#include "md_metric_set.h"
 #include "md_metric_sets_common.h"
+#include "md_information.h"
+#include "md_metric.h"
+#include "md_utils.h"
 #include <algorithm>
 
 namespace MetricsDiscoveryInternal::MetricSets_OcclusionQueryStats
@@ -23,20 +28,16 @@ namespace MetricsDiscoveryInternal::MetricSets_OcclusionQueryStats
 
     TCompletionCode CRenderedPixelsStatsMetricSet::Initialize()
     {
-        CMetric*    metric               = nullptr;
-        const char* availabilityEquation = nullptr;
-        m_params.InformationCount        = m_concurrentGroup->GetInformationCount();
+        CMetric* metric           = nullptr;
+        m_params.InformationCount = m_concurrentGroup->GetInformationCount();
         MD_CHECK_CC( SetApiSpecificId( "", 9, 0, 0, 0, 0, "", 1, "", 0 ) );
 
-        availabilityEquation = nullptr;
-        metric               = AddMetric( "PixelsRendered", "Depth passed pixels",
-                          "The total number of pixels that passed depth test. Note: not all rendered pixels are necessarily written to render targets.",
-                          "3D Pipe/Output Merger", ( METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_OM * 0x10000 ), USAGE_FLAG_OVERVIEW | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL4_X,
-                          METRIC_TYPE_EVENT, RESULT_UINT64, "pixels", 0, 0, HW_UNIT_GPU, availabilityEquation, "pixel|fragment", nullptr, 0 );
-        if( metric )
-        {
-            MD_CHECK_CC( ( metric->SetDeltaReportReadEquation( "qw@0x00" ) ) );
-        }
+        metric = AddMetric( "PixelsRendered", "Depth passed pixels",
+            "The total number of pixels that passed depth test. Note: not all rendered pixels are necessarily written to render targets.",
+            "3D Pipe/Output Merger", ( METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_OM * 0x10000 ), USAGE_FLAG_OVERVIEW | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL4_X,
+            METRIC_TYPE_EVENT, RESULT_UINT64, "pixels", 0, 0, HW_UNIT_GPU, nullptr, "pixel|fragment", nullptr, 0 );
+        MD_CHECK_PTR( metric );
+        MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x00" ) );
 
         MD_CHECK_CC( RefreshConfigRegisters() );
 
@@ -53,20 +54,16 @@ namespace MetricsDiscoveryInternal::MetricSets_OcclusionQueryStats
 
     TCompletionCode CRenderedFragmentsStatsMetricSet::Initialize()
     {
-        CMetric*    metric               = nullptr;
-        const char* availabilityEquation = nullptr;
-        m_params.InformationCount        = m_concurrentGroup->GetInformationCount();
+        CMetric* metric           = nullptr;
+        m_params.InformationCount = m_concurrentGroup->GetInformationCount();
         MD_CHECK_CC( SetApiSpecificId( "", 0, 0, 0, 0, 0, "", 0, "", 0x8C2F ) );
 
-        availabilityEquation = nullptr;
-        metric               = AddMetric( "PixelsRendered", "Depth passed fragments",
-                          "The total number of fragments that passed depth test. Note: not all rendered fragments are necessarily written to render targets.",
-                          "3D Pipe/Output Merger", ( METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_OM * 0x10000 ), USAGE_FLAG_OVERVIEW | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_OGL | API_TYPE_OGL4_X,
-                          METRIC_TYPE_EVENT, RESULT_UINT64, "fragments", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 0 );
-        if( metric )
-        {
-            MD_CHECK_CC( ( metric->SetDeltaReportReadEquation( "qw@0x00" ) ) );
-        }
+        metric = AddMetric( "PixelsRendered", "Depth passed fragments",
+            "The total number of fragments that passed depth test. Note: not all rendered fragments are necessarily written to render targets.",
+            "3D Pipe/Output Merger", ( METRIC_GROUP_NAME_ID_3D_PIPE * 0x1000000 ) | ( METRIC_GROUP_NAME_ID_OM * 0x10000 ), USAGE_FLAG_OVERVIEW | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_OGL | API_TYPE_OGL4_X,
+            METRIC_TYPE_EVENT, RESULT_UINT64, "fragments", 0, 0, HW_UNIT_GPU, nullptr, nullptr, nullptr, 0 );
+        MD_CHECK_PTR( metric );
+        MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x00" ) );
 
         MD_CHECK_CC( RefreshConfigRegisters() );
 
@@ -87,22 +84,18 @@ namespace MetricsDiscoveryInternal::MetricSets_TimestampQuery
 
     TCompletionCode CGPUTimestampMetricSet::Initialize()
     {
-        CMetric*    metric               = nullptr;
-        const char* availabilityEquation = nullptr;
-        m_params.InformationCount        = m_concurrentGroup->GetInformationCount();
+        CMetric* metric           = nullptr;
+        m_params.InformationCount = m_concurrentGroup->GetInformationCount();
         MD_CHECK_CC( SetApiSpecificId( "", 10, 0, 0, 0, 0, "", 2, "", 0x88BF ) );
 
-        availabilityEquation = nullptr;
-        metric               = AddMetric( "GpuDuration", "GPU Duration",
-                          "Total GPU duration for selected work items.",
-                          "GPU", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_1 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL4_X,
-                          METRIC_TYPE_DURATION, RESULT_UINT64, "ns", 0, 0, HW_UNIT_GPU, availabilityEquation, nullptr, nullptr, 0 );
-        if( metric )
-        {
-            MD_CHECK_CC( ( metric->SetSnapshotReportReadEquation( "qw@0x00" ) ) );
-            MD_CHECK_CC( ( metric->SetNormalizationEquation( "$Self 1000000000 UMUL $GpuTimestampFrequency UDIV" ) ) );
-            MD_CHECK_CC( ( metric->SetSnapshotReportDeltaFunction( "DELTA 64" ) ) );
-        }
+        metric = AddMetric( "GpuDuration", "GPU Duration",
+            "Total GPU duration for selected work items.",
+            "GPU", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_1 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL4_X,
+            METRIC_TYPE_DURATION, RESULT_UINT64, "ns", 0, 0, HW_UNIT_GPU, nullptr, nullptr, nullptr, 0 );
+        MD_CHECK_PTR( metric );
+        MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "qw@0x00" ) );
+        MD_CHECK_CC( metric->SetNormalizationEquation( "$Self 1000000000 UMUL $GpuTimestampFrequency UDIV" ) );
+        MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 64" ) );
 
         MD_CHECK_CC( RefreshConfigRegisters() );
 

@@ -16,6 +16,7 @@ SPDX-License-Identifier: MIT
 
 #include <cstdio>
 #include <unordered_map>
+#include <string_view>
 
 using namespace MetricsDiscovery;
 

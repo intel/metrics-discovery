@@ -14,12 +14,13 @@ SPDX-License-Identifier: MIT
 #pragma once
 
 #include "md_adapter.h"
-#include "md_equation.h"
-#include "md_information.h"
-#include "md_metric.h"
 #include "md_metrics_device.h"
 #include "md_metric_set.h"
+#include "md_metric.h"
+#include "md_information.h"
+#include "md_equation.h"
 #include "md_types.h"
+#include "md_utils.h"
 
 #include <cstring>
 #include <limits>

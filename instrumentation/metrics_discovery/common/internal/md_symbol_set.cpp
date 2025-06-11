@@ -607,6 +607,21 @@ namespace MetricsDiscoveryInternal
             TByteArray_1_0 byteArray     = { byteArraySize, out.ValueByteArray };
             typedValue.ValueByteArray    = GetCopiedByteArray( &byteArray, adapterId );
         }
+        else if( name == "ColorPipeTotalCount" )
+        {
+            ret                    = m_driverInterface.SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_COLOR_PIPE_TOTAL_COUNT, out, m_metricsDevice );
+            typedValue.ValueUInt32 = out.ValueUint32;
+        }
+        else if( name == "DepthPipeTotalCount" )
+        {
+            ret                    = m_driverInterface.SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_DEPTH_PIPE_TOTAL_COUNT, out, m_metricsDevice );
+            typedValue.ValueUInt32 = out.ValueUint32;
+        }
+        else if( name == "GeometryPipeTotalCount" )
+        {
+            ret                    = m_driverInterface.SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_GEOMETRY_PIPE_TOTAL_COUNT, out, m_metricsDevice );
+            typedValue.ValueUInt32 = out.ValueUint32;
+        }
         else if( name == "QueryMode" )
         {
             typedValue.ValueUInt32 = static_cast<uint32_t>( m_metricsDevice.GetQueryMode() );
@@ -733,7 +748,10 @@ namespace MetricsDiscoveryInternal
             name == "GtL3BankMask" ||
             name == "GtL3NodeMask" ||
             name == "GtSqidiMask" ||
-            name == "GtCopyEngineMask" )
+            name == "GtCopyEngineMask" ||
+            name == "ColorPipeTotalCount" ||
+            name == "DepthPipeTotalCount" ||
+            name == "GeometryPipeTotalCount" )
         {
             MD_LOG_A( adapterId, LOG_DEBUG, "Symbol name is%s supported: %.*s", isXe2Plus ? "" : " not", static_cast<uint32_t>( name.length() ), name.data() );
             return isXe2Plus;

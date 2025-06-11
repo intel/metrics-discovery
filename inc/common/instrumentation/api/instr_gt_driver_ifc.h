@@ -236,7 +236,8 @@ typedef enum
     GTDI_IFC_VERSION_3_60    = GTDI_MAKE_IFC_VER( GTDI_IFC_VERSION_3, 60 ), // New device params: L3 Bank, L3 Node and Copy Engine masks
     GTDI_IFC_VERSION_3_61    = GTDI_MAKE_IFC_VER( GTDI_IFC_VERSION_3, 61 ), // EU cores and threads override withdrawal
     GTDI_IFC_VERSION_3_62    = GTDI_MAKE_IFC_VER( GTDI_IFC_VERSION_3, 62 ),
-    GTDI_IFC_VERSION_CURRENT = GTDI_IFC_VERSION_3_62,
+    GTDI_IFC_VERSION_3_63    = GTDI_MAKE_IFC_VER( GTDI_IFC_VERSION_3, 63 ), // New device params: color, depth, geometry pipes count
+    GTDI_IFC_VERSION_CURRENT = GTDI_IFC_VERSION_3_63,
     GTDI_IFC_VERSION_MAX     = 0xFFFFFFFF
 } GTDI_IFC_VERSION;
 
@@ -611,6 +612,9 @@ typedef enum GTDI_DEVICE_PARAM_ENUM
     GTDI_DEVICE_PARAM_L3_BANK_MASK                       = 60,
     GTDI_DEVICE_PARAM_L3_NODE_MASK                       = 61,
     GTDI_DEVICE_PARAM_COPY_ENGINE_MASK                   = 62,
+    GTDI_DEVICE_PARAM_COLOR_PIPE_TOTAL_COUNT             = 63,
+    GTDI_DEVICE_PARAM_DEPTH_PIPE_TOTAL_COUNT             = 64,
+    GTDI_DEVICE_PARAM_GEOMETRY_PIPE_TOTAL_COUNT          = 65,
 
     // For Xe2+, the values are maximums for a given device.
     // These params are intended for internal use only.

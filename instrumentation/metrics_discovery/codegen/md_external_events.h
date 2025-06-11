@@ -18,7 +18,7 @@ SPDX-License-Identifier: MIT
 
 struct ExternalEvents
 {
-    static const char archEvents[33031];
+    static const char archEvents[33079];
     static const char hwEvents[46344];
 };
 

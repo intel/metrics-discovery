@@ -63,6 +63,7 @@ namespace MetricsDiscoveryInternal
         TCompletionCode SetDeltaReportReadEquation( const char* equationString );
         TCompletionCode SetAvailabilityEquation( const char* equationString );
         bool            IsAvailabilityEquationTrue();
+        bool            IsAggregatable() const;
 
         TCompletionCode SetOverflowFunction( const char* equationString );
         TCompletionCode SetOverflowFunction( TDeltaFunction_1_0 overflowFunction );

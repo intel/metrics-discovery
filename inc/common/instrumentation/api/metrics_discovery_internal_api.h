@@ -24,33 +24,21 @@ namespace MetricsDiscovery
     typedef enum EPlatformType
     {
         PLATFORM_UNKNOWN = 0,
-        // 0-4 reserved
-        PLATFORM_HSW      = 1 << 5 /*GENERATION_HSW*/,
-        PLATFORM_BDW      = 1 << 6 /*GENERATION_BDW*/,
-        PLATFORM_SKL      = 1 << 7 /*GENERATION_SKL*/,
-        // 8-9 reserved
-        PLATFORM_BXT      = 1 << 10 /*GENERATION_BXT*/,
-        // 11 reserved
-        PLATFORM_KBL      = 1 << 12 /*GENERATION_KBL*/,
-        PLATFORM_GLK      = 1 << 13 /*GENERATION_GLK*/,
-        PLATFORM_ICL      = 1 << 14 /*GENERATION_ICL*/,
-        // 15-16 reserved
-        PLATFORM_TGL      = 1 << 17 /*GENERATION_TGL*/,
-        PLATFORM_CFL      = 1 << 18 /*GENERATION_CFL*/,
-        PLATFORM_EHL      = 1 << 19 /*GENERATION_EHL*/,
-        // 20 reserved
-        PLATFORM_DG1      = 1 << 21 /*GENERATION_DG1*/,
+        // 0-16 reserved
+        PLATFORM_TGL = 1 << 17 /*GENERATION_TGL*/,
+        // 18-20 reserved
+        PLATFORM_DG1 = 1 << 21 /*GENERATION_DG1*/,
         // 22 reserved
-        PLATFORM_RKL      = 1 << 23 /*GENERATION_RKL*/,
-        PLATFORM_ACM      = 1 << 24 /*GENERATION_ACM*/,
-        PLATFORM_PVC      = 1 << 25 /*GENERATION_PVC*/,
-        PLATFORM_ADLP     = 1 << 26 /*GENERATION_ADLP*/,
-        PLATFORM_MTL      = 1 << 27 /*GENERATION_MTL*/,
-        PLATFORM_BMG      = 1 << 28 /*GENERATION_BMG*/,
-        PLATFORM_ADLS     = 1 << 29 /*GENERATION_ADLS*/,
-        PLATFORM_ADLN     = 1 << 30 /*GENERATION_ADLN*/,
-        PLATFORM_FUTURE   = 0x80000000,
-        PLATFORM_ALL      = 0xFFFFFFFF,
+        PLATFORM_RKL    = 1 << 23 /*GENERATION_RKL*/,
+        PLATFORM_ACM    = 1 << 24 /*GENERATION_ACM*/,
+        PLATFORM_PVC    = 1 << 25 /*GENERATION_PVC*/,
+        PLATFORM_ADLP   = 1 << 26 /*GENERATION_ADLP*/,
+        PLATFORM_MTL    = 1 << 27 /*GENERATION_MTL*/,
+        PLATFORM_BMG    = 1 << 28 /*GENERATION_BMG*/,
+        PLATFORM_ADLS   = 1 << 29 /*GENERATION_ADLS*/,
+        PLATFORM_ADLN   = 1 << 30 /*GENERATION_ADLN*/,
+        PLATFORM_FUTURE = 0x80000000,
+        PLATFORM_ALL    = 0xFFFFFFFF,
     } TPlatformType;
 
     ////////////////////////////////////////////////////////////////////////////////
@@ -62,12 +50,10 @@ namespace MetricsDiscovery
         GT_TYPE_GT1     = 1,
         GT_TYPE_GT2     = 1 << 1,
         // 2-8 reserved
-        GT_TYPE_GT3 = 1 << 9,
-        GT_TYPE_GT4 = 1 << 10,
-        GT_TYPE_GT0 = 1 << 11,
-        // 12-16 reserved
+        GT_TYPE_GT3     = 1 << 9,
+        // 10-16 reserved
         // ...
-        GT_TYPE_ALL = 0xFFFFFFFF,
+        GT_TYPE_ALL     = 0xFFFFFFFF,
     } TGTType;
 
     ////////////////////////////////////////////////////////////////////////////////

@@ -13,7 +13,6 @@ SPDX-License-Identifier: MIT
 #pragma once
 
 #include "metrics_discovery_internal_api.h"
-#include "md_per_platform_preamble.h"
 #include "md_debug.h"
 #include "iu_std.h"
 

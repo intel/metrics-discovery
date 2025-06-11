@@ -15,30 +15,37 @@ https://opensource.org/licenses/MIT
 
 ## Supported Platforms
 
-- Intel(R) Processors with Arc graphics devices (formerly Alchemist)
-- Intel(R) Processors with Gen12 graphics devices (formerly Tiger Lake, Arctic Sound, DG1, Rocket Lake, Ponte Vecchio, Alder Lake)
-- Intel(R) Processors with Gen11 graphics devices (formerly Ice Lake, Elkhart Lake),
-- Intel(R) Processors with Gen9 graphics devices (formerly Skylake, Kaby Lake, Apollo Lake/Broxton, Gemini Lake, Coffee Lake),
-- Intel(R) Processors with Gen8 graphics devices (formerly Broadwell),
-- Intel(R) Processors with Gen7.5 graphics devices (formerly Haswell).
+- Intel(R) Processors with Xe3 graphics devices (formerly Panther Lake)
+- Intel(R) Processors with Xe2 graphics devices (formerly Lunar Lake)
+- Intel(R) Processors with Arc graphics devices (formerly Alchemist, Battlemage)
+- Intel(R) Processors with Xe graphics devices (formerly Tiger Lake, Rocket Lake, DG1, Alder Lake, Ponte Vecchio, Meteor Lake, Arrow Lake)
+
+Since version 1.14.181, support for Gen7.5, Gen8, Gen9 and Gen11 platforms has been discontinued. For these platforms, use version 1.14.180 or earlier.
 
 ## Supported Operating Systems
 
-Intel(R) Metrics Discovery Application Programming Interface is supported on Linux family operating systems with minimum kernel version 4.14.
+Intel(R) Metrics Discovery Application Programming Interface is supported on Linux family operating systems with minimum kernel version 5.7.
 Event based measurements require minimum Mesa version 18.2.
 
 ### Detailed minimum version requirements
 
 | Platform | Code Name | Minimum Linux Kernel Version | Minimum Mesa Version |
 |--|--|--|--|
-| Arc | Alchemist | 5.20 | 22.1.5 |
-| Gen12 | Rocket Lake | 5.17 | 22.1.5 |
-| Gen12 | DG1 | 5.13 | 22.1.5 |
-| Gen12 | Tiger Lake | 5.9 | 21.0 |
-| Gen11 | Elkhart Lake | 5.3 | 19.1 |
-| Gen11 | Ice Lake | 4.18 | 19.1 |
-| Gen9, Gen8 | * | 4.14 | 18.2 |
-| Gen7.5 | Haswell | 4.17 | 18.2 |
+| Xe3-LPG | Panther Lake | 6.15 | 25.1 |
+| Xe2-HPG | Battlemage | 6.11 | 24.2 |
+| Xe2-LPG | Lunar Lake | 6.11 | 24.2 |
+| Xe-LPG | Arrow Lake-H | 6.9 | 24.1 |
+| Xe-LPG | Arrow Lake-S | 6.7 | 24.1 |
+| Xe-LPG | Arrow Lake-U | 6.9 | 24.1 |
+| Xe-LPG | Meteor Lake | 6.7 | 23.1 |
+| Xe-HPG | Alchemist | 6.2 | 22.2 |
+| Xe-HPC | Ponte Vecchio | 5.20 | 18.2 |
+| Xe-LP | Alder Lake-S | 5.16 | 22.0 |
+| Xe-LP | Alder Lake-N | 5.18 | 22.0 |
+| Xe-LP | Alder Lake-P | 5.17 | 22.0 |
+| Xe-LP | DG1 | 5.16 | 22.1.5 |
+| Xe-LP | Rocket Lake | 5.13 | 20.2 |
+| Xe-LP | Tiger Lake | 5.7 | 21.0 |
 
 ## Build and Install
 

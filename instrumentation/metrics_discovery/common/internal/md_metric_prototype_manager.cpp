@@ -16,6 +16,7 @@ SPDX-License-Identifier: MIT
 #include "md_metric_set.h"
 #include "md_metric_prototype.h"
 #include "md_metric_prototype_manager.h"
+#include "md_utils.h"
 
 #include <sstream>
 
@@ -799,11 +800,20 @@ namespace MetricsDiscoveryInternal
                         deltaReportReadEquation << " $VectorEngineThreadsCount UDIV";
                     }
                 }
-                else if( instance == "pixpipe" || instance == "zpipe" )
+                else if( instance == "pixpipe" )
                 {
-                    // 2 pixel/depth pipes per slice
-                    snapshotReportReadEquation << " $SliceTotalCount 2 UMUL UDIV";
-                    deltaReportReadEquation << " $SliceTotalCount 2 UMUL UDIV";
+                    snapshotReportReadEquation << " $ColorPipeTotalCount UDIV";
+                    deltaReportReadEquation << " $ColorPipeTotalCount UDIV";
+                }
+                else if( instance == "zpipe" )
+                {
+                    snapshotReportReadEquation << " $DepthPipeTotalCount UDIV";
+                    deltaReportReadEquation << " $DepthPipeTotalCount UDIV";
+                }
+                else if( instance == "geompipe" )
+                {
+                    snapshotReportReadEquation << " $GeometryPipeTotalCount UDIV";
+                    deltaReportReadEquation << " $GeometryPipeTotalCount UDIV";
                 }
                 else if( instance == "ccs" )
                 {
@@ -848,13 +858,38 @@ namespace MetricsDiscoveryInternal
                         MD_ASSERT_A( adapterId, false );
                     }
                 }
-                else if( instance == "pixpipe" || instance == "zpipe" )
+                else if( instance == "pixpipe" )
                 {
-                    // 2 pixel/depth pipes per slice
                     if( hwEvent.m_archEvent.m_disaggregationMode == DISAGGREGATION_MODE_SLICE )
                     {
-                        snapshotReportReadEquation << " 2 UDIV";
-                        deltaReportReadEquation << " 2 UDIV";
+                        snapshotReportReadEquation << " $ColorPipeTotalCount $SliceTotalCount UDIV UDIV";
+                        deltaReportReadEquation << " $ColorPipeTotalCount $SliceTotalCount UDIV UDIV";
+                    }
+                    else
+                    {
+                        // These disaggregation mode and instance type are not supported.
+                        MD_ASSERT_A( adapterId, false );
+                    }
+                }
+                else if( instance == "zpipe" )
+                {
+                    if( hwEvent.m_archEvent.m_disaggregationMode == DISAGGREGATION_MODE_SLICE )
+                    {
+                        snapshotReportReadEquation << " $DepthPipeTotalCount $SliceTotalCount UDIV UDIV";
+                        deltaReportReadEquation << " $DepthPipeTotalCount $SliceTotalCount UDIV UDIV";
+                    }
+                    else
+                    {
+                        // These disaggregation mode and instance type are not supported.
+                        MD_ASSERT_A( adapterId, false );
+                    }
+                }
+                else if( instance == "geompipe" )
+                {
+                    if( hwEvent.m_archEvent.m_disaggregationMode == DISAGGREGATION_MODE_SLICE )
+                    {
+                        snapshotReportReadEquation << " $GeometryPipeTotalCount $SliceTotalCount UDIV UDIV";
+                        deltaReportReadEquation << " $GeometryPipeTotalCount $SliceTotalCount UDIV UDIV";
                     }
                     else
                     {

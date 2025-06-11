@@ -22,6 +22,7 @@ SPDX-License-Identifier: MIT
 #include "md_metric_prototype.h"
 #include "md_metric_enumerator.h"
 #include "md_metric_prototype_manager.h"
+#include "md_metrics_calculator.h"
 
 #include "md_calculation.h"
 #include "md_driver_ifc.h"
@@ -50,21 +51,22 @@ namespace MetricsDiscoveryInternal
     //     Constructor.
     //
     // Input:
-    //     CMetricsDevice&     device               -
-    //     CConcurrentGroup*   concurrentGroup      -
-    //     const char*         symbolicName         -
-    //     const char*         shortName            -
-    //     uint32_t            apiMask              -
-    //     uint32_t            categoryMask         -
-    //     uint32_t            snapshotReportSize   -
-    //     uint32_t            deltaReportSize      -
-    //     TReportType         reportType           -
-    //     TByteArrayLatest*   platformMask         -
-    //     uint32_t            gtMask               -
-    //     bool                isCustom             -
+    //     CMetricsDevice&     device                 -
+    //     CConcurrentGroup*   concurrentGroup        -
+    //     const char*         symbolicName           -
+    //     const char*         shortName              -
+    //     uint32_t            apiMask                -
+    //     uint32_t            categoryMask           -
+    //     uint32_t            snapshotReportSize     -
+    //     uint32_t            deltaReportSize        -
+    //     TReportType         reportType             -
+    //     TByteArrayLatest*   platformMask           -
+    //     uint32_t            gtMask                 -
+    //     bool                isCustom               -
+    //     bool                isAggregationRequested -
     //
     //////////////////////////////////////////////////////////////////////////////
-    CMetricSet::CMetricSet( CMetricsDevice& device, CConcurrentGroup* concurrentGroup, const char* symbolicName, const char* shortName, uint32_t apiMask, uint32_t categoryMask, uint32_t snapshotReportSize, uint32_t deltaReportSize, TReportType reportType, TByteArrayLatest* platformMask, uint32_t gtMask /*= GT_TYPE_ALL*/, bool isCustom /*= false*/ )
+    CMetricSet::CMetricSet( CMetricsDevice& device, CConcurrentGroup* concurrentGroup, const char* symbolicName, const char* shortName, uint32_t apiMask, uint32_t categoryMask, uint32_t snapshotReportSize, uint32_t deltaReportSize, TReportType reportType, TByteArrayLatest* platformMask, uint32_t gtMask /*= GT_TYPE_ALL*/, bool isCustom /*= false*/, bool isAggregationRequested /*= false*/ )
         : m_concurrentGroup( concurrentGroup )
         , m_params{}
         , m_device( device )
@@ -82,6 +84,7 @@ namespace MetricsDiscoveryInternal
         , m_filteredMetricsVector()
         , m_filteredInformationVector()
         , m_isCustom( isCustom )
+        , m_isAggregationRequested( isAggregationRequested )
         , m_isReadRegsCfgSet( false )
         , m_metricsCalculator( new( std::nothrow ) CMetricsCalculator( m_device ) )
         , m_isOam( COAMConcurrentGroup::IsValidSymbolName( concurrentGroup->GetParams()->SymbolName ) )
@@ -2136,6 +2139,26 @@ namespace MetricsDiscoveryInternal
     //     CMetricSet
     //
     // Method:
+    //     IsFiltered
+    //
+    // Description:
+    //     True if filtered variables are used.
+    //
+    // Output:
+    //     bool - true if filtered
+    //
+    //////////////////////////////////////////////////////////////////////////////
+    bool CMetricSet::IsFiltered()
+    {
+        return m_isFiltered;
+    }
+
+    //////////////////////////////////////////////////////////////////////////////
+    //
+    // Class:
+    //     CMetricSet
+    //
+    // Method:
     //     GetConcurrentGroup
     //
     // Description:
@@ -2474,7 +2497,8 @@ namespace MetricsDiscoveryInternal
             if( auto information = static_cast<CInformation*>( GetInformation( i ) ); information != nullptr )
             {
                 if( const auto params = information->GetParams();
-                    params != nullptr && ( ( params->ApiMask & m_filteredParams.ApiMask ) != 0 ) )
+                    params != nullptr && ( ( params->ApiMask & m_filteredParams.ApiMask ) != 0 ) &&
+                    ( !m_isAggregationRequested || information->IsAggregatable() ) )
                 {
                     information->SetIdInSetParam( j++ );
 
@@ -2876,14 +2900,14 @@ namespace MetricsDiscoveryInternal
 
         // Initialize context
         calculationManager->ResetContext( context );
-        context.CommonCalculationContext.DeltaValues    = new( std::nothrow ) TTypedValue_1_0[m_currentParams->MetricsCount];
+        context.CommonCalculationContext.DeltaValues = new( std::nothrow ) TTypedValue_1_0[m_currentParams->MetricsCount];
+        MD_CHECK_PTR_RET_A( adapterId, context.CommonCalculationContext.DeltaValues, CC_ERROR_NO_MEMORY );
         context.CommonCalculationContext.Calculator     = m_metricsCalculator;
         context.CommonCalculationContext.MetricSet      = this;
         context.CommonCalculationContext.Out            = out;
         context.CommonCalculationContext.OutMaxValues   = outMaxValues;
         context.CommonCalculationContext.RawData        = rawData;
         context.CommonCalculationContext.RawReportCount = rawReportCount;
-        MD_CHECK_PTR_RET_A( adapterId, context.CommonCalculationContext.DeltaValues, CC_ERROR_NO_MEMORY );
         if( measurementType == MEASUREMENT_TYPE_SNAPSHOT_IO )
         {
             // Not supported

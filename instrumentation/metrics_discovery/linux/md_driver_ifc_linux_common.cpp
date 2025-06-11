@@ -13,6 +13,7 @@ SPDX-License-Identifier: MIT
 #include "md_driver_ifc_linux_perf.h"
 #include "md_driver_ifc_linux_xe.h"
 #include "md_adapter.h"
+#include "md_oa_concurrent_group.h"
 #include "md_metrics_device.h"
 #include "md_metric_set.h"
 #include "md_utils.h"
@@ -397,7 +398,9 @@ namespace MetricsDiscoveryInternal
                 adapter.Params.SubVendorId = device.deviceinfo.pci->subvendor_id;
                 adapter.Params.DeviceId    = device.deviceinfo.pci->device_id;
 
-                adapter.Params.ShortName = GetCopiedCString( drmGetDeviceNameFromFd2( drmFd ), IU_ADAPTER_ID_UNKNOWN );
+                const char* deviceName   = drmGetDeviceNameFromFd2( drmFd );
+                adapter.Params.ShortName = GetCopiedCString( deviceName, IU_ADAPTER_ID_UNKNOWN );
+                drmFree( (void*) deviceName );
             }
 
             adapter.Handle = new( std::nothrow ) CAdapterHandleLinux( drmFd ); // Important: adapterData.Handle has to be deleted later!
@@ -965,7 +968,7 @@ namespace MetricsDiscoveryInternal
                 MD_CHECK_CC_RET_A( m_adapterId, ret );
 
                 out.ValueType   = GTDI_DEVICE_PARAM_VALUE_TYPE_UINT64;
-                out.ValueUint32 = l3BankMask;
+                out.ValueUint64 = l3BankMask;
                 break;
             }
 
@@ -977,7 +980,7 @@ namespace MetricsDiscoveryInternal
                 MD_CHECK_CC_RET_A( m_adapterId, ret );
 
                 out.ValueType   = GTDI_DEVICE_PARAM_VALUE_TYPE_UINT64;
-                out.ValueUint32 = l3NodeMask;
+                out.ValueUint64 = l3NodeMask;
                 break;
             }
 
@@ -989,7 +992,37 @@ namespace MetricsDiscoveryInternal
                 MD_CHECK_CC_RET_A( m_adapterId, ret );
 
                 out.ValueType   = GTDI_DEVICE_PARAM_VALUE_TYPE_UINT64;
-                out.ValueUint32 = copyEngineMask;
+                out.ValueUint64 = copyEngineMask;
+                break;
+            }
+
+            case GTDI_DEVICE_PARAM_COLOR_PIPE_TOTAL_COUNT:
+            case GTDI_DEVICE_PARAM_DEPTH_PIPE_TOTAL_COUNT:
+            case GTDI_DEVICE_PARAM_GEOMETRY_PIPE_TOTAL_COUNT:
+            {
+                if( GetGtMaxSubslicePerSlice() <= 2 )
+                {
+                    // For 1x2 configurations, the number of pixel/depth/geometry pipes is always 1.
+                    out.ValueUint32 = MD_ZPIXEL_GEOM_PIPE_PER_SLICE_1_2;
+                }
+                else
+                {
+                    ret = SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_SLICES_COUNT, out, metricsDevice );
+
+                    const uint32_t sliceCount = out.ValueUint32;
+
+                    if( param == GTDI_DEVICE_PARAM_GEOMETRY_PIPE_TOTAL_COUNT )
+                    {
+                        out.ValueUint32 = sliceCount * MD_GEOMETRY_PIPE_PER_SLICE;
+                    }
+                    else
+                    {
+                        out.ValueUint32 = sliceCount * MD_ZPIXEL_PIPE_PER_SLICE;
+                    }
+                }
+
+                out.ValueType = GTDI_DEVICE_PARAM_VALUE_TYPE_UINT32;
+
                 break;
             }
 
@@ -3023,7 +3056,10 @@ namespace MetricsDiscoveryInternal
                 switch( gfxDeviceInfo->PlatformVersion )
                 {
                     case 2:
-                        return MD_MAX_SLICE_BMG_G21;
+                        return MD_MAX_SLICE_BMG_VER_2;
+
+                    case 3:
+                        return MD_MAX_SLICE_BMG_VER_3;
 
                     default:
                         // Unsupported BMG device id
@@ -3082,17 +3118,6 @@ namespace MetricsDiscoveryInternal
 
         switch( gfxDeviceInfo->PlatformIndex )
         {
-            case GENERATION_HSW:
-            case GENERATION_BDW:
-            case GENERATION_SKL:
-            case GENERATION_BXT:
-            case GENERATION_KBL:
-            case GENERATION_CFL:
-            case GENERATION_GLK:
-                return MD_MAX_SUBSLICE_PER_SLICE_OLD;
-
-            case GENERATION_ICL:
-            case GENERATION_EHL:
             case GENERATION_PVC:
                 return MD_MAX_SUBSLICE_PER_SLICE;
 
@@ -3199,7 +3224,10 @@ namespace MetricsDiscoveryInternal
                 switch( gfxDeviceInfo->PlatformVersion )
                 {
                     case 2:
-                        return MD_MAX_L3_NODE_BMG_G21;
+                        return MD_MAX_L3_NODE_BMG_VER_2;
+
+                    case 3:
+                        return MD_MAX_L3_NODE_BMG_VER_3;
 
                     default:
                         // Unsupported BMG device id

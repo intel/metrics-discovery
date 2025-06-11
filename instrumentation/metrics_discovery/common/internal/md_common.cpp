@@ -14,6 +14,7 @@ SPDX-License-Identifier: MIT
 
 namespace MetricsDiscovery
 {
+    // Equation interface.
     IEquation_1_0::~IEquation_1_0()
     {
     }
@@ -26,6 +27,7 @@ namespace MetricsDiscovery
         return nullptr;
     }
 
+    // Metrics Device interface.
     IMetricsDevice_1_0::~IMetricsDevice_1_0()
     {
     }
@@ -86,6 +88,7 @@ namespace MetricsDiscovery
         return nullptr;
     }
 
+    // Override interface.
     IOverride_1_2::~IOverride_1_2()
     {
     }
@@ -98,6 +101,7 @@ namespace MetricsDiscovery
         return CC_ERROR_NOT_SUPPORTED;
     }
 
+    // Concurrent Group interface.
     IConcurrentGroup_1_0::~IConcurrentGroup_1_0()
     {
     }
@@ -137,12 +141,10 @@ namespace MetricsDiscovery
     {
         return nullptr;
     }
-
     TCompletionCode IConcurrentGroup_1_3::SetIoStreamSamplingType( [[maybe_unused]] TSamplingType type )
     {
         return CC_ERROR_NOT_SUPPORTED;
     }
-
     IMetricSet_1_5* IConcurrentGroup_1_5::GetMetricSet( [[maybe_unused]] uint32_t index )
     {
         return nullptr;
@@ -152,6 +154,10 @@ namespace MetricsDiscovery
         return nullptr;
     }
     TConcurrentGroupParams_1_13* IConcurrentGroup_1_13::GetParams( void )
+    {
+        return nullptr;
+    }
+    IMetricSet_1_13* IConcurrentGroup_1_13::GetMetricSet( [[maybe_unused]] uint32_t index )
     {
         return nullptr;
     }
@@ -171,10 +177,8 @@ namespace MetricsDiscovery
     {
         return CC_ERROR_NOT_SUPPORTED;
     }
-    IMetricSet_1_13* IConcurrentGroup_1_13::GetMetricSet( [[maybe_unused]] uint32_t index )
-    {
-        return nullptr;
-    }
+
+    // Metric Set interface.
     IMetricSet_1_0::~IMetricSet_1_0()
     {
     }
@@ -206,7 +210,6 @@ namespace MetricsDiscovery
     {
         return nullptr;
     }
-
     IMetricSet_1_1::~IMetricSet_1_1()
     {
     }
@@ -247,14 +250,6 @@ namespace MetricsDiscovery
     IMetricSet_1_13::~IMetricSet_1_13()
     {
     }
-    IMetric_1_13* IMetricSet_1_13::GetMetric( uint32_t )
-    {
-        return nullptr;
-    }
-    IMetric_1_13* IMetricSet_1_13::AddCustomMetric( [[maybe_unused]] const char* symbolName, [[maybe_unused]] const char* shortName, [[maybe_unused]] const char* groupName, [[maybe_unused]] const char* longName, [[maybe_unused]] const char* dxToOglAlias, [[maybe_unused]] uint32_t usageFlagsMask, [[maybe_unused]] uint32_t apiMask, [[maybe_unused]] TMetricResultType resultType, [[maybe_unused]] const char* resultUnits, [[maybe_unused]] TMetricType metricType, [[maybe_unused]] int64_t loWatermark, [[maybe_unused]] int64_t hiWatermark, [[maybe_unused]] THwUnitType hwType, [[maybe_unused]] const char* ioReadEquation, [[maybe_unused]] const char* deltaFunction, [[maybe_unused]] const char* queryReadEquation, [[maybe_unused]] const char* normalizationEquation, [[maybe_unused]] const char* maxValueEquation, [[maybe_unused]] const char* signalName, [[maybe_unused]] uint32_t queryModeMask )
-    {
-        return nullptr;
-    }
     TCompletionCode IMetricSet_1_13::Open()
     {
         return CC_ERROR_NOT_SUPPORTED;
@@ -271,7 +266,16 @@ namespace MetricsDiscovery
     {
         return CC_ERROR_NOT_SUPPORTED;
     }
+    IMetric_1_13* IMetricSet_1_13::GetMetric( [[maybe_unused]] uint32_t index )
+    {
+        return nullptr;
+    }
+    IMetric_1_13* IMetricSet_1_13::AddCustomMetric( [[maybe_unused]] const char* symbolName, [[maybe_unused]] const char* shortName, [[maybe_unused]] const char* groupName, [[maybe_unused]] const char* longName, [[maybe_unused]] const char* dxToOglAlias, [[maybe_unused]] uint32_t usageFlagsMask, [[maybe_unused]] uint32_t apiMask, [[maybe_unused]] TMetricResultType resultType, [[maybe_unused]] const char* resultUnits, [[maybe_unused]] TMetricType metricType, [[maybe_unused]] int64_t loWatermark, [[maybe_unused]] int64_t hiWatermark, [[maybe_unused]] THwUnitType hwType, [[maybe_unused]] const char* ioReadEquation, [[maybe_unused]] const char* deltaFunction, [[maybe_unused]] const char* queryReadEquation, [[maybe_unused]] const char* normalizationEquation, [[maybe_unused]] const char* maxValueEquation, [[maybe_unused]] const char* signalName, [[maybe_unused]] uint32_t queryModeMask )
+    {
+        return nullptr;
+    }
 
+    // Metric interface.
     IMetric_1_0::~IMetric_1_0()
     {
     }
@@ -282,12 +286,12 @@ namespace MetricsDiscovery
     IMetric_1_13::~IMetric_1_13()
     {
     }
-
     TMetricParams_1_13* IMetric_1_13::GetParams()
     {
         return nullptr;
     }
 
+    // Metric Prototype interface.
     IMetricPrototype_1_13::~IMetricPrototype_1_13()
     {
     }
@@ -312,6 +316,7 @@ namespace MetricsDiscovery
         return CC_ERROR_NOT_SUPPORTED;
     }
 
+    // Metric Enumerator interface.
     IMetricEnumerator_1_13 ::~IMetricEnumerator_1_13()
     {
     }
@@ -332,6 +337,7 @@ namespace MetricsDiscovery
         return CC_ERROR_NOT_SUPPORTED;
     }
 
+    // Information interface.
     IInformation_1_0::~IInformation_1_0()
     {
     }
@@ -340,7 +346,7 @@ namespace MetricsDiscovery
         return nullptr;
     }
 
-    // Internal API
+    // Internal API.
     IInternalConcurrentGroup::~IInternalConcurrentGroup()
     {
     }
@@ -355,12 +361,10 @@ namespace MetricsDiscovery
     {
         return nullptr;
     }
+
+    // Adapter Group interface.
     IAdapterGroup_1_6::~IAdapterGroup_1_6()
     {
-    }
-    TCompletionCode IAdapterGroup_1_6::Close( void )
-    {
-        return CC_ERROR_NOT_SUPPORTED;
     }
     const TAdapterGroupParams_1_6* IAdapterGroup_1_6::GetParams( void ) const
     {
@@ -369,6 +373,10 @@ namespace MetricsDiscovery
     IAdapter_1_6* IAdapterGroup_1_6::GetAdapter( [[maybe_unused]] uint32_t index )
     {
         return nullptr;
+    }
+    TCompletionCode IAdapterGroup_1_6::Close( void )
+    {
+        return CC_ERROR_NOT_SUPPORTED;
     }
     IAdapter_1_8* IAdapterGroup_1_8::GetAdapter( [[maybe_unused]] uint32_t index )
     {
@@ -403,6 +411,7 @@ namespace MetricsDiscovery
         return CC_ERROR_NOT_SUPPORTED;
     }
 
+    // Adapter interface.
     IAdapter_1_6::~IAdapter_1_6()
     {
     }
@@ -434,14 +443,6 @@ namespace MetricsDiscovery
     {
         return nullptr;
     }
-    TCompletionCode IAdapter_1_9::OpenMetricsSubDevice( [[maybe_unused]] const uint32_t subDeviceIndex, [[maybe_unused]] IMetricsDevice_1_5** metricsDevice )
-    {
-        return CC_ERROR_NOT_SUPPORTED;
-    }
-    TCompletionCode IAdapter_1_9::OpenMetricsSubDeviceFromFile( [[maybe_unused]] const uint32_t subDeviceIndex, [[maybe_unused]] const char* fileName, [[maybe_unused]] void* openParams, [[maybe_unused]] IMetricsDevice_1_5** metricsDevice )
-    {
-        return CC_ERROR_NOT_SUPPORTED;
-    }
     const TAdapterParams_1_9* IAdapter_1_9::GetParams( void ) const
     {
         return nullptr;
@@ -454,9 +455,13 @@ namespace MetricsDiscovery
     {
         return nullptr;
     }
-    const TEngineParams_1_13* IAdapter_1_13::GetEngineParams( [[maybe_unused]] const uint32_t subDeviceIndex, [[maybe_unused]] const uint32_t engineIndex )
+    TCompletionCode IAdapter_1_9::OpenMetricsSubDevice( [[maybe_unused]] const uint32_t subDeviceIndex, [[maybe_unused]] IMetricsDevice_1_5** metricsDevice )
     {
-        return nullptr;
+        return CC_ERROR_NOT_SUPPORTED;
+    }
+    TCompletionCode IAdapter_1_9::OpenMetricsSubDeviceFromFile( [[maybe_unused]] const uint32_t subDeviceIndex, [[maybe_unused]] const char* fileName, [[maybe_unused]] void* openParams, [[maybe_unused]] IMetricsDevice_1_5** metricsDevice )
+    {
+        return CC_ERROR_NOT_SUPPORTED;
     }
     TCompletionCode IAdapter_1_10::OpenMetricsDevice( [[maybe_unused]] IMetricsDevice_1_10** metricsDevice )
     {
@@ -509,5 +514,9 @@ namespace MetricsDiscovery
     TCompletionCode IAdapter_1_13::OpenMetricsSubDeviceFromFile( [[maybe_unused]] const uint32_t subDeviceIndex, [[maybe_unused]] const char* fileName, [[maybe_unused]] void* openParams, [[maybe_unused]] IMetricsDevice_1_13** metricsDevice )
     {
         return CC_ERROR_NOT_SUPPORTED;
+    }
+    const TEngineParams_1_13* IAdapter_1_13::GetEngineParams( [[maybe_unused]] const uint32_t subDeviceIndex, [[maybe_unused]] const uint32_t engineIndex )
+    {
+        return nullptr;
     }
 } // namespace MetricsDiscovery

@@ -297,16 +297,10 @@ namespace MetricsDiscoveryInternal
     {
         const bool isRenderEngine       = engineParams.EngineId.ClassInstance.Class == I915_ENGINE_CLASS_RENDER;
         const bool isComputeEngine      = engineParams.EngineId.ClassInstance.Class == I915_ENGINE_CLASS_COMPUTE;
-        const bool isVideoEngine        = engineParams.EngineId.ClassInstance.Class == I915_ENGINE_CLASS_VIDEO;
         const bool isVideoEnhanceEngine = engineParams.EngineId.ClassInstance.Class == I915_ENGINE_CLASS_VIDEO_ENHANCE;
-        bool       isValidInstance      = ( requestedInstance == static_cast<uint32_t>( -1 ) ) || ( engineParams.EngineId.ClassInstance.Instance == requestedInstance );
+        const bool isValidInstance      = ( requestedInstance == static_cast<uint32_t>( -1 ) ) || ( engineParams.EngineId.ClassInstance.Instance == requestedInstance );
 
-        if( isValidInstance && ( ( isOam && ( isVideoEngine || isVideoEnhanceEngine ) ) || ( !isOam && ( isRenderEngine || isComputeEngine ) ) ) )
-        {
-            return true;
-        }
-
-        return false;
+        return isValidInstance && ( ( isOam && isVideoEnhanceEngine ) || ( !isOam && ( isRenderEngine || isComputeEngine ) ) );
     }
 
     //////////////////////////////////////////////////////////////////////////////
@@ -623,9 +617,7 @@ namespace MetricsDiscoveryInternal
                 switch( engine.engine.engine_class )
                 {
                     case I915_ENGINE_CLASS_RENDER:
-                    case I915_ENGINE_CLASS_COPY:
                     case I915_ENGINE_CLASS_COMPUTE:
-                    case I915_ENGINE_CLASS_VIDEO:
                     case I915_ENGINE_CLASS_VIDEO_ENHANCE:
                         distance.engine = engine.engine;
                         distances.push_back( std::move( distance ) );
@@ -694,16 +686,14 @@ namespace MetricsDiscoveryInternal
 
             if( validDistance )
             {
-                const bool     isOam          = engine.engine_class == I915_ENGINE_CLASS_VIDEO_ENHANCE || engine.engine_class == I915_ENGINE_CLASS_VIDEO;
+                const bool     isOam          = engine.engine_class == I915_ENGINE_CLASS_VIDEO_ENHANCE;
                 const uint32_t subDeviceIndex = subDevices.GetAllEnginesCount() - 1;
                 const uint32_t gtId           = subDeviceIndex * 2 + ( isOam ? 1 : 0 );
 
                 switch( engine.engine_class )
                 {
                     case I915_ENGINE_CLASS_RENDER:
-                    case I915_ENGINE_CLASS_COPY:
                     case I915_ENGINE_CLASS_COMPUTE:
-                    case I915_ENGINE_CLASS_VIDEO:
                     case I915_ENGINE_CLASS_VIDEO_ENHANCE:
                         MD_LOG_A( m_adapterId, LOG_DEBUG, "Sub device %u / engine %u:%u / GT ID: %u / OA unit: %u", subDeviceIndex, engine.engine_class, engine.engine_instance, gtId, oaUnits[i] );
                         subDevices.AddEngine( engine.engine_class, engine.engine_instance, gtId, oaUnits[i] );
@@ -905,15 +895,14 @@ namespace MetricsDiscoveryInternal
                 uint32_t baseEngineInstance = 0;
                 for( uint32_t i = 0; i < subDeviceIndex; ++i )
                 {
-                    const uint32_t videoEngineCount        = subDevices.GetClassInstancesCount( i, I915_ENGINE_CLASS_VIDEO );
                     const uint32_t videoEnhanceEngineCount = subDevices.GetClassInstancesCount( i, I915_ENGINE_CLASS_VIDEO_ENHANCE );
 
-                    ret = ( !isValidValue( videoEngineCount ) || !isValidValue( videoEnhanceEngineCount ) || videoEngineCount != videoEnhanceEngineCount )
+                    ret = isValidValue( videoEnhanceEngineCount )
                         ? CC_ERROR_GENERAL
                         : CC_OK;
                     MD_CHECK_CC_RET_A( m_adapterId, ret );
 
-                    baseEngineInstance += videoEngineCount;
+                    baseEngineInstance += videoEnhanceEngineCount;
                 }
 
                 requiredEngineInstance = baseEngineInstance + oamBufferSlice;
@@ -1276,16 +1265,6 @@ namespace MetricsDiscoveryInternal
 
         switch( gfxDeviceInfo->PlatformIndex )
         {
-            case GENERATION_HSW:
-            {
-                switch( reportType )
-                {
-                    case OA_REPORT_TYPE_256B_A45_NOA16:
-                        return I915_OA_FORMAT_A45_B8_C8;
-                    default:
-                        return -1;
-                }
-            }
             case GENERATION_ACM:
             case GENERATION_PVC:
             {
@@ -2440,16 +2419,9 @@ namespace MetricsDiscoveryInternal
         {
             auto           subDevices              = metricsDevice.GetAdapter().GetSubDevices();
             const uint32_t subDeviceIndex          = metricsDevice.GetSubDeviceIndex();
-            const uint32_t videoEngineCount        = subDevices.GetClassInstancesCount( subDeviceIndex, I915_ENGINE_CLASS_VIDEO );
             const uint32_t videoEnhanceEngineCount = subDevices.GetClassInstancesCount( subDeviceIndex, I915_ENGINE_CLASS_VIDEO_ENHANCE );
 
-            if( videoEngineCount != videoEnhanceEngineCount )
-            {
-                MD_LOG_A( m_adapterId, LOG_ERROR, "Video engine count (%u) and video enhance engine count (%u) mismatch.", videoEngineCount, videoEnhanceEngineCount );
-                return CC_ERROR_GENERAL;
-            }
-
-            oaBufferCount += videoEngineCount;
+            oaBufferCount += videoEnhanceEngineCount; // Video enhance engines map to media slices.
         }
 
         return CC_OK;

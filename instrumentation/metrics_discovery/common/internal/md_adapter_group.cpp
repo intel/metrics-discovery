@@ -12,6 +12,7 @@ SPDX-License-Identifier: MIT
 
 #include "md_adapter_group.h"
 #include "md_adapter.h"
+#include "md_metrics_device.h"
 
 #include "md_driver_ifc.h"
 #include "md_driver_ifc_offline.h"

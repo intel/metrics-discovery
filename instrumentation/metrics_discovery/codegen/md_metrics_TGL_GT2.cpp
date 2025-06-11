@@ -11,7 +11,12 @@ SPDX-License-Identifier: MIT
 //     Abstract:   C++ automated generated file to stack metrics meta data
 
 #include "md_per_platform_preamble.h"
+#include "md_adapter.h"
+#include "md_metrics_device.h"
+#include "md_concurrent_group.h"
+#include "md_metric_set.h"
 #include "md_metric_sets_TGL_GT2.h"
+#include "md_utils.h"
 
 using namespace MetricsDiscoveryInternal;
 

@@ -12,12 +12,6 @@ SPDX-License-Identifier: MIT
 //                 MetricSet classes inherited from CMetricSet
 
 #pragma once
-#include "md_calculation.h"
-#include "md_concurrent_group.h"
-#include "md_equation.h"
-#include "md_information.h"
-#include "md_metric.h"
-#include "md_metric_set.h"
 
 #if MD_INCLUDE_ADLN_METRICS
 

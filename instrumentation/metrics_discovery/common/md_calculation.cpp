@@ -12,12 +12,14 @@ SPDX-License-Identifier: MIT
 
 #include "md_calculation.h"
 #include "md_adapter.h"
-#include "md_equation.h"
-#include "md_information.h"
-#include "md_metric.h"
-#include "md_metric_set.h"
 #include "md_metrics_device.h"
+#include "md_metric_set.h"
+#include "md_metrics.h"
+#include "md_information.h"
+#include "md_equation.h"
+#include "md_metrics_calculator.h"
 #include "md_types.h"
+#include "md_utils.h"
 #include <algorithm>
 #include <cstring>
 
@@ -84,47 +86,50 @@ namespace MetricsDiscoveryInternal
     //
     // Input:
     //     TCalculationContext& context - (IN/OUT) calculation context
+    //     bool isRawDataProvided       - True if raw data and output buffer are provided, false otherwise
+    //     bool isAggregationRequested  - Indicates if the aggregation is requested
     //
     // Output:
     //     TCompletionCode              - *CC_OK* means success
     //
     //////////////////////////////////////////////////////////////////////////////
     template <>
-    TCompletionCode CMetricsCalculationManager<MEASUREMENT_TYPE_SNAPSHOT_IO>::PrepareContext( TCalculationContext& context )
+    TCompletionCode CMetricsCalculationManager<MEASUREMENT_TYPE_SNAPSHOT_IO>::PrepareContext( TCalculationContext& context, bool isRawDataProvided /*true*/, bool isAggregationRequested /*false*/ )
     {
         TStreamCalculationContext* sc = &context.StreamCalculationContext;
         MD_CHECK_PTR_RET( sc->Calculator, CC_ERROR_INVALID_PARAMETER );
 
         const uint32_t adapterId = sc->Calculator->GetMetricsDevice().GetAdapter().GetAdapterId();
 
-        MD_CHECK_PTR_RET_A( adapterId, sc->MetricSet, CC_ERROR_INVALID_PARAMETER );
-        MD_CHECK_PTR_RET_A( adapterId, sc->RawData, CC_ERROR_INVALID_PARAMETER );
-        MD_CHECK_PTR_RET_A( adapterId, sc->Out, CC_ERROR_INVALID_PARAMETER );
-        MD_CHECK_PTR_RET_A( adapterId, sc->DeltaValues, CC_ERROR_INVALID_PARAMETER );
-
-        // Find required indices for context filtering, report filtering and PreviousContextId information
-        sc->ContextIdIdx    = GetInformationIndex( "ContextId", sc->MetricSet );
-        sc->ReportReasonIdx = GetInformationIndex( "ReportReason", sc->MetricSet );
-
-        if( sc->DoContextFiltering && sc->ContextIdIdx < 0 )
+        if( !isAggregationRequested )
         {
-            MD_LOG_A( adapterId, LOG_ERROR, "error: can't find required information for context filtering" );
-            MD_LOG_EXIT_A( adapterId );
-            return CC_ERROR_INVALID_PARAMETER;
+            // Find required indices for context filtering, report filtering and PreviousContextId information
+            sc->ContextIdIdx    = GetInformationIndex( "ContextId", sc->MetricSet );
+            sc->ReportReasonIdx = GetInformationIndex( "ReportReason", sc->MetricSet );
+
+            if( sc->DoContextFiltering && sc->ContextIdIdx < 0 )
+            {
+                MD_LOG_A( adapterId, LOG_ERROR, "error: can't find required information for context filtering" );
+                MD_LOG_EXIT_A( adapterId );
+                return CC_ERROR_INVALID_PARAMETER;
+            }
+        }
+
+        if( isRawDataProvided )
+        {
+            sc->OutReportCount      = 0;
+            sc->OutPtr              = sc->Out;
+            sc->OutMaxValuesPtr     = sc->OutMaxValues;
+            sc->PrevRawDataPtr      = sc->RawData;
+            sc->PrevRawReportNumber = 0;
+            sc->LastRawDataPtr      = sc->RawData;
+            sc->LastRawReportNumber = 0;
         }
 
         auto& metricSetParams = *sc->MetricSet->GetParams();
 
         sc->MetricsAndInformationCount = metricSetParams.MetricsCount + metricSetParams.InformationCount;
         sc->RawReportSize              = metricSetParams.RawReportSize;
-
-        sc->OutReportCount      = 0;
-        sc->OutPtr              = sc->Out;
-        sc->OutMaxValuesPtr     = sc->OutMaxValues;
-        sc->PrevRawDataPtr      = sc->RawData;
-        sc->PrevRawReportNumber = 0;
-        sc->LastRawDataPtr      = sc->RawData;
-        sc->LastRawReportNumber = 0;
 
         sc->Calculator->Reset( sc->RawReportSize, sc->MetricsAndInformationCount );
 
@@ -145,23 +150,20 @@ namespace MetricsDiscoveryInternal
     //
     // Input:
     //     TCalculationContext& context - (IN/OUT) calculation context
+    //     bool isRawDataProvided       - True if raw data and output buffer are provided, false otherwise
+    //     bool isAggregationRequested  - Indicates if the aggregation is requested
     //
     // Output:
     //     TCompletionCode              - *CC_OK* means success
     //
     //////////////////////////////////////////////////////////////////////////////
     template <>
-    TCompletionCode CMetricsCalculationManager<MEASUREMENT_TYPE_DELTA_QUERY>::PrepareContext( TCalculationContext& context )
+    TCompletionCode CMetricsCalculationManager<MEASUREMENT_TYPE_DELTA_QUERY>::PrepareContext( TCalculationContext& context, bool isRawDataProvided /*true*/, bool isAggregationRequested /*false*/ )
     {
         TQueryCalculationContext* qc = &context.QueryCalculationContext;
         MD_CHECK_PTR_RET( qc->Calculator, CC_ERROR_INVALID_PARAMETER );
 
         const uint32_t adapterId = qc->Calculator->GetMetricsDevice().GetAdapter().GetAdapterId();
-
-        MD_CHECK_PTR_RET_A( adapterId, qc->MetricSet, CC_ERROR_INVALID_PARAMETER );
-        MD_CHECK_PTR_RET_A( adapterId, qc->RawData, CC_ERROR_INVALID_PARAMETER );
-        MD_CHECK_PTR_RET_A( adapterId, qc->Out, CC_ERROR_INVALID_PARAMETER );
-        MD_CHECK_PTR_RET_A( adapterId, qc->DeltaValues, CC_ERROR_INVALID_PARAMETER );
 
         qc->Calculator->Reset();
 
@@ -170,10 +172,13 @@ namespace MetricsDiscoveryInternal
         qc->MetricsAndInformationCount = metricSetParams.MetricsCount + metricSetParams.InformationCount;
         qc->RawReportSize              = metricSetParams.QueryReportSize;
 
-        qc->OutReportCount  = 0;
-        qc->OutPtr          = qc->Out;
-        qc->OutMaxValuesPtr = qc->OutMaxValues;
-        qc->RawDataPtr      = qc->RawData;
+        if( isRawDataProvided )
+        {
+            qc->OutReportCount  = 0;
+            qc->OutPtr          = qc->Out;
+            qc->OutMaxValuesPtr = qc->OutMaxValues;
+            qc->RawDataPtr      = qc->RawData;
+        }
 
         return CC_OK;
     }

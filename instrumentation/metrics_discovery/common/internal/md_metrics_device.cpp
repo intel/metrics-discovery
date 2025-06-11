@@ -20,6 +20,7 @@ SPDX-License-Identifier: MIT
 #include "md_metric.h"
 #include "md_metric_set.h"
 #include "md_override.h"
+#include "md_utils.h"
 
 #include "md_driver_ifc.h"
 
@@ -92,7 +93,7 @@ namespace MetricsDiscoveryInternal
         }
         else
         {
-            m_gtType            = GT_TYPE_GT1;
+            m_gtType            = GT_TYPE_ALL;
             m_params.DeviceName = GetCopiedCString( "Offline Metrics Device", adapterId );
         }
 

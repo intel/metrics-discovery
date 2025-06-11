@@ -11,11 +11,16 @@ SPDX-License-Identifier: MIT
 //     Abstract:   C++ Metrics Discovery oa concurrent group implementation
 
 #include "md_oa_concurrent_group.h"
+#include "md_adapter.h"
+#include "md_metrics_device.h"
 #include "md_information.h"
 #include "md_events.h"
 #include "md_metric_enumerator.h"
+#include "md_metric_set.h"
+#include "md_metrics_calculator.h"
 #include "md_calculation.h"
 #include "md_driver_ifc.h"
+#include "md_utils.h"
 
 #include <cstring>
 

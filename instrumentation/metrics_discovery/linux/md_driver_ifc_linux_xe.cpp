@@ -277,16 +277,10 @@ namespace MetricsDiscoveryInternal
     {
         const bool isRenderEngine       = engineParams.EngineId.ClassInstance.Class == DRM_XE_ENGINE_CLASS_RENDER;
         const bool isComputeEngine      = engineParams.EngineId.ClassInstance.Class == DRM_XE_ENGINE_CLASS_COMPUTE;
-        const bool isVideoEngine        = engineParams.EngineId.ClassInstance.Class == DRM_XE_ENGINE_CLASS_VIDEO_DECODE;
         const bool isVideoEnhanceEngine = engineParams.EngineId.ClassInstance.Class == DRM_XE_ENGINE_CLASS_VIDEO_ENHANCE;
-        bool       isValidInstance      = ( requestedInstance == static_cast<uint32_t>( -1 ) ) || ( engineParams.EngineId.ClassInstance.Instance == requestedInstance );
+        const bool isValidInstance      = ( requestedInstance == static_cast<uint32_t>( -1 ) ) || ( engineParams.EngineId.ClassInstance.Instance == requestedInstance );
 
-        if( isValidInstance && ( ( isOam && ( isVideoEngine || isVideoEnhanceEngine ) ) || ( !isOam && ( isRenderEngine || isComputeEngine ) ) ) )
-        {
-            return true;
-        }
-
-        return false;
+        return isValidInstance && ( ( isOam && isVideoEnhanceEngine ) || ( !isOam && ( isRenderEngine || isComputeEngine ) ) );
     }
 
     //////////////////////////////////////////////////////////////////////////////
@@ -442,8 +436,6 @@ namespace MetricsDiscoveryInternal
             switch( engine.engine_class )
             {
                 case DRM_XE_ENGINE_CLASS_RENDER:
-                case DRM_XE_ENGINE_CLASS_COPY:
-                case DRM_XE_ENGINE_CLASS_VIDEO_DECODE:
                 case DRM_XE_ENGINE_CLASS_VIDEO_ENHANCE:
                 case DRM_XE_ENGINE_CLASS_COMPUTE:
                     MD_LOG_A( m_adapterId, LOG_DEBUG, "Sub device %u / engine %u:%u / GT ID: %u / OA unit: %u", subDevices.GetAllEnginesCount() - 1, engine.engine_class, engine.engine_instance, engine.gt_id, oaUnit );
@@ -1607,16 +1599,9 @@ namespace MetricsDiscoveryInternal
 
         auto           subDevices              = metricsDevice.GetAdapter().GetSubDevices();
         const uint32_t subDeviceIndex          = metricsDevice.GetSubDeviceIndex();
-        const uint32_t videoEngineCount        = subDevices.GetClassInstancesCount( subDeviceIndex, DRM_XE_ENGINE_CLASS_VIDEO_DECODE );
         const uint32_t videoEnhanceEngineCount = subDevices.GetClassInstancesCount( subDeviceIndex, DRM_XE_ENGINE_CLASS_VIDEO_ENHANCE );
 
-        if( videoEngineCount != videoEnhanceEngineCount )
-        {
-            MD_LOG_A( m_adapterId, LOG_ERROR, "Video engine count (%u) and video enhance engine count (%u) mismatch.", videoEngineCount, videoEnhanceEngineCount );
-            return CC_ERROR_GENERAL;
-        }
-
-        oaBufferCount += videoEngineCount;
+        oaBufferCount += videoEnhanceEngineCount; // Video enhance engines map to media slices.
 
         return CC_OK;
     }

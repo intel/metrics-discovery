@@ -16,7 +16,6 @@ SPDX-License-Identifier: MIT
 #include "md_debug.h"
 
 #include "instr_gt_driver_ifc.h"
-#include "md_oa_concurrent_group.h"
 
 #include <vector>
 
@@ -28,7 +27,9 @@ namespace MetricsDiscoveryInternal
 {
     // Forward declarations //
     class CAdapterHandle;
+    class CSubDevices;
     class CMetricsDevice;
+    class COAConcurrentGroup;
     class CMetricSet;
 
     ///////////////////////////////////////////////////////////////////////////////

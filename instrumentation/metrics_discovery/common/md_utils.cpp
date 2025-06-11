@@ -12,6 +12,7 @@ SPDX-License-Identifier: MIT
 
 #include "md_utils.h"
 #include "md_adapter.h"
+#include "md_metrics_device.h"
 #include "md_concurrent_group.h"
 #include "md_driver_ifc.h"
 #include "md_equation.h"
@@ -598,7 +599,7 @@ namespace MetricsDiscoveryInternal
     //
     // Description:
     //     Allocates memory and copies given cstring. Copy is returned.
-    //     It HAVE TO be deleted later.
+    //     It HAS TO be deleted later.
     //
     // Input:
     //     const char*    cstring   - cstring to be copied
@@ -634,7 +635,7 @@ namespace MetricsDiscoveryInternal
     //
     // Description:
     //     Allocates memory and copies given wide-char cstring. Copy is returned.
-    //     It HAVE TO be deleted later.
+    //     It HAS TO be deleted later.
     //
     // Input:
     //     const wchar_t* wcstring  - wide-char cstring to be copied

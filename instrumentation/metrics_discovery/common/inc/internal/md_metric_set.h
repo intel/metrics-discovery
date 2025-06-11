@@ -232,8 +232,9 @@ namespace MetricsDiscoveryInternal
             uint32_t          deltaReportSize,
             TReportType       reportType,
             TByteArrayLatest* platformMask,
-            uint32_t          gtMask   = GT_TYPE_ALL,
-            bool              isCustom = false );
+            uint32_t          gtMask                 = GT_TYPE_ALL,
+            bool              isCustom               = false,
+            bool              isAggregationRequested = false );
         virtual ~CMetricSet();
 
         CMetricSet( const CMetricSet& )            = delete; // Delete copy-constructor
@@ -270,6 +271,7 @@ namespace MetricsDiscoveryInternal
         TCompletionCode WriteCMetricSetToBuffer( uint8_t* buffer, uint32_t& bufferSize, uint32_t& bufferOffset, bool copyInformationFromGroup );
         bool            IsMetricAlreadyAdded( const char* symbolName );
         bool            IsCustom();
+        bool            IsFiltered();
 
         CConcurrentGroup*   GetConcurrentGroup();
         CMetricsCalculator* GetMetricsCalculator();
@@ -355,9 +357,10 @@ namespace MetricsDiscoveryInternal
         std::vector<CInformation*> m_filteredInformationVector; // Stores only references
 
         // Runtime state:
-        bool                m_isFiltered;       // if true then 'filtered' variables are used
-        bool                m_isCustom;         // if true then it has custom metrics or it's a custom set
-        bool                m_isReadRegsCfgSet; // if true then read regs config will be cleared on Deactivate; determined during Activate
+        bool                m_isFiltered;             // if true then 'filtered' variables are used
+        bool                m_isCustom;               // if true then it has custom metrics or it's a custom set
+        bool                m_isAggregationRequested; // if true then non-aggregatable informations are filtered out from the set
+        bool                m_isReadRegsCfgSet;       // if true then read regs config will be cleared on Deactivate; determined during Activate
         TPmRegsConfigInfo   m_pmRegsConfigInfo;
         CMetricsCalculator* m_metricsCalculator;
 

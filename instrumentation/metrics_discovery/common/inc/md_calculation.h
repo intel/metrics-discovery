@@ -13,7 +13,6 @@ SPDX-License-Identifier: MIT
 #pragma once
 
 #include "metrics_discovery_api.h"
-#include "md_metrics_calculator.h"
 
 #include <stack>
 
@@ -27,6 +26,7 @@ namespace MetricsDiscoveryInternal
     class CMetricsDevice;
     class CMetricSet;
     class CEquation;
+    class CMetricsCalculator;
 
     ///////////////////////////////////////////////////////////////////////////////
     //      * Common calculation context:
@@ -111,9 +111,9 @@ namespace MetricsDiscoveryInternal
     {
     public:
         virtual ~CCalculationManager(){};
-        virtual void            ResetContext( TCalculationContext& context )        = 0;
-        virtual TCompletionCode PrepareContext( TCalculationContext& context )      = 0;
-        virtual bool            CalculateNextReport( TCalculationContext& context ) = 0;
+        virtual void            ResetContext( TCalculationContext& context )                                                                       = 0;
+        virtual TCompletionCode PrepareContext( TCalculationContext& context, bool isRawDataProvided = true, bool isAggregationRequested = false ) = 0;
+        virtual bool            CalculateNextReport( TCalculationContext& context )                                                                = 0;
     };
 
     //////////////////////////////////////////////////////////////////////////////
@@ -130,7 +130,7 @@ namespace MetricsDiscoveryInternal
     {
     public:
         virtual void            ResetContext( TCalculationContext& context );
-        virtual TCompletionCode PrepareContext( TCalculationContext& context );
+        virtual TCompletionCode PrepareContext( TCalculationContext& context, bool isRawDataProvided = true, bool isAggregationRequested = false );
         virtual bool            CalculateNextReport( TCalculationContext& context );
 
     private:

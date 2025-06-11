@@ -12,9 +12,13 @@ SPDX-License-Identifier: MIT
 
 #include "md_oam_concurrent_group.h"
 #include "md_events.h"
+#include "md_adapter.h"
+#include "md_metrics_device.h"
 #include "md_metric_enumerator.h"
+#include "md_metric_set.h"
 #include "md_calculation.h"
 #include "md_driver_ifc.h"
+#include "md_utils.h"
 
 #include <cstring>
 
@@ -238,22 +242,28 @@ namespace MetricsDiscoveryInternal
     {
         if( IsValidSymbolName( symbolName ) )
         {
-            const uint32_t oaBuferCount = device.GetOaBufferCount();
+            uint32_t oaBufferCount = device.GetOaBufferCount();
 
             if( symbolName[3] == 'G' ) // OAMG
             {
-                return static_cast<GTDI_OA_BUFFER_TYPE>( oaBuferCount - 1 );
+                return static_cast<GTDI_OA_BUFFER_TYPE>( oaBufferCount - 1 );
             }
-            else
+            else // OAM0, OAM1 etc.
             {
+                // If a given platform supports OAMG, oaBufferCount must be decreased by 1 for OAMs, because the last one is OAMG.
+                if( !IsPlatformMatch( device.GetPlatformIndex(), GENERATION_MTL, GENERATION_ARL ) )
+                {
+                    --oaBufferCount;
+                }
+
                 const uint32_t oamBufferType = symbolName[3] - '0' + 1;
-                if( oamBufferType >= GTDI_OA_BUFFER_TYPE_OAM_SLICE_0 && oamBufferType < oaBuferCount )
+                if( oamBufferType >= GTDI_OA_BUFFER_TYPE_OAM_SLICE_0 && oamBufferType < oaBufferCount )
                 {
                     return static_cast<GTDI_OA_BUFFER_TYPE>( oamBufferType );
                 }
 
                 const uint32_t adapterId = device.GetAdapter().GetAdapterId();
-                MD_LOG_A( adapterId, LOG_DEBUG, "ERROR: Cannot get oa buffer type for OAM. Given symbol name: %s, OA buffer count: %u", symbolName, oaBuferCount );
+                MD_LOG_A( adapterId, LOG_DEBUG, "Cannot get oa buffer type for OAM. Given symbol name: %s, OAM buffers count: %u", symbolName, oaBufferCount - GTDI_OA_BUFFER_TYPE_OAM_SLICE_0 );
             }
         }
 

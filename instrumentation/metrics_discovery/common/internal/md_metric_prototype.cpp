@@ -10,6 +10,8 @@ SPDX-License-Identifier: MIT
 //
 //     Abstract:   C++ Metrics Discovery internal metric prototype implementation
 
+#include "md_adapter.h"
+#include "md_metrics_device.h"
 #include "md_metric_prototype.h"
 #include "md_oa_concurrent_group.h"
 #include "md_metric_enumerator.h"

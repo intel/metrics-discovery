@@ -12,15 +12,13 @@ SPDX-License-Identifier: MIT
 
 #pragma once
 
-#include "md_utils.h"
-
-#include "md_adapter.h"
-#include "md_metrics_device.h"
-#include "md_metric_set.h"
+#include "metrics_discovery_internal_api.h"
+#include "md_types.h"
 
 #include <cstdio>
 #include <vector>
 #include <list>
+#include <string>
 
 //////////////////////////////////////////////////////////////////////////////
 // Helper macro to get CustomMetricSetParams
@@ -34,6 +32,8 @@ namespace MetricsDiscoveryInternal
     ///////////////////////////////////////////////////////////////////////////////
     // Forward declarations:                                                     //
     ///////////////////////////////////////////////////////////////////////////////
+    class CMetricsDevice;
+    class CMetricSet;
     class CInformation;
 
     struct SArchEvent;
@@ -85,61 +85,9 @@ namespace MetricsDiscoveryInternal
         template <typename TMetricSet>
         TMetricSet* AddMetricSetExplicit( const char* symbolicName, const char* shortName, const uint32_t apiMask, const uint32_t categoryMask, const uint32_t snapshotReportSize, const uint32_t deltaReportSize, const TReportType reportType, TByteArrayLatest* platformMask, const char* availabilityEquation = nullptr, const uint32_t gtMask = GT_TYPE_ALL, const bool isCustom = false )
         {
-            const uint32_t adapterId = m_device.GetAdapter().GetAdapterId();
+            TMetricSet* set = new( std::nothrow ) TMetricSet( m_device, this, symbolicName, shortName, apiMask, categoryMask, snapshotReportSize, deltaReportSize, reportType, platformMask, gtMask, isCustom );
 
-            CMetricSet* alreadyAddedSet = nullptr;
-            TMetricSet* set             = new( std::nothrow ) TMetricSet( m_device, this, symbolicName, shortName, apiMask, categoryMask, snapshotReportSize, deltaReportSize, reportType, platformMask, gtMask, isCustom );
-            MD_CHECK_PTR_RET_A( adapterId, set, nullptr );
-
-            if( set->Initialize() != CC_OK )
-            {
-                MD_LOG_A( adapterId, LOG_ERROR, "Error initializing metrics" );
-                MD_SAFE_DELETE( set );
-                return nullptr;
-            }
-
-            if( set->SetAvailabilityEquation( availabilityEquation ) != CC_OK )
-            {
-                MD_LOG_A( adapterId, LOG_ERROR, "Error setting metric set equations" );
-                MD_SAFE_DELETE( set );
-                return nullptr;
-            }
-
-            bool isSuitablePlatform = m_device.IsPlatformTypeOf( platformMask, gtMask ) && set->IsAvailabilityEquationTrue();
-            if( isSuitablePlatform )
-            {
-                // Check if metric set is already present in m_setsVector or m_otherSetsList.
-                alreadyAddedSet = GetMatchingMetricSet( symbolicName, platformMask, gtMask, true );
-                if( alreadyAddedSet != nullptr )
-                {
-                    // If metric set present in m_setsVector it should be move to m_otherSetsList.
-                    // Metric set compared to alreadyAddedSet will be added in else section as unavailable on this platform.
-                    auto iterator = std::find( m_setsVector.begin(), m_setsVector.end(), alreadyAddedSet );
-                    if( iterator != m_setsVector.end() )
-                    {
-                        MD_LOG_A( adapterId, LOG_WARNING, "Attempt to add metric set [%s] with the same name and true availability equation.", alreadyAddedSet->GetParams()->SymbolName );
-
-                        m_setsVector.erase( iterator );
-                        m_params.MetricSetsCount = static_cast<uint32_t>( m_setsVector.size() );
-
-                        m_otherSetsList.push_back( alreadyAddedSet );
-                    }
-                }
-            }
-
-            if( isSuitablePlatform && alreadyAddedSet == nullptr )
-            {
-                m_setsVector.push_back( set );
-                m_params.MetricSetsCount = static_cast<uint32_t>( m_setsVector.size() );
-                MD_LOG_A( adapterId, LOG_INFO, "%s - added", set->GetParams()->SymbolName );
-            }
-            else
-            {
-                MD_LOG_A( adapterId, LOG_INFO, "%s - not available", set->GetParams()->SymbolName );
-                m_otherSetsList.push_back( set );
-            }
-
-            return set;
+            return static_cast<TMetricSet*>( InitializeMetricSet( set, platformMask, availabilityEquation, gtMask ) );
         }
 
         TCompletionCode Lock();
@@ -147,6 +95,7 @@ namespace MetricsDiscoveryInternal
         TCompletionCode WriteCConcurrentGroupToBuffer( uint8_t* buffer, uint32_t& bufferSize, uint32_t& bufferOffset, IMetricSet_1_13** metricSets, uint32_t metricSetCount );
 
     protected:
+        CMetricSet*       InitializeMetricSet( CMetricSet* set, TByteArrayLatest* platformMask, const char* availabilityEquation, const uint32_t gtMask );
         IMetricSetLatest* AddCustomMetricSet( CMetricSet* referenceMetricSet, const char* signalName, const char* symbolName, const char* shortName, uint32_t apiMask, uint32_t categoryMask, TByteArrayLatest* platformMask, uint32_t gtMask, uint32_t rawReportSize, uint32_t queryReportSize, const char* complementarySetsList, TApiSpecificId_1_0 apiSpecificId, TRegisterSet* startRegSets, uint32_t startRegSetsCount, const char* availabilityEquation, TReportType reportType, bool copyInformationOnly = false );
         bool              MatchingSetExists( const char* symbolName, TByteArrayLatest* platformMask, uint32_t gtMask );
         bool              AreMetricSetParamsValid( const char* symbolName, const char* shortName, TByteArrayLatest* platformMask, uint32_t gtMask, TRegisterSet* startRegSets, uint32_t startRegSetsCount );

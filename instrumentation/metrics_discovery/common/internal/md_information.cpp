@@ -246,6 +246,26 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     //
     // Class:
+    //     CInformation
+    //
+    // Method:
+    //     IsAggregatable
+    //
+    // Description:
+    //     Returns true if information can be aggregated, false otherwise.
+    //
+    // Output:
+    //     bool - true if information can be aggregated, false otherwise.
+    //
+    //////////////////////////////////////////////////////////////////////////////
+    bool CInformation::IsAggregatable() const
+    {
+        return !( m_params.ApiMask & API_TYPE_IOSTREAM ) || std::string_view( m_params.SymbolName ) == "QueryBeginTime";
+    }
+
+    //////////////////////////////////////////////////////////////////////////////
+    //
+    // Class:
     //     CMetric
     //
     // Method:
