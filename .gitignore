@@ -1,6 +1,7 @@
 # Build
 dump/*
 libigdmd.pc
+build/*
 
 # CMake
 CMakeFiles/*

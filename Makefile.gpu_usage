@@ -1,0 +1,45 @@
+# Makefile for Intel GPU Usage Monitor
+
+# Compiler settings
+CC = gcc
+CXX = g++
+CFLAGS = -Wall -Wextra -std=c11 -O2
+CXXFLAGS = -Wall -Wextra -std=c++17 -O2
+
+# Paths
+METRICS_DISCOVERY_ROOT = .
+INCLUDE_PATH = $(METRICS_DISCOVERY_ROOT)/inc
+LIB_PATH = $(METRICS_DISCOVERY_ROOT)/dump/linux64/release/metrics_discovery
+
+# Libraries
+LIBS = -ligdmd -ldl
+
+# Target
+TARGET = gpu_usage
+SOURCE = gpu_usage.c
+
+# Default target
+all: $(TARGET)
+
+# Build the GPU usage monitor
+$(TARGET): $(SOURCE)
+	$(CXX) $(CXXFLAGS) -I$(INCLUDE_PATH) -L$(LIB_PATH) -o $(TARGET) $(SOURCE) $(LIBS)
+
+# Clean target
+clean:
+	rm -f $(TARGET)
+
+# Install target (optional)
+install: $(TARGET)
+	sudo cp $(TARGET) /usr/local/bin/
+	sudo chmod +x /usr/local/bin/$(TARGET)
+
+# Help target
+help:
+	@echo "Available targets:"
+	@echo "  all      - Build the GPU usage monitor"
+	@echo "  clean    - Remove built files"
+	@echo "  install  - Install to /usr/local/bin (requires sudo)"
+	@echo "  help     - Show this help"
+
+.PHONY: all clean install help
