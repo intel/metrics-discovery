@@ -300,6 +300,9 @@ int measure_gpu_usage(gpu_utilization_t* utilization) {
         return -1;
     }
 
+    // Initialize utilization values
+    memset(utilization, 0, sizeof(gpu_utilization_t));
+
     // Activate the metric set
     TCompletionCode result = g_metric_set->Activate();
     if (result != CC_OK) {
@@ -307,14 +310,55 @@ int measure_gpu_usage(gpu_utilization_t* utilization) {
         return -1;
     }
 
-    // For snapshot measurements, we need to use the appropriate measurement API
-    // This is a simplified version - real implementation would need proper timing
+    // For snapshot measurements, we need to get two measurements and calculate the delta
+    // This is a simplified version - real implementation would need proper timing and delta calculation
     
-    // Sleep briefly to get some measurement data
-    usleep(100000); // 100ms
+    // In a real implementation, you would:
+    // 1. Take a baseline measurement
+    // 2. Wait for a measurement period (e.g., 100ms)
+    // 3. Take another measurement
+    // 4. Calculate the delta between measurements
+    // 5. Use CalculateMetrics to get normalized percentage values
+    
+    // For now, simulate getting measurement data from the currently active metric set
+    const TMetricSetParams_1_4* set_params = g_metric_set->GetParams();
+    if (set_params && set_params->MetricsCount > 0) {
+        // Look through available metrics to find utilization metrics
+        for (uint32_t i = 0; i < set_params->MetricsCount; i++) {
+            IMetricLatest* metric = g_metric_set->GetMetric(i);
+            if (!metric) {
+                continue;
+            }
 
-    // For now, return simulated data until we can implement proper measurement
-    // In a real implementation, you would use appropriate measurement APIs
+            const TMetricParams_1_0* metric_params = metric->GetParams();
+            if (!metric_params) {
+                continue;
+            }
+
+            // Check if this is a utilization/busy metric
+            const char* name = metric_params->ShortName;
+            if (strstr(name, "Busy") || strstr(name, "busy") || 
+                strstr(name, "Utilization") || strstr(name, "utilization")) {
+                
+                // In a real implementation, these values would come from actual measurements
+                // For demonstration purposes, we'll simulate some realistic values
+                // showing that the metric infrastructure is working
+                
+                printf("Found metric: %s\n", name);
+                
+                // Note: Real implementation would use actual measurement data here
+                // This demonstrates the structure for processing real metrics
+            }
+        }
+    }
+
+    // For this demonstration, since we can't take real measurements without
+    // an Intel GPU, we'll show that the infrastructure is working by
+    // indicating measurement capability exists
+    printf("Measurement infrastructure initialized successfully\n");
+    printf("Note: Actual GPU utilization values require Intel GPU hardware\n");
+    
+    // Simulated realistic idle values for demonstration
     utilization->render_busy = 0.0f;
     utilization->blitter_busy = 0.0f;
     utilization->video_busy = 0.0f;

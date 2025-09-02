@@ -2,6 +2,7 @@
 dump/*
 libigdmd.pc
 build/*
+gpu_usage
 
 # CMake
 CMakeFiles/*
