@@ -63,7 +63,7 @@ namespace MetricsDiscoveryInternal
         , m_isOpenedFromFile( false )
         , m_isOffline( isOffline )
         , m_referenceCounter( 0 )
-        , m_oaBuferCount( m_isOffline ? 0xFFFFFFFF : 0 )
+        , m_oaBufferMask( m_isOffline ? GTDI_OA_BUFFER_MASK_ALL : GTDI_OA_BUFFER_MASK_NONE )
         , m_queryModeRequested( QUERY_MODE_NONE )
         , m_queryModeDefault( m_driverInterface.GetQueryModeOverride() )
     {
@@ -1988,35 +1988,35 @@ namespace MetricsDiscoveryInternal
     //     CMetricsDevice
     //
     // Method:
-    //     GetOaBufferCount
+    //     GetOaBufferMask
     //
     // Description:
-    //     Returns oa buffer count.
+    //     Returns oa buffer mask.
     //
     // Output:
-    //     uint32_t - oa buffer count
+    //     uint32_t - oa buffer mask
     //
     //////////////////////////////////////////////////////////////////////////////
-    uint32_t CMetricsDevice::GetOaBufferCount()
+    GTDI_OA_BUFFER_MASK CMetricsDevice::GetOaBufferMask()
     {
-        if( m_oaBuferCount == 0 )
+        if( m_oaBufferMask == GTDI_OA_BUFFER_MASK_NONE )
         {
             const uint32_t adapterId = m_adapter.GetAdapterId();
 
             GTDIDeviceInfoParamExtOut out = {};
-            const auto                ret = m_driverInterface.SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_OA_BUFFERS_COUNT, out, *this );
+            const auto                ret = m_driverInterface.SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_OA_BUFFERS_MASK, out, *this );
             if( ret == CC_OK )
             {
-                m_oaBuferCount = out.ValueUint32;
-                MD_LOG_A( adapterId, LOG_DEBUG, "Oa buffer count: %u", m_oaBuferCount );
+                m_oaBufferMask = static_cast<GTDI_OA_BUFFER_MASK>( out.ValueUint32 );
+                MD_LOG_A( adapterId, LOG_DEBUG, "Oa buffer mask: %x", m_oaBufferMask );
             }
             else
             {
-                MD_LOG_A( adapterId, LOG_ERROR, "ERROR: Unable to get oa buffer count. Return code: %u", ret );
+                MD_LOG_A( adapterId, LOG_ERROR, "ERROR: Unable to get oa buffer mask. Return code: %u", ret );
             }
         }
 
-        return m_oaBuferCount;
+        return m_oaBufferMask;
     }
 
     //////////////////////////////////////////////////////////////////////////////

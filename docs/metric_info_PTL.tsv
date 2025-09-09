@@ -22,8 +22,8 @@ RenderBasic	ASYNC_GPGPU_THREADGROUP_COUNT	Async GpGpu Threadgroup Count	Thread D
 RenderBasic	RASTERIZER_SAMPLE_OUTPUT	Rasterizer Sample Output	Rasterizer	Number of lit samples emitted by Rasterizer
 RenderBasic	PIXEL_BLEND	Pixel Blend	Color Pipe	Number of blended pixels written to all render targets
 RenderBasic	PIXEL_WRITE	Pixel Write	Color Pipe	Number of pixels written to all render targets
-RenderBasic	POSTPS_ALPHA_TEST_FAIL	PostPS Alpha Test Fail	Color Pipe	Number of 2x2 that were lit from Rasterizer but failed the alpha test
-RenderBasic	SHADER_PIX_KILL	Shader Pix Kill	Color Pipe	Number of pixels that were lit from Rasterizer but killed by the Pixel Shader
+RenderBasic	POSTPS_ALPHA_TEST_FAIL	PostPS Alpha Test Fail	Color Pipe	Number of 2x2 that were lit from Rasterizer but failed the Alpha Test or Alpha-to-Coverage
+RenderBasic	SHADER_PIX_KILL	Shader Pix Kill	Color Pipe	Number of pixels that were lit from Rasterizer but killed by the Pixel Shader or OOB Check
 RenderBasic	L3_READ	L3 Read	Device Cache	Number of Device Cache 64B read requests
 RenderBasic	L3_WRITE	L3 Write	Device Cache	Number of Device Cache 64B write requests
 RenderBasic	COMMAND_PARSER_COMPUTE_ENGINE_BUSY	Command Parser Compute Engine Busy	Front End	Percentage of time in which there is a context loaded and active on the compute queue
@@ -174,7 +174,6 @@ DeviceCacheProfile	GPGPU_THREADGROUP_COUNT	GpGpu Threadgroup Count	Thread Dispat
 DeviceCacheProfile	ASYNC_GPGPU_THREADGROUP_COUNT	Async GpGpu Threadgroup Count	Thread Dispatcher	Number of Async GPGPU threadgroups dispatched
 DeviceCacheProfile	RASTERIZER_SAMPLE_OUTPUT	Rasterizer Sample Output	Rasterizer	Number of lit samples emitted by Rasterizer
 DeviceCacheProfile	AMFS_L3_ACCESS	AMFS L3 Access	Device Cache	Number of AMFS access to Device Cache
-DeviceCacheProfile	AMFS_L3_ATOMIC	AMFS L3 Atomic	Device Cache	Number of AMFS atomics to Device Cache
 DeviceCacheProfile	AMFS_L3_HIT	AMFS L3 Hit	Device Cache	Number of AMFS hits in Device Cache
 DeviceCacheProfile	AMFS_L3_WRITE	AMFS L3 Write	Device Cache	Number of AMFS writes to Device Cache
 DeviceCacheProfile	COLOR_L3_ACCESS	Color L3 Access	Device Cache	Number of Device Cache requests resulting from color local cache misses
@@ -213,10 +212,10 @@ MemoryProfile	ASYNC_GPGPU_THREADGROUP_COUNT	Async GpGpu Threadgroup Count	Thread
 MemoryProfile	RASTERIZER_SAMPLE_OUTPUT	Rasterizer Sample Output	Rasterizer	Number of lit samples emitted by Rasterizer
 MemoryProfile	COMPRESSOR_INPUT	Compressor Input	Memory	Number of 256B writes to compressible surfaces at the input of the compressor
 MemoryProfile	COMPRESSOR_OUTPUT	Compressor Output	Memory	Number of 256B writes to compressible surfaces at the output of the compressor
-MemoryProfile	GPU_MEMORY_32B_TRANSACTION_READ	GPU Memory 32b Transaction Read	Memory	Number of device local memory (HBM, GDDR, LPDDR, etc.) reads (32B)
-MemoryProfile	GPU_MEMORY_32B_TRANSACTION_WRITE	GPU Memory 32b Transaction Write	Memory	Number of device local memory (HBM, GDDR, LPDDR, etc.) writes (32B)
-MemoryProfile	GPU_MEMORY_64B_TRANSACTION_READ	GPU Memory 64b Transaction Read	Memory	Number of device local memory (HBM, GDDR, LPDDR, etc.) reads (64B)
-MemoryProfile	GPU_MEMORY_64B_TRANSACTION_WRITE	GPU Memory 64b Transaction Write	Memory	Number of device local memory (HBM, GDDR, LPDDR, etc.) writes (64B)
+MemoryProfile	GPU_MEMORY_32B_TRANSACTION_READ	GPU Memory 32b Transaction Read	Memory	Number of device local memory (HBM, GDDR, LPDDR, etc.) non coherent reads (32B)
+MemoryProfile	GPU_MEMORY_32B_TRANSACTION_WRITE	GPU Memory 32b Transaction Write	Memory	Number of device local memory (HBM, GDDR, LPDDR, etc.) non coherent writes (32B)
+MemoryProfile	GPU_MEMORY_64B_TRANSACTION_READ	GPU Memory 64b Transaction Read	Memory	Number of device local memory (HBM, GDDR, LPDDR, etc.) non coherent reads (64B)
+MemoryProfile	GPU_MEMORY_64B_TRANSACTION_WRITE	GPU Memory 64b Transaction Write	Memory	Number of device local memory (HBM, GDDR, LPDDR, etc.) non coherent writes (64B)
 MemoryProfile	GPU_MEMORY_BYTE_READ	GPU Memory Byte Read	Memory	Number of device local memory (HBM, GDDR, LPDDR, etc.) read bytes
 MemoryProfile	GPU_MEMORY_BYTE_WRITE	GPU Memory Byte Write	Memory	Number of device local memory (HBM, GDDR, LPDDR, etc.) write bytes
 MemoryProfile	GPU_MEMORY_BYTE_READ_RATE	GPU Memory Byte Read Rate	Memory	Device local memory (HBM, GDDR, LPDDR, etc.) read bandwidth
@@ -240,7 +239,7 @@ MemoryProfile	LOAD_STORE_CACHE_BYTE_READ	Load Store Cache Byte Read	L1 Cache	Num
 MemoryProfile	LOAD_STORE_CACHE_BYTE_WRITE	Load Store Cache Byte Write	L1 Cache	Number of bytes written to the Load Store Cache, excluding SLM accesses
 MemoryProfile	LOAD_STORE_CACHE_HIT	Load Store Cache Hit	L1 Cache	Number of Load Store Cache hits
 MemoryProfile	LOAD_STORE_CACHE_INPUT_AVAILABLE	Load Store Cache Input Available	L1 Cache	Percentage of time in which the Load Store Cache has input available
-MemoryProfile	LOAD_STORE_CACHE_NUMBER_OF_BANK_ACCESS_COUNT	Load Store Cache Number Of Bank Access Count	L1 Cache	Number of Load Store Cache banks accessed in a clock
+MemoryProfile	LOAD_STORE_CACHE_NUMBER_OF_BANK_ACCESS_COUNT	Load Store Cache Number Of Bank Access Count	L1 Cache	Number of Load Store Cache banks accessed in a clock.
 MemoryProfile	LOAD_STORE_CACHE_OUTPUT_READY	Load Store Cache Output Ready	L1 Cache	Percentage of time in which the Load Store Cache has output ready
 MemoryProfile	LOAD_STORE_CACHE_PARTIAL_WRITE_COUNT	Load Store Cache Partial Write Count	L1 Cache	Number of writes to the Load Store Cache that don't fill a subsector
 MemoryProfile	SLM_ACCESS_COUNT	SLM Access Count	L1 Cache	Number of SLM accesses
@@ -440,6 +439,76 @@ VectorEngineStalls	XVE_THREADS_OCCUPANCY_ALL	XVE Threads Occupancy All	Vector En
 VectorEngineStalls	XVE_MULTIPLE_PIPE_ACTIVE	XVE Multiple Pipe Active	Vector Engine	Percentage of time in which at least two pipes are actively executing a Gen ISA instruction among ALU0, ALU1 and ALU2 pipes
 VectorEngineStalls	XVE_PIPE_ALU0_AND_ALU1_ACTIVE	XVE Pipe ALU0 And ALU1 Active	Vector Engine	Percentage of time in which ALU0 and ALU1 pipes are both actively executing a Gen ISA instruction
 VectorEngineStalls	XVE_PIPE_ALU0_AND_ALU2_ACTIVE	XVE Pipe ALU0 And ALU2 Active	Vector Engine	Percentage of time in which ALU0 and ALU2 pipes are both actively executing a Gen ISA instruction
+VectorEngineStalls	THREADGROUP_DISPATCH_QUEUE0_INPUT_AVAILABLE	Threadgroup Dispatch Queue0 Input Available	Thread Dispatcher	Percentage of time in which Thread Spawner has input available on queue 0
+VectorEngineStalls	THREADGROUP_DISPATCH_QUEUE1_INPUT_AVAILABLE	Threadgroup Dispatch Queue1 Input Available	Thread Dispatcher	Percentage of time in which Thread Spawner has input available on queue 1
+XvePipelineRasterizationProfile	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
+XvePipelineRasterizationProfile	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
+XvePipelineRasterizationProfile	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
+XvePipelineRasterizationProfile	ResultUncertainty	Result Uncertainty	GPU	Result uncertainty indicator
+XvePipelineRasterizationProfile	XVE_ACTIVE	XVE Active	Vector Engine	Percentage of time in which at least one pipe is active in XVE
+XvePipelineRasterizationProfile	XVE_STALL	XVE Stall	Vector Engine	Percentage of time in which any thread loaded but not even a single pipe is active in XVE
+XvePipelineRasterizationProfile	XVE_INST_EXECUTED_ALU0_ALL_UTILIZATION	XVE Inst Executed ALU0 All Utilization	Vector Engine	Percentage of time taken by instructions executed by ALL threads on ALU0 pipe
+XvePipelineRasterizationProfile	XVE_INST_EXECUTED_ALU1_ALL_UTILIZATION	XVE Inst Executed ALU1 All Utilization	Vector Engine	Percentage of time taken by instructions executed by ALL threads on ALU1 pipe. Does not include extended math instructions.
+XvePipelineRasterizationProfile	XVE_INST_EXECUTED_ALU2_ALL_UTILIZATION	XVE Inst Executed ALU2 All Utilization	Vector Engine	Percentage of time taken by instructions executed in ALU2 pipe
+XvePipelineRasterizationProfile	XVE_PIPE_ALU0_AND_ALU1_ACTIVE	XVE Pipe ALU0 And ALU1 Active	Vector Engine	Percentage of time in which ALU0 and ALU1 pipes are both actively executing a Gen ISA instruction
+XvePipelineRasterizationProfile	XVE_PIPE_ALU0_AND_ALU2_ACTIVE	XVE Pipe ALU0 And ALU2 Active	Vector Engine	Percentage of time in which ALU0 and ALU2 pipes are both actively executing a Gen ISA instruction
+XvePipelineRasterizationProfile	XVE_MULTIPLE_PIPE_ACTIVE	XVE Multiple Pipe Active	Vector Engine	Percentage of time in which at least two pipes are actively executing a Gen ISA instruction among ALU0, ALU1 and ALU2 pipes
+XvePipelineRasterizationProfile	XVE_INST_EXECUTED_ALU0_VS_UTILIZATION	XVE Inst Executed ALU0 VS Utilization	Vector Engine	Percentage of time taken by instructions executed by VS threads on ALU0 pipe
+XvePipelineRasterizationProfile	XVE_INST_EXECUTED_ALU0_MS_UTILIZATION	XVE Inst Executed ALU0 MS Utilization	Vector Engine	Percentage of time taken by instructions executed by MS threads on ALU0 pipe
+XvePipelineRasterizationProfile	XVE_INST_EXECUTED_ALU0_TS_UTILIZATION	XVE Inst Executed ALU0 TS Utilization	Vector Engine	Percentage of time taken by instructions executed by TS threads on ALU0 pipe
+XvePipelineRasterizationProfile	XVE_INST_EXECUTED_ALU0_PS_UTILIZATION	XVE Inst Executed ALU0 PS Utilization	Vector Engine	Percentage of time taken by instructions executed by PS threads on ALU0 pipe
+XvePipelineRasterizationProfile	XVE_INST_EXECUTED_ALU0_ASYNC_CS_UTILIZATION	XVE Inst Executed ALU0 Async CS Utilization	Vector Engine	Percentage of time taken by instructions executed by ASYNC_CS threads on ALU0 pipe
+XvePipelineRasterizationProfile	XVE_INST_EXECUTED_ALU0_CS_UTILIZATION	XVE Inst Executed ALU0 CS Utilization	Vector Engine	Percentage of time taken by instructions executed by CS threads on ALU0 pipe
+XvePipelineRasterizationProfile	XVE_INST_EXECUTED_ALU1_VS_UTILIZATION	XVE Inst Executed ALU1 VS Utilization	Vector Engine	Percentage of time taken by instructions executed by VS threads on ALU1 pipe. Does not include extended math instructions.
+XvePipelineRasterizationProfile	XVE_INST_EXECUTED_ALU1_MS_UTILIZATION	XVE Inst Executed ALU1 MS Utilization	Vector Engine	Percentage of time taken by instructions executed by MS threads on ALU1 pipe. Does not include extended math instructions.
+XvePipelineRasterizationProfile	XVE_INST_EXECUTED_ALU1_TS_UTILIZATION	XVE Inst Executed ALU1 TS Utilization	Vector Engine	Percentage of time taken by instructions executed by TS threads on ALU1 pipe. Does not include extended math instructions.
+XvePipelineRasterizationProfile	XVE_INST_EXECUTED_ALU1_PS_UTILIZATION	XVE Inst Executed ALU1 PS Utilization	Vector Engine	Percentage of time taken by instructions executed by PS threads on ALU1 pipe. Does not include extended math instructions.
+XvePipelineRasterizationProfile	XVE_INST_EXECUTED_ALU1_ASYNC_CS_UTILIZATION	XVE Inst Executed ALU1 Async CS Utilization	Vector Engine	Percentage of time taken by instructions executed by ASYNC_CS threads on ALU1 pipe. Does not include extended math instructions.
+XvePipelineRasterizationProfile	XVE_INST_EXECUTED_ALU1_CS_UTILIZATION	XVE Inst Executed ALU1 CS Utilization	Vector Engine	Percentage of time taken by instructions executed by CS threads on ALU1 pipe. Does not include extended math instructions.
+XvePipelineRasterizationProfile	XVE_THREADS_OCCUPANCY_ALL	XVE Threads Occupancy All	Vector Engine	Percentage of thread slots occupied by ALL threads
+XvePipelineRasterizationProfile	XVE_STALL_ALUWR	XVE Stall Aluwr	Vector Engine	Percentage of time in which XVE stalled, with at least one thread waiting for ALU to write GRF/ACC register. Multiple stall reasons can qualify during the same cycle
+XvePipelineRasterizationProfile	XVE_STALL_BARRIER	XVE Stall Barrier	Vector Engine	Percentage of time in which XVE stalled, with at least one thread waiting for Gateway to write Notify register. Multiple stall reasons can qualify during the same cycle
+XvePipelineRasterizationProfile	XVE_STALL_CONTROL	XVE Stall Control	Vector Engine	Percentage of time in which XVE stalled, with at least one thread waiting for JEU to complete branch instruction. Multiple stall reasons can qualify during the same cycle
+XvePipelineRasterizationProfile	XVE_STALL_INSTFETCH	XVE Stall Instfetch	Vector Engine	Percentage of time in which XVE stalled, with at least one thread waiting for Instruction Fetch. Multiple stall reasons can qualify during the same cycle
+XvePipelineRasterizationProfile	XVE_STALL_OTHER	XVE Stall Other	Vector Engine	Percentage of time in which XVE stalled, with at least one thread waiting on any other dependency (Flag/EoT etc). Multiple stall reasons can qualify during the same cycle
+XvePipelineRasterizationProfile	XVE_STALL_PIPESTALL	XVE Stall Pipestall	Vector Engine	Percentage of time in which XVE stalled, with at least one thread ready to be scheduled (Grf conf/send holds etc). Multiple stall reasons can qualify during the same cycle
+XvePipelineRasterizationProfile	XVE_STALL_PS_DEPENDENCY	XVE Stall PS Dependency	Vector Engine	Percentage of time in which XVE stalled, with at least one thread waiting on Pixel Shader dependency
+XvePipelineRasterizationProfile	XVE_STALL_SBID	XVE Stall Sbid	Vector Engine	Percentage of time in which XVE stalled, with at least one thread waiting for Scoreboard token to be available. Multiple stall reasons can qualify during the same cycle
+XvePipelineRasterizationProfile	XVE_STALL_SENDWR	XVE Stall Sendwr	Vector Engine	Percentage of time in which XVE stalled, with at least one thread waiting for SEND message to be dispatched from XVE. Multiple stall reasons can qualify during the same cycle
+XvePipelineRaytracingProfile	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
+XvePipelineRaytracingProfile	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
+XvePipelineRaytracingProfile	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
+XvePipelineRaytracingProfile	ResultUncertainty	Result Uncertainty	GPU	Result uncertainty indicator
+XvePipelineRaytracingProfile	XVE_ACTIVE	XVE Active	Vector Engine	Percentage of time in which at least one pipe is active in XVE
+XvePipelineRaytracingProfile	XVE_STALL	XVE Stall	Vector Engine	Percentage of time in which any thread loaded but not even a single pipe is active in XVE
+XvePipelineRaytracingProfile	XVE_INST_EXECUTED_ALU0_ALL_UTILIZATION	XVE Inst Executed ALU0 All Utilization	Vector Engine	Percentage of time taken by instructions executed by ALL threads on ALU0 pipe
+XvePipelineRaytracingProfile	XVE_INST_EXECUTED_ALU1_ALL_UTILIZATION	XVE Inst Executed ALU1 All Utilization	Vector Engine	Percentage of time taken by instructions executed by ALL threads on ALU1 pipe. Does not include extended math instructions.
+XvePipelineRaytracingProfile	XVE_INST_EXECUTED_ALU2_ALL_UTILIZATION	XVE Inst Executed ALU2 All Utilization	Vector Engine	Percentage of time taken by instructions executed in ALU2 pipe
+XvePipelineRaytracingProfile	XVE_PIPE_ALU0_AND_ALU1_ACTIVE	XVE Pipe ALU0 And ALU1 Active	Vector Engine	Percentage of time in which ALU0 and ALU1 pipes are both actively executing a Gen ISA instruction
+XvePipelineRaytracingProfile	XVE_PIPE_ALU0_AND_ALU2_ACTIVE	XVE Pipe ALU0 And ALU2 Active	Vector Engine	Percentage of time in which ALU0 and ALU2 pipes are both actively executing a Gen ISA instruction
+XvePipelineRaytracingProfile	XVE_MULTIPLE_PIPE_ACTIVE	XVE Multiple Pipe Active	Vector Engine	Percentage of time in which at least two pipes are actively executing a Gen ISA instruction among ALU0, ALU1 and ALU2 pipes
+XvePipelineRaytracingProfile	XVE_INST_EXECUTED_ALU0_RT_AHS_UTILIZATION	XVE Inst Executed ALU0 RT AHS Utilization	Vector Engine	Percentage of time taken by instructions executed by RT_AHS threads on ALU0 pipe
+XvePipelineRaytracingProfile	XVE_INST_EXECUTED_ALU0_RT_CHS_UTILIZATION	XVE Inst Executed ALU0 RT CHS Utilization	Vector Engine	Percentage of time taken by instructions executed by RT_CHS threads on ALU0 pipe
+XvePipelineRaytracingProfile	XVE_INST_EXECUTED_ALU0_RT_MS_UTILIZATION	XVE Inst Executed ALU0 RT MS Utilization	Vector Engine	Percentage of time taken by instructions executed by RT_MS threads on ALU0 pipe
+XvePipelineRaytracingProfile	XVE_INST_EXECUTED_ALU0_PS_UTILIZATION	XVE Inst Executed ALU0 PS Utilization	Vector Engine	Percentage of time taken by instructions executed by PS threads on ALU0 pipe
+XvePipelineRaytracingProfile	XVE_INST_EXECUTED_ALU0_ASYNC_CS_UTILIZATION	XVE Inst Executed ALU0 Async CS Utilization	Vector Engine	Percentage of time taken by instructions executed by ASYNC_CS threads on ALU0 pipe
+XvePipelineRaytracingProfile	XVE_INST_EXECUTED_ALU0_CS_UTILIZATION	XVE Inst Executed ALU0 CS Utilization	Vector Engine	Percentage of time taken by instructions executed by CS threads on ALU0 pipe
+XvePipelineRaytracingProfile	XVE_INST_EXECUTED_ALU1_RT_AHS_UTILIZATION	XVE Inst Executed ALU1 RT AHS Utilization	Vector Engine	Percentage of time taken by instructions executed by RT_AHS threads on ALU1 pipe. Does not include extended math instructions.
+XvePipelineRaytracingProfile	XVE_INST_EXECUTED_ALU1_RT_CHS_UTILIZATION	XVE Inst Executed ALU1 RT CHS Utilization	Vector Engine	Percentage of time taken by instructions executed by RT_CHS threads on ALU1 pipe. Does not include extended math instructions.
+XvePipelineRaytracingProfile	XVE_INST_EXECUTED_ALU1_RT_MS_UTILIZATION	XVE Inst Executed ALU1 RT MS Utilization	Vector Engine	Percentage of time taken by instructions executed by RT_MS threads on ALU1 pipe. Does not include extended math instructions.
+XvePipelineRaytracingProfile	XVE_INST_EXECUTED_ALU1_PS_UTILIZATION	XVE Inst Executed ALU1 PS Utilization	Vector Engine	Percentage of time taken by instructions executed by PS threads on ALU1 pipe. Does not include extended math instructions.
+XvePipelineRaytracingProfile	XVE_INST_EXECUTED_ALU1_ASYNC_CS_UTILIZATION	XVE Inst Executed ALU1 Async CS Utilization	Vector Engine	Percentage of time taken by instructions executed by ASYNC_CS threads on ALU1 pipe. Does not include extended math instructions.
+XvePipelineRaytracingProfile	XVE_INST_EXECUTED_ALU1_CS_UTILIZATION	XVE Inst Executed ALU1 CS Utilization	Vector Engine	Percentage of time taken by instructions executed by CS threads on ALU1 pipe. Does not include extended math instructions.
+XvePipelineRaytracingProfile	XVE_THREADS_OCCUPANCY_ALL	XVE Threads Occupancy All	Vector Engine	Percentage of thread slots occupied by ALL threads
+XvePipelineRaytracingProfile	XVE_STALL_ALUWR	XVE Stall Aluwr	Vector Engine	Percentage of time in which XVE stalled, with at least one thread waiting for ALU to write GRF/ACC register. Multiple stall reasons can qualify during the same cycle
+XvePipelineRaytracingProfile	XVE_STALL_BARRIER	XVE Stall Barrier	Vector Engine	Percentage of time in which XVE stalled, with at least one thread waiting for Gateway to write Notify register. Multiple stall reasons can qualify during the same cycle
+XvePipelineRaytracingProfile	XVE_STALL_CONTROL	XVE Stall Control	Vector Engine	Percentage of time in which XVE stalled, with at least one thread waiting for JEU to complete branch instruction. Multiple stall reasons can qualify during the same cycle
+XvePipelineRaytracingProfile	XVE_STALL_INSTFETCH	XVE Stall Instfetch	Vector Engine	Percentage of time in which XVE stalled, with at least one thread waiting for Instruction Fetch. Multiple stall reasons can qualify during the same cycle
+XvePipelineRaytracingProfile	XVE_STALL_OTHER	XVE Stall Other	Vector Engine	Percentage of time in which XVE stalled, with at least one thread waiting on any other dependency (Flag/EoT etc). Multiple stall reasons can qualify during the same cycle
+XvePipelineRaytracingProfile	XVE_STALL_PIPESTALL	XVE Stall Pipestall	Vector Engine	Percentage of time in which XVE stalled, with at least one thread ready to be scheduled (Grf conf/send holds etc). Multiple stall reasons can qualify during the same cycle
+XvePipelineRaytracingProfile	XVE_STALL_PS_DEPENDENCY	XVE Stall PS Dependency	Vector Engine	Percentage of time in which XVE stalled, with at least one thread waiting on Pixel Shader dependency
+XvePipelineRaytracingProfile	XVE_STALL_SBID	XVE Stall Sbid	Vector Engine	Percentage of time in which XVE stalled, with at least one thread waiting for Scoreboard token to be available. Multiple stall reasons can qualify during the same cycle
+XvePipelineRaytracingProfile	XVE_STALL_SENDWR	XVE Stall Sendwr	Vector Engine	Percentage of time in which XVE stalled, with at least one thread waiting for SEND message to be dispatched from XVE. Multiple stall reasons can qualify during the same cycle
 TestOa	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
 TestOa	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
 TestOa	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.

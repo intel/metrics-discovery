@@ -470,7 +470,9 @@ namespace MetricsDiscoveryInternal
                     }
                     else if( archEventHeader[j].m_name == "Project" )
                     {
-                        archEvent->m_projectName  = archEventValueString;
+                        archEvent->m_projectName = archEventValueString;
+
+                        DeleteByteArray( archEvent->m_platformMask, adapterId );
                         archEvent->m_platformMask = CStrToPlatformMask( archEventValueString );
                     }
                     else if( archEventHeader[j].m_name == "Group Name" )

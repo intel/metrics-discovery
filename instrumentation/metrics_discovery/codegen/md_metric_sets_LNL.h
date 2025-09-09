@@ -103,6 +103,22 @@ namespace MetricsDiscoveryInternal::MetricSets_LNL_OA
         TCompletionCode Initialize();
     };
 
+    class CXvePipelineRasterizationProfileMetricSet final : public CMetricSet
+    {
+    public:
+        CXvePipelineRasterizationProfileMetricSet( CMetricsDevice& device, CConcurrentGroup* concurrentGroup, const char* symbolicName, const char* shortName, uint32_t apiMask, uint32_t category, uint32_t snapshotReportSize, uint32_t deltaReportSize, TReportType reportType, TByteArrayLatest* platformMask, uint32_t gtMask = GT_TYPE_ALL, bool isCustom = false );
+
+        TCompletionCode Initialize();
+    };
+
+    class CXvePipelineRaytracingProfileMetricSet final : public CMetricSet
+    {
+    public:
+        CXvePipelineRaytracingProfileMetricSet( CMetricsDevice& device, CConcurrentGroup* concurrentGroup, const char* symbolicName, const char* shortName, uint32_t apiMask, uint32_t category, uint32_t snapshotReportSize, uint32_t deltaReportSize, TReportType reportType, TByteArrayLatest* platformMask, uint32_t gtMask = GT_TYPE_ALL, bool isCustom = false );
+
+        TCompletionCode Initialize();
+    };
+
     class CTestOaMetricSet final : public CMetricSet
     {
     public:

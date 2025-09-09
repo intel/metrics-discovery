@@ -242,28 +242,22 @@ namespace MetricsDiscoveryInternal
     {
         if( IsValidSymbolName( symbolName ) )
         {
-            uint32_t oaBufferCount = device.GetOaBufferCount();
+            const uint32_t oaBufferMask = device.GetOaBufferMask();
 
-            if( symbolName[3] == 'G' ) // OAMG
+            if( symbolName[3] == 'G' ) // OAM SAG (OAMG)
             {
-                return static_cast<GTDI_OA_BUFFER_TYPE>( oaBufferCount - 1 );
+                return ( oaBufferMask & GTDI_OA_BUFFER_MASK_OAM_SAG ) ? GTDI_OA_BUFFER_TYPE_OAM_SAG : GTDI_OA_BUFFER_TYPE_DEFAULT;
             }
-            else // OAM0, OAM1 etc.
+            else // OAM SCMI (OAM0, OAM1 etc.)
             {
-                // If a given platform supports OAMG, oaBufferCount must be decreased by 1 for OAMs, because the last one is OAMG.
-                if( !IsPlatformMatch( device.GetPlatformIndex(), GENERATION_MTL, GENERATION_ARL ) )
-                {
-                    --oaBufferCount;
-                }
-
-                const uint32_t oamBufferType = symbolName[3] - '0' + 1;
-                if( oamBufferType >= GTDI_OA_BUFFER_TYPE_OAM_SLICE_0 && oamBufferType < oaBufferCount )
+                const uint32_t oamBufferType = symbolName[3] - '0' + GTDI_OA_BUFFER_TYPE_OAM_SLICE_0;
+                if( oaBufferMask & ( 1 << oamBufferType ) )
                 {
                     return static_cast<GTDI_OA_BUFFER_TYPE>( oamBufferType );
                 }
 
                 const uint32_t adapterId = device.GetAdapter().GetAdapterId();
-                MD_LOG_A( adapterId, LOG_DEBUG, "Cannot get oa buffer type for OAM. Given symbol name: %s, OAM buffers count: %u", symbolName, oaBufferCount - GTDI_OA_BUFFER_TYPE_OAM_SLICE_0 );
+                MD_LOG_A( adapterId, LOG_DEBUG, "Cannot get oa buffer type for OAM. Given symbol name: %s, OA buffers mask: %x", symbolName, oaBufferMask );
             }
         }
 

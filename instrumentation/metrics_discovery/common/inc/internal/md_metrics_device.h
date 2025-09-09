@@ -107,7 +107,7 @@ namespace MetricsDiscoveryInternal
         // Sub devices.
         uint32_t GetSubDeviceIndex();
 
-        uint32_t GetOaBufferCount();
+        GTDI_OA_BUFFER_MASK GetOaBufferMask();
 
         // Performance stream.
         int32_t               GetStreamId();
@@ -151,7 +151,7 @@ namespace MetricsDiscoveryInternal
         bool     m_isOffline;
         uint32_t m_referenceCounter;
 
-        uint32_t m_oaBuferCount;
+        GTDI_OA_BUFFER_MASK m_oaBufferMask;
 
         TQueryMode       m_queryModeRequested;
         const TQueryMode m_queryModeDefault;

@@ -11,6 +11,7 @@ SPDX-License-Identifier: MIT
 //     Abstract:   C++ Metrics Discovery internal events implementation
 
 #include "md_events.h"
+#include "md_utils.h"
 
 namespace MetricsDiscoveryInternal
 {
@@ -147,6 +148,23 @@ namespace MetricsDiscoveryInternal
         , m_projectName( "" )
         , m_disaggregationMode( DISAGGREGATION_MODE_NONE )
     {
+    }
+
+    //////////////////////////////////////////////////////////////////////////////
+    //
+    // Class:
+    //     SArchEvent
+    //
+    // Method:
+    //     SArchEvent destructor
+    //
+    // Description:
+    //     Destructor.
+    //
+    //////////////////////////////////////////////////////////////////////////////
+    SArchEvent::~SArchEvent()
+    {
+        DeleteByteArray( m_platformMask, IU_ADAPTER_ID_UNKNOWN );
     }
 
     //////////////////////////////////////////////////////////////////////////////

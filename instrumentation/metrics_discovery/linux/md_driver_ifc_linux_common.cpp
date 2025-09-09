@@ -484,6 +484,8 @@ namespace MetricsDiscoveryInternal
         , m_CachedGfxDeviceInfo{ GTDI_PLATFORM_MAX, GFX_GTTYPE_UNDEFINED, 0, 0 }
         , m_CachedDeviceId( -1 )
         , m_CachedRevisionId( -1 )
+        , m_CachedOaTimestampFrequency( 0 )
+        , m_CachedCsTimestampFrequency( 0 )
     {
     }
 
@@ -900,16 +902,14 @@ namespace MetricsDiscoveryInternal
                 break;
 
             case GTDI_DEVICE_PARAM_OA_BUFFERS_COUNT:
-            {
-                uint32_t oaBufferCount = 0;
-
-                ret = GetOaBufferCount( metricsDevice, oaBufferCount );
-                MD_CHECK_CC_RET_A( m_adapterId, ret );
-
                 out.ValueType   = GTDI_DEVICE_PARAM_VALUE_TYPE_UINT32;
-                out.ValueUint32 = oaBufferCount;
+                out.ValueUint32 = GetOaBufferCount( metricsDevice );
                 break;
-            }
+
+            case GTDI_DEVICE_PARAM_OA_BUFFERS_MASK:
+                out.ValueType   = GTDI_DEVICE_PARAM_VALUE_TYPE_UINT32;
+                out.ValueUint32 = GetOaBufferMask( metricsDevice );
+                break;
 
             case GTDI_DEVICE_PARAM_L3_BANK_TOTAL_COUNT:
             {

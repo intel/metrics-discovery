@@ -146,12 +146,13 @@ namespace MetricsDiscoveryInternal
         TCompletionCode         GetGpuCpuTimestamps( CMetricsDevice& device, uint64_t& gpuTimestampNs, uint64_t& cpuTimestampNs );
 
         // IOCTLs
-        TCompletionCode SendGetParamIoctl( int32_t drmFd, uint32_t paramId, GTDIDeviceInfoParamExtOut& outValue );
-        TCompletionCode SendGetParamIoctl( int32_t drmFd, uint32_t paramId, int32_t& outValue );
+        TCompletionCode SendGetParamIoctl( uint32_t paramId, GTDIDeviceInfoParamExtOut& outValue );
+        TCompletionCode SendGetParamIoctl( uint32_t paramId, int32_t& outValue );
 
         virtual TCompletionCode GetOaBufferSize( const int32_t streamId, uint32_t& oaBufferSize );
         virtual TCompletionCode GetOaBufferSupportedSizes( const uint32_t platformId, uint32_t& minSize, uint32_t& maxSize );
-        virtual TCompletionCode GetOaBufferCount( CMetricsDevice& metricsDevice, uint32_t& oaBufferCount );
+        virtual uint32_t        GetOaBufferCount( CMetricsDevice& metricsDevice );
+        virtual uint32_t        GetOaBufferMask( CMetricsDevice& metricsDevice );
         virtual TCompletionCode GetL3NodeTotalCount( CMetricsDevice& metricsDevice, uint32_t& l3NodeCount );
         virtual TCompletionCode GetL3BankTotalCount( CMetricsDevice& metricsDevice, uint32_t& l3BankCount );
         virtual TCompletionCode GetCopyEngineTotalCount( CMetricsDevice& metricsDevice, uint32_t& copyEngineCount );
@@ -159,9 +160,6 @@ namespace MetricsDiscoveryInternal
         virtual TCompletionCode GetL3BankMask( CMetricsDevice& metricsDevice, uint64_t& l3BankMask );
         virtual TCompletionCode GetL3NodeMask( CMetricsDevice& metricsDevice, uint64_t& l3NodeMask );
         virtual TCompletionCode GetCopyEngineMask( CMetricsDevice& metricsDevice, uint64_t& copyEngineMask );
-
-        // Device info utils
-        bool IsXePlus();
 
     private:
         // Variables

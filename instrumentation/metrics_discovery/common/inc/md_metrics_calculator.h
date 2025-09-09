@@ -25,6 +25,8 @@ SPDX-License-Identifier: MIT
 #include <cstring>
 #include <limits>
 #include <stack>
+#include <array>
+#include <functional>
 
 namespace MetricsDiscoveryInternal
 {
@@ -60,16 +62,145 @@ namespace MetricsDiscoveryInternal
             : m_readEquationStack{}
             , m_readEquationAndDeltaStack{}
             , m_normalizationEquationStack{}
+            , m_symbolMap{}
             , m_device( metricsDevice )
             , m_gpuCoreClocks( 0 )
             , m_euCoresCount( 0 )
             , m_savedReport( nullptr )
             , m_savedReportSize( 0 )
             , m_contextIdPrev( 0 )
-            , m_savedReportPresent( false )
             , m_prevValues( nullptr )
             , m_prevValuesCount( 0 )
+            , m_savedReportPresent( false )
+            , m_multipleSymbols( false )
         {
+            TTypedValue_1_0* euCoresTotalCount = GetGlobalSymbolValue( "VectorEngineTotalCount" );
+            // Get old global symbol if new one is not available
+            if( euCoresTotalCount == nullptr )
+            {
+                euCoresTotalCount = GetGlobalSymbolValue( "EuCoresTotalCount" );
+            }
+            m_euCoresCount = euCoresTotalCount ? euCoresTotalCount->ValueUInt32 : 0;
+        }
+
+        //////////////////////////////////////////////////////////////////////////////
+        //
+        // Class:
+        //     CMetricsCalculator
+        //
+        // Method:
+        //     CMetricsCalculator
+        //
+        // Description:
+        //     CMetricsCalculator constructor.
+        //
+        // Input:
+        //     std::vector<std::reference_wrapper<CMetricsDevice>> metricsDevice -
+        //          metrics devices are used for obtaining global symbols during calculations
+        //
+        //////////////////////////////////////////////////////////////////////////////
+        inline CMetricsCalculator( std::vector<std::reference_wrapper<CMetricsDevice>> metricsDevice )
+            : m_readEquationStack{}
+            , m_readEquationAndDeltaStack{}
+            , m_normalizationEquationStack{}
+            , m_symbolMap{}
+            , m_device( metricsDevice[0] )
+            , m_gpuCoreClocks( 0 )
+            , m_euCoresCount( 0 )
+            , m_savedReport( nullptr )
+            , m_savedReportSize( 0 )
+            , m_contextIdPrev( 0 )
+            , m_prevValues( nullptr )
+            , m_prevValuesCount( 0 )
+            , m_savedReportPresent( false )
+            , m_multipleSymbols( false )
+        {
+            constexpr std::array<std::pair<const char*, const bool>, 25> acceptableSymbols = {
+                { { "EuCoresTotalCount", true },
+                    { "EuDualSubslicesTotalCount", true },
+                    { "EuThreadsCount", true },
+                    { "GpuMaxFrequencyMHz", false },
+                    { "GpuTimestampFrequency", false },
+                    { "VectorEngineTotalCount", true },
+                    { "VectorEnginePerXeCoreCount", true },
+                    { "XeCoreTotalCount", true },
+                    { "SliceTotalCount", true },
+                    { "VectorEngineThreadsCount", true },
+                    { "L3BankTotalCount", true },
+                    { "L3NodeTotalCount", true },
+                    { "SqidiTotalCount", true },
+                    { "ComputeEngineTotalCount", true },
+                    { "CopyEngineTotalCount", true },
+                    { "ColorPipeTotalCount", true },
+                    { "DepthPipeTotalCount", true },
+                    { "GeometryPipeTotalCount", true },
+                    { "VectorEngineGrfBlocksCount", true },
+                    { "SliceMaxCount", true },
+                    { "XeCoreMaxCount", true },
+                    { "L3BankMaxCount", true },
+                    { "L3NodeMaxCount", true },
+                    { "SqidiMaxCount", true },
+                    { "CopyEngineMaxCount", true } }
+            };
+
+            // Build global symbol map for all devices
+            for( auto& device : metricsDevice )
+            {
+                const uint32_t globalSymbolsCount = device.get().GetParams()->GlobalSymbolsCount;
+
+                for( uint32_t i = 0; i < globalSymbolsCount; ++i )
+                {
+                    if( auto symbol = device.get().GetGlobalSymbol( i );
+                        symbol )
+                    {
+                        auto isSymbolNameEqual = [&]( const std::pair<const char*, bool>& element )
+                        {
+                            return element.first == symbol->SymbolName;
+                        };
+
+                        auto acceptableSymbolIterator = std::find_if( acceptableSymbols.begin(), acceptableSymbols.end(), isSymbolNameEqual );
+
+                        if( acceptableSymbolIterator == acceptableSymbols.end() )
+                        {
+                            continue;
+                        }
+
+                        TTypedValueLatest typedValue = symbol->SymbolTypedValue;
+
+                        // Check if symbol is already in the map, if not, insert it
+                        // This is needed to avoid duplicates in case of multiple devices
+                        auto it = m_symbolMap.find( symbol->SymbolName );
+                        if( it == m_symbolMap.end() )
+                        {
+                            // Insert global symbol into the map
+                            m_symbolMap.emplace( symbol->SymbolName, typedValue );
+                        }
+                        else
+                        {
+                            if( it->second.ValueType == typedValue.ValueType && acceptableSymbolIterator->second )
+                            {
+                                switch( typedValue.ValueType )
+                                {
+                                    case VALUE_TYPE_UINT32:
+                                        it->second.ValueUInt32 += typedValue.ValueUInt32;
+                                        break;
+                                    case VALUE_TYPE_UINT64:
+                                        it->second.ValueUInt64 += typedValue.ValueUInt64;
+                                        break;
+                                    case VALUE_TYPE_BOOL:
+                                        it->second.ValueBool = ( it->second.ValueBool && typedValue.ValueBool );
+                                        break;
+                                    default:
+                                        MD_ASSERT_A( m_device.GetAdapter().GetAdapterId(), false );
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            m_multipleSymbols = m_symbolMap.size() != 0;
+
             TTypedValue_1_0* euCoresTotalCount = GetGlobalSymbolValue( "VectorEngineTotalCount" );
             // Get old global symbol if new one is not available
             if( euCoresTotalCount == nullptr )
@@ -535,9 +666,15 @@ namespace MetricsDiscoveryInternal
                 outValue->ValueUInt64 = 0ULL;
             }
 
-            outValue->ValueType = ( informationParams.InfoType == INFORMATION_TYPE_FLAG )
-                ? VALUE_TYPE_BOOL
-                : VALUE_TYPE_UINT64;
+            if( informationParams.InfoType == INFORMATION_TYPE_FLAG )
+            {
+                outValue->ValueType = VALUE_TYPE_BOOL;
+                outValue->ValueBool = ( outValue->ValueUInt64 != 0ULL );
+            }
+            else
+            {
+                outValue->ValueType = VALUE_TYPE_UINT64;
+            }
         }
 
         //////////////////////////////////////////////////////////////////////////////
@@ -1103,6 +1240,19 @@ namespace MetricsDiscoveryInternal
             const uint32_t adapterId = m_device.GetAdapter().GetAdapterId();
             MD_CHECK_PTR_RET_A( adapterId, symbolName, nullptr );
 
+            if( m_multipleSymbols )
+            {
+                if( auto symbol = m_symbolMap.find( symbolName );
+                    symbol != m_symbolMap.end() )
+                {
+                    return &symbol->second;
+                }
+                else
+                {
+                    return nullptr;
+                }
+            }
+
             return m_device.GetGlobalSymbolValueByName( symbolName );
         }
 
@@ -1247,6 +1397,13 @@ namespace MetricsDiscoveryInternal
 
                     case EQUATION_ELEM_OPERATION:
                     {
+                        if( m_readEquationStack.size() < 2 )
+                        {
+                            MD_LOG_A( adapterId, LOG_DEBUG, "Not enough elements in equationStack, size is less than 2." );
+                            typedValue = {};
+                            return typedValue;
+                        }
+
                         // Pop two values from stack
                         TTypedValue_1_0 valueLast = m_readEquationStack.top();
                         m_readEquationStack.pop();
@@ -1489,6 +1646,13 @@ namespace MetricsDiscoveryInternal
 
                     case EQUATION_ELEM_OPERATION:
                     {
+                        if( m_readEquationAndDeltaStack.size() < 2 )
+                        {
+                            MD_LOG_A( adapterId, LOG_DEBUG, "Not enough elements in equationStack, size is less than 2." );
+                            typedValue = {};
+                            return typedValue;
+                        }
+
                         // Pop two values from stack
                         TTypedValue_1_0 valueLast = m_readEquationAndDeltaStack.top();
                         m_readEquationAndDeltaStack.pop();
@@ -1685,10 +1849,16 @@ namespace MetricsDiscoveryInternal
 
                     case EQUATION_ELEM_OPERATION:
                     {
-                        // pop two values from stack
+                        if( m_normalizationEquationStack.size() < 2 )
+                        {
+                            MD_LOG_A( adapterId, LOG_DEBUG, "Not enough elements in equationStack, size is less than 2." );
+                            typedValue = {};
+                            return typedValue;
+                        }
+
+                        // Pop two values from stack
                         TTypedValue_1_0 valueLast = m_normalizationEquationStack.top();
                         m_normalizationEquationStack.pop();
-
                         algorithmCheck--;
                         TTypedValue_1_0 valuePrev = m_normalizationEquationStack.top();
                         m_normalizationEquationStack.pop();
@@ -2002,17 +2172,19 @@ namespace MetricsDiscoveryInternal
         }
 
     private:
-        std::stack<TTypedValue_1_0> m_readEquationStack;
-        std::stack<TTypedValue_1_0> m_readEquationAndDeltaStack;
-        std::stack<TTypedValue_1_0> m_normalizationEquationStack;
-        CMetricsDevice&             m_device;
-        uint64_t                    m_gpuCoreClocks;
-        uint32_t                    m_euCoresCount;
-        uint8_t*                    m_savedReport;
-        uint32_t                    m_savedReportSize;
-        uint64_t                    m_contextIdPrev;
-        bool                        m_savedReportPresent;
-        TTypedValue_1_0*            m_prevValues;
-        uint32_t                    m_prevValuesCount;
+        std::stack<TTypedValue_1_0>                             m_readEquationStack;
+        std::stack<TTypedValue_1_0>                             m_readEquationAndDeltaStack;
+        std::stack<TTypedValue_1_0>                             m_normalizationEquationStack;
+        std::unordered_map<std::string_view, TTypedValueLatest> m_symbolMap;
+        CMetricsDevice&                                         m_device;
+        uint64_t                                                m_gpuCoreClocks;
+        uint32_t                                                m_euCoresCount;
+        uint8_t*                                                m_savedReport;
+        uint32_t                                                m_savedReportSize;
+        uint64_t                                                m_contextIdPrev;
+        TTypedValue_1_0*                                        m_prevValues;
+        uint32_t                                                m_prevValuesCount;
+        bool                                                    m_savedReportPresent;
+        bool                                                    m_multipleSymbols;
     };
 } // namespace MetricsDiscoveryInternal

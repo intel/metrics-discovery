@@ -160,6 +160,7 @@ namespace MetricsDiscoveryInternal
         TDisaggregationMode m_disaggregationMode;
 
         SArchEvent();
+        ~SArchEvent();
     } TArchEvent;
 
     //////////////////////////////////////////////////////////////////////////////

@@ -156,6 +156,7 @@ namespace MetricsDiscoveryInternal
         { 0x7DD1, TPlatformIndexGt( GENERATION_ARL, GFX_GTTYPE_GT2 ) },
 
         { 0xE202, TPlatformIndexGt( GENERATION_BMG, GFX_GTTYPE_UNDEFINED, 2 ) }, // G21
+        { 0xE209, TPlatformIndexGt( GENERATION_BMG, GFX_GTTYPE_UNDEFINED, 2 ) },
         { 0xE20B, TPlatformIndexGt( GENERATION_BMG, GFX_GTTYPE_UNDEFINED, 2 ) },
         { 0xE20C, TPlatformIndexGt( GENERATION_BMG, GFX_GTTYPE_UNDEFINED, 2 ) },
         { 0xE20D, TPlatformIndexGt( GENERATION_BMG, GFX_GTTYPE_UNDEFINED, 2 ) },

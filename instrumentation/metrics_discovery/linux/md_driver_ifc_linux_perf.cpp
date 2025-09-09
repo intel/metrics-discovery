@@ -700,7 +700,7 @@ namespace MetricsDiscoveryInternal
                         break;
 
                     default:
-                        MD_LOG_A( m_adapterId, LOG_ERROR, "Unknown engine type" );
+                        MD_LOG_A( m_adapterId, LOG_ERROR, "Unknown engine type: %u", engine.engine_class );
                         MD_ASSERT_A( m_adapterId, 0 );
                         break;
                 }
@@ -885,7 +885,7 @@ namespace MetricsDiscoveryInternal
         {
             if( isOamRequested )
             {
-                const uint32_t oamBufferSlice = static_cast<uint32_t>( oaBufferType ) - 1;
+                const uint32_t oamBufferSlice = static_cast<uint32_t>( oaBufferType ) - GTDI_OA_BUFFER_TYPE_OAM_SLICE_0;
                 if( !isValidValue( oamBufferSlice ) )
                 {
                     MD_LOG_A( m_adapterId, LOG_ERROR, "ERROR: Incorrect oa buffer type for OAM. oaBufferType: %d, oamBufferSlice: %d", static_cast<uint32_t>( oaBufferType ), oamBufferSlice );
@@ -1317,7 +1317,6 @@ namespace MetricsDiscoveryInternal
     //     Returned value is always 32-bit integer.
     //
     // Input:
-    //     int32_t                 drmFd    - DRM file descriptor
     //     uint32_t                paramId  - parameter to get through i915 GetParam IOCTL
     //     GTDIDeviceInfoParamOut& outValue - (OUT) output value
     //
@@ -1325,17 +1324,19 @@ namespace MetricsDiscoveryInternal
     //     TCompletionCode                  - *CC_OK* means success
     //
     //////////////////////////////////////////////////////////////////////////////
-    TCompletionCode CDriverInterfaceLinuxPerf::SendGetParamIoctl( int32_t drmFd, uint32_t paramId, GTDIDeviceInfoParamExtOut& outValue )
+    TCompletionCode CDriverInterfaceLinuxPerf::SendGetParamIoctl( uint32_t paramId, GTDIDeviceInfoParamExtOut& outValue )
     {
         // GET_PARAM IOCTLs always return integers
         int32_t paramValue = 0;
 
-        TCompletionCode ret = SendGetParamIoctl( drmFd, paramId, paramValue );
+        TCompletionCode ret = SendGetParamIoctl( paramId, paramValue );
+
         if( ret == CC_OK )
         {
             outValue.ValueUint32 = paramValue;
             outValue.ValueType   = GTDI_DEVICE_PARAM_VALUE_TYPE_UINT32;
         }
+
         return ret;
     }
 
@@ -1352,7 +1353,6 @@ namespace MetricsDiscoveryInternal
     //     Returned value is always 32-bit integer.
     //
     // Input:
-    //     int32_t  drmFd    - DRM file descriptor
     //     uint32_t paramId  - parameter to get through i915 GetParam IOCTL
     //     int32_t& outValue - (OUT) output value
     //
@@ -1360,14 +1360,14 @@ namespace MetricsDiscoveryInternal
     //     TCompletionCode   - *CC_OK* means success
     //
     //////////////////////////////////////////////////////////////////////////////
-    TCompletionCode CDriverInterfaceLinuxPerf::SendGetParamIoctl( int32_t drmFd, uint32_t paramId, int32_t& outValue )
+    TCompletionCode CDriverInterfaceLinuxPerf::SendGetParamIoctl( uint32_t paramId, int32_t& outValue )
     {
         drm_i915_getparam_t params = {};
 
         params.param = paramId;
         params.value = &outValue;
 
-        int32_t ioctlRet = SendIoctl( drmFd, DRM_IOCTL_I915_GETPARAM, &params );
+        int32_t ioctlRet = SendIoctl( m_DrmDeviceHandle, DRM_IOCTL_I915_GETPARAM, &params );
         if( ioctlRet )
         {
             MD_LOG_A( m_adapterId, LOG_WARNING, "ERROR: Failed to send GET_PARAM ioctl, paramId: %u, errno: %d (%s)", paramId, errno, strerror( errno ) );
@@ -1609,11 +1609,6 @@ namespace MetricsDiscoveryInternal
     {
         sliceMask = 0;
 
-        if( !IsXePlus() )
-        {
-            return SendGetParamIoctl( m_DrmDeviceHandle, I915_PARAM_SLICE_MASK, sliceMask );
-        }
-
         // Return value is a mask of enabled subslices or dual-subslices
         uint32_t subslicePerSlice = IsDualSubsliceSupported()
             ? GetGtMaxDualSubslicePerSlice()
@@ -1661,61 +1656,36 @@ namespace MetricsDiscoveryInternal
 
         subsliceMask = 0;
 
-        if( !IsXePlus() )
+        if( IsDualSubsliceSupported() )
         {
-            // Return value is a mask for one slice (assuming it's uniform for each slice)
-            int32_t  singleSubsliceMask       = 0;
-            int32_t  sliceMask                = 0;
-            uint32_t maxSubslicePerSliceCount = GetGtMaxSubslicePerSlice();
-
-            ret = SendGetParamIoctl( m_DrmDeviceHandle, I915_PARAM_SUBSLICE_MASK, singleSubsliceMask );
-            MD_CHECK_CC_RET_A( m_adapterId, ret );
-            ret = SendGetParamIoctl( m_DrmDeviceHandle, I915_PARAM_SLICE_MASK, sliceMask );
-            MD_CHECK_CC_RET_A( m_adapterId, ret );
-
-            for( int32_t i = 0; i < MD_MAX_SLICE; ++i )
-            {
-                // If slice enabled
-                if( sliceMask & MD_BIT( i ) )
-                {
-                    const uint64_t targetSubsliceMask = static_cast<uint64_t>( singleSubsliceMask ) << ( maxSubslicePerSliceCount * i );
-                    subsliceMask |= targetSubsliceMask;
-                }
-            }
+            MD_LOG_A( m_adapterId, LOG_INFO, "Obtaining dual subslice mask" );
         }
         else
         {
-            if( IsDualSubsliceSupported() )
+            MD_LOG_A( m_adapterId, LOG_INFO, "Obtaining subslice mask" );
+        }
+
+        // Get subslice or dual-subslice mask per sub device.
+        auto buffer = std::vector<uint8_t>();
+        ret         = GetQueryGeometrySlices( buffer, metricsDevice );
+        MD_CHECK_CC_RET_A( m_adapterId, ret );
+
+        auto topology = reinterpret_cast<drm_i915_query_topology_info*>( buffer.data() );
+
+        const uint16_t subsliceOffset = topology->subslice_offset;
+        const uint16_t subsliceStride = topology->subslice_stride;
+        uint32_t       ssIndex        = 0;
+
+        for( uint32_t sliceIndex = 0; sliceIndex < topology->max_slices; ++sliceIndex )
+        {
+            for( uint32_t subSliceIndex = 0; subSliceIndex < topology->max_subslices; ++subSliceIndex )
             {
-                MD_LOG_A( m_adapterId, LOG_INFO, "Obtaining dual subslice mask" );
-            }
-            else
-            {
-                MD_LOG_A( m_adapterId, LOG_INFO, "Obtaining subslice mask" );
-            }
-
-            // Get subslice or dual-subslice mask per sub device.
-            auto buffer = std::vector<uint8_t>();
-            ret         = GetQueryGeometrySlices( buffer, metricsDevice );
-            MD_CHECK_CC_RET_A( m_adapterId, ret );
-
-            auto topology = reinterpret_cast<drm_i915_query_topology_info*>( buffer.data() );
-
-            const uint16_t subsliceOffset = topology->subslice_offset;
-            const uint16_t subsliceStride = topology->subslice_stride;
-            uint32_t       ssIndex        = 0;
-
-            for( uint32_t sliceIndex = 0; sliceIndex < topology->max_slices; ++sliceIndex )
-            {
-                for( uint32_t subSliceIndex = 0; subSliceIndex < topology->max_subslices; ++subSliceIndex )
+                const uint32_t dataIndex = subsliceOffset + ( sliceIndex * subsliceStride ) + ( subSliceIndex / 8 );
+                if( ( ( topology->data[dataIndex] ) >> ( subSliceIndex % 8 ) ) & 1 )
                 {
-                    const uint32_t dataIndex = subsliceOffset + ( sliceIndex * subsliceStride ) + ( subSliceIndex / 8 );
-                    if( ( ( topology->data[dataIndex] ) >> ( subSliceIndex % 8 ) ) & 1 )
-                    {
-                        subsliceMask |= 1UL << ssIndex;
-                    }
-                    ssIndex++;
+                    subsliceMask |= 1UL << ssIndex;
                 }
+                ssIndex++;
             }
         }
 
@@ -1743,11 +1713,6 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     TCompletionCode CDriverInterfaceLinuxPerf::GetEuCoresTotalCount( GTDIDeviceInfoParamExtOut& out, CMetricsDevice& metricsDevice )
     {
-        if( !IsXePlus() )
-        {
-            return SendGetParamIoctl( m_DrmDeviceHandle, I915_PARAM_EU_TOTAL, out );
-        }
-
         TCompletionCode ret = CC_OK;
 
         // Get EuCoresTotalCount per sub device.
@@ -1808,41 +1773,30 @@ namespace MetricsDiscoveryInternal
 
         TCompletionCode ret = CC_OK;
 
-        if( IsXePlus() )
+        ret = GetEuCoresTotalCount( out, metricsDevice );
+        MD_CHECK_CC_RET_A( m_adapterId, ret );
+
+        int64_t subsliceMask = 0;
+        ret                  = GetSubsliceMask( subsliceMask, metricsDevice );
+        MD_CHECK_CC_RET_A( m_adapterId, ret );
+
+        subslicesTotalCount = CalculateEnabledBits( subsliceMask );
+
+        const TGfxDeviceInfo* gfxDeviceInfo = nullptr;
+        ret                                 = GetGfxDeviceInfo( gfxDeviceInfo );
+        MD_CHECK_CC_RET_A( m_adapterId, ret );
+
+        switch( gfxDeviceInfo->PlatformIndex )
         {
-            ret = GetEuCoresTotalCount( out, metricsDevice );
-            MD_CHECK_CC_RET_A( m_adapterId, ret );
-
-            int64_t subsliceMask = 0;
-            ret                  = GetSubsliceMask( subsliceMask, metricsDevice );
-            MD_CHECK_CC_RET_A( m_adapterId, ret );
-
-            subslicesTotalCount = CalculateEnabledBits( subsliceMask );
-
-            const TGfxDeviceInfo* gfxDeviceInfo = nullptr;
-            ret                                 = GetGfxDeviceInfo( gfxDeviceInfo );
-            MD_CHECK_CC_RET_A( m_adapterId, ret );
-
-            switch( gfxDeviceInfo->PlatformIndex )
-            {
-                case GENERATION_TGL:
-                case GENERATION_DG1:
-                case GENERATION_ADLP:
-                case GENERATION_ADLS:
-                case GENERATION_ADLN:
-                    subslicesTotalCount *= MD_MAX_SUBSLICE_PER_DSS;
-                    break;
-                default:
-                    break;
-            }
-        }
-        else
-        {
-            ret = SendGetParamIoctl( m_DrmDeviceHandle, I915_PARAM_EU_TOTAL, out );
-            MD_CHECK_CC_RET_A( m_adapterId, ret );
-
-            ret = SendGetParamIoctl( m_DrmDeviceHandle, I915_PARAM_SUBSLICE_TOTAL, subslicesTotalCount );
-            MD_CHECK_CC_RET_A( m_adapterId, ret );
+            case GENERATION_TGL:
+            case GENERATION_DG1:
+            case GENERATION_ADLP:
+            case GENERATION_ADLS:
+            case GENERATION_ADLN:
+                subslicesTotalCount *= MD_MAX_SUBSLICE_PER_DSS;
+                break;
+            default:
+                break;
         }
 
         euCoresTotalCount = out.ValueUint32;
@@ -1877,7 +1831,7 @@ namespace MetricsDiscoveryInternal
 
         if( m_CachedDeviceId == -1 )
         {
-            ret = SendGetParamIoctl( m_DrmDeviceHandle, I915_PARAM_CHIPSET_ID, m_CachedDeviceId );
+            ret = SendGetParamIoctl( I915_PARAM_CHIPSET_ID, m_CachedDeviceId );
             if( ret != CC_OK )
             {
                 m_CachedDeviceId = -1;
@@ -1913,7 +1867,7 @@ namespace MetricsDiscoveryInternal
 
         if( m_CachedRevisionId == -1 )
         {
-            ret = SendGetParamIoctl( m_DrmDeviceHandle, I915_PARAM_REVISION, m_CachedRevisionId );
+            ret = SendGetParamIoctl( I915_PARAM_REVISION, m_CachedRevisionId );
             if( ret != CC_OK )
             {
                 m_CachedRevisionId = -1;
@@ -1997,11 +1951,16 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     TCompletionCode CDriverInterfaceLinuxPerf::GetOaTimestampFrequency( uint64_t& frequency )
     {
-        int32_t freq = 0;
+        if( m_CachedOaTimestampFrequency == 0 )
+        {
+            int32_t freq = 0;
 
-        TCompletionCode result = SendGetParamIoctl( m_DrmDeviceHandle, I915_PARAM_OA_TIMESTAMP_FREQUENCY, freq );
-        MD_CHECK_CC_RET_A( m_adapterId, result );
-        frequency = static_cast<uint64_t>( freq );
+            TCompletionCode result = SendGetParamIoctl( I915_PARAM_OA_TIMESTAMP_FREQUENCY, freq );
+            MD_CHECK_CC_RET_A( m_adapterId, result );
+            m_CachedOaTimestampFrequency = static_cast<uint64_t>( freq );
+        }
+
+        frequency = m_CachedOaTimestampFrequency;
 
         return CC_OK;
     }
@@ -2026,11 +1985,16 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     TCompletionCode CDriverInterfaceLinuxPerf::GetCsTimestampFrequency( uint64_t& frequency )
     {
-        int32_t freq = 0;
+        if( m_CachedCsTimestampFrequency == 0 )
+        {
+            int32_t freq = 0;
 
-        TCompletionCode result = SendGetParamIoctl( m_DrmDeviceHandle, I915_PARAM_CS_TIMESTAMP_FREQUENCY, freq );
-        MD_CHECK_CC_RET_A( m_adapterId, result );
-        frequency = static_cast<uint64_t>( freq );
+            TCompletionCode result = SendGetParamIoctl( I915_PARAM_CS_TIMESTAMP_FREQUENCY, freq );
+            MD_CHECK_CC_RET_A( m_adapterId, result );
+            m_CachedCsTimestampFrequency = static_cast<uint64_t>( freq );
+        }
+
+        frequency = m_CachedCsTimestampFrequency;
 
         return CC_OK;
     }
@@ -2404,16 +2368,15 @@ namespace MetricsDiscoveryInternal
     //     Returns oa buffer count for current platform.
     //
     // Input:
-    //     CMetricsDevice& metricsDevice - (IN) metrics device
-    //     uint32_t&       oaBufferCount - (OUT) oa buffer count
+    //     CMetricsDevice& metricsDevice - metrics device
     //
     // Output:
-    //     TCompletionCode               - *CC_OK* means success
+    //     uint32_t                      - oa buffer count
     //
     //////////////////////////////////////////////////////////////////////////////
-    TCompletionCode CDriverInterfaceLinuxPerf::GetOaBufferCount( CMetricsDevice& metricsDevice, uint32_t& oaBufferCount )
+    uint32_t CDriverInterfaceLinuxPerf::GetOaBufferCount( CMetricsDevice& metricsDevice )
     {
-        oaBufferCount = 1; // OAG/OA buffer
+        uint32_t oaBufferCount = 1; // OAG/OA buffer
 
         if( IsOamSupported() && IsSubDeviceSupported() )
         {
@@ -2421,10 +2384,53 @@ namespace MetricsDiscoveryInternal
             const uint32_t subDeviceIndex          = metricsDevice.GetSubDeviceIndex();
             const uint32_t videoEnhanceEngineCount = subDevices.GetClassInstancesCount( subDeviceIndex, I915_ENGINE_CLASS_VIDEO_ENHANCE );
 
-            oaBufferCount += videoEnhanceEngineCount; // Video enhance engines map to media slices.
+            if( videoEnhanceEngineCount == std::numeric_limits<uint32_t>::max() )
+            {
+                MD_LOG_A( m_adapterId, LOG_ERROR, "ERROR: Getting video enhance engine count failed" );
+                return 0;
+            }
+
+            oaBufferCount += videoEnhanceEngineCount; // Video enhance engines map to media slices (OAM SCMI).
         }
 
-        return CC_OK;
+        return oaBufferCount;
+    }
+
+    //////////////////////////////////////////////////////////////////////////////
+    //
+    // Class:
+    //     CDriverInterfaceLinuxPerf
+    //
+    // Method:
+    //     GetOaBufferMask
+    //
+    // Description:
+    //     Returns oa buffer mask for current platform.
+    //
+    // Input:
+    //     CMetricsDevice& metricsDevice - metrics device
+    //
+    // Output:
+    //     uint32_t                      - oa buffer mask
+    //
+    //////////////////////////////////////////////////////////////////////////////
+    uint32_t CDriverInterfaceLinuxPerf::GetOaBufferMask( CMetricsDevice& metricsDevice )
+    {
+        uint32_t oaBufferMask = GTDI_OA_BUFFER_MASK_OAG;
+
+        if( IsOamSupported() && IsSubDeviceSupported() )
+        {
+            auto           subDevices              = metricsDevice.GetAdapter().GetSubDevices();
+            const uint32_t subDeviceIndex          = metricsDevice.GetSubDeviceIndex();
+            const uint32_t videoEnhanceEngineCount = subDevices.GetClassInstancesCount( subDeviceIndex, I915_ENGINE_CLASS_VIDEO_ENHANCE );
+
+            for( uint32_t i = 0; i < videoEnhanceEngineCount; ++i )
+            {
+                oaBufferMask |= ( 1 << ( GTDI_OA_BUFFER_TYPE_OAM_SLICE_0 + i ) ); // Video enhance engines map to media slices (OAM SCMI).
+            }
+        }
+
+        return oaBufferMask;
     }
 
     //////////////////////////////////////////////////////////////////////////////
@@ -2616,51 +2622,6 @@ namespace MetricsDiscoveryInternal
     TCompletionCode CDriverInterfaceLinuxPerf::GetCopyEngineMask( CMetricsDevice& metricsDevice, uint64_t& copyEngineMask )
     {
         return CC_ERROR_NOT_SUPPORTED;
-    }
-
-    //////////////////////////////////////////////////////////////////////////////
-    //
-    // Class:
-    //     CDriverInterfaceLinuxPerf
-    //
-    // Method:
-    //     IsXePlus
-    //
-    // Description:
-    //     Returns information if current platform is Xe+.
-    //
-    // Output:
-    //     bool - true if current platform is Xe+
-    //
-    //////////////////////////////////////////////////////////////////////////////
-    bool CDriverInterfaceLinuxPerf::IsXePlus()
-    {
-        const TGfxDeviceInfo* gfxDeviceInfo = nullptr;
-
-        auto ret = GetGfxDeviceInfo( gfxDeviceInfo );
-        if( ret != CC_OK )
-        {
-            MD_LOG_A( m_adapterId, LOG_WARNING, "WARNING: Cannot get gfx device info" );
-            return false;
-        }
-
-        switch( gfxDeviceInfo->PlatformIndex )
-        {
-            case GENERATION_TGL:
-            case GENERATION_DG1:
-            case GENERATION_PVC:
-            case GENERATION_ACM:
-            case GENERATION_RKL:
-            case GENERATION_ADLP:
-            case GENERATION_ADLS:
-            case GENERATION_ADLN:
-            case GENERATION_MTL:
-            case GENERATION_ARL:
-                return true;
-
-            default:
-                return false;
-        }
     }
 
 } // namespace MetricsDiscoveryInternal

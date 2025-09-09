@@ -51,22 +51,22 @@ namespace MetricsDiscoveryInternal
     //     Constructor.
     //
     // Input:
-    //     CMetricsDevice&     device                 -
-    //     CConcurrentGroup*   concurrentGroup        -
-    //     const char*         symbolicName           -
-    //     const char*         shortName              -
-    //     uint32_t            apiMask                -
-    //     uint32_t            categoryMask           -
-    //     uint32_t            snapshotReportSize     -
-    //     uint32_t            deltaReportSize        -
-    //     TReportType         reportType             -
-    //     TByteArrayLatest*   platformMask           -
-    //     uint32_t            gtMask                 -
-    //     bool                isCustom               -
-    //     bool                isAggregationRequested -
+    //     CMetricsDevice&     device             -
+    //     CConcurrentGroup*   concurrentGroup    -
+    //     const char*         symbolicName       -
+    //     const char*         shortName          -
+    //     uint32_t            apiMask            -
+    //     uint32_t            categoryMask       -
+    //     uint32_t            snapshotReportSize -
+    //     uint32_t            deltaReportSize    -
+    //     TReportType         reportType         -
+    //     TByteArrayLatest*   platformMask       -
+    //     uint32_t            gtMask             -
+    //     bool                isCustom           -
+    //     bool                aggregationEnabled -
     //
     //////////////////////////////////////////////////////////////////////////////
-    CMetricSet::CMetricSet( CMetricsDevice& device, CConcurrentGroup* concurrentGroup, const char* symbolicName, const char* shortName, uint32_t apiMask, uint32_t categoryMask, uint32_t snapshotReportSize, uint32_t deltaReportSize, TReportType reportType, TByteArrayLatest* platformMask, uint32_t gtMask /*= GT_TYPE_ALL*/, bool isCustom /*= false*/, bool isAggregationRequested /*= false*/ )
+    CMetricSet::CMetricSet( CMetricsDevice& device, CConcurrentGroup* concurrentGroup, const char* symbolicName, const char* shortName, uint32_t apiMask, uint32_t categoryMask, uint32_t snapshotReportSize, uint32_t deltaReportSize, TReportType reportType, TByteArrayLatest* platformMask, uint32_t gtMask /*= GT_TYPE_ALL*/, bool isCustom /*= false*/, bool aggregationEnabled /*= false*/ )
         : m_concurrentGroup( concurrentGroup )
         , m_params{}
         , m_device( device )
@@ -84,9 +84,9 @@ namespace MetricsDiscoveryInternal
         , m_filteredMetricsVector()
         , m_filteredInformationVector()
         , m_isCustom( isCustom )
-        , m_isAggregationRequested( isAggregationRequested )
+        , m_aggregationEnabled( aggregationEnabled )
         , m_isReadRegsCfgSet( false )
-        , m_metricsCalculator( new( std::nothrow ) CMetricsCalculator( m_device ) )
+        , m_metricsCalculator( nullptr )
         , m_isOam( COAMConcurrentGroup::IsValidSymbolName( concurrentGroup->GetParams()->SymbolName ) )
         , m_isFlexible( false )
         , m_isOpened( false )
@@ -118,11 +118,6 @@ namespace MetricsDiscoveryInternal
         m_filteredParams.ApiMask              = 0;
         m_filteredParams.GtMask               = 0;
         m_filteredParams.AvailabilityEquation = nullptr;
-
-        if( m_metricsCalculator == nullptr )
-        {
-            MD_LOG_A( adapterId, LOG_ERROR, "ERROR: Cannot allocate memory for CMetricsCalculator" );
-        }
     }
 
     //////////////////////////////////////////////////////////////////////////////
@@ -2498,7 +2493,7 @@ namespace MetricsDiscoveryInternal
             {
                 if( const auto params = information->GetParams();
                     params != nullptr && ( ( params->ApiMask & m_filteredParams.ApiMask ) != 0 ) &&
-                    ( !m_isAggregationRequested || information->IsAggregatable() ) )
+                    ( !m_aggregationEnabled || information->IsAggregatable() ) )
                 {
                     information->SetIdInSetParam( j++ );
 
@@ -2612,9 +2607,67 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     TCompletionCode CMetricSet::CalculateMetrics( const uint8_t* rawData, uint32_t rawDataSize, TTypedValue_1_0* out, uint32_t outSize, uint32_t* outReportCount, TTypedValue_1_0* outMaxValues, uint32_t outMaxValuesSize )
     {
+        return CalculateMetrics<false>( rawData, rawDataSize, out, outSize, outReportCount, outMaxValues, outMaxValuesSize );
+    }
+
+    //////////////////////////////////////////////////////////////////////////////
+    //
+    // Class:
+    //     CMetricSet
+    //
+    // Method:
+    //     CalculateMetrics
+    //
+    // Template Parameter:
+    //     async - Determines if the calculation is performed for async reports or not.
+    //
+    // Description:
+    //     Conducts the whole process of metrics and information calculation for multiple reports.
+    //     It's API agnostic - user doesn't have to worry about API he has used.
+    //     User has to provide input buffer and its size, output buffer and its size with enough space for
+    //     all calculated metrics and information.
+    //     If async, method supports only IoStream. Query is not supported. Timer reports are not calculated in this method.
+    //     The amount of input reports is calculated based on rawData size and the size of single raw report.
+    //
+    //     Optional MaxValues calculation added, if MaxValueEquation isn't defined for the metric its current
+    //     normalized value is used.
+    //
+    // Input:
+    //     const uint8_t*   rawData                - raw report data
+    //     uint32_t         rawDataSize            - size of raw report data in bytes
+    //     TTypedValue_1_0* out                    - (OUT) buffer for calculated reports
+    //     uint32_t         outSize                - size of the provided output buffer in bytes
+    //     uint32_t*        outReportCount         - (OUT - optional) how much reports were calculated and are stored in the out buffer
+    //     TTypedValue_1_0* outMaxValues           - (OUT - optional) should have a memory for at least 'MetricCount * RawReportCount' values, can be nullptr. Calculated maxValues for each metric.
+    //                                               If MaxValueEquation isn't defined for the metric, MaxValue will be equal to the current, normalized metric value.
+    //     uint32_t         outMaxValuesSize       - size of the provided buffer for max values in bytes
+    //
+    // Output:
+    //     TCompletionCode - *CC_OK* means success
+    //
+    //////////////////////////////////////////////////////////////////////////////
+    template <bool async>
+    TCompletionCode CMetricSet::CalculateMetrics( const uint8_t* rawData, uint32_t rawDataSize, TTypedValue_1_0* out, uint32_t outSize, uint32_t* outReportCount, TTypedValue_1_0* outMaxValues, uint32_t outMaxValuesSize )
+    {
         const uint32_t adapterId = m_device.GetAdapter().GetAdapterId();
 
         MD_LOG_ENTER_A( adapterId );
+
+        constexpr uint32_t streamMask = API_TYPE_IOSTREAM;
+
+        const auto measurementType = ( m_currentParams->ApiMask & streamMask )
+            ? MEASUREMENT_TYPE_SNAPSHOT_IO
+            : MEASUREMENT_TYPE_DELTA_QUERY;
+
+        if constexpr( async )
+        {
+            if( measurementType != MEASUREMENT_TYPE_SNAPSHOT_IO )
+            {
+                MD_LOG_A( adapterId, LOG_ERROR, "Async metrics calculation is only supported for IoStream measurements" );
+                MD_LOG_EXIT_A( adapterId );
+                return CC_ERROR_NOT_SUPPORTED;
+            }
+        }
 
         MD_CHECK_PTR_RET_A( adapterId, rawData, CC_ERROR_INVALID_PARAMETER );
         MD_CHECK_PTR_RET_A( adapterId, out, CC_ERROR_INVALID_PARAMETER );
@@ -2646,15 +2699,11 @@ namespace MetricsDiscoveryInternal
             return CC_OK;
         }
 
-        constexpr uint32_t streamMask = API_TYPE_IOSTREAM;
+        const uint32_t rawReportSize = ( measurementType == MEASUREMENT_TYPE_SNAPSHOT_IO )
+            ? m_currentParams->RawReportSize
+            : m_currentParams->QueryReportSize;
 
-        const auto     measurementType = ( m_currentParams->ApiMask & streamMask )
-                ? MEASUREMENT_TYPE_SNAPSHOT_IO
-                : MEASUREMENT_TYPE_DELTA_QUERY;
-        const uint32_t rawReportSize   = ( measurementType == MEASUREMENT_TYPE_SNAPSHOT_IO )
-              ? m_currentParams->RawReportSize
-              : m_currentParams->QueryReportSize;
-        const uint32_t rawReportCount  = rawDataSize / rawReportSize;
+        const uint32_t rawReportCount = rawDataSize / rawReportSize;
 
         // Validation
         auto ret = ValidateCalculateMetricsParams( rawDataSize, rawReportSize, outSize, rawReportCount, outMaxValuesSize );
@@ -2676,8 +2725,17 @@ namespace MetricsDiscoveryInternal
         MD_LOG_A( adapterId, LOG_DEBUG, "about to calculate %u raw reports", rawReportCount );
 
         // CALCULATE METRICS
-        while( calculationManager->CalculateNextReport( calculationContext ) )
-        { // void
+        if constexpr( async )
+        {
+            while( calculationManager->CalculateNextAsyncReport( calculationContext ) )
+            { // void
+            }
+        }
+        else
+        {
+            while( calculationManager->CalculateNextReport( calculationContext ) )
+            { // void
+            }
         }
 
         MD_LOG_A( adapterId, LOG_DEBUG, "calculated %u out reports", calculationContext.CommonCalculationContext.OutReportCount );
@@ -2733,9 +2791,10 @@ namespace MetricsDiscoveryInternal
             return CC_ERROR_INVALID_PARAMETER;
         }
 
-        MD_CHECK_PTR_RET_A( adapterId, m_metricsCalculator, CC_ERROR_GENERAL );
+        auto metricsCalculator = GetMetricsCalculator();
+        MD_CHECK_PTR_RET_A( adapterId, metricsCalculator, CC_ERROR_GENERAL );
 
-        m_metricsCalculator->ReadIoMeasurementInformation( *m_concurrentGroup, out );
+        metricsCalculator->ReadIoMeasurementInformation( *m_concurrentGroup, out );
         MD_LOG_A( adapterId, LOG_DEBUG, "calculated %u out io information", m_concurrentGroup->GetParams()->IoMeasurementInformationCount );
 
         MD_LOG_EXIT_A( adapterId );
@@ -2902,7 +2961,7 @@ namespace MetricsDiscoveryInternal
         calculationManager->ResetContext( context );
         context.CommonCalculationContext.DeltaValues = new( std::nothrow ) TTypedValue_1_0[m_currentParams->MetricsCount];
         MD_CHECK_PTR_RET_A( adapterId, context.CommonCalculationContext.DeltaValues, CC_ERROR_NO_MEMORY );
-        context.CommonCalculationContext.Calculator     = m_metricsCalculator;
+        context.CommonCalculationContext.Calculator     = GetMetricsCalculator();
         context.CommonCalculationContext.MetricSet      = this;
         context.CommonCalculationContext.Out            = out;
         context.CommonCalculationContext.OutMaxValues   = outMaxValues;
@@ -3095,6 +3154,13 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     CMetricsCalculator* CMetricSet::GetMetricsCalculator()
     {
+        if( m_metricsCalculator == nullptr )
+        {
+            std::vector<std::reference_wrapper<CMetricsDevice>> devices = { m_device };
+
+            InitializeMetricsCalculator( devices );
+        }
+
         return m_metricsCalculator;
     }
 
@@ -3136,6 +3202,44 @@ namespace MetricsDiscoveryInternal
     TByteArrayLatest* CMetricSet::GetPlatformMask()
     {
         return m_platformMask;
+    }
+
+    //////////////////////////////////////////////////////////////////////////////
+    //
+    // Class:
+    //     CMetricSet
+    //
+    // Method:
+    //     InitializeMetricsCalculator
+    //
+    // Description:
+    //     Initializes metrics calculator if not already initialized.
+    //
+    // Input:
+    //    std::vector<std::reference_wrapper<CMetricsDevice>>& devices - vector of metrics devices, used to get symbols
+    //
+    // Output:
+    //     TCompletionCode - *CC_OK* if metrics calculator has been initialized successfully, *CC_ERROR_NO_MEMORY* if memory allocation failed.
+    //
+    //////////////////////////////////////////////////////////////////////////////
+    TCompletionCode CMetricSet::InitializeMetricsCalculator( std::vector<std::reference_wrapper<CMetricsDevice>>& devices )
+    {
+        if( m_metricsCalculator == nullptr )
+        {
+            const uint32_t adapterId = m_device.GetAdapter().GetAdapterId();
+
+            m_metricsCalculator = ( devices.size() == 1 )
+                ? new( std::nothrow ) CMetricsCalculator( devices[0].get() )
+                : new( std::nothrow ) CMetricsCalculator( devices );
+
+            if( m_metricsCalculator == nullptr )
+            {
+                MD_LOG_A( adapterId, LOG_ERROR, "ERROR: Cannot allocate memory for CMetricsCalculator" );
+                return CC_ERROR_NO_MEMORY;
+            }
+        }
+
+        return CC_OK;
     }
 
     //////////////////////////////////////////////////////////////////////////////

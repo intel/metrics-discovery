@@ -28,6 +28,8 @@ namespace MetricsDiscoveryInternal
     // Forward declarations //
     template <>
     int32_t CMetricsCalculationManager<MEASUREMENT_TYPE_SNAPSHOT_IO>::GetInformationIndex( const char* symbolName, CMetricSet* metricSet );
+    template <>
+    void CMetricsCalculationManager<MEASUREMENT_TYPE_SNAPSHOT_IO>::ProcessCalculation( TStreamCalculationContext* sc, bool async, uint32_t adapterId );
 
     //////////////////////////////////////////////////////////////////////////////
     //
@@ -86,22 +88,20 @@ namespace MetricsDiscoveryInternal
     //
     // Input:
     //     TCalculationContext& context - (IN/OUT) calculation context
-    //     bool isRawDataProvided       - True if raw data and output buffer are provided, false otherwise
-    //     bool isAggregationRequested  - Indicates if the aggregation is requested
     //
     // Output:
     //     TCompletionCode              - *CC_OK* means success
     //
     //////////////////////////////////////////////////////////////////////////////
     template <>
-    TCompletionCode CMetricsCalculationManager<MEASUREMENT_TYPE_SNAPSHOT_IO>::PrepareContext( TCalculationContext& context, bool isRawDataProvided /*true*/, bool isAggregationRequested /*false*/ )
+    TCompletionCode CMetricsCalculationManager<MEASUREMENT_TYPE_SNAPSHOT_IO>::PrepareContext( TCalculationContext& context )
     {
         TStreamCalculationContext* sc = &context.StreamCalculationContext;
         MD_CHECK_PTR_RET( sc->Calculator, CC_ERROR_INVALID_PARAMETER );
 
         const uint32_t adapterId = sc->Calculator->GetMetricsDevice().GetAdapter().GetAdapterId();
 
-        if( !isAggregationRequested )
+        if( !sc->AggregationEnabled )
         {
             // Find required indices for context filtering, report filtering and PreviousContextId information
             sc->ContextIdIdx    = GetInformationIndex( "ContextId", sc->MetricSet );
@@ -115,11 +115,9 @@ namespace MetricsDiscoveryInternal
             }
         }
 
-        if( isRawDataProvided )
+        if( sc->RawData )
         {
             sc->OutReportCount      = 0;
-            sc->OutPtr              = sc->Out;
-            sc->OutMaxValuesPtr     = sc->OutMaxValues;
             sc->PrevRawDataPtr      = sc->RawData;
             sc->PrevRawReportNumber = 0;
             sc->LastRawDataPtr      = sc->RawData;
@@ -150,15 +148,13 @@ namespace MetricsDiscoveryInternal
     //
     // Input:
     //     TCalculationContext& context - (IN/OUT) calculation context
-    //     bool isRawDataProvided       - True if raw data and output buffer are provided, false otherwise
-    //     bool isAggregationRequested  - Indicates if the aggregation is requested
     //
     // Output:
     //     TCompletionCode              - *CC_OK* means success
     //
     //////////////////////////////////////////////////////////////////////////////
     template <>
-    TCompletionCode CMetricsCalculationManager<MEASUREMENT_TYPE_DELTA_QUERY>::PrepareContext( TCalculationContext& context, bool isRawDataProvided /*true*/, bool isAggregationRequested /*false*/ )
+    TCompletionCode CMetricsCalculationManager<MEASUREMENT_TYPE_DELTA_QUERY>::PrepareContext( TCalculationContext& context )
     {
         TQueryCalculationContext* qc = &context.QueryCalculationContext;
         MD_CHECK_PTR_RET( qc->Calculator, CC_ERROR_INVALID_PARAMETER );
@@ -172,12 +168,9 @@ namespace MetricsDiscoveryInternal
         qc->MetricsAndInformationCount = metricSetParams.MetricsCount + metricSetParams.InformationCount;
         qc->RawReportSize              = metricSetParams.QueryReportSize;
 
-        if( isRawDataProvided )
+        if( qc->RawData )
         {
-            qc->OutReportCount  = 0;
-            qc->OutPtr          = qc->Out;
-            qc->OutMaxValuesPtr = qc->OutMaxValues;
-            qc->RawDataPtr      = qc->RawData;
+            qc->OutReportCount = 0;
         }
 
         return CC_OK;
@@ -249,23 +242,23 @@ namespace MetricsDiscoveryInternal
         // METRICS
         sc->Calculator->ReadMetricsFromIoReport( sc->LastRawDataPtr, sc->PrevRawDataPtr, sc->DeltaValues, *sc->MetricSet );
         // NORMALIZATION
-        sc->Calculator->NormalizeMetrics( sc->DeltaValues, sc->OutPtr, *sc->MetricSet );
+        sc->Calculator->NormalizeMetrics( sc->DeltaValues, sc->Out, *sc->MetricSet );
         // INFORMATION
-        sc->Calculator->ReadInformation( sc->LastRawDataPtr, sc->OutPtr + sc->MetricSet->GetParams()->MetricsCount, *sc->MetricSet, sc->ContextIdIdx );
+        sc->Calculator->ReadInformation( sc->LastRawDataPtr, sc->Out + sc->MetricSet->GetParams()->MetricsCount, *sc->MetricSet, sc->ContextIdIdx );
         // MAX VALUES
         if( sc->OutMaxValues )
         {
-            sc->Calculator->CalculateMaxValues( sc->DeltaValues, sc->OutPtr, sc->OutMaxValuesPtr, *sc->MetricSet );
-            sc->OutMaxValuesPtr += sc->MetricSet->GetParams()->MetricsCount;
+            sc->Calculator->CalculateMaxValues( sc->DeltaValues, sc->Out, sc->OutMaxValues, *sc->MetricSet );
+            sc->OutMaxValues += sc->MetricSet->GetParams()->MetricsCount;
         }
 
         // Save calculated report for reuse
-        if( CC_OK != sc->Calculator->SaveCalculatedReport( sc->OutPtr ) )
+        if( CC_OK != sc->Calculator->SaveCalculatedReport( sc->Out ) )
         {
             MD_LOG_A( adapterId, LOG_DEBUG, "Unable to store previous calculated report for reuse." );
         }
 
-        sc->OutPtr += sc->MetricsAndInformationCount;
+        sc->Out += sc->MetricsAndInformationCount;
         sc->OutReportCount++;
 
         // Prev is now Last
@@ -328,24 +321,128 @@ namespace MetricsDiscoveryInternal
         const uint32_t metricsCount = qc->MetricSet->GetParams()->MetricsCount;
 
         // METRICS
-        qc->Calculator->ReadMetricsFromQueryReport( qc->RawDataPtr, qc->DeltaValues, *qc->MetricSet );
+        qc->Calculator->ReadMetricsFromQueryReport( qc->RawData, qc->DeltaValues, *qc->MetricSet );
         // NORMALIZATION
-        qc->Calculator->NormalizeMetrics( qc->DeltaValues, qc->OutPtr, *qc->MetricSet );
+        qc->Calculator->NormalizeMetrics( qc->DeltaValues, qc->Out, *qc->MetricSet );
         // INFORMATION
-        qc->Calculator->ReadInformation( qc->RawDataPtr, qc->OutPtr + metricsCount, *qc->MetricSet, -1 );
+        qc->Calculator->ReadInformation( qc->RawData, qc->Out + metricsCount, *qc->MetricSet, -1 );
         // MAX VALUES
         if( qc->OutMaxValues )
         {
-            qc->Calculator->CalculateMaxValues( qc->DeltaValues, qc->OutPtr, qc->OutMaxValuesPtr, *qc->MetricSet );
-            qc->OutMaxValuesPtr += metricsCount;
+            qc->Calculator->CalculateMaxValues( qc->DeltaValues, qc->Out, qc->OutMaxValues, *qc->MetricSet );
+            qc->OutMaxValues += metricsCount;
         }
 
-        qc->RawDataPtr += qc->RawReportSize;
-        qc->OutPtr += qc->MetricsAndInformationCount;
+        qc->RawData += qc->RawReportSize;
+        qc->Out += qc->MetricsAndInformationCount;
 
         qc->OutReportCount++;
 
         return true;
+    }
+
+    //////////////////////////////////////////////////////////////////////////////
+    //
+    // Class:
+    //     CMetricsCalculationManager<MEASUREMENT_TYPE_SNAPSHOT_IO>
+    //
+    // Method:
+    //     CalculateNextAsyncReport
+    //
+    // Description:
+    //     Calculates a single report for a IoStream measurements using raw data and
+    //     other state variables stored in the given calculation context.
+    //     Timer reports are not calculated. First calculated async report has deltas
+    //     equal to 0.
+    //
+    // Input:
+    //     TCalculationContext& context - (IN/OUT) calculation context
+    //
+    // Output:
+    //     bool - true, if report calculated
+    //            false, if not - calculation complete for current context
+    //
+    //////////////////////////////////////////////////////////////////////////////
+    template <>
+    bool CMetricsCalculationManager<MEASUREMENT_TYPE_SNAPSHOT_IO>::CalculateNextAsyncReport( TCalculationContext& context )
+    {
+        TStreamCalculationContext* sc = &context.StreamCalculationContext;
+        MD_CHECK_PTR_RET( sc->Calculator, false );
+
+        const uint64_t reportReason = sc->Calculator->ReadInformationByIndex( sc->LastRawDataPtr, *sc->MetricSet, sc->ReportReasonIdx );
+
+        const uint32_t adapterId = sc->Calculator->GetMetricsDevice().GetAdapter().GetAdapterId();
+
+        const bool isSavedReport = sc->Calculator->SavedReportPresent();
+
+        sc->LastRawReportNumber++;
+
+        // Calculate and save first report if there are no other reports or if the report is the last one.
+        if( sc->LastRawReportNumber >= sc->RawReportCount )
+        {
+            if( ( reportReason & REPORT_REASON_INTERNAL_TIMER ) == 0 ) // Calculate every report except timer reports.
+            {
+                if( isSavedReport )
+                {
+                    sc->PrevRawDataPtr = sc->Calculator->GetSavedReport();
+                }
+
+                ProcessCalculation( sc, true, adapterId );
+            }
+
+            return false;
+        }
+
+        // Calculation of multiple reports. From the first to the penultimate.
+        if( ( reportReason & REPORT_REASON_INTERNAL_TIMER ) != 0 )
+        {
+            sc->LastRawDataPtr += sc->RawReportSize;
+
+            if( !isSavedReport )
+            {
+                // Prev is now Last
+                sc->PrevRawDataPtr = sc->LastRawDataPtr;
+            }
+
+            // Skip timer reports in async calculation
+            return true;
+        }
+
+        if( isSavedReport )
+        {
+            sc->PrevRawDataPtr = sc->Calculator->GetSavedReport();
+            MD_ASSERT_A( adapterId, sc->PrevRawDataPtr != nullptr );
+        }
+
+        ProcessCalculation( sc, true, adapterId );
+
+        sc->LastRawDataPtr += sc->RawReportSize;
+
+        return true;
+    }
+
+    //////////////////////////////////////////////////////////////////////////////
+    //
+    // Class:
+    //     CMetricsCalculationManager<MEASUREMENT_TYPE_DELTA_QUERY>
+    //
+    // Method:
+    //     CalculateNextAsyncReport
+    //
+    // Description:
+    //     Async calculation is only for IoStream measurements.
+    //
+    // Input:
+    //     TCalculationContext& context - (IN/OUT) calculation context
+    //
+    // Output:
+    //     bool - always false, as async calculation is not supported for Query measurements
+    //
+    //////////////////////////////////////////////////////////////////////////////
+    template <>
+    bool CMetricsCalculationManager<MEASUREMENT_TYPE_DELTA_QUERY>::CalculateNextAsyncReport( TCalculationContext& context )
+    {
+        return false;
     }
 
     //////////////////////////////////////////////////////////////////////////////
@@ -391,5 +488,64 @@ namespace MetricsDiscoveryInternal
 
         MD_LOG_A( adapterId, LOG_DEBUG, "can't find information index: %s", symbolName );
         return -1;
+    }
+
+    //////////////////////////////////////////////////////////////////////////////
+    //
+    // Class:
+    //     CMetricsCalculationManager<MEASUREMENT_TYPE_SNAPSHOT_IO>
+    //
+    // Method:
+    //     ProcessAsyncCalculation
+    //
+    // Description:
+    //     Processes async calculation for IoStream measurements using the provided
+    //     calculation context. This method reads and normalizes metric values,
+    //     reads information values, calculates max values if required, and saves
+    //     both the raw and calculated reports for future use.
+    //
+    // Input:
+    //     bool     async     - Indicates whether the calculation is only for async reports or not.
+    //     uint32_t adapterId - The adapter ID used for logging and assertion purposes.
+    //
+    // [In,Out]:
+    //     TStreamCalculationContext* sc - Pointer to the stream calculation context containing all state and data
+    //     required for processing async calculation.
+    //
+    //////////////////////////////////////////////////////////////////////////////
+    template <>
+    void CMetricsCalculationManager<MEASUREMENT_TYPE_SNAPSHOT_IO>::ProcessCalculation( TStreamCalculationContext* sc, bool async, uint32_t adapterId )
+    {
+        const uint32_t metricsCount = sc->MetricSet->GetParams()->MetricsCount;
+
+        // METRICS
+        sc->Calculator->ReadMetricsFromIoReport( sc->LastRawDataPtr, sc->PrevRawDataPtr, sc->DeltaValues, *sc->MetricSet );
+        // NORMALIZATION
+        sc->Calculator->NormalizeMetrics( sc->DeltaValues, sc->Out, *sc->MetricSet );
+        // INFORMATION
+        sc->Calculator->ReadInformation( sc->LastRawDataPtr, sc->Out + metricsCount, *sc->MetricSet, sc->ContextIdIdx );
+        // MAX VALUES
+        if( sc->OutMaxValues )
+        {
+            sc->Calculator->CalculateMaxValues( sc->DeltaValues, sc->Out, sc->OutMaxValues, *sc->MetricSet );
+            sc->OutMaxValues += metricsCount;
+        }
+
+        if( async )
+        {
+            if( CC_OK != sc->Calculator->SaveReport( sc->LastRawDataPtr ) )
+            {
+                MD_LOG_A( adapterId, LOG_DEBUG, "Unable to store last raw report for reuse." );
+            }
+        }
+
+        // Save calculated report for reuse
+        if( CC_OK != sc->Calculator->SaveCalculatedReport( sc->Out ) )
+        {
+            MD_LOG_A( adapterId, LOG_DEBUG, "Unable to store previous calculated report for reuse." );
+        }
+
+        sc->Out += sc->MetricsAndInformationCount;
+        sc->OutReportCount++;
     }
 } // namespace MetricsDiscoveryInternal

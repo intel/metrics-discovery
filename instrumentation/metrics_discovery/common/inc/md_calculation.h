@@ -29,7 +29,7 @@ namespace MetricsDiscoveryInternal
     class CMetricsCalculator;
 
     ///////////////////////////////////////////////////////////////////////////////
-    //      * Common calculation context:
+    // Common calculation context:
     //////////////////////////////////////////////////////////////////////////////
     typedef struct SCommonCalculationContext
     {
@@ -53,13 +53,14 @@ namespace MetricsDiscoveryInternal
 
         // Calculation
         TTypedValue_1_0* DeltaValues; // Required
-        TTypedValue_1_0* OutPtr;      // Required
-        TTypedValue_1_0* OutMaxValuesPtr;
+
+        // Aggregation
+        bool AggregationEnabled;
 
     } TCommonCalculationContext;
 
     ///////////////////////////////////////////////////////////////////////////////
-    //      * Stream specific calculation context:
+    // Stream specific calculation context:
     //////////////////////////////////////////////////////////////////////////////
     typedef struct SStreamCalculationContext : public TCommonCalculationContext
     {
@@ -79,17 +80,14 @@ namespace MetricsDiscoveryInternal
     } TStreamCalculationContext;
 
     ///////////////////////////////////////////////////////////////////////////////
-    //      * Query specific calculation context:
+    // Query specific calculation context:
     //////////////////////////////////////////////////////////////////////////////
     typedef struct SQueryCalculationContext : public TCommonCalculationContext
     {
-        // Calculation
-        const uint8_t* RawDataPtr;
-
     } TQueryCalculationContext;
 
     ///////////////////////////////////////////////////////////////////////////////
-    //      * Union with all of calculation contexts:
+    // Union with all of calculation contexts:
     //////////////////////////////////////////////////////////////////////////////
     typedef union SCalculationContext
     {
@@ -111,9 +109,12 @@ namespace MetricsDiscoveryInternal
     {
     public:
         virtual ~CCalculationManager(){};
-        virtual void            ResetContext( TCalculationContext& context )                                                                       = 0;
-        virtual TCompletionCode PrepareContext( TCalculationContext& context, bool isRawDataProvided = true, bool isAggregationRequested = false ) = 0;
-        virtual bool            CalculateNextReport( TCalculationContext& context )                                                                = 0;
+
+        // Calculation.
+        virtual void            ResetContext( TCalculationContext& context )             = 0;
+        virtual TCompletionCode PrepareContext( TCalculationContext& context )           = 0;
+        virtual bool            CalculateNextReport( TCalculationContext& context )      = 0;
+        virtual bool            CalculateNextAsyncReport( TCalculationContext& context ) = 0;
     };
 
     //////////////////////////////////////////////////////////////////////////////
@@ -129,11 +130,14 @@ namespace MetricsDiscoveryInternal
     class CMetricsCalculationManager : public CCalculationManager
     {
     public:
+        // Calculation.
         virtual void            ResetContext( TCalculationContext& context );
-        virtual TCompletionCode PrepareContext( TCalculationContext& context, bool isRawDataProvided = true, bool isAggregationRequested = false );
+        virtual TCompletionCode PrepareContext( TCalculationContext& context );
         virtual bool            CalculateNextReport( TCalculationContext& context );
+        virtual bool            CalculateNextAsyncReport( TCalculationContext& context );
 
     private:
         int32_t GetInformationIndex( const char* symbolName, CMetricSet* set );
+        void    ProcessCalculation( TStreamCalculationContext* sc, bool async, uint32_t adapterId );
     };
 } // namespace MetricsDiscoveryInternal

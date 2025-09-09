@@ -108,6 +108,14 @@ TCompletionCode CreateMetricTreeLNL_OA( CMetricsDevice* metricsDevice, CConcurre
             GPU_RENDER | GPU_COMPUTE | GPU_GENERIC, 576, 880, OA_REPORT_TYPE_576B_PEC64LL, &platformMask, nullptr );
         MD_CHECK_PTR( metricSet );
 
+        metricSet = concurrentGroup->AddMetricSetExplicit<MetricSets_LNL_OA::CXvePipelineRasterizationProfileMetricSet>( "XvePipelineRasterizationProfile", "XvePipelineRasterizationProfile", API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+            GPU_RENDER | GPU_COMPUTE | GPU_GENERIC, 576, 880, OA_REPORT_TYPE_576B_PEC64LL, &platformMask, nullptr );
+        MD_CHECK_PTR( metricSet );
+
+        metricSet = concurrentGroup->AddMetricSetExplicit<MetricSets_LNL_OA::CXvePipelineRaytracingProfileMetricSet>( "XvePipelineRaytracingProfile", "XvePipelineRaytracingProfile", API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+            GPU_RENDER | GPU_COMPUTE | GPU_GENERIC, 576, 880, OA_REPORT_TYPE_576B_PEC64LL, &platformMask, nullptr );
+        MD_CHECK_PTR( metricSet );
+
         metricSet = concurrentGroup->AddMetricSetExplicit<MetricSets_LNL_OA::CTestOaMetricSet>( "TestOa", "TestOa", API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
             GPU_RENDER | GPU_COMPUTE | GPU_GENERIC, 576, 880, OA_REPORT_TYPE_576B_PEC64LL, &platformMask, nullptr );
         MD_CHECK_PTR( metricSet );

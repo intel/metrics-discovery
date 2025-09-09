@@ -17,6 +17,7 @@ SPDX-License-Identifier: MIT
 #include <cstdio>
 #include <vector>
 #include <list>
+#include <functional>
 
 #define MD_METRIC_GROUP_NAME_LEVEL_MAX 3
 
@@ -232,9 +233,9 @@ namespace MetricsDiscoveryInternal
             uint32_t          deltaReportSize,
             TReportType       reportType,
             TByteArrayLatest* platformMask,
-            uint32_t          gtMask                 = GT_TYPE_ALL,
-            bool              isCustom               = false,
-            bool              isAggregationRequested = false );
+            uint32_t          gtMask             = GT_TYPE_ALL,
+            bool              isCustom           = false,
+            bool              aggregationEnabled = false );
         virtual ~CMetricSet();
 
         CMetricSet( const CMetricSet& )            = delete; // Delete copy-constructor
@@ -277,6 +278,8 @@ namespace MetricsDiscoveryInternal
         CMetricsCalculator* GetMetricsCalculator();
         CMetricsDevice&     GetMetricsDevice();
         TByteArrayLatest*   GetPlatformMask();
+
+        TCompletionCode InitializeMetricsCalculator( std::vector<std::reference_wrapper<CMetricsDevice>>& devices );
 
         TCompletionCode SetAvailabilityEquation( const char* equationString );
         bool            IsAvailabilityEquationTrue();
@@ -327,6 +330,9 @@ namespace MetricsDiscoveryInternal
         // Flexible metric set methods:
         virtual TCompletionCode AddDefaultMetrics();
 
+        template <bool async>
+        TCompletionCode CalculateMetrics( const uint8_t* rawData, uint32_t rawDataSize, TTypedValue_1_0* out, uint32_t outSize, uint32_t* outReportCount, TTypedValue_1_0* outMaxValues, uint32_t outMaxValuesSize );
+
     private:
         // Variables:
         TReportType m_reportType;
@@ -357,10 +363,10 @@ namespace MetricsDiscoveryInternal
         std::vector<CInformation*> m_filteredInformationVector; // Stores only references
 
         // Runtime state:
-        bool                m_isFiltered;             // if true then 'filtered' variables are used
-        bool                m_isCustom;               // if true then it has custom metrics or it's a custom set
-        bool                m_isAggregationRequested; // if true then non-aggregatable informations are filtered out from the set
-        bool                m_isReadRegsCfgSet;       // if true then read regs config will be cleared on Deactivate; determined during Activate
+        bool                m_isFiltered;         // if true then 'filtered' variables are used
+        bool                m_isCustom;           // if true then it has custom metrics or it's a custom set
+        bool                m_aggregationEnabled; // if true then non-aggregatable informations are filtered out from the set
+        bool                m_isReadRegsCfgSet;   // if true then read regs config will be cleared on Deactivate; determined during Activate
         TPmRegsConfigInfo   m_pmRegsConfigInfo;
         CMetricsCalculator* m_metricsCalculator;
 

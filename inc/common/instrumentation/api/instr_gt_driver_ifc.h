@@ -237,7 +237,9 @@ typedef enum
     GTDI_IFC_VERSION_3_61    = GTDI_MAKE_IFC_VER( GTDI_IFC_VERSION_3, 61 ), // EU cores and threads override withdrawal
     GTDI_IFC_VERSION_3_62    = GTDI_MAKE_IFC_VER( GTDI_IFC_VERSION_3, 62 ),
     GTDI_IFC_VERSION_3_63    = GTDI_MAKE_IFC_VER( GTDI_IFC_VERSION_3, 63 ), // New device params: color, depth, geometry pipes count
-    GTDI_IFC_VERSION_CURRENT = GTDI_IFC_VERSION_3_63,
+    GTDI_IFC_VERSION_3_64    = GTDI_MAKE_IFC_VER( GTDI_IFC_VERSION_3, 64 ),
+    GTDI_IFC_VERSION_3_65    = GTDI_MAKE_IFC_VER( GTDI_IFC_VERSION_3, 65 ), // New device param - OA buffers mask
+    GTDI_IFC_VERSION_CURRENT = GTDI_IFC_VERSION_3_65,
     GTDI_IFC_VERSION_MAX     = 0xFFFFFFFF
 } GTDI_IFC_VERSION;
 
@@ -499,34 +501,34 @@ typedef enum
 typedef enum
 {
     // 0-4 reserved
-    GENERATION_HSW      = 5,
+    GENERATION_HSW = 5,
     GENERATION_BDW,
     GENERATION_SKL,
     // 8-9 reserved
-    GENERATION_BXT      = 10,
+    GENERATION_BXT = 10,
     // 11 reserved
-    GENERATION_KBL      = 12,
-    GENERATION_GLK      = 13,
-    GENERATION_ICL      = 14,
+    GENERATION_KBL = 12,
+    GENERATION_GLK = 13,
+    GENERATION_ICL = 14,
     // 15-16 reserved
-    GENERATION_TGL      = 17,
-    GENERATION_CFL      = 18,
-    GENERATION_EHL      = 19,
+    GENERATION_TGL = 17,
+    GENERATION_CFL = 18,
+    GENERATION_EHL = 19,
     // 20 reserved
-    GENERATION_DG1      = 21,
+    GENERATION_DG1 = 21,
     // 22 reserved
-    GENERATION_RKL      = 23,
-    GENERATION_ACM      = 24,
-    GENERATION_PVC      = 25,
-    GENERATION_ADLP     = 26,
-    GENERATION_MTL      = 27,
-    GENERATION_BMG      = 28,
-    GENERATION_ADLS     = 29,
-    GENERATION_ADLN     = 30,
-    GENERATION_LNL      = 31,
-    GENERATION_PTL      = 32,
+    GENERATION_RKL  = 23,
+    GENERATION_ACM  = 24,
+    GENERATION_PVC  = 25,
+    GENERATION_ADLP = 26,
+    GENERATION_MTL  = 27,
+    GENERATION_BMG  = 28,
+    GENERATION_ADLS = 29,
+    GENERATION_ADLN = 30,
+    GENERATION_LNL  = 31,
+    GENERATION_PTL  = 32,
     // 33 reserved
-    GENERATION_ARL      = 34,
+    GENERATION_ARL = 34,
     // ...
     // DO NOT CHANGE ORDER OF THIS ENUM, ADD NEW PLATFORMS AT THE END!
     // It has to be synchronized with metric_discovery_internal_api.h file.
@@ -615,6 +617,8 @@ typedef enum GTDI_DEVICE_PARAM_ENUM
     GTDI_DEVICE_PARAM_COLOR_PIPE_TOTAL_COUNT             = 63,
     GTDI_DEVICE_PARAM_DEPTH_PIPE_TOTAL_COUNT             = 64,
     GTDI_DEVICE_PARAM_GEOMETRY_PIPE_TOTAL_COUNT          = 65,
+    // 66 reserved
+    GTDI_DEVICE_PARAM_OA_BUFFERS_MASK                    = 67,
 
     // For Xe2+, the values are maximums for a given device.
     // These params are intended for internal use only.
@@ -650,16 +654,39 @@ typedef enum GTDI_OA_BUFFER_TYPE_ENUM
     GTDI_OA_BUFFER_TYPE_DEFAULT     = 0,
     GTDI_OA_BUFFER_TYPE_OA          = GTDI_OA_BUFFER_TYPE_DEFAULT, // preGen12
     GTDI_OA_BUFFER_TYPE_OAG         = GTDI_OA_BUFFER_TYPE_DEFAULT, // Gen12+
-    GTDI_OA_BUFFER_TYPE_OAM_SLICE_0 = 1,
-    GTDI_OA_BUFFER_TYPE_OAM_SLICE_1 = 2,
-    GTDI_OA_BUFFER_TYPE_OAM_SLICE_2 = 3,
-    GTDI_OA_BUFFER_TYPE_OAM_SLICE_3 = 4,
-    GTDI_OA_BUFFER_TYPE_OAM_SLICE_4 = 5,
-    GTDI_OA_BUFFER_TYPE_OAM_SLICE_5 = 6,
+    // 1 reserved
+    GTDI_OA_BUFFER_TYPE_OAM_SAG     = 2,
+    GTDI_OA_BUFFER_TYPE_OAM_SLICE_0 = 3,
+    GTDI_OA_BUFFER_TYPE_OAM_SLICE_1 = 4,
+    GTDI_OA_BUFFER_TYPE_OAM_SLICE_2 = 5,
+    GTDI_OA_BUFFER_TYPE_OAM_SLICE_3 = 6,
+    GTDI_OA_BUFFER_TYPE_OAM_SLICE_4 = 7,
+    GTDI_OA_BUFFER_TYPE_OAM_SLICE_5 = 8,
     GTDI_OA_BUFFER_TYPE_COUNT,
     GTDI_OA_BUFFER_TYPE_ALL     = GTDI_OA_BUFFER_TYPE_COUNT,
     GTDI_OA_BUFFER_TYPE_INVALID = GTDI_OA_BUFFER_TYPE_ALL,
 } GTDI_OA_BUFFER_TYPE;
+
+/******************************************************************************/
+/* GTDI_OA_BUFFER_MASK:                                                       */
+/******************************************************************************/
+typedef enum GTDI_OA_BUFFER_MASK_ENUM
+{
+    // HW resource
+    GTDI_OA_BUFFER_MASK_NONE        = 0,
+    GTDI_OA_BUFFER_MASK_DEFAULT     = 1 << GTDI_OA_BUFFER_TYPE_DEFAULT,
+    GTDI_OA_BUFFER_MASK_OA          = 1 << GTDI_OA_BUFFER_TYPE_OA,  // preGen12
+    GTDI_OA_BUFFER_MASK_OAG         = 1 << GTDI_OA_BUFFER_TYPE_OAG, // Gen12+
+    // 1 << 1 reserved
+    GTDI_OA_BUFFER_MASK_OAM_SAG     = 1 << GTDI_OA_BUFFER_TYPE_OAM_SAG,
+    GTDI_OA_BUFFER_MASK_OAM_SLICE_0 = 1 << GTDI_OA_BUFFER_TYPE_OAM_SLICE_0,
+    GTDI_OA_BUFFER_MASK_OAM_SLICE_1 = 1 << GTDI_OA_BUFFER_TYPE_OAM_SLICE_1,
+    GTDI_OA_BUFFER_MASK_OAM_SLICE_2 = 1 << GTDI_OA_BUFFER_TYPE_OAM_SLICE_2,
+    GTDI_OA_BUFFER_MASK_OAM_SLICE_3 = 1 << GTDI_OA_BUFFER_TYPE_OAM_SLICE_3,
+    GTDI_OA_BUFFER_MASK_OAM_SLICE_4 = 1 << GTDI_OA_BUFFER_TYPE_OAM_SLICE_4,
+    GTDI_OA_BUFFER_MASK_OAM_SLICE_5 = 1 << GTDI_OA_BUFFER_TYPE_OAM_SLICE_5,
+    GTDI_OA_BUFFER_MASK_ALL         = 0xFFFFFFFF,
+} GTDI_OA_BUFFER_MASK;
 
 /******************************************************************************/
 /* GTDI_DEVICE_PARAM_VALUE_TYPE:                                              */
@@ -944,20 +971,20 @@ typedef struct GTDISetOverrideCfgInStruct
     GTDI_ESCAPE_FUNCTION Function;
     struct
     {
-        uint32_t OverrideId : 16;    // Id of the override to configure
-        uint32_t Reserved : 14;      //
-        uint32_t Permanent : 1;      // 0 - override is enabled/disabled
-                                     // per each command buffer separately
-                                     // 1 - override state is controlled
-                                     // by escape calls only -> DANGEROUS:
-                                     // can lead to system  freeze if given
-                                     // override is located in the global
-                                     // registers
-        uint32_t QueryControl : 1;   // Determines if override setting
-    };                               // is for immediate execution
-                                     // (value of 0) or to be applied
-                                     // when override control query
-                                     // begins (value of 1).
+        uint32_t OverrideId : 16;  // Id of the override to configure
+        uint32_t Reserved : 14;    //
+        uint32_t Permanent : 1;    // 0 - override is enabled/disabled
+                                   // per each command buffer separately
+                                   // 1 - override state is controlled
+                                   // by escape calls only -> DANGEROUS:
+                                   // can lead to system  freeze if given
+                                   // override is located in the global
+                                   // registers
+        uint32_t QueryControl : 1; // Determines if override setting
+    }; // is for immediate execution
+       // (value of 0) or to be applied
+       // when override control query
+       // begins (value of 1).
     union                            //
     {                                //
         bool32_t Enable;             // Flag: True = Enable, False = Disable
@@ -1467,17 +1494,17 @@ typedef struct GTDISetOverrideEUCfgInStruct
     GTDI_EU_CONFIG_ENTRY_TYPE ConfigEntryType;
     union
     {
-        uint32_t ThreadCount;          // Maximum number of threads spawned on single EU.
-                                       //
-        uint32_t EUMask;               // Threads will execute on n-th core only if n-th
-    };                                 // bit of EUMask is 1. If there is fewer than 8
-                                       // cores per slice (e.g. SNB/IVB GT1), last core
-                                       // in each row is not available (mask 0x77 selects
-                                       // all available cores on single IVB/SNB GT1 slice).
-                                       // On SNB GT2 both ThreadCount and EUMask must have
-                                       // identical config on each slice - because of that
-                                       // last submitted configuration for any slice will
-                                       // be used for both slices during override enabling.
+        uint32_t ThreadCount; // Maximum number of threads spawned on single EU.
+                              //
+        uint32_t EUMask;      // Threads will execute on n-th core only if n-th
+    }; // bit of EUMask is 1. If there is fewer than 8
+       // cores per slice (e.g. SNB/IVB GT1), last core
+       // in each row is not available (mask 0x77 selects
+       // all available cores on single IVB/SNB GT1 slice).
+       // On SNB GT2 both ThreadCount and EUMask must have
+       // identical config on each slice - because of that
+       // last submitted configuration for any slice will
+       // be used for both slices during override enabling.
     GTDI_PIPELINE_STAGE PipelineStage; // Which pipeline stage does EUMask affect.
     GTDI_PARTITION_ID   PartitionID;   // Which partition does EUMask or ThreadCount affect.
     uint32_t            Reserved;      // for backwards compatibility
