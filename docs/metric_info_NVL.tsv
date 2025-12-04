@@ -66,7 +66,7 @@ RenderBasic	RT_INPUT_MESSAGE_RAY_COUNT	RT Input Message Ray Count	Ray Tracing	Nu
 RenderBasic	LOAD_STORE_CACHE_HIT	Load Store Cache Hit	L1 Cache	Number of Load Store Cache hits
 RenderBasic	LOAD_STORE_CACHE_ACCESS	Load Store Cache Access	L1 Cache	Number of Load Store Cache accesses
 RenderBasic	XVE_THREADS_OCCUPANCY_ALL	XVE Threads Occupancy All	Vector Engine	Percentage of thread slots occupied by ALL threads
-RenderBasic	XVE_INST_ISSUED_ALL	XVE Inst Issued All	Vector Engine	Number of instructions issued (decoded) to any pipe
+RenderBasic	XVE_INST_ISSUED_ALL	XVE Inst Issued All	Vector Engine	Number of instructions issued (decoded) to any pipe (does not include the Scalar pipe)
 RenderBasic	GPU_MEMORY_BYTE_READ	GPU Memory Byte Read	Memory	Number of device local memory (HBM, GDDR, LPDDR, etc.) read bytes
 RenderBasic	GPU_MEMORY_BYTE_WRITE	GPU Memory Byte Write	Memory	Number of device local memory (HBM, GDDR, LPDDR, etc.) write bytes
 RenderBasic	LOAD_STORE_CACHE_BYTE_READ	Load Store Cache Byte Read	L1 Cache	Number of bytes read out of the Load Store Cache, excluding SLM accesses
@@ -93,7 +93,7 @@ ComputeBasic	XVE_ACTIVE	XVE Active	Vector Engine	Percentage of time in which at 
 ComputeBasic	XVE_INST_EXECUTED_ALU0_ALL	XVE Inst Executed ALU0 All	Vector Engine	Number of execution slots taken by instructions executed by ALL threads on ALU0 pipe
 ComputeBasic	XVE_INST_EXECUTED_ALU1_ALL	XVE Inst Executed ALU1 All	Vector Engine	Number of execution slots taken by instructions executed by ALL threads on ALU1 pipe. Does not include extended math instructions.
 ComputeBasic	XVE_INST_EXECUTED_SEND_ALL	XVE Inst Executed Send All	Vector Engine	Number of instruction (GRF or SRF) dispatches executed by ALL threads on SEND Pipe
-ComputeBasic	XVE_INST_ISSUED_ALL	XVE Inst Issued All	Vector Engine	Number of instructions issued (decoded) to any pipe
+ComputeBasic	XVE_INST_ISSUED_ALL	XVE Inst Issued All	Vector Engine	Number of instructions issued (decoded) to any pipe (does not include the Scalar pipe)
 ComputeBasic	XVE_SHARED_FUNCTION_ACCESS_HOLD	XVE Shared Function Access Hold	Vector Engine	Percentage of time in which XVE requests stalled by Shared Function units
 ComputeBasic	XVE_STALL	XVE Stall	Vector Engine	Percentage of time in which any thread loaded but not even a single pipe is active in XVE
 ComputeBasic	XVE_THREADS_OCCUPANCY_ALL	XVE Threads Occupancy All	Vector Engine	Percentage of thread slots occupied by ALL threads
@@ -163,7 +163,6 @@ DepthProfile	RENDER_CACHE_WRITE	Render Cache Write	Color Pipe	Number of Render C
 DepthProfile	URB_CROSS_SLICE_READ	URB Cross Slice Read	URB	Number of URB reads occurred from cross slices
 DepthProfile	PIXEL_2X2_LIT_POST_RASTERIZER_EARLY_DEPTH	Pixel 2x2 Lit Post Rasterizer Early Depth	Rasterizer	Number of promoted 2x2 that are lit from Rasterizer
 DepthProfile	PIXEL_2X2_LIT_POST_RASTERIZER_LATE_DEPTH	Pixel 2x2 Lit Post Rasterizer Late Depth	Rasterizer	Number of non-promoted 2x2 that are lit from Rasterizer
-DepthProfile	GPU_MEMORY_ACTIVE	GPU Memory Active	Memory	Percentage of time in which device local memory (HBM, GDDR, LPDDR, etc.) is active
 DeviceCacheProfile	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
 DeviceCacheProfile	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
 DeviceCacheProfile	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
@@ -212,10 +211,6 @@ MemoryProfile	ASYNC_GPGPU_THREADGROUP_COUNT	Async GpGpu Threadgroup Count	Thread
 MemoryProfile	RASTERIZER_SAMPLE_OUTPUT	Rasterizer Sample Output	Rasterizer	Number of lit samples emitted by Rasterizer
 MemoryProfile	COMPRESSOR_INPUT	Compressor Input	Memory	Number of 256B writes to compressible surfaces at the input of the compressor
 MemoryProfile	COMPRESSOR_OUTPUT	Compressor Output	Memory	Number of 256B writes to compressible surfaces at the output of the compressor
-MemoryProfile	GPU_MEMORY_32B_TRANSACTION_READ	GPU Memory 32b Transaction Read	Memory	Number of device local memory (HBM, GDDR, LPDDR, etc.) non coherent reads (32B)
-MemoryProfile	GPU_MEMORY_32B_TRANSACTION_WRITE	GPU Memory 32b Transaction Write	Memory	Number of device local memory (HBM, GDDR, LPDDR, etc.) non coherent writes (32B)
-MemoryProfile	GPU_MEMORY_64B_TRANSACTION_READ	GPU Memory 64b Transaction Read	Memory	Number of device local memory (HBM, GDDR, LPDDR, etc.) non coherent reads (64B)
-MemoryProfile	GPU_MEMORY_64B_TRANSACTION_WRITE	GPU Memory 64b Transaction Write	Memory	Number of device local memory (HBM, GDDR, LPDDR, etc.) non coherent writes (64B)
 MemoryProfile	GPU_MEMORY_BYTE_READ	GPU Memory Byte Read	Memory	Number of device local memory (HBM, GDDR, LPDDR, etc.) read bytes
 MemoryProfile	GPU_MEMORY_BYTE_WRITE	GPU Memory Byte Write	Memory	Number of device local memory (HBM, GDDR, LPDDR, etc.) write bytes
 MemoryProfile	GPU_MEMORY_BYTE_READ_RATE	GPU Memory Byte Read Rate	Memory	Device local memory (HBM, GDDR, LPDDR, etc.) read bandwidth
@@ -259,6 +254,15 @@ MemoryProfile	XVE_SLM_WRITE_MESSAGE_COUNT	XVE SLM Write Message Count	L1 Cache	N
 MemoryProfile	COPY_ENGINE_READ_REQUEST	Copy Engine Read Request	Copy Engine	Number of read requests sent by the Copy Engine
 MemoryProfile	COPY_ENGINE_REQUEST_STALL	Copy Engine Request Stall	Copy Engine	Percentage of time in which copy engine is stalled on the memory path due to stall on the read or write path when there are commands pending within copy engine
 MemoryProfile	COPY_ENGINE_WRITE_REQUEST	Copy Engine Write Request	Copy Engine	Number of write requests sent by the Copy Engine
+MemoryProfile	RT_LOAD_STORE_CACHE_READ_MESSAGE_COUNT	RT Load Store Cache Read Message Count	L1 Cache	Number of read messages sent from Ray Tracing unit to the Load Store Cache
+MemoryProfile	RT_LOAD_STORE_CACHE_WRITE_FROM_MESSAGE_COUNT	RT Load Store Cache Write From Message Count	L1 Cache	Number of write messages sent from Ray Tracing unit to the Load Store Cache
+MemoryProfile	GPU_MEMORY_32B_TRANSACTION_READ	GPU Memory 32b Transaction Read	Memory	Number of device local memory (HBM, GDDR, LPDDR, etc.) non coherent reads (32B)
+MemoryProfile	GPU_MEMORY_32B_TRANSACTION_WRITE	GPU Memory 32b Transaction Write	Memory	Number of device local memory (HBM, GDDR, LPDDR, etc.) non coherent writes (32B)
+MemoryProfile	GPU_MEMORY_64B_TRANSACTION_READ	GPU Memory 64b Transaction Read	Memory	Number of device local memory (HBM, GDDR, LPDDR, etc.) non coherent reads (64B)
+MemoryProfile	GPU_MEMORY_64B_TRANSACTION_WRITE	GPU Memory 64b Transaction Write	Memory	Number of device local memory (HBM, GDDR, LPDDR, etc.) non coherent writes (64B)
+MemoryProfile	GPU_MEMORY_ACTIVE	GPU Memory Active	Memory	Percentage of time in which device local memory (HBM, GDDR, LPDDR, etc.) is active
+MemoryProfile	GPU_MEMORY_READ	GPU Memory Read	Memory	Number of GTI memory reads
+MemoryProfile	GPU_MEMORY_WRITE	GPU Memory Write	Memory	Number of GTI memory writes
 RenderPipeProfile	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
 RenderPipeProfile	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
 RenderPipeProfile	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
@@ -342,8 +346,9 @@ RTProfile	XVE_INST_EXECUTED_ALU1_RT_MS	XVE Inst Executed ALU1 RT MS	Vector Engin
 RTProfile	XVE_THREADS_OCCUPANCY_ALL	XVE Threads Occupancy All	Vector Engine	Percentage of thread slots occupied by ALL threads
 RTProfile	RT_BVH_CACHE_MISS	RT BVH Cache Miss	Ray Tracing	Number of BVH cache misses
 RTProfile	RT_INPUT_MESSAGE_RAY_COUNT	RT Input Message Ray Count	Ray Tracing	Number of valid SIMD lanes in the TraceRay message
-RTProfile	RT_LOAD_STORE_CACHE_READ_MESSAGE_COUNT	RT Load Store Cache Read Message Count	L1 Cache	Number of read messages sent from Ray Tracing unit to the Load Store Cache
-RTProfile	RT_LOAD_STORE_CACHE_WRITE_FROM_MESSAGE_COUNT	RT Load Store Cache Write From Message Count	L1 Cache	Number of write messages sent from Ray Tracing unit to the Load Store Cache
+RTProfile	RT_QUAD_LEAF_STOC_RAY_COUNT	RT Quad Leaf Stoc Ray Count	Ray Tracing	Number of quad leaf nodes with STOC masks processed by the traversal function
+RTProfile	RT_STOC_HIT_OPAQUE	RT Stoc Hit Opaque	Ray Tracing	Number of hits on quads with STOC masks evaluated as opaque
+RTProfile	RT_STOC_HIT_TRANSPARENT	RT Stoc Hit Transparent	Ray Tracing	Number of hits on quads with STOC masks evaluated as transparent (ignored)
 VectorEngineProfile	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
 VectorEngineProfile	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
 VectorEngineProfile	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
@@ -378,7 +383,7 @@ VectorEngineProfile	XVE_INST_EXECUTED_XMX_FP16	XVE Inst Executed XMX Fp16	Vector
 VectorEngineProfile	XVE_INST_EXECUTED_XMX_INT2	XVE Inst Executed XMX Int2	Vector Engine	Number of execution slots taken by INT2 XMX instructions
 VectorEngineProfile	XVE_INST_EXECUTED_XMX_INT4	XVE Inst Executed XMX Int4	Vector Engine	Number of execution slots taken by INT4 XMX instructions
 VectorEngineProfile	XVE_INST_EXECUTED_XMX_INT8	XVE Inst Executed XMX Int8	Vector Engine	Number of execution slots taken by INT8 XMX instructions
-VectorEngineProfile	XVE_INST_ISSUED_ALL	XVE Inst Issued All	Vector Engine	Number of instructions issued (decoded) to any pipe
+VectorEngineProfile	XVE_INST_ISSUED_ALL	XVE Inst Issued All	Vector Engine	Number of instructions issued (decoded) to any pipe (does not include the Scalar pipe)
 VectorEngineProfile	XVE_MULTIPLE_PIPE_ACTIVE	XVE Multiple Pipe Active	Vector Engine	Percentage of time in which at least two pipes are actively executing a Gen ISA instruction among ALU0, ALU1 and ALU2 pipes
 VectorEngineProfile	XVE_PIPE_ALU0_AND_ALU1_ACTIVE	XVE Pipe ALU0 And ALU1 Active	Vector Engine	Percentage of time in which ALU0 and ALU1 pipes are both actively executing a Gen ISA instruction
 VectorEngineProfile	XVE_PIPE_ALU0_AND_ALU2_ACTIVE	XVE Pipe ALU0 And ALU2 Active	Vector Engine	Percentage of time in which ALU0 and ALU2 pipes are both actively executing a Gen ISA instruction
@@ -521,10 +526,6 @@ TestOa	TEST_EVENT1_CYCLES_XECORE0	Test Event1 Cycles Xecore0	Test	Number of GPU 
 TestOa	TEST_EVENT1_CYCLES_XECORE1	Test Event1 Cycles Xecore1	Test	Number of GPU (gt) clock cycles at every clock period (XECORE1)
 TestOa	TEST_EVENT1_CYCLES_XECORE2	Test Event1 Cycles Xecore2	Test	Number of GPU (gt) clock cycles at every clock period (XECORE2)
 TestOa	TEST_EVENT1_CYCLES_XECORE3	Test Event1 Cycles Xecore3	Test	Number of GPU (gt) clock cycles at every clock period (XECORE3)
-TestOa	TEST_EVENT1_CYCLES_XECORE4	Test Event1 Cycles Xecore4	Test	Number of GPU (gt) clock cycles at every clock period (XECORE4)
-TestOa	TEST_EVENT1_CYCLES_XECORE5	Test Event1 Cycles Xecore5	Test	Number of GPU (gt) clock cycles at every clock period (XECORE5)
-TestOa	TEST_EVENT1_CYCLES_XECORE6	Test Event1 Cycles Xecore6	Test	Number of GPU (gt) clock cycles at every clock period (XECORE6)
-TestOa	TEST_EVENT1_CYCLES_XECORE7	Test Event1 Cycles Xecore7	Test	Number of GPU (gt) clock cycles at every clock period (XECORE7)
 TestOa	TEST_EVENT1_CYCLES_AVERAGE	Test Event1 Cycles Average	Test	Average number of GPU (gt) clock cycles at every clock period
 TestOa	TEST_EVENT2	Test Event2	Test	Number of GPU (gt) clock cycles at every other clock period
 TestOa	TEST_EVENT2_CYCLES	Test Event2 Cycles	Test	Number of GPU (gt) clock cycles at every other clock period

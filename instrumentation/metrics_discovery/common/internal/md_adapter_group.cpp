@@ -240,15 +240,15 @@ namespace MetricsDiscoveryInternal
     //     Multiple instances of offline metric devices may be created at once.
     //
     // Input:
-    //     uint8_t*              buffer        - a buffer that an offline device is created from
-    //     uint32_t              bufferSize    - the size of a buffer
-    //     IMetricsDevice_1_13** metricsDevice - [out] created / retrieved metrics device
+    //     uint8_t*         buffer        - a buffer that an offline device is created from
+    //     uint32_t         bufferSize    - the size of a buffer
+    //     CMetricsDevice** metricsDevice - [out] created / retrieved metrics device
     //
     // Output:
-    //     TCompletionCode                     - CC_OK or CC_ALREADY_INITIALIZED means success
+    //     TCompletionCode                - CC_OK or CC_ALREADY_INITIALIZED means success
     //
     //////////////////////////////////////////////////////////////////////////////
-    TCompletionCode CAdapterGroup::OpenOfflineMetricsDeviceFromBuffer( uint8_t* buffer, uint32_t bufferSize, IMetricsDevice_1_13** metricsDevice )
+    TCompletionCode CAdapterGroup::OpenOfflineMetricsDeviceFromBuffer( uint8_t* buffer, uint32_t bufferSize, CMetricsDevice** metricsDevice )
     {
         MD_CHECK_PTR_RET( buffer, CC_ERROR_INVALID_PARAMETER );
         MD_CHECK_PTR_RET( metricsDevice, CC_ERROR_INVALID_PARAMETER );
@@ -298,19 +298,45 @@ namespace MetricsDiscoveryInternal
     //     CAdapterGroup
     //
     // Method:
+    //     OpenOfflineMetricsDeviceFromBuffer
+    //
+    // Description:
+    //     Opens offline metrics device object.
+    //     Multiple instances of offline metric devices may be created at once.
+    //
+    // Input:
+    //     uint8_t*              buffer        - a buffer that an offline device is created from
+    //     uint32_t              bufferSize    - the size of a buffer
+    //     IMetricsDevice_1_13** metricsDevice - [out] created / retrieved metrics device
+    //
+    // Output:
+    //     TCompletionCode                     - CC_OK or CC_ALREADY_INITIALIZED means success
+    //
+    //////////////////////////////////////////////////////////////////////////////
+    TCompletionCode CAdapterGroup::OpenOfflineMetricsDeviceFromBuffer( uint8_t* buffer, uint32_t bufferSize, IMetricsDevice_1_13** metricsDevice )
+    {
+        return OpenOfflineMetricsDeviceFromBuffer( buffer, bufferSize, reinterpret_cast<CMetricsDevice**>( metricsDevice ) );
+    }
+
+    //////////////////////////////////////////////////////////////////////////////
+    //
+    // Class:
+    //     CAdapterGroup
+    //
+    // Method:
     //     CloseOfflineMetricsDevice
     //
     // Description:
     //     Close offline metrics device object and free resources.
     //
     // Input:
-    //     IMetricsDevice_1_13* metricsDevice - a pointer to offline metrics device to close
+    //     CMetricsDevice* metricsDevice - a pointer to offline metrics device to close
     //
     // Output:
-    //     TCompletionCode                    - CC_OK means success
+    //     TCompletionCode               - CC_OK means success
     //
     //////////////////////////////////////////////////////////////////////////////
-    TCompletionCode CAdapterGroup::CloseOfflineMetricsDevice( IMetricsDevice_1_13* metricsDevice )
+    TCompletionCode CAdapterGroup::CloseOfflineMetricsDevice( CMetricsDevice* metricsDevice )
     {
         auto deviceIterator = std::find( m_offlineDevicesVector.begin(), m_offlineDevicesVector.end(), metricsDevice );
 
@@ -339,6 +365,64 @@ namespace MetricsDiscoveryInternal
     //     CAdapterGroup
     //
     // Method:
+    //     CloseOfflineMetricsDevice
+    //
+    // Description:
+    //     Close offline metrics device object and free resources.
+    //
+    // Input:
+    //     IMetricsDevice_1_13* metricsDevice - a pointer to offline metrics device to close
+    //
+    // Output:
+    //     TCompletionCode                    - CC_OK means success
+    //
+    //////////////////////////////////////////////////////////////////////////////
+    TCompletionCode CAdapterGroup::CloseOfflineMetricsDevice( IMetricsDevice_1_13* metricsDevice )
+    {
+        return CloseOfflineMetricsDevice( static_cast<CMetricsDevice*>( metricsDevice ) );
+    }
+
+    //////////////////////////////////////////////////////////////////////////////
+    //
+    // Class:
+    //     CAdapterGroup
+    //
+    // Method:
+    //     SaveMetricsDeviceToBuffer
+    //
+    // Description:
+    //     Saves metrics device to buffer. Then the buffer can be used for offline calculation.
+    //
+    // Input:
+    //     CMetricsDevice* metricsDevice      - a buffer that an offline device is created from
+    //     CMetricSet**    metricSets         - an array of metric sets that will be written to the buffer
+    //     uint32_t        metricSetCount     - a number of metric sets in the array
+    //     uint8_t*        buffer             - a buffer that an offline device is created from
+    //     uint32_t        bufferSize         - the size of a buffer
+    //     const uint32_t  minMajorApiVersion - required MDAPI major version to open the buffer
+    //     const uint32_t  minMinorApiVersion - required MDAPI minor version to open the buffer
+    //
+    // Output:
+    //     TCompletionCode                    - CC_OK means success
+    //
+    //////////////////////////////////////////////////////////////////////////////
+    TCompletionCode CAdapterGroup::SaveMetricsDeviceToBuffer( CMetricsDevice* metricsDevice, CMetricSet** metricSets, uint32_t metricSetCount, uint8_t* buffer, uint32_t* bufferSize, const uint32_t minMajorApiVersion, const uint32_t minMinorApiVersion )
+    {
+        MD_CHECK_PTR_RET( metricsDevice, CC_ERROR_INVALID_PARAMETER );
+        MD_CHECK_PTR_RET( metricSets, CC_ERROR_INVALID_PARAMETER );
+        MD_CHECK_PTR_RET( bufferSize, CC_ERROR_INVALID_PARAMETER );
+
+        CMetricsDevice* device = static_cast<CMetricsDevice*>( metricsDevice );
+
+        return device->WriteToBuffer( buffer, *bufferSize, metricSets, metricSetCount, minMajorApiVersion, minMinorApiVersion );
+    }
+
+    //////////////////////////////////////////////////////////////////////////////
+    //
+    // Class:
+    //     CAdapterGroup
+    //
+    // Method:
     //     SaveMetricsDeviceToBuffer
     //
     // Description:
@@ -359,13 +443,7 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     TCompletionCode CAdapterGroup::SaveMetricsDeviceToBuffer( IMetricsDevice_1_13* metricsDevice, IMetricSet_1_13** metricSets, uint32_t metricSetCount, uint8_t* buffer, uint32_t* bufferSize, const uint32_t minMajorApiVersion, const uint32_t minMinorApiVersion )
     {
-        MD_CHECK_PTR_RET( metricsDevice, CC_ERROR_INVALID_PARAMETER );
-        MD_CHECK_PTR_RET( metricSets, CC_ERROR_INVALID_PARAMETER );
-        MD_CHECK_PTR_RET( bufferSize, CC_ERROR_INVALID_PARAMETER );
-
-        CMetricsDevice* device = static_cast<CMetricsDevice*>( metricsDevice );
-
-        return device->WriteToBuffer( buffer, *bufferSize, metricSets, metricSetCount, minMajorApiVersion, minMinorApiVersion );
+        return SaveMetricsDeviceToBuffer( static_cast<CMetricsDevice*>( metricsDevice ), reinterpret_cast<CMetricSet**>( metricSets ), metricSetCount, buffer, bufferSize, minMajorApiVersion, minMinorApiVersion );
     }
 
     //////////////////////////////////////////////////////////////////////////////

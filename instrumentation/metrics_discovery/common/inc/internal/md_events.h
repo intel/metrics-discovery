@@ -75,6 +75,7 @@ namespace MetricsDiscoveryInternal
         EVENT_WORKAROUND_TYPE_ALL_COUNTERS       = 1,
         EVENT_WORKAROUND_TYPE_FLEX_COUNTERS      = 2,
         EVENT_WORKAROUND_TYPE_DISAGGREGATED_ONLY = 3,
+        EVENT_WORKAROUND_TYPE_UTILIZATION_ONLY   = 4,
     } TEventWorkaroundType;
 
     //////////////////////////////////////////////////////////////////////////////

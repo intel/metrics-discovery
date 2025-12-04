@@ -77,9 +77,9 @@ namespace MetricsDiscoveryInternal
         , m_id( id ) // id in original set, equal to filtered on creation
         , m_isCustom( isCustom )
         , m_availabilityEquation( nullptr )
-        , m_normEquation( nullptr )
         , m_ioReadEquation( nullptr )
         , m_queryReadEquation( nullptr )
+        , m_normEquation( nullptr )
         , m_maxValueEquation( nullptr )
         , m_device( device )
     {

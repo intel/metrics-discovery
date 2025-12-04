@@ -60,26 +60,38 @@ SPDX-License-Identifier: MIT
 //     Based on Intel driver files.
 //
 //////////////////////////////////////////////////////////////////////////////
-#define MD_MAX_SUBSLICE_PER_SLICE      8  // Currently max value
-#define MD_MAX_SLICE                   8  // Currently max value
-#define MD_MAX_DUALSUBSLICE_PER_SLICE  6  // Currently max value
-#define MD_MAX_SUBSLICE_PER_DSS        2  // Currently max value
-#define MD_MAX_L3_NODE                 16 // Currently max value
-#define MD_MAX_L3_BANK_PER_L3_NODE_XE2 4  // Currently Xe2 value
-#define MD_MAX_L3_NODE_PER_COPY_ENGINE 2  // Currently max value
-#define MD_DUALSUBSLICE_PER_SLICE      4  // Current value
-#define MD_SUBSLICE_PER_SLICE_XE2      4  // Current Xe2 value
-#define MD_SUBSLICE_PER_SLICE_XE3      6  // Current Xe3 value
-#define MD_MAX_SLICE_BMG_VER_2         5  // Currently BMG (ver.2) value
-#define MD_MAX_SLICE_BMG_VER_3         8  // Currently BMG (ver.3) value
-#define MD_MAX_SLICE_LNL               2  // Currently LNL value
-#define MD_MAX_SLICE_PTL_H             2  // Currently PTL H value
-#define MD_MAX_SLICE_PTL_U             1  // Currently PTL U value
-#define MD_MAX_L3_NODE_BMG_VER_2       6  // Currently BMG (ver.2) value
-#define MD_MAX_L3_NODE_BMG_VER_3       8  // Currently BMG (ver.3) value
-#define MD_MAX_L3_NODE_LNL             2  // Currently LNL value
-#define MD_MAX_L3_NODE_PTL_H           2  // Currently PTL H value
-#define MD_MAX_L3_NODE_PTL_U           1  // Currently PTL U value
+#define MD_MAX_SUBSLICE_PER_SLICE        8  // Currently max value
+#define MD_MAX_SLICE                     8  // Currently max value
+#define MD_MAX_DUALSUBSLICE_PER_SLICE    6  // Currently max value
+#define MD_MAX_SUBSLICE_PER_DSS          2  // Currently max value
+#define MD_MAX_L3_NODE                   16 // Currently max value
+#define MD_MAX_L3_BANK_PER_L3_NODE_XE2   4  // Currently Xe2 value
+#define MD_MAX_L3_BANK_PER_L3_NODE_NVL_S 2  // Currently NVL-S
+#define MD_MAX_L3_BANK_PER_L3_NODE_NVL_U 4  // Currently NVL-U
+#define MD_MAX_L3_BANK_PER_L3_NODE_CRI   4  // Currently CRI
+#define MD_MAX_L3_NODE_PER_COPY_ENGINE   2  // Currently max value
+#define MD_DUALSUBSLICE_PER_SLICE        4  // Current value
+#define MD_SUBSLICE_PER_SLICE_XE2        4  // Current Xe2 value
+#define MD_SUBSLICE_PER_SLICE_XE3        6  // Current Xe3 value
+#define MD_SUBSLICE_PER_SLICE_NVL_S      2  // Currently NVL-S
+#define MD_SUBSLICE_PER_SLICE_NVL_U      4  // Currently NVL-U
+#define MD_SUBSLICE_PER_SLICE_CRI        8  // Currently CRI
+#define MD_MAX_SLICE_BMG_VER_2           5  // Currently BMG (ver.2) value
+#define MD_MAX_SLICE_BMG_VER_3           8  // Currently BMG (ver.3) value
+#define MD_MAX_SLICE_LNL                 2  // Currently LNL value
+#define MD_MAX_SLICE_PTL_H               2  // Currently PTL-H
+#define MD_MAX_SLICE_PTL_U               1  // Currently PTL-U
+#define MD_MAX_SLICE_NVL_S               1  // Currently NVL-S
+#define MD_MAX_SLICE_NVL_U               1  // Currently NVL-U
+#define MD_MAX_SLICE_CRI                 4  // Currently CRI
+#define MD_MAX_L3_NODE_BMG_VER_2         6  // Currently BMG (ver.2) value
+#define MD_MAX_L3_NODE_BMG_VER_3         8  // Currently BMG (ver.3) value
+#define MD_MAX_L3_NODE_LNL               2  // Currently LNL value
+#define MD_MAX_L3_NODE_PTL_H             2  // Currently PTL-H
+#define MD_MAX_L3_NODE_PTL_U             1  // Currently PTL-U
+#define MD_MAX_L3_NODE_NVL_S             1  // Currently NVL-S
+#define MD_MAX_L3_NODE_NVL_U             1  // Currently NVL-U
+#define MD_MAX_L3_NODE_CRI               8  // Currently CRI
 
 //////////////////////////////////////////////////////////////////////////////
 //
@@ -302,7 +314,7 @@ namespace MetricsDiscoveryInternal
         virtual TCompletionCode GetMaxMinOaBufferSize( const GTDI_OA_BUFFER_TYPE oaBufferType, const GTDI_DEVICE_PARAM param, GTDIDeviceInfoParamExtOut& out, CMetricsDevice& metricsDevice );
         virtual TCompletionCode SendPmRegsConfig( TRegister** regVector, const uint32_t regCount, const uint32_t subDeviceIndex, const GTDI_OA_BUFFER_TYPE oaBufferType );
         virtual TCompletionCode SendReadRegsConfig( TRegister** regVector, uint32_t regCount );
-        virtual TCompletionCode GetPmRegsConfigHandles( uint32_t* oaConfigHandle, uint32_t* gpConfigHandle, uint32_t* rrConfigHandle );
+        virtual TCompletionCode GetPmRegsConfigHandles( uint32_t* oaConfigHandle, uint32_t* rrConfigHandle );
         virtual TCompletionCode ValidatePmRegsConfig( TRegister* regVector, uint32_t regCount, uint32_t platformId );
         virtual TCompletionCode GetGpuCpuTimestamps( CMetricsDevice& device, uint64_t& gpuTimestamp, uint64_t& cpuTimestamp, uint32_t& cpuId, uint64_t& correlationIndicator ) = 0;
         virtual bool            IsTbsEngineValid( const TEngineParamsLatest& engineParams, const uint32_t requestedInstance = -1, const bool isOam = false ) const             = 0;
@@ -385,6 +397,7 @@ namespace MetricsDiscoveryInternal
         virtual TCompletionCode GetL3BankTotalCount( CMetricsDevice& metricsDevice, uint32_t& l3BankCount )                  = 0;
         virtual TCompletionCode GetCopyEngineTotalCount( CMetricsDevice& metricsDevice, uint32_t& copyEngineCount )          = 0;
         virtual TCompletionCode GetComputeEngineTotalCount( CMetricsDevice& metricsDevice, uint32_t& computeEngineCount )    = 0;
+        virtual TCompletionCode GetSqidiTotalCount( CMetricsDevice& metricsDevice, uint32_t& sqidiCount )                    = 0;
         virtual TCompletionCode GetL3BankMask( CMetricsDevice& metricsDevice, uint64_t& l3BankMask )                         = 0;
         virtual TCompletionCode GetL3NodeMask( CMetricsDevice& metricsDevice, uint64_t& l3NodeMask )                         = 0;
         virtual TCompletionCode GetCopyEngineMask( CMetricsDevice& metricsDevice, uint64_t& copyEngineMask )                 = 0;
@@ -396,6 +409,7 @@ namespace MetricsDiscoveryInternal
         uint32_t   GetGtMaxL3Node();
         uint32_t   GetGtMaxL3BankPerL3Node();
         uint32_t   GetGtMaxCopyEngine();
+        uint32_t   GetGtMaxSqidi();
         bool       IsDualSubsliceSupported();
         TGfxGtType MapDeviceInfoToInstrGtTypeGfxVer12( const TGfxDeviceInfo& gfxDeviceInfo, CMetricsDevice& metricsDevice );
 

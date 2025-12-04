@@ -659,7 +659,7 @@ namespace MetricsDiscoveryInternal
 
         // Apply workarounds if any.
         switch( auto& archWorkaround = hwEvent.m_archEvent.m_workaround;
-                archWorkaround.m_type )
+            archWorkaround.m_type )
         {
             case EVENT_WORKAROUND_TYPE_ALL_COUNTERS:
                 snapshotReportReadEquation << ' ' << hwEvent.m_archEvent.m_workaround.m_equation;
@@ -672,7 +672,7 @@ namespace MetricsDiscoveryInternal
         }
 
         switch( auto& hwWorkaround = hwEvent.m_workaround;
-                hwWorkaround.m_type )
+            hwWorkaround.m_type )
         {
             case EVENT_WORKAROUND_TYPE_ALL_COUNTERS:
                 snapshotReportReadEquation << ' ' << hwEvent.m_workaround.m_equation;
@@ -681,6 +681,14 @@ namespace MetricsDiscoveryInternal
 
             case EVENT_WORKAROUND_TYPE_DISAGGREGATED_ONLY:
                 if( isDisaggregationEnabled )
+                {
+                    snapshotReportReadEquation << ' ' << hwEvent.m_workaround.m_equation;
+                    deltaReportReadEquation << ' ' << hwEvent.m_workaround.m_equation;
+                }
+                break;
+
+            case EVENT_WORKAROUND_TYPE_UTILIZATION_ONLY:
+                if( isUtilizationEnabled )
                 {
                     snapshotReportReadEquation << ' ' << hwEvent.m_workaround.m_equation;
                     deltaReportReadEquation << ' ' << hwEvent.m_workaround.m_equation;
@@ -1006,7 +1014,9 @@ namespace MetricsDiscoveryInternal
             m_device.GetPlatformIndex(),
             GENERATION_BMG,
             GENERATION_LNL,
-            GENERATION_PTL );
+            GENERATION_PTL,
+            GENERATION_NVL,
+            GENERATION_CRI );
     }
 
     //////////////////////////////////////////////////////////////////////////////
@@ -1033,7 +1043,9 @@ namespace MetricsDiscoveryInternal
             GENERATION_ARL,
             GENERATION_BMG,
             GENERATION_LNL,
-            GENERATION_PTL );
+            GENERATION_PTL,
+            GENERATION_NVL,
+            GENERATION_CRI );
     }
 
     //////////////////////////////////////////////////////////////////////////////
@@ -1063,7 +1075,7 @@ namespace MetricsDiscoveryInternal
             GENERATION_ARL );
 
         switch( const char* concurrentGroupSymbolName = concurrentGroup.GetParams()->SymbolName;
-                concurrentGroupSymbolName[3] )
+            concurrentGroupSymbolName[3] )
         {
             case '0': // OAM0
                 return isXeLPG ? 0x00393200 : 0x00394200;

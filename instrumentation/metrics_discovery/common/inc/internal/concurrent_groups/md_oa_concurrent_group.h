@@ -77,6 +77,8 @@ namespace MetricsDiscoveryInternal
         // Constructor:
         COAConcurrentGroup( CMetricsDevice& device, const char* name, const char* description, const uint32_t measurementTypeMask, const TStreamType streamType, const GTDI_OA_BUFFER_TYPE oaBufferType );
 
+        TCompletionCode OpenIoStream( CMetricSet* metricSet, uint32_t processId, uint32_t* nsTimerPeriod, uint32_t* oaBufferSize );
+
         TCompletionCode SetIoMetricSet( IMetricSet_1_0* metricSet );
 
         CInformation*           AddIoMeasurementInformation( const char* name, const char* shortName, const char* longName, const char* group, TInformationType informationType, const char* informationUnits );

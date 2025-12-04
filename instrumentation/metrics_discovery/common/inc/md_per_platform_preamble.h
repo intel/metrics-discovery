@@ -41,7 +41,9 @@ SPDX-License-Identifier: MIT
            MD_INCLUDE_LNL_METRICS              || \
            MD_INCLUDE_PTL_METRICS              || \
            MD_INCLUDE_ARL_GT1_METRICS          || \
-           MD_INCLUDE_ARL_GT2_METRICS )
+           MD_INCLUDE_ARL_GT2_METRICS          || \
+           MD_INCLUDE_NVL_METRICS              || \
+           MD_INCLUDE_CRI_METRICS )
     // clang-format on
 
         #define MD_INCLUDE_TGL_GT1_METRICS 1
@@ -63,6 +65,8 @@ SPDX-License-Identifier: MIT
         #define MD_INCLUDE_PTL_METRICS     1
         #define MD_INCLUDE_ARL_GT1_METRICS 1
         #define MD_INCLUDE_ARL_GT2_METRICS 1
+        #define MD_INCLUDE_NVL_METRICS     1
+        #define MD_INCLUDE_CRI_METRICS     1
     #endif
 
 #endif

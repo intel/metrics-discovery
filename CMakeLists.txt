@@ -85,42 +85,22 @@ set (_SOURCES ${_SOURCES}
     ${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen/md_metrics_ACM_GT1.cpp
     ${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen/md_metrics_ACM_GT2.cpp
     ${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen/md_metrics_ACM_GT3.cpp
+    ${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen/md_metrics_PVC_GT1.cpp
+    ${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen/md_metrics_PVC_GT2.cpp
     ${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen/md_metrics_ADLP.cpp
     ${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen/md_metrics_ADLS.cpp
     ${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen/md_metrics_ADLN.cpp
-    ${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen/md_metrics_PVC_GT1.cpp
-    ${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen/md_metrics_PVC_GT2.cpp
     ${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen/md_metrics_MTL_GT2.cpp
     ${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen/md_metrics_MTL_GT3.cpp
     ${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen/md_metrics_BMG.cpp
     ${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen/md_metrics_LNL.cpp
+    ${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen/md_metrics_PTL.cpp
     ${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen/md_metrics_ARL_GT1.cpp
     ${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen/md_metrics_ARL_GT2.cpp
-    ${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen/md_metrics_PTL.cpp
-
-    ${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen/md_metric_sets_TGL_GT1.cpp
-    ${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen/md_metric_sets_TGL_GT2.cpp
-    ${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen/md_metric_sets_DG1.cpp
-    ${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen/md_metric_sets_RKL.cpp
-    ${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen/md_metric_sets_ACM_GT1.cpp
-    ${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen/md_metric_sets_ACM_GT2.cpp
-    ${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen/md_metric_sets_ACM_GT3.cpp
-    ${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen/md_metric_sets_ADLP.cpp
-    ${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen/md_metric_sets_ADLS.cpp
-    ${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen/md_metric_sets_ADLN.cpp
-    ${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen/md_metric_sets_PVC_GT1.cpp
-    ${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen/md_metric_sets_PVC_GT2.cpp
-    ${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen/md_metric_sets_MTL_GT2.cpp
-    ${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen/md_metric_sets_MTL_GT3.cpp
-    ${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen/md_metric_sets_BMG.cpp
-    ${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen/md_metric_sets_LNL.cpp
-    ${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen/md_metric_sets_ARL_GT1.cpp
-    ${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen/md_metric_sets_ARL_GT2.cpp
-    ${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen/md_metric_sets_PTL.cpp
-    ${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen/md_metric_sets_common.cpp
-
+    ${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen/md_metrics_NVL.cpp
+    ${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen/md_metrics_CRI.cpp
     ${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen/md_metrics.cpp
-    # events
+    # external events
     ${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen/md_external_events.cpp
     # mdapi core
     ${BS_DIR_INSTRUMENTATION}/metrics_discovery/common/md_main.cpp
@@ -144,6 +124,29 @@ set (_SOURCES ${_SOURCES}
     ${BS_DIR_INSTRUMENTATION}/metrics_discovery/common/internal/md_register_set.cpp
     ${BS_DIR_INSTRUMENTATION}/metrics_discovery/common/internal/md_symbol_set.cpp
     ${BS_DIR_INSTRUMENTATION}/metrics_discovery/common/md_calculation.cpp
+    # calculation specific
+    ${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen/md_metric_sets_TGL_GT1.cpp
+    ${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen/md_metric_sets_TGL_GT2.cpp
+    ${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen/md_metric_sets_DG1.cpp
+    ${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen/md_metric_sets_RKL.cpp
+    ${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen/md_metric_sets_ACM_GT1.cpp
+    ${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen/md_metric_sets_ACM_GT2.cpp
+    ${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen/md_metric_sets_ACM_GT3.cpp
+    ${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen/md_metric_sets_PVC_GT1.cpp
+    ${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen/md_metric_sets_PVC_GT2.cpp
+    ${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen/md_metric_sets_ADLP.cpp
+    ${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen/md_metric_sets_ADLS.cpp
+    ${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen/md_metric_sets_ADLN.cpp
+    ${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen/md_metric_sets_MTL_GT2.cpp
+    ${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen/md_metric_sets_MTL_GT3.cpp
+    ${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen/md_metric_sets_BMG.cpp
+    ${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen/md_metric_sets_LNL.cpp
+    ${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen/md_metric_sets_PTL.cpp
+    ${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen/md_metric_sets_ARL_GT1.cpp
+    ${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen/md_metric_sets_ARL_GT2.cpp
+    ${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen/md_metric_sets_NVL.cpp
+    ${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen/md_metric_sets_CRI.cpp
+    ${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen/md_metric_sets_common.cpp
     # utils
     ${BS_DIR_INSTRUMENTATION}/utils/common/iu_debug.c
     )
@@ -151,8 +154,10 @@ set (_SOURCES ${_SOURCES}
 # platform dependent
 if ("${PLATFORM}" STREQUAL Windows) # windows
     set (_SOURCES ${_SOURCES}
-        # mdapi core
+        # driver interface
         ${BS_DIR_INSTRUMENTATION}/metrics_discovery/windows/md_driver_ifc_win.cpp
+        ${BS_DIR_INSTRUMENTATION}/metrics_discovery/windows/md_sub_devices_win.cpp
+        # performance api
         ${BS_DIR_INSTRUMENTATION}/metrics_discovery/windows/performance_api_common.cpp
         ${BS_DIR_INSTRUMENTATION}/metrics_discovery/windows/performance_api_dx12.cpp
         ${BS_DIR_INSTRUMENTATION}/metrics_discovery/windows/performance_api_vulkan.cpp
@@ -165,11 +170,11 @@ if ("${PLATFORM}" STREQUAL Windows) # windows
 
     # linux files in solution explorer
     set (_LINUX_SOURCES_ON_WINDOWS
-         # mdapi core
-        ${BS_DIR_INSTRUMENTATION}/metrics_discovery/linux/md_driver_ifc_linux_perf.cpp
-        ${BS_DIR_INSTRUMENTATION}/metrics_discovery/linux/md_sub_devices_linux.cpp
+        # driver interface
         ${BS_DIR_INSTRUMENTATION}/metrics_discovery/linux/md_driver_ifc_linux_common.cpp
+        ${BS_DIR_INSTRUMENTATION}/metrics_discovery/linux/md_driver_ifc_linux_perf.cpp
         ${BS_DIR_INSTRUMENTATION}/metrics_discovery/linux/md_driver_ifc_linux_xe.cpp
+        ${BS_DIR_INSTRUMENTATION}/metrics_discovery/linux/md_sub_devices_linux.cpp
         # instr utils
         ${BS_DIR_INSTRUMENTATION}/utils/linux/iu_std.cpp
         ${BS_DIR_INSTRUMENTATION}/utils/linux/iu_os.cpp
@@ -181,10 +186,10 @@ if ("${PLATFORM}" STREQUAL Windows) # windows
     set (_SOURCES ${_SOURCES} ${_LINUX_SOURCES_ON_WINDOWS})
 elseif ("${PLATFORM}" STREQUAL linux) # linux
     set (_SOURCES ${_SOURCES}
-    ${BS_DIR_INSTRUMENTATION}/metrics_discovery/linux/md_driver_ifc_linux_perf.cpp
-    ${BS_DIR_INSTRUMENTATION}/metrics_discovery/linux/md_sub_devices_linux.cpp
     ${BS_DIR_INSTRUMENTATION}/metrics_discovery/linux/md_driver_ifc_linux_common.cpp
+    ${BS_DIR_INSTRUMENTATION}/metrics_discovery/linux/md_driver_ifc_linux_perf.cpp
     ${BS_DIR_INSTRUMENTATION}/metrics_discovery/linux/md_driver_ifc_linux_xe.cpp
+    ${BS_DIR_INSTRUMENTATION}/metrics_discovery/linux/md_sub_devices_linux.cpp
     ${BS_DIR_INSTRUMENTATION}/utils/linux/iu_std.cpp
     ${BS_DIR_INSTRUMENTATION}/utils/linux/iu_os.cpp
     )
@@ -204,6 +209,7 @@ file (GLOB_RECURSE _HEADERS
     ${BS_DIR_INC}/common/instrumentation/api/*_api.h
     ${BS_DIR_INSTRUMENTATION}/utils/common/inc/*.h
     ${BS_DIR_INSTRUMENTATION}/metrics_discovery/common/inc/*.h
+    ${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen/*.h
     )
 # platform dependent
 if ("${PLATFORM}" STREQUAL Windows) # windows
@@ -223,12 +229,14 @@ if ("${PLATFORM}" STREQUAL Windows) # windows
     file (GLOB_RECURSE _LINUX_HEADERS
         ${BS_DIR_INSTRUMENTATION}/utils/linux/inc/*.h
         ${BS_DIR_INSTRUMENTATION}/metrics_discovery/linux/inc/*.h
+        ${BS_DIR_INSTRUMENTATION}/metrics_discovery/external/drm/*.h
         )
     set (_HEADERS ${_HEADERS} ${_LINUX_HEADERS})
 elseif ("${PLATFORM}" STREQUAL linux) # linux
     file (GLOB_RECURSE _LINUX_HEADERS
         ${BS_DIR_INSTRUMENTATION}/utils/linux/inc/*.h
         ${BS_DIR_INSTRUMENTATION}/metrics_discovery/linux/inc/*.h
+        ${BS_DIR_INSTRUMENTATION}/metrics_discovery/external/drm/*.h
         )
     set (_HEADERS ${_HEADERS} ${_LINUX_HEADERS})
 else ()
@@ -245,35 +253,41 @@ set (HEADERS ${_HEADERS})
 # platform dependent ones. The order of adding files matters.
 
 # common
-source_group ("Header Files\\api"                   "${BS_DIR_INC}/common/instrumentation/api/.*_api.h")
-source_group ("Header Files\\api\\performance_api"  "${BS_DIR_INC}/common/instrumentation/api/.*performance_api.h")
+source_group ("Header Files\\api"                          "${BS_DIR_INC}/common/instrumentation/api/.*_api.h")
+source_group ("Header Files\\codegen"                      "${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen/.*.h")
+source_group ("Header Files\\internal"                     "${BS_DIR_INSTRUMENTATION}/metrics_discovery/common/inc/internal/.*.h")
+source_group ("Header Files\\internal\\concurrent_groups"  "${BS_DIR_INSTRUMENTATION}/metrics_discovery/common/inc/internal/concurrent_groups/.*.h")
 
-source_group ("Source Files\\codegen"               "${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen/.*.cpp")
+source_group ("Source Files\\codegen"                      "${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen/.*.cpp")
+source_group ("Source Files\\internal"                     "${BS_DIR_INSTRUMENTATION}/metrics_discovery/common/internal/.*.cpp")
+source_group ("Source Files\\internal\\concurrent_groups"  "${BS_DIR_INSTRUMENTATION}/metrics_discovery/common/internal/concurrent_groups/.*.cpp")
 
 # common & platform dependent
 if ("${PLATFORM}" STREQUAL Windows) # windows
-    source_group ("Header Files"                    "(${BS_DIR_INSTRUMENTATION}/metrics_discovery/common/inc/.*.h)|(${BS_DIR_INSTRUMENTATION}/metrics_discovery/windows/inc/.*.h)")
-    source_group ("Header Files\\iu"                "(${BS_DIR_INSTRUMENTATION}/utils/common/inc/.*.h)|(${BS_DIR_INSTRUMENTATION}/utils/windows/inc/.*.h)")
-    source_group ("Header Files\\performance_api"   FILES              "${BS_DIR_D3D12}/PCH/D3D12PerformanceAPI.H"
-                                                                       "${BS_DIR_VULKAN}/Core/PCH/vulkan/vk_intel_performance_query.h"
-                                                    REGULAR_EXPRESSION "(${BS_DIR_INSTRUMENTATION}/metrics_discovery/windows/inc/.*performance.*.h)")
+    source_group ("Header Files\\api\\performance_api"      "${BS_DIR_INC}/common/instrumentation/api/.*performance_api.h")
+    source_group ("Header Files"                            "(${BS_DIR_INSTRUMENTATION}/metrics_discovery/common/inc/.*.h)|(${BS_DIR_INSTRUMENTATION}/metrics_discovery/windows/inc/.*.h)")
+    source_group ("Header Files\\iu"                        "(${BS_DIR_INSTRUMENTATION}/utils/common/inc/.*.h)|(${BS_DIR_INSTRUMENTATION}/utils/windows/inc/.*.h)")
+    source_group ("Header Files\\performance_api"           FILES              "${BS_DIR_D3D12}/PCH/D3D12PerformanceAPI.H"
+                                                                               "${BS_DIR_VULKAN}/Core/PCH/vulkan/vk_intel_performance_query.h"
+                                                            REGULAR_EXPRESSION "(${BS_DIR_INSTRUMENTATION}/metrics_discovery/windows/inc/.*performance.*.h)")
 
-    source_group ("Source Files"                    "(${BS_DIR_INSTRUMENTATION}/metrics_discovery/common/.*.cpp)|(${BS_DIR_INSTRUMENTATION}/metrics_discovery/.*.rc)|(${BS_DIR_INSTRUMENTATION}/metrics_discovery/windows/.*.cpp)")
-    source_group ("Source Files\\iu"                "(${BS_DIR_INSTRUMENTATION}/utils/common/.*.c)|(${BS_DIR_INSTRUMENTATION}/utils/windows/umd/.*.cpp)")
-    source_group ("Source Files\\performance_api"   "(${BS_DIR_INSTRUMENTATION}/metrics_discovery/windows/.*performance.*.cpp)")
+    source_group ("Source Files"                            "(${BS_DIR_INSTRUMENTATION}/metrics_discovery/common/.*.cpp)|(${BS_DIR_INSTRUMENTATION}/metrics_discovery/.*.rc)|(${BS_DIR_INSTRUMENTATION}/metrics_discovery/windows/.*.cpp)")
+    source_group ("Source Files\\iu"                        "(${BS_DIR_INSTRUMENTATION}/utils/common/.*.c)|(${BS_DIR_INSTRUMENTATION}/utils/windows/umd/.*.cpp)|(${BS_DIR_INSTRUMENTATION}/utils/windows/.*.cpp)")
+    source_group ("Source Files\\performance_api"           "(${BS_DIR_INSTRUMENTATION}/metrics_discovery/windows/.*performance.*.cpp)")
 
     # linux files in solution explorer
-    source_group ("Header Files\\linux"             "(${BS_DIR_INSTRUMENTATION}/metrics_discovery/linux/inc/.*.h)")
-    source_group ("Header Files\\linux\\iu"         "(${BS_DIR_INSTRUMENTATION}/utils/linux/inc/.*.h)")
+    source_group ("Header Files\\linux"                     "(${BS_DIR_INSTRUMENTATION}/metrics_discovery/linux/inc/.*.h)")
+    source_group ("Header Files\\linux\\iu"                 "(${BS_DIR_INSTRUMENTATION}/utils/linux/inc/.*.h)")
+    source_group ("Header Files\\external\\drm"             "(${BS_DIR_INSTRUMENTATION}/metrics_discovery/external/drm/.*.h)")
 
-    source_group ("Source Files\\linux"             "(${BS_DIR_INSTRUMENTATION}/metrics_discovery/linux/.*.cpp)")
-    source_group ("Source Files\\linux\\iu"         "(${BS_DIR_INSTRUMENTATION}/utils/linux/.*.cpp)")
+    source_group ("Source Files\\linux"                     "(${BS_DIR_INSTRUMENTATION}/metrics_discovery/linux/.*.cpp)")
+    source_group ("Source Files\\linux\\iu"                 "(${BS_DIR_INSTRUMENTATION}/utils/linux/.*.cpp)")
 elseif ("${PLATFORM}" STREQUAL linux) # linux
-    source_group ("Header Files"                    "(${BS_DIR_INSTRUMENTATION}/metrics_discovery/common/inc/.*.h)|(${BS_DIR_INSTRUMENTATION}/metrics_discovery/linux/inc/.*.h)")
-    source_group ("Header Files\\iu"                "(${BS_DIR_INSTRUMENTATION}/utils/common/inc/.*.h)|(${BS_DIR_INSTRUMENTATION}/utils/linux/inc/.*.h)")
+    source_group ("Header Files"                            "(${BS_DIR_INSTRUMENTATION}/metrics_discovery/common/inc/.*.h)|(${BS_DIR_INSTRUMENTATION}/metrics_discovery/linux/inc/.*.h)")
+    source_group ("Header Files\\iu"                        "(${BS_DIR_INSTRUMENTATION}/utils/common/inc/.*.h)|(${BS_DIR_INSTRUMENTATION}/utils/linux/inc/.*.h)")
 
-    source_group ("Source Files"                    "(${BS_DIR_INSTRUMENTATION}/metrics_discovery/common/.*.cpp)|(${BS_DIR_INSTRUMENTATION}/metrics_discovery/linux/.*.cpp)")
-    source_group ("Source Files\\iu"                "(${BS_DIR_INSTRUMENTATION}/utils/common/.*.c)|(${BS_DIR_INSTRUMENTATION}/utils/linux/.*.cpp)")
+    source_group ("Source Files"                            "(${BS_DIR_INSTRUMENTATION}/metrics_discovery/common/.*.cpp)|(${BS_DIR_INSTRUMENTATION}/metrics_discovery/linux/.*.cpp)")
+    source_group ("Source Files\\iu"                        "(${BS_DIR_INSTRUMENTATION}/utils/common/.*.c)|(${BS_DIR_INSTRUMENTATION}/utils/linux/.*.cpp)")
 else ()
     message ("-- Using platform is ${PLATFORM}")
 endif ()
@@ -293,11 +307,7 @@ if ("${PLATFORM}" STREQUAL Windows) # windows
         /EXPORT:OpenMetricsDeviceFromFile
         /EXPORT:OpenPerformanceInterface
         /EXPORT:ClosePerformanceInterface)
-    set (INTERNAL_EXPORTS
-        /EXPORT:SaveMetricsDeviceToFile)
-    instr_set_linker_flags ("RELEASE"         "${PUBLIC_EXPORTS}")
-    instr_set_linker_flags ("RELEASEINTERNAL" "${PUBLIC_EXPORTS} ${INTERNAL_EXPORTS}")
-    instr_set_linker_flags ("DEBUG"           "${PUBLIC_EXPORTS} ${INTERNAL_EXPORTS}")
+    instr_set_linker_flags ("RELEASE" "${PUBLIC_EXPORTS}")
     set (CMAKE_CXX_STANDARD_LIBRARIES "")
     set (CMAKE_C_STANDARD_LIBRARIES "")
     set_target_properties(${PROJECT_NAME} PROPERTIES VS_GLOBAL_DriverTargetPlatform Universal)
@@ -305,6 +315,7 @@ if ("${PLATFORM}" STREQUAL Windows) # windows
     set_property (TARGET ${PROJECT_NAME} PROPERTY OUTPUT_NAME ${LIB}${ARCH})
     target_link_libraries (${PROJECT_NAME}
         dxgi.lib    # used in performance_api_dx12.cpp
+        dxcore.lib  # used in performance_api_dx12.cpp
         gdi32.lib
         )
     windows_apps_props_universal(${PROJECT_NAME})
@@ -422,8 +433,8 @@ elseif ("${PLATFORM}" STREQUAL "linux") # linux
     # configuration specific defines
     if ("${BUILD_TYPE}" STREQUAL "release")
         add_definitions(-DNDEBUG)
-        # optimization flags
-        add_definitions(-O2)
+        # security compiler flags
+        add_definitions(-O2 -Wformat)
     elseif ("${BUILD_TYPE}" STREQUAL "release-internal" OR
             "${BUILD_TYPE}" STREQUAL "releaseinternal")
             add_definitions(-D_RELEASE_INTERNAL)
@@ -647,6 +658,7 @@ elseif ("${PLATFORM}" STREQUAL linux)
     message ("INFO: BS_DIR_EXTERNAL        = ${BS_DIR_EXTERNAL}")
     message ("INFO: CMAKE_C_FLAGS          = ${CMAKE_C_FLAGS}")
     message ("INFO: CMAKE_CXX_FLAGS        = ${CMAKE_CXX_FLAGS}")
+    message ("INFO: CMAKE_CXX_COMPILER_ID  = ${CMAKE_CXX_COMPILER_ID}")
 else ()
     message ("-- Using platform is ${PLATFORM}")
 endif ()

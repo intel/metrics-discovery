@@ -18,11 +18,8 @@ SPDX-License-Identifier: MIT
 #include "md_metric_enumerator.h"
 #include "md_metric_set.h"
 #include "md_metrics_calculator.h"
-#include "md_calculation.h"
 #include "md_driver_ifc.h"
 #include "md_utils.h"
-
-#include <cstring>
 
 #define DX9_FOURCC              "GPAV"
 #define DX9_QUERY_ID            0
@@ -119,6 +116,8 @@ namespace MetricsDiscoveryInternal
             case GENERATION_BMG:
             case GENERATION_LNL:
             case GENERATION_PTL:
+            case GENERATION_NVL:
+            case GENERATION_CRI:
                 snapshotReportSize = snapshotReportSizePostXe2;
                 deltaReportSize    = deltaReportSizePostXe2;
                 reportFormat       = OA_REPORT_TYPE_576B_PEC64LL;
@@ -279,16 +278,16 @@ namespace MetricsDiscoveryInternal
     //     (Enables Timer Mode and opens Counter Stream)
     //
     // Input:
-    //     IMetricSet_1_0*      metricSet           - metric set
-    //     uint32_t             processId           - PID of the measured app (0 is global context)
-    //     uint32_t*            nsTimerPeriod       - (in/out) requested/set sampling period time in nanoseconds
-    //     uint32_t*            oaBufferSize        - (in/out) requested/set OA Buffer size in bytes
+    //     CMetricSet*    metricSet     - metric set
+    //     uint32_t       processId     - PID of the measured app (0 is global context)
+    //     uint32_t*      nsTimerPeriod - (in/out) requested/set sampling period time in nanoseconds
+    //     uint32_t*      oaBufferSize  - (in/out) requested/set OA Buffer size in bytes
     //
     // Output:
-    //     TCompletionCode                          - result of operation (*CC_OK* is OK)
+    //     TCompletionCode              - result of operation (*CC_OK* is OK)
     //
     //////////////////////////////////////////////////////////////////////////////
-    TCompletionCode COAConcurrentGroup::OpenIoStream( IMetricSet_1_0* metricSet, uint32_t processId, uint32_t* nsTimerPeriod, uint32_t* oaBufferSize )
+    TCompletionCode COAConcurrentGroup::OpenIoStream( CMetricSet* metricSet, uint32_t processId, uint32_t* nsTimerPeriod, uint32_t* oaBufferSize )
     {
         const uint32_t adapterId = m_device.GetAdapter().GetAdapterId();
         MD_LOG_ENTER_A( adapterId );
@@ -322,6 +321,33 @@ namespace MetricsDiscoveryInternal
 
         MD_LOG_EXIT_A( adapterId );
         return ret;
+    }
+
+    //////////////////////////////////////////////////////////////////////////////
+    //
+    // Class:
+    //     COAConcurrentGroup
+    //
+    // Method:
+    //     OpenIoStream
+    //
+    // Description:
+    //     Opens IO Stream for given metric set.
+    //     (Enables Timer Mode and opens Counter Stream)
+    //
+    // Input:
+    //     IMetricSet_1_0* metricSet     - metric set
+    //     uint32_t        processId     - PID of the measured app (0 is global context)
+    //     uint32_t*       nsTimerPeriod - (in/out) requested/set sampling period time in nanoseconds
+    //     uint32_t*       oaBufferSize  - (in/out) requested/set OA Buffer size in bytes
+    //
+    // Output:
+    //     TCompletionCode               - result of operation (*CC_OK* is OK)
+    //
+    //////////////////////////////////////////////////////////////////////////////
+    TCompletionCode COAConcurrentGroup::OpenIoStream( IMetricSet_1_0* metricSet, uint32_t processId, uint32_t* nsTimerPeriod, uint32_t* oaBufferSize )
+    {
+        return OpenIoStream( static_cast<CMetricSet*>( metricSet ), processId, nsTimerPeriod, oaBufferSize );
     }
 
     //////////////////////////////////////////////////////////////////////////////
@@ -540,6 +566,8 @@ namespace MetricsDiscoveryInternal
             case GENERATION_BMG:
             case GENERATION_LNL:
             case GENERATION_PTL:
+            case GENERATION_NVL:
+            case GENERATION_CRI:
                 reportType = DEFAULT_METRIC_SET_REPORT_TYPE_XE2;
                 break;
             default:

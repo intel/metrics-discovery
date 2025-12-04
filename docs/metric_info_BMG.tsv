@@ -53,7 +53,7 @@ RenderBasic	ICACHE_MISS	ICache Miss	Vector Engine	Number of Instruction Cache mi
 RenderBasic	XVE_ACTIVE	XVE Active	Vector Engine	Percentage of time in which at least one pipe is active in XVE
 RenderBasic	XVE_INST_EXECUTED_ALU0_ALL	XVE Inst Executed ALU0 All	Vector Engine	Number of execution slots taken by instructions executed by ALL threads on ALU0 pipe
 RenderBasic	XVE_INST_EXECUTED_ALU1_ALL	XVE Inst Executed ALU1 All	Vector Engine	Number of execution slots taken by instructions executed by ALL threads on ALU1 pipe. Does not include extended math instructions.
-RenderBasic	XVE_INST_EXECUTED_SEND_ALL	XVE Inst Executed Send All	Vector Engine	Number of instruction (GRF) dispatches executed by ALL threads on SEND Pipe
+RenderBasic	XVE_INST_EXECUTED_SEND_ALL	XVE Inst Executed Send All	Vector Engine	Number of instruction (GRF or SRF) dispatches executed by ALL threads on SEND Pipe
 RenderBasic	XVE_INST_EXECUTED_ALU0_CS	XVE Inst Executed ALU0 CS	Vector Engine	Number of execution slots taken by instructions executed by CS threads on ALU0 pipe
 RenderBasic	XVE_INST_EXECUTED_ALU0_PS	XVE Inst Executed ALU0 PS	Vector Engine	Number of execution slots taken by instructions executed by PS threads on ALU0 pipe
 RenderBasic	XVE_INST_EXECUTED_ALU0_VS	XVE Inst Executed ALU0 VS	Vector Engine	Number of execution slots taken by instructions executed by VS threads on ALU0 pipe
@@ -96,7 +96,7 @@ ComputeBasic	ICACHE_MISS	ICache Miss	Vector Engine	Number of Instruction Cache m
 ComputeBasic	XVE_ACTIVE	XVE Active	Vector Engine	Percentage of time in which at least one pipe is active in XVE
 ComputeBasic	XVE_INST_EXECUTED_ALU0_ALL	XVE Inst Executed ALU0 All	Vector Engine	Number of execution slots taken by instructions executed by ALL threads on ALU0 pipe
 ComputeBasic	XVE_INST_EXECUTED_ALU1_ALL	XVE Inst Executed ALU1 All	Vector Engine	Number of execution slots taken by instructions executed by ALL threads on ALU1 pipe. Does not include extended math instructions.
-ComputeBasic	XVE_INST_EXECUTED_SEND_ALL	XVE Inst Executed Send All	Vector Engine	Number of instruction (GRF) dispatches executed by ALL threads on SEND Pipe
+ComputeBasic	XVE_INST_EXECUTED_SEND_ALL	XVE Inst Executed Send All	Vector Engine	Number of instruction (GRF or SRF) dispatches executed by ALL threads on SEND Pipe
 ComputeBasic	XVE_INST_ISSUED_ALL	XVE Inst Issued All	Vector Engine	Number of instructions issued (decoded) to any pipe
 ComputeBasic	XVE_SHARED_FUNCTION_ACCESS_HOLD	XVE Shared Function Access Hold	Vector Engine	Percentage of time in which XVE requests stalled by Shared Function units
 ComputeBasic	XVE_STALL	XVE Stall	Vector Engine	Percentage of time in which any thread loaded but not even a single pipe is active in XVE
@@ -384,7 +384,7 @@ VectorEngineProfile	XVE_INST_EXECUTED_INT64	XVE Inst Executed Int64	Vector Engin
 VectorEngineProfile	XVE_INST_EXECUTED_MATH	XVE Inst Executed Math	Vector Engine	Number of execution slots taken by extended math instructions
 VectorEngineProfile	XVE_INST_EXECUTED_NONDIVERGENT	XVE Inst Executed Nondivergent	Vector Engine	Number of non-divergent instructions (not execution slots) executed
 VectorEngineProfile	XVE_INST_EXECUTED_PREDICATION	XVE Inst Executed Predication	Vector Engine	Number of instructions (not execution slots) executed with predication mask enabled
-VectorEngineProfile	XVE_INST_EXECUTED_SEND_ALL	XVE Inst Executed Send All	Vector Engine	Number of instruction (GRF) dispatches executed by ALL threads on SEND Pipe
+VectorEngineProfile	XVE_INST_EXECUTED_SEND_ALL	XVE Inst Executed Send All	Vector Engine	Number of instruction (GRF or SRF) dispatches executed by ALL threads on SEND Pipe
 VectorEngineProfile	XVE_INST_EXECUTED_XMX_BF16	XVE Inst Executed XMX Bf16	Vector Engine	Number of execution slots taken by BF16 XMX instructions
 VectorEngineProfile	XVE_INST_EXECUTED_XMX_FP16	XVE Inst Executed XMX Fp16	Vector Engine	Number of execution slots taken by FP16 XMX instructions
 VectorEngineProfile	XVE_INST_EXECUTED_XMX_INT2	XVE Inst Executed XMX Int2	Vector Engine	Number of execution slots taken by INT2 XMX instructions

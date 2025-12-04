@@ -29,6 +29,7 @@ namespace MetricsDiscoveryInternal
     class CAdapter;
     class CDriverInterfaceOffline;
     class CMetricsDevice;
+    class CMetricSet;
 
     //////////////////////////////////////////////////////////////////////////////
     //
@@ -52,7 +53,10 @@ namespace MetricsDiscoveryInternal
 
     public:
         // Non-API:
-        CAdapter* GetDefaultAdapter();
+        CAdapter*       GetDefaultAdapter();
+        TCompletionCode OpenOfflineMetricsDeviceFromBuffer( uint8_t* buffer, uint32_t bufferSize, CMetricsDevice** metricsDevice );
+        TCompletionCode CloseOfflineMetricsDevice( CMetricsDevice* metricsDevice );
+        TCompletionCode SaveMetricsDeviceToBuffer( CMetricsDevice* metricsDevice, CMetricSet** metricSets, uint32_t metricSetCount, uint8_t* buffer, uint32_t* bufferSize, const uint32_t minMajorApiVersion, const uint32_t minMinorApiVersion );
 
         // Non-API static:
         static TCompletionCode Open( CAdapterGroup** adapterGroup );

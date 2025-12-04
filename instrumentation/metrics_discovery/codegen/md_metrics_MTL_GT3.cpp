@@ -20,7 +20,7 @@ SPDX-License-Identifier: MIT
 
 using namespace MetricsDiscoveryInternal;
 
-#if( ( !defined( MD_INCLUDE_MTL_GT3_METRICS ) && MD_INCLUDE_ALL_METRICS ) || MD_INCLUDE_MTL_GT3_METRICS )
+#if ( ( !defined( MD_INCLUDE_MTL_GT3_METRICS ) && MD_INCLUDE_ALL_METRICS ) || MD_INCLUDE_MTL_GT3_METRICS )
 
 TCompletionCode CreateMetricTreeMTL_GT3_PipelineStatistics( CMetricsDevice* metricsDevice, CConcurrentGroup* concurrentGroup )
 {
@@ -52,7 +52,7 @@ exception:
 }
 #endif
 
-#if( ( !defined( MD_INCLUDE_MTL_GT3_METRICS ) && MD_INCLUDE_ALL_METRICS ) || MD_INCLUDE_MTL_GT3_METRICS )
+#if ( ( !defined( MD_INCLUDE_MTL_GT3_METRICS ) && MD_INCLUDE_ALL_METRICS ) || MD_INCLUDE_MTL_GT3_METRICS )
 
 TCompletionCode CreateMetricTreeMTL_GT3_OA( CMetricsDevice* metricsDevice, CConcurrentGroup* concurrentGroup )
 {
@@ -1154,7 +1154,7 @@ exception:
 }
 #endif
 
-#if( ( !defined( MD_INCLUDE_MTL_GT3_METRICS ) && MD_INCLUDE_ALL_METRICS ) || MD_INCLUDE_MTL_GT3_METRICS )
+#if ( ( !defined( MD_INCLUDE_MTL_GT3_METRICS ) && MD_INCLUDE_ALL_METRICS ) || MD_INCLUDE_MTL_GT3_METRICS )
 
 TCompletionCode CreateMetricTreeMTL_GT3_OAM0( CMetricsDevice* metricsDevice, CConcurrentGroup* concurrentGroup )
 {

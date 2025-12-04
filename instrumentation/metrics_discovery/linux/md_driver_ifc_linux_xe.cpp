@@ -284,7 +284,9 @@ namespace MetricsDiscoveryInternal
         const bool isGscEngine          = engineParams.EngineId.ClassInstance.Class == DRM_XE_ENGINE_CLASS_GSC;
         const bool isValidInstance      = ( requestedInstance == static_cast<uint32_t>( -1 ) ) || ( engineParams.EngineId.ClassInstance.Instance == requestedInstance );
 
-        return isValidInstance && ( ( isOam && ( isVideoEnhanceEngine || isGscEngine ) ) || ( !isOam && ( isRenderEngine || isComputeEngine ) ) );
+        return isValidInstance &&
+            ( ( isOam && ( isVideoEnhanceEngine || isGscEngine ) ) ||
+                ( !isOam && ( isRenderEngine || isComputeEngine ) ) );
     }
 
     //////////////////////////////////////////////////////////////////////////////
@@ -382,15 +384,27 @@ namespace MetricsDiscoveryInternal
         {
             const auto& oaUnit = *reinterpret_cast<drm_xe_oa_unit*>( oaUnitOffset );
 
-            if( oaUnit.oa_unit_type == DRM_XE_OA_UNIT_TYPE_OAM_SAG && oaUnit.num_engines == 0 ) // GSC engine is not exposed to userspace in the Xe driver.
+            if( oaUnit.num_engines == 0 )
             {
-                // OAM SAG unit is not attached to any engine, but it is still a valid unit, so we create a dummy GSC engine for it.
-                drm_xe_engine_class_instance eci = {};
-                eci.engine_class                 = DRM_XE_ENGINE_CLASS_GSC;
-                eci.engine_instance              = DRM_XE_ENGINE_INSTANCE_GSC;
-                eci.gt_id                        = currentRenderGtId + 1; // GSC engine is always on the media GT ID.
+                switch( oaUnit.oa_unit_type )
+                {
+                    case DRM_XE_OA_UNIT_TYPE_OAM_SAG: // GSC engine is not exposed to userspace in the Xe driver.
+                    {
+                        // OAM SAG unit is not attached to any engine, but it is still a valid unit, so we create a dummy GSC engine for it.
+                        drm_xe_engine_class_instance eci = {};
+                        eci.engine_class                 = DRM_XE_ENGINE_CLASS_GSC;
+                        eci.engine_instance              = DRM_XE_ENGINE_INSTANCE_GSC;
+                        eci.gt_id                        = currentRenderGtId + 1; // GSC engine is always on the media GT ID.
 
-                engines.emplace_back( oaUnit.oa_unit_id, eci );
+                        engines.emplace_back( oaUnit.oa_unit_id, eci );
+
+                        break;
+                    }
+
+                    default:
+                        MD_LOG_A( m_adapterId, LOG_DEBUG, "OA unit %u has no engines", oaUnit.oa_unit_id );
+                        break;
+                }
             }
             else
             {
@@ -523,7 +537,7 @@ namespace MetricsDiscoveryInternal
         TCompletionCode         ret                                                                          = CC_ERROR_GENERAL;
         int32_t                 oaEventFd                                                                    = -1;
         uint32_t                requiredEngineInstance                                                       = -1;
-        const bool              isOamRequested                                                               = IsOamRequested( oaReportType );
+        const bool              isOamRequested                                                               = IsOamRequested( oaReportType, oaBufferType );
         const uint32_t          subDeviceIndex                                                               = metricsDevice.GetSubDeviceIndex();
         auto                    subDevices                                                                   = metricsDevice.GetAdapter().GetSubDevices();
         auto                    engine                                                                       = TEngineParamsLatest{};
@@ -943,6 +957,8 @@ namespace MetricsDiscoveryInternal
             case GENERATION_BMG:
             case GENERATION_LNL:
             case GENERATION_PTL:
+            case GENERATION_NVL:
+            case GENERATION_CRI:
             {
                 switch( reportType )
                 {
@@ -1126,6 +1142,10 @@ namespace MetricsDiscoveryInternal
                     m_xeObservationCapabilities.IsOamSagSupported = oaUnit.capabilities & DRM_XE_OA_CAPS_OAM;
 
                     MD_LOG_A( m_adapterId, LOG_INFO, "OAM SAG is%s supported", m_xeObservationCapabilities.IsOamSagSupported ? "" : " not" );
+                    break;
+
+                default:
+                    MD_LOG_A( m_adapterId, LOG_DEBUG, "Unknown OA unit type: %u", oaUnit.oa_unit_type );
                     break;
             }
 
@@ -1584,13 +1604,14 @@ namespace MetricsDiscoveryInternal
     //     Returns information if access to oam requested.
     //
     // Input:
-    //     const uint32_t reportType - report type
+    //     const uint32_t            reportType   - report type
+    //     const GTDI_OA_BUFFER_TYPE oaBufferType - oa buffer type
     //
     // Output:
     //     bool                      - true if access to oam requested.
     //
     //////////////////////////////////////////////////////////////////////////////
-    bool CDriverInterfaceLinuxXe::IsOamRequested( const uint32_t reportType )
+    bool CDriverInterfaceLinuxXe::IsOamRequested( const uint32_t reportType, const GTDI_OA_BUFFER_TYPE oaBufferType )
     {
         return ( DRM_XE_OA_FORMAT_MASK_FMT_TYPE & reportType ) == DRM_XE_OA_FMT_TYPE_OAM_MPEC;
     }
@@ -1888,6 +1909,48 @@ namespace MetricsDiscoveryInternal
         computeEngineCount            = subDevices.GetClassInstancesCount( subDeviceIndex, DRM_XE_ENGINE_CLASS_COMPUTE );
 
         return CC_OK;
+    }
+
+    //////////////////////////////////////////////////////////////////////////////
+    //
+    // Class:
+    //     CDriverInterfaceLinuxXe
+    //
+    // Method:
+    //     GetSqidiTotalCount
+    //
+    // Description:
+    //     Returns SQIDI count for current platform.
+    //
+    // Input:
+    //     CMetricsDevice& metricsDevice - (IN) metrics device
+    //     uint32_t&       sqidiCount    - (OUT) SQIDI count
+    //
+    // Output:
+    //     TCompletionCode               - *CC_OK* means success
+    //
+    //////////////////////////////////////////////////////////////////////////////
+    TCompletionCode CDriverInterfaceLinuxXe::GetSqidiTotalCount( CMetricsDevice& metricsDevice, uint32_t& sqidiCount )
+    {
+        sqidiCount                          = 0;
+        const TGfxDeviceInfo* gfxDeviceInfo = nullptr;
+        auto                  ret           = GetGfxDeviceInfo( gfxDeviceInfo );
+
+        MD_CHECK_CC_RET_A( m_adapterId, ret );
+
+        if( ( gfxDeviceInfo->PlatformIndex == GENERATION_PTL && gfxDeviceInfo->PlatformVersion == 2 ) ||
+            gfxDeviceInfo->PlatformIndex == GENERATION_NVL )
+        {
+            // On small PTL/NVL SKUs, SQIDI count is fixed to 2 regardless of L3 node count.
+            // SQIDI mask is still 0x1 to not break disaggregation. Disaggregation is applied on mempipe level.
+            sqidiCount = 2;
+        }
+        else
+        {
+            ret = GetL3NodeTotalCount( metricsDevice, sqidiCount );
+        }
+
+        return ret;
     }
 
     //////////////////////////////////////////////////////////////////////////////

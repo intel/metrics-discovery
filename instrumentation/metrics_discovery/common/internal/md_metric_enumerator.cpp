@@ -128,6 +128,8 @@ namespace MetricsDiscoveryInternal
                 case GENERATION_BMG:
                 case GENERATION_LNL:
                 case GENERATION_PTL:
+                case GENERATION_NVL:
+                case GENERATION_CRI:
                     isXe2Plus = true;
                     break;
 
@@ -135,7 +137,7 @@ namespace MetricsDiscoveryInternal
                     break;
             }
 
-#if MD_INCLUDE_BMG_METRICS || MD_INCLUDE_LNL_METRICS || MD_INCLUDE_PTL_METRICS
+#if MD_INCLUDE_BMG_METRICS || MD_INCLUDE_LNL_METRICS || MD_INCLUDE_PTL_METRICS || MD_INCLUDE_NVL_METRICS || MD_INCLUDE_CRI_METRICS
             if( isXe2Plus )
             {
                 // External events.
@@ -155,8 +157,8 @@ namespace MetricsDiscoveryInternal
 
         if( isOamReporting )
         {
-#if MD_INCLUDE_MTL_GT2_METRICS || MD_INCLUDE_MTL_GT3_METRICS || MD_INCLUDE_BMG_METRICS || MD_INCLUDE_LNL_METRICS || MD_INCLUDE_PTL_METRICS || MD_INCLUDE_ARL_GT1_METRICS || MD_INCLUDE_ARL_GT2_METRICS
-            if( IsPlatformMatch( platformIndex, GENERATION_MTL, GENERATION_BMG, GENERATION_LNL, GENERATION_PTL, GENERATION_ARL ) )
+#if MD_INCLUDE_MTL_GT2_METRICS || MD_INCLUDE_MTL_GT3_METRICS || MD_INCLUDE_BMG_METRICS || MD_INCLUDE_LNL_METRICS || MD_INCLUDE_PTL_METRICS || MD_INCLUDE_ARL_GT1_METRICS || MD_INCLUDE_ARL_GT2_METRICS || MD_INCLUDE_NVL_METRICS || MD_INCLUDE_CRI_METRICS
+            if( IsPlatformMatch( platformIndex, GENERATION_MTL, GENERATION_BMG, GENERATION_LNL, GENERATION_PTL, GENERATION_ARL, GENERATION_NVL, GENERATION_CRI ) )
             {
                 // External media events.
                 status = ReadEvents(
@@ -173,7 +175,7 @@ namespace MetricsDiscoveryInternal
 #endif
         }
 
-#if MD_INCLUDE_BMG_METRICS || MD_INCLUDE_LNL_METRICS || MD_INCLUDE_PTL_METRICS
+#if MD_INCLUDE_BMG_METRICS || MD_INCLUDE_LNL_METRICS || MD_INCLUDE_PTL_METRICS || MD_INCLUDE_NVL_METRICS || MD_INCLUDE_CRI_METRICS
         // Read workarounds for external events.
         uint32_t workaroundsSize = sizeof( ExternalEventsWorkarounds::workarounds );
         uint8_t* workarounds     = new( std::nothrow ) uint8_t[workaroundsSize]();
@@ -1242,6 +1244,18 @@ namespace MetricsDiscoveryInternal
         {
             return GENERATION_ARL;
         }
+#if MD_INCLUDE_NVL_METRICS
+        if( platform == "NVL" )
+        {
+            return GENERATION_NVL;
+        }
+#endif // MD_INCLUDE_NVL_METRICS
+#if MD_INCLUDE_CRI_METRICS
+        if( platform == "CRI" )
+        {
+            return GENERATION_CRI;
+        }
+#endif // MD_INCLUDE_CRI_METRICS
 
         return GTDI_PLATFORM_MAX;
     }

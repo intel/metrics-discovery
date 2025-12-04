@@ -81,11 +81,13 @@ namespace MetricsDiscoveryInternal
         , m_otherInformationVector()
         , m_platformMask( GetCopiedByteArray( platformMask, m_device.GetAdapter().GetAdapterId() ) )
         , m_availabilityEquation( nullptr )
+        , m_filteredParams{}
         , m_filteredMetricsVector()
         , m_filteredInformationVector()
         , m_isCustom( isCustom )
         , m_aggregationEnabled( aggregationEnabled )
         , m_isReadRegsCfgSet( false )
+        , m_pmRegsConfigInfo{}
         , m_metricsCalculator( nullptr )
         , m_isOam( COAMConcurrentGroup::IsValidSymbolName( concurrentGroup->GetParams()->SymbolName ) )
         , m_isFlexible( false )
@@ -94,30 +96,18 @@ namespace MetricsDiscoveryInternal
     {
         const uint32_t adapterId = m_device.GetAdapter().GetAdapterId();
 
-        m_params.SymbolName             = GetCopiedCString( symbolicName, adapterId );
-        m_params.ShortName              = GetCopiedCString( shortName, adapterId );
-        m_params.ApiMask                = apiMask;
-        m_params.CategoryMask           = categoryMask;
-        m_params.RawReportSize          = snapshotReportSize; // as in HW
-        m_params.QueryReportSize        = deltaReportSize;    // as in Query API
-        m_params.MetricsCount           = 0;
-        m_params.InformationCount       = concurrentGroup->GetInformationCount();
-        m_params.ComplementarySetsCount = 0;
-        m_params.ApiSpecificId          = {};
-        m_params.PlatformMask           = GetPlatformTypeFromByteArray( platformMask, adapterId );
-        m_params.GtMask                 = gtMask;
-        m_params.AvailabilityEquation   = nullptr;
-
-        m_pmRegsConfigInfo.IsQueryConfig  = false;
-        m_pmRegsConfigInfo.OaConfigHandle = 0;
-        m_pmRegsConfigInfo.GpConfigHandle = 0;
-        m_pmRegsConfigInfo.RrConfigHandle = 0;
+        m_params.SymbolName       = GetCopiedCString( symbolicName, adapterId );
+        m_params.ShortName        = GetCopiedCString( shortName, adapterId );
+        m_params.ApiMask          = apiMask;
+        m_params.CategoryMask     = categoryMask;
+        m_params.RawReportSize    = snapshotReportSize; // as in HW
+        m_params.QueryReportSize  = deltaReportSize;    // as in Query API
+        m_params.InformationCount = concurrentGroup->GetInformationCount();
+        m_params.PlatformMask     = GetPlatformTypeFromByteArray( platformMask, adapterId );
+        m_params.GtMask           = gtMask;
 
         // Set 'current' variables and mark 'filtered' params as uninitialized
         UseApiFilteredVariables( false );
-        m_filteredParams.ApiMask              = 0;
-        m_filteredParams.GtMask               = 0;
-        m_filteredParams.AvailabilityEquation = nullptr;
     }
 
     //////////////////////////////////////////////////////////////////////////////
@@ -191,10 +181,10 @@ namespace MetricsDiscoveryInternal
     //     Returns metric set params
     //
     // Output:
-    //     TMetricSetParams_1_11*  - metric set params
+    //     TMetricSetParamsLatest* - metric set params
     //
     //////////////////////////////////////////////////////////////////////////////
-    TMetricSetParams_1_11* CMetricSet::GetParams( void )
+    TMetricSetParamsLatest* CMetricSet::GetParams( void )
     {
         return m_currentParams;
     }
@@ -292,16 +282,16 @@ namespace MetricsDiscoveryInternal
     //     uint32_t     index  - index of a complementary set
     //
     // Output:
-    //     IMetricSet_1_11*     - chosen complementary metric set or null
+    //     IMetricSetLatest*   - chosen complementary metric set or null
     //
     //////////////////////////////////////////////////////////////////////////////
-    IMetricSet_1_11* CMetricSet::GetComplementaryMetricSet( uint32_t index )
+    IMetricSetLatest* CMetricSet::GetComplementaryMetricSet( uint32_t index )
     {
         if( index < m_complementarySetsVector.size() )
         {
-            IMetricSet_1_11* metricSet       = nullptr;
-            size_t           stringLength    = strlen( m_complementarySetsVector[index] );
-            uint32_t         metricSetsCount = m_concurrentGroup->GetParams()->MetricSetsCount;
+            IMetricSetLatest* metricSet       = nullptr;
+            size_t            stringLength    = strlen( m_complementarySetsVector[index] );
+            uint32_t          metricSetsCount = m_concurrentGroup->GetParams()->MetricSetsCount;
             for( uint32_t i = 0; i < metricSetsCount; i++ )
             {
                 metricSet = m_concurrentGroup->GetMetricSet( i );
@@ -385,7 +375,7 @@ namespace MetricsDiscoveryInternal
             if( ret == CC_OK )
             {
                 // Update PmRegsHandles and reset rrSet flag
-                driverInterface.GetPmRegsConfigHandles( &m_pmRegsConfigInfo.OaConfigHandle, &m_pmRegsConfigInfo.GpConfigHandle, &m_pmRegsConfigInfo.RrConfigHandle );
+                driverInterface.GetPmRegsConfigHandles( &m_pmRegsConfigInfo.OaConfigHandle, &m_pmRegsConfigInfo.RrConfigHandle );
                 m_isReadRegsCfgSet = false;
             }
         }
@@ -691,10 +681,10 @@ namespace MetricsDiscoveryInternal
     //     const char * signalName                  -
     //
     // Output:
-    //     IMetric_1_0* - newly created metric, nullptr if error
+    //     IMetricLatest* - newly created metric, nullptr if error
     //
     //////////////////////////////////////////////////////////////////////////////
-    IMetric_1_0* CMetricSet::AddCustomMetric( const char* symbolName, const char* shortName, const char* groupName, const char* longName, const char* dxToOglAlias, uint32_t usageFlagsMask, uint32_t apiMask, TMetricResultType resultType, const char* resultUnits, TMetricType metricType, int64_t loWatermark, int64_t hiWatermark, THwUnitType hwType, const char* ioReadEquation, const char* deltaFunction, const char* queryReadEquation, const char* normalizationEquation, const char* maxValueEquation, const char* signalName )
+    IMetricLatest* CMetricSet::AddCustomMetric( const char* symbolName, const char* shortName, const char* groupName, const char* longName, const char* dxToOglAlias, uint32_t usageFlagsMask, uint32_t apiMask, TMetricResultType resultType, const char* resultUnits, TMetricType metricType, int64_t loWatermark, int64_t hiWatermark, THwUnitType hwType, const char* ioReadEquation, const char* deltaFunction, const char* queryReadEquation, const char* normalizationEquation, const char* maxValueEquation, const char* signalName )
     {
         TAddCustomMetricParams params                      = {};
         params.Type                                        = METRIC_CUSTOM_PARAMS_1_0;
@@ -1639,7 +1629,7 @@ namespace MetricsDiscoveryInternal
                     m_isReadRegsCfgSet = readRegs.size() > 0;
 
                     m_pmRegsConfigInfo.IsQueryConfig = sendQueryConfigFlag;
-                    driverInterface.GetPmRegsConfigHandles( &m_pmRegsConfigInfo.OaConfigHandle, &m_pmRegsConfigInfo.GpConfigHandle, &m_pmRegsConfigInfo.RrConfigHandle );
+                    driverInterface.GetPmRegsConfigHandles( &m_pmRegsConfigInfo.OaConfigHandle, &m_pmRegsConfigInfo.RrConfigHandle );
                 }
             }
             else
@@ -1710,16 +1700,15 @@ namespace MetricsDiscoveryInternal
         bool           ret             = true;
 
         // If measurement type didn't change and config handles were checked before
-        if( m_pmRegsConfigInfo.IsQueryConfig == sendQueryConfigFlag && ( m_pmRegsConfigInfo.OaConfigHandle != 0 || m_pmRegsConfigInfo.GpConfigHandle != 0 || m_pmRegsConfigInfo.RrConfigHandle != 0 ) )
+        if( m_pmRegsConfigInfo.IsQueryConfig == sendQueryConfigFlag && ( m_pmRegsConfigInfo.OaConfigHandle != 0 || m_pmRegsConfigInfo.RrConfigHandle != 0 ) )
         {
             uint32_t        oaCfgHandle = 0;
-            uint32_t        gpCfgHandle = 0;
             uint32_t        rrCfgHandle = 0;
             TCompletionCode retCode     = CC_OK;
 
-            retCode = driverInterface.GetPmRegsConfigHandles( &oaCfgHandle, &gpCfgHandle, &rrCfgHandle );
+            retCode = driverInterface.GetPmRegsConfigHandles( &oaCfgHandle, &rrCfgHandle );
 
-            if( retCode == CC_OK && oaCfgHandle == m_pmRegsConfigInfo.OaConfigHandle && gpCfgHandle == m_pmRegsConfigInfo.GpConfigHandle && rrCfgHandle == m_pmRegsConfigInfo.RrConfigHandle )
+            if( retCode == CC_OK && oaCfgHandle == m_pmRegsConfigInfo.OaConfigHandle && rrCfgHandle == m_pmRegsConfigInfo.RrConfigHandle )
             {
                 ret = false;
                 MD_LOG_A( adapterId, LOG_DEBUG, "No need to send PmRegs configuration" );
@@ -2099,7 +2088,7 @@ namespace MetricsDiscoveryInternal
 
         for( auto& metric : m_otherMetricsVector )
         {
-            if( strcmp( symbolName, metric->GetParams()->SymbolName ) == 0 )
+            if( metric && ( strcmp( symbolName, metric->GetParams()->SymbolName ) == 0 ) )
             {
                 return true;
             }
@@ -3429,7 +3418,9 @@ namespace MetricsDiscoveryInternal
         const bool isXe2PlusPlatform =
             IsPlatformPresentInMask( m_platformMask, GENERATION_BMG, adapterId ) ||
             IsPlatformPresentInMask( m_platformMask, GENERATION_LNL, adapterId ) ||
-            IsPlatformPresentInMask( m_platformMask, GENERATION_PTL, adapterId );
+            IsPlatformPresentInMask( m_platformMask, GENERATION_PTL, adapterId ) ||
+            IsPlatformPresentInMask( m_platformMask, GENERATION_NVL, adapterId ) ||
+            IsPlatformPresentInMask( m_platformMask, GENERATION_CRI, adapterId );
 
         const uint32_t apiMask = m_isOam
             ? API_TYPE_IOSTREAM

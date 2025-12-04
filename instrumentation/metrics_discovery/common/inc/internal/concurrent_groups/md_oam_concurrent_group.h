@@ -38,11 +38,13 @@ namespace MetricsDiscoveryInternal
     public:
         // API 1.13:
         virtual IMetricEnumerator_1_13* GetMetricEnumerator( void ) override;
-        virtual IMetricSet_1_13*        AddMetricSet( const char* symbolName, const char* shortName ) override;
+
+        virtual IMetricSet_1_13* AddMetricSet( const char* symbolName, const char* shortName ) override;
 
     public:
-        // Constructor:
+        // Constructor & Destructor:
         COAMConcurrentGroup( CMetricsDevice& device, const char* name, const char* description, const uint32_t measurementTypeMask );
+        virtual ~COAMConcurrentGroup() {};
 
         COAMConcurrentGroup( const COAMConcurrentGroup& )            = delete; // Delete copy-constructor
         COAMConcurrentGroup& operator=( const COAMConcurrentGroup& ) = delete; // Delete assignment operator

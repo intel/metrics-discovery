@@ -134,7 +134,6 @@ namespace MetricsDiscoveryInternal
     {
         bool     IsQueryConfig;
         uint32_t OaConfigHandle;
-        uint32_t GpConfigHandle;
         uint32_t RrConfigHandle;
     } TPmRegsConfigInfo;
 
@@ -179,9 +178,6 @@ namespace MetricsDiscoveryInternal
              const char*       signalName,
              uint32_t          queryModeMask );
 
-        // API 1.11:
-        virtual TMetricSetParams_1_11* GetParams( void );
-
         // API 1.5:
         virtual TCompletionCode CalculateMetrics( const uint8_t* rawData, uint32_t rawDataSize, TTypedValue_1_0* out, uint32_t outSize, uint32_t* outReportCount, TTypedValue_1_0* outMaxValues, uint32_t outMaxValuesSize );
 
@@ -191,31 +187,32 @@ namespace MetricsDiscoveryInternal
         virtual TCompletionCode CalculateIoMeasurementInformation( TTypedValue_1_0* out, uint32_t outSize );
 
         // API 1.0:
-        virtual IMetricLatest*    GetMetric( uint32_t index );
-        virtual IInformation_1_0* GetInformation( uint32_t index );
-        virtual IMetricSet_1_11*  GetComplementaryMetricSet( uint32_t index );
-        virtual TCompletionCode   Activate( void );   // To enable this configuration before query instance is created or IO stream is opened
-        virtual TCompletionCode   Deactivate( void ); // To disable this configuration after query instance is created or IO stream is closed
-        virtual IMetric_1_0*      AddCustomMetric(
-                 const char*       symbolName,
-                 const char*       shortName,
-                 const char*       groupName,
-                 const char*       longName,
-                 const char*       dxToOglAlias,
-                 uint32_t          usageFlagsMask,
-                 uint32_t          apiMask,
-                 TMetricResultType resultType,
-                 const char*       resultUnits,
-                 TMetricType       metricType,
-                 int64_t           loWatermark,
-                 int64_t           hiWatermark,
-                 THwUnitType       hwType,
-                 const char*       ioReadEquation,
-                 const char*       deltaFunction,
-                 const char*       queryReadEquation,
-                 const char*       normalizationEquation,
-                 const char*       maxValueEquation,
-                 const char*       signalName );
+        virtual TMetricSetParamsLatest* GetParams( void );
+        virtual IMetricLatest*          GetMetric( uint32_t index );
+        virtual IInformationLatest*     GetInformation( uint32_t index );
+        virtual IMetricSetLatest*       GetComplementaryMetricSet( uint32_t index );
+        virtual TCompletionCode         Activate( void );   // To enable this configuration before query instance is created or IO stream is opened
+        virtual TCompletionCode         Deactivate( void ); // To disable this configuration after query instance is created or IO stream is closed
+        virtual IMetricLatest*          AddCustomMetric(
+                     const char*       symbolName,
+                     const char*       shortName,
+                     const char*       groupName,
+                     const char*       longName,
+                     const char*       dxToOglAlias,
+                     uint32_t          usageFlagsMask,
+                     uint32_t          apiMask,
+                     TMetricResultType resultType,
+                     const char*       resultUnits,
+                     TMetricType       metricType,
+                     int64_t           loWatermark,
+                     int64_t           hiWatermark,
+                     THwUnitType       hwType,
+                     const char*       ioReadEquation,
+                     const char*       deltaFunction,
+                     const char*       queryReadEquation,
+                     const char*       normalizationEquation,
+                     const char*       maxValueEquation,
+                     const char*       signalName );
 
         // Internal API (IInternalMetricSet):
         virtual IMetricLatest* AddCustomMetric( TAddCustomMetricParams* params );

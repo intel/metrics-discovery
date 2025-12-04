@@ -89,7 +89,7 @@ namespace MetricsDiscoveryInternal
         bool            IsPlatformTypeOf( TByteArrayLatest* platformMask, uint32_t gtMask = GT_TYPE_ALL );
 
         TCompletionCode   SaveToFile( const char* fileName, const uint32_t minMajorApiVersion, const uint32_t minMinorApiVersion );
-        TCompletionCode   WriteToBuffer( uint8_t* buffer, uint32_t& bufferSize, IMetricSet_1_13** metricSets, uint32_t metricSetCount, const uint32_t minMajorApiVersion, const uint32_t minMinorApiVersion );
+        TCompletionCode   WriteToBuffer( uint8_t* buffer, uint32_t& bufferSize, CMetricSet** metricSets, uint32_t metricSetCount, const uint32_t minMajorApiVersion, const uint32_t minMinorApiVersion );
         TCompletionCode   OpenFromFile( const char* fileName );
         TCompletionCode   OpenOfflineFromBuffer( uint8_t* buffer, uint32_t bufferSize );
         TQueryMode        GetQueryMode() const;

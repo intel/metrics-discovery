@@ -20,7 +20,7 @@ SPDX-License-Identifier: MIT
 
 using namespace MetricsDiscoveryInternal;
 
-#if( ( !defined( MD_INCLUDE_PVC_GT2_METRICS ) && MD_INCLUDE_ALL_METRICS ) || MD_INCLUDE_PVC_GT2_METRICS )
+#if ( ( !defined( MD_INCLUDE_PVC_GT2_METRICS ) && MD_INCLUDE_ALL_METRICS ) || MD_INCLUDE_PVC_GT2_METRICS )
 
 TCompletionCode CreateMetricTreePVC_GT2_OA( CMetricsDevice* metricsDevice, CConcurrentGroup* concurrentGroup )
 {

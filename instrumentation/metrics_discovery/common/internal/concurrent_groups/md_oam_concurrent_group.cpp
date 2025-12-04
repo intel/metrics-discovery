@@ -16,7 +16,6 @@ SPDX-License-Identifier: MIT
 #include "md_metrics_device.h"
 #include "md_metric_enumerator.h"
 #include "md_metric_set.h"
-#include "md_calculation.h"
 #include "md_driver_ifc.h"
 #include "md_utils.h"
 
@@ -70,7 +69,7 @@ namespace MetricsDiscoveryInternal
         MD_CHECK_PTR_RET_A( adapterId, shortName, nullptr );
 
         constexpr uint32_t deltaReportSize    = 0;
-        constexpr uint32_t snapshotReportSize = 128;
+        uint32_t           snapshotReportSize = 0;
         const uint32_t     platformIndex      = m_device.GetPlatformIndex();
         TReportType        reportFormat       = OA_REPORT_TYPE_LAST;
 
@@ -78,11 +77,22 @@ namespace MetricsDiscoveryInternal
         {
             case GENERATION_MTL:
             case GENERATION_ARL:
+            {
+                snapshotReportSize = 128;
+                reportFormat       = OA_REPORT_TYPE_128B_MPEC8_NOA16;
+                break;
+            }
+
             case GENERATION_BMG:
             case GENERATION_LNL:
             case GENERATION_PTL:
-                reportFormat = OA_REPORT_TYPE_128B_MPEC8_NOA16;
+            case GENERATION_NVL:
+            case GENERATION_CRI:
+            {
+                snapshotReportSize = 192;
+                reportFormat       = OA_REPORT_TYPE_192B_MPEC8LL_NOA16;
                 break;
+            }
 
             default:
                 return nullptr;

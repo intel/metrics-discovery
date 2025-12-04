@@ -66,7 +66,7 @@ namespace MetricsDiscoveryInternal
     {
     public:
         CSubDevices( CAdapter& adapter );
-        ~CSubDevices(){};
+        ~CSubDevices() {};
 
         bool            IsSupported();
         TCompletionCode Enumerate();

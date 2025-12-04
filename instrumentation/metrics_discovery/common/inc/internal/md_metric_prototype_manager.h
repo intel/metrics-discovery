@@ -49,7 +49,7 @@ namespace MetricsDiscoveryInternal
     public:
         // Methods:
         CPrototypeManager( CMetricsDevice& device, CMetricSet& metricSet );
-        virtual ~CPrototypeManager(){};
+        virtual ~CPrototypeManager() {};
 
         TCompletionCode         AddPrototype( CMetricPrototype& prototype );
         TCompletionCode         RemovePrototype( CMetricPrototype& prototype );
@@ -108,7 +108,7 @@ namespace MetricsDiscoveryInternal
     public:
         // Methods:
         CMetricPrototypeManager( CMetricsDevice& device, CMetricSet& metricSet );
-        virtual ~CMetricPrototypeManager(){};
+        virtual ~CMetricPrototypeManager() {};
 
         virtual bool IsSupported();
 

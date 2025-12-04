@@ -130,7 +130,6 @@ namespace MetricsDiscoveryInternal
         { 0x56a4, TPlatformIndexGt( GENERATION_ACM, GFX_GTTYPE_GT2 ) },
         { 0x56a5, TPlatformIndexGt( GENERATION_ACM, GFX_GTTYPE_GT1 ) },
         { 0x56a6, TPlatformIndexGt( GENERATION_ACM, GFX_GTTYPE_GT1 ) },
-        { 0x56af, TPlatformIndexGt( GENERATION_ACM, GFX_GTTYPE_GT3 ) },
         { 0x56b0, TPlatformIndexGt( GENERATION_ACM, GFX_GTTYPE_GT1 ) },
         { 0x56b1, TPlatformIndexGt( GENERATION_ACM, GFX_GTTYPE_GT1 ) },
         { 0x56b2, TPlatformIndexGt( GENERATION_ACM, GFX_GTTYPE_GT2 ) },
@@ -155,7 +154,7 @@ namespace MetricsDiscoveryInternal
         { 0x7D67, TPlatformIndexGt( GENERATION_ARL, GFX_GTTYPE_GT1 ) },
         { 0x7DD1, TPlatformIndexGt( GENERATION_ARL, GFX_GTTYPE_GT2 ) },
 
-        { 0xE202, TPlatformIndexGt( GENERATION_BMG, GFX_GTTYPE_UNDEFINED, 2 ) }, // G21
+        { 0xE202, TPlatformIndexGt( GENERATION_BMG, GFX_GTTYPE_UNDEFINED, 2 ) }, // Ver.2
         { 0xE209, TPlatformIndexGt( GENERATION_BMG, GFX_GTTYPE_UNDEFINED, 2 ) },
         { 0xE20B, TPlatformIndexGt( GENERATION_BMG, GFX_GTTYPE_UNDEFINED, 2 ) },
         { 0xE20C, TPlatformIndexGt( GENERATION_BMG, GFX_GTTYPE_UNDEFINED, 2 ) },
@@ -163,7 +162,8 @@ namespace MetricsDiscoveryInternal
         { 0xE210, TPlatformIndexGt( GENERATION_BMG, GFX_GTTYPE_UNDEFINED, 2 ) },
         { 0xE211, TPlatformIndexGt( GENERATION_BMG, GFX_GTTYPE_UNDEFINED, 2 ) },
         { 0xE212, TPlatformIndexGt( GENERATION_BMG, GFX_GTTYPE_UNDEFINED, 2 ) },
-        { 0xE216, TPlatformIndexGt( GENERATION_BMG, GFX_GTTYPE_UNDEFINED, 2 ) },
+
+        { 0xE216, TPlatformIndexGt( GENERATION_BMG, GFX_GTTYPE_UNDEFINED, 2 ) }, // Ver.3
         { 0xE220, TPlatformIndexGt( GENERATION_BMG, GFX_GTTYPE_UNDEFINED, 3 ) },
         { 0xE221, TPlatformIndexGt( GENERATION_BMG, GFX_GTTYPE_UNDEFINED, 3 ) },
         { 0xE222, TPlatformIndexGt( GENERATION_BMG, GFX_GTTYPE_UNDEFINED, 3 ) },
@@ -172,7 +172,7 @@ namespace MetricsDiscoveryInternal
         { 0x64A0, TPlatformIndexGt( GENERATION_LNL, GFX_GTTYPE_UNDEFINED ) },
         { 0x6420, TPlatformIndexGt( GENERATION_LNL, GFX_GTTYPE_UNDEFINED ) },
 
-        { 0xB080, TPlatformIndexGt( GENERATION_PTL, GFX_GTTYPE_UNDEFINED, 1 ) }, // H
+        { 0xB080, TPlatformIndexGt( GENERATION_PTL, GFX_GTTYPE_UNDEFINED, 1 ) }, // PTL-H
         { 0xB081, TPlatformIndexGt( GENERATION_PTL, GFX_GTTYPE_UNDEFINED, 1 ) },
         { 0xB082, TPlatformIndexGt( GENERATION_PTL, GFX_GTTYPE_UNDEFINED, 1 ) },
         { 0xB083, TPlatformIndexGt( GENERATION_PTL, GFX_GTTYPE_UNDEFINED, 1 ) },
@@ -182,10 +182,22 @@ namespace MetricsDiscoveryInternal
         { 0xB087, TPlatformIndexGt( GENERATION_PTL, GFX_GTTYPE_UNDEFINED, 1 ) },
         { 0xB08F, TPlatformIndexGt( GENERATION_PTL, GFX_GTTYPE_UNDEFINED, 1 ) },
 
-        { 0xB090, TPlatformIndexGt( GENERATION_PTL, GFX_GTTYPE_UNDEFINED, 2 ) }, // U
+        { 0xB090, TPlatformIndexGt( GENERATION_PTL, GFX_GTTYPE_UNDEFINED, 2 ) }, // PTL-U
+        { 0xB0A0, TPlatformIndexGt( GENERATION_PTL, GFX_GTTYPE_UNDEFINED, 2 ) },
 
-        { 0xB0A0, TPlatformIndexGt( GENERATION_PTL, GFX_GTTYPE_UNDEFINED, 2 ) }, // H
         { 0xB0B0, TPlatformIndexGt( GENERATION_PTL, GFX_GTTYPE_UNDEFINED, 1 ) },
+
+        { 0xFD80, TPlatformIndexGt( GENERATION_PTL, GFX_GTTYPE_UNDEFINED, 2 ) }, // WCL
+        { 0xFD81, TPlatformIndexGt( GENERATION_PTL, GFX_GTTYPE_UNDEFINED, 2 ) }, // WCL
+
+        { 0xD740, TPlatformIndexGt( GENERATION_NVL, GFX_GTTYPE_UNDEFINED, 1 ) }, // NVL-S
+        { 0xD741, TPlatformIndexGt( GENERATION_NVL, GFX_GTTYPE_UNDEFINED, 2 ) }, // NVL-U
+        { 0xD742, TPlatformIndexGt( GENERATION_NVL, GFX_GTTYPE_UNDEFINED, 2 ) }, // NVL-H
+        { 0xD743, TPlatformIndexGt( GENERATION_NVL, GFX_GTTYPE_UNDEFINED, 1 ) }, // NVL-HX
+        { 0xD744, TPlatformIndexGt( GENERATION_NVL, GFX_GTTYPE_UNDEFINED, 1 ) }, // NVL-UL
+        { 0xD745, TPlatformIndexGt( GENERATION_NVL, GFX_GTTYPE_UNDEFINED, 2 ) }, // NVL-HX
+
+        { 0x674C, TPlatformIndexGt( GENERATION_CRI, GFX_GTTYPE_UNDEFINED ) }, // CRI
     };
 
     const std::map<GTDI_PLATFORM_INDEX, uint32_t> threadsPerEuMap{

@@ -2558,6 +2558,30 @@ namespace MetricsDiscoveryInternal
     //     CDriverInterfaceLinuxPerf
     //
     // Method:
+    //     GetSqidiTotalCount
+    //
+    // Description:
+    //     Returns SQIDI count for current platform.
+    //
+    // Input:
+    //     CMetricsDevice& metricsDevice - (IN) metrics device
+    //     uint32_t&       sqidiCount    - (OUT) SQIDI count
+    //
+    // Output:
+    //     TCompletionCode               - *CC_OK* means success
+    //
+    //////////////////////////////////////////////////////////////////////////////
+    TCompletionCode CDriverInterfaceLinuxPerf::GetSqidiTotalCount( CMetricsDevice& metricsDevice, uint32_t& sqidiCount )
+    {
+        return CC_ERROR_NOT_SUPPORTED;
+    }
+
+    //////////////////////////////////////////////////////////////////////////////
+    //
+    // Class:
+    //     CDriverInterfaceLinuxPerf
+    //
+    // Method:
     //     GetL3BankMask
     //
     // Description:

@@ -1,0 +1,269 @@
+MetricSet	SymbolName	ShortName	Group	LongName
+ComputeBasic	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
+ComputeBasic	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
+ComputeBasic	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
+ComputeBasic	ResultUncertainty	Result Uncertainty	GPU	Result uncertainty indicator
+ComputeBasic	GPU_BUSY	GPU Busy	Front End	Percentage of time in which GPU is not idle including all GPU engines
+ComputeBasic	ASYNC_GPGPU_THREADGROUP_COUNT	Async GpGpu Threadgroup Count	Thread Dispatcher	Number of Async GPGPU threadgroups dispatched
+ComputeBasic	ICACHE_HIT	ICache Hit	Vector Engine	Number of Instruction Cache hits
+ComputeBasic	ICACHE_MISS	ICache Miss	Vector Engine	Number of Instruction Cache misses
+ComputeBasic	XVE_ACTIVE	XVE Active	Vector Engine	Percentage of time in which at least one pipe is active in XVE
+ComputeBasic	XVE_INST_EXECUTED_ALU0_ALL	XVE Inst Executed ALU0 All	Vector Engine	Number of execution slots taken by instructions executed on ALU0 pipe
+ComputeBasic	XVE_INST_EXECUTED_ALU1_ALL	XVE Inst Executed ALU1 All	Vector Engine	Number of execution slots taken by instructions executed on ALU1 pipe. Does not include extended math instructions.
+ComputeBasic	XVE_INST_EXECUTED_SEND_ALL	XVE Inst Executed Send All	Vector Engine	Number of instruction (GRF or SRF) dispatches executed on SEND Pipe
+ComputeBasic	XVE_INST_ISSUED_ALL	XVE Inst Issued All	Vector Engine	Number of instructions issued (decoded) to any pipe
+ComputeBasic	XVE_SHARED_FUNCTION_ACCESS_HOLD	XVE Shared Function Access Hold	Vector Engine	Percentage of time in which XVE requests stalled by Shared Function units
+ComputeBasic	XVE_STALL	XVE Stall	Vector Engine	Percentage of time in which any thread loaded but not even a single pipe is active in XVE
+ComputeBasic	XVE_THREADS_OCCUPANCY_ALL	XVE Threads Occupancy All	Vector Engine	Percentage of thread slots occupied
+ComputeBasic	XVE_INST_EXECUTED_ALU2_ALL	XVE Inst Executed ALU2 All	Vector Engine	Number of execution slots taken by instructions executed in ALU2 pipe
+ComputeBasic	XVE_MULTIPLE_PIPE_ACTIVE	XVE Multiple Pipe Active	Vector Engine	Percentage of time in which at least two pipes are actively executing a Gen ISA instruction among ALU0, ALU1, ALU2 and ALU3 pipes
+ComputeBasic	LOAD_STORE_CACHE_PARTIAL_WRITE_COUNT	Load Store Cache Partial Write Count	L1 Cache	Number of writes to the Load Store Cache that don't fill a subsector
+ComputeBasic	SLM_BANK_CONFLICT_COUNT	SLM Bank Conflict Count	L1 Cache	Number of SLM accesses resulting in a bank conflict
+ComputeBasic	SLM_BYTE_READ	SLM Byte Read	L1 Cache	Number of bytes read from SLM
+ComputeBasic	SLM_BYTE_WRITE	SLM Byte Write	L1 Cache	Number of bytes written to SLM
+ComputeBasic	LOAD_STORE_CACHE_BYTE_READ	Load Store Cache Byte Read	L1 Cache	Number of bytes read out of the Load Store Cache, excluding SLM accesses
+ComputeBasic	LOAD_STORE_CACHE_BYTE_WRITE	Load Store Cache Byte Write	L1 Cache	Number of bytes written to the Load Store Cache, excluding SLM accesses
+ComputeBasic	LOAD_STORE_CACHE_ACCESS	Load Store Cache Access	L1 Cache	Number of Load Store Cache accesses
+ComputeBasic	LOAD_STORE_CACHE_HIT	Load Store Cache Hit	L1 Cache	Number of Load Store Cache hits
+ComputeBasic	ASYNC_GPGPU_THREAD_EXIT_COUNT	Async GpGpu Thread Exit Count	Thread Dispatcher	Number of Async GPGPU EOT messages received
+ComputeBasic	GPGPU_DISPATCH	GpGpu Dispatch	Thread Dispatcher	Percentage of time in which spent dispatching GPGPU threads to XVEs
+ComputeBasic	COMMAND_PARSER_COMPUTE_ENGINE_BUSY	Command Parser Compute Engine Busy	Front End	Percentage of time in which there is a context loaded and active on the compute queue
+ComputeBasic	COMMAND_PARSER_COMPUTE_ENGINE_DISPATCH_KERNEL_COUNT	Command Parser Compute Engine Dispatch Kernel Count	Front End	Number of compute walker commands parsed on the compute engine
+ComputeBasic	COMMAND_PARSER_COPY_ENGINE_BUSY	Command Parser Copy Engine Busy	Front End	Percentage of time in which there is a context loaded and active on the copy queue.
+ComputeBasic	COMMAND_PARSER_FLUSH_COUNT	Command Parser Flush Count	Front End	Number of Stalling flushes at the top of the pipe
+ComputeBasic	XVE_PIPE_ALU0_AND_ALU1_ACTIVE	XVE Pipe ALU0 And ALU1 Active	Vector Engine	Percentage of time in which ALU0 and ALU1 pipes are both actively executing a Gen ISA instruction
+ComputeBasic	XVE_PIPE_ALU0_AND_ALU2_ACTIVE	XVE Pipe ALU0 And ALU2 Active	Vector Engine	Percentage of time in which ALU0 and ALU2 pipes are both actively executing a Gen ISA instruction
+ComputeBasic	XVE_INST_EXECUTED_ALU0_ALL_UTILIZATION	XVE Inst Executed ALU0 All Utilization	Vector Engine	Percentage of time taken by instructions executed on ALU0 pipe
+ComputeBasic	XVE_INST_EXECUTED_ALU1_ALL_UTILIZATION	XVE Inst Executed ALU1 All Utilization	Vector Engine	Percentage of time taken by instructions executed on ALU1 pipe. Does not include extended math instructions.
+ComputeBasic	XVE_INST_EXECUTED_ALU2_ALL_UTILIZATION	XVE Inst Executed ALU2 All Utilization	Vector Engine	Percentage of time taken by instructions executed in ALU2 pipe
+ComputeBasic	XVE_INST_EXECUTED_BARRIER	XVE Inst Executed Barrier	Vector Engine	Number of sync.bar and sync.host instructions executed
+ComputeBasic	COPY_ENGINE_READ_REQUEST	Copy Engine Read Request	Copy Engine	Number of read requests sent by the Copy Engine
+ComputeBasic	COPY_ENGINE_REQUEST_STALL	Copy Engine Request Stall	Copy Engine	Percentage of time in which copy engine is stalled on the memory path due to stall on the read or write path when there are commands pending within copy engine
+ComputeBasic	COPY_ENGINE_WRITE_REQUEST	Copy Engine Write Request	Copy Engine	Number of write requests sent by the Copy Engine
+ComputeBasic	GPU_MEMORY_BYTE_READ	GPU Memory Byte Read	Device Cache	Number of device local memory (HBM, GDDR, LPDDR, etc.) read bytes
+ComputeBasic	GPU_MEMORY_BYTE_WRITE	GPU Memory Byte Write	Device Cache	Number of device local memory (HBM, GDDR, LPDDR, etc.) write bytes
+ComputeBasic	GPU_MEMORY_ACTIVE	GPU Memory Active	Device Cache	Percentage of time in which local memory is active
+ComputeBasic	GPU_MEMORY_READ	GPU Memory Read	Device Cache	Number of local memory reads
+ComputeBasic	GPU_MEMORY_WRITE	GPU Memory Write	Device Cache	Number of local memory writes
+ComputeBasic	TLB_MISS	TLB Miss	Memory	Number of misses from all TLBs and all engines
+ComputeBasic	TLB_PAGE_SIZE_1G	TLB Page Size 1g	Memory	Number of TLB accesses to pages of size 1 GB
+ComputeBasic	TLB_PAGE_SIZE_2M	TLB Page Size 2m	Memory	Number of TLB accesses to pages of size 2 MB
+ComputeBasic	TLB_PAGE_SIZE_4K	TLB Page Size 4k	Memory	Number of TLB accesses to pages of size 4 KB
+ComputeBasic	TLB_PAGE_SIZE_64K	TLB Page Size 64k	Memory	Number of TLB accesses to pages of size 64 KB
+ComputeBasic	COMPRESSOR_INPUT	Compressor Input	Memory	Number of 256B writes to compressible surfaces at the input of the compressor
+ComputeBasic	COMPRESSOR_OUTPUT	Compressor Output	Memory	Number of 256B writes to compressible surfaces at the output of the compressor
+ComputeBasic	L3_READ	L3 Read	Device Cache	Number of Device Cache 64B read requests
+ComputeBasic	L3_WRITE	L3 Write	Device Cache	Number of Device Cache 64B write requests
+ComputeBasic	L3_BYTE_READ	L3 Byte Read	Device Cache	Number of Device Cache bytes read
+ComputeBasic	L3_BYTE_WRITE	L3 Byte Write	Device Cache	Number of Device Cache bytes written
+ComputeBasic	L3_ATOMIC_ACCESS	L3 Atomic Access	Device Cache	Number of atomic accesses to Device Cache bank
+ComputeBasic	L3_HIT	L3 Hit	Device Cache	Number of Device Cache accesses which hits in the Device Cache cache
+ComputeBasic	L3_MISS	L3 Miss	Device Cache	Number of Device Cache accesses which miss in the Device Cache cache
+ComputeBasic	L3_SUPERQ_FULL	L3 Superq Full	Device Cache	Percentage of time in which all slots in Device Cache request queue are waiting for data return / response
+ComputeBasic	XVE_INST_EXECUTED_ALU3_ALL	XVE Inst Executed Alu3 All	Vector Engine	Number of execution slots taken by instructions executed in ALU3 pipe
+ComputeBasic	XVE_GRFBLOCK_OCCUPANCY_ALL	XVE Grfblock Occupancy All	Vector Engine	Number of GRF register blocks occupied
+ComputeBasic	XVE_INST_LANE_ENABLED	XVE Inst Lane Enabled	Vector Engine	Number of execution lanes enabled for instructions executed on ALU0 and ALU1. Does not include control-flow instructions such as CALL, CALLA, RET, etc.
+ComputeBasic	XVE_INST_LANE_TOTAL	XVE Inst Lane Total	Vector Engine	Number of available execution lanes (enabled and not enabled) for instructions executed on ALU0 and ALU1, evaluated after shootdown. Does not include control-flow instructions such as CALL, CALLA, RET, etc.
+ComputeBasic	XVE_OP_FP32	XVE Op Fp32	Vector Engine	Number of effective 32-bit floating-point operations (FLOPs) executed on ALU0 and ALU1
+ComputeBasic	XVE_OP_FP64	XVE Op Fp64	Vector Engine	Number of effective 64-bit floating-point operations (FLOPs) executed on ALU0 and ALU1
+L1Profile	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
+L1Profile	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
+L1Profile	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
+L1Profile	ResultUncertainty	Result Uncertainty	GPU	Result uncertainty indicator
+L1Profile	GPU_BUSY	GPU Busy	Front End	Percentage of time in which GPU is not idle including all GPU engines
+L1Profile	ASYNC_GPGPU_THREADGROUP_COUNT	Async GpGpu Threadgroup Count	Thread Dispatcher	Number of Async GPGPU threadgroups dispatched
+L1Profile	LOAD_STORE_CACHE_ACCESS	Load Store Cache Access	L1 Cache	Number of Load Store Cache accesses
+L1Profile	LOAD_STORE_CACHE_BYTE_READ	Load Store Cache Byte Read	L1 Cache	Number of bytes read out of the Load Store Cache, excluding SLM accesses
+L1Profile	LOAD_STORE_CACHE_BYTE_WRITE	Load Store Cache Byte Write	L1 Cache	Number of bytes written to the Load Store Cache, excluding SLM accesses
+L1Profile	LOAD_STORE_CACHE_HIT	Load Store Cache Hit	L1 Cache	Number of Load Store Cache hits
+L1Profile	LOAD_STORE_CACHE_INPUT_AVAILABLE	Load Store Cache Input Available	L1 Cache	Percentage of time in which the Load Store Cache has input available
+L1Profile	LOAD_STORE_CACHE_NUMBER_OF_BANK_ACCESS_COUNT	Load Store Cache Number Of Bank Access Count	L1 Cache	Number of Load Store Cache banks accessed in a clock.
+L1Profile	LOAD_STORE_CACHE_OUTPUT_READY	Load Store Cache Output Ready	L1 Cache	Percentage of time in which the Load Store Cache has output ready
+L1Profile	LOAD_STORE_CACHE_PARTIAL_WRITE_COUNT	Load Store Cache Partial Write Count	L1 Cache	Number of writes to the Load Store Cache that don't fill a subsector
+L1Profile	SLM_ACCESS_COUNT	SLM Access Count	L1 Cache	Number of SLM accesses
+L1Profile	SLM_BANK_CONFLICT_COUNT	SLM Bank Conflict Count	L1 Cache	Number of SLM accesses resulting in a bank conflict
+L1Profile	SLM_BYTE_READ	SLM Byte Read	L1 Cache	Number of bytes read from SLM
+L1Profile	SLM_BYTE_WRITE	SLM Byte Write	L1 Cache	Number of bytes written to SLM
+L1Profile	XVE_LOAD_STORE_CACHE_ATOMIC_MESSAGE_COUNT	XVE Load Store Cache Atomic Message Count	L1 Cache	Number of atomic operations sent by XVEs to the Load Store Cache
+L1Profile	XVE_LOAD_STORE_CACHE_FENCE_MESSAGE_COUNT	XVE Load Store Cache Fence Message Count	L1 Cache	Number of fence messages sent by XVEs to the Load Store Cache
+L1Profile	XVE_LOAD_STORE_CACHE_READ_MESSAGE_COUNT	XVE Load Store Cache Read Message Count	L1 Cache	Number of read messages sent by XVEs to the Load Store Cache
+L1Profile	XVE_LOAD_STORE_CACHE_REGISTER_REQUEST_COUNT	XVE Load Store Cache Register Request Count	L1 Cache	Number of message payload transactions sent by XVEs to the Load Store Cache
+L1Profile	XVE_LOAD_STORE_CACHE_REGISTER_RESPONSE_COUNT	XVE Load Store Cache Register Response Count	L1 Cache	Number of message payload transactions sent from the Load Store Cache back to XVEs
+L1Profile	XVE_LOAD_STORE_CACHE_WRITE_MESSAGE_COUNT	XVE Load Store Cache Write Message Count	L1 Cache	Number of write messages sent by XVEs to the Load Store Cache
+L1Profile	XVE_SLM_ATOMIC_MESSAGE_COUNT	XVE SLM Atomic Message Count	L1 Cache	Number of SLM atomic operations sent by XVEs
+L1Profile	XVE_SLM_FENCE_MESSAGE_COUNT	XVE SLM Fence Message Count	L1 Cache	Number of SLM fence operations sent by XVEs
+L1Profile	XVE_SLM_READ_MESSAGE_COUNT	XVE SLM Read Message Count	L1 Cache	Number of SLM read messages sent by XVEs
+L1Profile	XVE_SLM_WRITE_MESSAGE_COUNT	XVE SLM Write Message Count	L1 Cache	Number of SLM write messages sent by XVEs
+L1Profile	SLM_ATOMIC_ACCESS_COUNT	SLM Atomic Access Count	L1 Cache	Number of SLM atomic accesses
+L1Profile	SLM_OVERLAPPED_ATOMIC_ACCESS_COUNT	SLM Overlapped Atomic Access Count	L1 Cache	Number of overlapped SLM atomic accesses within a message
+L1Profile	GLOBAL_OVERLAPPED_ATOMIC_ACCESS_COUNT	Global Overlapped Atomic Access Count	L1 Cache	Number of overlapped global memory atomic accesses within a message
+L1Profile	ICACHE_L3_HIT	ICache L3 Hit	Device Cache	Number of XVE instruction cache requests that hit the Device Cache
+L1Profile	ICACHE_L3_READ	ICache L3 Read	Device Cache	Number of Device Cache read requests coming from XVE Instruction Cache
+L1Profile	L3_BUSY	L3 Busy	Device Cache	Percentage of time in which Device Cache request queue has one or more requests pending
+L1Profile	L3_INPUT_AVAILABLE	L3 Input Available	Device Cache	Percentage of time in which Device Cache bank has input requests
+L1Profile	L3_OUTPUT_READY	L3 Output Ready	Device Cache	Percentage of time in which Device Cache bank has output ready
+L1Profile	L3_STALL	L3 Stall	Device Cache	Percentage of time in which Device Cache bank stalled
+L1Profile	LOAD_STORE_CACHE_L3_HIT	Load Store Cache L3 Hit	Device Cache	Number of Load Store Cache requests to Device Cache that are hit
+L1Profile	LOAD_STORE_CACHE_L3_READ	Load Store Cache L3 Read	Device Cache	Number of cacheline read requests from the Load Store Cache to Device Cache
+L1Profile	LOAD_STORE_CACHE_L3_WRITE	Load Store Cache L3 Write	Device Cache	Number of cacheline write requests from the Load Store Cache to Device Cache
+VectorEngineProfile	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
+VectorEngineProfile	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
+VectorEngineProfile	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
+VectorEngineProfile	ResultUncertainty	Result Uncertainty	GPU	Result uncertainty indicator
+VectorEngineProfile	GPU_BUSY	GPU Busy	Front End	Percentage of time in which GPU is not idle including all GPU engines
+VectorEngineProfile	ASYNC_GPGPU_THREADGROUP_COUNT	Async GpGpu Threadgroup Count	Thread Dispatcher	Number of Async GPGPU threadgroups dispatched
+VectorEngineProfile	ICACHE_HIT	ICache Hit	Vector Engine	Number of Instruction Cache hits
+VectorEngineProfile	ICACHE_MISS	ICache Miss	Vector Engine	Number of Instruction Cache misses
+VectorEngineProfile	XVE_INST_EXECUTED_ALU0_ALL	XVE Inst Executed ALU0 All	Vector Engine	Number of execution slots taken by instructions executed on ALU0 pipe
+VectorEngineProfile	XVE_INST_EXECUTED_ALU1_ALL	XVE Inst Executed ALU1 All	Vector Engine	Number of execution slots taken by instructions executed on ALU1 pipe. Does not include extended math instructions.
+VectorEngineProfile	XVE_INST_EXECUTED_ALU2_ALL	XVE Inst Executed ALU2 All	Vector Engine	Number of execution slots taken by instructions executed in ALU2 pipe
+VectorEngineProfile	XVE_INST_EXECUTED_BARRIER	XVE Inst Executed Barrier	Vector Engine	Number of sync.bar and sync.host instructions executed
+VectorEngineProfile	XVE_INST_EXECUTED_BITCONV	XVE Inst Executed Bitconv	Vector Engine	Number of execution slots taken by bit manipulation instructions
+VectorEngineProfile	XVE_INST_EXECUTED_CONTROL_ALL	XVE Inst Executed Control All	Vector Engine	Number of instructions executed on JEU Pipe
+VectorEngineProfile	XVE_INST_EXECUTED_FP16	XVE Inst Executed Fp16	Vector Engine	Number of execution slots taken by FP16 ALU instructions. Does not include extended math instructions.
+VectorEngineProfile	XVE_INST_EXECUTED_FP32	XVE Inst Executed Fp32	Vector Engine	Number of execution slots taken by FP32 ALU instructions. Does not include extended math instructions.
+VectorEngineProfile	XVE_INST_EXECUTED_FP64	XVE Inst Executed Fp64	Vector Engine	Number of execution slots taken by FP64 ALU instructions
+VectorEngineProfile	XVE_INST_EXECUTED_FP64_2ND	XVE Inst Executed Fp64 2nd	Vector Engine	Number of execution slots taken by FP64 ALU instructions executed in the second pipe
+VectorEngineProfile	XVE_INST_EXECUTED_INT16	XVE Inst Executed Int16	Vector Engine	Number of execution slots taken by INT16 ALU instructions
+VectorEngineProfile	XVE_INST_EXECUTED_INT32	XVE Inst Executed Int32	Vector Engine	Number of execution slots taken by INT32 ALU instructions
+VectorEngineProfile	XVE_INST_EXECUTED_INT64	XVE Inst Executed Int64	Vector Engine	Number of execution slots taken by INT64 instructions
+VectorEngineProfile	XVE_INST_EXECUTED_MATH	XVE Inst Executed Math	Vector Engine	Number of execution slots taken by extended math instructions
+VectorEngineProfile	XVE_INST_EXECUTED_NONDIVERGENT	XVE Inst Executed Nondivergent	Vector Engine	Number of non-divergent instructions (not execution slots) executed
+VectorEngineProfile	XVE_INST_EXECUTED_PREDICATION	XVE Inst Executed Predication	Vector Engine	Number of instructions (not execution slots) executed with predication mask enabled
+VectorEngineProfile	XVE_INST_EXECUTED_SEND_ALL	XVE Inst Executed Send All	Vector Engine	Number of instruction (GRF or SRF) dispatches executed on SEND Pipe
+VectorEngineProfile	XVE_INST_EXECUTED_XMX_BF16	XVE Inst Executed XMX Bf16	Vector Engine	Number of execution slots taken by BF16 XMX instructions
+VectorEngineProfile	XVE_INST_EXECUTED_XMX_FP16	XVE Inst Executed XMX Fp16	Vector Engine	Number of execution slots taken by FP16 XMX instructions
+VectorEngineProfile	XVE_INST_EXECUTED_XMX_INT4	XVE Inst Executed XMX Int4	Vector Engine	Number of execution slots taken by INT4 XMX instructions
+VectorEngineProfile	XVE_INST_EXECUTED_XMX_INT8	XVE Inst Executed XMX Int8	Vector Engine	Number of execution slots taken by INT8 XMX instructions
+VectorEngineProfile	XVE_INST_ISSUED_ALL	XVE Inst Issued All	Vector Engine	Number of instructions issued (decoded) to any pipe
+VectorEngineProfile	XVE_THREADS_OCCUPANCY_ALL	XVE Threads Occupancy All	Vector Engine	Percentage of thread slots occupied
+VectorEngineProfile	COMMAND_PARSER_COMPUTE_ENGINE_BUSY	Command Parser Compute Engine Busy	Front End	Percentage of time in which there is a context loaded and active on the compute queue
+VectorEngineProfile	COMMAND_PARSER_COMPUTE_ENGINE_DISPATCH_KERNEL_COUNT	Command Parser Compute Engine Dispatch Kernel Count	Front End	Number of compute walker commands parsed on the compute engine
+VectorEngineProfile	XVE_INST_EXECUTED_BF16	XVE Inst Executed Bf16	Vector Engine	Number of execution slots taken by BF16 ALU instructions
+VectorEngineProfile	XVE_INST_EXECUTED_XMX_FP4	XVE Inst Executed XMX Fp4	Vector Engine	Number of execution slots taken by FP4 XMX instruction
+VectorEngineProfile	XVE_INST_EXECUTED_XMX_FP64	XVE Inst Executed XMX Fp64	Vector Engine	Number of execution slots taken by FP64 XMX instructions
+VectorEngineProfile	XVE_INST_EXECUTED_XMX_FP8	XVE Inst Executed XMX Fp8	Vector Engine	Number of execution slots taken by FP8 XMX instructions
+VectorEngineStalls	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
+VectorEngineStalls	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
+VectorEngineStalls	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
+VectorEngineStalls	ResultUncertainty	Result Uncertainty	GPU	Result uncertainty indicator
+VectorEngineStalls	GPU_BUSY	GPU Busy	Front End	Percentage of time in which GPU is not idle including all GPU engines
+VectorEngineStalls	ASYNC_GPGPU_THREADGROUP_COUNT	Async GpGpu Threadgroup Count	Thread Dispatcher	Number of Async GPGPU threadgroups dispatched
+VectorEngineStalls	XVE_STALL_ALUWR	XVE Stall Aluwr	Vector Engine	Percentage of time in which XVE stalled, with at least one thread waiting for ALU to write GRF/ACC register. Multiple stall reasons can qualify during the same cycle
+VectorEngineStalls	XVE_STALL_BARRIER	XVE Stall Barrier	Vector Engine	Percentage of time in which XVE stalled, with at least one thread waiting for Gateway to write Notify register. Multiple stall reasons can qualify during the same cycle
+VectorEngineStalls	XVE_STALL_CONTROL	XVE Stall Control	Vector Engine	Percentage of time in which XVE stalled, with at least one thread waiting for JEU to complete branch instruction. Multiple stall reasons can qualify during the same cycle
+VectorEngineStalls	XVE_STALL_INSTFETCH	XVE Stall Instfetch	Vector Engine	Percentage of time in which XVE stalled, with at least one thread waiting for Instruction Fetch. Multiple stall reasons can qualify during the same cycle
+VectorEngineStalls	XVE_STALL_OTHER	XVE Stall Other	Vector Engine	Percentage of time in which XVE stalled, with at least one thread waiting on any other dependency (Flag/EoT etc). Multiple stall reasons can qualify during the same cycle
+VectorEngineStalls	XVE_STALL_PIPESTALL	XVE Stall Pipestall	Vector Engine	Percentage of time in which XVE stalled, with at least one thread ready to be scheduled (Grf conf/send holds etc). Multiple stall reasons can qualify during the same cycle
+VectorEngineStalls	XVE_STALL_SBID	XVE Stall Sbid	Vector Engine	Percentage of time in which XVE stalled, with at least one thread waiting for Scoreboard token to be available. Multiple stall reasons can qualify during the same cycle
+VectorEngineStalls	XVE_STALL_SENDWR	XVE Stall Sendwr	Vector Engine	Percentage of time in which XVE stalled, with at least one thread waiting for SEND message to be dispatched from XVE. Multiple stall reasons can qualify during the same cycle
+VectorEngineStalls	THREAD_DISPATCH_QUEUE0_ACTIVE	Thread Dispatch Queue0 Active	Thread Dispatcher	Percentage of time in which non-Pixel Shader threads are ready for dispatch in a particular Xe core
+VectorEngineStalls	THREAD_DISPATCH_QUEUE0_STALL	Thread Dispatch Queue0 Stall	Thread Dispatcher	Percentage of time in which queue 0 is stalled waiting for threads to be available
+VectorEngineStalls	THREAD_DISPATCH_QUEUE1_ACTIVE	Thread Dispatch Queue1 Active	Thread Dispatcher	Percentage of time in which non-Pixel Shader threads are ready for dispatch in a particular Xe core
+VectorEngineStalls	THREAD_DISPATCH_QUEUE1_STALL	Thread Dispatch Queue1 Stall	Thread Dispatcher	Percentage of time in which queue 1 is stalled waiting for threads to be available
+VectorEngineStalls	THREADGROUP_DISPATCH_QUEUE0_RESOURCE_STALL	Threadgroup Dispatch Queue0 Resource Stall	Thread Dispatcher	Percentage of time in which Thread Spawner queue 0 is stalled waiting for any resource to be available (for example, SLM, Barrier, BTD stack, etc.)
+VectorEngineStalls	THREADGROUP_DISPATCH_QUEUE1_RESOURCE_STALL	Threadgroup Dispatch Queue1 Resource Stall	Thread Dispatcher	Percentage of time in which Thread Spawner queue 1 is stalled waiting for any resource to be available (for example, SLM, Barrier, BTD stack, etc.)
+VectorEngineStalls	XVE_ACTIVE	XVE Active	Vector Engine	Percentage of time in which at least one pipe is active in XVE
+VectorEngineStalls	XVE_SHARED_FUNCTION_ACCESS_HOLD	XVE Shared Function Access Hold	Vector Engine	Percentage of time in which XVE requests stalled by Shared Function units
+VectorEngineStalls	XVE_STALL	XVE Stall	Vector Engine	Percentage of time in which any thread loaded but not even a single pipe is active in XVE
+VectorEngineStalls	XVE_THREADS_OCCUPANCY_ALL	XVE Threads Occupancy All	Vector Engine	Percentage of thread slots occupied
+VectorEngineStalls	XVE_MULTIPLE_PIPE_ACTIVE	XVE Multiple Pipe Active	Vector Engine	Percentage of time in which at least two pipes are actively executing a Gen ISA instruction among ALU0, ALU1, ALU2 and ALU3 pipes
+VectorEngineStalls	XVE_PIPE_ALU0_AND_ALU1_ACTIVE	XVE Pipe ALU0 And ALU1 Active	Vector Engine	Percentage of time in which ALU0 and ALU1 pipes are both actively executing a Gen ISA instruction
+VectorEngineStalls	XVE_PIPE_ALU0_AND_ALU2_ACTIVE	XVE Pipe ALU0 And ALU2 Active	Vector Engine	Percentage of time in which ALU0 and ALU2 pipes are both actively executing a Gen ISA instruction
+VectorEngineStalls	ASYNC_GPGPU_THREAD_EXIT_COUNT	Async GpGpu Thread Exit Count	Thread Dispatcher	Number of Async GPGPU EOT messages received
+VectorEngineStalls	THREAD_DISPATCH_GPGPU_COMMON_ENGINE	Thread Dispatch GpGpu Common Engine	Thread Dispatcher	Number of Common (non-Async)) GPGPU threads dispatched
+VectorEngineStalls	THREAD_DISPATCH_GPGPU_COMPUTE_ENGINE	Thread Dispatch GpGpu Compute Engine	Thread Dispatcher	Number of Compute (Async) GPGPU threads dispatched
+VectorEngineStalls	THREAD_DISPATCH_INPUT_AVAILABLE	Thread Dispatch Input Available	Thread Dispatcher	Percentage of time in which Thread Dispatch input is available
+VectorEngineStalls	THREAD_DISPATCH_OTHER	Thread Dispatch Other	Thread Dispatcher	Number of threads dispatched that do not fit into any of the other identified groups. This group includes, at least, AMFS threads and may include other groups.
+VectorEngineStalls	THREADGROUP_DISPATCH_QUEUE0_INPUT_AVAILABLE	Threadgroup Dispatch Queue0 Input Available	Thread Dispatcher	Percentage of time in which Thread Spawner has input available on queue 0
+VectorEngineStalls	THREADGROUP_DISPATCH_QUEUE1_INPUT_AVAILABLE	Threadgroup Dispatch Queue1 Input Available	Thread Dispatcher	Percentage of time in which Thread Spawner has input available on queue 1
+TestOa	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
+TestOa	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
+TestOa	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
+TestOa	ResultUncertainty	Result Uncertainty	GPU	Result uncertainty indicator
+TestOa	GPU_BUSY	GPU Busy	Front End	Percentage of time in which GPU is not idle including all GPU engines
+TestOa	GPGPU_THREADGROUP_COUNT	GpGpu Threadgroup Count	Thread Dispatcher	Number of GPGPU threadgroups dispatched
+TestOa	ASYNC_GPGPU_THREADGROUP_COUNT	Async GpGpu Threadgroup Count	Thread Dispatcher	Number of Async GPGPU threadgroups dispatched
+TestOa	TEST_EVENT1	Test Event1	Test	Number of GPU (gt) clock cycles at every clock period
+TestOa	TEST_EVENT1_CYCLES	Test Event1 Cycles	Test	Number of GPU (gt) clock cycles at every clock period
+TestOa	TEST_EVENT1_CYCLES_XECORE0	Test Event1 Cycles Xecore0	Test	Number of GPU (gt) clock cycles at every clock period (XECORE0)
+TestOa	TEST_EVENT1_CYCLES_XECORE1	Test Event1 Cycles Xecore1	Test	Number of GPU (gt) clock cycles at every clock period (XECORE1)
+TestOa	TEST_EVENT1_CYCLES_XECORE2	Test Event1 Cycles Xecore2	Test	Number of GPU (gt) clock cycles at every clock period (XECORE2)
+TestOa	TEST_EVENT1_CYCLES_XECORE3	Test Event1 Cycles Xecore3	Test	Number of GPU (gt) clock cycles at every clock period (XECORE3)
+TestOa	TEST_EVENT1_CYCLES_XECORE4	Test Event1 Cycles Xecore4	Test	Number of GPU (gt) clock cycles at every clock period (XECORE4)
+TestOa	TEST_EVENT1_CYCLES_XECORE5	Test Event1 Cycles Xecore5	Test	Number of GPU (gt) clock cycles at every clock period (XECORE5)
+TestOa	TEST_EVENT1_CYCLES_XECORE6	Test Event1 Cycles Xecore6	Test	Number of GPU (gt) clock cycles at every clock period (XECORE6)
+TestOa	TEST_EVENT1_CYCLES_XECORE7	Test Event1 Cycles Xecore7	Test	Number of GPU (gt) clock cycles at every clock period (XECORE7)
+TestOa	TEST_EVENT1_CYCLES_XECORE8	Test Event1 Cycles Xecore8	Test	Number of GPU (gt) clock cycles at every clock period (XECORE8)
+TestOa	TEST_EVENT1_CYCLES_XECORE9	Test Event1 Cycles Xecore9	Test	Number of GPU (gt) clock cycles at every clock period (XECORE9)
+TestOa	TEST_EVENT1_CYCLES_XECORE10	Test Event1 Cycles Xecore10	Test	Number of GPU (gt) clock cycles at every clock period (XECORE10)
+TestOa	TEST_EVENT1_CYCLES_XECORE11	Test Event1 Cycles Xecore11	Test	Number of GPU (gt) clock cycles at every clock period (XECORE11)
+TestOa	TEST_EVENT1_CYCLES_XECORE12	Test Event1 Cycles Xecore12	Test	Number of GPU (gt) clock cycles at every clock period (XECORE12)
+TestOa	TEST_EVENT1_CYCLES_XECORE13	Test Event1 Cycles Xecore13	Test	Number of GPU (gt) clock cycles at every clock period (XECORE13)
+TestOa	TEST_EVENT1_CYCLES_XECORE14	Test Event1 Cycles Xecore14	Test	Number of GPU (gt) clock cycles at every clock period (XECORE14)
+TestOa	TEST_EVENT1_CYCLES_XECORE15	Test Event1 Cycles Xecore15	Test	Number of GPU (gt) clock cycles at every clock period (XECORE15)
+TestOa	TEST_EVENT1_CYCLES_XECORE16	Test Event1 Cycles Xecore16	Test	Number of GPU (gt) clock cycles at every clock period (XECORE16)
+TestOa	TEST_EVENT1_CYCLES_XECORE17	Test Event1 Cycles Xecore17	Test	Number of GPU (gt) clock cycles at every clock period (XECORE17)
+TestOa	TEST_EVENT1_CYCLES_XECORE18	Test Event1 Cycles Xecore18	Test	Number of GPU (gt) clock cycles at every clock period (XECORE18)
+TestOa	TEST_EVENT1_CYCLES_XECORE19	Test Event1 Cycles Xecore19	Test	Number of GPU (gt) clock cycles at every clock period (XECORE19)
+TestOa	TEST_EVENT1_CYCLES_XECORE20	Test Event1 Cycles Xecore20	Test	Number of GPU (gt) clock cycles at every clock period (XECORE20)
+TestOa	TEST_EVENT1_CYCLES_XECORE21	Test Event1 Cycles Xecore21	Test	Number of GPU (gt) clock cycles at every clock period (XECORE21)
+TestOa	TEST_EVENT1_CYCLES_XECORE22	Test Event1 Cycles Xecore22	Test	Number of GPU (gt) clock cycles at every clock period (XECORE22)
+TestOa	TEST_EVENT1_CYCLES_XECORE23	Test Event1 Cycles Xecore23	Test	Number of GPU (gt) clock cycles at every clock period (XECORE23)
+TestOa	TEST_EVENT1_CYCLES_XECORE24	Test Event1 Cycles Xecore24	Test	Number of GPU (gt) clock cycles at every clock period (XECORE24)
+TestOa	TEST_EVENT1_CYCLES_XECORE25	Test Event1 Cycles Xecore25	Test	Number of GPU (gt) clock cycles at every clock period (XECORE25)
+TestOa	TEST_EVENT1_CYCLES_XECORE26	Test Event1 Cycles Xecore26	Test	Number of GPU (gt) clock cycles at every clock period (XECORE26)
+TestOa	TEST_EVENT1_CYCLES_XECORE27	Test Event1 Cycles Xecore27	Test	Number of GPU (gt) clock cycles at every clock period (XECORE27)
+TestOa	TEST_EVENT1_CYCLES_XECORE28	Test Event1 Cycles Xecore28	Test	Number of GPU (gt) clock cycles at every clock period (XECORE28)
+TestOa	TEST_EVENT1_CYCLES_AVERAGE	Test Event1 Cycles Average	Test	Average number of GPU (gt) clock cycles at every clock period
+TestOa	TEST_EVENT2	Test Event2	Test	Number of GPU (gt) clock cycles at every other clock period
+TestOa	TEST_EVENT2_CYCLES	Test Event2 Cycles	Test	Number of GPU (gt) clock cycles at every other clock period
+MediaSet1	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
+MediaSet1	GpuCoreClocks	GPU Media Clocks	GPU	The total number of media slice clocks elapsed during the measurement.
+MediaSet1	AvgGpuCoreFrequencyMHz	AVG GPU Media Frequency	GPU	Average GPU Media Frequency in the measurement.
+MediaSet1	ResultUncertainty	Result Uncertainty	GPU	Result uncertainty indicator
+MediaSet1	MEDIA_READ_REQUEST	Media Read Request	Media	Number of read requests from stand alone media
+MediaSet1	MEDIA_WRITE_REQUEST	Media Write Request	Media	Number of write requests from stand alone media
+MediaSet1	COMMAND_PARSER_VIDEO_DECODE_ENGINE0_BUSY	Command Parser Video Decode Engine0 Busy	Media	Number of VCS0 (VDBOX0) activities
+MediaSet1	VIDEO_DECODE_BOX0_READ_REQUEST	Video Decode Box0 Read Request	Media	Number of VDBOX0 read requests
+MediaSet1	VIDEO_DECODE_BOX0_WRITE_REQUEST	Video Decode Box0 Write Request	Media	Number of VDBOX0 write requests
+MediaSet1	COMMAND_PARSER_VIDEO_DECODE_ENGINE1_BUSY	Command Parser Video Decode Engine1 Busy	Media	Number of VCS1 (VDBOX1) activities
+MediaSet1	VIDEO_DECODE_BOX1_READ_REQUEST	Video Decode Box1 Read Request	Media	Number of VDBOX1 read requests
+MediaSet1	VIDEO_DECODE_BOX1_WRITE_REQUEST	Video Decode Box1 Write Request	Media	Number of VDBOX1 write requests
+MediaSet2	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
+MediaSet2	GpuCoreClocks	GPU Media Clocks	GPU	The total number of media slice clocks elapsed during the measurement.
+MediaSet2	AvgGpuCoreFrequencyMHz	AVG GPU Media Frequency	GPU	Average GPU Media Frequency in the measurement.
+MediaSet2	ResultUncertainty	Result Uncertainty	GPU	Result uncertainty indicator
+MediaSet2	COMMAND_PARSER_VIDEO_ENHANCEMENT_ENGINE0_BUSY	Command Parser Video Enhancement Engine0 Busy	Media	Number of VECS0 (VEBOX0) activities
+MediaSet2	VIDEO_ENHANCEMENT_BOX0_READ_REQUEST	Video Enhancement Box0 Read Request	Media	Number of VEBOX0 read requests
+MediaSet2	VIDEO_ENHANCEMENT_BOX0_WRITE_REQUEST	Video Enhancement Box0 Write Request	Media	Number of VEBOX0 write requests
+MediaSet2	COMMAND_PARSER_VIDEO_ENHANCEMENT_ENGINE1_BUSY	Command Parser Video Enhancement Engine1 Busy	Media	Number of VECS1 (VEBOX1) activities
+MediaSet2	VIDEO_ENHANCEMENT_BOX1_READ_REQUEST	Video Enhancement Box1 Read Request	Media	Number of VEBOX1 read requests
+MediaSet2	VIDEO_ENHANCEMENT_BOX1_WRITE_REQUEST	Video Enhancement Box1 Write Request	Media	Number of VEBOX1 write requests
+MediaSet1	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
+MediaSet1	GpuCoreClocks	GPU Media Clocks	GPU	The total number of media slice clocks elapsed during the measurement.
+MediaSet1	AvgGpuCoreFrequencyMHz	AVG GPU Media Frequency	GPU	Average GPU Media Frequency in the measurement.
+MediaSet1	ResultUncertainty	Result Uncertainty	GPU	Result uncertainty indicator
+MediaSet1	MEDIA_READ_REQUEST	Media Read Request	Media	Number of read requests from stand alone media
+MediaSet1	MEDIA_WRITE_REQUEST	Media Write Request	Media	Number of write requests from stand alone media
+MediaSet1	COMMAND_PARSER_VIDEO_DECODE_ENGINE0_BUSY	Command Parser Video Decode Engine0 Busy	Media	Number of VCS0 (VDBOX0) activities
+MediaSet1	VIDEO_DECODE_BOX0_READ_REQUEST	Video Decode Box0 Read Request	Media	Number of VDBOX0 read requests
+MediaSet1	VIDEO_DECODE_BOX0_WRITE_REQUEST	Video Decode Box0 Write Request	Media	Number of VDBOX0 write requests
+MediaSet1	COMMAND_PARSER_VIDEO_DECODE_ENGINE1_BUSY	Command Parser Video Decode Engine1 Busy	Media	Number of VCS1 (VDBOX1) activities
+MediaSet1	VIDEO_DECODE_BOX1_READ_REQUEST	Video Decode Box1 Read Request	Media	Number of VDBOX1 read requests
+MediaSet1	VIDEO_DECODE_BOX1_WRITE_REQUEST	Video Decode Box1 Write Request	Media	Number of VDBOX1 write requests
+MediaSet2	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
+MediaSet2	GpuCoreClocks	GPU Media Clocks	GPU	The total number of media slice clocks elapsed during the measurement.
+MediaSet2	AvgGpuCoreFrequencyMHz	AVG GPU Media Frequency	GPU	Average GPU Media Frequency in the measurement.
+MediaSet2	ResultUncertainty	Result Uncertainty	GPU	Result uncertainty indicator
+MediaSet2	COMMAND_PARSER_VIDEO_ENHANCEMENT_ENGINE0_BUSY	Command Parser Video Enhancement Engine0 Busy	Media	Number of VECS0 (VEBOX0) activities
+MediaSet2	VIDEO_ENHANCEMENT_BOX0_READ_REQUEST	Video Enhancement Box0 Read Request	Media	Number of VEBOX0 read requests
+MediaSet2	VIDEO_ENHANCEMENT_BOX0_WRITE_REQUEST	Video Enhancement Box0 Write Request	Media	Number of VEBOX0 write requests
+MediaSet2	COMMAND_PARSER_VIDEO_ENHANCEMENT_ENGINE1_BUSY	Command Parser Video Enhancement Engine1 Busy	Media	Number of VECS1 (VEBOX1) activities
+MediaSet2	VIDEO_ENHANCEMENT_BOX1_READ_REQUEST	Video Enhancement Box1 Read Request	Media	Number of VEBOX1 read requests
+MediaSet2	VIDEO_ENHANCEMENT_BOX1_WRITE_REQUEST	Video Enhancement Box1 Write Request	Media	Number of VEBOX1 write requests
+MediaSet1	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
+MediaSet1	GpuCoreClocks	GPU Media Clocks	GPU	The total number of media slice clocks elapsed during the measurement.
+MediaSet1	AvgGpuCoreFrequencyMHz	AVG GPU Media Frequency	GPU	Average GPU Media Frequency in the measurement.
+MediaSet1	ResultUncertainty	Result Uncertainty	GPU	Result uncertainty indicator
+MediaSet1	COMMAND_PARSER_GRAPHICS_SECURITY_CONTROLLER_BUSY	Command Parser Graphics Security Controller Busy	Media	Number of GSCCS activities

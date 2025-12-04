@@ -17,6 +17,7 @@ SPDX-License-Identifier: MIT
 #include "md_utils.h"
 
 #include <cstring>
+#include <array>
 
 namespace MetricsDiscoveryInternal
 {
@@ -455,6 +456,8 @@ namespace MetricsDiscoveryInternal
                     // Push 0 to stack for unavailable unpacked mask symbol.
                     const bool isUnpackedMaskSymbol = ( element.SymbolName != nullptr ) &&
                         ( ( strstr( element.SymbolName, "GtSlice" ) != nullptr ) ||
+                            ( strstr( element.SymbolName, "GtSubslice" ) != nullptr ) ||
+                            ( strstr( element.SymbolName, "GtDualSubslice" ) != nullptr ) ||
                             ( strstr( element.SymbolName, "GtXeCore" ) != nullptr ) ||
                             ( strstr( element.SymbolName, "GtL3Bank" ) != nullptr ) ||
                             ( strstr( element.SymbolName, "GtL3Node" ) != nullptr ) ||
@@ -470,7 +473,7 @@ namespace MetricsDiscoveryInternal
                     }
                     else
                     {
-                        MD_LOG_A( adapterId, LOG_DEBUG, "Not allowed equation element type in availability equation: %u", element.Type );
+                        MD_LOG_A( adapterId, LOG_DEBUG, "Not allowed equation element type in availability equation: %u (%s)", element.Type, element.SymbolName ? element.SymbolName : "null" );
                         MD_ASSERT_A( adapterId, false );
                         ClearList( equationStack );
                         return false;
@@ -722,6 +725,8 @@ namespace MetricsDiscoveryInternal
                 case GENERATION_BMG:
                 case GENERATION_LNL:
                 case GENERATION_PTL:
+                case GENERATION_NVL:
+                case GENERATION_CRI:
                     return ParseEquationString( "$Self $GpuSliceClocksCount $VectorEngineTotalCount UMUL FDIV 100 FMUL" );
 
                 default:
@@ -958,6 +963,31 @@ namespace MetricsDiscoveryInternal
             }
 
             auto value = m_device.GetGlobalSymbolValueByName( symbolName.c_str() );
+
+            // If symbol not found, try to map legacy eu/subslice names to current xve/xecore names
+            if( !value )
+            {
+                constexpr std::array<std::pair<std::string_view, std::string_view>, 8> globalSymbolPairs = {
+                    { { "EuCoresTotalCount", "VectorEngineTotalCount" },
+                        { "EuCoresPerSubsliceCount", "VectorEnginePerXeCoreCount" },
+                        { "EuSlicesTotalCount", "SliceTotalCount" },
+                        { "EuThreadsCount", "VectorEngineThreadsCount" },
+                        { "EuSubslicesTotalCount", "XeCoreTotalCount" },
+                        { "EuDualSubslicesTotalCount", "XeCoreTotalCount" },
+                        { "GtSubsliceMask", "GtXeCoreMask" },
+                        { "GtDualSubsliceMask", "GtXeCoreMask" } }
+                };
+
+                for( auto iterator = globalSymbolPairs.begin(); iterator != globalSymbolPairs.end(); ++iterator )
+                {
+                    if( iterator->first == symbolName )
+                    {
+                        symbolName = iterator->second;
+                        value      = m_device.GetGlobalSymbolValueByName( symbolName.c_str() );
+                        break;
+                    }
+                }
+            }
 
             MD_SAFE_DELETE_ARRAY( element.SymbolName );
             element.SymbolName = GetCopiedCString( symbolName.c_str(), adapterId );

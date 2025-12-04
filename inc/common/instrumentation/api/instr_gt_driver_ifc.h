@@ -235,11 +235,13 @@ typedef enum
     GTDI_IFC_VERSION_3_59    = GTDI_MAKE_IFC_VER( GTDI_IFC_VERSION_3, 59 ),
     GTDI_IFC_VERSION_3_60    = GTDI_MAKE_IFC_VER( GTDI_IFC_VERSION_3, 60 ), // New device params: L3 Bank, L3 Node and Copy Engine masks
     GTDI_IFC_VERSION_3_61    = GTDI_MAKE_IFC_VER( GTDI_IFC_VERSION_3, 61 ), // EU cores and threads override withdrawal
-    GTDI_IFC_VERSION_3_62    = GTDI_MAKE_IFC_VER( GTDI_IFC_VERSION_3, 62 ),
+    GTDI_IFC_VERSION_3_62    = GTDI_MAKE_IFC_VER( GTDI_IFC_VERSION_3, 62 ), // NVL base support
     GTDI_IFC_VERSION_3_63    = GTDI_MAKE_IFC_VER( GTDI_IFC_VERSION_3, 63 ), // New device params: color, depth, geometry pipes count
     GTDI_IFC_VERSION_3_64    = GTDI_MAKE_IFC_VER( GTDI_IFC_VERSION_3, 64 ),
     GTDI_IFC_VERSION_3_65    = GTDI_MAKE_IFC_VER( GTDI_IFC_VERSION_3, 65 ), // New device param - OA buffers mask
-    GTDI_IFC_VERSION_CURRENT = GTDI_IFC_VERSION_3_65,
+    GTDI_IFC_VERSION_3_66    = GTDI_MAKE_IFC_VER( GTDI_IFC_VERSION_3, 66 ),
+    GTDI_IFC_VERSION_3_67    = GTDI_MAKE_IFC_VER( GTDI_IFC_VERSION_3, 67 ), // New device params: sqidi mask, sqidi max, lnep to cc scaling
+    GTDI_IFC_VERSION_CURRENT = GTDI_IFC_VERSION_3_67,
     GTDI_IFC_VERSION_MAX     = 0xFFFFFFFF
 } GTDI_IFC_VERSION;
 
@@ -314,6 +316,7 @@ typedef enum GTDI_RETURN_CODE_ENUM
     GTDI_RET_INVALID_PARAMETER,
     GTDI_RET_HW_FAILURE,
     GTDI_RET_ACCESS_DENIED, // designed to control access to OA
+    GTDI_RET_BUFFER_OVERFLOW,
     GTDI_RET_MAX = 0xFFFFFFFF
 } GTDI_RETURN_CODE;
 
@@ -439,20 +442,20 @@ typedef enum GTDI_REPORT_TYPE_ENUM
 {
     GTDI_REPORT_TYPE_OA_SHIFT  = 0,          // 2 ^ 0 - render & dma related report types start from this value
     GTDI_REPORT_TYPE_OAM_SHIFT = 8,          // 2 ^ 8 - media related report types start from this value
-    GTDI_REPORT_TYPE_OAC_SHIFT = 12,         // 2 ^ 12 - compute related report types start from this value
     GTDI_REPORT_TYPE_OA_MASK   = 0x000000FF, // render & dma related report types range
     GTDI_REPORT_TYPE_OAM_MASK  = 0x00000F00, // media related report types range
-    GTDI_REPORT_TYPE_OAC_MASK  = 0x0000F000, // compute related report types range
-
     // 3D (OA/OAG) report types
-    GTDI_REPORT_TYPE_128B_A13_NOA16 = 0 << GTDI_REPORT_TYPE_OA_SHIFT, // obsolete
-    GTDI_REPORT_TYPE_192B_A29_NOA16 = 1 << GTDI_REPORT_TYPE_OA_SHIFT, // obsolete
-    GTDI_REPORT_TYPE_256B_A45_NOA16 = 2 << GTDI_REPORT_TYPE_OA_SHIFT,
-    GTDI_REPORT_TYPE_64B_A13        = 3 << GTDI_REPORT_TYPE_OA_SHIFT, // obsolete
-    GTDI_REPORT_TYPE_128B_A29       = 4 << GTDI_REPORT_TYPE_OA_SHIFT, // obsolete
-    GTDI_REPORT_TYPE_64B_NOA12      = 5 << GTDI_REPORT_TYPE_OA_SHIFT, // obsolete
-    GTDI_REPORT_TYPE_128B_A16_NOA12 = 6 << GTDI_REPORT_TYPE_OA_SHIFT, // obsolete
-    GTDI_REPORT_TYPE_64B_NOA12_2    = 7 << GTDI_REPORT_TYPE_OA_SHIFT, // obsolete
+    GTDI_REPORT_TYPE_128B_A13_NOA16     = 0 << GTDI_REPORT_TYPE_OA_SHIFT,  // obsolete
+    GTDI_REPORT_TYPE_192B_A29_NOA16     = 1 << GTDI_REPORT_TYPE_OA_SHIFT,  // obsolete
+    GTDI_REPORT_TYPE_256B_A45_NOA16     = 2 << GTDI_REPORT_TYPE_OA_SHIFT,  // the only format currently used in Gen8+ until Xe2
+    GTDI_REPORT_TYPE_64B_A13            = 3 << GTDI_REPORT_TYPE_OA_SHIFT,  // obsolete
+    GTDI_REPORT_TYPE_128B_A29           = 4 << GTDI_REPORT_TYPE_OA_SHIFT,  // obsolete
+    GTDI_REPORT_TYPE_64B_NOA12          = 5 << GTDI_REPORT_TYPE_OA_SHIFT,  // obsolete
+    GTDI_REPORT_TYPE_128B_A16_NOA12     = 6 << GTDI_REPORT_TYPE_OA_SHIFT,  // obsolete
+    GTDI_REPORT_TYPE_64B_NOA12_2        = 7 << GTDI_REPORT_TYPE_OA_SHIFT,  // obsolete
+    GTDI_REPORT_TYPE_320B_PEC64         = 8 << GTDI_REPORT_TYPE_OA_SHIFT,  // Xe2+ format: 64 PEC(32-bit)
+    GTDI_REPORT_TYPE_576B_PEC64LL       = 9 << GTDI_REPORT_TYPE_OA_SHIFT,  // Xe2+ format: 64 PEC(64-bit)
+    GTDI_REPORT_TYPE_640B_PEC64LL_NOA16 = 10 << GTDI_REPORT_TYPE_OA_SHIFT, // Xe2+ format: 64 PEC(64-bit) + 16 NOA(32-bit)
     // DMA sampling only
     GTDI_REPORT_TYPE_FULL      = 100 << GTDI_REPORT_TYPE_OA_SHIFT, // all counters
     GTDI_REPORT_TYPE_TIMESTAMP = 101 << GTDI_REPORT_TYPE_OA_SHIFT, // timestamp only
@@ -529,6 +532,10 @@ typedef enum
     GENERATION_PTL  = 32,
     // 33 reserved
     GENERATION_ARL = 34,
+    // 35 reserved
+    GENERATION_NVL = 36,
+    // 37 reserved
+    GENERATION_CRI = 38,
     // ...
     // DO NOT CHANGE ORDER OF THIS ENUM, ADD NEW PLATFORMS AT THE END!
     // It has to be synchronized with metric_discovery_internal_api.h file.
@@ -619,7 +626,10 @@ typedef enum GTDI_DEVICE_PARAM_ENUM
     GTDI_DEVICE_PARAM_GEOMETRY_PIPE_TOTAL_COUNT          = 65,
     // 66 reserved
     GTDI_DEVICE_PARAM_OA_BUFFERS_MASK                    = 67,
+    GTDI_DEVICE_PARAM_SQIDI_MASK                         = 68,
+    GTDI_DEVICE_PARAM_LNEP_CC_SCALING                    = 69,
 
+    // Maximums which bound all supported GT. The values will change as needed with new GT.
     // For Xe2+, the values are maximums for a given device.
     // These params are intended for internal use only.
     GTDI_DEVICE_PARAM_MAX_SLICE                  = 1000,
@@ -629,6 +639,7 @@ typedef enum GTDI_DEVICE_PARAM_ENUM
     GTDI_DEVICE_PARAM_MAX_L3_NODE                = 1004,
     GTDI_DEVICE_PARAM_MAX_L3_BANK_PER_L3_NODE    = 1005,
     GTDI_DEVICE_PARAM_MAX_COPY_ENGINE            = 1006,
+    GTDI_DEVICE_PARAM_MAX_SQIDI                  = 1007,
 
     GTDI_DEVICE_PARAM_MAX = 0xFFFFFFFF
 } GTDI_DEVICE_PARAM;
@@ -655,13 +666,13 @@ typedef enum GTDI_OA_BUFFER_TYPE_ENUM
     GTDI_OA_BUFFER_TYPE_OA          = GTDI_OA_BUFFER_TYPE_DEFAULT, // preGen12
     GTDI_OA_BUFFER_TYPE_OAG         = GTDI_OA_BUFFER_TYPE_DEFAULT, // Gen12+
     // 1 reserved
-    GTDI_OA_BUFFER_TYPE_OAM_SAG     = 2,
-    GTDI_OA_BUFFER_TYPE_OAM_SLICE_0 = 3,
-    GTDI_OA_BUFFER_TYPE_OAM_SLICE_1 = 4,
-    GTDI_OA_BUFFER_TYPE_OAM_SLICE_2 = 5,
-    GTDI_OA_BUFFER_TYPE_OAM_SLICE_3 = 6,
-    GTDI_OA_BUFFER_TYPE_OAM_SLICE_4 = 7,
-    GTDI_OA_BUFFER_TYPE_OAM_SLICE_5 = 8,
+    GTDI_OA_BUFFER_TYPE_OAM_SAG     = 2,                           // OAM SAG
+    GTDI_OA_BUFFER_TYPE_OAM_SLICE_0 = 3,                           // OAM SCMI0
+    GTDI_OA_BUFFER_TYPE_OAM_SLICE_1 = 4,                           // OAM SCMI1
+    GTDI_OA_BUFFER_TYPE_OAM_SLICE_2 = 5,                           // OAM SCMI2
+    GTDI_OA_BUFFER_TYPE_OAM_SLICE_3 = 6,                           // OAM SCMI3
+    GTDI_OA_BUFFER_TYPE_OAM_SLICE_4 = 7,                           // OAM SCMI4
+    GTDI_OA_BUFFER_TYPE_OAM_SLICE_5 = 8,                           // OAM SCMI5
     GTDI_OA_BUFFER_TYPE_COUNT,
     GTDI_OA_BUFFER_TYPE_ALL     = GTDI_OA_BUFFER_TYPE_COUNT,
     GTDI_OA_BUFFER_TYPE_INVALID = GTDI_OA_BUFFER_TYPE_ALL,
@@ -675,16 +686,16 @@ typedef enum GTDI_OA_BUFFER_MASK_ENUM
     // HW resource
     GTDI_OA_BUFFER_MASK_NONE        = 0,
     GTDI_OA_BUFFER_MASK_DEFAULT     = 1 << GTDI_OA_BUFFER_TYPE_DEFAULT,
-    GTDI_OA_BUFFER_MASK_OA          = 1 << GTDI_OA_BUFFER_TYPE_OA,  // preGen12
-    GTDI_OA_BUFFER_MASK_OAG         = 1 << GTDI_OA_BUFFER_TYPE_OAG, // Gen12+
+    GTDI_OA_BUFFER_MASK_OA          = 1 << GTDI_OA_BUFFER_TYPE_OA,          // preGen12
+    GTDI_OA_BUFFER_MASK_OAG         = 1 << GTDI_OA_BUFFER_TYPE_OAG,         // Gen12+
     // 1 << 1 reserved
-    GTDI_OA_BUFFER_MASK_OAM_SAG     = 1 << GTDI_OA_BUFFER_TYPE_OAM_SAG,
-    GTDI_OA_BUFFER_MASK_OAM_SLICE_0 = 1 << GTDI_OA_BUFFER_TYPE_OAM_SLICE_0,
-    GTDI_OA_BUFFER_MASK_OAM_SLICE_1 = 1 << GTDI_OA_BUFFER_TYPE_OAM_SLICE_1,
-    GTDI_OA_BUFFER_MASK_OAM_SLICE_2 = 1 << GTDI_OA_BUFFER_TYPE_OAM_SLICE_2,
-    GTDI_OA_BUFFER_MASK_OAM_SLICE_3 = 1 << GTDI_OA_BUFFER_TYPE_OAM_SLICE_3,
-    GTDI_OA_BUFFER_MASK_OAM_SLICE_4 = 1 << GTDI_OA_BUFFER_TYPE_OAM_SLICE_4,
-    GTDI_OA_BUFFER_MASK_OAM_SLICE_5 = 1 << GTDI_OA_BUFFER_TYPE_OAM_SLICE_5,
+    GTDI_OA_BUFFER_MASK_OAM_SAG     = 1 << GTDI_OA_BUFFER_TYPE_OAM_SAG,     // OAM SAG
+    GTDI_OA_BUFFER_MASK_OAM_SLICE_0 = 1 << GTDI_OA_BUFFER_TYPE_OAM_SLICE_0, // OAM SCMI0
+    GTDI_OA_BUFFER_MASK_OAM_SLICE_1 = 1 << GTDI_OA_BUFFER_TYPE_OAM_SLICE_1, // OAM SCMI1
+    GTDI_OA_BUFFER_MASK_OAM_SLICE_2 = 1 << GTDI_OA_BUFFER_TYPE_OAM_SLICE_2, // OAM SCMI2
+    GTDI_OA_BUFFER_MASK_OAM_SLICE_3 = 1 << GTDI_OA_BUFFER_TYPE_OAM_SLICE_3, // OAM SCMI3
+    GTDI_OA_BUFFER_MASK_OAM_SLICE_4 = 1 << GTDI_OA_BUFFER_TYPE_OAM_SLICE_4, // OAM SCMI4
+    GTDI_OA_BUFFER_MASK_OAM_SLICE_5 = 1 << GTDI_OA_BUFFER_TYPE_OAM_SLICE_5, // OAM SCMI5
     GTDI_OA_BUFFER_MASK_ALL         = 0xFFFFFFFF,
 } GTDI_OA_BUFFER_MASK;
 
@@ -757,6 +768,15 @@ typedef union
                                //
     uint64_t UmBufferOffset64; // Placeholder
 } GTDIPointer;
+
+/******************************************************************************/
+/* GTDIByteArray - structure to store dynamic data.                           */
+/******************************************************************************/
+typedef struct GTDIByteArrayStruct
+{
+    uint32_t    Size; // Size in bytes
+    GTDIPointer Data; // Pointer to allocated memory
+} GTDIByteArray;
 
 /******************************************************************************/
 /* Escape headers structure definitions                                       */
@@ -981,12 +1001,13 @@ typedef struct GTDISetOverrideCfgInStruct
                                    // override is located in the global
                                    // registers
         uint32_t QueryControl : 1; // Determines if override setting
-    }; // is for immediate execution
-       // (value of 0) or to be applied
-       // when override control query
-       // begins (value of 1).
-    union                            //
-    {                                //
+                                   // is for immediate execution
+                                   // (value of 0) or to be applied
+                                   // when override control query
+                                   // begins (value of 1).
+    };
+    union
+    {
         bool32_t Enable;             // Flag: True = Enable, False = Disable
                                      //
         GTDI_STALL_LEVEL StallLevel; // OBSOLETE
@@ -1497,14 +1518,15 @@ typedef struct GTDISetOverrideEUCfgInStruct
         uint32_t ThreadCount; // Maximum number of threads spawned on single EU.
                               //
         uint32_t EUMask;      // Threads will execute on n-th core only if n-th
-    }; // bit of EUMask is 1. If there is fewer than 8
-       // cores per slice (e.g. SNB/IVB GT1), last core
-       // in each row is not available (mask 0x77 selects
-       // all available cores on single IVB/SNB GT1 slice).
-       // On SNB GT2 both ThreadCount and EUMask must have
-       // identical config on each slice - because of that
-       // last submitted configuration for any slice will
-       // be used for both slices during override enabling.
+                              // bit of EUMask is 1. If there is fewer than 8
+                              // cores per slice (e.g. SNB/IVB GT1), last core
+                              // in each row is not available (mask 0x77 selects
+                              // all available cores on single IVB/SNB GT1 slice).
+                              // On SNB GT2 both ThreadCount and EUMask must have
+                              // identical config on each slice - because of that
+                              // last submitted configuration for any slice will
+                              // be used for both slices during override enabling.
+    };
     GTDI_PIPELINE_STAGE PipelineStage; // Which pipeline stage does EUMask affect.
     GTDI_PARTITION_ID   PartitionID;   // Which partition does EUMask or ThreadCount affect.
     uint32_t            Reserved;      // for backwards compatibility

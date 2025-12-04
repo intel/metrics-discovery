@@ -30,8 +30,8 @@ namespace MetricsDiscoveryInternal
     class CAdapterHandleOffline : public CAdapterHandle
     {
     public:
-        CAdapterHandleOffline(){};
-        virtual ~CAdapterHandleOffline(){};
+        CAdapterHandleOffline() {};
+        virtual ~CAdapterHandleOffline() {};
 
         virtual TCompletionCode Close( const uint32_t adapterId )
         {
@@ -56,8 +56,8 @@ namespace MetricsDiscoveryInternal
     {
     public:
         // Constructor & Destructor:
-        CDriverInterfaceOffline(){};
-        virtual ~CDriverInterfaceOffline(){};
+        CDriverInterfaceOffline() {};
+        virtual ~CDriverInterfaceOffline() {};
 
         CDriverInterfaceOffline( const CDriverInterfaceOffline& )            = delete; // Delete copy-constructor
         CDriverInterfaceOffline& operator=( const CDriverInterfaceOffline& ) = delete; // Delete assignment operator
@@ -87,7 +87,7 @@ namespace MetricsDiscoveryInternal
         {
             return CC_ERROR_NOT_SUPPORTED;
         };
-        virtual TCompletionCode GetPmRegsConfigHandles( uint32_t* oaConfigHandle, uint32_t* gpConfigHandle, uint32_t* rrConfigHandle )
+        virtual TCompletionCode GetPmRegsConfigHandles( uint32_t* oaConfigHandle, uint32_t* rrConfigHandle )
         {
             return CC_ERROR_NOT_SUPPORTED;
         };
@@ -197,7 +197,7 @@ namespace MetricsDiscoveryInternal
         {
             return false;
         };
-        virtual void            DeleteContext(){};
+        virtual void            DeleteContext() {};
         virtual TCompletionCode ReopenIoStream( const std::wstring& streamEventNameW, const GTDI_OA_BUFFER_TYPE oaBufferType, const uint32_t processId )
         {
             return CC_ERROR_NOT_SUPPORTED;

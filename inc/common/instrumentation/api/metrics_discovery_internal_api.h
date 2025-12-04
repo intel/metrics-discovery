@@ -350,7 +350,7 @@ namespace MetricsDiscovery
         virtual IMetricSetLatest* AddCustomMetricSet( TAddCustomMetricSetParams* params, IMetricSetLatest* referenceMetricSet, bool copyInformationOnly = false );
     };
 
-    /////////////////////////////////////////////////////////////////////////////**
+    /////////////////////////////////////////////////////////////////////////////
     //
     // Class:
     //   IInternalMetricSet

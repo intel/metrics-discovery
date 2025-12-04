@@ -98,7 +98,7 @@ namespace MetricsDiscoveryInternal
         virtual uint32_t        GetOaReportType( const TReportType reportType );
         virtual TCompletionCode GetOaTimestampFrequency( uint64_t& frequency );
         virtual TCompletionCode GetCsTimestampFrequency( uint64_t& frequency );
-        bool                    IsOamRequested( const uint32_t reportType );
+        bool                    IsOamRequested( const uint32_t reportType, const GTDI_OA_BUFFER_TYPE oaBufferType );
 
         // Xe observation capabilities
         TCompletionCode ReadXeObservationCapabilities();
@@ -120,6 +120,7 @@ namespace MetricsDiscoveryInternal
         virtual TCompletionCode GetL3BankTotalCount( CMetricsDevice& metricsDevice, uint32_t& l3BankCount );
         virtual TCompletionCode GetCopyEngineTotalCount( CMetricsDevice& metricsDevice, uint32_t& copyEngineCount );
         virtual TCompletionCode GetComputeEngineTotalCount( CMetricsDevice& metricsDevice, uint32_t& computeEngineCount );
+        virtual TCompletionCode GetSqidiTotalCount( CMetricsDevice& metricsDevice, uint32_t& sqidiCount );
         virtual TCompletionCode GetL3BankMask( CMetricsDevice& metricsDevice, uint64_t& l3BankMask );
         virtual TCompletionCode GetL3NodeMask( CMetricsDevice& metricsDevice, uint64_t& l3NodeMask );
         virtual TCompletionCode GetCopyEngineMask( CMetricsDevice& metricsDevice, uint64_t& copyEngineMask );

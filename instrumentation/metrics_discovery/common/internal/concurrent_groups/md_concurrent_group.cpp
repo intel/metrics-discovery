@@ -102,6 +102,8 @@ namespace MetricsDiscoveryInternal
             case GENERATION_BMG:
             case GENERATION_LNL:
             case GENERATION_PTL:
+            case GENERATION_NVL:
+            case GENERATION_CRI:
                 reportType = DEFAULT_METRIC_SET_REPORT_TYPE_XE2;
                 break;
             default:
@@ -264,12 +266,9 @@ namespace MetricsDiscoveryInternal
     {
         const uint32_t adapterId = device.GetAdapter().GetAdapterId();
 
-        m_params.SymbolName                    = GetCopiedCString( name, adapterId );
-        m_params.Description                   = GetCopiedCString( description, adapterId );
-        m_params.MeasurementTypeMask           = measurementTypeMask;
-        m_params.MetricSetsCount               = 0;
-        m_params.IoMeasurementInformationCount = 0;
-        m_params.IoGpuContextInformationCount  = 0;
+        m_params.SymbolName          = GetCopiedCString( name, adapterId );
+        m_params.Description         = GetCopiedCString( description, adapterId );
+        m_params.MeasurementTypeMask = measurementTypeMask;
     }
 
     //////////////////////////////////////////////////////////////////////////////
@@ -621,17 +620,17 @@ namespace MetricsDiscoveryInternal
     //     Writes concurrent group to buffer.
     //
     // Input:
-    //     uint8_t*          buffer         - pointer to a buffer
-    //     uint32_t&         bufferSize     - size of the buffer
-    //     uint32_t&         bufferOffset   - the current offset of the buffer
-    //     IMetricSet_1_13** metricSets     - an array of metric sets to be written
-    //     uint32_t          metricSetCount - a number of metric sets to be written
+    //     uint8_t*     buffer         - pointer to a buffer
+    //     uint32_t&    bufferSize     - size of the buffer
+    //     uint32_t&    bufferOffset   - the current offset of the buffer
+    //     CMetricSet** metricSets     - an array of metric sets to be written
+    //     uint32_t     metricSetCount - a number of metric sets to be written
     //
     // Output:
-    //     TCompletionCode                  - result of operation
+    //     TCompletionCode             - result of operation
     //
     //////////////////////////////////////////////////////////////////////////////
-    TCompletionCode CConcurrentGroup::WriteCConcurrentGroupToBuffer( uint8_t* buffer, uint32_t& bufferSize, uint32_t& bufferOffset, IMetricSet_1_13** metricSets, uint32_t metricSetCount )
+    TCompletionCode CConcurrentGroup::WriteCConcurrentGroupToBuffer( uint8_t* buffer, uint32_t& bufferSize, uint32_t& bufferOffset, CMetricSet** metricSets, uint32_t metricSetCount )
     {
         const uint32_t  adapterId = m_device.GetAdapter().GetAdapterId();
         TCompletionCode result    = CC_OK;

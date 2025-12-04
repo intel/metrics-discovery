@@ -924,7 +924,6 @@ namespace MetricsDiscoveryInternal
             }
 
             case GTDI_DEVICE_PARAM_L3_NODE_TOTAL_COUNT:
-            case GTDI_DEVICE_PARAM_SQIDI_TOTAL_COUNT:
             {
                 uint32_t l3NodeCount = 0;
 
@@ -933,6 +932,18 @@ namespace MetricsDiscoveryInternal
 
                 out.ValueType   = GTDI_DEVICE_PARAM_VALUE_TYPE_UINT32;
                 out.ValueUint32 = l3NodeCount;
+                break;
+            }
+
+            case GTDI_DEVICE_PARAM_SQIDI_TOTAL_COUNT:
+            {
+                uint32_t sqidiCount = 0;
+
+                ret = GetSqidiTotalCount( metricsDevice, sqidiCount );
+                MD_CHECK_CC_RET_A( m_adapterId, ret );
+
+                out.ValueType   = GTDI_DEVICE_PARAM_VALUE_TYPE_UINT32;
+                out.ValueUint32 = sqidiCount;
                 break;
             }
 
@@ -973,6 +984,7 @@ namespace MetricsDiscoveryInternal
             }
 
             case GTDI_DEVICE_PARAM_L3_NODE_MASK:
+            case GTDI_DEVICE_PARAM_SQIDI_MASK: // SQIDI mask is the same as L3 node mask
             {
                 uint64_t l3NodeMask = 0;
 
@@ -1039,6 +1051,11 @@ namespace MetricsDiscoveryInternal
             case GTDI_DEVICE_PARAM_MAX_COPY_ENGINE:
                 out.ValueType   = GTDI_DEVICE_PARAM_VALUE_TYPE_UINT32;
                 out.ValueUint32 = GetGtMaxCopyEngine();
+                break;
+
+            case GTDI_DEVICE_PARAM_MAX_SQIDI:
+                out.ValueType   = GTDI_DEVICE_PARAM_VALUE_TYPE_UINT32;
+                out.ValueUint32 = GetGtMaxSqidi();
                 break;
 
             case GTDI_DEVICE_PARAM_PLATFORM_VERSION:
@@ -1201,19 +1218,18 @@ namespace MetricsDiscoveryInternal
     //     GetPmRegsConfigHandles
     //
     // Description:
-    //     Retrieves handles to the Oa, Gp and read regs configuration from the driver.
+    //     Retrieves handles to the Oa and read regs configuration from the driver.
     //     !READ REGS NOT SUPPORTED ON LINUX YET!
     //
     // Input:
     //     uint32_t* oaConfigHandle - (OUT) OA config handle in KMD
-    //     uint32_t* gpConfigHandle - (OUT) GP config handle in KMD
     //     uint32_t* rrConfigHandle - (OUT) Read regs config handle in KMD
     //
     // Output:
     //     TCompletionCode           - *CC_OK* means succeess
     //
     //////////////////////////////////////////////////////////////////////////////
-    TCompletionCode CDriverInterfaceLinuxCommon::GetPmRegsConfigHandles( uint32_t* oaConfigHandle, uint32_t* gpConfigHandle, uint32_t* rrConfigHandle )
+    TCompletionCode CDriverInterfaceLinuxCommon::GetPmRegsConfigHandles( uint32_t* oaConfigHandle, uint32_t* rrConfigHandle )
     {
         // Not supported on Linux - returning CC_OK on purpose
         return CC_OK;
@@ -2693,6 +2709,7 @@ namespace MetricsDiscoveryInternal
             case GENERATION_ACM:
             case GENERATION_PVC:
             case GENERATION_BMG:
+            case GENERATION_CRI:
                 return ADAPTER_TYPE_DISCRETE;
             default:
                 return ADAPTER_TYPE_INTEGRATED;
@@ -3082,6 +3099,24 @@ namespace MetricsDiscoveryInternal
                         return 0;
                 }
 
+            case GENERATION_CRI:
+                return MD_MAX_SLICE_CRI;
+
+            case GENERATION_NVL:
+                switch( gfxDeviceInfo->PlatformVersion )
+                {
+                    case 1:
+                        return MD_MAX_SLICE_NVL_S;
+
+                    case 2:
+                        return MD_MAX_SLICE_NVL_U;
+
+                    default:
+                        // Unsupported NVL device id
+                        MD_ASSERT_A( m_adapterId, false );
+                        return 0;
+                }
+
             default:
                 // Return the legacy value for pre-Xe2 platforms.
                 return MD_MAX_SLICE;
@@ -3138,6 +3173,24 @@ namespace MetricsDiscoveryInternal
 
             case GENERATION_PTL:
                 return MD_SUBSLICE_PER_SLICE_XE3;
+
+            case GENERATION_CRI:
+                return MD_SUBSLICE_PER_SLICE_CRI;
+
+            case GENERATION_NVL:
+                switch( gfxDeviceInfo->PlatformVersion )
+                {
+                    case 1:
+                        return MD_SUBSLICE_PER_SLICE_NVL_S;
+
+                    case 2:
+                        return MD_SUBSLICE_PER_SLICE_NVL_U;
+
+                    default:
+                        // Unsupported NVL device id
+                        MD_ASSERT_A( m_adapterId, false );
+                        return 0;
+                }
 
             default:
                 MD_LOG_A( m_adapterId, LOG_WARNING, "WARNING: Unsupported platform, default MaxSubslicePerSlice used" );
@@ -3253,6 +3306,24 @@ namespace MetricsDiscoveryInternal
                         return 0;
                 }
 
+            case GENERATION_CRI:
+                return MD_MAX_L3_NODE_CRI;
+
+            case GENERATION_NVL:
+                switch( gfxDeviceInfo->PlatformVersion )
+                {
+                    case 1:
+                        return MD_MAX_L3_NODE_NVL_S;
+
+                    case 2:
+                        return MD_MAX_L3_NODE_NVL_U;
+
+                    default:
+                        // Unsupported NVL device id
+                        MD_ASSERT_A( m_adapterId, false );
+                        return 0;
+                }
+
             default:
                 // Return 0 for pre-Xe2 platforms as unsupported
                 return 0;
@@ -3293,6 +3364,24 @@ namespace MetricsDiscoveryInternal
             case GENERATION_PTL:
                 return MD_MAX_L3_BANK_PER_L3_NODE_XE2;
 
+            case GENERATION_NVL:
+                switch( gfxDeviceInfo->PlatformVersion )
+                {
+                    case 1:
+                        return MD_MAX_L3_BANK_PER_L3_NODE_NVL_S;
+
+                    case 2:
+                        return MD_MAX_L3_BANK_PER_L3_NODE_NVL_U;
+
+                    default:
+                        // Unsupported NVL device id
+                        MD_ASSERT_A( m_adapterId, false );
+                        return 0;
+                }
+
+            case GENERATION_CRI:
+                return MD_MAX_L3_BANK_PER_L3_NODE_CRI;
+
             default:
                 // Return 0 for pre-Xe2 platforms as unsupported.
                 return 0;
@@ -3322,6 +3411,39 @@ namespace MetricsDiscoveryInternal
         return ( maxL3NodeCount & 1 )
             ? ( ( maxL3NodeCount + 1 ) / MD_MAX_L3_NODE_PER_COPY_ENGINE )
             : ( maxL3NodeCount / MD_MAX_L3_NODE_PER_COPY_ENGINE );
+    }
+
+    //////////////////////////////////////////////////////////////////////////////
+    //
+    // Class:
+    //     CDriverInterfaceLinuxCommon
+    //
+    // Method:
+    //     GetGtMaxSqidi
+    //
+    // Description:
+    //     Returns information about max active SQIDIs on GPU.
+    //     Based on __InstrGetMaxSqidi().
+    //
+    // Output:
+    //     uint32_t - max sqidis
+    //
+    //////////////////////////////////////////////////////////////////////////////
+    uint32_t CDriverInterfaceLinuxCommon::GetGtMaxSqidi()
+    {
+        const TGfxDeviceInfo* gfxDeviceInfo = nullptr;
+        auto                  result        = GetGfxDeviceInfo( gfxDeviceInfo );
+
+        if( result != CC_OK )
+        {
+            MD_LOG_A( m_adapterId, LOG_ERROR, "WARNING: Failed to get platform ID" );
+            return 0;
+        }
+
+        return ( ( gfxDeviceInfo->PlatformIndex == GENERATION_PTL && gfxDeviceInfo->PlatformVersion == 2 ) ||
+                   gfxDeviceInfo->PlatformIndex == GENERATION_NVL )
+            ? MD_MAX_L3_NODE_PTL_U * 2 // 2 SQIDIs per L3 node on PTL-U/NVL
+            : GetGtMaxL3Node();        // 1 SQIDI per L3 node on other platforms
     }
 
     //////////////////////////////////////////////////////////////////////////////

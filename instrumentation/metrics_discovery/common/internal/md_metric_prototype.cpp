@@ -13,12 +13,10 @@ SPDX-License-Identifier: MIT
 #include "md_adapter.h"
 #include "md_metrics_device.h"
 #include "md_metric_prototype.h"
-#include "md_oa_concurrent_group.h"
 #include "md_metric_enumerator.h"
 
 #include "md_utils.h"
 
-#include <cstring>
 #include <limits>
 #include <regex>
 
@@ -567,7 +565,7 @@ namespace MetricsDiscoveryInternal
         for( uint32_t i = 0; i < option->ValidValueCount; ++i )
         {
             switch( const auto& validValue = option->ValidValues[i];
-                    validValue.ValueType )
+                validValue.ValueType )
             {
                 case VALUE_TYPE_UINT32:
                     isValidValue = value == validValue.ValueUInt32;
@@ -1077,7 +1075,7 @@ namespace MetricsDiscoveryInternal
                         longName = prefix + bytesMatch[5].str() + infix + bytesMatch[6].str();
                     }
                     else if( std::smatch localMemoryMatch;
-                             std::regex_search( longName, localMemoryMatch, std::regex( "(Average )?(Number|number) of device(.+)( read| write) (bytes)" ) ) )
+                        std::regex_search( longName, localMemoryMatch, std::regex( "(Average )?(Number|number) of device(.+)( read| write) (bytes)" ) ) )
                     {
                         MD_ASSERT_A( adapterId, localMemoryMatch.size() == 6 );
 
@@ -1107,7 +1105,7 @@ namespace MetricsDiscoveryInternal
                         longName = prefix + l3BytesMatch[2].str() + " of bytes " + infix;
                     }
                     else if( std::smatch bytesMatch;
-                             std::regex_search( longName, bytesMatch, std::regex( "(Average )?(Number|number) of (|Device Cache|cacheline|system memory 64B) (read requests|write requests|read|write|reads|writes) (.+)" ) ) )
+                        std::regex_search( longName, bytesMatch, std::regex( "(Average )?(Number|number) of (|Device Cache|cacheline|system memory 64B) (read requests|write requests|read|write|reads|writes) (.+)" ) ) )
                     {
                         MD_ASSERT_A( adapterId, bytesMatch.size() == 6 );
 
@@ -1130,7 +1128,7 @@ namespace MetricsDiscoveryInternal
                         longName = prefix + bytesMatch[2].str() + " of " + infix + infix2 + bytesMatch[5].str();
                     }
                     else if( std::smatch gpuMemBytesMatch;
-                             std::regex_search( longName, gpuMemBytesMatch, std::regex( "(Average )?(Number|number) of host 64B (reads to|writes to) (.+)" ) ) )
+                        std::regex_search( longName, gpuMemBytesMatch, std::regex( "(Average )?(Number|number) of host 64B (reads to|writes to) (.+)" ) ) )
                     {
                         MD_ASSERT_A( adapterId, gpuMemBytesMatch.size() == 5 );
 

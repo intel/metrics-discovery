@@ -81,6 +81,7 @@ namespace MetricsDiscoveryInternal
         uint32_t                                             m_maxL3Node;
         uint32_t                                             m_maxL3BankPerL3Node;
         uint32_t                                             m_maxCopyEngine;
+        uint32_t                                             m_maxSqidi;
 
     private:
         // Static variables:

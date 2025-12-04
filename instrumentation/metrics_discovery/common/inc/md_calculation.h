@@ -108,7 +108,7 @@ namespace MetricsDiscoveryInternal
     class CCalculationManager
     {
     public:
-        virtual ~CCalculationManager(){};
+        virtual ~CCalculationManager() {};
 
         // Calculation.
         virtual void            ResetContext( TCalculationContext& context )             = 0;

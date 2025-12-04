@@ -15,7 +15,6 @@ SPDX-License-Identifier: MIT
 #include "md_concurrent_group.h"
 #include "md_oa_concurrent_group.h"
 #include "md_oam_concurrent_group.h"
-#include "md_equation.h"
 #include "md_information.h"
 #include "md_metric.h"
 #include "md_metric_set.h"
@@ -25,7 +24,6 @@ SPDX-License-Identifier: MIT
 #include "md_driver_ifc.h"
 
 #include <cstring>
-#include <cmath>
 
 namespace MetricsDiscoveryInternal
 {
@@ -57,6 +55,7 @@ namespace MetricsDiscoveryInternal
         , m_symbolSet( *this, driverInterface )
         , m_streamId( -1 )
         , m_streamConfigId( -1 )
+        , m_streamBuffer()
         , m_subDeviceIndex( subDeviceIndex )
         , m_platformIndex( 0 )
         , m_gtType( GT_TYPE_UNKNOWN )
@@ -662,18 +661,18 @@ namespace MetricsDiscoveryInternal
     //     Saves a custom part of MetricsDevice to buffer.
     //
     // Input:
-    //     uint8_t*          buffer             - pointer to a buffer
-    //     uint32_t&         bufferSize         - size of the buffer
-    //     IMetricSet_1_13** metricSets         - metric sets to write to the buffer
-    //     uint32_t          metricSetCount     - number of metric sets
-    //     const uint32_t    minMajorApiVersion - required major MDAPI version to save to buffer
-    //     const uint32_t    minMinorApiVersion - required minor MDAPI version to save to buffer
+    //     uint8_t*       buffer             - pointer to a buffer
+    //     uint32_t&      bufferSize         - size of the buffer
+    //     CMetricSet**   metricSets         - metric sets to write to the buffer
+    //     uint32_t       metricSetCount     - number of metric sets
+    //     const uint32_t minMajorApiVersion - required major MDAPI version to save to buffer
+    //     const uint32_t minMinorApiVersion - required minor MDAPI version to save to buffer
     //
     // Output:
-    //     TCompletionCode                      - result
+    //     TCompletionCode                   - result
     //
     //////////////////////////////////////////////////////////////////////////////
-    TCompletionCode CMetricsDevice::WriteToBuffer( uint8_t* buffer, uint32_t& bufferSize, IMetricSet_1_13** metricSets, uint32_t metricSetCount, const uint32_t minMajorApiVersion, const uint32_t minMinorApiVersion )
+    TCompletionCode CMetricsDevice::WriteToBuffer( uint8_t* buffer, uint32_t& bufferSize, CMetricSet** metricSets, uint32_t metricSetCount, const uint32_t minMajorApiVersion, const uint32_t minMinorApiVersion )
     {
         const uint32_t  adapterId = m_adapter.GetAdapterId();
         TCompletionCode result    = CC_OK;
@@ -1927,6 +1926,8 @@ namespace MetricsDiscoveryInternal
             case GENERATION_BMG:
             case GENERATION_LNL:
             case GENERATION_PTL:
+            case GENERATION_NVL:
+            case GENERATION_CRI:
             {
                 // Ticks masked to 56bit to get sync with report timestamps.
                 const double oneTickNs                        = static_cast<double>( MD_SECOND_IN_NS ) / gpuTimestampFrequency;

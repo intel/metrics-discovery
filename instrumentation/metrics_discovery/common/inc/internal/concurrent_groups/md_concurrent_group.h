@@ -55,7 +55,7 @@ namespace MetricsDiscoveryInternal
     {
     public:
         // API 1.13:
-        using IConcurrentGroup_1_13::AddMetricSet; // To avoid hiding by 1.13 interface function
+        using IConcurrentGroup_1_13::AddMetricSet; // To avoid hiding by non-API function
 
         virtual TConcurrentGroupParamsLatest* GetParams( void );
         virtual IMetricSetLatest*             GetMetricSet( uint32_t index );
@@ -92,7 +92,7 @@ namespace MetricsDiscoveryInternal
 
         TCompletionCode Lock();
         TCompletionCode Unlock();
-        TCompletionCode WriteCConcurrentGroupToBuffer( uint8_t* buffer, uint32_t& bufferSize, uint32_t& bufferOffset, IMetricSet_1_13** metricSets, uint32_t metricSetCount );
+        TCompletionCode WriteCConcurrentGroupToBuffer( uint8_t* buffer, uint32_t& bufferSize, uint32_t& bufferOffset, CMetricSet** metricSets, uint32_t metricSetCount );
 
     protected:
         CMetricSet*       InitializeMetricSet( CMetricSet* set, TByteArrayLatest* platformMask, const char* availabilityEquation, const uint32_t gtMask );

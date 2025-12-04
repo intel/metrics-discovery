@@ -1166,6 +1166,8 @@ namespace MetricsDiscoveryInternal
                         case GENERATION_BMG:
                         case GENERATION_LNL:
                         case GENERATION_PTL:
+                        case GENERATION_NVL:
+                        case GENERATION_CRI:
                             deltaFunction.BitsCount = 56;
                             break;
                         default:
@@ -1342,7 +1344,7 @@ namespace MetricsDiscoveryInternal
                     {
                         TLargeInteger largeValue;
                         largeValue.u.LowPart   = *( (const uint32_t*) ( rawReport + element.ReadParams.ByteOffset ) );
-                        largeValue.u.HighPart  = ( int32_t ) * ( (const uint8_t*) ( rawReport + element.ReadParams.ByteOffsetExt ) );
+                        largeValue.u.HighPart  = (int32_t) *( (const uint8_t*) ( rawReport + element.ReadParams.ByteOffsetExt ) );
                         typedValue.ValueUInt64 = static_cast<uint64_t>( largeValue.QuadPart );
                         typedValue.ValueType   = VALUE_TYPE_UINT64;
                         isValid                = EquationStackPush( m_readEquationStack, typedValue, algorithmCheck );
@@ -1501,6 +1503,8 @@ namespace MetricsDiscoveryInternal
                     case GENERATION_BMG:
                     case GENERATION_LNL:
                     case GENERATION_PTL:
+                    case GENERATION_NVL:
+                    case GENERATION_CRI:
                         readDeltaFunction.BitsCount = 56;
                         break;
                     default:
@@ -1539,11 +1543,11 @@ namespace MetricsDiscoveryInternal
 
                     case EQUATION_ELEM_RD_UINT8:
                         typedValuePrev.ValueUInt64 =
-                            ( uint64_t ) * ( (const uint8_t*) ( pRawReportPrev + element.ReadParams.ByteOffset ) );
+                            (uint64_t) *( (const uint8_t*) ( pRawReportPrev + element.ReadParams.ByteOffset ) );
                         typedValuePrev.ValueType = VALUE_TYPE_UINT64;
 
                         typedValueLast.ValueUInt64 =
-                            ( uint64_t ) * ( (const uint8_t*) ( pRawReportLast + element.ReadParams.ByteOffset ) );
+                            (uint64_t) *( (const uint8_t*) ( pRawReportLast + element.ReadParams.ByteOffset ) );
                         typedValueLast.ValueType = VALUE_TYPE_UINT64;
 
                         typedValue = CalculateDeltaFunction( readDeltaFunction, typedValueLast, typedValuePrev );
@@ -1552,11 +1556,11 @@ namespace MetricsDiscoveryInternal
 
                     case EQUATION_ELEM_RD_UINT16:
                         typedValuePrev.ValueUInt64 =
-                            ( uint64_t ) * ( (const uint16_t*) ( pRawReportPrev + element.ReadParams.ByteOffset ) );
+                            (uint64_t) *( (const uint16_t*) ( pRawReportPrev + element.ReadParams.ByteOffset ) );
                         typedValuePrev.ValueType = VALUE_TYPE_UINT64;
 
                         typedValueLast.ValueUInt64 =
-                            ( uint64_t ) * ( (const uint16_t*) ( pRawReportLast + element.ReadParams.ByteOffset ) );
+                            (uint64_t) *( (const uint16_t*) ( pRawReportLast + element.ReadParams.ByteOffset ) );
                         typedValueLast.ValueType = VALUE_TYPE_UINT64;
 
                         typedValue = CalculateDeltaFunction( readDeltaFunction, typedValueLast, typedValuePrev );
@@ -1565,11 +1569,11 @@ namespace MetricsDiscoveryInternal
 
                     case EQUATION_ELEM_RD_UINT32:
                         typedValuePrev.ValueUInt64 =
-                            ( uint64_t ) * ( (const uint32_t*) ( pRawReportPrev + element.ReadParams.ByteOffset ) );
+                            (uint64_t) *( (const uint32_t*) ( pRawReportPrev + element.ReadParams.ByteOffset ) );
                         typedValuePrev.ValueType = VALUE_TYPE_UINT64;
 
                         typedValueLast.ValueUInt64 =
-                            ( uint64_t ) * ( (const uint32_t*) ( pRawReportLast + element.ReadParams.ByteOffset ) );
+                            (uint64_t) *( (const uint32_t*) ( pRawReportLast + element.ReadParams.ByteOffset ) );
                         typedValueLast.ValueType = VALUE_TYPE_UINT64;
 
                         typedValue = CalculateDeltaFunction( readDeltaFunction, typedValueLast, typedValuePrev );
@@ -1602,12 +1606,12 @@ namespace MetricsDiscoveryInternal
                     {
                         TLargeInteger largeValue;
                         largeValue.u.LowPart       = *( (const uint32_t*) ( pRawReportPrev + element.ReadParams.ByteOffset ) );
-                        largeValue.u.HighPart      = ( int32_t ) * ( (const uint8_t*) ( pRawReportPrev + element.ReadParams.ByteOffsetExt ) );
+                        largeValue.u.HighPart      = (int32_t) *( (const uint8_t*) ( pRawReportPrev + element.ReadParams.ByteOffsetExt ) );
                         typedValuePrev.ValueUInt64 = static_cast<uint64_t>( largeValue.QuadPart );
                         typedValuePrev.ValueType   = VALUE_TYPE_UINT64;
 
                         largeValue.u.LowPart       = *( (const uint32_t*) ( pRawReportLast + element.ReadParams.ByteOffset ) );
-                        largeValue.u.HighPart      = ( int32_t ) * ( (const uint8_t*) ( pRawReportLast + element.ReadParams.ByteOffsetExt ) );
+                        largeValue.u.HighPart      = (int32_t) *( (const uint8_t*) ( pRawReportLast + element.ReadParams.ByteOffsetExt ) );
                         typedValueLast.ValueUInt64 = static_cast<uint64_t>( largeValue.QuadPart );
                         typedValueLast.ValueType   = VALUE_TYPE_UINT64;
 

@@ -14,31 +14,31 @@ SPDX-License-Identifier: MIT
 
 #include "md_per_platform_preamble.h"
 
-#if MD_INCLUDE_BMG_METRICS || MD_INCLUDE_LNL_METRICS || MD_INCLUDE_PTL_METRICS
+#if MD_INCLUDE_BMG_METRICS || MD_INCLUDE_LNL_METRICS || MD_INCLUDE_PTL_METRICS || MD_INCLUDE_NVL_METRICS || MD_INCLUDE_CRI_METRICS
 
 struct ExternalEvents
 {
-    static const char archEvents[33411];
-    static const char hwEvents[46779];
+    static const char archEvents[39488];
+    static const char hwEvents[53298];
 };
 
 #endif
 
-#if MD_INCLUDE_MTL_GT2_METRICS || MD_INCLUDE_MTL_GT3_METRICS || MD_INCLUDE_BMG_METRICS || MD_INCLUDE_LNL_METRICS || MD_INCLUDE_PTL_METRICS || MD_INCLUDE_ARL_GT1_METRICS || MD_INCLUDE_ARL_GT2_METRICS
+#if MD_INCLUDE_MTL_GT2_METRICS || MD_INCLUDE_MTL_GT3_METRICS || MD_INCLUDE_BMG_METRICS || MD_INCLUDE_LNL_METRICS || MD_INCLUDE_PTL_METRICS || MD_INCLUDE_ARL_GT1_METRICS || MD_INCLUDE_ARL_GT2_METRICS || MD_INCLUDE_NVL_METRICS || MD_INCLUDE_CRI_METRICS
 
 struct ExternalEventsMedia
 {
-    static const char archEvents[2001];
-    static const char hwEvents[2577];
+    static const char archEvents[2121];
+    static const char hwEvents[2697];
 };
 
 #endif
 
-#if MD_INCLUDE_BMG_METRICS || MD_INCLUDE_LNL_METRICS || MD_INCLUDE_PTL_METRICS
+#if MD_INCLUDE_BMG_METRICS || MD_INCLUDE_LNL_METRICS || MD_INCLUDE_PTL_METRICS || MD_INCLUDE_NVL_METRICS || MD_INCLUDE_CRI_METRICS
 
 struct ExternalEventsWorkarounds
 {
-    static const char workarounds[409];
+    static const char workarounds[543];
 };
 
 #endif
