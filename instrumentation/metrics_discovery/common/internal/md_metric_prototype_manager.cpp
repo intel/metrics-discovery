@@ -42,7 +42,7 @@ namespace MetricsDiscoveryInternal
         : m_device( device )
         , m_set( metricSet )
         , m_deltaCounterSize( sizeof( uint64_t ) )
-        , m_snapshotCounterSize( ( m_set.GetReportType() == OA_REPORT_TYPE_128B_MPEC8_NOA16 || m_set.GetReportType() == OA_REPORT_TYPE_320B_PEC64 ) ? sizeof( uint32_t ) : sizeof( uint64_t ) )
+        , m_snapshotCounterSize( ( m_set.GetReportType() == OA_REPORT_TYPE_128B_MPEC8_NOA16 || m_set.GetReportType() == OA_REPORT_TYPE_320B_PEC64 || m_set.GetReportType() == OA_REPORT_TYPE_128B_MERT_PEC8 ) ? sizeof( uint32_t ) : sizeof( uint64_t ) )
     {
     }
 
@@ -965,7 +965,7 @@ namespace MetricsDiscoveryInternal
     template <>
     CMetricPrototypeManager<METRIC_PROTOTYPE_MANAGER_TYPE_OA>::CMetricPrototypeManager( CMetricsDevice& device, CMetricSet& metricSet )
         : CPrototypeManager( device, metricSet )
-        , m_mediaPesOffset( 0 )
+        , m_pesOffset( 0 )
     {
     }
 
@@ -988,7 +988,30 @@ namespace MetricsDiscoveryInternal
     template <>
     CMetricPrototypeManager<METRIC_PROTOTYPE_MANAGER_TYPE_OAM>::CMetricPrototypeManager( CMetricsDevice& device, CMetricSet& metricSet )
         : CPrototypeManager( device, metricSet )
-        , m_mediaPesOffset( GetMediaPesOffset( *metricSet.GetConcurrentGroup() ) )
+        , m_pesOffset( GetPesOffset( *metricSet.GetConcurrentGroup() ) )
+    {
+    }
+
+    //////////////////////////////////////////////////////////////////////////////
+    //
+    // Class:
+    //     CMetricPrototypeManager
+    //
+    // Method:
+    //     CMetricPrototypeManager constructor
+    //
+    // Description:
+    //     Constructor for OAMERT unit.
+    //
+    // Input:
+    //     CMetricsDevice& device    - metrics device
+    //     CMetricSet&     metricSet - metric set related to the prototype manager
+    //
+    //////////////////////////////////////////////////////////////////////////////
+    template <>
+    CMetricPrototypeManager<METRIC_PROTOTYPE_MANAGER_TYPE_OAMERT>::CMetricPrototypeManager( CMetricsDevice& device, CMetricSet& metricSet )
+        : CPrototypeManager( device, metricSet )
+        , m_pesOffset( GetPesOffset( *metricSet.GetConcurrentGroup() ) )
     {
     }
 
@@ -1001,10 +1024,10 @@ namespace MetricsDiscoveryInternal
     //     IsSupported
     //
     // Description:
-    //     Returns true if the prototype manager is support for OA unit.
+    //     Returns true if the prototype manager is supported for OA unit.
     //
     // Output:
-    //     bool - true if the prototype manager is support for OA unit, false otherwise.
+    //     bool - true if the prototype manager is supported for OA unit, false otherwise.
     //
     //////////////////////////////////////////////////////////////////////////////
     template <>
@@ -1028,10 +1051,10 @@ namespace MetricsDiscoveryInternal
     //     IsSupported
     //
     // Description:
-    //     Returns true if the prototype manager is support for OAM unit.
+    //     Returns true if the prototype manager is supported for OAM unit.
     //
     // Output:
-    //     bool - true if the prototype manager is support for OAM unit, false otherwise.
+    //     bool - true if the prototype manager is supported for OAM unit, false otherwise.
     //
     //////////////////////////////////////////////////////////////////////////////
     template <>
@@ -1054,7 +1077,30 @@ namespace MetricsDiscoveryInternal
     //     CMetricPrototypeManager
     //
     // Method:
-    //     GetMediaPesOffset
+    //     IsSupported
+    //
+    // Description:
+    //     Returns true if the prototype manager is supported for OAMERT unit.
+    //
+    // Output:
+    //     bool - true if the prototype manager is supported for OAMERT unit, false otherwise.
+    //
+    //////////////////////////////////////////////////////////////////////////////
+    template <>
+    bool CMetricPrototypeManager<METRIC_PROTOTYPE_MANAGER_TYPE_OAMERT>::IsSupported()
+    {
+        return IsPlatformMatch(
+            m_device.GetPlatformIndex(),
+            GENERATION_CRI );
+    }
+
+    //////////////////////////////////////////////////////////////////////////////
+    //
+    // Class:
+    //     CMetricPrototypeManager
+    //
+    // Method:
+    //     GetPesOffset
     //
     // Description:
     //     Returns media PES starting offset.
@@ -1067,7 +1113,7 @@ namespace MetricsDiscoveryInternal
     //
     //////////////////////////////////////////////////////////////////////////////
     template <>
-    uint32_t CMetricPrototypeManager<METRIC_PROTOTYPE_MANAGER_TYPE_OAM>::GetMediaPesOffset( CConcurrentGroup& concurrentGroup )
+    uint32_t CMetricPrototypeManager<METRIC_PROTOTYPE_MANAGER_TYPE_OAM>::GetPesOffset( CConcurrentGroup& concurrentGroup )
     {
         const bool isXeLPG = IsPlatformMatch(
             m_device.GetPlatformIndex(),
@@ -1098,22 +1144,46 @@ namespace MetricsDiscoveryInternal
     //     CMetricPrototypeManager
     //
     // Method:
-    //     GetMediaPesOffset
+    //     GetPesOffset
     //
     // Description:
-    //     Returns media PES starting offset. This method is for non OAM units.
+    //     Returns mert PES starting offset.
     //
     // Input:
     //     CConcurrentGroup& concurrentGroup - concurrent group
     //
     // Output:
-    //     uint32_t                          - media PES starting offset.
+    //     uint32_t                          - mert PES starting offset.
+    //
+    //////////////////////////////////////////////////////////////////////////////
+    template <>
+    uint32_t CMetricPrototypeManager<METRIC_PROTOTYPE_MANAGER_TYPE_OAMERT>::GetPesOffset( CConcurrentGroup& concurrentGroup )
+    {
+        return 0x145340;
+    }
+
+    //////////////////////////////////////////////////////////////////////////////
+    //
+    // Class:
+    //     CMetricPrototypeManager
+    //
+    // Method:
+    //     GetPesOffset
+    //
+    // Description:
+    //     Returns PES starting offset. This method is for non OAM/MERT units.
+    //
+    // Input:
+    //     CConcurrentGroup& concurrentGroup - concurrent group
+    //
+    // Output:
+    //     uint32_t                          - PES starting offset.
     //
     //////////////////////////////////////////////////////////////////////////////
     template <TMetricPrototypeManagerType T>
-    uint32_t CMetricPrototypeManager<T>::GetMediaPesOffset( CConcurrentGroup& concurrentGroup )
+    uint32_t CMetricPrototypeManager<T>::GetPesOffset( CConcurrentGroup& concurrentGroup )
     {
-        // Media PES group is supported for OAM units only.
+        // PES group is supported for OAM/MERT units only.
         return 0;
     }
 
@@ -1193,6 +1263,30 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     template <>
     THwEventGroup CMetricPrototypeManager<METRIC_PROTOTYPE_MANAGER_TYPE_OAM>::GetHwEventGroup( const THwEvent& hwEvent )
+    {
+        return HW_EVENT_GROUP_FIRST;
+    }
+
+    //////////////////////////////////////////////////////////////////////////////
+    //
+    // Class:
+    //     CMetricPrototypeManager
+    //
+    // Method:
+    //     GetHwEventGroup
+    //
+    // Description:
+    //     Returns group number from hw event. This is method for OAMERT unit.
+    //
+    // Input:
+    //     const THwEvent* hwEvent - a hw event.
+    //
+    // Output:
+    //     THwEventGroup           - group enum that a hw event belongs to.
+    //
+    //////////////////////////////////////////////////////////////////////////////
+    template <>
+    THwEventGroup CMetricPrototypeManager<METRIC_PROTOTYPE_MANAGER_TYPE_OAMERT>::GetHwEventGroup( const THwEvent& hwEvent )
     {
         return HW_EVENT_GROUP_FIRST;
     }
@@ -1371,7 +1465,67 @@ namespace MetricsDiscoveryInternal
         {
             const uint32_t hwEventIndex = static_cast<uint32_t>( std::distance( m_firstEventGroup.begin(), hwEventPair ) );
 
-            const uint32_t pesProgrammingOffset = m_mediaPesOffset + sizeof( uint64_t ) * hwEventIndex;
+            const uint32_t pesProgrammingOffset = m_pesOffset + sizeof( uint64_t ) * hwEventIndex;
+            snapshotReportOffsets               = m_snapshotReportOffsetStart + m_snapshotCounterSize * hwEventIndex;
+
+            if( !pesProgrammed[hwEventIndex] )
+            {
+                MD_CHECK_CC( m_set.AddStartConfigRegister( pesProgrammingOffset, lowerPesProgramming, REGISTER_TYPE_OA ) );
+                MD_CHECK_CC( m_set.AddStartConfigRegister( pesProgrammingOffset + 4, upperPesProgramming, REGISTER_TYPE_OA ) );
+
+                pesProgrammed[hwEventIndex] = true;
+            }
+        }
+
+        return CC_OK;
+
+    exception:
+        MD_LOG_A( m_device.GetAdapter().GetAdapterId(), LOG_INFO, "Failed to append PES configuration" );
+        return CC_ERROR_GENERAL;
+    }
+
+    //////////////////////////////////////////////////////////////////////////////
+    //
+    // Class:
+    //     CMetricPrototypeManager
+    //
+    // Method:
+    //     AppendPesConfiguration
+    //
+    // Description:
+    //     Appends PES configuration. This is method for OAMERT unit.
+    //
+    // Input:
+    //     const THwEvent&    hwEvent               - a hw event.
+    //     const uint64_t     pesProgramming        - PES programming for the hw event.
+    //     std::vector<bool>& pesProgrammed         - a vector of already programmed PES-es.
+    //     uint32_t           flexProgramming[]     - an array with flex programming.
+    //     uint32_t&          snapshotReportOffsets - snapshot report offset for the metric.
+    //     uint32_t&          deltaReportOffsets    - delta report offset for the metric.
+    //
+    // Output:
+    //     TCompletionCode                          - result, *CC_OK* is ok
+    //
+    //////////////////////////////////////////////////////////////////////////////
+    template <>
+    TCompletionCode CMetricPrototypeManager<METRIC_PROTOTYPE_MANAGER_TYPE_OAMERT>::AppendPesConfiguration(
+        const THwEvent&    hwEvent,
+        const uint64_t     pesProgramming,
+        std::vector<bool>& pesProgrammed,
+        uint32_t           flexProgramming[],
+        uint32_t&          snapshotReportOffsets,
+        uint32_t&          deltaReportOffsets )
+    {
+        const uint32_t lowerPesProgramming = static_cast<uint32_t>( pesProgramming );
+        const uint32_t upperPesProgramming = static_cast<uint32_t>( pesProgramming >> 32 );
+
+        auto hwEventPair = GetHwEventIteratorFromGroup( m_firstEventGroup, hwEvent );
+
+        if( hwEventPair != m_firstEventGroup.end() )
+        {
+            const uint32_t hwEventIndex = static_cast<uint32_t>( std::distance( m_firstEventGroup.begin(), hwEventPair ) );
+
+            const uint32_t pesProgrammingOffset = m_pesOffset + sizeof( uint64_t ) * hwEventIndex;
             snapshotReportOffsets               = m_snapshotReportOffsetStart + m_snapshotCounterSize * hwEventIndex;
 
             if( !pesProgrammed[hwEventIndex] )

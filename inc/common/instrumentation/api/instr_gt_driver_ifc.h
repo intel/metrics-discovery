@@ -440,10 +440,13 @@ typedef enum GTDI_SAMPLING_TYPE_ENUM
 /******************************************************************************/
 typedef enum GTDI_REPORT_TYPE_ENUM
 {
-    GTDI_REPORT_TYPE_OA_SHIFT  = 0,          // 2 ^ 0 - render & dma related report types start from this value
-    GTDI_REPORT_TYPE_OAM_SHIFT = 8,          // 2 ^ 8 - media related report types start from this value
-    GTDI_REPORT_TYPE_OA_MASK   = 0x000000FF, // render & dma related report types range
-    GTDI_REPORT_TYPE_OAM_MASK  = 0x00000F00, // media related report types range
+    GTDI_REPORT_TYPE_OA_SHIFT     = 0,          // 2 ^ 0 - render & compute related report types start from this value
+    GTDI_REPORT_TYPE_OAM_SHIFT    = 8,          // 2 ^ 8 - media related report types start from this value
+    GTDI_REPORT_TYPE_OAMERT_SHIFT = 12,         // 2 ^ 12 - mert related report types start from this value
+    GTDI_REPORT_TYPE_OA_MASK      = 0x000000FF, // render & compute related report types range
+    GTDI_REPORT_TYPE_OAM_MASK     = 0x00000F00, // media related report types range
+    GTDI_REPORT_TYPE_OAMERT_MASK  = 0x0000F000, // mert related report types range
+
     // 3D (OA/OAG) report types
     GTDI_REPORT_TYPE_128B_A13_NOA16     = 0 << GTDI_REPORT_TYPE_OA_SHIFT,  // obsolete
     GTDI_REPORT_TYPE_192B_A29_NOA16     = 1 << GTDI_REPORT_TYPE_OA_SHIFT,  // obsolete
@@ -466,6 +469,9 @@ typedef enum GTDI_REPORT_TYPE_ENUM
     GTDI_REPORT_TYPE_128B_OAM           = 1 << GTDI_REPORT_TYPE_OAM_SHIFT, // obsolete
     GTDI_REPORT_TYPE_192B_MPEC8LL_NOA16 = 2 << GTDI_REPORT_TYPE_OAM_SHIFT, // MTL+ format: 8 PEC(64-bit) + 16 NOA(32-bit)
     GTDI_REPORT_TYPE_128B_MPEC8_NOA16   = 3 << GTDI_REPORT_TYPE_OAM_SHIFT, // MTL+ format: 8 PEC(32-bit) + 16 NOA(32-bit)
+    // MERT report types
+    GTDI_REPORT_TYPE_128B_MERT_PEC8   = 1 << GTDI_REPORT_TYPE_OAMERT_SHIFT, // 8 PEC(32-bit)
+    GTDI_REPORT_TYPE_192B_MERT_PEC8LL = 2 << GTDI_REPORT_TYPE_OAMERT_SHIFT, // 8 PEC(64-bit)
 
     GTDI_REPORT_TYPE_MAX = 0xFFFFFFFF,
 } GTDI_REPORT_TYPE;
@@ -665,7 +671,7 @@ typedef enum GTDI_OA_BUFFER_TYPE_ENUM
     GTDI_OA_BUFFER_TYPE_DEFAULT     = 0,
     GTDI_OA_BUFFER_TYPE_OA          = GTDI_OA_BUFFER_TYPE_DEFAULT, // preGen12
     GTDI_OA_BUFFER_TYPE_OAG         = GTDI_OA_BUFFER_TYPE_DEFAULT, // Gen12+
-    // 1 reserved
+    GTDI_OA_BUFFER_TYPE_MERT        = 1,                           // MERT
     GTDI_OA_BUFFER_TYPE_OAM_SAG     = 2,                           // OAM SAG
     GTDI_OA_BUFFER_TYPE_OAM_SLICE_0 = 3,                           // OAM SCMI0
     GTDI_OA_BUFFER_TYPE_OAM_SLICE_1 = 4,                           // OAM SCMI1
@@ -688,7 +694,7 @@ typedef enum GTDI_OA_BUFFER_MASK_ENUM
     GTDI_OA_BUFFER_MASK_DEFAULT     = 1 << GTDI_OA_BUFFER_TYPE_DEFAULT,
     GTDI_OA_BUFFER_MASK_OA          = 1 << GTDI_OA_BUFFER_TYPE_OA,          // preGen12
     GTDI_OA_BUFFER_MASK_OAG         = 1 << GTDI_OA_BUFFER_TYPE_OAG,         // Gen12+
-    // 1 << 1 reserved
+    GTDI_OA_BUFFER_MASK_MERT        = 1 << GTDI_OA_BUFFER_TYPE_MERT,        // MERT
     GTDI_OA_BUFFER_MASK_OAM_SAG     = 1 << GTDI_OA_BUFFER_TYPE_OAM_SAG,     // OAM SAG
     GTDI_OA_BUFFER_MASK_OAM_SLICE_0 = 1 << GTDI_OA_BUFFER_TYPE_OAM_SLICE_0, // OAM SCMI0
     GTDI_OA_BUFFER_MASK_OAM_SLICE_1 = 1 << GTDI_OA_BUFFER_TYPE_OAM_SLICE_1, // OAM SCMI1

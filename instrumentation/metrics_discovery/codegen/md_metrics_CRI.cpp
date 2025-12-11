@@ -179,3 +179,37 @@ exception:
     return CC_ERROR_NO_MEMORY;
 }
 #endif
+
+#if ( ( !defined( MD_INCLUDE_CRI_METRICS ) && MD_INCLUDE_ALL_METRICS ) || MD_INCLUDE_CRI_METRICS )
+
+TCompletionCode CreateMetricTreeCRI_OAMERT( CMetricsDevice* metricsDevice, CConcurrentGroup* concurrentGroup )
+{
+    const uint32_t adapterId = OBTAIN_ADAPTER_ID( metricsDevice );
+
+    MD_LOG_ENTER_A( adapterId );
+    MD_CHECK_PTR_RET_A( adapterId, metricsDevice, CC_ERROR_INVALID_PARAMETER );
+    MD_CHECK_PTR_RET_A( adapterId, concurrentGroup, CC_ERROR_INVALID_PARAMETER );
+
+    CMetricSet*      metricSet                                               = nullptr;
+    uint8_t          platformMaskByteArray[MD_PLATFORM_MASK_BYTE_ARRAY_SIZE] = {};
+    TByteArrayLatest platformMask                                            = { MD_PLATFORM_MASK_BYTE_ARRAY_SIZE, platformMaskByteArray };
+
+    MD_CHECK_CC( SetPlatformMask( adapterId, &platformMask, nullptr, false, GENERATION_CRI ) );
+
+    if( metricsDevice->IsPlatformTypeOf( &platformMask ) )
+    {
+        MD_CHECK_CC( MetricSets_CRI_OAMERT::AddInformationSet( concurrentGroup ) );
+
+        metricSet = concurrentGroup->AddMetricSetExplicit<MetricSets_CRI_OAMERT::CMertExtSetMetricSet>( "MertExtSet", "MertExtSet", API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+            GPU_RENDER | GPU_COMPUTE | GPU_GENERIC, 192, 0, OA_REPORT_TYPE_192B_MERT_PEC8LL, &platformMask, nullptr );
+        MD_CHECK_PTR( metricSet );
+    }
+
+    MD_LOG_EXIT_A( adapterId );
+    return CC_OK;
+
+exception:
+    MD_LOG_EXIT_A( adapterId );
+    return CC_ERROR_NO_MEMORY;
+}
+#endif

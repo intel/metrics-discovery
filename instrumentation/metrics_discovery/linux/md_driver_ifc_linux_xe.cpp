@@ -40,8 +40,10 @@ using namespace MetricsDiscovery;
 
 namespace MetricsDiscoveryInternal
 {
-#define DRM_XE_ENGINE_CLASS_GSC    65535
-#define DRM_XE_ENGINE_INSTANCE_GSC 65535
+#define DRM_XE_ENGINE_CLASS_GSC     65535
+#define DRM_XE_ENGINE_INSTANCE_GSC  65535
+#define DRM_XE_ENGINE_CLASS_MERT    65534
+#define DRM_XE_ENGINE_INSTANCE_MERT 65534
 
     //////////////////////////////////////////////////////////////////////////////
     //
@@ -282,11 +284,12 @@ namespace MetricsDiscoveryInternal
         const bool isComputeEngine      = engineParams.EngineId.ClassInstance.Class == DRM_XE_ENGINE_CLASS_COMPUTE;
         const bool isVideoEnhanceEngine = engineParams.EngineId.ClassInstance.Class == DRM_XE_ENGINE_CLASS_VIDEO_ENHANCE;
         const bool isGscEngine          = engineParams.EngineId.ClassInstance.Class == DRM_XE_ENGINE_CLASS_GSC;
+        const bool isMertEngine         = engineParams.EngineId.ClassInstance.Class == DRM_XE_ENGINE_CLASS_MERT;
         const bool isValidInstance      = ( requestedInstance == static_cast<uint32_t>( -1 ) ) || ( engineParams.EngineId.ClassInstance.Instance == requestedInstance );
 
         return isValidInstance &&
             ( ( isOam && ( isVideoEnhanceEngine || isGscEngine ) ) ||
-                ( !isOam && ( isRenderEngine || isComputeEngine ) ) );
+                ( !isOam && ( isRenderEngine || isComputeEngine || isMertEngine ) ) );
     }
 
     //////////////////////////////////////////////////////////////////////////////
@@ -401,6 +404,19 @@ namespace MetricsDiscoveryInternal
                         break;
                     }
 
+                    case DRM_XE_OA_UNIT_TYPE_MERT: // MERT is not related to any engine.
+                    {
+                        // MERT unit is not attached to any engine, but it is still a valid unit, so we create a dummy MERT engine for it.
+                        drm_xe_engine_class_instance eci = {};
+                        eci.engine_class                 = DRM_XE_ENGINE_CLASS_MERT;
+                        eci.engine_instance              = DRM_XE_ENGINE_INSTANCE_MERT;
+                        eci.gt_id                        = currentRenderGtId; // MERT engine is always on the render GT ID.
+
+                        engines.emplace_back( oaUnit.oa_unit_id, eci );
+
+                        break;
+                    }
+
                     default:
                         MD_LOG_A( m_adapterId, LOG_DEBUG, "OA unit %u has no engines", oaUnit.oa_unit_id );
                         break;
@@ -486,6 +502,7 @@ namespace MetricsDiscoveryInternal
                 case DRM_XE_ENGINE_CLASS_VIDEO_ENHANCE:
                 case DRM_XE_ENGINE_CLASS_COMPUTE:
                 case DRM_XE_ENGINE_CLASS_GSC:
+                case DRM_XE_ENGINE_CLASS_MERT:
                     MD_LOG_A( m_adapterId, LOG_DEBUG, "Sub device %u / engine %u:%u / GT ID: %u / OA unit: %u", subDevices.GetAllEnginesCount() - 1, engine.engine_class, engine.engine_instance, engine.gt_id, oaUnit );
                     subDevices.AddEngine( engine.engine_class, engine.engine_instance, engine.gt_id, oaUnit );
                     break;
@@ -566,7 +583,7 @@ namespace MetricsDiscoveryInternal
             ++currentIndex;
         };
 
-        if( oaBufferType != GTDI_OA_BUFFER_TYPE_OAG )
+        if( oaBufferType != GTDI_OA_BUFFER_TYPE_OAG && oaBufferType != GTDI_OA_BUFFER_TYPE_MERT )
         {
             if( m_xeObservationCapabilities.IsOamSagSupported && oaBufferType == GTDI_OA_BUFFER_TYPE_OAM_SAG )
             {
@@ -969,8 +986,10 @@ namespace MetricsDiscoveryInternal
                     case OA_REPORT_TYPE_640B_PEC64LL_NOA16:
                         return ( DRM_XE_OA_FMT_TYPE_PEC | ( 1 << 8 ) | ( 1 << 16 ) | ( 1 << 24 ) ); // counter select = 1, counter size = 1, bc report = 1
                     case OA_REPORT_TYPE_128B_MPEC8_NOA16:
+                    case OA_REPORT_TYPE_128B_MERT_PEC8:
                         return ( DRM_XE_OA_FMT_TYPE_OAM_MPEC | ( 2 << 8 ) | ( 0 << 16 ) | ( 0 << 24 ) ); // counter select = 2, counter size = 0, bc report = 0
                     case OA_REPORT_TYPE_192B_MPEC8LL_NOA16:
+                    case OA_REPORT_TYPE_192B_MERT_PEC8LL:
                         return ( DRM_XE_OA_FMT_TYPE_OAM_MPEC | ( 1 << 8 ) | ( 0 << 16 ) | ( 0 << 24 ) ); // counter select = 1, counter size = 0, bc report = 0
                     default:
                         return -1;
@@ -1142,6 +1161,12 @@ namespace MetricsDiscoveryInternal
                     m_xeObservationCapabilities.IsOamSagSupported = oaUnit.capabilities & DRM_XE_OA_CAPS_OAM;
 
                     MD_LOG_A( m_adapterId, LOG_INFO, "OAM SAG is%s supported", m_xeObservationCapabilities.IsOamSagSupported ? "" : " not" );
+                    break;
+
+                case DRM_XE_OA_UNIT_TYPE_MERT:
+                    m_xeObservationCapabilities.IsOaMertSupported = true;
+
+                    MD_LOG_A( m_adapterId, LOG_INFO, "OA MERT is%s supported", m_xeObservationCapabilities.IsOaMertSupported ? "" : " not" );
                     break;
 
                 default:
@@ -1613,7 +1638,8 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     bool CDriverInterfaceLinuxXe::IsOamRequested( const uint32_t reportType, const GTDI_OA_BUFFER_TYPE oaBufferType )
     {
-        return ( DRM_XE_OA_FORMAT_MASK_FMT_TYPE & reportType ) == DRM_XE_OA_FMT_TYPE_OAM_MPEC;
+        return ( ( DRM_XE_OA_FORMAT_MASK_FMT_TYPE & reportType ) == DRM_XE_OA_FMT_TYPE_OAM_MPEC ) &&
+            oaBufferType != GTDI_OA_BUFFER_TYPE_MERT; // MERT uses OAM report types, but it is not OAM.
     }
 
     //////////////////////////////////////////////////////////////////////////////
@@ -1741,6 +1767,11 @@ namespace MetricsDiscoveryInternal
             oaBufferCount += gscEngineCount; // OAM SAG
         }
 
+        if( m_xeObservationCapabilities.IsOaMertSupported )
+        {
+            oaBufferCount += 1;
+        }
+
         return oaBufferCount;
     }
 
@@ -1785,6 +1816,11 @@ namespace MetricsDiscoveryInternal
             {
                 oaBufferMask |= GTDI_OA_BUFFER_MASK_OAM_SAG; // OAM SAG
             }
+        }
+
+        if( m_xeObservationCapabilities.IsOaMertSupported )
+        {
+            oaBufferMask |= GTDI_OA_BUFFER_MASK_MERT;
         }
 
         return oaBufferMask;

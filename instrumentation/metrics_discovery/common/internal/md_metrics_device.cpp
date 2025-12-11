@@ -15,6 +15,7 @@ SPDX-License-Identifier: MIT
 #include "md_concurrent_group.h"
 #include "md_oa_concurrent_group.h"
 #include "md_oam_concurrent_group.h"
+#include "md_mert_concurrent_group.h"
 #include "md_information.h"
 #include "md_metric.h"
 #include "md_metric_set.h"
@@ -441,7 +442,17 @@ namespace MetricsDiscoveryInternal
             return nullptr;
         };
 
-        if( strstr( symbolicName, "OAM" ) != nullptr )
+        if( strstr( symbolicName, "OAMERT" ) != nullptr )
+        {
+            if( !CMERTConcurrentGroup::IsSupported( *this ) )
+            {
+                isSupported = false;
+                return nullptr;
+            }
+
+            group = new( std::nothrow ) CMERTConcurrentGroup( *this, symbolicName, shortName, measurementTypeMask );
+        }
+        else if( strstr( symbolicName, "OAM" ) != nullptr )
         {
             if( !COAMConcurrentGroup::IsSupported( symbolicName, *this ) )
             {

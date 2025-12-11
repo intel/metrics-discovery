@@ -40,6 +40,7 @@ namespace MetricsDiscoveryInternal
         bool IsOaNotifyNumReportsSupported;
         bool IsOamScmiSupported;
         bool IsOamSagSupported;
+        bool IsOaMertSupported;
     } TXeObservationCapabilities;
 
     //////////////////////////////////////////////////////////////////////////////

@@ -1866,7 +1866,9 @@ namespace MetricsDiscoveryInternal
         {
             case STREAM_TYPE_OA:
             case STREAM_TYPE_OAM:
+            case STREAM_TYPE_OAMERT:
                 return true;
+
             default:
                 MD_LOG_A( m_adapterId, LOG_ERROR, "Error: Given stream type is not supported: %d", static_cast<uint32_t>( streamType ) );
                 return false;

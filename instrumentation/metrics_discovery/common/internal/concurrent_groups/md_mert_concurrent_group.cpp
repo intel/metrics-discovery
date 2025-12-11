@@ -1,16 +1,16 @@
 /*========================== begin_copyright_notice ============================
 
-Copyright (C) 2022-2025 Intel Corporation
+Copyright (C) 2025 Intel Corporation
 
 SPDX-License-Identifier: MIT
 
 ============================= end_copyright_notice ===========================*/
 
-//     File Name:  md_oam_concurrent_group.cpp
+//     File Name:  md_mert_concurrent_group.cpp
 
-//     Abstract:   C++ Metrics Discovery oam concurrent group implementation
+//     Abstract:   C++ Metrics Discovery mert concurrent group implementation
 
-#include "md_oam_concurrent_group.h"
+#include "md_mert_concurrent_group.h"
 #include "md_events.h"
 #include "md_adapter.h"
 #include "md_metrics_device.h"
@@ -26,7 +26,7 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     //
     // Class:
-    //     COAConcurrentGroup
+    //     CMERTConcurrentGroup
     //
     // Method:
     //     GetMetricEnumerator
@@ -38,15 +38,15 @@ namespace MetricsDiscoveryInternal
     //     IMetricEnumerator_1_13* - a pointer to a metric enumerator object.
     //
     //////////////////////////////////////////////////////////////////////////////
-    IMetricEnumerator_1_13* COAMConcurrentGroup::GetMetricEnumerator( void )
+    IMetricEnumerator_1_13* CMERTConcurrentGroup::GetMetricEnumerator( void )
     {
-        return COAConcurrentGroup::GetMetricEnumerator( OA_REPORTING_MEDIA );
+        return COAConcurrentGroup::GetMetricEnumerator( OA_REPORTING_MERT );
     }
 
     //////////////////////////////////////////////////////////////////////////////
     //
     // Class:
-    //     COAMConcurrentGroup
+    //     CMERTConcurrentGroup
     //
     // Method:
     //     AddMetricSet
@@ -62,37 +62,22 @@ namespace MetricsDiscoveryInternal
     //     IMetricSet_1_13*       - a pointer to a created metric set.
     //
     //////////////////////////////////////////////////////////////////////////////
-    IMetricSet_1_13* COAMConcurrentGroup::AddMetricSet( const char* symbolName, const char* shortName )
+    IMetricSet_1_13* CMERTConcurrentGroup::AddMetricSet( const char* symbolName, const char* shortName )
     {
         const uint32_t adapterId = m_device.GetAdapter().GetAdapterId();
         MD_CHECK_PTR_RET_A( adapterId, symbolName, nullptr );
         MD_CHECK_PTR_RET_A( adapterId, shortName, nullptr );
 
         constexpr uint32_t deltaReportSize    = 0;
-        uint32_t           snapshotReportSize = 0;
+        constexpr uint32_t snapshotReportSize = 128;
         const uint32_t     platformIndex      = m_device.GetPlatformIndex();
         TReportType        reportFormat       = OA_REPORT_TYPE_LAST;
 
         switch( platformIndex )
         {
-            case GENERATION_MTL:
-            case GENERATION_ARL:
-            {
-                snapshotReportSize = 128;
-                reportFormat       = OA_REPORT_TYPE_128B_MPEC8_NOA16;
-                break;
-            }
-
-            case GENERATION_BMG:
-            case GENERATION_LNL:
-            case GENERATION_PTL:
-            case GENERATION_NVL:
             case GENERATION_CRI:
-            {
-                snapshotReportSize = 192;
-                reportFormat       = OA_REPORT_TYPE_192B_MPEC8LL_NOA16;
+                reportFormat = OA_REPORT_TYPE_192B_MERT_PEC8LL;
                 break;
-            }
 
             default:
                 return nullptr;
@@ -132,10 +117,10 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     //
     // Class:
-    //     COAMConcurrentGroup
+    //     CMERTConcurrentGroup
     //
     // Method:
-    //     COAMConcurrentGroup constructor
+    //     CMERTConcurrentGroup constructor
     //
     // Description:
     //     Constructor.
@@ -147,15 +132,15 @@ namespace MetricsDiscoveryInternal
     //     const uint32_t  measurementTypeMask    - measurement type mask
     //
     //////////////////////////////////////////////////////////////////////////////
-    COAMConcurrentGroup::COAMConcurrentGroup( CMetricsDevice& device, const char* name, const char* description, const uint32_t measurementTypeMask )
-        : COAConcurrentGroup( device, name, description, measurementTypeMask, STREAM_TYPE_OAM, GetOaBufferTypeFromName( name, device ) )
+    CMERTConcurrentGroup::CMERTConcurrentGroup( CMetricsDevice& device, const char* name, const char* description, const uint32_t measurementTypeMask )
+        : COAConcurrentGroup( device, name, description, measurementTypeMask, STREAM_TYPE_OAMERT, GTDI_OA_BUFFER_TYPE_MERT )
     {
     }
 
     //////////////////////////////////////////////////////////////////////////////
     //
     // Class:
-    //     COAMConcurrentGroup
+    //     CMERTConcurrentGroup
     //
     // Method:
     //     GetStreamTypeFromSamplingType
@@ -171,11 +156,11 @@ namespace MetricsDiscoveryInternal
     //     TCompletionCode                  - result of operation (*CC_OK* is OK)
     //
     //////////////////////////////////////////////////////////////////////////////
-    TCompletionCode COAMConcurrentGroup::GetStreamTypeFromSamplingType( const TSamplingType samplingType, TStreamType& streamType ) const
+    TCompletionCode CMERTConcurrentGroup::GetStreamTypeFromSamplingType( const TSamplingType samplingType, TStreamType& streamType ) const
     {
-        if( samplingType == SAMPLING_TYPE_OAM_TIMER )
+        if( samplingType == SAMPLING_TYPE_OAMERT_TIMER )
         {
-            streamType = STREAM_TYPE_OAM;
+            streamType = STREAM_TYPE_OAMERT;
             return CC_OK;
         }
 
@@ -185,93 +170,23 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     //
     // Class:
-    //     COAMConcurrentGroup
+    //     CMERTConcurrentGroup
     //
     // Method:
     //     IsSupported
     //
     // Description:
-    //     Checks if a given OAM concurrent group is supported on current platform.
+    //     Checks if MERT concurrent group is supported on current platform.
     //
     // Input:
-    //     const char*     symbolName - concurrent group symbol name
-    //     CMetricsDevice& device     - metrics device
+    //     CMetricsDevice& device - metrics device
     //
     // Output:
-    //     bool                       - true if supported
+    //     bool - true if supported
     //
     //////////////////////////////////////////////////////////////////////////////
-    bool COAMConcurrentGroup::IsSupported( const char* symbolName, CMetricsDevice& device )
+    bool CMERTConcurrentGroup::IsSupported( CMetricsDevice& device )
     {
-        return GetOaBufferTypeFromName( symbolName, device ) != GTDI_OA_BUFFER_TYPE_DEFAULT;
+        return ( device.GetOaBufferMask() & GTDI_OA_BUFFER_MASK_MERT ) != 0;
     }
-
-    //////////////////////////////////////////////////////////////////////////////
-    //
-    // Class:
-    //     COAMConcurrentGroup
-    //
-    // Method:
-    //     IsValidSymbolName
-    //
-    // Description:
-    //     Checks if OAM concurrent group symbol name is valid.
-    //
-    // Input:
-    //     const char* symbolName - concurrent group symbol name
-    //
-    // Output:
-    //     bool                   - true if valid
-    //
-    //////////////////////////////////////////////////////////////////////////////
-    bool COAMConcurrentGroup::IsValidSymbolName( const char* symbolName )
-    {
-        return strlen( symbolName ) == 4 && strstr( symbolName, "OAM" ) != nullptr;
-    }
-
-    //////////////////////////////////////////////////////////////////////////////
-    //
-    // Class:
-    //     COAMConcurrentGroup
-    //
-    // Method:
-    //     GetOaBufferTypeFromName
-    //
-    // Description:
-    //     Gets oa buffer type from concurrent group symbol name.
-    //
-    // Input:
-    //     const char*     symbolName - concurrent group symbol name
-    //     CMetricsDevice& device     - metrics device
-    //
-    // Output:
-    //     GTDI_OA_BUFFER_TYPE        - oa buffer type
-    //
-    //////////////////////////////////////////////////////////////////////////////
-    GTDI_OA_BUFFER_TYPE COAMConcurrentGroup::GetOaBufferTypeFromName( const char* symbolName, CMetricsDevice& device )
-    {
-        if( IsValidSymbolName( symbolName ) )
-        {
-            const uint32_t oaBufferMask = device.GetOaBufferMask();
-
-            if( symbolName[3] == 'G' ) // OAM SAG (OAMG)
-            {
-                return ( oaBufferMask & GTDI_OA_BUFFER_MASK_OAM_SAG ) ? GTDI_OA_BUFFER_TYPE_OAM_SAG : GTDI_OA_BUFFER_TYPE_DEFAULT;
-            }
-            else // OAM SCMI (OAM0, OAM1 etc.)
-            {
-                const uint32_t oamBufferType = symbolName[3] - '0' + GTDI_OA_BUFFER_TYPE_OAM_SLICE_0;
-                if( oaBufferMask & ( 1 << oamBufferType ) )
-                {
-                    return static_cast<GTDI_OA_BUFFER_TYPE>( oamBufferType );
-                }
-
-                const uint32_t adapterId = device.GetAdapter().GetAdapterId();
-                MD_LOG_A( adapterId, LOG_DEBUG, "Cannot get oa buffer type for OAM. Given symbol name: %s, OA buffers mask: %x", symbolName, oaBufferMask );
-            }
-        }
-
-        return GTDI_OA_BUFFER_TYPE_DEFAULT;
-    }
-
 } // namespace MetricsDiscoveryInternal

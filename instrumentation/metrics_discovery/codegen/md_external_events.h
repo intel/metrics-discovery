@@ -34,6 +34,16 @@ struct ExternalEventsMedia
 
 #endif
 
+#if MD_INCLUDE_CRI_METRICS
+
+struct ExternalEventsMert
+{
+    static const char archEvents[1118];
+    static const char hwEvents[1128];
+};
+
+#endif
+
 #if MD_INCLUDE_BMG_METRICS || MD_INCLUDE_LNL_METRICS || MD_INCLUDE_PTL_METRICS || MD_INCLUDE_NVL_METRICS || MD_INCLUDE_CRI_METRICS
 
 struct ExternalEventsWorkarounds

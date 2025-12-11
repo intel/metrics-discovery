@@ -174,10 +174,10 @@ namespace MetricsDiscoveryInternal
         m_params_1_13.MetricType         = m_hwEvent.m_archEvent.m_metricType;
         m_params_1_13.HwUnitType         = m_hwEvent.m_archEvent.m_hwUnitType;
         m_params_1_13.DisaggregationMode = m_hwEvent.m_archEvent.m_disaggregationMode;
-        m_params_1_13.QueryModeMask      = static_cast<uint32_t>( m_hwEvent.m_archEvent.m_oaReportingType & ~OA_REPORTING_MEDIA ); // Media metric prototypes don't support query
+        m_params_1_13.QueryModeMask      = static_cast<uint32_t>( m_hwEvent.m_archEvent.m_oaReportingType & ~( OA_REPORTING_MEDIA | OA_REPORTING_MERT ) ); // Media and mert metric prototypes don't support query
 
         const auto oaReportingType = m_hwEvent.m_archEvent.m_oaReportingType;
-        if( oaReportingType & ( OA_REPORTING_GLOBAL | OA_REPORTING_GLOBAL_EXTENDED | OA_REPORTING_MEDIA ) )
+        if( oaReportingType & ( OA_REPORTING_GLOBAL | OA_REPORTING_GLOBAL_EXTENDED | OA_REPORTING_MEDIA | OA_REPORTING_MERT ) )
         {
             m_params_1_13.ApiMask |= API_TYPE_IOSTREAM;
         }

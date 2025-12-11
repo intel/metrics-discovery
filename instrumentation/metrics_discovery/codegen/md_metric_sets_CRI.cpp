@@ -3674,4 +3674,125 @@ namespace MetricsDiscoveryInternal::MetricSets_CRI_OAMG
 
 } // namespace MetricsDiscoveryInternal::MetricSets_CRI_OAMG
 
+namespace MetricsDiscoveryInternal::MetricSets_CRI_OAMERT
+{
+    TCompletionCode AddInformationSet( CConcurrentGroup* concurrentGroup )
+    {
+        CInformation* information = nullptr;
+
+        information = concurrentGroup->AddInformation( "QueryBeginTime", "Query Begin Time", "The measurement begin time.", "Report Meta Data", API_TYPE_IOSTREAM, INFORMATION_TYPE_TIMESTAMP, "ns", nullptr, 0 );
+        MD_CHECK_PTR( information );
+        MD_CHECK_CC( information->SetSnapshotReportReadEquation( "qw@0x08 100 UMUL $GpuTimestampFrequency 100000 UDIV UDIV 100 UMUL" ) );
+        MD_CHECK_CC( information->SetOverflowFunction( "NS_TIME" ) );
+
+        information = concurrentGroup->AddInformation( "ReportReason", "Report Reason", "The reason of the report.", "Report Meta Data", API_TYPE_IOSTREAM, INFORMATION_TYPE_REPORT_REASON, nullptr, nullptr, 1 );
+        MD_CHECK_PTR( information );
+        MD_CHECK_CC( information->SetSnapshotReportReadEquation( "dw@0x0 19 >> 0x7f AND" ) );
+
+        return CC_OK;
+
+    exception:
+        return CC_ERROR_GENERAL;
+    }
+
+    CMertExtSetMetricSet::CMertExtSetMetricSet( CMetricsDevice& device, CConcurrentGroup* concurrentGroup, const char* symbolicName, const char* shortName, uint32_t apiMask, uint32_t category, uint32_t snapshotReportSize, uint32_t deltaReportSize, TReportType reportType, TByteArrayLatest* platformMask, uint32_t gtMask /*= GT_TYPE_ALL*/, bool isCustom /*= false*/ )
+        : CMetricSet( device, concurrentGroup, symbolicName, shortName, apiMask, category, snapshotReportSize, deltaReportSize, reportType, platformMask, gtMask, isCustom )
+    {
+    }
+
+    TCompletionCode CMertExtSetMetricSet::Initialize()
+    {
+        CMetric* metric           = nullptr;
+        m_params.InformationCount = m_concurrentGroup->GetInformationCount();
+        MD_CHECK_CC( SetApiSpecificId( "GPAV", 0, 0x40000000, 0x80000203, 0, 0, "Intel Performance Counters for GT Set Dynamic", 0, "Intel_Raw_Hardware_Counters_Set_0_Query", 0 ) );
+
+        metric = AddMetric( "GpuTime", "GPU Time Elapsed",
+            "Time elapsed on the GPU during the measurement.",
+            "GPU", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_1 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_BATCH, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+            METRIC_TYPE_EVENT, RESULT_UINT64, "ns", 0, 0, HW_UNIT_GPU, nullptr, nullptr, nullptr, 0 );
+        MD_CHECK_PTR( metric );
+        MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "qw@0x08 100 UMUL $GpuTimestampFrequency 100000 UDIV UDIV 100 UMUL" ) );
+        MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0" ) );
+        MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "NS_TIME" ) );
+        metric->SetQueryModeMask( QUERY_MODE_MASK_RENDER | QUERY_MODE_MASK_COMPUTE | QUERY_MODE_MASK_GLOBAL | QUERY_MODE_MASK_GLOBAL_EXTENDED );
+
+        metric = AddMetric( "GpuCoreClocks", "GPU Mert Clocks",
+            "The total number of Mert slice clocks elapsed during the measurement.",
+            "GPU", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_1 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_BATCH, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+            METRIC_TYPE_EVENT, RESULT_UINT64, "cycles", 0, 0, HW_UNIT_GPU, nullptr, nullptr, nullptr, 1 );
+        MD_CHECK_PTR( metric );
+        MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "qw@0x18" ) );
+        MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 64" ) );
+        metric->SetQueryModeMask( QUERY_MODE_MASK_RENDER | QUERY_MODE_MASK_COMPUTE | QUERY_MODE_MASK_GLOBAL | QUERY_MODE_MASK_GLOBAL_EXTENDED );
+
+        metric = AddMetric( "AvgGpuCoreFrequencyMHz", "AVG GPU Mert Frequency",
+            "Average GPU Mert Frequency in the measurement.",
+            "GPU", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_1 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_BATCH, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+            METRIC_TYPE_EVENT, RESULT_UINT64, "MHz", 0, 0, HW_UNIT_GPU, nullptr, nullptr, nullptr, 2 );
+        MD_CHECK_PTR( metric );
+        MD_CHECK_CC( metric->SetNormalizationEquation( "$GpuCoreClocks 1000 UMUL $$GpuTime UDIV" ) );
+        metric->SetQueryModeMask( QUERY_MODE_MASK_RENDER | QUERY_MODE_MASK_COMPUTE | QUERY_MODE_MASK_GLOBAL | QUERY_MODE_MASK_GLOBAL_EXTENDED );
+
+        metric = AddMetric( "ResultUncertainty", "Result Uncertainty",
+            "Result uncertainty indicator",
+            "GPU", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_1 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_BATCH, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+            METRIC_TYPE_EVENT, RESULT_UINT64, "percent", 0, 0, HW_UNIT_GPU, nullptr, nullptr, nullptr, 3 );
+        MD_CHECK_PTR( metric );
+        MD_CHECK_CC( metric->SetNormalizationEquation( "100 $GpuCoreClocks 500 UMAX 5000 UMIN 500 USUB 45 UDIV USUB" ) );
+
+        metric = AddMetric( "HOST_TO_GPUMEM_TRANSACTION_READ", "Host To GpuMem Transaction Read",
+            "Number of host 64B reads to GPU local (HBM) memory (downstream over an interface such as pcie, cxl or an integrated fabric as applicable to the respective product segment)",
+            "Memory", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+            METRIC_TYPE_EVENT, RESULT_UINT64, "events", 0, 0, HW_UNIT_GPU, nullptr, nullptr, nullptr, 4 );
+        MD_CHECK_PTR( metric );
+        MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "qw@0x20" ) );
+        MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 64" ) );
+        metric->SetQueryModeMask( QUERY_MODE_MASK_GLOBAL | QUERY_MODE_MASK_GLOBAL_EXTENDED );
+
+        metric = AddMetric( "HOST_TO_GPUMEM_TRANSACTION_WRITE", "Host To GpuMem Transaction Write",
+            "Number of host 64B writes to GPU local (HBM) memory (downstream over an interface such as pcie, cxl or an integrated fabric as applicable to the respective product segment)",
+            "Memory", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+            METRIC_TYPE_EVENT, RESULT_UINT64, "events", 0, 0, HW_UNIT_GPU, nullptr, nullptr, nullptr, 5 );
+        MD_CHECK_PTR( metric );
+        MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "qw@0x28" ) );
+        MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 64" ) );
+        metric->SetQueryModeMask( QUERY_MODE_MASK_GLOBAL | QUERY_MODE_MASK_GLOBAL_EXTENDED );
+
+        metric = AddMetric( "SYSMEM_TRANSACTION_READ", "SysMem Transaction Read",
+            "Number of system memory 64B reads (upstream over an interface such as pcie, cxl or an integrated fabric as applicable to the respective product segment)",
+            "Memory", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+            METRIC_TYPE_EVENT, RESULT_UINT64, "events", 0, 0, HW_UNIT_GPU, nullptr, nullptr, nullptr, 6 );
+        MD_CHECK_PTR( metric );
+        MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "qw@0x30" ) );
+        MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 64" ) );
+        metric->SetQueryModeMask( QUERY_MODE_MASK_GLOBAL | QUERY_MODE_MASK_GLOBAL_EXTENDED );
+
+        metric = AddMetric( "SYSMEM_TRANSACTION_WRITE", "SysMem Transaction Write",
+            "Number of system memory 64B writes (upstream over an interface such as pcie, cxl or an integrated fabric as applicable to the respective product segment)",
+            "Memory", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+            METRIC_TYPE_EVENT, RESULT_UINT64, "events", 0, 0, HW_UNIT_GPU, nullptr, nullptr, nullptr, 7 );
+        MD_CHECK_PTR( metric );
+        MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "qw@0x38" ) );
+        MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 64" ) );
+        metric->SetQueryModeMask( QUERY_MODE_MASK_GLOBAL | QUERY_MODE_MASK_GLOBAL_EXTENDED );
+
+        MD_CHECK_CC( AddStartRegisterSet( 0, 0, nullptr ) );
+        MD_CHECK_CC( AddStartConfigRegister( 0x145340, 0x00006400, REGISTER_TYPE_OA ) );
+        MD_CHECK_CC( AddStartConfigRegister( 0x145344, 0x00000000, REGISTER_TYPE_OA ) );
+        MD_CHECK_CC( AddStartConfigRegister( 0x145348, 0x00006401, REGISTER_TYPE_OA ) );
+        MD_CHECK_CC( AddStartConfigRegister( 0x14534c, 0x00000000, REGISTER_TYPE_OA ) );
+        MD_CHECK_CC( AddStartConfigRegister( 0x145350, 0x00006402, REGISTER_TYPE_OA ) );
+        MD_CHECK_CC( AddStartConfigRegister( 0x145354, 0x00000000, REGISTER_TYPE_OA ) );
+        MD_CHECK_CC( AddStartConfigRegister( 0x145358, 0x00006403, REGISTER_TYPE_OA ) );
+        MD_CHECK_CC( AddStartConfigRegister( 0x14535c, 0x00000000, REGISTER_TYPE_OA ) );
+        MD_CHECK_CC( RefreshConfigRegisters() );
+
+        return CC_OK;
+
+    exception:
+        return CC_ERROR_GENERAL;
+    }
+
+} // namespace MetricsDiscoveryInternal::MetricSets_CRI_OAMERT
+
 #endif

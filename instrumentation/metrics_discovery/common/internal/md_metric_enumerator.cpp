@@ -45,6 +45,7 @@ namespace MetricsDiscoveryInternal
         : m_metricPrototypes()
         , m_oaConcurrentGroup( oaConcurrentGroup )
         , m_device( oaConcurrentGroup.GetMetricsDevice() )
+        , m_oaReportingMask( OA_REPORTING_NONE )
         , m_isInitialized( false )
     {
     }
@@ -107,17 +108,21 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     TCompletionCode CMetricEnumerator::Initialize( const uint32_t oaReportingTypeMask )
     {
-        const uint32_t adapterId      = m_device.GetAdapter().GetAdapterId();
-        const uint32_t platformIndex  = m_device.GetPlatformIndex();
-        const bool     isOaReporting  = ( oaReportingTypeMask & ( OA_REPORTING_GLOBAL | OA_REPORTING_GLOBAL_EXTENDED | OA_REPORTING_RENDER | OA_REPORTING_COMPUTE ) ) != 0;
-        const bool     isOamReporting = ( oaReportingTypeMask & OA_REPORTING_MEDIA ) != 0;
-        bool           isXe2Plus      = false;
+        const uint32_t adapterId     = m_device.GetAdapter().GetAdapterId();
+        const uint32_t platformIndex = m_device.GetPlatformIndex();
+
+        m_oaReportingMask = static_cast<TOaReportingType>( oaReportingTypeMask );
+
+        const bool isOaReporting     = ( m_oaReportingMask & ( OA_REPORTING_GLOBAL | OA_REPORTING_GLOBAL_EXTENDED | OA_REPORTING_RENDER | OA_REPORTING_COMPUTE ) ) != 0;
+        const bool isOamReporting    = ( m_oaReportingMask & OA_REPORTING_MEDIA ) != 0;
+        const bool isOaMertReporting = ( m_oaReportingMask & OA_REPORTING_MERT ) != 0;
+        bool       isXe2Plus         = false;
 
         TCompletionCode status = CC_ERROR_NOT_SUPPORTED;
 
-        if( isOaReporting && isOamReporting )
+        if( ( isOaReporting && isOamReporting ) || ( isOaReporting && isOaMertReporting ) || ( isOamReporting && isOaMertReporting ) )
         {
-            MD_LOG_A( adapterId, LOG_ERROR, "Error: Cannot initialize common metric enumerator for OAM and OAG/OAR/OAC. oaReportingTypeMask: %u", oaReportingTypeMask );
+            MD_LOG_A( adapterId, LOG_ERROR, "Error: Cannot initialize common metric enumerator for OAG/OAR/OAC and OAM or MERT. oaReportingMask: %u", m_oaReportingMask );
             return CC_ERROR_INVALID_PARAMETER;
         }
 
@@ -166,6 +171,26 @@ namespace MetricsDiscoveryInternal
                     sizeof( ExternalEventsMedia::archEvents ),
                     ExternalEventsMedia::hwEvents,
                     sizeof( ExternalEventsMedia::hwEvents ) );
+
+                if( status != CC_OK )
+                {
+                    return status;
+                }
+            }
+#endif
+        }
+
+        if( isOaMertReporting )
+        {
+#if MD_INCLUDE_CRI_METRICS
+            if( IsPlatformMatch( platformIndex, GENERATION_CRI ) )
+            {
+                // External mert events.
+                status = ReadEvents(
+                    ExternalEventsMert::archEvents,
+                    sizeof( ExternalEventsMert::archEvents ),
+                    ExternalEventsMert::hwEvents,
+                    sizeof( ExternalEventsMert::hwEvents ) );
 
                 if( status != CC_OK )
                 {
@@ -458,7 +483,9 @@ namespace MetricsDiscoveryInternal
                             }
                             else if( *( archEventValueString + k ) == 'G' )
                             {
-                                archEvent->m_oaReportingType = static_cast<TOaReportingType>( archEvent->m_oaReportingType | OA_REPORTING_GLOBAL | OA_REPORTING_GLOBAL_EXTENDED );
+                                archEvent->m_oaReportingType = ( m_oaReportingMask == OA_REPORTING_MERT )
+                                    ? static_cast<TOaReportingType>( archEvent->m_oaReportingType | OA_REPORTING_MERT )
+                                    : static_cast<TOaReportingType>( archEvent->m_oaReportingType | OA_REPORTING_GLOBAL | OA_REPORTING_GLOBAL_EXTENDED );
                             }
                             else if( *( archEventValueString + k ) == 'M' )
                             {

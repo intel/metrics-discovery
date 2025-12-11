@@ -24,6 +24,7 @@ namespace MetricsDiscoveryInternal
     ///////////////////////////////////////////////////////////////////////////////
     // Forward declarations:                                                     //
     ///////////////////////////////////////////////////////////////////////////////
+    class CMetric;
     class CMetricPrototype;
 
     ///////////////////////////////////////////////////////////////////////////////
@@ -31,8 +32,9 @@ namespace MetricsDiscoveryInternal
     ///////////////////////////////////////////////////////////////////////////////
     typedef enum EMetricPrototypeManagerType
     {
-        METRIC_PROTOTYPE_MANAGER_TYPE_OA  = 0,
-        METRIC_PROTOTYPE_MANAGER_TYPE_OAM = 1,
+        METRIC_PROTOTYPE_MANAGER_TYPE_OA     = 0,
+        METRIC_PROTOTYPE_MANAGER_TYPE_OAM    = 1,
+        METRIC_PROTOTYPE_MANAGER_TYPE_OAMERT = 2,
     } TMetricPrototypeManagerType;
 
     //////////////////////////////////////////////////////////////////////////////
@@ -114,7 +116,7 @@ namespace MetricsDiscoveryInternal
 
     private:
         // Methods:
-        uint32_t GetMediaPesOffset( CConcurrentGroup& concurrentGroup );
+        uint32_t GetPesOffset( CConcurrentGroup& concurrentGroup );
 
         virtual THwEventGroup GetHwEventGroup( const THwEvent& hwEvent );
 
@@ -125,7 +127,7 @@ namespace MetricsDiscoveryInternal
         virtual uint32_t GetGroupMaxSize( const THwEventGroup group );
 
         // Members:
-        const uint32_t m_mediaPesOffset;
+        const uint32_t m_pesOffset;
 
         // Static members:
         static constexpr bool     m_isOa                             = ( managerType == METRIC_PROTOTYPE_MANAGER_TYPE_OA );
@@ -140,6 +142,8 @@ namespace MetricsDiscoveryInternal
 
     // Explicit instantiation:
     template <>
-    uint32_t CMetricPrototypeManager<METRIC_PROTOTYPE_MANAGER_TYPE_OAM>::GetMediaPesOffset( CConcurrentGroup& concurrentGroup );
+    uint32_t CMetricPrototypeManager<METRIC_PROTOTYPE_MANAGER_TYPE_OAM>::GetPesOffset( CConcurrentGroup& concurrentGroup );
+    template <>
+    uint32_t CMetricPrototypeManager<METRIC_PROTOTYPE_MANAGER_TYPE_OAMERT>::GetPesOffset( CConcurrentGroup& concurrentGroup );
 
 } // namespace MetricsDiscoveryInternal

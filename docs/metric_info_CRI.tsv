@@ -267,3 +267,11 @@ MediaSet1	GpuCoreClocks	GPU Media Clocks	GPU	The total number of media slice clo
 MediaSet1	AvgGpuCoreFrequencyMHz	AVG GPU Media Frequency	GPU	Average GPU Media Frequency in the measurement.
 MediaSet1	ResultUncertainty	Result Uncertainty	GPU	Result uncertainty indicator
 MediaSet1	COMMAND_PARSER_GRAPHICS_SECURITY_CONTROLLER_BUSY	Command Parser Graphics Security Controller Busy	Media	Number of GSCCS activities
+MertExtSet	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
+MertExtSet	GpuCoreClocks	GPU Mert Clocks	GPU	The total number of Mert slice clocks elapsed during the measurement.
+MertExtSet	AvgGpuCoreFrequencyMHz	AVG GPU Mert Frequency	GPU	Average GPU Mert Frequency in the measurement.
+MertExtSet	ResultUncertainty	Result Uncertainty	GPU	Result uncertainty indicator
+MertExtSet	HOST_TO_GPUMEM_TRANSACTION_READ	Host To GpuMem Transaction Read	Memory	Number of host 64B reads to GPU local (HBM) memory (downstream over an interface such as pcie, cxl or an integrated fabric as applicable to the respective product segment)
+MertExtSet	HOST_TO_GPUMEM_TRANSACTION_WRITE	Host To GpuMem Transaction Write	Memory	Number of host 64B writes to GPU local (HBM) memory (downstream over an interface such as pcie, cxl or an integrated fabric as applicable to the respective product segment)
+MertExtSet	SYSMEM_TRANSACTION_READ	SysMem Transaction Read	Memory	Number of system memory 64B reads (upstream over an interface such as pcie, cxl or an integrated fabric as applicable to the respective product segment)
+MertExtSet	SYSMEM_TRANSACTION_WRITE	SysMem Transaction Write	Memory	Number of system memory 64B writes (upstream over an interface such as pcie, cxl or an integrated fabric as applicable to the respective product segment)

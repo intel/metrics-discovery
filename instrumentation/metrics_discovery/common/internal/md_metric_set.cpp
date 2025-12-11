@@ -89,7 +89,7 @@ namespace MetricsDiscoveryInternal
         , m_isReadRegsCfgSet( false )
         , m_pmRegsConfigInfo{}
         , m_metricsCalculator( nullptr )
-        , m_isOam( COAMConcurrentGroup::IsValidSymbolName( concurrentGroup->GetParams()->SymbolName ) )
+        , m_prototypeManagerType( METRIC_PROTOTYPE_MANAGER_TYPE_OA )
         , m_isFlexible( false )
         , m_isOpened( false )
         , m_prototypeManager( nullptr )
@@ -105,6 +105,15 @@ namespace MetricsDiscoveryInternal
         m_params.InformationCount = concurrentGroup->GetInformationCount();
         m_params.PlatformMask     = GetPlatformTypeFromByteArray( platformMask, adapterId );
         m_params.GtMask           = gtMask;
+
+        if( COAMConcurrentGroup::IsValidSymbolName( concurrentGroup->GetParams()->SymbolName ) )
+        {
+            m_prototypeManagerType = METRIC_PROTOTYPE_MANAGER_TYPE_OAM;
+        }
+        else if( concurrentGroup->GetParams()->SymbolName == std::string_view( "OAMERT" ) )
+        {
+            m_prototypeManagerType = METRIC_PROTOTYPE_MANAGER_TYPE_OAMERT;
+        }
 
         // Set 'current' variables and mark 'filtered' params as uninitialized
         UseApiFilteredVariables( false );
@@ -3320,13 +3329,23 @@ namespace MetricsDiscoveryInternal
     {
         if( !m_prototypeManager )
         {
-            if( m_isOam )
+            switch( m_prototypeManagerType )
             {
-                m_prototypeManager = new( std::nothrow ) CMetricPrototypeManager<METRIC_PROTOTYPE_MANAGER_TYPE_OAM>( m_device, *this );
-            }
-            else
-            {
-                m_prototypeManager = new( std::nothrow ) CMetricPrototypeManager<METRIC_PROTOTYPE_MANAGER_TYPE_OA>( m_device, *this );
+                case METRIC_PROTOTYPE_MANAGER_TYPE_OA:
+                    m_prototypeManager = new( std::nothrow ) CMetricPrototypeManager<METRIC_PROTOTYPE_MANAGER_TYPE_OA>( m_device, *this );
+                    break;
+
+                case METRIC_PROTOTYPE_MANAGER_TYPE_OAM:
+                    m_prototypeManager = new( std::nothrow ) CMetricPrototypeManager<METRIC_PROTOTYPE_MANAGER_TYPE_OAM>( m_device, *this );
+                    break;
+
+                case METRIC_PROTOTYPE_MANAGER_TYPE_OAMERT:
+                    m_prototypeManager = new( std::nothrow ) CMetricPrototypeManager<METRIC_PROTOTYPE_MANAGER_TYPE_OAMERT>( m_device, *this );
+                    break;
+
+                default:
+                    MD_ASSERT_A( m_device.GetAdapter().GetAdapterId(), false );
+                    break;
             }
 
             m_isFlexible = m_prototypeManager != nullptr;
@@ -3422,7 +3441,7 @@ namespace MetricsDiscoveryInternal
             IsPlatformPresentInMask( m_platformMask, GENERATION_NVL, adapterId ) ||
             IsPlatformPresentInMask( m_platformMask, GENERATION_CRI, adapterId );
 
-        const uint32_t apiMask = m_isOam
+        const uint32_t apiMask = ( m_prototypeManagerType != METRIC_PROTOTYPE_MANAGER_TYPE_OA )
             ? API_TYPE_IOSTREAM
             : ( MD_QUERY_API_MASK | API_TYPE_IOSTREAM );
 
@@ -3440,7 +3459,7 @@ namespace MetricsDiscoveryInternal
         {
             MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "dw@0x08 1000000000 UMUL $GpuTimestampFrequency UDIV" ) );
         }
-        if( !m_isOam )
+        if( m_prototypeManagerType == METRIC_PROTOTYPE_MANAGER_TYPE_OA )
         {
             MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x00" ) );
         }
@@ -3451,7 +3470,7 @@ namespace MetricsDiscoveryInternal
         MD_CHECK_PTR_RET_A( adapterId, metric, CC_ERROR_NO_MEMORY );
         MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "qw@0x18" ) );
 
-        if( !m_isOam )
+        if( m_prototypeManagerType == METRIC_PROTOTYPE_MANAGER_TYPE_OA )
         {
             MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x08" ) );
         }

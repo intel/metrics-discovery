@@ -13,6 +13,7 @@ SPDX-License-Identifier: MIT
 #pragma once
 
 #include "md_types.h"
+#include "md_metric_prototype_manager.h"
 
 #include <cstdio>
 #include <vector>
@@ -368,9 +369,9 @@ namespace MetricsDiscoveryInternal
         CMetricsCalculator* m_metricsCalculator;
 
         // Flexible metric set members:
-        bool               m_isOam;
-        bool               m_isFlexible;
-        bool               m_isOpened;
-        CPrototypeManager* m_prototypeManager;
+        TMetricPrototypeManagerType m_prototypeManagerType;
+        bool                        m_isFlexible;
+        bool                        m_isOpened;
+        CPrototypeManager*          m_prototypeManager;
     };
 } // namespace MetricsDiscoveryInternal
