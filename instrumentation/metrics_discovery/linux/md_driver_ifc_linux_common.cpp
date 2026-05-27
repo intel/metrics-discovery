@@ -792,7 +792,16 @@ namespace MetricsDiscoveryInternal
                 uint64_t* actFrequency = ( param == GTDI_DEVICE_PARAM_GPU_CORE_FREQUENCY ) ? &out.ValueUint64 : nullptr;
 
                 ret = GetGpuFrequencyInfo( metricsDevice, minFrequency, maxFrequency, actFrequency, nullptr );
-                MD_CHECK_CC_RET_A( m_adapterId, ret );
+                if( ret == CC_ERROR_FILE_NOT_FOUND )
+                {
+                    // If gpu frequency files are not found, it means that frequency symbols are not supported
+                    out.ValueUint64 = 0;
+                    ret             = CC_ERROR_NOT_SUPPORTED;
+                }
+                else
+                {
+                    MD_CHECK_CC_RET_A( m_adapterId, ret );
+                }
 
                 out.ValueType = GTDI_DEVICE_PARAM_VALUE_TYPE_UINT64;
                 break;
@@ -803,13 +812,27 @@ namespace MetricsDiscoveryInternal
                 uint64_t minFrequencyOverride = 0;
                 uint64_t maxFrequencyOverride = 0;
 
-                ReadSysFsFile( metricsDevice, SYS_FS_MIN_FREQ_OV, &minFrequencyOverride );
-                ReadSysFsFile( metricsDevice, SYS_FS_MAX_FREQ_OV, &maxFrequencyOverride );
+                ret = ReadSysFsFile( metricsDevice, SYS_FS_MIN_FREQ_OV, &minFrequencyOverride );
+                if( ret == CC_OK )
+                {
+                    ret = ReadSysFsFile( metricsDevice, SYS_FS_MAX_FREQ_OV, &maxFrequencyOverride );
+                }
+                if( ret == CC_ERROR_FILE_NOT_FOUND )
+                {
+                    // If override files are not found, it means that frequency override is not supported
+                    out.ValueType   = GTDI_DEVICE_PARAM_VALUE_TYPE_UINT32;
+                    out.ValueUint32 = 0;
+                    ret             = CC_ERROR_NOT_SUPPORTED;
+                }
+                else
+                {
+                    MD_CHECK_CC_RET_A( m_adapterId, ret );
 
-                const bool isFrequencyOverrideEnabled = ( minFrequencyOverride != 0 && maxFrequencyOverride != 0 && minFrequencyOverride == maxFrequencyOverride );
+                    const bool isFrequencyOverrideEnabled = ( minFrequencyOverride != 0 && maxFrequencyOverride != 0 && minFrequencyOverride == maxFrequencyOverride );
 
-                out.ValueType   = GTDI_DEVICE_PARAM_VALUE_TYPE_UINT32;
-                out.ValueUint32 = isFrequencyOverrideEnabled ? 1 : 0;
+                    out.ValueType   = GTDI_DEVICE_PARAM_VALUE_TYPE_UINT32;
+                    out.ValueUint32 = isFrequencyOverrideEnabled ? 1 : 0;
+                }
                 break;
             }
 
