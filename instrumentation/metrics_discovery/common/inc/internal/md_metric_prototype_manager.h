@@ -14,6 +14,7 @@ SPDX-License-Identifier: MIT
 
 #include "md_events.h"
 #include "md_metrics_device.h"
+#include "md_register_manager.h"
 
 #include <vector>
 
@@ -78,20 +79,22 @@ namespace MetricsDiscoveryInternal
         CMetric*                AddMetricToSet( const CMetricPrototype& prototype, const uint32_t metricIndex );
         TCompletionCode         AddEquations( CMetricPrototype& prototype, CMetric& metric, const uint32_t snapshotReportOffset, const uint32_t deltaReportOffset );
         TCompletionCode         AppendNormalizationsAndWorkarounds( CMetricPrototype& prototype, CMetric& metric, std::stringstream& snapshotReportReadEquation, std::stringstream& deltaReportReadEquation );
-        virtual TCompletionCode AppendPesConfiguration( const THwEvent& hwEvent, const uint64_t pesProgramming, std::vector<bool>& pesProgrammed, uint32_t flexProgramming[], uint32_t& snapshotReportOffsets, uint32_t& deltaReportOffsets ) = 0;
-        virtual TCompletionCode AppendFlexConfiguration( const uint32_t flexProgramming[] )                                                                                                                                                   = 0;
-        virtual uint32_t        GetMaxPesCount()                                                                                                                                                                                              = 0;
-        virtual uint32_t        GetGroupMaxSize( const THwEventGroup group )                                                                                                                                                                  = 0;
+        virtual TCompletionCode AppendPesConfiguration( CMetricPrototype& prototype, std::vector<bool>& pesProgrammed, uint32_t flexProgramming[], uint32_t& snapshotReportOffsets, uint32_t& deltaReportOffsets ) = 0;
+        virtual TCompletionCode AppendFlexConfiguration( const uint32_t flexProgramming[] )                                                                                                                        = 0;
+        virtual uint32_t        GetMaxPesCount()                                                                                                                                                                   = 0;
+        virtual uint32_t        GetGroupMaxSize( const THwEventGroup group )                                                                                                                                       = 0;
 
         // Members:
         CMetricsDevice&                m_device;
         CMetricSet&                    m_set;
         const uint32_t                 m_deltaCounterSize;
         const uint32_t                 m_snapshotCounterSize;
+        const uint32_t                 m_pesCountMultiplier;
         THwEventPairVector             m_firstEventGroup;
         THwEventPairVector             m_secondEventGroup;
         THwEventPairVector             m_flexEventGroup;
         std::vector<CMetricPrototype*> m_metricPrototypes;
+        CRegisterManager               m_registerManager;
     };
 
     //////////////////////////////////////////////////////////////////////////////
@@ -120,7 +123,7 @@ namespace MetricsDiscoveryInternal
 
         virtual THwEventGroup GetHwEventGroup( const THwEvent& hwEvent ) final;
 
-        virtual TCompletionCode AppendPesConfiguration( const THwEvent& hwEvent, const uint64_t pesProgramming, std::vector<bool>& pesProgrammed, uint32_t flexProgramming[], uint32_t& snapshotReportOffsets, uint32_t& deltaReportOffsets ) final;
+        virtual TCompletionCode AppendPesConfiguration( CMetricPrototype& prototype, std::vector<bool>& pesProgrammed, uint32_t flexProgramming[], uint32_t& snapshotReportOffsets, uint32_t& deltaReportOffsets ) final;
         virtual TCompletionCode AppendFlexConfiguration( const uint32_t flexProgramming[] ) final;
 
         virtual uint32_t GetMaxPesCount() final;

@@ -232,16 +232,18 @@ typedef enum
     GTDI_IFC_VERSION_3_56    = GTDI_MAKE_IFC_VER( GTDI_IFC_VERSION_3, 56 ), // New device params: compute and copy engines count
     GTDI_IFC_VERSION_3_57    = GTDI_MAKE_IFC_VER( GTDI_IFC_VERSION_3, 57 ), // PTL base support
     GTDI_IFC_VERSION_3_58    = GTDI_MAKE_IFC_VER( GTDI_IFC_VERSION_3, 58 ), // ARL base support
-    GTDI_IFC_VERSION_3_59    = GTDI_MAKE_IFC_VER( GTDI_IFC_VERSION_3, 59 ),
+    GTDI_IFC_VERSION_3_59    = GTDI_MAKE_IFC_VER( GTDI_IFC_VERSION_3, 59 ), // EU Stall Sampling support
     GTDI_IFC_VERSION_3_60    = GTDI_MAKE_IFC_VER( GTDI_IFC_VERSION_3, 60 ), // New device params: L3 Bank, L3 Node and Copy Engine masks
     GTDI_IFC_VERSION_3_61    = GTDI_MAKE_IFC_VER( GTDI_IFC_VERSION_3, 61 ), // EU cores and threads override withdrawal
     GTDI_IFC_VERSION_3_62    = GTDI_MAKE_IFC_VER( GTDI_IFC_VERSION_3, 62 ), // NVL base support
     GTDI_IFC_VERSION_3_63    = GTDI_MAKE_IFC_VER( GTDI_IFC_VERSION_3, 63 ), // New device params: color, depth, geometry pipes count
-    GTDI_IFC_VERSION_3_64    = GTDI_MAKE_IFC_VER( GTDI_IFC_VERSION_3, 64 ),
+    GTDI_IFC_VERSION_3_64    = GTDI_MAKE_IFC_VER( GTDI_IFC_VERSION_3, 64 ), // New device param - GRF blocks count
     GTDI_IFC_VERSION_3_65    = GTDI_MAKE_IFC_VER( GTDI_IFC_VERSION_3, 65 ), // New device param - OA buffers mask
-    GTDI_IFC_VERSION_3_66    = GTDI_MAKE_IFC_VER( GTDI_IFC_VERSION_3, 66 ),
+    GTDI_IFC_VERSION_3_66    = GTDI_MAKE_IFC_VER( GTDI_IFC_VERSION_3, 66 ), // New escape: GTDI_FNC_CHANGE_COUNTER_STREAM_STATE_BY_TYPE
     GTDI_IFC_VERSION_3_67    = GTDI_MAKE_IFC_VER( GTDI_IFC_VERSION_3, 67 ), // New device params: sqidi mask, sqidi max, lnep to cc scaling
-    GTDI_IFC_VERSION_CURRENT = GTDI_IFC_VERSION_3_67,
+    GTDI_IFC_VERSION_3_68    = GTDI_MAKE_IFC_VER( GTDI_IFC_VERSION_3, 68 ),
+    GTDI_IFC_VERSION_3_69    = GTDI_MAKE_IFC_VER( GTDI_IFC_VERSION_3, 69 ), // New escape: GTDI_FNC_CHANGE_EU_STALL_SAMPLING_STREAM_STATE
+    GTDI_IFC_VERSION_CURRENT = GTDI_IFC_VERSION_3_69,
     GTDI_IFC_VERSION_MAX     = 0xFFFFFFFF
 } GTDI_IFC_VERSION;
 
@@ -326,47 +328,52 @@ typedef enum GTDI_RETURN_CODE_ENUM
 typedef enum GTDI_ESCAPE_FUNCTION_ENUM
 {
     // All GenX architectures
-    GTDI_FNC_DEVICE_INFO                  = 0,  // Get device information
-    GTDI_FNC_IGPA_SUPPORT_ENABLE          = 1,  // Initialize drv instrumentation
-    GTDI_FNC_HW_METRICS_ENABLE            = 2,  // Initialize HW metrics support
-    GTDI_FNC_CONNECT                      = 3,  // Connect
-    GTDI_FNC_DISCONNECT                   = 4,  // Disconnect
-    GTDI_FNC_GET_HW_METRIC_SAMPLE         = 5,  // Get HW metrics sample (with optional CHAP reconfiguration) - OBSOLETE FROM GEN6!!!
-    GTDI_FNC_SET_CHAP_CFG                 = 6,  // Set CHAP configuration - OBSOLETE FROM GEN6!!!
-    GTDI_FNC_SET_OVERRIDE_CFG             = 7,  // Enable/disable a particular override
-    GTDI_FNC_DEVICE_INFO_EXT              = 8,  // Get extended device information. Processing may take up to 0.5s.
-    GTDI_FNC_GET_HW_METRIC_SAMPLE_EXT     = 9,  // Get HW metrics sample (with optional CHAP reconfiguration) - OBSOLETE FROM GEN6!!!
-    GTDI_FNC_OVERRIDES_SUPPORT_ENABLE     = 10, // Request Null HW override support for selected context
-    GTDI_FNC_OPEN_COUNTER_STREAM          = 11, // Open UM application stream for reading from (active) OA buffer
-    GTDI_FNC_CLOSE_COUNTER_STREAM         = 12, // Close UM application stream for reading from (active) OA buffer
-    GTDI_FNC_SET_PM_REGS_CFG              = 13, // Set registers for dynamic configuration
-    GTDI_FNC_GET_EU_CORES_INFO            = 14, // GET EU specific information
-    GTDI_FNC_TIMER_MODE_ENABLE            = 15, // Turn timer mode on. Must be called with HardwareAccess flag set to 1.
-    GTDI_FNC_EVENT_MODE_ENABLE            = 16, // obsolete - no longer supported
-    GTDI_FNC_READ_COUNTER_STREAM          = 17, // Request asynchronous read from (active) OA buffer providing UM application buffer to copy data to.
-    GTDI_FNC_SET_KI_QUERY_CFG             = 18, // obsolete - no longer supported
-    GTDI_FNC_SET_KI_BUILD_CFG             = 19, // obsolete - no longer supported
-    GTDI_FNC_SET_OVERRIDE_EU_CFG          = 20, // obsolete - no longer supported
-    GTDI_FNC_SET_WORKAROUNDS              = 21, // Gen7+ Workarounds settings escape
-    GTDI_FNC_SET_KI_QUERY_CFG_EX          = 22, // obsolete - no longer supported
-    GTDI_FNC_SET_KI_BUILD_CFG_EX          = 23, // obsolete - no longer supported
-    GTDI_FNC_SET_KERNEL_DUMP_TYPE         = 24, // obsolete - no longer supported
-    GTDI_FNC_GET_GPU_CPU_TIMESTAMPS       = 25, // Dedicated function for retrieving GPU and CPU timestamps at the same moment
-    GTDI_FNC_GET_KI_BUILD_INFO            = 26, // obsolete - no longer supported
-    GTDI_FNC_GET_ERROR_INFO               = 27, // extended error information
-    GTDI_FNC_DEVICE_INFO_PARAM            = 28, // Get device parameter
-    GTDI_FNC_SET_DEVICE_PARAM             = 29, // Set device parameter
-    GTDI_FNC_READ_REGS_CFG                = 30, // Get current values from specified registers
-    GTDI_FNC_GET_CTX_ID_TAGS              = 31, // NOT AVAILABLE (removed)
-    GTDI_FNC_VALIDATE_PM_REGS_CFG         = 32, // NOT AVAILABLE (removed)
-    GTDI_FNC_DMA_MODE_ENABLE              = 33, // obsolete - no longer supported
-    GTDI_FNC_GET_OVERRIDES_INFO           = 34, // Allows to get the overrides list
-    GTDI_FNC_OPEN_COUNTER_STREAM_BY_TYPE  = 35, // Open UM application stream for reading from OA buffer (identified by its type)
-    GTDI_FNC_CLOSE_COUNTER_STREAM_BY_TYPE = 36, // Close UM application stream for reading from OA buffer (identified by its type)
-    GTDI_FNC_READ_COUNTER_STREAM_BY_TYPE  = 37, // Request asynchronous read from OA buffer (identified by its type) providing UM application buffer to copy data to.
-    GTDI_FNC_SET_PM_REGS_CFG_BY_TYPE      = 38, // Set registers for dynamic configuration to given OA buffer (identified by its type).
-    GTDI_FNC_TIMER_MODE_ENABLE_BY_TYPE    = 39, // Enable timer mode in the given OA buffer (identified by its type)
-    GTDI_FNC_MAX                          = 0xFFFFFFFF
+    GTDI_FNC_DEVICE_INFO                           = 0,  // Get device information
+    GTDI_FNC_IGPA_SUPPORT_ENABLE                   = 1,  // Initialize drv instrumentation
+    GTDI_FNC_HW_METRICS_ENABLE                     = 2,  // Initialize HW metrics support
+    GTDI_FNC_CONNECT                               = 3,  // Connect
+    GTDI_FNC_DISCONNECT                            = 4,  // Disconnect
+    GTDI_FNC_GET_HW_METRIC_SAMPLE                  = 5,  // Get HW metrics sample (with optional CHAP reconfiguration) - OBSOLETE FROM GEN6!!!
+    GTDI_FNC_SET_CHAP_CFG                          = 6,  // Set CHAP configuration - OBSOLETE FROM GEN6!!!
+    GTDI_FNC_SET_OVERRIDE_CFG                      = 7,  // Enable/disable a particular override
+    GTDI_FNC_DEVICE_INFO_EXT                       = 8,  // Get extended device information. Processing may take up to 0.5s.
+    GTDI_FNC_GET_HW_METRIC_SAMPLE_EXT              = 9,  // Get HW metrics sample (with optional CHAP reconfiguration) - OBSOLETE FROM GEN6!!!
+    GTDI_FNC_OVERRIDES_SUPPORT_ENABLE              = 10, // Request Null HW override support for selected context
+    GTDI_FNC_OPEN_COUNTER_STREAM                   = 11, // Open UM application stream for reading from (active) OA buffer
+    GTDI_FNC_CLOSE_COUNTER_STREAM                  = 12, // Close UM application stream for reading from (active) OA buffer
+    GTDI_FNC_SET_PM_REGS_CFG                       = 13, // Set registers for dynamic configuration
+    GTDI_FNC_GET_EU_CORES_INFO                     = 14, // GET EU specific information
+    GTDI_FNC_TIMER_MODE_ENABLE                     = 15, // Turn timer mode on. Must be called with HardwareAccess flag set to 1.
+    GTDI_FNC_EVENT_MODE_ENABLE                     = 16, // obsolete - no longer supported
+    GTDI_FNC_READ_COUNTER_STREAM                   = 17, // Request asynchronous read from (active) OA buffer providing UM application buffer to copy data to.
+    GTDI_FNC_SET_KI_QUERY_CFG                      = 18, // obsolete - no longer supported
+    GTDI_FNC_SET_KI_BUILD_CFG                      = 19, // obsolete - no longer supported
+    GTDI_FNC_SET_OVERRIDE_EU_CFG                   = 20, // obsolete - no longer supported
+    GTDI_FNC_SET_WORKAROUNDS                       = 21, // Gen7+ Workarounds settings escape
+    GTDI_FNC_SET_KI_QUERY_CFG_EX                   = 22, // obsolete - no longer supported
+    GTDI_FNC_SET_KI_BUILD_CFG_EX                   = 23, // obsolete - no longer supported
+    GTDI_FNC_SET_KERNEL_DUMP_TYPE                  = 24, // obsolete - no longer supported
+    GTDI_FNC_GET_GPU_CPU_TIMESTAMPS                = 25, // Dedicated function for retrieving GPU and CPU timestamps at the same moment
+    GTDI_FNC_GET_KI_BUILD_INFO                     = 26, // obsolete - no longer supported
+    GTDI_FNC_GET_ERROR_INFO                        = 27, // extended error information
+    GTDI_FNC_DEVICE_INFO_PARAM                     = 28, // Get device parameter
+    GTDI_FNC_SET_DEVICE_PARAM                      = 29, // Set device parameter
+    GTDI_FNC_READ_REGS_CFG                         = 30, // Get current values from specified registers
+    GTDI_FNC_GET_CTX_ID_TAGS                       = 31, // NOT AVAILABLE (removed)
+    GTDI_FNC_VALIDATE_PM_REGS_CFG                  = 32, // NOT AVAILABLE (removed)
+    GTDI_FNC_DMA_MODE_ENABLE                       = 33, // obsolete - no longer supported
+    GTDI_FNC_GET_OVERRIDES_INFO                    = 34, // Allows to get the overrides list
+    GTDI_FNC_OPEN_COUNTER_STREAM_BY_TYPE           = 35, // Open UM application stream for reading from OA buffer (identified by its type)
+    GTDI_FNC_CLOSE_COUNTER_STREAM_BY_TYPE          = 36, // Close UM application stream for reading from OA buffer (identified by its type)
+    GTDI_FNC_READ_COUNTER_STREAM_BY_TYPE           = 37, // Request asynchronous read from OA buffer (identified by its type) providing UM application buffer to copy data to.
+    GTDI_FNC_SET_PM_REGS_CFG_BY_TYPE               = 38, // Set registers for dynamic configuration to given OA buffer (identified by its type).
+    GTDI_FNC_TIMER_MODE_ENABLE_BY_TYPE             = 39, // Enable timer mode in the given OA buffer (identified by its type)
+    GTDI_FNC_OPEN_EU_STALL_SAMPLING_STREAM         = 40, // Open UM application stream for reading from EU Stall buffers
+    GTDI_FNC_READ_EU_STALL_SAMPLING_STREAM         = 41, // Request asynchronous read from EU Stall buffers providing UM application buffer to copy data to
+    GTDI_FNC_CLOSE_EU_STALL_SAMPLING_STREAM        = 42, // Close UM application stream for reading from EU Stall buffers
+    GTDI_FNC_CHANGE_COUNTER_STREAM_STATE_BY_TYPE   = 43, // Change UM application stream state for reading from OA buffer (identified by its type)
+    GTDI_FNC_CHANGE_EU_STALL_SAMPLING_STREAM_STATE = 44, // Change UM application stream state for reading from EU Stall buffers
+    GTDI_FNC_MAX                                   = 0xFFFFFFFF
 } GTDI_ESCAPE_FUNCTION;
 
 /******************************************************************************/
@@ -511,8 +518,8 @@ typedef enum
 {
     // 0-4 reserved
     GENERATION_HSW = 5,
-    GENERATION_BDW,
-    GENERATION_SKL,
+    GENERATION_BDW = 6,
+    GENERATION_SKL = 7,
     // 8-9 reserved
     GENERATION_BXT = 10,
     // 11 reserved
@@ -539,9 +546,9 @@ typedef enum
     // 33 reserved
     GENERATION_ARL = 34,
     // 35 reserved
-    GENERATION_NVL = 36,
-    // 37 reserved
-    GENERATION_CRI = 38,
+    GENERATION_NVL  = 36,
+    GENERATION_NVLP = 37,
+    GENERATION_CRI  = 38,
     // ...
     // DO NOT CHANGE ORDER OF THIS ENUM, ADD NEW PLATFORMS AT THE END!
     // It has to be synchronized with metric_discovery_internal_api.h file.
@@ -630,7 +637,7 @@ typedef enum GTDI_DEVICE_PARAM_ENUM
     GTDI_DEVICE_PARAM_COLOR_PIPE_TOTAL_COUNT             = 63,
     GTDI_DEVICE_PARAM_DEPTH_PIPE_TOTAL_COUNT             = 64,
     GTDI_DEVICE_PARAM_GEOMETRY_PIPE_TOTAL_COUNT          = 65,
-    // 66 reserved
+    GTDI_DEVICE_PARAM_VECTOR_ENGINE_GRF_BLOCKS_COUNT     = 66,
     GTDI_DEVICE_PARAM_OA_BUFFERS_MASK                    = 67,
     GTDI_DEVICE_PARAM_SQIDI_MASK                         = 68,
     GTDI_DEVICE_PARAM_LNEP_CC_SCALING                    = 69,
@@ -1407,6 +1414,87 @@ typedef struct GTDIReadCounterStreamOutStruct
 } GTDIReadCounterStreamOut;
 
 /******************************************************************************/
+/* GTDI_FNC_OPEN_EU_STALL_SAMPLING_STREAM function structure definitions      */
+/******************************************************************************/
+
+/******************************************************************************/
+/* GTDIOpenEuStallSamplingStreamIn                                            */
+/******************************************************************************/
+typedef struct GTDIOpenEuStallSamplingStreamInStruct
+{
+    GTDI_ESCAPE_FUNCTION Function;
+    uint32_t             SampleRate;
+    uint32_t             MinBufferSize; // In bytes
+} GTDIOpenEuStallSamplingStreamIn;
+
+/******************************************************************************/
+/* GTDIOpenEuStallSamplingStreamOut                                           */
+/******************************************************************************/
+typedef GTDIHeaderOut GTDIOpenEuStallSamplingStreamOut;
+
+/******************************************************************************/
+/* GTDI_FNC_READ_EU_STALL_SAMPLING_STREAM function structure definitions      */
+/******************************************************************************/
+
+/******************************************************************************/
+/* GTDIReadEuStallSamplingStreamIn                                           */
+/******************************************************************************/
+typedef struct GTDIReadEuStallSamplingStreamInStruct
+{
+    GTDI_ESCAPE_FUNCTION Function;
+    uint32_t             BytesToRead;  // Requested data size (in bytes)
+    GTDIByteArray        SubsliceMask; // Select subslices to read data from.
+                                       // One slice has max 8 subslice.
+                                       // If size set to 0, data from all subslices will be gathered.
+    GTDIPointer UmBufferPointer;       // Pointer to user samples buffer (use GTDI_SET_POINTER macro)
+} GTDIReadEuStallSamplingStreamIn;
+
+/******************************************************************************/
+/* GTDIReadEuStallSamplingStreamOut                                           */
+/******************************************************************************/
+typedef struct GTDIReadEuStallSamplingStreamOutStruct
+{
+    GTDI_RETURN_CODE RetCode;
+    uint32_t         BytesWritten;
+} GTDIReadEuStallSamplingStreamOut;
+
+/******************************************************************************/
+/* GTDI_FNC_CLOSE_EU_STALL_SAMPLING_STREAM function structure definitions     */
+/******************************************************************************/
+
+/******************************************************************************/
+/* GTDICloseEuStallSamplingStreamIn                                           */
+/******************************************************************************/
+typedef GTDIHeaderIn GTDICloseEuStallSamplingStreamIn;
+
+/******************************************************************************/
+/* GTDICloseEuStallSamplingStreamOut                                          */
+/******************************************************************************/
+typedef GTDIHeaderOut GTDICloseEuStallSamplingStreamOut;
+
+/******************************************************************************/
+/* GTDI_FNC_CHANGE_EU_STALL_SAMPLING_STREAM_STATE function structure defs     */
+/******************************************************************************/
+/******************************************************************************/
+/* GTDIChangeEuStallSamplingStreamStateInStruct:                              */
+/******************************************************************************/
+typedef struct GTDIChangeEuStallSamplingStreamStateInStruct
+{
+    GTDI_ESCAPE_FUNCTION Function;
+    bool32_t             Enable;     // Enable/disable euss report generation
+    uint32_t             SampleRate; // Report generation period in multiple of 251 cycles (0 = keep current)
+} GTDIChangeEuStallSamplingStreamStateIn;
+
+/******************************************************************************/
+/* GTDIChangeEuStallSamplingStreamStateOut:                                   */
+/******************************************************************************/
+typedef struct GTDIChangeEuStallSamplingStreamStateOutStruct
+{
+    GTDI_RETURN_CODE RetCode;    // Result of the call
+    uint32_t         SampleRate; // Actual rate set in hardware
+} GTDIChangeEuStallSamplingStreamStateOut;
+
+/******************************************************************************/
 /* GTDIReadCounterStreamExceptions                                            */
 /******************************************************************************/
 typedef struct GTDIReadCounterStreamExceptionsStruct
@@ -1483,6 +1571,29 @@ typedef struct GTDICloseCounterStreamByTypeInStruct
 /* GTDICloseCounterStreamByTypeOut                                            */
 /******************************************************************************/
 typedef GTDIHeaderOut GTDICloseCounterStreamByTypeOut;
+
+/******************************************************************************/
+/* GTDI_FNC_CHANGE_COUNTER_STREAM_STATE_BY_TYPE function structure definitions*/
+/******************************************************************************/
+/******************************************************************************/
+/* GTDIChangeCounterStreamStateByTypeIn:                                      */
+/******************************************************************************/
+typedef struct GTDIChangeCounterStreamStateByTypeInStruct
+{
+    GTDI_ESCAPE_FUNCTION Function;
+    bool32_t             Enable;       // Enable/disable timer report generation
+    uint32_t             TimerPeriod;  // Report generation period in nanoseconds (0 = keep current)
+    GTDI_OA_BUFFER_TYPE  OaBufferType; // Target OA buffer type
+} GTDIChangeCounterStreamStateByTypeIn;
+
+/******************************************************************************/
+/* GTDIChangeCounterStreamStateByTypeOut:                                     */
+/******************************************************************************/
+typedef struct GTDIChangeCounterStreamStateByTypeOutStruct
+{
+    GTDI_RETURN_CODE RetCode;     // Result of the call
+    uint32_t         TimerPeriod; // Actual period set in hardware
+} GTDIChangeCounterStreamStateByTypeOut;
 
 /******************************************************************************/
 /* GTDI_FNC_GET_OVERRIDES_INFO function structure definitions                 */

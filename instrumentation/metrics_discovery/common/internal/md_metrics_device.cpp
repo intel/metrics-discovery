@@ -513,23 +513,6 @@ namespace MetricsDiscoveryInternal
             case OVERRIDE_TYPE_FREQUENCY:
                 override = new( std::nothrow ) COverride<OVERRIDE_TYPE_FREQUENCY>( *this );
                 break;
-            case OVERRIDE_TYPE_NULL_HARDWARE:
-                override = new( std::nothrow ) COverride<OVERRIDE_TYPE_NULL_HARDWARE>( *this );
-                break;
-            case OVERRIDE_TYPE_MULTISAMPLED_QUERY:
-                override = new( std::nothrow ) COverride<OVERRIDE_TYPE_MULTISAMPLED_QUERY>( *this );
-                break;
-            case OVERRIDE_TYPE_EXTENDED_QUERY:
-                override = new( std::nothrow ) COverride<OVERRIDE_TYPE_EXTENDED_QUERY>( *this );
-                break;
-            case OVERRIDE_TYPE_FLUSH_GPU_CACHES:
-                override = new( std::nothrow ) COverride<OVERRIDE_TYPE_FLUSH_GPU_CACHES>( *this );
-                break;
-#if defined( _RELEASE_INTERNAL )
-            case OVERRIDE_TYPE_FREQUENCY_CHANGE_REPORTS:
-                override = new( std::nothrow ) COverride<OVERRIDE_TYPE_FREQUENCY_CHANGE_REPORTS>( *this );
-                break;
-#endif
             default:
                 break;
         }
@@ -574,13 +557,6 @@ namespace MetricsDiscoveryInternal
         TCompletionCode ret = CC_OK;
 
         AddOverride( OVERRIDE_TYPE_FREQUENCY );
-        AddOverride( OVERRIDE_TYPE_NULL_HARDWARE );
-        AddOverride( OVERRIDE_TYPE_EXTENDED_QUERY );
-        AddOverride( OVERRIDE_TYPE_MULTISAMPLED_QUERY );
-        AddOverride( OVERRIDE_TYPE_FLUSH_GPU_CACHES );
-#if defined( _RELEASE_INTERNAL )
-        AddOverride( OVERRIDE_TYPE_FREQUENCY_CHANGE_REPORTS );
-#endif
         // ...
 
         return ret;
@@ -1498,16 +1474,16 @@ namespace MetricsDiscoveryInternal
     // Description:
     //     Opens, checks for MDAPI plain text format and loads file with saved
     //     metrics device if the format is valid.
-
     //
     // Input:
-    //     const char* fileName - file name
+    //     const char*    fileName   - file name
+    //     const uint8_t* openParams - device open parameters
     //
     // Output:
-    //     TCompletionCode      - result
+    //     TCompletionCode           - result
     //
     //////////////////////////////////////////////////////////////////////////////
-    TCompletionCode CMetricsDevice::OpenFromFile( const char* fileName )
+    TCompletionCode CMetricsDevice::OpenFromFile( const char* fileName, [[maybe_unused]] const uint8_t* openParams )
     {
         TCompletionCode retVal           = CC_OK;
         FILE*           metricFile       = nullptr;
@@ -1938,6 +1914,7 @@ namespace MetricsDiscoveryInternal
             case GENERATION_LNL:
             case GENERATION_PTL:
             case GENERATION_NVL:
+            case GENERATION_NVLP:
             case GENERATION_CRI:
             {
                 // Ticks masked to 56bit to get sync with report timestamps.

@@ -199,21 +199,27 @@ namespace MetricsDiscoveryInternal
                 case DISAGGREGATION_MODE_XECORE:
                     globalSymbolName = "GtXeCoreMask";
                     break;
+
                 case DISAGGREGATION_MODE_L3BANK:
                     globalSymbolName = "GtL3BankMask";
                     break;
+
                 case DISAGGREGATION_MODE_SLICE:
                     globalSymbolName = "GtSliceMask";
                     break;
+
                 case DISAGGREGATION_MODE_SQIDI:
                     globalSymbolName = "GtSqidiMask";
                     break;
+
                 case DISAGGREGATION_MODE_L3NODE:
                     globalSymbolName = "GtL3NodeMask";
                     break;
+
                 case DISAGGREGATION_MODE_COPYENGINE:
                     globalSymbolName = "GtCopyEngineMask";
                     break;
+
                 default:
                     MD_LOG_A( adapterId, LOG_DEBUG, "ERROR: unknown disaggeragation mode for HW event %s:%d",
                         m_hwEvent.m_name.c_str(), disaggregationMode );
@@ -483,7 +489,7 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     uint32_t CMetricPrototype::GetDisaggregationMask( const uint64_t instance ) const
     {
-        uint32_t disaggregationMode = m_hwEvent.m_archEvent.m_disaggregationMode;
+        const uint32_t disaggregationMode = m_hwEvent.m_archEvent.m_disaggregationMode;
 
         uint32_t disaggregationMask = static_cast<uint32_t>( ( disaggregationMode & 0b111 ) << 16 ); // disaggregation mode 18:16
         disaggregationMask |= ( ( instance & 0b111111 ) << 20 );                                     // disaggregation select 25:20

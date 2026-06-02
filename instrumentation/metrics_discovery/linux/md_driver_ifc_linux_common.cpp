@@ -204,13 +204,17 @@ namespace MetricsDiscoveryInternal
     //     CreateInstance
     //
     // Description:
-    //     Returns instance of CDriverInterface for Linux supporting Perf.
+    //     Returns instance of CDriverInterface for Linux supporting i915/Xe.
+    //
+    // Input:
+    //     CAdapterHandle& adapterHandle - reference to adapter handle for which driver interface should be created
+    //     uint32_t& adapterId           - reference to adapter ID
     //
     // Output:
     //     CDriverInterface* - Pointer to new allocated object of CDriverInterfaceLinuxCommon
     //
     //////////////////////////////////////////////////////////////////////////////
-    CDriverInterface* CDriverInterface::CreateInstance( CAdapterHandle& adapterHandle )
+    CDriverInterface* CDriverInterface::CreateInstance( CAdapterHandle& adapterHandle, uint32_t& adapterId )
     {
         // Initialize DRM.
         CDriverInterface* driverInterface = nullptr;
@@ -235,6 +239,11 @@ namespace MetricsDiscoveryInternal
         if( ( driverInterface != nullptr ) && ( driverInterface->CreateContext() == false ) )
         {
             MD_SAFE_DELETE( driverInterface );
+        }
+
+        if( driverInterface )
+        {
+            adapterId = driverInterface->m_adapterId;
         }
 
         return driverInterface;
@@ -1052,7 +1061,10 @@ namespace MetricsDiscoveryInternal
 
                     if( param == GTDI_DEVICE_PARAM_GEOMETRY_PIPE_TOTAL_COUNT )
                     {
-                        out.ValueUint32 = sliceCount * MD_GEOMETRY_PIPE_PER_SLICE;
+                        const uint32_t geometryPipePerSlice = ( platformId == GENERATION_NVLP )
+                            ? MD_GEOMETRY_PIPE_PER_SLICE_XE3P
+                            : MD_GEOMETRY_PIPE_PER_SLICE;
+                        out.ValueUint32                     = sliceCount * geometryPipePerSlice;
                     }
                     else
                     {
@@ -1064,6 +1076,13 @@ namespace MetricsDiscoveryInternal
 
                 break;
             }
+
+            case GTDI_DEVICE_PARAM_VECTOR_ENGINE_GRF_BLOCKS_COUNT:
+                out.ValueUint32 = ( gfxDeviceInfo->ThreadsPerEu == 8 )
+                    ? MD_GRF_PER_EU_8 / MD_GRF_PER_GRF_BLOCK
+                    : MD_GRF_PER_EU_10 / MD_GRF_PER_GRF_BLOCK;
+                out.ValueType   = GTDI_DEVICE_PARAM_VALUE_TYPE_UINT32;
+                break;
 
             case GTDI_DEVICE_PARAM_MAX_L3_NODE:
                 out.ValueType   = GTDI_DEVICE_PARAM_VALUE_TYPE_UINT32;
@@ -1291,84 +1310,6 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     //
     // Class:
-    //     CDriverInterfaceLinuxCommon
-    //
-    // Method:
-    //     SendGetCtxIdTagsEscape
-    //
-    // Description:
-    //     Sends GetCtxIdTags escape.
-    //     *NOT SUPPORTED ON LINUX*
-    //
-    // Input:
-    //     TGetCtxTagsIdParams* params - params
-    //
-    // Output:
-    //     TCompletionCode             - *CC_OK* means succeess
-    //
-    //////////////////////////////////////////////////////////////////////////////
-    TCompletionCode CDriverInterfaceLinuxCommon::SendGetCtxIdTagsEscape( [[maybe_unused]] TGetCtxTagsIdParams* params )
-    {
-        // Not supported on Linux - returning CC_OK on purpose
-        return CC_ERROR_NOT_SUPPORTED;
-    }
-
-    //////////////////////////////////////////////////////////////////////////////
-    //
-    // Class:
-    //     CDriverInterfaceLinuxCommon
-    //
-    // Method:
-    //     IsOaBufferSupported
-    //
-    // Description:
-    //     Returns information is given oa buffer type is supported.
-    //
-    // Input:
-    //     const GTDI_OA_BUFFER_TYPE oaBufferType  - oa buffer type
-    //     CMetricsDevice&           metricsDevice - metrics device
-    //
-    // Output:
-    //     bool                                    - true if supported
-    //
-    //////////////////////////////////////////////////////////////////////////////
-    bool CDriverInterfaceLinuxCommon::IsOaBufferSupported( const GTDI_OA_BUFFER_TYPE oaBufferType, CMetricsDevice& metricsDevice )
-    {
-        GTDIDeviceInfoParamExtOut out = {};
-        auto                      ret = SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_OA_BUFFERS_COUNT, out, metricsDevice );
-        if( ret != CC_OK )
-        {
-            MD_LOG_A( m_adapterId, LOG_ERROR, "Error: Cannot send GTDI_DEVICE_PARAM_OA_BUFFERS_COUNT escape" );
-            return false;
-        }
-
-        MD_LOG_A( m_adapterId, LOG_INFO, "Oa buffer count: %u", out.ValueUint32 );
-        return static_cast<uint32_t>( oaBufferType ) < out.ValueUint32;
-    }
-
-    //////////////////////////////////////////////////////////////////////////////
-    //
-    // Class:
-    //     CDriverInterfaceLinuxCommon
-    //
-    // Method:
-    //     GetAdapterId
-    //
-    // Description:
-    //     Returns adapter id
-    //
-    // Output:
-    //     uint32_t - adapter id
-    //
-    //////////////////////////////////////////////////////////////////////////////
-    uint32_t CDriverInterfaceLinuxCommon::GetAdapterId()
-    {
-        return m_adapterId;
-    }
-
-    //////////////////////////////////////////////////////////////////////////////
-    //
-    // Class:
     //     CDriverInterface
     //
     // Method:
@@ -1490,96 +1431,6 @@ namespace MetricsDiscoveryInternal
         }
 
         MD_LOG_EXIT_A( adapterId );
-        return CC_OK;
-    }
-
-    //////////////////////////////////////////////////////////////////////////////
-    //
-    // Class:
-    //     CDriverInterfaceLinuxCommon
-    //
-    // Method:
-    //     LockConcurrentGroup
-    //
-    // Description:
-    //     Locks concurrent group of given name. Creates semaphore and waits up to 1s if
-    //     needed.
-    //     ! On Linux name isn't used, only semaphore pointer. !
-    //
-    // Input:
-    //     const char* name        - concurrent group name
-    //     void**      semaphore   - (IN/OUT) pointer to the semaphore
-    //
-    // Output:
-    //     TCompletionCode         - *CC_OK* means succeess
-    //
-    //////////////////////////////////////////////////////////////////////////////
-    TCompletionCode CDriverInterfaceLinuxCommon::LockConcurrentGroup( const char* name, void** semaphore )
-    {
-        MD_CHECK_PTR_RET_A( m_adapterId, semaphore, CC_ERROR_INVALID_PARAMETER );
-
-        TCompletionCode retVal = CC_OK;
-
-        if( *semaphore == nullptr )
-        {
-            if( SemaphoreCreate( name, semaphore, m_adapterId ) != CC_OK )
-            {
-                MD_LOG_A( m_adapterId, LOG_ERROR, "Creating semaphore failed" );
-                return CC_ERROR_GENERAL;
-            }
-        }
-
-        TSemaphoreWaitResult result = SemaphoreWait( 1000L, *semaphore, m_adapterId ); // Wait 1 sec
-        switch( result )
-        {
-            case WAIT_RESULT_SUCCESSFUL: // The semaphore object was signaled
-                retVal = CC_OK;
-                break;
-
-            case WAIT_RESULT_TIMEOUT: // A time-out occurred
-                retVal = CC_CONCURRENT_GROUP_LOCKED;
-                MD_LOG_A( m_adapterId, LOG_DEBUG, "Concurrent group locked" );
-                break;
-
-            default:
-                retVal = CC_ERROR_GENERAL;
-                break;
-        }
-
-        return retVal;
-    }
-
-    //////////////////////////////////////////////////////////////////////////////
-    //
-    // Class:
-    //     CDriverInterfaceLinuxCommon
-    //
-    // Method:
-    //     UnlockConcurrentGroup
-    //
-    // Description:
-    //     Unlocks concurrent group of given name.
-    //     ! On Linux name isn't used, only semaphore pointer. !
-    //
-    // Input:
-    //     const char*     name        - name of the ConcurrentGroup
-    //     void**          semaphore   - (IN/OUT) pointer to the semaphore
-    //
-    // Output:
-    //     TCompletionCode             - *CC_OK* means succeess
-    //
-    //////////////////////////////////////////////////////////////////////////////
-    TCompletionCode CDriverInterfaceLinuxCommon::UnlockConcurrentGroup( [[maybe_unused]] const char* name, void** semaphore )
-    {
-        MD_CHECK_PTR_RET_A( m_adapterId, semaphore, CC_ERROR_INVALID_PARAMETER );
-        MD_CHECK_PTR_RET_A( m_adapterId, *semaphore, CC_ERROR_INVALID_PARAMETER );
-
-        if( SemaphoreRelease( semaphore, m_adapterId ) != CC_OK )
-        {
-            MD_LOG_A( m_adapterId, LOG_ERROR, "ERROR: Releasing semaphore failed" );
-            return CC_ERROR_GENERAL;
-        }
-
         return CC_OK;
     }
 
@@ -1791,6 +1642,40 @@ namespace MetricsDiscoveryInternal
     //     CDriverInterfaceLinuxCommon
     //
     // Method:
+    //     ChangeIoStreamState
+    //
+    // Description:
+    //     Changes Counter Stream (IO Stream) state by enabling or disabling it and
+    //     updating timer period.
+    //
+    // Input:
+    //     COAConcurrentGroup& oaConcurrentGroup - oa concurrent group
+    //     TIoStreamState      state             - IO Stream state to set
+    //     uint32_t&           nsTimerPeriod     - (in/out) requested sampling period time in nanoseconds (currently not supported)
+    //
+    // Output:
+    //     TCompletionCode                       - result of operation (*CC_OK* is OK)
+    //
+    //////////////////////////////////////////////////////////////////////////////
+    TCompletionCode CDriverInterfaceLinuxCommon::ChangeIoStreamState( COAConcurrentGroup& oaConcurrentGroup, TIoStreamState state, [[maybe_unused]] uint32_t& nsTimerPeriod )
+    {
+        const int32_t streamId = oaConcurrentGroup.GetMetricsDevice().GetStreamId();
+
+        if( streamId < 0 )
+        {
+            MD_LOG_A( m_adapterId, LOG_WARNING, "Stream not opened" );
+            return CC_ERROR_FILE_NOT_FOUND;
+        }
+
+        return ChangeIoStreamState( streamId, state );
+    }
+
+    //////////////////////////////////////////////////////////////////////////////
+    //
+    // Class:
+    //     CDriverInterfaceLinuxCommon
+    //
+    // Method:
     //     HandleIoStreamExceptions
     //
     // Description:
@@ -1842,6 +1727,7 @@ namespace MetricsDiscoveryInternal
 
         return WaitForOaStreamReports( oaConcurrentGroup.GetMetricsDevice(), milliseconds );
     }
+
     //////////////////////////////////////////////////////////////////////////////
     //
     // Class:
@@ -1999,29 +1885,6 @@ namespace MetricsDiscoveryInternal
     //     CDriverInterfaceLinuxCommon
     //
     // Method:
-    //     SetFreqChangeReportsOverride
-    //
-    // Description:
-    //     Allows to toggle frequency change reports.
-    //
-    // Input:
-    //     bool enable     - true to enable, false to disable
-    //
-    // Output:
-    //     TCompletionCode - result, *CC_OK* means success
-    //
-    //////////////////////////////////////////////////////////////////////////////
-    TCompletionCode CDriverInterfaceLinuxCommon::SetFreqChangeReportsOverride( [[maybe_unused]] bool enable )
-    {
-        return CC_ERROR_NOT_SUPPORTED;
-    }
-
-    //////////////////////////////////////////////////////////////////////////////
-    //
-    // Class:
-    //     CDriverInterfaceLinuxCommon
-    //
-    // Method:
     //     IsOverrideAvailable
     //
     // Description:
@@ -2059,31 +1922,6 @@ namespace MetricsDiscoveryInternal
     {
         // Only OAG query is supported on Linux.
         return QUERY_MODE_GLOBAL;
-    }
-
-    //////////////////////////////////////////////////////////////////////////////
-    //
-    // Class:
-    //     CDriverInterfaceLinuxCommon
-    //
-    // Method:
-    //     SetQueryOverride
-    //
-    // Description:
-    //     Enables/disables multisampled/extended query mode using escape code.
-    //
-    // Input:
-    //     TOverrideType                        overrideType   - override type: extended/multisampled
-    //     uint32_t                             oaBufferSize   - default Oa buffer size
-    //     const TSetQueryOverrideParams_1_2&   params         - query override params
-    //
-    // Output:
-    //     TCompletionCode                                     - *CC_OK* means success
-    //
-    //////////////////////////////////////////////////////////////////////////////
-    TCompletionCode CDriverInterfaceLinuxCommon::SetQueryOverride( [[maybe_unused]] TOverrideType overrideType, [[maybe_unused]] uint32_t oaBufferSize, [[maybe_unused]] const TSetQueryOverrideParams_1_2& params )
-    {
-        return CC_ERROR_NOT_SUPPORTED;
     }
 
     //////////////////////////////////////////////////////////////////////////////
@@ -3146,6 +2984,18 @@ namespace MetricsDiscoveryInternal
                         return 0;
                 }
 
+            case GENERATION_NVLP:
+                switch( gfxDeviceInfo->PlatformVersion )
+                {
+                    case 1:
+                        return MD_MAX_SLICE_NVLP;
+
+                    default:
+                        // Unsupported NVLP device id
+                        MD_ASSERT_A( m_adapterId, false );
+                        return 0;
+                }
+
             default:
                 // Return the legacy value for pre-Xe2 platforms.
                 return MD_MAX_SLICE;
@@ -3217,6 +3067,18 @@ namespace MetricsDiscoveryInternal
 
                     default:
                         // Unsupported NVL device id
+                        MD_ASSERT_A( m_adapterId, false );
+                        return 0;
+                }
+
+            case GENERATION_NVLP:
+                switch( gfxDeviceInfo->PlatformVersion )
+                {
+                    case 1:
+                        return MD_SUBSLICE_PER_SLICE_NVLP;
+
+                    default:
+                        // Unsupported NVLP device id
                         MD_ASSERT_A( m_adapterId, false );
                         return 0;
                 }
@@ -3353,6 +3215,18 @@ namespace MetricsDiscoveryInternal
                         return 0;
                 }
 
+            case GENERATION_NVLP:
+                switch( gfxDeviceInfo->PlatformVersion )
+                {
+                    case 1:
+                        return MD_MAX_L3_NODE_NVLP;
+
+                    default:
+                        // Unsupported NVLP device id
+                        MD_ASSERT_A( m_adapterId, false );
+                        return 0;
+                }
+
             default:
                 // Return 0 for pre-Xe2 platforms as unsupported
                 return 0;
@@ -3410,6 +3284,18 @@ namespace MetricsDiscoveryInternal
 
             case GENERATION_CRI:
                 return MD_MAX_L3_BANK_PER_L3_NODE_CRI;
+
+            case GENERATION_NVLP:
+                switch( gfxDeviceInfo->PlatformVersion )
+                {
+                    case 1:
+                        return MD_MAX_L3_BANK_PER_L3_NODE_NVLP;
+
+                    default:
+                        // Unsupported NVLP device id
+                        MD_ASSERT_A( m_adapterId, false );
+                        return 0;
+                }
 
             default:
                 // Return 0 for pre-Xe2 platforms as unsupported.

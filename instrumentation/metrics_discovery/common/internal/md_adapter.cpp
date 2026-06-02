@@ -480,6 +480,31 @@ namespace MetricsDiscoveryInternal
     //     CAdapter
     //
     // Method:
+    //     OpenMetricsDevice
+    //
+    // Description:
+    //     Opens metrics device or retrieves an instance opened before. Only one
+    //     instance per adapter may exist. All OpenMetricsDevice() calls are
+    //     reference counted.
+    //
+    // Input:
+    //     IMetricsDevice_1_15** metricsDevice - [out] created / retrieved metrics device
+    //
+    // Output:
+    //     TCompletionCode                     - CC_OK or CC_ALREADY_INITIALIZED means success
+    //
+    //////////////////////////////////////////////////////////////////////////////
+    TCompletionCode CAdapter::OpenMetricsDevice( IMetricsDevice_1_15** metricsDevice )
+    {
+        return OpenMetricsDeviceByIndex( reinterpret_cast<CMetricsDevice**>( metricsDevice ), MD_ROOT_DEVICE_INDEX );
+    }
+
+    //////////////////////////////////////////////////////////////////////////////
+    //
+    // Class:
+    //     CAdapter
+    //
+    // Method:
     //     OpenMetricsDeviceFromFileByIndex
     //
     // Description:
@@ -497,7 +522,7 @@ namespace MetricsDiscoveryInternal
     //     TCompletionCode                       - CC_OK or CC_ALREADY_INITIALIZED means success
     //
     //////////////////////////////////////////////////////////////////////////////
-    TCompletionCode CAdapter::OpenMetricsDeviceFromFileByIndex( const char* fileName, [[maybe_unused]] void* openParams, CMetricsDevice** metricsDevice, const uint32_t subDeviceIndex )
+    TCompletionCode CAdapter::OpenMetricsDeviceFromFileByIndex( const char* fileName, void* openParams, CMetricsDevice** metricsDevice, const uint32_t subDeviceIndex )
     {
         MD_LOG_ENTER_A( m_adapterId );
         MD_CHECK_PTR_RET_A( m_adapterId, fileName, CC_ERROR_INVALID_PARAMETER );
@@ -531,7 +556,7 @@ namespace MetricsDiscoveryInternal
             }
             else
             {
-                retVal = device->OpenFromFile( fileName );
+                retVal = device->OpenFromFile( fileName, (uint8_t*) openParams );
                 if( retVal == CC_OK )
                 {
                     *metricsDevice = device;
@@ -661,6 +686,33 @@ namespace MetricsDiscoveryInternal
     //
     //////////////////////////////////////////////////////////////////////////////
     TCompletionCode CAdapter::OpenMetricsDeviceFromFile( const char* fileName, void* openParams, IMetricsDevice_1_13** metricsDevice )
+    {
+        return OpenMetricsDeviceFromFileByIndex( fileName, openParams, reinterpret_cast<CMetricsDevice**>( metricsDevice ), MD_ROOT_DEVICE_INDEX );
+    }
+
+    //////////////////////////////////////////////////////////////////////////////
+    //
+    // Class:
+    //     CAdapter
+    //
+    // Method:
+    //     OpenMetricsDeviceFromFile
+    //
+    // Description:
+    //     Opens metrics device or uses an instance opened before (just like OpenMetricsDevice),
+    //     then loads custom metric sets / metrics from a file and merged them into the 'standard'
+    //     metrics device.
+    //
+    // Input:
+    //     const char*           fileName       - custom metric file
+    //     void*                 openParams     - open params
+    //     IMetricsDevice_1_15** metricsDevice  - [out] created / retrieved metrics device
+    //
+    // Output:
+    //     TCompletionCode                      - CC_OK or CC_ALREADY_INITIALIZED means success
+    //
+    //////////////////////////////////////////////////////////////////////////////
+    TCompletionCode CAdapter::OpenMetricsDeviceFromFile( const char* fileName, void* openParams, IMetricsDevice_1_15** metricsDevice )
     {
         return OpenMetricsDeviceFromFileByIndex( fileName, openParams, reinterpret_cast<CMetricsDevice**>( metricsDevice ), MD_ROOT_DEVICE_INDEX );
     }
@@ -822,6 +874,30 @@ namespace MetricsDiscoveryInternal
     //
     //////////////////////////////////////////////////////////////////////////////
     TCompletionCode CAdapter::OpenMetricsSubDevice( const uint32_t subDeviceIndex, IMetricsDevice_1_13** metricsDevice )
+    {
+        return OpenMetricsSubDevice( subDeviceIndex, reinterpret_cast<CMetricsDevice**>( metricsDevice ) );
+    }
+
+    //////////////////////////////////////////////////////////////////////////////
+    //
+    // Class:
+    //     CAdapter
+    //
+    // Method:
+    //     OpenMetricsSubDevice
+    //
+    // Description:
+    //     Opens metrics sub device or retrieves an instance opened before.
+    //
+    // Input:
+    //     const uint32_t          subDeviceIndex - sub device index to create
+    //     IMetricsDevice_1_15**   metricsDevice  - [out] created / retrieved metrics sub device
+    //
+    // Output:
+    //     TCompletionCode                        - CC_OK or CC_ALREADY_INITIALIZED means success
+    //
+    //////////////////////////////////////////////////////////////////////////////
+    TCompletionCode CAdapter::OpenMetricsSubDevice( const uint32_t subDeviceIndex, IMetricsDevice_1_15** metricsDevice )
     {
         return OpenMetricsSubDevice( subDeviceIndex, reinterpret_cast<CMetricsDevice**>( metricsDevice ) );
     }
@@ -1004,6 +1080,34 @@ namespace MetricsDiscoveryInternal
     //
     //////////////////////////////////////////////////////////////////////////////
     TCompletionCode CAdapter::OpenMetricsSubDeviceFromFile( const uint32_t subDeviceIndex, const char* fileName, void* openParams, IMetricsDevice_1_13** metricsDevice )
+    {
+        return OpenMetricsSubDeviceFromFile( subDeviceIndex, fileName, openParams, reinterpret_cast<CMetricsDevice**>( metricsDevice ) );
+    }
+
+    //////////////////////////////////////////////////////////////////////////////
+    //
+    // Class:
+    //     CAdapter
+    //
+    // Method:
+    //     OpenMetricsSubDeviceFromFile
+    //
+    // Description:
+    //     Opens metrics device or uses an instance opened before (just like OpenMetricsDevice),
+    //     then loads custom metric sets / metrics from a file and merged them into the 'standard'
+    //     metrics device.
+    //
+    // Input:
+    //     const uint32_t             subDeviceIndex  - sub device index to create
+    //     const char*                fileName        - custom metric file
+    //     void*                      openParams      - open params
+    //     IMetricsDevice_1_15**      metricsDevice   - [out] created / retrieved metrics device
+    //
+    // Output:
+    //     TCompletionCode                            - CC_OK or CC_ALREADY_INITIALIZED means success
+    //
+    //////////////////////////////////////////////////////////////////////////////
+    TCompletionCode CAdapter::OpenMetricsSubDeviceFromFile( const uint32_t subDeviceIndex, const char* fileName, void* openParams, IMetricsDevice_1_15** metricsDevice )
     {
         return OpenMetricsSubDeviceFromFile( subDeviceIndex, fileName, openParams, reinterpret_cast<CMetricsDevice**>( metricsDevice ) );
     }
@@ -1274,17 +1378,10 @@ namespace MetricsDiscoveryInternal
 
         if( !m_driverInterface )
         {
-            m_driverInterface = CDriverInterface::CreateInstance( *m_adapterHandle );
+            m_driverInterface = CDriverInterface::CreateInstance( *m_adapterHandle, m_adapterId );
         }
 
-        if( m_driverInterface )
-        {
-            m_adapterId = m_driverInterface->GetAdapterId();
-            return CC_OK;
-        }
-
-        m_adapterId = IU_ADAPTER_ID_UNKNOWN;
-        return CC_ERROR_NOT_SUPPORTED;
+        return m_driverInterface ? CC_OK : CC_ERROR_NOT_SUPPORTED;
     }
 
     //////////////////////////////////////////////////////////////////////////////

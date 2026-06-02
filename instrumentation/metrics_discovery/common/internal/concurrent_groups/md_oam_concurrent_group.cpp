@@ -87,6 +87,7 @@ namespace MetricsDiscoveryInternal
             case GENERATION_LNL:
             case GENERATION_PTL:
             case GENERATION_NVL:
+            case GENERATION_NVLP:
             case GENERATION_CRI:
             {
                 snapshotReportSize = 192;

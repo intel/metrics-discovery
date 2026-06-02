@@ -36,6 +36,10 @@ namespace MetricsDiscoveryInternal
     class COAConcurrentGroup : public CConcurrentGroup
     {
     public:
+        // API 1.15:
+        virtual TCompletionCode OpenIoStream( IMetricSet_1_13* metricSet, uint32_t processId, uint32_t* nsTimerPeriod, uint32_t* oaBufferSize, TIoStreamState state ) final;
+        virtual TCompletionCode ChangeIoStreamState( TIoStreamState state, uint32_t* nsTimerPeriod ) final;
+
         // API 1.13:
         virtual IMetricEnumerator_1_13* GetMetricEnumerator( void ) override;
         virtual IMetricEnumerator_1_13* GetMetricEnumeratorFromFile( const char* fileName ) final;
@@ -77,7 +81,8 @@ namespace MetricsDiscoveryInternal
         // Constructor:
         COAConcurrentGroup( CMetricsDevice& device, const char* name, const char* description, const uint32_t measurementTypeMask, const TStreamType streamType, const GTDI_OA_BUFFER_TYPE oaBufferType );
 
-        TCompletionCode OpenIoStream( CMetricSet* metricSet, uint32_t processId, uint32_t* nsTimerPeriod, uint32_t* oaBufferSize );
+        TCompletionCode OpenIoStream( CMetricSet* metricSet, uint32_t processId, uint32_t* nsTimerPeriod, uint32_t* oaBufferSize, TIoStreamState state );
+
         TCompletionCode RemoveMetricSetInternal( CMetricSet* metricSet );
 
         TCompletionCode SetIoMetricSet( IMetricSet_1_0* metricSet );

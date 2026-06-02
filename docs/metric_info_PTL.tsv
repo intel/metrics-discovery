@@ -373,8 +373,8 @@ VectorEngineProfile	XVE_INST_EXECUTED_INT16	XVE Inst Executed Int16	Vector Engin
 VectorEngineProfile	XVE_INST_EXECUTED_INT32	XVE Inst Executed Int32	Vector Engine	Number of execution slots taken by INT32 ALU instructions
 VectorEngineProfile	XVE_INST_EXECUTED_INT64	XVE Inst Executed Int64	Vector Engine	Number of execution slots taken by INT64 instructions
 VectorEngineProfile	XVE_INST_EXECUTED_MATH	XVE Inst Executed Math	Vector Engine	Number of execution slots taken by extended math instructions
-VectorEngineProfile	XVE_INST_EXECUTED_NONDIVERGENT	XVE Inst Executed Nondivergent	Vector Engine	Number of non-divergent instructions (not execution slots) executed
-VectorEngineProfile	XVE_INST_EXECUTED_PREDICATION	XVE Inst Executed Predication	Vector Engine	Number of instructions (not execution slots) executed with predication mask enabled
+VectorEngineProfile	XVE_INST_EXECUTED_NONDIVERGENT	XVE Inst Executed Nondivergent	Vector Engine	Number of non-divergent instructions (not execution slots) issued
+VectorEngineProfile	XVE_INST_EXECUTED_PREDICATION	XVE Inst Executed Predication	Vector Engine	Number of instructions (not execution slots) issued with predication mask enabled
 VectorEngineProfile	XVE_INST_EXECUTED_SEND_ALL	XVE Inst Executed Send All	Vector Engine	Number of instruction (GRF or SRF) dispatches executed by ALL threads on SEND Pipe
 VectorEngineProfile	XVE_INST_EXECUTED_XMX_BF16	XVE Inst Executed XMX Bf16	Vector Engine	Number of execution slots taken by BF16 XMX instructions
 VectorEngineProfile	XVE_INST_EXECUTED_XMX_FP16	XVE Inst Executed XMX Fp16	Vector Engine	Number of execution slots taken by FP16 XMX instructions
@@ -532,7 +532,7 @@ TestOa	TEST_EVENT1_CYCLES_XECORE8	Test Event1 Cycles Xecore8	Test	Number of GPU 
 TestOa	TEST_EVENT1_CYCLES_XECORE9	Test Event1 Cycles Xecore9	Test	Number of GPU (gt) clock cycles at every clock period (XECORE9)
 TestOa	TEST_EVENT1_CYCLES_XECORE10	Test Event1 Cycles Xecore10	Test	Number of GPU (gt) clock cycles at every clock period (XECORE10)
 TestOa	TEST_EVENT1_CYCLES_XECORE11	Test Event1 Cycles Xecore11	Test	Number of GPU (gt) clock cycles at every clock period (XECORE11)
-TestOa	TEST_EVENT1_CYCLES_AVERAGE	Test Event1 Cycles Average	Test	Average number of GPU (gt) clock cycles at every clock period
+TestOa	TEST_EVENT1_CYCLES_AVERAGE	Test Event1 Cycles Average	Test	Average number of GPU (gt) clock cycles at every clock period (per instance)
 TestOa	TEST_EVENT2	Test Event2	Test	Number of GPU (gt) clock cycles at every other clock period
 TestOa	TEST_EVENT2_CYCLES	Test Event2 Cycles	Test	Number of GPU (gt) clock cycles at every other clock period
 MediaSet1	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.

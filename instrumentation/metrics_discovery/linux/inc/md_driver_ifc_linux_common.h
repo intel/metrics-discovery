@@ -52,6 +52,10 @@ SPDX-License-Identifier: MIT
 #define MD_ZPIXEL_GEOM_PIPE_PER_SLICE_1_2   ( 1 )
 #define MD_ZPIXEL_PIPE_PER_SLICE            ( 2 )
 #define MD_GEOMETRY_PIPE_PER_SLICE          ( 1 )
+#define MD_GEOMETRY_PIPE_PER_SLICE_XE3P     ( 2 )
+#define MD_GRF_PER_GRF_BLOCK                ( 32 )   // Each GRF block has 32 GRFs
+#define MD_GRF_PER_EU_8                     ( 2048 ) // EU with 8 threads has 2048 GRFs
+#define MD_GRF_PER_EU_10                    ( 1024 ) // EU with 10 threads has 1024 GRFs
 
 //////////////////////////////////////////////////////////////////////////////
 //
@@ -68,6 +72,7 @@ SPDX-License-Identifier: MIT
 #define MD_MAX_L3_BANK_PER_L3_NODE_XE2   4  // Currently Xe2 value
 #define MD_MAX_L3_BANK_PER_L3_NODE_NVL_S 2  // Currently NVL-S
 #define MD_MAX_L3_BANK_PER_L3_NODE_NVL_U 4  // Currently NVL-U
+#define MD_MAX_L3_BANK_PER_L3_NODE_NVLP  4  // Currently NVLP
 #define MD_MAX_L3_BANK_PER_L3_NODE_CRI   4  // Currently CRI
 #define MD_MAX_L3_NODE_PER_COPY_ENGINE   2  // Currently max value
 #define MD_DUALSUBSLICE_PER_SLICE        4  // Current value
@@ -75,6 +80,7 @@ SPDX-License-Identifier: MIT
 #define MD_SUBSLICE_PER_SLICE_XE3        6  // Current Xe3 value
 #define MD_SUBSLICE_PER_SLICE_NVL_S      2  // Currently NVL-S
 #define MD_SUBSLICE_PER_SLICE_NVL_U      4  // Currently NVL-U
+#define MD_SUBSLICE_PER_SLICE_NVLP       6  // Currently NVLP
 #define MD_SUBSLICE_PER_SLICE_CRI        8  // Currently CRI
 #define MD_MAX_SLICE_BMG_VER_2           5  // Currently BMG (ver.2) value
 #define MD_MAX_SLICE_BMG_VER_3           8  // Currently BMG (ver.3) value
@@ -83,6 +89,7 @@ SPDX-License-Identifier: MIT
 #define MD_MAX_SLICE_PTL_U               1  // Currently PTL-U
 #define MD_MAX_SLICE_NVL_S               1  // Currently NVL-S
 #define MD_MAX_SLICE_NVL_U               1  // Currently NVL-U
+#define MD_MAX_SLICE_NVLP                2  // Currently NVLP
 #define MD_MAX_SLICE_CRI                 4  // Currently CRI
 #define MD_MAX_L3_NODE_BMG_VER_2         6  // Currently BMG (ver.2) value
 #define MD_MAX_L3_NODE_BMG_VER_3         8  // Currently BMG (ver.3) value
@@ -91,6 +98,7 @@ SPDX-License-Identifier: MIT
 #define MD_MAX_L3_NODE_PTL_U             1  // Currently PTL-U
 #define MD_MAX_L3_NODE_NVL_S             1  // Currently NVL-S
 #define MD_MAX_L3_NODE_NVL_U             1  // Currently NVL-U
+#define MD_MAX_L3_NODE_NVLP              2  // Currently NVLP
 #define MD_MAX_L3_NODE_CRI               8  // Currently CRI
 
 //////////////////////////////////////////////////////////////////////////////
@@ -318,19 +326,13 @@ namespace MetricsDiscoveryInternal
         virtual TCompletionCode ValidatePmRegsConfig( TRegister* regVector, uint32_t regCount, uint32_t platformId ) final;
         virtual TCompletionCode GetGpuCpuTimestamps( CMetricsDevice& device, uint64_t& gpuTimestamp, uint64_t& cpuTimestamp, uint32_t& cpuId, uint64_t& correlationIndicator ) = 0;
         virtual bool            IsTbsEngineValid( const TEngineParamsLatest& engineParams, const uint32_t requestedInstance = -1, const bool isOam = false ) const             = 0;
-        virtual TCompletionCode SendGetCtxIdTagsEscape( TGetCtxTagsIdParams* params ) final;
-        virtual uint32_t        GetAdapterId() final;
-        virtual bool            IsOaBufferSupported( const GTDI_OA_BUFFER_TYPE oaBufferType, CMetricsDevice& metricsDevice ) final;
         TCompletionCode         GetOaTimestamp( const uint64_t csTimestamp, uint64_t& oaTimestamp );
-
-        // Synchronization
-        virtual TCompletionCode LockConcurrentGroup( const char* name, void** semaphore ) final;
-        virtual TCompletionCode UnlockConcurrentGroup( const char* name, void** semaphore ) final;
 
         // Stream
         virtual TCompletionCode OpenIoStream( COAConcurrentGroup& oaConcurrentGroup, const uint32_t processId, uint32_t& nsTimerPeriod, uint32_t& bufferSize ) final;
         virtual TCompletionCode ReadIoStream( COAConcurrentGroup& oaConcurrentGroup, char* reportData, uint32_t& reportsCount, uint32_t& frequency, GTDIReadCounterStreamExceptions& exceptions ) final;
         virtual TCompletionCode CloseIoStream( COAConcurrentGroup& oaConcurrentGroup ) final;
+        virtual TCompletionCode ChangeIoStreamState( COAConcurrentGroup& oaConcurrentGroup, TIoStreamState state, uint32_t& nsTimerPeriod ) final;
         virtual TCompletionCode HandleIoStreamExceptions( COAConcurrentGroup& oaConcurrentGroup, const uint32_t processId, uint32_t& reportCount, const GTDIReadCounterStreamExceptions exceptions ) final;
         virtual TCompletionCode WaitForIoStreamReports( COAConcurrentGroup& oaConcurrentGroup, const uint32_t milliseconds ) final;
         virtual bool            IsIoMeasurementInfoAvailable( const TIoMeasurementInfoType ioMeasurementInfoType ) final;
@@ -338,8 +340,6 @@ namespace MetricsDiscoveryInternal
 
         // Overrides
         virtual TCompletionCode SetFrequencyOverride( CMetricsDevice& device, const TSetFrequencyOverrideParams_1_2& params ) final;
-        virtual TCompletionCode SetQueryOverride( TOverrideType overrideType, uint32_t oaBufferSize, const TSetQueryOverrideParams_1_2& params ) final;
-        virtual TCompletionCode SetFreqChangeReportsOverride( bool enable ) final;
         virtual bool            IsOverrideAvailable( TOverrideType overrideType ) final;
         virtual bool            IsSubDeviceSupported()                         = 0;
         virtual TCompletionCode EnumerateSubDevices( CSubDevices& subDevices ) = 0;
@@ -355,6 +355,7 @@ namespace MetricsDiscoveryInternal
         virtual TCompletionCode ReadOaStream( CMetricsDevice& metricsDevice, uint32_t reportSize, uint32_t reportsToRead, char* reportData, uint32_t& readBytes, GTDIReadCounterStreamExceptions& exceptions )                                 = 0;
         TCompletionCode         CloseOaStream( CMetricsDevice& metricsDevice );
         TCompletionCode         WaitForOaStreamReports( CMetricsDevice& metricsDevice, uint32_t timeoutMs );
+        virtual TCompletionCode ChangeIoStreamState( const int32_t streamId, const TIoStreamState state ) = 0;
         std::string             GenerateQueryGuid( const uint32_t subDeviceIndex, const TReportType reportType );
         virtual TCompletionCode AddOaConfig( TRegister** regVector, const uint32_t regCount, const uint32_t subDeviceIndex, const char* requestedGuid, int32_t& addedConfigId ) = 0;
         virtual TCompletionCode RemoveOaConfig( int32_t oaConfigId )                                                                                                            = 0;

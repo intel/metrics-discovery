@@ -5391,7 +5391,7 @@ namespace MetricsDiscoveryInternal::MetricSets_NVL_OA
         metric->SetQueryModeMask( QUERY_MODE_MASK_RENDER | QUERY_MODE_MASK_COMPUTE | QUERY_MODE_MASK_GLOBAL | QUERY_MODE_MASK_GLOBAL_EXTENDED );
 
         metric = AddMetric( "XVE_INST_EXECUTED_NONDIVERGENT", "XVE Inst Executed Nondivergent",
-            "Number of non-divergent instructions (not execution slots) executed",
+            "Number of non-divergent instructions (not execution slots) issued",
             "Vector Engine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "events", 0, 0, HW_UNIT_GPU, nullptr, nullptr, nullptr, 26 );
         MD_CHECK_PTR( metric );
@@ -5401,7 +5401,7 @@ namespace MetricsDiscoveryInternal::MetricSets_NVL_OA
         metric->SetQueryModeMask( QUERY_MODE_MASK_RENDER | QUERY_MODE_MASK_COMPUTE | QUERY_MODE_MASK_GLOBAL | QUERY_MODE_MASK_GLOBAL_EXTENDED );
 
         metric = AddMetric( "XVE_INST_EXECUTED_PREDICATION", "XVE Inst Executed Predication",
-            "Number of instructions (not execution slots) executed with predication mask enabled",
+            "Number of instructions (not execution slots) issued with predication mask enabled",
             "Vector Engine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "events", 0, 0, HW_UNIT_GPU, nullptr, nullptr, nullptr, 27 );
         MD_CHECK_PTR( metric );
@@ -7482,7 +7482,7 @@ namespace MetricsDiscoveryInternal::MetricSets_NVL_OA
         metric->SetQueryModeMask( QUERY_MODE_MASK_RENDER | QUERY_MODE_MASK_COMPUTE | QUERY_MODE_MASK_GLOBAL | QUERY_MODE_MASK_GLOBAL_EXTENDED );
 
         metric = AddMetric( "TEST_EVENT1_CYCLES_AVERAGE", "Test Event1 Cycles Average",
-            "Average number of GPU (gt) clock cycles at every clock period",
+            "Average number of GPU (gt) clock cycles at every clock period (per instance)",
             "Test", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "cycles", 0, 0, HW_UNIT_GPU, nullptr, nullptr, nullptr, 15 );
         MD_CHECK_PTR( metric );

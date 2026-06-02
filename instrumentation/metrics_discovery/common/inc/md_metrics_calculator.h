@@ -115,33 +115,28 @@ namespace MetricsDiscoveryInternal
             , m_savedReportPresent( false )
             , m_multipleSymbols( false )
         {
-            constexpr size_t                                                                acceptableSymbolsSize = 25;
-            constexpr std::array<std::pair<const char*, const bool>, acceptableSymbolsSize> acceptableSymbols     = {
+            constexpr size_t acceptableSymbolsSize = 19;
+
+            constexpr std::array<std::pair<const char*, const bool>, acceptableSymbolsSize> acceptableSymbols = {
                 { { "EuCoresTotalCount", true },
-                        { "EuDualSubslicesTotalCount", true },
-                        { "EuThreadsCount", true },
-                        { "GpuMaxFrequencyMHz", false },
-                        { "GpuTimestampFrequency", false },
-                        { "VectorEngineTotalCount", true },
-                        { "VectorEnginePerXeCoreCount", true },
-                        { "XeCoreTotalCount", true },
-                        { "SliceTotalCount", true },
-                        { "VectorEngineThreadsCount", true },
-                        { "L3BankTotalCount", true },
-                        { "L3NodeTotalCount", true },
-                        { "SqidiTotalCount", true },
-                        { "ComputeEngineTotalCount", true },
-                        { "CopyEngineTotalCount", true },
-                        { "ColorPipeTotalCount", true },
-                        { "DepthPipeTotalCount", true },
-                        { "GeometryPipeTotalCount", true },
-                        { "VectorEngineGrfBlocksCount", true },
-                        { "SliceMaxCount", true },
-                        { "XeCoreMaxCount", true },
-                        { "L3BankMaxCount", true },
-                        { "L3NodeMaxCount", true },
-                        { "SqidiMaxCount", true },
-                        { "CopyEngineMaxCount", true } }
+                    { "EuDualSubslicesTotalCount", true },
+                    { "EuThreadsCount", true },
+                    { "GpuMaxFrequencyMHz", false },
+                    { "GpuTimestampFrequency", false },
+                    { "VectorEngineTotalCount", true },
+                    { "VectorEnginePerXeCoreCount", true },
+                    { "XeCoreTotalCount", true },
+                    { "SliceTotalCount", true },
+                    { "VectorEngineThreadsCount", true },
+                    { "L3BankTotalCount", true },
+                    { "L3NodeTotalCount", true },
+                    { "SqidiTotalCount", true },
+                    { "ComputeEngineTotalCount", true },
+                    { "CopyEngineTotalCount", true },
+                    { "ColorPipeTotalCount", true },
+                    { "DepthPipeTotalCount", true },
+                    { "GeometryPipeTotalCount", true },
+                    { "VectorEngineGrfBlocksCount", true } }
             };
 
             // Build global symbol map for all devices
@@ -688,6 +683,7 @@ namespace MetricsDiscoveryInternal
         //
         // Description:
         //     Calculates IoMeasurementInformation obtained on every ReadIoStream.
+        //     Runtime calculation is applied. There is no metric set specific.
         //
         // Input:
         //     IConcurrentGroup_1_1& concurrentGroup - concurrentGroup which was used during ReadIoStream
@@ -1168,6 +1164,7 @@ namespace MetricsDiscoveryInternal
                         case GENERATION_LNL:
                         case GENERATION_PTL:
                         case GENERATION_NVL:
+                        case GENERATION_NVLP:
                         case GENERATION_CRI:
                             deltaFunction.BitsCount = 56;
                             break;
@@ -1505,6 +1502,7 @@ namespace MetricsDiscoveryInternal
                     case GENERATION_LNL:
                     case GENERATION_PTL:
                     case GENERATION_NVL:
+                    case GENERATION_NVLP:
                     case GENERATION_CRI:
                         readDeltaFunction.BitsCount = 56;
                         break;

@@ -87,6 +87,10 @@ namespace MetricsDiscovery
     {
         return nullptr;
     }
+    IConcurrentGroup_1_15* IMetricsDevice_1_15::GetConcurrentGroup( [[maybe_unused]] uint32_t index )
+    {
+        return nullptr;
+    }
 
     // Override interface.
     IOverride_1_2::~IOverride_1_2()
@@ -174,6 +178,14 @@ namespace MetricsDiscovery
         return nullptr;
     }
     TCompletionCode IConcurrentGroup_1_13::RemoveMetricSet( [[maybe_unused]] IMetricSet_1_13* metricSet )
+    {
+        return CC_ERROR_NOT_SUPPORTED;
+    }
+    TCompletionCode IConcurrentGroup_1_15::OpenIoStream( [[maybe_unused]] IMetricSet_1_13* metricSet, [[maybe_unused]] uint32_t processId, [[maybe_unused]] uint32_t* nsTimerPeriod, [[maybe_unused]] uint32_t* oaBufferSize, [[maybe_unused]] TIoStreamState state )
+    {
+        return CC_ERROR_NOT_SUPPORTED;
+    }
+    TCompletionCode IConcurrentGroup_1_15::ChangeIoStreamState( [[maybe_unused]] TIoStreamState state, [[maybe_unused]] uint32_t* nsTimerPeriod )
     {
         return CC_ERROR_NOT_SUPPORTED;
     }
@@ -410,6 +422,22 @@ namespace MetricsDiscovery
     {
         return CC_ERROR_NOT_SUPPORTED;
     }
+    IAdapter_1_15* IAdapterGroup_1_15::GetAdapter( [[maybe_unused]] uint32_t index )
+    {
+        return nullptr;
+    }
+    TCompletionCode IAdapterGroup_1_15::OpenOfflineMetricsDeviceFromBuffer( [[maybe_unused]] uint8_t* buffer, [[maybe_unused]] uint32_t bufferSize, [[maybe_unused]] IMetricsDevice_1_15** metricsDevice )
+    {
+        return CC_ERROR_NOT_SUPPORTED;
+    }
+    TCompletionCode IAdapterGroup_1_15::CloseOfflineMetricsDevice( [[maybe_unused]] IMetricsDevice_1_15* metricsDevice )
+    {
+        return CC_ERROR_NOT_SUPPORTED;
+    }
+    TCompletionCode IAdapterGroup_1_15::SaveMetricsDeviceToBuffer( [[maybe_unused]] IMetricsDevice_1_15* metricsDevice, [[maybe_unused]] IMetricSet_1_13** metricSets, [[maybe_unused]] uint32_t metricSetCount, [[maybe_unused]] uint8_t* buffer, [[maybe_unused]] uint32_t* bufferSize, [[maybe_unused]] const uint32_t minMajorApiVersion, [[maybe_unused]] const uint32_t minMinorApiVersion )
+    {
+        return CC_ERROR_NOT_SUPPORTED;
+    }
 
     // Adapter interface.
     IAdapter_1_6::~IAdapter_1_6()
@@ -518,5 +546,21 @@ namespace MetricsDiscovery
     const TEngineParams_1_13* IAdapter_1_13::GetEngineParams( [[maybe_unused]] const uint32_t subDeviceIndex, [[maybe_unused]] const uint32_t engineIndex )
     {
         return nullptr;
+    }
+    TCompletionCode IAdapter_1_15::OpenMetricsDevice( [[maybe_unused]] IMetricsDevice_1_15** metricsDevice )
+    {
+        return CC_ERROR_NOT_SUPPORTED;
+    }
+    TCompletionCode IAdapter_1_15::OpenMetricsDeviceFromFile( [[maybe_unused]] const char* fileName, [[maybe_unused]] void* openParams, [[maybe_unused]] IMetricsDevice_1_15** metricsDevice )
+    {
+        return CC_ERROR_NOT_SUPPORTED;
+    }
+    TCompletionCode IAdapter_1_15::OpenMetricsSubDevice( [[maybe_unused]] const uint32_t subDeviceIndex, [[maybe_unused]] IMetricsDevice_1_15** metricsDevice )
+    {
+        return CC_ERROR_NOT_SUPPORTED;
+    }
+    TCompletionCode IAdapter_1_15::OpenMetricsSubDeviceFromFile( [[maybe_unused]] const uint32_t subDeviceIndex, [[maybe_unused]] const char* fileName, [[maybe_unused]] void* openParams, [[maybe_unused]] IMetricsDevice_1_15** metricsDevice )
+    {
+        return CC_ERROR_NOT_SUPPORTED;
     }
 } // namespace MetricsDiscovery

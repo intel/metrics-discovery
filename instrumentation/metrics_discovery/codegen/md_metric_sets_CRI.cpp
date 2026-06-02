@@ -790,8 +790,8 @@ namespace MetricsDiscoveryInternal::MetricSets_CRI_OA
         MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 64" ) );
         metric->SetQueryModeMask( QUERY_MODE_MASK_RENDER | QUERY_MODE_MASK_COMPUTE | QUERY_MODE_MASK_GLOBAL | QUERY_MODE_MASK_GLOBAL_EXTENDED );
 
-        metric = AddMetric( "XVE_GRFBLOCK_OCCUPANCY_ALL", "XVE Grfblock Occupancy All",
-            "Number of GRF register blocks occupied",
+        metric = AddMetric( "XVE_INST_LANE_ENABLED", "XVE Inst Lane Enabled",
+            "Number of execution lanes enabled for instructions executed on ALU0 and ALU1. Does not include control-flow instructions such as CALL, CALLA, RET, etc.",
             "Vector Engine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "events", 0, 0, HW_UNIT_GPU, nullptr, nullptr, nullptr, 62 );
         MD_CHECK_PTR( metric );
@@ -800,8 +800,8 @@ namespace MetricsDiscoveryInternal::MetricSets_CRI_OA
         MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 64" ) );
         metric->SetQueryModeMask( QUERY_MODE_MASK_RENDER | QUERY_MODE_MASK_COMPUTE | QUERY_MODE_MASK_GLOBAL | QUERY_MODE_MASK_GLOBAL_EXTENDED );
 
-        metric = AddMetric( "XVE_INST_LANE_ENABLED", "XVE Inst Lane Enabled",
-            "Number of execution lanes enabled for instructions executed on ALU0 and ALU1. Does not include control-flow instructions such as CALL, CALLA, RET, etc.",
+        metric = AddMetric( "XVE_INST_LANE_TOTAL", "XVE Inst Lane Total",
+            "Number of available execution lanes (enabled and not enabled) for instructions executed on ALU0 and ALU1, evaluated after shootdown. Does not include control-flow instructions such as CALL, CALLA, RET, etc.",
             "Vector Engine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "events", 0, 0, HW_UNIT_GPU, nullptr, nullptr, nullptr, 63 );
         MD_CHECK_PTR( metric );
@@ -810,8 +810,8 @@ namespace MetricsDiscoveryInternal::MetricSets_CRI_OA
         MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 64" ) );
         metric->SetQueryModeMask( QUERY_MODE_MASK_RENDER | QUERY_MODE_MASK_COMPUTE | QUERY_MODE_MASK_GLOBAL | QUERY_MODE_MASK_GLOBAL_EXTENDED );
 
-        metric = AddMetric( "XVE_INST_LANE_TOTAL", "XVE Inst Lane Total",
-            "Number of available execution lanes (enabled and not enabled) for instructions executed on ALU0 and ALU1, evaluated after shootdown. Does not include control-flow instructions such as CALL, CALLA, RET, etc.",
+        metric = AddMetric( "XVE_OP_FP32", "XVE Op Fp32",
+            "Number of effective 32-bit floating-point operations (FLOPs) executed on ALU0 and ALU1",
             "Vector Engine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "events", 0, 0, HW_UNIT_GPU, nullptr, nullptr, nullptr, 64 );
         MD_CHECK_PTR( metric );
@@ -820,8 +820,8 @@ namespace MetricsDiscoveryInternal::MetricSets_CRI_OA
         MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 64" ) );
         metric->SetQueryModeMask( QUERY_MODE_MASK_RENDER | QUERY_MODE_MASK_COMPUTE | QUERY_MODE_MASK_GLOBAL | QUERY_MODE_MASK_GLOBAL_EXTENDED );
 
-        metric = AddMetric( "XVE_OP_FP32", "XVE Op Fp32",
-            "Number of effective 32-bit floating-point operations (FLOPs) executed on ALU0 and ALU1",
+        metric = AddMetric( "XVE_OP_FP64", "XVE Op Fp64",
+            "Number of effective 64-bit floating-point operations (FLOPs) executed on ALU0 and ALU1",
             "Vector Engine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "events", 0, 0, HW_UNIT_GPU, nullptr, nullptr, nullptr, 65 );
         MD_CHECK_PTR( metric );
@@ -830,13 +830,34 @@ namespace MetricsDiscoveryInternal::MetricSets_CRI_OA
         MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 64" ) );
         metric->SetQueryModeMask( QUERY_MODE_MASK_RENDER | QUERY_MODE_MASK_COMPUTE | QUERY_MODE_MASK_GLOBAL | QUERY_MODE_MASK_GLOBAL_EXTENDED );
 
-        metric = AddMetric( "XVE_OP_FP64", "XVE Op Fp64",
-            "Number of effective 64-bit floating-point operations (FLOPs) executed on ALU0 and ALU1",
-            "Vector Engine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+        metric = AddMetric( "TLB_INV_ATS", "TLB Inv Ats",
+            "Number of ATS Invalidations",
+            "Memory", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "events", 0, 0, HW_UNIT_GPU, nullptr, nullptr, nullptr, 66 );
         MD_CHECK_PTR( metric );
-        MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "qw@0xc0" ) );
-        MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0xb0" ) );
+        MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "qw@0x1f0" ) );
+        MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x1e0" ) );
+        MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 64" ) );
+        metric->SetQueryModeMask( QUERY_MODE_MASK_GLOBAL | QUERY_MODE_MASK_GLOBAL_EXTENDED );
+
+        metric = AddMetric( "TLB_INV_DRIVER", "TLB Inv Driver",
+            "Number of TLB invalidations from Driver",
+            "Memory", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+            METRIC_TYPE_EVENT, RESULT_UINT64, "events", 0, 0, HW_UNIT_GPU, nullptr, nullptr, nullptr, 67 );
+        MD_CHECK_PTR( metric );
+        MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "qw@0x1f8" ) );
+        MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x1e8" ) );
+        MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 64" ) );
+        metric->SetQueryModeMask( QUERY_MODE_MASK_GLOBAL | QUERY_MODE_MASK_GLOBAL_EXTENDED );
+
+        metric = AddMetric( "XVE_GRFBLOCK_OCCUPANCY_ALL", "XVE Grfblock Occupancy All",
+            "Percentage of GRF blocks occupied",
+            "Vector Engine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+            METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, nullptr, nullptr, nullptr, 68 );
+        MD_CHECK_PTR( metric );
+        MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "qw@0xc0 $VectorEngineGrfBlocksCount $VectorEngineTotalCount UMUL UDIV" ) );
+        MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0xb0 $VectorEngineGrfBlocksCount $VectorEngineTotalCount UMUL UDIV" ) );
+        MD_CHECK_CC( metric->SetNormalizationEquation( "GpuDuration" ) );
         MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 64" ) );
         metric->SetQueryModeMask( QUERY_MODE_MASK_RENDER | QUERY_MODE_MASK_COMPUTE | QUERY_MODE_MASK_GLOBAL | QUERY_MODE_MASK_GLOBAL_EXTENDED );
 
@@ -873,15 +894,15 @@ namespace MetricsDiscoveryInternal::MetricSets_CRI_OA
         MD_CHECK_CC( AddStartConfigRegister( 0x13074, 0x00000000, REGISTER_TYPE_OA ) );
         MD_CHECK_CC( AddStartConfigRegister( 0x13078, 0x00000632, REGISTER_TYPE_OA ) );
         MD_CHECK_CC( AddStartConfigRegister( 0x1307c, 0x00000000, REGISTER_TYPE_OA ) );
-        MD_CHECK_CC( AddStartConfigRegister( 0x13080, 0x00000627, REGISTER_TYPE_OA ) );
+        MD_CHECK_CC( AddStartConfigRegister( 0x13080, 0x00000634, REGISTER_TYPE_OA ) );
         MD_CHECK_CC( AddStartConfigRegister( 0x13084, 0x00000000, REGISTER_TYPE_OA ) );
-        MD_CHECK_CC( AddStartConfigRegister( 0x13088, 0x00000634, REGISTER_TYPE_OA ) );
+        MD_CHECK_CC( AddStartConfigRegister( 0x13088, 0x00000635, REGISTER_TYPE_OA ) );
         MD_CHECK_CC( AddStartConfigRegister( 0x1308c, 0x00000000, REGISTER_TYPE_OA ) );
-        MD_CHECK_CC( AddStartConfigRegister( 0x13090, 0x00000635, REGISTER_TYPE_OA ) );
+        MD_CHECK_CC( AddStartConfigRegister( 0x13090, 0x00000636, REGISTER_TYPE_OA ) );
         MD_CHECK_CC( AddStartConfigRegister( 0x13094, 0x00000000, REGISTER_TYPE_OA ) );
-        MD_CHECK_CC( AddStartConfigRegister( 0x13098, 0x00000636, REGISTER_TYPE_OA ) );
+        MD_CHECK_CC( AddStartConfigRegister( 0x13098, 0x00000637, REGISTER_TYPE_OA ) );
         MD_CHECK_CC( AddStartConfigRegister( 0x1309c, 0x00000000, REGISTER_TYPE_OA ) );
-        MD_CHECK_CC( AddStartConfigRegister( 0x130a0, 0x00000637, REGISTER_TYPE_OA ) );
+        MD_CHECK_CC( AddStartConfigRegister( 0x130a0, 0x00000627, REGISTER_TYPE_OA ) );
         MD_CHECK_CC( AddStartConfigRegister( 0x130a4, 0x00000000, REGISTER_TYPE_OA ) );
         MD_CHECK_CC( AddStartConfigRegister( 0x130a8, 0x0000060b, REGISTER_TYPE_OA ) );
         MD_CHECK_CC( AddStartConfigRegister( 0x130ac, 0x00000000, REGISTER_TYPE_OA ) );
@@ -1061,6 +1082,18 @@ namespace MetricsDiscoveryInternal::MetricSets_CRI_OA
         MD_CHECK_CC( AddStartConfigRegister( 0x135cc, 0x00000000, REGISTER_TYPE_OA ) );
         MD_CHECK_CC( AddStartConfigRegister( 0x137c8, 0x00006013, REGISTER_TYPE_OA ) );
         MD_CHECK_CC( AddStartConfigRegister( 0x137cc, 0x00000000, REGISTER_TYPE_OA ) );
+        MD_CHECK_CC( AddStartConfigRegister( 0x133d0, 0x00005c06, REGISTER_TYPE_OA ) );
+        MD_CHECK_CC( AddStartConfigRegister( 0x133d4, 0x00000000, REGISTER_TYPE_OA ) );
+        MD_CHECK_CC( AddStartConfigRegister( 0x135d0, 0x00005c06, REGISTER_TYPE_OA ) );
+        MD_CHECK_CC( AddStartConfigRegister( 0x135d4, 0x00000000, REGISTER_TYPE_OA ) );
+        MD_CHECK_CC( AddStartConfigRegister( 0x137d0, 0x00005c06, REGISTER_TYPE_OA ) );
+        MD_CHECK_CC( AddStartConfigRegister( 0x137d4, 0x00000000, REGISTER_TYPE_OA ) );
+        MD_CHECK_CC( AddStartConfigRegister( 0x133d8, 0x00005c07, REGISTER_TYPE_OA ) );
+        MD_CHECK_CC( AddStartConfigRegister( 0x133dc, 0x00000000, REGISTER_TYPE_OA ) );
+        MD_CHECK_CC( AddStartConfigRegister( 0x135d8, 0x00005c07, REGISTER_TYPE_OA ) );
+        MD_CHECK_CC( AddStartConfigRegister( 0x135dc, 0x00000000, REGISTER_TYPE_OA ) );
+        MD_CHECK_CC( AddStartConfigRegister( 0x137d8, 0x00005c07, REGISTER_TYPE_OA ) );
+        MD_CHECK_CC( AddStartConfigRegister( 0x137dc, 0x00000000, REGISTER_TYPE_OA ) );
         MD_CHECK_CC( AddStartConfigRegister( 0xe458, 0x00000000, REGISTER_TYPE_FLEX ) );
         MD_CHECK_CC( AddStartConfigRegister( 0xe558, 0x00000000, REGISTER_TYPE_FLEX ) );
         MD_CHECK_CC( AddStartConfigRegister( 0xe658, 0x00000000, REGISTER_TYPE_FLEX ) );
@@ -1845,7 +1878,7 @@ namespace MetricsDiscoveryInternal::MetricSets_CRI_OA
         metric->SetQueryModeMask( QUERY_MODE_MASK_RENDER | QUERY_MODE_MASK_COMPUTE | QUERY_MODE_MASK_GLOBAL | QUERY_MODE_MASK_GLOBAL_EXTENDED );
 
         metric = AddMetric( "XVE_INST_EXECUTED_NONDIVERGENT", "XVE Inst Executed Nondivergent",
-            "Number of non-divergent instructions (not execution slots) executed",
+            "Number of non-divergent instructions (not execution slots) issued",
             "Vector Engine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "events", 0, 0, HW_UNIT_GPU, nullptr, nullptr, nullptr, 22 );
         MD_CHECK_PTR( metric );
@@ -1855,7 +1888,7 @@ namespace MetricsDiscoveryInternal::MetricSets_CRI_OA
         metric->SetQueryModeMask( QUERY_MODE_MASK_RENDER | QUERY_MODE_MASK_COMPUTE | QUERY_MODE_MASK_GLOBAL | QUERY_MODE_MASK_GLOBAL_EXTENDED );
 
         metric = AddMetric( "XVE_INST_EXECUTED_PREDICATION", "XVE Inst Executed Predication",
-            "Number of instructions (not execution slots) executed with predication mask enabled",
+            "Number of instructions (not execution slots) issued with predication mask enabled",
             "Vector Engine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "events", 0, 0, HW_UNIT_GPU, nullptr, nullptr, nullptr, 23 );
         MD_CHECK_PTR( metric );
@@ -2245,7 +2278,7 @@ namespace MetricsDiscoveryInternal::MetricSets_CRI_OA
         MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 64" ) );
         metric->SetQueryModeMask( QUERY_MODE_MASK_RENDER | QUERY_MODE_MASK_COMPUTE | QUERY_MODE_MASK_GLOBAL | QUERY_MODE_MASK_GLOBAL_EXTENDED );
 
-        metric = AddMetric( "THREAD_DISPATCH_QUEUE0_ACTIVE", "Thread Dispatch Queue0 Active",
+        metric = AddMetric( "THREAD_DISPATCH_QUEUE1_ACTIVE", "Thread Dispatch Queue1 Active",
             "Percentage of time in which non-Pixel Shader threads are ready for dispatch in a particular Xe core",
             "Thread Dispatcher", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
             METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, nullptr, "Pixel|Fragment", nullptr, 14 );
@@ -2254,10 +2287,10 @@ namespace MetricsDiscoveryInternal::MetricSets_CRI_OA
         MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0xc8 $XeCoreTotalCount UDIV" ) );
         MD_CHECK_CC( metric->SetNormalizationEquation( "GpuDuration" ) );
         MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 64" ) );
-        metric->SetQueryModeMask( QUERY_MODE_MASK_RENDER | QUERY_MODE_MASK_GLOBAL | QUERY_MODE_MASK_GLOBAL_EXTENDED );
+        metric->SetQueryModeMask( QUERY_MODE_MASK_COMPUTE | QUERY_MODE_MASK_GLOBAL | QUERY_MODE_MASK_GLOBAL_EXTENDED );
 
-        metric = AddMetric( "THREAD_DISPATCH_QUEUE0_STALL", "Thread Dispatch Queue0 Stall",
-            "Percentage of time in which queue 0 is stalled waiting for threads to be available",
+        metric = AddMetric( "THREAD_DISPATCH_QUEUE1_STALL", "Thread Dispatch Queue1 Stall",
+            "Percentage of time in which queue 1 is stalled waiting for threads to be available",
             "Thread Dispatcher", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
             METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, nullptr, nullptr, nullptr, 15 );
         MD_CHECK_PTR( metric );
@@ -2265,12 +2298,12 @@ namespace MetricsDiscoveryInternal::MetricSets_CRI_OA
         MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0xd0 $XeCoreTotalCount UDIV" ) );
         MD_CHECK_CC( metric->SetNormalizationEquation( "GpuDuration" ) );
         MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 64" ) );
-        metric->SetQueryModeMask( QUERY_MODE_MASK_RENDER | QUERY_MODE_MASK_GLOBAL | QUERY_MODE_MASK_GLOBAL_EXTENDED );
+        metric->SetQueryModeMask( QUERY_MODE_MASK_COMPUTE | QUERY_MODE_MASK_GLOBAL | QUERY_MODE_MASK_GLOBAL_EXTENDED );
 
-        metric = AddMetric( "THREAD_DISPATCH_QUEUE1_ACTIVE", "Thread Dispatch Queue1 Active",
-            "Percentage of time in which non-Pixel Shader threads are ready for dispatch in a particular Xe core",
+        metric = AddMetric( "THREADGROUP_DISPATCH_QUEUE1_RESOURCE_STALL", "Threadgroup Dispatch Queue1 Resource Stall",
+            "Percentage of time in which Thread Spawner queue 1 is stalled waiting for any resource to be available (for example, SLM, Barrier, BTD stack, etc.)",
             "Thread Dispatcher", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
-            METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, nullptr, "Pixel|Fragment", nullptr, 16 );
+            METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, nullptr, nullptr, nullptr, 16 );
         MD_CHECK_PTR( metric );
         MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "qw@0xe8 $XeCoreTotalCount UDIV" ) );
         MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0xd8 $XeCoreTotalCount UDIV" ) );
@@ -2278,52 +2311,52 @@ namespace MetricsDiscoveryInternal::MetricSets_CRI_OA
         MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 64" ) );
         metric->SetQueryModeMask( QUERY_MODE_MASK_COMPUTE | QUERY_MODE_MASK_GLOBAL | QUERY_MODE_MASK_GLOBAL_EXTENDED );
 
-        metric = AddMetric( "THREAD_DISPATCH_QUEUE1_STALL", "Thread Dispatch Queue1 Stall",
-            "Percentage of time in which queue 1 is stalled waiting for threads to be available",
-            "Thread Dispatcher", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
-            METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, nullptr, nullptr, nullptr, 17 );
-        MD_CHECK_PTR( metric );
-        MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "qw@0xf0 $XeCoreTotalCount UDIV" ) );
-        MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0xe0 $XeCoreTotalCount UDIV" ) );
-        MD_CHECK_CC( metric->SetNormalizationEquation( "GpuDuration" ) );
-        MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 64" ) );
-        metric->SetQueryModeMask( QUERY_MODE_MASK_COMPUTE | QUERY_MODE_MASK_GLOBAL | QUERY_MODE_MASK_GLOBAL_EXTENDED );
-
-        metric = AddMetric( "THREADGROUP_DISPATCH_QUEUE0_RESOURCE_STALL", "Threadgroup Dispatch Queue0 Resource Stall",
-            "Percentage of time in which Thread Spawner queue 0 is stalled waiting for any resource to be available (for example, SLM, Barrier, BTD stack, etc.)",
-            "Thread Dispatcher", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
-            METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, nullptr, nullptr, nullptr, 18 );
-        MD_CHECK_PTR( metric );
-        MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "qw@0xf8 $XeCoreTotalCount UDIV" ) );
-        MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0xe8 $XeCoreTotalCount UDIV" ) );
-        MD_CHECK_CC( metric->SetNormalizationEquation( "GpuDuration" ) );
-        MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 64" ) );
-        metric->SetQueryModeMask( QUERY_MODE_MASK_RENDER | QUERY_MODE_MASK_GLOBAL | QUERY_MODE_MASK_GLOBAL_EXTENDED );
-
-        metric = AddMetric( "THREADGROUP_DISPATCH_QUEUE1_RESOURCE_STALL", "Threadgroup Dispatch Queue1 Resource Stall",
-            "Percentage of time in which Thread Spawner queue 1 is stalled waiting for any resource to be available (for example, SLM, Barrier, BTD stack, etc.)",
-            "Thread Dispatcher", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
-            METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, nullptr, nullptr, nullptr, 19 );
-        MD_CHECK_PTR( metric );
-        MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "qw@0x100 $XeCoreTotalCount UDIV" ) );
-        MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0xf0 $XeCoreTotalCount UDIV" ) );
-        MD_CHECK_CC( metric->SetNormalizationEquation( "GpuDuration" ) );
-        MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 64" ) );
-        metric->SetQueryModeMask( QUERY_MODE_MASK_COMPUTE | QUERY_MODE_MASK_GLOBAL | QUERY_MODE_MASK_GLOBAL_EXTENDED );
-
         metric = AddMetric( "XVE_ACTIVE", "XVE Active",
             "Percentage of time in which at least one pipe is active in XVE",
             "Vector Engine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
-            METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, nullptr, nullptr, nullptr, 20 );
+            METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, nullptr, nullptr, nullptr, 17 );
         MD_CHECK_PTR( metric );
-        MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "qw@0x108" ) );
-        MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0xf8" ) );
+        MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "qw@0xf0" ) );
+        MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0xe0" ) );
         MD_CHECK_CC( metric->SetNormalizationEquation( "EuAggrDuration" ) );
         MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 64" ) );
         metric->SetQueryModeMask( QUERY_MODE_MASK_RENDER | QUERY_MODE_MASK_COMPUTE | QUERY_MODE_MASK_GLOBAL | QUERY_MODE_MASK_GLOBAL_EXTENDED );
 
         metric = AddMetric( "XVE_SHARED_FUNCTION_ACCESS_HOLD", "XVE Shared Function Access Hold",
             "Percentage of time in which XVE requests stalled by Shared Function units",
+            "Vector Engine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+            METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, nullptr, nullptr, nullptr, 18 );
+        MD_CHECK_PTR( metric );
+        MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "qw@0xf8" ) );
+        MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0xe8" ) );
+        MD_CHECK_CC( metric->SetNormalizationEquation( "EuAggrDuration" ) );
+        MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 64" ) );
+        metric->SetQueryModeMask( QUERY_MODE_MASK_RENDER | QUERY_MODE_MASK_COMPUTE | QUERY_MODE_MASK_GLOBAL | QUERY_MODE_MASK_GLOBAL_EXTENDED );
+
+        metric = AddMetric( "XVE_STALL", "XVE Stall",
+            "Percentage of time in which any thread loaded but not even a single pipe is active in XVE",
+            "Vector Engine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+            METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, nullptr, nullptr, nullptr, 19 );
+        MD_CHECK_PTR( metric );
+        MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "qw@0x100" ) );
+        MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0xf0" ) );
+        MD_CHECK_CC( metric->SetNormalizationEquation( "EuAggrDuration" ) );
+        MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 64" ) );
+        metric->SetQueryModeMask( QUERY_MODE_MASK_RENDER | QUERY_MODE_MASK_COMPUTE | QUERY_MODE_MASK_GLOBAL | QUERY_MODE_MASK_GLOBAL_EXTENDED );
+
+        metric = AddMetric( "XVE_THREADS_OCCUPANCY_ALL", "XVE Threads Occupancy All",
+            "Percentage of thread slots occupied",
+            "Vector Engine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+            METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, nullptr, nullptr, nullptr, 20 );
+        MD_CHECK_PTR( metric );
+        MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "qw@0x108 $VectorEngineThreadsCount $VectorEngineTotalCount UMUL UDIV" ) );
+        MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0xf8 $VectorEngineThreadsCount $VectorEngineTotalCount UMUL UDIV" ) );
+        MD_CHECK_CC( metric->SetNormalizationEquation( "GpuDuration" ) );
+        MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 64" ) );
+        metric->SetQueryModeMask( QUERY_MODE_MASK_RENDER | QUERY_MODE_MASK_COMPUTE | QUERY_MODE_MASK_GLOBAL | QUERY_MODE_MASK_GLOBAL_EXTENDED );
+
+        metric = AddMetric( "XVE_MULTIPLE_PIPE_ACTIVE", "XVE Multiple Pipe Active",
+            "Percentage of time in which at least two pipes are actively executing a Gen ISA instruction among ALU0, ALU1, ALU2 and ALU3 pipes",
             "Vector Engine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
             METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, nullptr, nullptr, nullptr, 21 );
         MD_CHECK_PTR( metric );
@@ -2333,8 +2366,8 @@ namespace MetricsDiscoveryInternal::MetricSets_CRI_OA
         MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 64" ) );
         metric->SetQueryModeMask( QUERY_MODE_MASK_RENDER | QUERY_MODE_MASK_COMPUTE | QUERY_MODE_MASK_GLOBAL | QUERY_MODE_MASK_GLOBAL_EXTENDED );
 
-        metric = AddMetric( "XVE_STALL", "XVE Stall",
-            "Percentage of time in which any thread loaded but not even a single pipe is active in XVE",
+        metric = AddMetric( "XVE_PIPE_ALU0_AND_ALU1_ACTIVE", "XVE Pipe ALU0 And ALU1 Active",
+            "Percentage of time in which ALU0 and ALU1 pipes are both actively executing a Gen ISA instruction",
             "Vector Engine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
             METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, nullptr, nullptr, nullptr, 22 );
         MD_CHECK_PTR( metric );
@@ -2344,46 +2377,13 @@ namespace MetricsDiscoveryInternal::MetricSets_CRI_OA
         MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 64" ) );
         metric->SetQueryModeMask( QUERY_MODE_MASK_RENDER | QUERY_MODE_MASK_COMPUTE | QUERY_MODE_MASK_GLOBAL | QUERY_MODE_MASK_GLOBAL_EXTENDED );
 
-        metric = AddMetric( "XVE_THREADS_OCCUPANCY_ALL", "XVE Threads Occupancy All",
-            "Percentage of thread slots occupied",
-            "Vector Engine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
-            METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, nullptr, nullptr, nullptr, 23 );
-        MD_CHECK_PTR( metric );
-        MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "qw@0x58 $VectorEngineThreadsCount $VectorEngineTotalCount UMUL UDIV" ) );
-        MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x48 $VectorEngineThreadsCount $VectorEngineTotalCount UMUL UDIV" ) );
-        MD_CHECK_CC( metric->SetNormalizationEquation( "GpuDuration" ) );
-        MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 64" ) );
-        metric->SetQueryModeMask( QUERY_MODE_MASK_RENDER | QUERY_MODE_MASK_COMPUTE | QUERY_MODE_MASK_GLOBAL | QUERY_MODE_MASK_GLOBAL_EXTENDED );
-
-        metric = AddMetric( "XVE_MULTIPLE_PIPE_ACTIVE", "XVE Multiple Pipe Active",
-            "Percentage of time in which at least two pipes are actively executing a Gen ISA instruction among ALU0, ALU1, ALU2 and ALU3 pipes",
-            "Vector Engine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
-            METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, nullptr, nullptr, nullptr, 24 );
-        MD_CHECK_PTR( metric );
-        MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "qw@0x60" ) );
-        MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x50" ) );
-        MD_CHECK_CC( metric->SetNormalizationEquation( "EuAggrDuration" ) );
-        MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 64" ) );
-        metric->SetQueryModeMask( QUERY_MODE_MASK_RENDER | QUERY_MODE_MASK_COMPUTE | QUERY_MODE_MASK_GLOBAL | QUERY_MODE_MASK_GLOBAL_EXTENDED );
-
-        metric = AddMetric( "XVE_PIPE_ALU0_AND_ALU1_ACTIVE", "XVE Pipe ALU0 And ALU1 Active",
-            "Percentage of time in which ALU0 and ALU1 pipes are both actively executing a Gen ISA instruction",
-            "Vector Engine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
-            METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, nullptr, nullptr, nullptr, 25 );
-        MD_CHECK_PTR( metric );
-        MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "qw@0x68" ) );
-        MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x58" ) );
-        MD_CHECK_CC( metric->SetNormalizationEquation( "EuAggrDuration" ) );
-        MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 64" ) );
-        metric->SetQueryModeMask( QUERY_MODE_MASK_RENDER | QUERY_MODE_MASK_COMPUTE | QUERY_MODE_MASK_GLOBAL | QUERY_MODE_MASK_GLOBAL_EXTENDED );
-
         metric = AddMetric( "XVE_PIPE_ALU0_AND_ALU2_ACTIVE", "XVE Pipe ALU0 And ALU2 Active",
             "Percentage of time in which ALU0 and ALU2 pipes are both actively executing a Gen ISA instruction",
             "Vector Engine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
-            METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, nullptr, nullptr, nullptr, 26 );
+            METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, nullptr, nullptr, nullptr, 23 );
         MD_CHECK_PTR( metric );
-        MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "qw@0x70" ) );
-        MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x60" ) );
+        MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "qw@0x58" ) );
+        MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x48" ) );
         MD_CHECK_CC( metric->SetNormalizationEquation( "EuAggrDuration" ) );
         MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 64" ) );
         metric->SetQueryModeMask( QUERY_MODE_MASK_RENDER | QUERY_MODE_MASK_COMPUTE | QUERY_MODE_MASK_GLOBAL | QUERY_MODE_MASK_GLOBAL_EXTENDED );
@@ -2391,15 +2391,46 @@ namespace MetricsDiscoveryInternal::MetricSets_CRI_OA
         metric = AddMetric( "ASYNC_GPGPU_THREAD_EXIT_COUNT", "Async GpGpu Thread Exit Count",
             "Number of Async GPGPU EOT messages received",
             "Thread Dispatcher", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
-            METRIC_TYPE_EVENT, RESULT_UINT64, "messages", 0, 0, HW_UNIT_GPU, nullptr, nullptr, nullptr, 27 );
+            METRIC_TYPE_EVENT, RESULT_UINT64, "messages", 0, 0, HW_UNIT_GPU, nullptr, nullptr, nullptr, 24 );
         MD_CHECK_PTR( metric );
-        MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "qw@0x78" ) );
-        MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x68" ) );
+        MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "qw@0x60" ) );
+        MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x50" ) );
         MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 64" ) );
         metric->SetQueryModeMask( QUERY_MODE_MASK_COMPUTE | QUERY_MODE_MASK_GLOBAL | QUERY_MODE_MASK_GLOBAL_EXTENDED );
 
         metric = AddMetric( "THREAD_DISPATCH_GPGPU_COMMON_ENGINE", "Thread Dispatch GpGpu Common Engine",
             "Number of Common (non-Async)) GPGPU threads dispatched",
+            "Thread Dispatcher", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+            METRIC_TYPE_EVENT, RESULT_UINT64, "events", 0, 0, HW_UNIT_GPU, nullptr, nullptr, nullptr, 25 );
+        MD_CHECK_PTR( metric );
+        MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "qw@0x68" ) );
+        MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x58" ) );
+        MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 64" ) );
+        metric->SetQueryModeMask( QUERY_MODE_MASK_RENDER | QUERY_MODE_MASK_COMPUTE | QUERY_MODE_MASK_GLOBAL | QUERY_MODE_MASK_GLOBAL_EXTENDED );
+
+        metric = AddMetric( "THREAD_DISPATCH_GPGPU_COMPUTE_ENGINE", "Thread Dispatch GpGpu Compute Engine",
+            "Number of Compute (Async) GPGPU threads dispatched",
+            "Thread Dispatcher", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+            METRIC_TYPE_EVENT, RESULT_UINT64, "events", 0, 0, HW_UNIT_GPU, nullptr, nullptr, nullptr, 26 );
+        MD_CHECK_PTR( metric );
+        MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "qw@0x70" ) );
+        MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x60" ) );
+        MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 64" ) );
+        metric->SetQueryModeMask( QUERY_MODE_MASK_RENDER | QUERY_MODE_MASK_COMPUTE | QUERY_MODE_MASK_GLOBAL | QUERY_MODE_MASK_GLOBAL_EXTENDED );
+
+        metric = AddMetric( "THREAD_DISPATCH_INPUT_AVAILABLE", "Thread Dispatch Input Available",
+            "Percentage of time in which Thread Dispatch input is available",
+            "Thread Dispatcher", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+            METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, nullptr, nullptr, nullptr, 27 );
+        MD_CHECK_PTR( metric );
+        MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "qw@0x78 $XeCoreTotalCount UDIV" ) );
+        MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x68 $XeCoreTotalCount UDIV" ) );
+        MD_CHECK_CC( metric->SetNormalizationEquation( "GpuDuration" ) );
+        MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 64" ) );
+        metric->SetQueryModeMask( QUERY_MODE_MASK_RENDER | QUERY_MODE_MASK_COMPUTE | QUERY_MODE_MASK_GLOBAL | QUERY_MODE_MASK_GLOBAL_EXTENDED );
+
+        metric = AddMetric( "THREAD_DISPATCH_OTHER", "Thread Dispatch Other",
+            "Number of threads dispatched that do not fit into any of the other identified groups. This group includes, at least, AMFS threads and may include other groups.",
             "Thread Dispatcher", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "events", 0, 0, HW_UNIT_GPU, nullptr, nullptr, nullptr, 28 );
         MD_CHECK_PTR( metric );
@@ -2408,55 +2439,13 @@ namespace MetricsDiscoveryInternal::MetricSets_CRI_OA
         MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 64" ) );
         metric->SetQueryModeMask( QUERY_MODE_MASK_RENDER | QUERY_MODE_MASK_COMPUTE | QUERY_MODE_MASK_GLOBAL | QUERY_MODE_MASK_GLOBAL_EXTENDED );
 
-        metric = AddMetric( "THREAD_DISPATCH_GPGPU_COMPUTE_ENGINE", "Thread Dispatch GpGpu Compute Engine",
-            "Number of Compute (Async) GPGPU threads dispatched",
-            "Thread Dispatcher", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
-            METRIC_TYPE_EVENT, RESULT_UINT64, "events", 0, 0, HW_UNIT_GPU, nullptr, nullptr, nullptr, 29 );
-        MD_CHECK_PTR( metric );
-        MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "qw@0x88" ) );
-        MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x78" ) );
-        MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 64" ) );
-        metric->SetQueryModeMask( QUERY_MODE_MASK_RENDER | QUERY_MODE_MASK_COMPUTE | QUERY_MODE_MASK_GLOBAL | QUERY_MODE_MASK_GLOBAL_EXTENDED );
-
-        metric = AddMetric( "THREAD_DISPATCH_INPUT_AVAILABLE", "Thread Dispatch Input Available",
-            "Percentage of time in which Thread Dispatch input is available",
-            "Thread Dispatcher", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
-            METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, nullptr, nullptr, nullptr, 30 );
-        MD_CHECK_PTR( metric );
-        MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "qw@0x90 $XeCoreTotalCount UDIV" ) );
-        MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x80 $XeCoreTotalCount UDIV" ) );
-        MD_CHECK_CC( metric->SetNormalizationEquation( "GpuDuration" ) );
-        MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 64" ) );
-        metric->SetQueryModeMask( QUERY_MODE_MASK_RENDER | QUERY_MODE_MASK_COMPUTE | QUERY_MODE_MASK_GLOBAL | QUERY_MODE_MASK_GLOBAL_EXTENDED );
-
-        metric = AddMetric( "THREAD_DISPATCH_OTHER", "Thread Dispatch Other",
-            "Number of threads dispatched that do not fit into any of the other identified groups. This group includes, at least, AMFS threads and may include other groups.",
-            "Thread Dispatcher", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
-            METRIC_TYPE_EVENT, RESULT_UINT64, "events", 0, 0, HW_UNIT_GPU, nullptr, nullptr, nullptr, 31 );
-        MD_CHECK_PTR( metric );
-        MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "qw@0x98" ) );
-        MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x88" ) );
-        MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 64" ) );
-        metric->SetQueryModeMask( QUERY_MODE_MASK_RENDER | QUERY_MODE_MASK_COMPUTE | QUERY_MODE_MASK_GLOBAL | QUERY_MODE_MASK_GLOBAL_EXTENDED );
-
-        metric = AddMetric( "THREADGROUP_DISPATCH_QUEUE0_INPUT_AVAILABLE", "Threadgroup Dispatch Queue0 Input Available",
-            "Percentage of time in which Thread Spawner has input available on queue 0",
-            "Thread Dispatcher", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
-            METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, nullptr, nullptr, nullptr, 32 );
-        MD_CHECK_PTR( metric );
-        MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "qw@0xa0 $XeCoreTotalCount UDIV" ) );
-        MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x90 $XeCoreTotalCount UDIV" ) );
-        MD_CHECK_CC( metric->SetNormalizationEquation( "GpuDuration" ) );
-        MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 64" ) );
-        metric->SetQueryModeMask( QUERY_MODE_MASK_RENDER | QUERY_MODE_MASK_GLOBAL | QUERY_MODE_MASK_GLOBAL_EXTENDED );
-
         metric = AddMetric( "THREADGROUP_DISPATCH_QUEUE1_INPUT_AVAILABLE", "Threadgroup Dispatch Queue1 Input Available",
             "Percentage of time in which Thread Spawner has input available on queue 1",
             "Thread Dispatcher", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
-            METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, nullptr, nullptr, nullptr, 33 );
+            METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, nullptr, nullptr, nullptr, 29 );
         MD_CHECK_PTR( metric );
-        MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "qw@0xa8 $XeCoreTotalCount UDIV" ) );
-        MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x98 $XeCoreTotalCount UDIV" ) );
+        MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "qw@0x88 $XeCoreTotalCount UDIV" ) );
+        MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x78 $XeCoreTotalCount UDIV" ) );
         MD_CHECK_CC( metric->SetNormalizationEquation( "GpuDuration" ) );
         MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 64" ) );
         metric->SetQueryModeMask( QUERY_MODE_MASK_COMPUTE | QUERY_MODE_MASK_GLOBAL | QUERY_MODE_MASK_GLOBAL_EXTENDED );
@@ -2476,49 +2465,41 @@ namespace MetricsDiscoveryInternal::MetricSets_CRI_OA
         MD_CHECK_CC( AddStartConfigRegister( 0x1302c, 0x00000000, REGISTER_TYPE_OA ) );
         MD_CHECK_CC( AddStartConfigRegister( 0x13030, 0x0000061f, REGISTER_TYPE_OA ) );
         MD_CHECK_CC( AddStartConfigRegister( 0x13034, 0x00000000, REGISTER_TYPE_OA ) );
-        MD_CHECK_CC( AddStartConfigRegister( 0x13038, 0x00000604, REGISTER_TYPE_OA ) );
+        MD_CHECK_CC( AddStartConfigRegister( 0x13038, 0x00000626, REGISTER_TYPE_OA ) );
         MD_CHECK_CC( AddStartConfigRegister( 0x1303c, 0x00000000, REGISTER_TYPE_OA ) );
-        MD_CHECK_CC( AddStartConfigRegister( 0x13040, 0x00000624, REGISTER_TYPE_OA ) );
+        MD_CHECK_CC( AddStartConfigRegister( 0x13040, 0x00001804, REGISTER_TYPE_OA ) );
         MD_CHECK_CC( AddStartConfigRegister( 0x13044, 0x00000000, REGISTER_TYPE_OA ) );
-        MD_CHECK_CC( AddStartConfigRegister( 0x13048, 0x00000625, REGISTER_TYPE_OA ) );
+        MD_CHECK_CC( AddStartConfigRegister( 0x13048, 0x0000160f, REGISTER_TYPE_OA ) );
         MD_CHECK_CC( AddStartConfigRegister( 0x1304c, 0x00000000, REGISTER_TYPE_OA ) );
-        MD_CHECK_CC( AddStartConfigRegister( 0x13050, 0x00000626, REGISTER_TYPE_OA ) );
+        MD_CHECK_CC( AddStartConfigRegister( 0x13050, 0x00001610, REGISTER_TYPE_OA ) );
         MD_CHECK_CC( AddStartConfigRegister( 0x13054, 0x00000000, REGISTER_TYPE_OA ) );
-        MD_CHECK_CC( AddStartConfigRegister( 0x13058, 0x00001804, REGISTER_TYPE_OA ) );
+        MD_CHECK_CC( AddStartConfigRegister( 0x13058, 0x00001605, REGISTER_TYPE_OA ) );
         MD_CHECK_CC( AddStartConfigRegister( 0x1305c, 0x00000000, REGISTER_TYPE_OA ) );
-        MD_CHECK_CC( AddStartConfigRegister( 0x13060, 0x0000160f, REGISTER_TYPE_OA ) );
+        MD_CHECK_CC( AddStartConfigRegister( 0x13060, 0x00001611, REGISTER_TYPE_OA ) );
         MD_CHECK_CC( AddStartConfigRegister( 0x13064, 0x00000000, REGISTER_TYPE_OA ) );
-        MD_CHECK_CC( AddStartConfigRegister( 0x13068, 0x00001610, REGISTER_TYPE_OA ) );
+        MD_CHECK_CC( AddStartConfigRegister( 0x13068, 0x00001806, REGISTER_TYPE_OA ) );
         MD_CHECK_CC( AddStartConfigRegister( 0x1306c, 0x00000000, REGISTER_TYPE_OA ) );
-        MD_CHECK_CC( AddStartConfigRegister( 0x13070, 0x00001605, REGISTER_TYPE_OA ) );
-        MD_CHECK_CC( AddStartConfigRegister( 0x13074, 0x00000000, REGISTER_TYPE_OA ) );
-        MD_CHECK_CC( AddStartConfigRegister( 0x13078, 0x00001611, REGISTER_TYPE_OA ) );
-        MD_CHECK_CC( AddStartConfigRegister( 0x1307c, 0x00000000, REGISTER_TYPE_OA ) );
-        MD_CHECK_CC( AddStartConfigRegister( 0x13080, 0x00001805, REGISTER_TYPE_OA ) );
-        MD_CHECK_CC( AddStartConfigRegister( 0x13084, 0x00000000, REGISTER_TYPE_OA ) );
-        MD_CHECK_CC( AddStartConfigRegister( 0x13088, 0x00001806, REGISTER_TYPE_OA ) );
-        MD_CHECK_CC( AddStartConfigRegister( 0x1308c, 0x00000000, REGISTER_TYPE_OA ) );
         MD_CHECK_CC( AddStartConfigRegister( 0x130a8, 0x0000061c, REGISTER_TYPE_OA ) );
         MD_CHECK_CC( AddStartConfigRegister( 0x130ac, 0x00000000, REGISTER_TYPE_OA ) );
         MD_CHECK_CC( AddStartConfigRegister( 0x130b0, 0x0000061e, REGISTER_TYPE_OA ) );
         MD_CHECK_CC( AddStartConfigRegister( 0x130b4, 0x00000000, REGISTER_TYPE_OA ) );
-        MD_CHECK_CC( AddStartConfigRegister( 0x130b8, 0x00001601, REGISTER_TYPE_OA ) );
+        MD_CHECK_CC( AddStartConfigRegister( 0x130b8, 0x00001602, REGISTER_TYPE_OA ) );
         MD_CHECK_CC( AddStartConfigRegister( 0x130bc, 0x00000000, REGISTER_TYPE_OA ) );
-        MD_CHECK_CC( AddStartConfigRegister( 0x130c0, 0x00001604, REGISTER_TYPE_OA ) );
+        MD_CHECK_CC( AddStartConfigRegister( 0x130c0, 0x00001606, REGISTER_TYPE_OA ) );
         MD_CHECK_CC( AddStartConfigRegister( 0x130c4, 0x00000000, REGISTER_TYPE_OA ) );
-        MD_CHECK_CC( AddStartConfigRegister( 0x130c8, 0x00001602, REGISTER_TYPE_OA ) );
+        MD_CHECK_CC( AddStartConfigRegister( 0x130c8, 0x00001808, REGISTER_TYPE_OA ) );
         MD_CHECK_CC( AddStartConfigRegister( 0x130cc, 0x00000000, REGISTER_TYPE_OA ) );
-        MD_CHECK_CC( AddStartConfigRegister( 0x130d0, 0x00001606, REGISTER_TYPE_OA ) );
+        MD_CHECK_CC( AddStartConfigRegister( 0x130d0, 0x00000605, REGISTER_TYPE_OA ) );
         MD_CHECK_CC( AddStartConfigRegister( 0x130d4, 0x00000000, REGISTER_TYPE_OA ) );
-        MD_CHECK_CC( AddStartConfigRegister( 0x130d8, 0x00001807, REGISTER_TYPE_OA ) );
+        MD_CHECK_CC( AddStartConfigRegister( 0x130d8, 0x00000600, REGISTER_TYPE_OA ) );
         MD_CHECK_CC( AddStartConfigRegister( 0x130dc, 0x00000000, REGISTER_TYPE_OA ) );
-        MD_CHECK_CC( AddStartConfigRegister( 0x130e0, 0x00001808, REGISTER_TYPE_OA ) );
+        MD_CHECK_CC( AddStartConfigRegister( 0x130e0, 0x00000606, REGISTER_TYPE_OA ) );
         MD_CHECK_CC( AddStartConfigRegister( 0x130e4, 0x00000000, REGISTER_TYPE_OA ) );
-        MD_CHECK_CC( AddStartConfigRegister( 0x130e8, 0x00000605, REGISTER_TYPE_OA ) );
+        MD_CHECK_CC( AddStartConfigRegister( 0x130e8, 0x00000604, REGISTER_TYPE_OA ) );
         MD_CHECK_CC( AddStartConfigRegister( 0x130ec, 0x00000000, REGISTER_TYPE_OA ) );
-        MD_CHECK_CC( AddStartConfigRegister( 0x130f0, 0x00000600, REGISTER_TYPE_OA ) );
+        MD_CHECK_CC( AddStartConfigRegister( 0x130f0, 0x00000624, REGISTER_TYPE_OA ) );
         MD_CHECK_CC( AddStartConfigRegister( 0x130f4, 0x00000000, REGISTER_TYPE_OA ) );
-        MD_CHECK_CC( AddStartConfigRegister( 0x130f8, 0x00000606, REGISTER_TYPE_OA ) );
+        MD_CHECK_CC( AddStartConfigRegister( 0x130f8, 0x00000625, REGISTER_TYPE_OA ) );
         MD_CHECK_CC( AddStartConfigRegister( 0x130fc, 0x00000000, REGISTER_TYPE_OA ) );
         MD_CHECK_CC( AddStartConfigRegister( 0x13300, 0x00005a00, REGISTER_TYPE_OA ) );
         MD_CHECK_CC( AddStartConfigRegister( 0x13304, 0x00000000, REGISTER_TYPE_OA ) );
@@ -2598,33 +2579,23 @@ namespace MetricsDiscoveryInternal::MetricSets_CRI_OA
         MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 64" ) );
         metric->SetQueryModeMask( QUERY_MODE_MASK_GLOBAL | QUERY_MODE_MASK_GLOBAL_EXTENDED );
 
-        metric = AddMetric( "GPGPU_THREADGROUP_COUNT", "GpGpu Threadgroup Count",
-            "Number of GPGPU threadgroups dispatched",
+        metric = AddMetric( "ASYNC_GPGPU_THREADGROUP_COUNT", "Async GpGpu Threadgroup Count",
+            "Number of Async GPGPU threadgroups dispatched",
             "Thread Dispatcher", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "events", 0, 0, HW_UNIT_GPU, nullptr, nullptr, nullptr, 5 );
         MD_CHECK_PTR( metric );
         MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "qw@0x20" ) );
         MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x10" ) );
         MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 64" ) );
-        metric->SetQueryModeMask( QUERY_MODE_MASK_RENDER | QUERY_MODE_MASK_GLOBAL | QUERY_MODE_MASK_GLOBAL_EXTENDED );
-
-        metric = AddMetric( "ASYNC_GPGPU_THREADGROUP_COUNT", "Async GpGpu Threadgroup Count",
-            "Number of Async GPGPU threadgroups dispatched",
-            "Thread Dispatcher", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
-            METRIC_TYPE_EVENT, RESULT_UINT64, "events", 0, 0, HW_UNIT_GPU, nullptr, nullptr, nullptr, 6 );
-        MD_CHECK_PTR( metric );
-        MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "qw@0x28" ) );
-        MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x18" ) );
-        MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 64" ) );
         metric->SetQueryModeMask( QUERY_MODE_MASK_COMPUTE | QUERY_MODE_MASK_GLOBAL | QUERY_MODE_MASK_GLOBAL_EXTENDED );
 
         metric = AddMetric( "TEST_EVENT1", "Test Event1",
             "Number of GPU (gt) clock cycles at every clock period",
             "Test", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
-            METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, nullptr, nullptr, nullptr, 7 );
+            METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, nullptr, nullptr, nullptr, 6 );
         MD_CHECK_PTR( metric );
-        MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "qw@0x30 $XeCoreTotalCount UDIV" ) );
-        MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x20 $XeCoreTotalCount UDIV" ) );
+        MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "qw@0x28 $XeCoreTotalCount UDIV" ) );
+        MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x18 $XeCoreTotalCount UDIV" ) );
         MD_CHECK_CC( metric->SetNormalizationEquation( "GpuDuration" ) );
         MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 64" ) );
         metric->SetQueryModeMask( QUERY_MODE_MASK_RENDER | QUERY_MODE_MASK_COMPUTE | QUERY_MODE_MASK_GLOBAL | QUERY_MODE_MASK_GLOBAL_EXTENDED );
@@ -2632,317 +2603,317 @@ namespace MetricsDiscoveryInternal::MetricSets_CRI_OA
         metric = AddMetric( "TEST_EVENT1_CYCLES", "Test Event1 Cycles",
             "Number of GPU (gt) clock cycles at every clock period",
             "Test", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
-            METRIC_TYPE_EVENT, RESULT_UINT64, "cycles", 0, 0, HW_UNIT_GPU, nullptr, nullptr, nullptr, 8 );
+            METRIC_TYPE_EVENT, RESULT_UINT64, "cycles", 0, 0, HW_UNIT_GPU, nullptr, nullptr, nullptr, 7 );
         MD_CHECK_PTR( metric );
-        MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "qw@0x30" ) );
-        MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x20" ) );
+        MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "qw@0x28" ) );
+        MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x18" ) );
         MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 64" ) );
         metric->SetQueryModeMask( QUERY_MODE_MASK_RENDER | QUERY_MODE_MASK_COMPUTE | QUERY_MODE_MASK_GLOBAL | QUERY_MODE_MASK_GLOBAL_EXTENDED );
 
         metric = AddMetric( "TEST_EVENT1_CYCLES_XECORE0", "Test Event1 Cycles Xecore0",
             "Number of GPU (gt) clock cycles at every clock period (XECORE0)",
             "Test", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
-            METRIC_TYPE_EVENT, RESULT_UINT64, "cycles", 0, 0, HW_UNIT_GPU, "$GtXeCore0", nullptr, nullptr, 9 );
+            METRIC_TYPE_EVENT, RESULT_UINT64, "cycles", 0, 0, HW_UNIT_GPU, "$GtXeCore0", nullptr, nullptr, 8 );
         MD_CHECK_PTR( metric );
-        MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "qw@0x38" ) );
-        MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x28" ) );
+        MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "qw@0x30" ) );
+        MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x20" ) );
         MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 64" ) );
         metric->SetQueryModeMask( QUERY_MODE_MASK_RENDER | QUERY_MODE_MASK_COMPUTE | QUERY_MODE_MASK_GLOBAL | QUERY_MODE_MASK_GLOBAL_EXTENDED );
 
         metric = AddMetric( "TEST_EVENT1_CYCLES_XECORE1", "Test Event1 Cycles Xecore1",
             "Number of GPU (gt) clock cycles at every clock period (XECORE1)",
             "Test", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
-            METRIC_TYPE_EVENT, RESULT_UINT64, "cycles", 0, 0, HW_UNIT_GPU, "$GtXeCore1", nullptr, nullptr, 10 );
+            METRIC_TYPE_EVENT, RESULT_UINT64, "cycles", 0, 0, HW_UNIT_GPU, "$GtXeCore1", nullptr, nullptr, 9 );
         MD_CHECK_PTR( metric );
-        MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "qw@0x40" ) );
-        MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x30" ) );
+        MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "qw@0x38" ) );
+        MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x28" ) );
         MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 64" ) );
         metric->SetQueryModeMask( QUERY_MODE_MASK_RENDER | QUERY_MODE_MASK_COMPUTE | QUERY_MODE_MASK_GLOBAL | QUERY_MODE_MASK_GLOBAL_EXTENDED );
 
         metric = AddMetric( "TEST_EVENT1_CYCLES_XECORE2", "Test Event1 Cycles Xecore2",
             "Number of GPU (gt) clock cycles at every clock period (XECORE2)",
             "Test", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
-            METRIC_TYPE_EVENT, RESULT_UINT64, "cycles", 0, 0, HW_UNIT_GPU, "$GtXeCore2", nullptr, nullptr, 11 );
+            METRIC_TYPE_EVENT, RESULT_UINT64, "cycles", 0, 0, HW_UNIT_GPU, "$GtXeCore2", nullptr, nullptr, 10 );
         MD_CHECK_PTR( metric );
-        MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "qw@0x48" ) );
-        MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x38" ) );
+        MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "qw@0x40" ) );
+        MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x30" ) );
         MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 64" ) );
         metric->SetQueryModeMask( QUERY_MODE_MASK_RENDER | QUERY_MODE_MASK_COMPUTE | QUERY_MODE_MASK_GLOBAL | QUERY_MODE_MASK_GLOBAL_EXTENDED );
 
         metric = AddMetric( "TEST_EVENT1_CYCLES_XECORE3", "Test Event1 Cycles Xecore3",
             "Number of GPU (gt) clock cycles at every clock period (XECORE3)",
             "Test", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
-            METRIC_TYPE_EVENT, RESULT_UINT64, "cycles", 0, 0, HW_UNIT_GPU, "$GtXeCore3", nullptr, nullptr, 12 );
+            METRIC_TYPE_EVENT, RESULT_UINT64, "cycles", 0, 0, HW_UNIT_GPU, "$GtXeCore3", nullptr, nullptr, 11 );
         MD_CHECK_PTR( metric );
-        MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "qw@0x50" ) );
-        MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x40" ) );
+        MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "qw@0x48" ) );
+        MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x38" ) );
         MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 64" ) );
         metric->SetQueryModeMask( QUERY_MODE_MASK_RENDER | QUERY_MODE_MASK_COMPUTE | QUERY_MODE_MASK_GLOBAL | QUERY_MODE_MASK_GLOBAL_EXTENDED );
 
         metric = AddMetric( "TEST_EVENT1_CYCLES_XECORE4", "Test Event1 Cycles Xecore4",
             "Number of GPU (gt) clock cycles at every clock period (XECORE4)",
             "Test", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
-            METRIC_TYPE_EVENT, RESULT_UINT64, "cycles", 0, 0, HW_UNIT_GPU, "$GtXeCore4", nullptr, nullptr, 13 );
+            METRIC_TYPE_EVENT, RESULT_UINT64, "cycles", 0, 0, HW_UNIT_GPU, "$GtXeCore4", nullptr, nullptr, 12 );
         MD_CHECK_PTR( metric );
-        MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "qw@0xc8" ) );
-        MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0xb8" ) );
+        MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "qw@0x50" ) );
+        MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x40" ) );
         MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 64" ) );
         metric->SetQueryModeMask( QUERY_MODE_MASK_RENDER | QUERY_MODE_MASK_COMPUTE | QUERY_MODE_MASK_GLOBAL | QUERY_MODE_MASK_GLOBAL_EXTENDED );
 
         metric = AddMetric( "TEST_EVENT1_CYCLES_XECORE5", "Test Event1 Cycles Xecore5",
             "Number of GPU (gt) clock cycles at every clock period (XECORE5)",
             "Test", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
-            METRIC_TYPE_EVENT, RESULT_UINT64, "cycles", 0, 0, HW_UNIT_GPU, "$GtXeCore5", nullptr, nullptr, 14 );
+            METRIC_TYPE_EVENT, RESULT_UINT64, "cycles", 0, 0, HW_UNIT_GPU, "$GtXeCore5", nullptr, nullptr, 13 );
         MD_CHECK_PTR( metric );
-        MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "qw@0xd0" ) );
-        MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0xc0" ) );
+        MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "qw@0xc8" ) );
+        MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0xb8" ) );
         MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 64" ) );
         metric->SetQueryModeMask( QUERY_MODE_MASK_RENDER | QUERY_MODE_MASK_COMPUTE | QUERY_MODE_MASK_GLOBAL | QUERY_MODE_MASK_GLOBAL_EXTENDED );
 
         metric = AddMetric( "TEST_EVENT1_CYCLES_XECORE6", "Test Event1 Cycles Xecore6",
             "Number of GPU (gt) clock cycles at every clock period (XECORE6)",
             "Test", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
-            METRIC_TYPE_EVENT, RESULT_UINT64, "cycles", 0, 0, HW_UNIT_GPU, "$GtXeCore6", nullptr, nullptr, 15 );
+            METRIC_TYPE_EVENT, RESULT_UINT64, "cycles", 0, 0, HW_UNIT_GPU, "$GtXeCore6", nullptr, nullptr, 14 );
         MD_CHECK_PTR( metric );
-        MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "qw@0xd8" ) );
-        MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0xc8" ) );
+        MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "qw@0xd0" ) );
+        MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0xc0" ) );
         MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 64" ) );
         metric->SetQueryModeMask( QUERY_MODE_MASK_RENDER | QUERY_MODE_MASK_COMPUTE | QUERY_MODE_MASK_GLOBAL | QUERY_MODE_MASK_GLOBAL_EXTENDED );
 
         metric = AddMetric( "TEST_EVENT1_CYCLES_XECORE7", "Test Event1 Cycles Xecore7",
             "Number of GPU (gt) clock cycles at every clock period (XECORE7)",
             "Test", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
-            METRIC_TYPE_EVENT, RESULT_UINT64, "cycles", 0, 0, HW_UNIT_GPU, "$GtXeCore7", nullptr, nullptr, 16 );
+            METRIC_TYPE_EVENT, RESULT_UINT64, "cycles", 0, 0, HW_UNIT_GPU, "$GtXeCore7", nullptr, nullptr, 15 );
         MD_CHECK_PTR( metric );
-        MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "qw@0xe0" ) );
-        MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0xd0" ) );
+        MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "qw@0xd8" ) );
+        MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0xc8" ) );
         MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 64" ) );
         metric->SetQueryModeMask( QUERY_MODE_MASK_RENDER | QUERY_MODE_MASK_COMPUTE | QUERY_MODE_MASK_GLOBAL | QUERY_MODE_MASK_GLOBAL_EXTENDED );
 
         metric = AddMetric( "TEST_EVENT1_CYCLES_XECORE8", "Test Event1 Cycles Xecore8",
             "Number of GPU (gt) clock cycles at every clock period (XECORE8)",
             "Test", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
-            METRIC_TYPE_EVENT, RESULT_UINT64, "cycles", 0, 0, HW_UNIT_GPU, "$GtXeCore8", nullptr, nullptr, 17 );
+            METRIC_TYPE_EVENT, RESULT_UINT64, "cycles", 0, 0, HW_UNIT_GPU, "$GtXeCore8", nullptr, nullptr, 16 );
         MD_CHECK_PTR( metric );
-        MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "qw@0xe8" ) );
-        MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0xd8" ) );
+        MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "qw@0xe0" ) );
+        MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0xd0" ) );
         MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 64" ) );
         metric->SetQueryModeMask( QUERY_MODE_MASK_RENDER | QUERY_MODE_MASK_COMPUTE | QUERY_MODE_MASK_GLOBAL | QUERY_MODE_MASK_GLOBAL_EXTENDED );
 
         metric = AddMetric( "TEST_EVENT1_CYCLES_XECORE9", "Test Event1 Cycles Xecore9",
             "Number of GPU (gt) clock cycles at every clock period (XECORE9)",
             "Test", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
-            METRIC_TYPE_EVENT, RESULT_UINT64, "cycles", 0, 0, HW_UNIT_GPU, "$GtXeCore9", nullptr, nullptr, 18 );
+            METRIC_TYPE_EVENT, RESULT_UINT64, "cycles", 0, 0, HW_UNIT_GPU, "$GtXeCore9", nullptr, nullptr, 17 );
         MD_CHECK_PTR( metric );
-        MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "qw@0xf0" ) );
-        MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0xe0" ) );
+        MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "qw@0xe8" ) );
+        MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0xd8" ) );
         MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 64" ) );
         metric->SetQueryModeMask( QUERY_MODE_MASK_RENDER | QUERY_MODE_MASK_COMPUTE | QUERY_MODE_MASK_GLOBAL | QUERY_MODE_MASK_GLOBAL_EXTENDED );
 
         metric = AddMetric( "TEST_EVENT1_CYCLES_XECORE10", "Test Event1 Cycles Xecore10",
             "Number of GPU (gt) clock cycles at every clock period (XECORE10)",
             "Test", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
-            METRIC_TYPE_EVENT, RESULT_UINT64, "cycles", 0, 0, HW_UNIT_GPU, "$GtXeCore10", nullptr, nullptr, 19 );
+            METRIC_TYPE_EVENT, RESULT_UINT64, "cycles", 0, 0, HW_UNIT_GPU, "$GtXeCore10", nullptr, nullptr, 18 );
         MD_CHECK_PTR( metric );
-        MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "qw@0xf8" ) );
-        MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0xe8" ) );
+        MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "qw@0xf0" ) );
+        MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0xe0" ) );
         MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 64" ) );
         metric->SetQueryModeMask( QUERY_MODE_MASK_RENDER | QUERY_MODE_MASK_COMPUTE | QUERY_MODE_MASK_GLOBAL | QUERY_MODE_MASK_GLOBAL_EXTENDED );
 
         metric = AddMetric( "TEST_EVENT1_CYCLES_XECORE11", "Test Event1 Cycles Xecore11",
             "Number of GPU (gt) clock cycles at every clock period (XECORE11)",
             "Test", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
-            METRIC_TYPE_EVENT, RESULT_UINT64, "cycles", 0, 0, HW_UNIT_GPU, "$GtXeCore11", nullptr, nullptr, 20 );
+            METRIC_TYPE_EVENT, RESULT_UINT64, "cycles", 0, 0, HW_UNIT_GPU, "$GtXeCore11", nullptr, nullptr, 19 );
         MD_CHECK_PTR( metric );
-        MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "qw@0x100" ) );
-        MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0xf0" ) );
+        MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "qw@0xf8" ) );
+        MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0xe8" ) );
         MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 64" ) );
         metric->SetQueryModeMask( QUERY_MODE_MASK_RENDER | QUERY_MODE_MASK_COMPUTE | QUERY_MODE_MASK_GLOBAL | QUERY_MODE_MASK_GLOBAL_EXTENDED );
 
         metric = AddMetric( "TEST_EVENT1_CYCLES_XECORE12", "Test Event1 Cycles Xecore12",
             "Number of GPU (gt) clock cycles at every clock period (XECORE12)",
             "Test", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
-            METRIC_TYPE_EVENT, RESULT_UINT64, "cycles", 0, 0, HW_UNIT_GPU, "$GtXeCore12", nullptr, nullptr, 21 );
+            METRIC_TYPE_EVENT, RESULT_UINT64, "cycles", 0, 0, HW_UNIT_GPU, "$GtXeCore12", nullptr, nullptr, 20 );
         MD_CHECK_PTR( metric );
-        MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "qw@0x108" ) );
-        MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0xf8" ) );
+        MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "qw@0x100" ) );
+        MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0xf0" ) );
         MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 64" ) );
         metric->SetQueryModeMask( QUERY_MODE_MASK_RENDER | QUERY_MODE_MASK_COMPUTE | QUERY_MODE_MASK_GLOBAL | QUERY_MODE_MASK_GLOBAL_EXTENDED );
 
         metric = AddMetric( "TEST_EVENT1_CYCLES_XECORE13", "Test Event1 Cycles Xecore13",
             "Number of GPU (gt) clock cycles at every clock period (XECORE13)",
             "Test", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
-            METRIC_TYPE_EVENT, RESULT_UINT64, "cycles", 0, 0, HW_UNIT_GPU, "$GtXeCore13", nullptr, nullptr, 22 );
+            METRIC_TYPE_EVENT, RESULT_UINT64, "cycles", 0, 0, HW_UNIT_GPU, "$GtXeCore13", nullptr, nullptr, 21 );
         MD_CHECK_PTR( metric );
-        MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "qw@0x110" ) );
-        MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x100" ) );
+        MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "qw@0x108" ) );
+        MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0xf8" ) );
         MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 64" ) );
         metric->SetQueryModeMask( QUERY_MODE_MASK_RENDER | QUERY_MODE_MASK_COMPUTE | QUERY_MODE_MASK_GLOBAL | QUERY_MODE_MASK_GLOBAL_EXTENDED );
 
         metric = AddMetric( "TEST_EVENT1_CYCLES_XECORE14", "Test Event1 Cycles Xecore14",
             "Number of GPU (gt) clock cycles at every clock period (XECORE14)",
             "Test", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
-            METRIC_TYPE_EVENT, RESULT_UINT64, "cycles", 0, 0, HW_UNIT_GPU, "$GtXeCore14", nullptr, nullptr, 23 );
+            METRIC_TYPE_EVENT, RESULT_UINT64, "cycles", 0, 0, HW_UNIT_GPU, "$GtXeCore14", nullptr, nullptr, 22 );
         MD_CHECK_PTR( metric );
-        MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "qw@0x118" ) );
-        MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x108" ) );
+        MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "qw@0x110" ) );
+        MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x100" ) );
         MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 64" ) );
         metric->SetQueryModeMask( QUERY_MODE_MASK_RENDER | QUERY_MODE_MASK_COMPUTE | QUERY_MODE_MASK_GLOBAL | QUERY_MODE_MASK_GLOBAL_EXTENDED );
 
         metric = AddMetric( "TEST_EVENT1_CYCLES_XECORE15", "Test Event1 Cycles Xecore15",
             "Number of GPU (gt) clock cycles at every clock period (XECORE15)",
             "Test", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
-            METRIC_TYPE_EVENT, RESULT_UINT64, "cycles", 0, 0, HW_UNIT_GPU, "$GtXeCore15", nullptr, nullptr, 24 );
+            METRIC_TYPE_EVENT, RESULT_UINT64, "cycles", 0, 0, HW_UNIT_GPU, "$GtXeCore15", nullptr, nullptr, 23 );
         MD_CHECK_PTR( metric );
-        MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "qw@0x58" ) );
-        MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x48" ) );
+        MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "qw@0x118" ) );
+        MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x108" ) );
         MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 64" ) );
         metric->SetQueryModeMask( QUERY_MODE_MASK_RENDER | QUERY_MODE_MASK_COMPUTE | QUERY_MODE_MASK_GLOBAL | QUERY_MODE_MASK_GLOBAL_EXTENDED );
 
         metric = AddMetric( "TEST_EVENT1_CYCLES_XECORE16", "Test Event1 Cycles Xecore16",
             "Number of GPU (gt) clock cycles at every clock period (XECORE16)",
             "Test", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
-            METRIC_TYPE_EVENT, RESULT_UINT64, "cycles", 0, 0, HW_UNIT_GPU, "$GtXeCore16", nullptr, nullptr, 25 );
+            METRIC_TYPE_EVENT, RESULT_UINT64, "cycles", 0, 0, HW_UNIT_GPU, "$GtXeCore16", nullptr, nullptr, 24 );
         MD_CHECK_PTR( metric );
-        MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "qw@0x60" ) );
-        MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x50" ) );
+        MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "qw@0x58" ) );
+        MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x48" ) );
         MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 64" ) );
         metric->SetQueryModeMask( QUERY_MODE_MASK_RENDER | QUERY_MODE_MASK_COMPUTE | QUERY_MODE_MASK_GLOBAL | QUERY_MODE_MASK_GLOBAL_EXTENDED );
 
         metric = AddMetric( "TEST_EVENT1_CYCLES_XECORE17", "Test Event1 Cycles Xecore17",
             "Number of GPU (gt) clock cycles at every clock period (XECORE17)",
             "Test", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
-            METRIC_TYPE_EVENT, RESULT_UINT64, "cycles", 0, 0, HW_UNIT_GPU, "$GtXeCore17", nullptr, nullptr, 26 );
+            METRIC_TYPE_EVENT, RESULT_UINT64, "cycles", 0, 0, HW_UNIT_GPU, "$GtXeCore17", nullptr, nullptr, 25 );
         MD_CHECK_PTR( metric );
-        MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "qw@0x68" ) );
-        MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x58" ) );
+        MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "qw@0x60" ) );
+        MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x50" ) );
         MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 64" ) );
         metric->SetQueryModeMask( QUERY_MODE_MASK_RENDER | QUERY_MODE_MASK_COMPUTE | QUERY_MODE_MASK_GLOBAL | QUERY_MODE_MASK_GLOBAL_EXTENDED );
 
         metric = AddMetric( "TEST_EVENT1_CYCLES_XECORE18", "Test Event1 Cycles Xecore18",
             "Number of GPU (gt) clock cycles at every clock period (XECORE18)",
             "Test", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
-            METRIC_TYPE_EVENT, RESULT_UINT64, "cycles", 0, 0, HW_UNIT_GPU, "$GtXeCore18", nullptr, nullptr, 27 );
+            METRIC_TYPE_EVENT, RESULT_UINT64, "cycles", 0, 0, HW_UNIT_GPU, "$GtXeCore18", nullptr, nullptr, 26 );
         MD_CHECK_PTR( metric );
-        MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "qw@0x70" ) );
-        MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x60" ) );
+        MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "qw@0x68" ) );
+        MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x58" ) );
         MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 64" ) );
         metric->SetQueryModeMask( QUERY_MODE_MASK_RENDER | QUERY_MODE_MASK_COMPUTE | QUERY_MODE_MASK_GLOBAL | QUERY_MODE_MASK_GLOBAL_EXTENDED );
 
         metric = AddMetric( "TEST_EVENT1_CYCLES_XECORE19", "Test Event1 Cycles Xecore19",
             "Number of GPU (gt) clock cycles at every clock period (XECORE19)",
             "Test", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
-            METRIC_TYPE_EVENT, RESULT_UINT64, "cycles", 0, 0, HW_UNIT_GPU, "$GtXeCore19", nullptr, nullptr, 28 );
+            METRIC_TYPE_EVENT, RESULT_UINT64, "cycles", 0, 0, HW_UNIT_GPU, "$GtXeCore19", nullptr, nullptr, 27 );
         MD_CHECK_PTR( metric );
-        MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "qw@0x78" ) );
-        MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x68" ) );
+        MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "qw@0x70" ) );
+        MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x60" ) );
         MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 64" ) );
         metric->SetQueryModeMask( QUERY_MODE_MASK_RENDER | QUERY_MODE_MASK_COMPUTE | QUERY_MODE_MASK_GLOBAL | QUERY_MODE_MASK_GLOBAL_EXTENDED );
 
         metric = AddMetric( "TEST_EVENT1_CYCLES_XECORE20", "Test Event1 Cycles Xecore20",
             "Number of GPU (gt) clock cycles at every clock period (XECORE20)",
             "Test", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
-            METRIC_TYPE_EVENT, RESULT_UINT64, "cycles", 0, 0, HW_UNIT_GPU, "$GtXeCore20", nullptr, nullptr, 29 );
+            METRIC_TYPE_EVENT, RESULT_UINT64, "cycles", 0, 0, HW_UNIT_GPU, "$GtXeCore20", nullptr, nullptr, 28 );
         MD_CHECK_PTR( metric );
-        MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "qw@0x80" ) );
-        MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x70" ) );
+        MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "qw@0x78" ) );
+        MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x68" ) );
         MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 64" ) );
         metric->SetQueryModeMask( QUERY_MODE_MASK_RENDER | QUERY_MODE_MASK_COMPUTE | QUERY_MODE_MASK_GLOBAL | QUERY_MODE_MASK_GLOBAL_EXTENDED );
 
         metric = AddMetric( "TEST_EVENT1_CYCLES_XECORE21", "Test Event1 Cycles Xecore21",
             "Number of GPU (gt) clock cycles at every clock period (XECORE21)",
             "Test", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
-            METRIC_TYPE_EVENT, RESULT_UINT64, "cycles", 0, 0, HW_UNIT_GPU, "$GtXeCore21", nullptr, nullptr, 30 );
+            METRIC_TYPE_EVENT, RESULT_UINT64, "cycles", 0, 0, HW_UNIT_GPU, "$GtXeCore21", nullptr, nullptr, 29 );
         MD_CHECK_PTR( metric );
-        MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "qw@0x88" ) );
-        MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x78" ) );
+        MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "qw@0x80" ) );
+        MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x70" ) );
         MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 64" ) );
         metric->SetQueryModeMask( QUERY_MODE_MASK_RENDER | QUERY_MODE_MASK_COMPUTE | QUERY_MODE_MASK_GLOBAL | QUERY_MODE_MASK_GLOBAL_EXTENDED );
 
         metric = AddMetric( "TEST_EVENT1_CYCLES_XECORE22", "Test Event1 Cycles Xecore22",
             "Number of GPU (gt) clock cycles at every clock period (XECORE22)",
             "Test", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
-            METRIC_TYPE_EVENT, RESULT_UINT64, "cycles", 0, 0, HW_UNIT_GPU, "$GtXeCore22", nullptr, nullptr, 31 );
+            METRIC_TYPE_EVENT, RESULT_UINT64, "cycles", 0, 0, HW_UNIT_GPU, "$GtXeCore22", nullptr, nullptr, 30 );
         MD_CHECK_PTR( metric );
-        MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "qw@0x90" ) );
-        MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x80" ) );
+        MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "qw@0x88" ) );
+        MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x78" ) );
         MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 64" ) );
         metric->SetQueryModeMask( QUERY_MODE_MASK_RENDER | QUERY_MODE_MASK_COMPUTE | QUERY_MODE_MASK_GLOBAL | QUERY_MODE_MASK_GLOBAL_EXTENDED );
 
         metric = AddMetric( "TEST_EVENT1_CYCLES_XECORE23", "Test Event1 Cycles Xecore23",
             "Number of GPU (gt) clock cycles at every clock period (XECORE23)",
             "Test", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
-            METRIC_TYPE_EVENT, RESULT_UINT64, "cycles", 0, 0, HW_UNIT_GPU, "$GtXeCore23", nullptr, nullptr, 32 );
+            METRIC_TYPE_EVENT, RESULT_UINT64, "cycles", 0, 0, HW_UNIT_GPU, "$GtXeCore23", nullptr, nullptr, 31 );
         MD_CHECK_PTR( metric );
-        MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "qw@0x98" ) );
-        MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x88" ) );
+        MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "qw@0x90" ) );
+        MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x80" ) );
         MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 64" ) );
         metric->SetQueryModeMask( QUERY_MODE_MASK_RENDER | QUERY_MODE_MASK_COMPUTE | QUERY_MODE_MASK_GLOBAL | QUERY_MODE_MASK_GLOBAL_EXTENDED );
 
         metric = AddMetric( "TEST_EVENT1_CYCLES_XECORE24", "Test Event1 Cycles Xecore24",
             "Number of GPU (gt) clock cycles at every clock period (XECORE24)",
             "Test", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
-            METRIC_TYPE_EVENT, RESULT_UINT64, "cycles", 0, 0, HW_UNIT_GPU, "$GtXeCore24", nullptr, nullptr, 33 );
+            METRIC_TYPE_EVENT, RESULT_UINT64, "cycles", 0, 0, HW_UNIT_GPU, "$GtXeCore24", nullptr, nullptr, 32 );
         MD_CHECK_PTR( metric );
-        MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "qw@0xa0" ) );
-        MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x90" ) );
+        MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "qw@0x98" ) );
+        MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x88" ) );
         MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 64" ) );
         metric->SetQueryModeMask( QUERY_MODE_MASK_RENDER | QUERY_MODE_MASK_COMPUTE | QUERY_MODE_MASK_GLOBAL | QUERY_MODE_MASK_GLOBAL_EXTENDED );
 
         metric = AddMetric( "TEST_EVENT1_CYCLES_XECORE25", "Test Event1 Cycles Xecore25",
             "Number of GPU (gt) clock cycles at every clock period (XECORE25)",
             "Test", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
-            METRIC_TYPE_EVENT, RESULT_UINT64, "cycles", 0, 0, HW_UNIT_GPU, "$GtXeCore25", nullptr, nullptr, 34 );
+            METRIC_TYPE_EVENT, RESULT_UINT64, "cycles", 0, 0, HW_UNIT_GPU, "$GtXeCore25", nullptr, nullptr, 33 );
         MD_CHECK_PTR( metric );
-        MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "qw@0xa8" ) );
-        MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x98" ) );
+        MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "qw@0xa0" ) );
+        MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x90" ) );
         MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 64" ) );
         metric->SetQueryModeMask( QUERY_MODE_MASK_RENDER | QUERY_MODE_MASK_COMPUTE | QUERY_MODE_MASK_GLOBAL | QUERY_MODE_MASK_GLOBAL_EXTENDED );
 
         metric = AddMetric( "TEST_EVENT1_CYCLES_XECORE26", "Test Event1 Cycles Xecore26",
             "Number of GPU (gt) clock cycles at every clock period (XECORE26)",
             "Test", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
-            METRIC_TYPE_EVENT, RESULT_UINT64, "cycles", 0, 0, HW_UNIT_GPU, "$GtXeCore26", nullptr, nullptr, 35 );
+            METRIC_TYPE_EVENT, RESULT_UINT64, "cycles", 0, 0, HW_UNIT_GPU, "$GtXeCore26", nullptr, nullptr, 34 );
         MD_CHECK_PTR( metric );
-        MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "qw@0xb0" ) );
-        MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0xa0" ) );
+        MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "qw@0xa8" ) );
+        MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x98" ) );
         MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 64" ) );
         metric->SetQueryModeMask( QUERY_MODE_MASK_RENDER | QUERY_MODE_MASK_COMPUTE | QUERY_MODE_MASK_GLOBAL | QUERY_MODE_MASK_GLOBAL_EXTENDED );
 
         metric = AddMetric( "TEST_EVENT1_CYCLES_XECORE27", "Test Event1 Cycles Xecore27",
             "Number of GPU (gt) clock cycles at every clock period (XECORE27)",
             "Test", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
-            METRIC_TYPE_EVENT, RESULT_UINT64, "cycles", 0, 0, HW_UNIT_GPU, "$GtXeCore27", nullptr, nullptr, 36 );
+            METRIC_TYPE_EVENT, RESULT_UINT64, "cycles", 0, 0, HW_UNIT_GPU, "$GtXeCore27", nullptr, nullptr, 35 );
         MD_CHECK_PTR( metric );
-        MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "qw@0xb8" ) );
-        MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0xa8" ) );
+        MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "qw@0xb0" ) );
+        MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0xa0" ) );
         MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 64" ) );
         metric->SetQueryModeMask( QUERY_MODE_MASK_RENDER | QUERY_MODE_MASK_COMPUTE | QUERY_MODE_MASK_GLOBAL | QUERY_MODE_MASK_GLOBAL_EXTENDED );
 
         metric = AddMetric( "TEST_EVENT1_CYCLES_XECORE28", "Test Event1 Cycles Xecore28",
             "Number of GPU (gt) clock cycles at every clock period (XECORE28)",
             "Test", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
-            METRIC_TYPE_EVENT, RESULT_UINT64, "cycles", 0, 0, HW_UNIT_GPU, "$GtXeCore28", nullptr, nullptr, 37 );
+            METRIC_TYPE_EVENT, RESULT_UINT64, "cycles", 0, 0, HW_UNIT_GPU, "$GtXeCore28", nullptr, nullptr, 36 );
         MD_CHECK_PTR( metric );
-        MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "qw@0xc0" ) );
-        MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0xb0" ) );
+        MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "qw@0xb8" ) );
+        MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0xa8" ) );
         MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 64" ) );
         metric->SetQueryModeMask( QUERY_MODE_MASK_RENDER | QUERY_MODE_MASK_COMPUTE | QUERY_MODE_MASK_GLOBAL | QUERY_MODE_MASK_GLOBAL_EXTENDED );
 
         metric = AddMetric( "TEST_EVENT1_CYCLES_AVERAGE", "Test Event1 Cycles Average",
-            "Average number of GPU (gt) clock cycles at every clock period",
+            "Average number of GPU (gt) clock cycles at every clock period (per instance)",
             "Test", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
-            METRIC_TYPE_EVENT, RESULT_UINT64, "cycles", 0, 0, HW_UNIT_GPU, nullptr, nullptr, nullptr, 38 );
+            METRIC_TYPE_EVENT, RESULT_UINT64, "cycles", 0, 0, HW_UNIT_GPU, nullptr, nullptr, nullptr, 37 );
         MD_CHECK_PTR( metric );
-        MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "qw@0x30 $XeCoreTotalCount UDIV" ) );
-        MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x20 $XeCoreTotalCount UDIV" ) );
+        MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "qw@0x28 $XeCoreTotalCount UDIV" ) );
+        MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x18 $XeCoreTotalCount UDIV" ) );
         MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 64" ) );
         metric->SetQueryModeMask( QUERY_MODE_MASK_RENDER | QUERY_MODE_MASK_COMPUTE | QUERY_MODE_MASK_GLOBAL | QUERY_MODE_MASK_GLOBAL_EXTENDED );
 
         metric = AddMetric( "TEST_EVENT2", "Test Event2",
             "Number of GPU (gt) clock cycles at every other clock period",
             "Test", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
-            METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, nullptr, nullptr, nullptr, 39 );
+            METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, nullptr, nullptr, nullptr, 38 );
         MD_CHECK_PTR( metric );
         MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "qw@0x128 $SliceTotalCount UDIV" ) );
         MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x118 $SliceTotalCount UDIV" ) );
@@ -2953,7 +2924,7 @@ namespace MetricsDiscoveryInternal::MetricSets_CRI_OA
         metric = AddMetric( "TEST_EVENT2_CYCLES", "Test Event2 Cycles",
             "Number of GPU (gt) clock cycles at every other clock period",
             "Test", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
-            METRIC_TYPE_EVENT, RESULT_UINT64, "cycles", 0, 0, HW_UNIT_GPU, nullptr, nullptr, nullptr, 40 );
+            METRIC_TYPE_EVENT, RESULT_UINT64, "cycles", 0, 0, HW_UNIT_GPU, nullptr, nullptr, nullptr, 39 );
         MD_CHECK_PTR( metric );
         MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "qw@0x128" ) );
         MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x118" ) );
@@ -2961,69 +2932,67 @@ namespace MetricsDiscoveryInternal::MetricSets_CRI_OA
         metric->SetQueryModeMask( QUERY_MODE_MASK_GLOBAL | QUERY_MODE_MASK_GLOBAL_EXTENDED );
 
         MD_CHECK_CC( AddStartRegisterSet( 0, 0, nullptr ) );
-        MD_CHECK_CC( AddStartConfigRegister( 0x13000, 0x00001801, REGISTER_TYPE_OA ) );
+        MD_CHECK_CC( AddStartConfigRegister( 0x13000, 0x00001802, REGISTER_TYPE_OA ) );
         MD_CHECK_CC( AddStartConfigRegister( 0x13004, 0x00000000, REGISTER_TYPE_OA ) );
-        MD_CHECK_CC( AddStartConfigRegister( 0x13008, 0x00001802, REGISTER_TYPE_OA ) );
+        MD_CHECK_CC( AddStartConfigRegister( 0x13008, 0x00003e00, REGISTER_TYPE_OA ) );
         MD_CHECK_CC( AddStartConfigRegister( 0x1300c, 0x00000000, REGISTER_TYPE_OA ) );
-        MD_CHECK_CC( AddStartConfigRegister( 0x13010, 0x00003e00, REGISTER_TYPE_OA ) );
+        MD_CHECK_CC( AddStartConfigRegister( 0x13010, 0x00013e00, REGISTER_TYPE_OA ) );
         MD_CHECK_CC( AddStartConfigRegister( 0x13014, 0x00000000, REGISTER_TYPE_OA ) );
-        MD_CHECK_CC( AddStartConfigRegister( 0x13018, 0x00013e00, REGISTER_TYPE_OA ) );
+        MD_CHECK_CC( AddStartConfigRegister( 0x13018, 0x00113e00, REGISTER_TYPE_OA ) );
         MD_CHECK_CC( AddStartConfigRegister( 0x1301c, 0x00000000, REGISTER_TYPE_OA ) );
-        MD_CHECK_CC( AddStartConfigRegister( 0x13020, 0x00113e00, REGISTER_TYPE_OA ) );
+        MD_CHECK_CC( AddStartConfigRegister( 0x13020, 0x00213e00, REGISTER_TYPE_OA ) );
         MD_CHECK_CC( AddStartConfigRegister( 0x13024, 0x00000000, REGISTER_TYPE_OA ) );
-        MD_CHECK_CC( AddStartConfigRegister( 0x13028, 0x00213e00, REGISTER_TYPE_OA ) );
+        MD_CHECK_CC( AddStartConfigRegister( 0x13028, 0x00313e00, REGISTER_TYPE_OA ) );
         MD_CHECK_CC( AddStartConfigRegister( 0x1302c, 0x00000000, REGISTER_TYPE_OA ) );
-        MD_CHECK_CC( AddStartConfigRegister( 0x13030, 0x00313e00, REGISTER_TYPE_OA ) );
+        MD_CHECK_CC( AddStartConfigRegister( 0x13030, 0x00413e00, REGISTER_TYPE_OA ) );
         MD_CHECK_CC( AddStartConfigRegister( 0x13034, 0x00000000, REGISTER_TYPE_OA ) );
-        MD_CHECK_CC( AddStartConfigRegister( 0x13038, 0x00f13e00, REGISTER_TYPE_OA ) );
+        MD_CHECK_CC( AddStartConfigRegister( 0x13038, 0x01013e00, REGISTER_TYPE_OA ) );
         MD_CHECK_CC( AddStartConfigRegister( 0x1303c, 0x00000000, REGISTER_TYPE_OA ) );
-        MD_CHECK_CC( AddStartConfigRegister( 0x13040, 0x01013e00, REGISTER_TYPE_OA ) );
+        MD_CHECK_CC( AddStartConfigRegister( 0x13040, 0x01113e00, REGISTER_TYPE_OA ) );
         MD_CHECK_CC( AddStartConfigRegister( 0x13044, 0x00000000, REGISTER_TYPE_OA ) );
-        MD_CHECK_CC( AddStartConfigRegister( 0x13048, 0x01113e00, REGISTER_TYPE_OA ) );
+        MD_CHECK_CC( AddStartConfigRegister( 0x13048, 0x01213e00, REGISTER_TYPE_OA ) );
         MD_CHECK_CC( AddStartConfigRegister( 0x1304c, 0x00000000, REGISTER_TYPE_OA ) );
-        MD_CHECK_CC( AddStartConfigRegister( 0x13050, 0x01213e00, REGISTER_TYPE_OA ) );
+        MD_CHECK_CC( AddStartConfigRegister( 0x13050, 0x01313e00, REGISTER_TYPE_OA ) );
         MD_CHECK_CC( AddStartConfigRegister( 0x13054, 0x00000000, REGISTER_TYPE_OA ) );
-        MD_CHECK_CC( AddStartConfigRegister( 0x13058, 0x01313e00, REGISTER_TYPE_OA ) );
+        MD_CHECK_CC( AddStartConfigRegister( 0x13058, 0x01413e00, REGISTER_TYPE_OA ) );
         MD_CHECK_CC( AddStartConfigRegister( 0x1305c, 0x00000000, REGISTER_TYPE_OA ) );
-        MD_CHECK_CC( AddStartConfigRegister( 0x13060, 0x01413e00, REGISTER_TYPE_OA ) );
+        MD_CHECK_CC( AddStartConfigRegister( 0x13060, 0x01513e00, REGISTER_TYPE_OA ) );
         MD_CHECK_CC( AddStartConfigRegister( 0x13064, 0x00000000, REGISTER_TYPE_OA ) );
-        MD_CHECK_CC( AddStartConfigRegister( 0x13068, 0x01513e00, REGISTER_TYPE_OA ) );
+        MD_CHECK_CC( AddStartConfigRegister( 0x13068, 0x01613e00, REGISTER_TYPE_OA ) );
         MD_CHECK_CC( AddStartConfigRegister( 0x1306c, 0x00000000, REGISTER_TYPE_OA ) );
-        MD_CHECK_CC( AddStartConfigRegister( 0x13070, 0x01613e00, REGISTER_TYPE_OA ) );
+        MD_CHECK_CC( AddStartConfigRegister( 0x13070, 0x01713e00, REGISTER_TYPE_OA ) );
         MD_CHECK_CC( AddStartConfigRegister( 0x13074, 0x00000000, REGISTER_TYPE_OA ) );
-        MD_CHECK_CC( AddStartConfigRegister( 0x13078, 0x01713e00, REGISTER_TYPE_OA ) );
+        MD_CHECK_CC( AddStartConfigRegister( 0x13078, 0x01813e00, REGISTER_TYPE_OA ) );
         MD_CHECK_CC( AddStartConfigRegister( 0x1307c, 0x00000000, REGISTER_TYPE_OA ) );
-        MD_CHECK_CC( AddStartConfigRegister( 0x13080, 0x01813e00, REGISTER_TYPE_OA ) );
+        MD_CHECK_CC( AddStartConfigRegister( 0x13080, 0x01913e00, REGISTER_TYPE_OA ) );
         MD_CHECK_CC( AddStartConfigRegister( 0x13084, 0x00000000, REGISTER_TYPE_OA ) );
-        MD_CHECK_CC( AddStartConfigRegister( 0x13088, 0x01913e00, REGISTER_TYPE_OA ) );
+        MD_CHECK_CC( AddStartConfigRegister( 0x13088, 0x01a13e00, REGISTER_TYPE_OA ) );
         MD_CHECK_CC( AddStartConfigRegister( 0x1308c, 0x00000000, REGISTER_TYPE_OA ) );
-        MD_CHECK_CC( AddStartConfigRegister( 0x13090, 0x01a13e00, REGISTER_TYPE_OA ) );
+        MD_CHECK_CC( AddStartConfigRegister( 0x13090, 0x01b13e00, REGISTER_TYPE_OA ) );
         MD_CHECK_CC( AddStartConfigRegister( 0x13094, 0x00000000, REGISTER_TYPE_OA ) );
-        MD_CHECK_CC( AddStartConfigRegister( 0x13098, 0x01b13e00, REGISTER_TYPE_OA ) );
+        MD_CHECK_CC( AddStartConfigRegister( 0x13098, 0x01c13e00, REGISTER_TYPE_OA ) );
         MD_CHECK_CC( AddStartConfigRegister( 0x1309c, 0x00000000, REGISTER_TYPE_OA ) );
-        MD_CHECK_CC( AddStartConfigRegister( 0x130a0, 0x01c13e00, REGISTER_TYPE_OA ) );
-        MD_CHECK_CC( AddStartConfigRegister( 0x130a4, 0x00000000, REGISTER_TYPE_OA ) );
-        MD_CHECK_CC( AddStartConfigRegister( 0x130a8, 0x00413e00, REGISTER_TYPE_OA ) );
+        MD_CHECK_CC( AddStartConfigRegister( 0x130a8, 0x00513e00, REGISTER_TYPE_OA ) );
         MD_CHECK_CC( AddStartConfigRegister( 0x130ac, 0x00000000, REGISTER_TYPE_OA ) );
-        MD_CHECK_CC( AddStartConfigRegister( 0x130b0, 0x00513e00, REGISTER_TYPE_OA ) );
+        MD_CHECK_CC( AddStartConfigRegister( 0x130b0, 0x00613e00, REGISTER_TYPE_OA ) );
         MD_CHECK_CC( AddStartConfigRegister( 0x130b4, 0x00000000, REGISTER_TYPE_OA ) );
-        MD_CHECK_CC( AddStartConfigRegister( 0x130b8, 0x00613e00, REGISTER_TYPE_OA ) );
+        MD_CHECK_CC( AddStartConfigRegister( 0x130b8, 0x00713e00, REGISTER_TYPE_OA ) );
         MD_CHECK_CC( AddStartConfigRegister( 0x130bc, 0x00000000, REGISTER_TYPE_OA ) );
-        MD_CHECK_CC( AddStartConfigRegister( 0x130c0, 0x00713e00, REGISTER_TYPE_OA ) );
+        MD_CHECK_CC( AddStartConfigRegister( 0x130c0, 0x00813e00, REGISTER_TYPE_OA ) );
         MD_CHECK_CC( AddStartConfigRegister( 0x130c4, 0x00000000, REGISTER_TYPE_OA ) );
-        MD_CHECK_CC( AddStartConfigRegister( 0x130c8, 0x00813e00, REGISTER_TYPE_OA ) );
+        MD_CHECK_CC( AddStartConfigRegister( 0x130c8, 0x00913e00, REGISTER_TYPE_OA ) );
         MD_CHECK_CC( AddStartConfigRegister( 0x130cc, 0x00000000, REGISTER_TYPE_OA ) );
-        MD_CHECK_CC( AddStartConfigRegister( 0x130d0, 0x00913e00, REGISTER_TYPE_OA ) );
+        MD_CHECK_CC( AddStartConfigRegister( 0x130d0, 0x00a13e00, REGISTER_TYPE_OA ) );
         MD_CHECK_CC( AddStartConfigRegister( 0x130d4, 0x00000000, REGISTER_TYPE_OA ) );
-        MD_CHECK_CC( AddStartConfigRegister( 0x130d8, 0x00a13e00, REGISTER_TYPE_OA ) );
+        MD_CHECK_CC( AddStartConfigRegister( 0x130d8, 0x00b13e00, REGISTER_TYPE_OA ) );
         MD_CHECK_CC( AddStartConfigRegister( 0x130dc, 0x00000000, REGISTER_TYPE_OA ) );
-        MD_CHECK_CC( AddStartConfigRegister( 0x130e0, 0x00b13e00, REGISTER_TYPE_OA ) );
+        MD_CHECK_CC( AddStartConfigRegister( 0x130e0, 0x00c13e00, REGISTER_TYPE_OA ) );
         MD_CHECK_CC( AddStartConfigRegister( 0x130e4, 0x00000000, REGISTER_TYPE_OA ) );
-        MD_CHECK_CC( AddStartConfigRegister( 0x130e8, 0x00c13e00, REGISTER_TYPE_OA ) );
+        MD_CHECK_CC( AddStartConfigRegister( 0x130e8, 0x00d13e00, REGISTER_TYPE_OA ) );
         MD_CHECK_CC( AddStartConfigRegister( 0x130ec, 0x00000000, REGISTER_TYPE_OA ) );
-        MD_CHECK_CC( AddStartConfigRegister( 0x130f0, 0x00d13e00, REGISTER_TYPE_OA ) );
+        MD_CHECK_CC( AddStartConfigRegister( 0x130f0, 0x00e13e00, REGISTER_TYPE_OA ) );
         MD_CHECK_CC( AddStartConfigRegister( 0x130f4, 0x00000000, REGISTER_TYPE_OA ) );
-        MD_CHECK_CC( AddStartConfigRegister( 0x130f8, 0x00e13e00, REGISTER_TYPE_OA ) );
+        MD_CHECK_CC( AddStartConfigRegister( 0x130f8, 0x00f13e00, REGISTER_TYPE_OA ) );
         MD_CHECK_CC( AddStartConfigRegister( 0x130fc, 0x00000000, REGISTER_TYPE_OA ) );
         MD_CHECK_CC( AddStartConfigRegister( 0x13300, 0x00005a00, REGISTER_TYPE_OA ) );
         MD_CHECK_CC( AddStartConfigRegister( 0x13304, 0x00000000, REGISTER_TYPE_OA ) );

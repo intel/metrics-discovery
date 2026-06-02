@@ -75,11 +75,6 @@ namespace MetricsDiscoveryInternal
     typedef enum EOverrideType
     {
         OVERRIDE_TYPE_FREQUENCY = 0,
-        OVERRIDE_TYPE_NULL_HARDWARE,
-        OVERRIDE_TYPE_EXTENDED_QUERY,
-        OVERRIDE_TYPE_MULTISAMPLED_QUERY,
-        OVERRIDE_TYPE_FLUSH_GPU_CACHES,
-        OVERRIDE_TYPE_FREQUENCY_CHANGE_REPORTS,
         // ...
         OVERRIDE_TYPE_LAST,
     } TOverrideType;

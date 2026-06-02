@@ -61,11 +61,13 @@ ComputeBasic	L3_HIT	L3 Hit	Device Cache	Number of Device Cache accesses which hi
 ComputeBasic	L3_MISS	L3 Miss	Device Cache	Number of Device Cache accesses which miss in the Device Cache cache
 ComputeBasic	L3_SUPERQ_FULL	L3 Superq Full	Device Cache	Percentage of time in which all slots in Device Cache request queue are waiting for data return / response
 ComputeBasic	XVE_INST_EXECUTED_ALU3_ALL	XVE Inst Executed ALU3 All	Vector Engine	Number of execution slots taken by instructions executed in ALU3 pipe
-ComputeBasic	XVE_GRFBLOCK_OCCUPANCY_ALL	XVE Grfblock Occupancy All	Vector Engine	Number of GRF register blocks occupied
 ComputeBasic	XVE_INST_LANE_ENABLED	XVE Inst Lane Enabled	Vector Engine	Number of execution lanes enabled for instructions executed on ALU0 and ALU1. Does not include control-flow instructions such as CALL, CALLA, RET, etc.
 ComputeBasic	XVE_INST_LANE_TOTAL	XVE Inst Lane Total	Vector Engine	Number of available execution lanes (enabled and not enabled) for instructions executed on ALU0 and ALU1, evaluated after shootdown. Does not include control-flow instructions such as CALL, CALLA, RET, etc.
 ComputeBasic	XVE_OP_FP32	XVE Op Fp32	Vector Engine	Number of effective 32-bit floating-point operations (FLOPs) executed on ALU0 and ALU1
 ComputeBasic	XVE_OP_FP64	XVE Op Fp64	Vector Engine	Number of effective 64-bit floating-point operations (FLOPs) executed on ALU0 and ALU1
+ComputeBasic	TLB_INV_ATS	TLB Inv Ats	Memory	Number of ATS Invalidations
+ComputeBasic	TLB_INV_DRIVER	TLB Inv Driver	Memory	Number of TLB invalidations from Driver
+ComputeBasic	XVE_GRFBLOCK_OCCUPANCY_ALL	XVE Grfblock Occupancy All	Vector Engine	Percentage of GRF blocks occupied
 L1Profile	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
 L1Profile	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
 L1Profile	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
@@ -128,8 +130,8 @@ VectorEngineProfile	XVE_INST_EXECUTED_INT16	XVE Inst Executed Int16	Vector Engin
 VectorEngineProfile	XVE_INST_EXECUTED_INT32	XVE Inst Executed Int32	Vector Engine	Number of execution slots taken by INT32 ALU instructions
 VectorEngineProfile	XVE_INST_EXECUTED_INT64	XVE Inst Executed Int64	Vector Engine	Number of execution slots taken by INT64 instructions
 VectorEngineProfile	XVE_INST_EXECUTED_MATH	XVE Inst Executed Math	Vector Engine	Number of execution slots taken by extended math instructions
-VectorEngineProfile	XVE_INST_EXECUTED_NONDIVERGENT	XVE Inst Executed Nondivergent	Vector Engine	Number of non-divergent instructions (not execution slots) executed
-VectorEngineProfile	XVE_INST_EXECUTED_PREDICATION	XVE Inst Executed Predication	Vector Engine	Number of instructions (not execution slots) executed with predication mask enabled
+VectorEngineProfile	XVE_INST_EXECUTED_NONDIVERGENT	XVE Inst Executed Nondivergent	Vector Engine	Number of non-divergent instructions (not execution slots) issued
+VectorEngineProfile	XVE_INST_EXECUTED_PREDICATION	XVE Inst Executed Predication	Vector Engine	Number of instructions (not execution slots) issued with predication mask enabled
 VectorEngineProfile	XVE_INST_EXECUTED_SEND_ALL	XVE Inst Executed Send All	Vector Engine	Number of instruction (GRF or SRF) dispatches executed on SEND Pipe
 VectorEngineProfile	XVE_INST_EXECUTED_XMX_BF16	XVE Inst Executed XMX Bf16	Vector Engine	Number of execution slots taken by BF16 XMX instructions
 VectorEngineProfile	XVE_INST_EXECUTED_XMX_FP16	XVE Inst Executed XMX Fp16	Vector Engine	Number of execution slots taken by FP16 XMX instructions
@@ -157,11 +159,8 @@ VectorEngineStalls	XVE_STALL_OTHER	XVE Stall Other	Vector Engine	Percentage of t
 VectorEngineStalls	XVE_STALL_PIPESTALL	XVE Stall Pipestall	Vector Engine	Percentage of time in which XVE stalled, with at least one thread ready to be scheduled (Grf conf/send holds etc). Multiple stall reasons can qualify during the same cycle
 VectorEngineStalls	XVE_STALL_SBID	XVE Stall Sbid	Vector Engine	Percentage of time in which XVE stalled, with at least one thread waiting for Scoreboard token to be available. Multiple stall reasons can qualify during the same cycle
 VectorEngineStalls	XVE_STALL_SENDWR	XVE Stall Sendwr	Vector Engine	Percentage of time in which XVE stalled, with at least one thread waiting for SEND message to be dispatched from XVE. Multiple stall reasons can qualify during the same cycle
-VectorEngineStalls	THREAD_DISPATCH_QUEUE0_ACTIVE	Thread Dispatch Queue0 Active	Thread Dispatcher	Percentage of time in which non-Pixel Shader threads are ready for dispatch in a particular Xe core
-VectorEngineStalls	THREAD_DISPATCH_QUEUE0_STALL	Thread Dispatch Queue0 Stall	Thread Dispatcher	Percentage of time in which queue 0 is stalled waiting for threads to be available
 VectorEngineStalls	THREAD_DISPATCH_QUEUE1_ACTIVE	Thread Dispatch Queue1 Active	Thread Dispatcher	Percentage of time in which non-Pixel Shader threads are ready for dispatch in a particular Xe core
 VectorEngineStalls	THREAD_DISPATCH_QUEUE1_STALL	Thread Dispatch Queue1 Stall	Thread Dispatcher	Percentage of time in which queue 1 is stalled waiting for threads to be available
-VectorEngineStalls	THREADGROUP_DISPATCH_QUEUE0_RESOURCE_STALL	Threadgroup Dispatch Queue0 Resource Stall	Thread Dispatcher	Percentage of time in which Thread Spawner queue 0 is stalled waiting for any resource to be available (for example, SLM, Barrier, BTD stack, etc.)
 VectorEngineStalls	THREADGROUP_DISPATCH_QUEUE1_RESOURCE_STALL	Threadgroup Dispatch Queue1 Resource Stall	Thread Dispatcher	Percentage of time in which Thread Spawner queue 1 is stalled waiting for any resource to be available (for example, SLM, Barrier, BTD stack, etc.)
 VectorEngineStalls	XVE_ACTIVE	XVE Active	Vector Engine	Percentage of time in which at least one pipe is active in XVE
 VectorEngineStalls	XVE_SHARED_FUNCTION_ACCESS_HOLD	XVE Shared Function Access Hold	Vector Engine	Percentage of time in which XVE requests stalled by Shared Function units
@@ -175,14 +174,12 @@ VectorEngineStalls	THREAD_DISPATCH_GPGPU_COMMON_ENGINE	Thread Dispatch GpGpu Com
 VectorEngineStalls	THREAD_DISPATCH_GPGPU_COMPUTE_ENGINE	Thread Dispatch GpGpu Compute Engine	Thread Dispatcher	Number of Compute (Async) GPGPU threads dispatched
 VectorEngineStalls	THREAD_DISPATCH_INPUT_AVAILABLE	Thread Dispatch Input Available	Thread Dispatcher	Percentage of time in which Thread Dispatch input is available
 VectorEngineStalls	THREAD_DISPATCH_OTHER	Thread Dispatch Other	Thread Dispatcher	Number of threads dispatched that do not fit into any of the other identified groups. This group includes, at least, AMFS threads and may include other groups.
-VectorEngineStalls	THREADGROUP_DISPATCH_QUEUE0_INPUT_AVAILABLE	Threadgroup Dispatch Queue0 Input Available	Thread Dispatcher	Percentage of time in which Thread Spawner has input available on queue 0
 VectorEngineStalls	THREADGROUP_DISPATCH_QUEUE1_INPUT_AVAILABLE	Threadgroup Dispatch Queue1 Input Available	Thread Dispatcher	Percentage of time in which Thread Spawner has input available on queue 1
 TestOa	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
 TestOa	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
 TestOa	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
 TestOa	ResultUncertainty	Result Uncertainty	GPU	Result uncertainty indicator
 TestOa	GPU_BUSY	GPU Busy	Front End	Percentage of time in which GPU is not idle including all GPU engines
-TestOa	GPGPU_THREADGROUP_COUNT	GpGpu Threadgroup Count	Thread Dispatcher	Number of GPGPU threadgroups dispatched
 TestOa	ASYNC_GPGPU_THREADGROUP_COUNT	Async GpGpu Threadgroup Count	Thread Dispatcher	Number of Async GPGPU threadgroups dispatched
 TestOa	TEST_EVENT1	Test Event1	Test	Number of GPU (gt) clock cycles at every clock period
 TestOa	TEST_EVENT1_CYCLES	Test Event1 Cycles	Test	Number of GPU (gt) clock cycles at every clock period
@@ -215,7 +212,7 @@ TestOa	TEST_EVENT1_CYCLES_XECORE25	Test Event1 Cycles Xecore25	Test	Number of GP
 TestOa	TEST_EVENT1_CYCLES_XECORE26	Test Event1 Cycles Xecore26	Test	Number of GPU (gt) clock cycles at every clock period (XECORE26)
 TestOa	TEST_EVENT1_CYCLES_XECORE27	Test Event1 Cycles Xecore27	Test	Number of GPU (gt) clock cycles at every clock period (XECORE27)
 TestOa	TEST_EVENT1_CYCLES_XECORE28	Test Event1 Cycles Xecore28	Test	Number of GPU (gt) clock cycles at every clock period (XECORE28)
-TestOa	TEST_EVENT1_CYCLES_AVERAGE	Test Event1 Cycles Average	Test	Average number of GPU (gt) clock cycles at every clock period
+TestOa	TEST_EVENT1_CYCLES_AVERAGE	Test Event1 Cycles Average	Test	Average number of GPU (gt) clock cycles at every clock period (per instance)
 TestOa	TEST_EVENT2	Test Event2	Test	Number of GPU (gt) clock cycles at every other clock period
 TestOa	TEST_EVENT2_CYCLES	Test Event2 Cycles	Test	Number of GPU (gt) clock cycles at every other clock period
 MediaSet1	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.

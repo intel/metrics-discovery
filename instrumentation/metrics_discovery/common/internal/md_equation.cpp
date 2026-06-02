@@ -717,6 +717,7 @@ namespace MetricsDiscoveryInternal
                 case GENERATION_LNL:
                 case GENERATION_PTL:
                 case GENERATION_NVL:
+                case GENERATION_NVLP:
                 case GENERATION_CRI:
                     return ParseEquationString( "$Self $GpuSliceClocksCount $VectorEngineTotalCount UMUL FDIV 100 FMUL" );
 

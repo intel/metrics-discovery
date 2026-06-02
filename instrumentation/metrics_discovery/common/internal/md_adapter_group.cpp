@@ -324,6 +324,32 @@ namespace MetricsDiscoveryInternal
     //     CAdapterGroup
     //
     // Method:
+    //     OpenOfflineMetricsDeviceFromBuffer
+    //
+    // Description:
+    //     Opens offline metrics device object.
+    //     Multiple instances of offline metric devices may be created at once.
+    //
+    // Input:
+    //     uint8_t*              buffer        - a buffer that an offline device is created from
+    //     uint32_t              bufferSize    - the size of a buffer
+    //     IMetricsDevice_1_15** metricsDevice - [out] created / retrieved metrics device
+    //
+    // Output:
+    //     TCompletionCode                     - CC_OK or CC_ALREADY_INITIALIZED means success
+    //
+    //////////////////////////////////////////////////////////////////////////////
+    TCompletionCode CAdapterGroup::OpenOfflineMetricsDeviceFromBuffer( uint8_t* buffer, uint32_t bufferSize, IMetricsDevice_1_15** metricsDevice )
+    {
+        return OpenOfflineMetricsDeviceFromBuffer( buffer, bufferSize, reinterpret_cast<CMetricsDevice**>( metricsDevice ) );
+    }
+
+    //////////////////////////////////////////////////////////////////////////////
+    //
+    // Class:
+    //     CAdapterGroup
+    //
+    // Method:
     //     CloseOfflineMetricsDevice
     //
     // Description:
@@ -388,6 +414,29 @@ namespace MetricsDiscoveryInternal
     //     CAdapterGroup
     //
     // Method:
+    //     CloseOfflineMetricsDevice
+    //
+    // Description:
+    //     Close offline metrics device object and free resources.
+    //
+    // Input:
+    //     IMetricsDevice_1_15* metricsDevice - a pointer to offline metrics device to close
+    //
+    // Output:
+    //     TCompletionCode                    - CC_OK means success
+    //
+    //////////////////////////////////////////////////////////////////////////////
+    TCompletionCode CAdapterGroup::CloseOfflineMetricsDevice( IMetricsDevice_1_15* metricsDevice )
+    {
+        return CloseOfflineMetricsDevice( static_cast<CMetricsDevice*>( metricsDevice ) );
+    }
+
+    //////////////////////////////////////////////////////////////////////////////
+    //
+    // Class:
+    //     CAdapterGroup
+    //
+    // Method:
     //     SaveMetricsDeviceToBuffer
     //
     // Description:
@@ -442,6 +491,35 @@ namespace MetricsDiscoveryInternal
     //
     //////////////////////////////////////////////////////////////////////////////
     TCompletionCode CAdapterGroup::SaveMetricsDeviceToBuffer( IMetricsDevice_1_13* metricsDevice, IMetricSet_1_13** metricSets, uint32_t metricSetCount, uint8_t* buffer, uint32_t* bufferSize, const uint32_t minMajorApiVersion, const uint32_t minMinorApiVersion )
+    {
+        return SaveMetricsDeviceToBuffer( static_cast<CMetricsDevice*>( metricsDevice ), reinterpret_cast<CMetricSet**>( metricSets ), metricSetCount, buffer, bufferSize, minMajorApiVersion, minMinorApiVersion );
+    }
+
+    //////////////////////////////////////////////////////////////////////////////
+    //
+    // Class:
+    //     CAdapterGroup
+    //
+    // Method:
+    //     SaveMetricsDeviceToBuffer
+    //
+    // Description:
+    //     Saves metrics device to buffer. Then the buffer can be used for offline calculation.
+    //
+    // Input:
+    //     IMetricsDevice_1_15* metricsDevice      - a buffer that an offline device is created from
+    //     IMetricSet_1_15**    metricSets         - an array of metric sets that will be written to the buffer
+    //     uint32_t             metricSetCount     - a number of metric sets in the array
+    //     uint8_t*             buffer             - a buffer that an offline device is created from
+    //     uint32_t             bufferSize         - the size of a buffer
+    //     const uint32_t       minMajorApiVersion - required MDAPI major version to open the buffer
+    //     const uint32_t       minMinorApiVersion - required MDAPI minor version to open the buffer
+    //
+    // Output:
+    //     TCompletionCode                         - CC_OK means success
+    //
+    //////////////////////////////////////////////////////////////////////////////
+    TCompletionCode CAdapterGroup::SaveMetricsDeviceToBuffer( IMetricsDevice_1_15* metricsDevice, IMetricSet_1_13** metricSets, uint32_t metricSetCount, uint8_t* buffer, uint32_t* bufferSize, const uint32_t minMajorApiVersion, const uint32_t minMinorApiVersion )
     {
         return SaveMetricsDeviceToBuffer( static_cast<CMetricsDevice*>( metricsDevice ), reinterpret_cast<CMetricSet**>( metricSets ), metricSetCount, buffer, bufferSize, minMajorApiVersion, minMinorApiVersion );
     }

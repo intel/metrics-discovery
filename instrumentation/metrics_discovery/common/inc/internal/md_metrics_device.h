@@ -89,7 +89,7 @@ namespace MetricsDiscoveryInternal
 
         TCompletionCode   SaveToFile( const char* fileName, const uint32_t minMajorApiVersion, const uint32_t minMinorApiVersion );
         TCompletionCode   WriteToBuffer( uint8_t* buffer, uint32_t& bufferSize, CMetricSet** metricSets, uint32_t metricSetCount, const uint32_t minMajorApiVersion, const uint32_t minMinorApiVersion );
-        TCompletionCode   OpenFromFile( const char* fileName );
+        TCompletionCode   OpenFromFile( const char* fileName, const uint8_t* openParams );
         TCompletionCode   OpenOfflineFromBuffer( uint8_t* buffer, uint32_t bufferSize );
         TQueryMode        GetQueryMode() const;
         CConcurrentGroup* GetConcurrentGroupByName( const char* symbolicName );

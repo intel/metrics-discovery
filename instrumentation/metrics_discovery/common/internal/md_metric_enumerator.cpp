@@ -135,6 +135,7 @@ namespace MetricsDiscoveryInternal
                 case GENERATION_PTL:
                 case GENERATION_NVL:
                 case GENERATION_CRI:
+                case GENERATION_NVLP:
                     isXe2Plus = true;
                     break;
 
@@ -142,7 +143,7 @@ namespace MetricsDiscoveryInternal
                     break;
             }
 
-#if MD_INCLUDE_BMG_METRICS || MD_INCLUDE_LNL_METRICS || MD_INCLUDE_PTL_METRICS || MD_INCLUDE_NVL_METRICS || MD_INCLUDE_CRI_METRICS
+#if MD_INCLUDE_BMG_METRICS || MD_INCLUDE_LNL_METRICS || MD_INCLUDE_PTL_METRICS || MD_INCLUDE_NVL_METRICS || MD_INCLUDE_NVLP_METRICS || MD_INCLUDE_CRI_METRICS
             if( isXe2Plus )
             {
                 // External events.
@@ -162,8 +163,8 @@ namespace MetricsDiscoveryInternal
 
         if( isOamReporting )
         {
-#if MD_INCLUDE_MTL_GT2_METRICS || MD_INCLUDE_MTL_GT3_METRICS || MD_INCLUDE_BMG_METRICS || MD_INCLUDE_LNL_METRICS || MD_INCLUDE_PTL_METRICS || MD_INCLUDE_ARL_GT1_METRICS || MD_INCLUDE_ARL_GT2_METRICS || MD_INCLUDE_NVL_METRICS || MD_INCLUDE_CRI_METRICS
-            if( IsPlatformMatch( platformIndex, GENERATION_MTL, GENERATION_BMG, GENERATION_LNL, GENERATION_PTL, GENERATION_ARL, GENERATION_NVL, GENERATION_CRI ) )
+#if MD_INCLUDE_MTL_GT2_METRICS || MD_INCLUDE_MTL_GT3_METRICS || MD_INCLUDE_BMG_METRICS || MD_INCLUDE_LNL_METRICS || MD_INCLUDE_PTL_METRICS || MD_INCLUDE_ARL_GT1_METRICS || MD_INCLUDE_ARL_GT2_METRICS || MD_INCLUDE_NVL_METRICS || MD_INCLUDE_NVLP_METRICS || MD_INCLUDE_CRI_METRICS
+            if( IsPlatformMatch( platformIndex, GENERATION_MTL, GENERATION_BMG, GENERATION_LNL, GENERATION_PTL, GENERATION_ARL, GENERATION_NVL, GENERATION_NVLP, GENERATION_CRI ) )
             {
                 // External media events.
                 status = ReadEvents(
@@ -200,7 +201,7 @@ namespace MetricsDiscoveryInternal
 #endif
         }
 
-#if MD_INCLUDE_BMG_METRICS || MD_INCLUDE_LNL_METRICS || MD_INCLUDE_PTL_METRICS || MD_INCLUDE_NVL_METRICS || MD_INCLUDE_CRI_METRICS
+#if MD_INCLUDE_BMG_METRICS || MD_INCLUDE_LNL_METRICS || MD_INCLUDE_PTL_METRICS || MD_INCLUDE_NVL_METRICS || MD_INCLUDE_NVLP_METRICS || MD_INCLUDE_CRI_METRICS
         // Read workarounds for external events.
         uint32_t workaroundsSize = sizeof( ExternalEventsWorkarounds::workarounds );
         uint8_t* workarounds     = new( std::nothrow ) uint8_t[workaroundsSize]();
@@ -1279,6 +1280,12 @@ namespace MetricsDiscoveryInternal
             return GENERATION_NVL;
         }
 #endif // MD_INCLUDE_NVL_METRICS
+#if MD_INCLUDE_NVLP_METRICS
+        if( platform == "NVLP" )
+        {
+            return GENERATION_NVLP;
+        }
+#endif // MD_INCLUDE_NVLP_METRICS
 #if MD_INCLUDE_CRI_METRICS
         if( platform == "CRI" )
         {

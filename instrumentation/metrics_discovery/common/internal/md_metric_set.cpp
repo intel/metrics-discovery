@@ -2552,7 +2552,7 @@ namespace MetricsDiscoveryInternal
     //     TTypedValue_1_0* out                    - (OUT) buffer for calculated reports
     //     uint32_t         outSize                - size of the provided output buffer
     //     uint32_t*        outReportCount         - (OUT - optional) how much reports were calculated and are stored in the out buffer
-    //     bool             enableContextFiltering - if true enable context filtering during calculation
+    //     bool             enableContextFiltering - if true enable context filtering during calculation (obsolete)
     //
     // Output:
     //     TCompletionCode - *CC_OK* means success
@@ -2957,15 +2957,15 @@ namespace MetricsDiscoveryInternal
         calculationManager->ResetContext( context );
         context.CommonCalculationContext.DeltaValues = new( std::nothrow ) TTypedValue_1_0[m_currentParams->MetricsCount];
         MD_CHECK_PTR_RET_A( adapterId, context.CommonCalculationContext.DeltaValues, CC_ERROR_NO_MEMORY );
-        context.CommonCalculationContext.Calculator     = GetMetricsCalculator();
-        context.CommonCalculationContext.MetricSet      = this;
-        context.CommonCalculationContext.Out            = out;
-        context.CommonCalculationContext.OutMaxValues   = outMaxValues;
-        context.CommonCalculationContext.RawData        = rawData;
-        context.CommonCalculationContext.RawReportCount = rawReportCount;
+        context.CommonCalculationContext.Calculator      = GetMetricsCalculator();
+        context.CommonCalculationContext.MetricSet       = this;
+        context.CommonCalculationContext.ConcurrentGroup = m_concurrentGroup;
+        context.CommonCalculationContext.Out             = out;
+        context.CommonCalculationContext.OutMaxValues    = outMaxValues;
+        context.CommonCalculationContext.RawData         = rawData;
+        context.CommonCalculationContext.RawReportCount  = rawReportCount;
         if( measurementType == MEASUREMENT_TYPE_SNAPSHOT_IO )
         {
-            // Not supported
             context.StreamCalculationContext.DoContextFiltering = false;
         }
         if( calculationManager->PrepareContext( context ) != CC_OK )
@@ -3437,6 +3437,7 @@ namespace MetricsDiscoveryInternal
             IsPlatformPresentInMask( m_platformMask, GENERATION_LNL, adapterId ) ||
             IsPlatformPresentInMask( m_platformMask, GENERATION_PTL, adapterId ) ||
             IsPlatformPresentInMask( m_platformMask, GENERATION_NVL, adapterId ) ||
+            IsPlatformPresentInMask( m_platformMask, GENERATION_NVLP, adapterId ) ||
             IsPlatformPresentInMask( m_platformMask, GENERATION_CRI, adapterId );
 
         const uint32_t apiMask = ( m_prototypeManagerType != METRIC_PROTOTYPE_MANAGER_TYPE_OA )

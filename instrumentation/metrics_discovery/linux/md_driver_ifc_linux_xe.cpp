@@ -750,7 +750,7 @@ namespace MetricsDiscoveryInternal
                 else
                 {
                     readBytes = 0;
-                    MD_LOG_A( m_adapterId, LOG_ERROR, "ERROR: Failed to send DRM_XE_OBSERVATION_IOCTL_STATUS ioctl" );
+                    MD_LOG_A( m_adapterId, LOG_ERROR, "ERROR: Failed to send DRM_XE_OBSERVATION_IOCTL_STATUS ioctl, errno: %d (%s)", errno, strerror( errno ) );
                     return CC_ERROR_GENERAL;
                 }
             }
@@ -770,6 +770,39 @@ namespace MetricsDiscoveryInternal
         MD_LOG_A( m_adapterId, LOG_DEBUG, "Read %u bytes (= %lu reports)", xeReadBytes, xeReadBytes / reportSize );
 
         readBytes = xeReadBytes;
+
+        return CC_OK;
+    }
+
+    //////////////////////////////////////////////////////////////////////////////
+    //
+    // Class:
+    //     CDriverInterfaceLinuxXe
+    //
+    // Method:
+    //     ChangeIoStreamState
+    //
+    // Description:
+    //     Changes the state of the IO stream (enabled / disabled).
+    //
+    // Input:
+    //     const int32_t        streamId - stream ID (file descriptor) obtained when opening the stream
+    //     const TIoStreamState state    - new stream state (enabled / disabled)
+    //
+    // Output:
+    //     TCompletionCode               - *CC_OK* means success
+    //
+    //////////////////////////////////////////////////////////////////////////////
+    TCompletionCode CDriverInterfaceLinuxXe::ChangeIoStreamState( const int32_t streamId, const TIoStreamState state )
+    {
+        const uint32_t ioctlRequest = ( state == IO_STREAM_STATE_ENABLED ) ? DRM_XE_OBSERVATION_IOCTL_ENABLE : DRM_XE_OBSERVATION_IOCTL_DISABLE;
+        const int32_t  result       = SendIoctl( streamId, ioctlRequest, nullptr );
+
+        if( result == -1 )
+        {
+            MD_LOG_A( m_adapterId, LOG_WARNING, "Failed to send DRM_XE_OBSERVATION_IOCTL_%s ioctl, errno: %d (%s)", ( ioctlRequest == DRM_XE_OBSERVATION_IOCTL_ENABLE ) ? "ENABLE" : "DISABLE", errno, strerror( errno ) );
+            return CC_ERROR_GENERAL;
+        }
 
         return CC_OK;
     }
@@ -865,7 +898,7 @@ namespace MetricsDiscoveryInternal
         {
             if( errno != EADDRINUSE ) // errno == 98 (EADDRINUSE) means set with the given GUID is already added
             {
-                MD_LOG_A( m_adapterId, LOG_ERROR, "ERROR: Adding XE OA configuration failed, errno: %s (%d)", strerror( errno ), errno );
+                MD_LOG_A( m_adapterId, LOG_ERROR, "ERROR: Adding XE OA configuration failed, errno: %d (%s)", errno, strerror( errno ) );
                 ret = CC_ERROR_GENERAL;
             }
             else
@@ -980,6 +1013,7 @@ namespace MetricsDiscoveryInternal
             case GENERATION_LNL:
             case GENERATION_PTL:
             case GENERATION_NVL:
+            case GENERATION_NVLP:
             case GENERATION_CRI:
             {
                 switch( reportType )
@@ -1035,6 +1069,11 @@ namespace MetricsDiscoveryInternal
 
         const bool validCall   = SendIoctl( m_DrmDeviceHandle, DRM_IOCTL_XE_DEVICE_QUERY, &query ) == 0;
         const bool validLength = query.size > 0;
+
+        if( !validCall )
+        {
+            MD_LOG_A( m_adapterId, LOG_ERROR, "ERROR: Failed to send QUERY length ioctl, queryId: %u, errno: %d (%s)", queryId, errno, strerror( errno ) );
+        }
 
         return ( validCall && validLength )
             ? query.size
@@ -1108,7 +1147,7 @@ namespace MetricsDiscoveryInternal
     {
         if( SendIoctl( m_DrmDeviceHandle, DRM_IOCTL_XE_DEVICE_QUERY, &query ) )
         {
-            MD_LOG_A( m_adapterId, LOG_ERROR, "ERROR: invalid drm query result" );
+            MD_LOG_A( m_adapterId, LOG_ERROR, "ERROR: Failed to send QUERY ioctl, queryId: %u, errno: %d (%s)", query.query, errno, strerror( errno ) );
             return CC_ERROR_GENERAL;
         }
 
@@ -1677,7 +1716,7 @@ namespace MetricsDiscoveryInternal
         if( result == -1 )
         {
             oaBufferSize = 0;
-            MD_LOG_A( m_adapterId, LOG_ERROR, "ERROR: Failed to send DRM_XE_OBSERVATION_IOCTL_INFO ioctl" );
+            MD_LOG_A( m_adapterId, LOG_ERROR, "ERROR: Failed to send DRM_XE_OBSERVATION_IOCTL_INFO ioctl, errno: %d (%s)", errno, strerror( errno ) );
             return CC_ERROR_GENERAL;
         }
 

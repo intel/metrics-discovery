@@ -103,6 +103,7 @@ namespace MetricsDiscoveryInternal
             case GENERATION_LNL:
             case GENERATION_PTL:
             case GENERATION_NVL:
+            case GENERATION_NVLP:
             case GENERATION_CRI:
                 reportType = DEFAULT_METRIC_SET_REPORT_TYPE_XE2;
                 break;
@@ -557,17 +558,33 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     TCompletionCode CConcurrentGroup::Lock()
     {
-        // 1. Create semaphore name
-        char semaphoreName[MD_SEMAPHORE_NAME_MAX_LENGTH] = {};
+        const uint32_t adapterId                                   = m_device.GetAdapter().GetAdapterId();
+        char           semaphoreName[MD_SEMAPHORE_NAME_MAX_LENGTH] = {};
 
         TCompletionCode ret = FillLockSemaphoreName( semaphoreName, sizeof( semaphoreName ) );
         if( ret == CC_OK )
         {
-            // 2. Get driver interface
-            CDriverInterface& driverInterface = m_device.GetDriverInterface();
+            if( m_semaphore == nullptr )
+            {
+                if( CDriverInterface::SemaphoreCreate( semaphoreName, &m_semaphore, adapterId ) != CC_OK )
+                {
+                    MD_LOG_A( adapterId, LOG_ERROR, "Creating semaphore failed" );
+                    return CC_ERROR_GENERAL;
+                }
+            }
 
-            // 3. Lock concurrent group
-            ret = driverInterface.LockConcurrentGroup( semaphoreName, &m_semaphore );
+            switch( CDriverInterface::SemaphoreWait( 1000L, m_semaphore, adapterId ) ) // Wait 1 sec
+            {
+                case WAIT_RESULT_SUCCESSFUL: // The semaphore object was signaled
+                    return CC_OK;
+
+                case WAIT_RESULT_TIMEOUT: // A time-out occurred
+                    MD_LOG_A( adapterId, LOG_DEBUG, "Concurrent group locked" );
+                    return CC_CONCURRENT_GROUP_LOCKED;
+
+                default:
+                    return CC_ERROR_GENERAL;
+            }
         }
 
         return ret;
@@ -592,17 +609,17 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     TCompletionCode CConcurrentGroup::Unlock()
     {
-        // 1. Create semaphore name
-        char semaphoreName[MD_SEMAPHORE_NAME_MAX_LENGTH] = {};
+        const uint32_t adapterId                                   = m_device.GetAdapter().GetAdapterId();
+        char           semaphoreName[MD_SEMAPHORE_NAME_MAX_LENGTH] = {};
 
         TCompletionCode ret = FillLockSemaphoreName( semaphoreName, sizeof( semaphoreName ) );
         if( ret == CC_OK )
         {
-            // 2. Get driver interface
-            CDriverInterface& driverInterface = m_device.GetDriverInterface();
-
-            // 3. Unlock concurrent group
-            ret = driverInterface.UnlockConcurrentGroup( semaphoreName, &m_semaphore );
+            if( CDriverInterface::SemaphoreRelease( &m_semaphore, adapterId ) != CC_OK )
+            {
+                MD_LOG_A( adapterId, LOG_ERROR, "Releasing semaphore failed" );
+                return CC_ERROR_GENERAL;
+            }
         }
 
         return ret;

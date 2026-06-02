@@ -635,6 +635,11 @@ namespace MetricsDiscoveryInternal
             ret                    = m_driverInterface.SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_GEOMETRY_PIPE_TOTAL_COUNT, out, m_metricsDevice );
             typedValue.ValueUInt32 = out.ValueUint32;
         }
+        else if( name == "VectorEngineGrfBlocksCount" )
+        {
+            ret                    = m_driverInterface.SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_VECTOR_ENGINE_GRF_BLOCKS_COUNT, out, m_metricsDevice );
+            typedValue.ValueUInt32 = out.ValueUint32;
+        }
         else if( name == "QueryMode" )
         {
             typedValue.ValueUInt32 = static_cast<uint32_t>( m_metricsDevice.GetQueryMode() );
@@ -698,6 +703,7 @@ namespace MetricsDiscoveryInternal
         bool isOamSupported             = false;
         bool isL3BankSupported          = false;
         bool isXe2Plus                  = false;
+        bool isXe3pPlus                 = false;
 
         switch( platformIndex )
         {
@@ -734,7 +740,23 @@ namespace MetricsDiscoveryInternal
                 isXe2Plus                  = true;
                 break;
 
+            case GENERATION_NVLP:
+                isXe3pPlus                 = true;
+                isPlatformVersionSupported = true;
+                isNewTermUsed              = true;
+                isOamSupported             = true;
+                isL3BankSupported          = true;
+                isXe2Plus                  = true;
+                break;
+
             case GENERATION_CRI:
+                isXe3pPlus        = true;
+                isNewTermUsed     = true;
+                isOamSupported    = true;
+                isL3BankSupported = true;
+                isXe2Plus         = true;
+                break;
+
             case GENERATION_LNL:
                 isNewTermUsed     = true;
                 isOamSupported    = true;
@@ -781,6 +803,13 @@ namespace MetricsDiscoveryInternal
         {
             MD_LOG_A( adapterId, LOG_DEBUG, "Symbol name is%s supported: %.*s", isXe2Plus ? "" : " not", static_cast<uint32_t>( name.length() ), name.data() );
             return isXe2Plus;
+        }
+
+        // Xe3p+ related global symbols
+        if( name == "VectorEngineGrfBlocksCount" )
+        {
+            MD_LOG_A( adapterId, LOG_DEBUG, "Symbol name is%s supported: %.*s", isXe3pPlus ? "" : " not", static_cast<uint32_t>( name.length() ), name.data() );
+            return isXe3pPlus;
         }
 
         if( name == "L3Size" ||
@@ -1177,6 +1206,7 @@ namespace MetricsDiscoveryInternal
             case GENERATION_LNL:
             case GENERATION_PTL:
             case GENERATION_NVL:
+            case GENERATION_NVLP:
             case GENERATION_CRI:
             {
                 ret = m_driverInterface.SendDeviceInfoParamEscape( GTDI_DEVICE_PARAM_MAX_L3_NODE, out, m_metricsDevice );
@@ -1268,6 +1298,7 @@ namespace MetricsDiscoveryInternal
             case GENERATION_LNL:
             case GENERATION_PTL:
             case GENERATION_NVL:
+            case GENERATION_NVLP:
             case GENERATION_CRI:
                 isXe2Plus = true;
                 break;

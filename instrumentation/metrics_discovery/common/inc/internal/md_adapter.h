@@ -41,6 +41,12 @@ namespace MetricsDiscoveryInternal
     class CAdapter : public IAdapterLatest
     {
     public:
+        // API 1.15:
+        virtual TCompletionCode OpenMetricsDevice( IMetricsDevice_1_15** metricsDevice ) final;
+        virtual TCompletionCode OpenMetricsDeviceFromFile( const char* fileName, void* openParams, IMetricsDevice_1_15** metricsDevice ) final;
+        virtual TCompletionCode OpenMetricsSubDevice( const uint32_t subDeviceIndex, IMetricsDevice_1_15** metricsDevice ) final;
+        virtual TCompletionCode OpenMetricsSubDeviceFromFile( const uint32_t subDeviceIndex, const char* fileName, void* openParams, IMetricsDevice_1_15** metricsDevice ) final;
+
         // API 1.13:
         virtual TCompletionCode OpenMetricsDevice( IMetricsDevice_1_13** metricsDevice ) final;
         virtual TCompletionCode OpenMetricsDeviceFromFile( const char* fileName, void* openParams, IMetricsDevice_1_13** metricsDevice ) final;

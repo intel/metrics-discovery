@@ -43,6 +43,7 @@ namespace MetricsDiscoveryInternal
         , m_set( metricSet )
         , m_deltaCounterSize( sizeof( uint64_t ) )
         , m_snapshotCounterSize( ( m_set.GetReportType() == OA_REPORT_TYPE_128B_MPEC8_NOA16 || m_set.GetReportType() == OA_REPORT_TYPE_320B_PEC64 || m_set.GetReportType() == OA_REPORT_TYPE_128B_MERT_PEC8 ) ? sizeof( uint32_t ) : sizeof( uint64_t ) )
+        , m_pesCountMultiplier( 1 )
     {
     }
 
@@ -153,22 +154,29 @@ namespace MetricsDiscoveryInternal
 
         uint32_t metricIndex = m_set.GetParams()->MetricsCount;
 
+        const auto& oaRegisters = m_registerManager.GetRegistersVector();
+
+        m_registerManager.ClearRegistersVector();
+
         for( auto& metricPrototype : m_metricPrototypes )
         {
             CMetric* metric = AddMetricToSet( *metricPrototype, metricIndex++ );
 
             MD_CHECK_PTR_RET_A( adapterId, metric, CC_ERROR_NO_MEMORY );
 
-            const auto& hwEvent = metricPrototype->GetHwEvent();
-
-            const uint64_t pesProgramming = hwEvent.m_archEvent.m_eventEncoding | hwEvent.m_disaggregationMask;
-
             uint32_t snapshotReportOffsets = 0;
             uint32_t deltaReportOffsets    = 0;
 
-            MD_CHECK_CC( AppendPesConfiguration( hwEvent, pesProgramming, pesProgrammed, flexProgramming, snapshotReportOffsets, deltaReportOffsets ) );
+            MD_CHECK_CC( AppendPesConfiguration( *metricPrototype, pesProgrammed, flexProgramming, snapshotReportOffsets, deltaReportOffsets ) );
 
             MD_CHECK_CC( AddEquations( *metricPrototype, *metric, snapshotReportOffsets, deltaReportOffsets ) );
+        }
+
+        m_registerManager.SquashRegisters();
+
+        for( const auto& oaRegister : oaRegisters )
+        {
+            MD_CHECK_CC( m_set.AddStartConfigRegister( oaRegister.Address, oaRegister.Value, REGISTER_TYPE_OA ) );
         }
 
         MD_CHECK_CC( AppendFlexConfiguration( flexProgramming ) );
@@ -746,7 +754,7 @@ namespace MetricsDiscoveryInternal
                 // Metric unit is not updated.
                 // Max value is not used.
 
-                if( instance == "" )
+                if( instance.empty() )
                 {
                     // There is no metric prototype that supports average normalization and has no instance.
                     MD_ASSERT_A( adapterId, false );
@@ -828,7 +836,12 @@ namespace MetricsDiscoveryInternal
                     snapshotReportReadEquation << " $ComputeEngineTotalCount UDIV";
                     deltaReportReadEquation << " $ComputeEngineTotalCount UDIV";
                 }
-                else if( instance == "" )
+                else if( instance == "grfblock" )
+                {
+                    snapshotReportReadEquation << " $VectorEngineGrfBlocksCount $VectorEngineTotalCount UMUL UDIV";
+                    deltaReportReadEquation << " $VectorEngineGrfBlocksCount $VectorEngineTotalCount UMUL UDIV";
+                }
+                else if( instance.empty() )
                 {
                     // Do nothing on purpose.
                 }
@@ -905,13 +918,26 @@ namespace MetricsDiscoveryInternal
                         MD_ASSERT_A( adapterId, false );
                     }
                 }
+                else if( instance == "grfblock" )
+                {
+                    if( hwEvent.m_archEvent.m_disaggregationMode == DISAGGREGATION_MODE_XECORE )
+                    {
+                        snapshotReportReadEquation << " $VectorEngineGrfBlocksCount $VectorEnginePerXeCoreCount UMUL UDIV";
+                        deltaReportReadEquation << " $VectorEngineGrfBlocksCount $VectorEnginePerXeCoreCount UMUL UDIV";
+                    }
+                    else
+                    {
+                        // These disaggregation mode and instance type are not supported.
+                        MD_ASSERT_A( adapterId, false );
+                    }
+                }
                 else if( instance == "xecore" ||
                     instance == "l3bank" ||
                     instance == "slice" ||
                     instance == "sqidi" ||
                     instance == "l3node" ||
                     instance == "copyengine" ||
-                    instance == "" )
+                    instance.empty() )
                 {
                     // Do nothing on purpose.
                 }
@@ -1039,6 +1065,7 @@ namespace MetricsDiscoveryInternal
             GENERATION_LNL,
             GENERATION_PTL,
             GENERATION_NVL,
+            GENERATION_NVLP,
             GENERATION_CRI );
     }
 
@@ -1068,6 +1095,7 @@ namespace MetricsDiscoveryInternal
             GENERATION_LNL,
             GENERATION_PTL,
             GENERATION_NVL,
+            GENERATION_NVLP,
             GENERATION_CRI );
     }
 
@@ -1303,8 +1331,7 @@ namespace MetricsDiscoveryInternal
     //     Appends PES configuration. This is method for OA unit.
     //
     // Input:
-    //     const THwEvent&    hwEvent               - a hw event.
-    //     const uint64_t     pesProgramming        - PES programming for the hw event.
+    //     CMetricPrototype&  prototype             - a metric prototype.
     //     std::vector<bool>& pesProgrammed         - a vector of already programmed PES-es.
     //     uint32_t           flexProgramming[]     - an array with flex programming.
     //     uint32_t&          snapshotReportOffsets - snapshot report offset for the metric.
@@ -1316,8 +1343,7 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     template <>
     TCompletionCode CMetricPrototypeManager<METRIC_PROTOTYPE_MANAGER_TYPE_OA>::AppendPesConfiguration(
-        const THwEvent&    hwEvent,
-        const uint64_t     pesProgramming,
+        CMetricPrototype&  prototype,
         std::vector<bool>& pesProgrammed,
         uint32_t           flexProgramming[],
         uint32_t&          snapshotReportOffsets,
@@ -1328,92 +1354,212 @@ namespace MetricsDiscoveryInternal
         constexpr uint32_t pesSecondGroup1 = 0x00013500;
         constexpr uint32_t pesSecondGroup2 = 0x00013700;
 
-        const uint32_t lowerPesProgramming = static_cast<uint32_t>( pesProgramming );
-        const uint32_t upperPesProgramming = static_cast<uint32_t>( pesProgramming >> 32 );
+        const auto& hwEvent = prototype.GetHwEvent();
 
-        auto hwEventPair = GetHwEventIteratorFromGroup( m_firstEventGroup, hwEvent );
-
-        if( hwEventPair != m_firstEventGroup.end() )
+        if( m_pesCountMultiplier == 1 )
         {
-            uint32_t hwEventIndex = static_cast<uint32_t>( std::distance( m_firstEventGroup.begin(), hwEventPair ) );
+            const uint32_t upperPesProgramming = 0;
+            const uint32_t lowerPesProgramming = hwEvent.m_archEvent.m_eventEncoding | hwEvent.m_disaggregationMask;
 
-            if( hwEventIndex > 6 ) // PEC 21-31
+            auto hwEventPair = GetHwEventIteratorFromGroup( m_firstEventGroup, hwEvent );
+
+            if( hwEventPair != m_firstEventGroup.end() )
             {
-                hwEventIndex += 14;
-            }
+                uint32_t hwEventIndex = static_cast<uint32_t>( std::distance( m_firstEventGroup.begin(), hwEventPair ) );
 
-            snapshotReportOffsets = m_snapshotReportOffsetStart + m_snapshotCounterSize * hwEventIndex;
-            deltaReportOffsets    = m_deltaReportOffsetStart + m_deltaCounterSize * hwEventIndex;
-
-            if( !pesProgrammed[hwEventIndex] )
-            {
-                const uint32_t pesProgrammingOffset = pesFirstGroup + sizeof( uint64_t ) * hwEventIndex;
-
-                MD_CHECK_CC( m_set.AddStartConfigRegister( pesProgrammingOffset, lowerPesProgramming, REGISTER_TYPE_OA ) );
-                MD_CHECK_CC( m_set.AddStartConfigRegister( pesProgrammingOffset + 4, upperPesProgramming, REGISTER_TYPE_OA ) );
-
-                pesProgrammed[hwEventIndex] = true;
-            }
-        }
-
-        hwEventPair = GetHwEventIteratorFromGroup( m_secondEventGroup, hwEvent );
-
-        if( hwEventPair != m_secondEventGroup.end() )
-        {
-            const uint32_t hwEventIndex = static_cast<uint32_t>( std::distance( m_secondEventGroup.begin(), hwEventPair ) );
-
-            // PEC 32-63
-            snapshotReportOffsets = m_snapshotReportOffsetStart + m_snapshotCounterSize * ( hwEventIndex + 32 );
-            deltaReportOffsets    = m_deltaReportOffsetStart + m_deltaCounterSize * ( hwEventIndex + 32 );
-
-            if( !pesProgrammed[hwEventIndex + 32] )
-            {
-                const uint32_t pesProgrammingOffset0 = pesSecondGroup0 + sizeof( uint64_t ) * hwEventIndex;
-                const uint32_t pesProgrammingOffset1 = pesSecondGroup1 + sizeof( uint64_t ) * hwEventIndex;
-                const uint32_t pesProgrammingOffset2 = pesSecondGroup2 + sizeof( uint64_t ) * hwEventIndex;
-
-                MD_CHECK_CC( m_set.AddStartConfigRegister( pesProgrammingOffset0, lowerPesProgramming, REGISTER_TYPE_OA ) );
-                MD_CHECK_CC( m_set.AddStartConfigRegister( pesProgrammingOffset0 + 4, upperPesProgramming, REGISTER_TYPE_OA ) );
-                MD_CHECK_CC( m_set.AddStartConfigRegister( pesProgrammingOffset1, lowerPesProgramming, REGISTER_TYPE_OA ) );
-                MD_CHECK_CC( m_set.AddStartConfigRegister( pesProgrammingOffset1 + 4, upperPesProgramming, REGISTER_TYPE_OA ) );
-                MD_CHECK_CC( m_set.AddStartConfigRegister( pesProgrammingOffset2, lowerPesProgramming, REGISTER_TYPE_OA ) );
-                MD_CHECK_CC( m_set.AddStartConfigRegister( pesProgrammingOffset2 + 4, upperPesProgramming, REGISTER_TYPE_OA ) );
-
-                pesProgrammed[hwEventIndex + 32] = true;
-            }
-        }
-
-        hwEventPair = GetHwEventIteratorFromGroup( m_flexEventGroup, hwEvent );
-
-        if( hwEventPair != m_flexEventGroup.end() )
-        {
-            const uint32_t hwEventIndex = static_cast<uint32_t>( std::distance( m_flexEventGroup.begin(), hwEventPair ) );
-
-            // PEC 7-20
-            snapshotReportOffsets = m_snapshotReportOffsetStart + m_snapshotCounterSize * ( hwEventIndex + 7 );
-            deltaReportOffsets    = m_deltaReportOffsetStart + m_deltaCounterSize * ( hwEventIndex + 7 );
-
-            if( !pesProgrammed[hwEventIndex + 7] )
-            {
-                const uint32_t pesProgrammingOffset = pesFirstGroup + sizeof( uint64_t ) * ( hwEventIndex + 7 );
-
-                MD_CHECK_CC( m_set.AddStartConfigRegister( pesProgrammingOffset, lowerPesProgramming, REGISTER_TYPE_OA ) );
-                MD_CHECK_CC( m_set.AddStartConfigRegister( pesProgrammingOffset + 4, upperPesProgramming, REGISTER_TYPE_OA ) );
-
-                // Coarse filters.
-                if( hwEvent.m_filterValue > 0 )
+                if( hwEventIndex > 6 ) // PEC 0-6 & PEC 21-31
                 {
-                    if( !( hwEventIndex & 1 ) ) // 7:4 bits
-                    {
-                        flexProgramming[hwEventIndex >> 1] |= ( hwEvent.m_filterValue << 4 );
-                    }
-                    else // 19:16 bits
-                    {
-                        flexProgramming[hwEventIndex >> 1] |= ( hwEvent.m_filterValue << 16 );
-                    }
+                    hwEventIndex += 14;
                 }
 
-                pesProgrammed[hwEventIndex + 7] = true;
+                snapshotReportOffsets = m_snapshotReportOffsetStart + m_snapshotCounterSize * hwEventIndex;
+                deltaReportOffsets    = m_deltaReportOffsetStart + m_deltaCounterSize * hwEventIndex;
+
+                if( !pesProgrammed[hwEventIndex] )
+                {
+                    const uint32_t pesProgrammingOffset = pesFirstGroup + sizeof( uint64_t ) * hwEventIndex;
+
+                    MD_CHECK_CC( m_registerManager.AddRegister( pesProgrammingOffset, lowerPesProgramming, lowerPesProgramming ) );
+                    MD_CHECK_CC( m_registerManager.AddRegister( pesProgrammingOffset + 4, upperPesProgramming, upperPesProgramming ) );
+
+                    pesProgrammed[hwEventIndex] = true;
+                }
+            }
+
+            hwEventPair = GetHwEventIteratorFromGroup( m_secondEventGroup, hwEvent );
+
+            if( hwEventPair != m_secondEventGroup.end() )
+            {
+                const uint32_t hwEventIndex = static_cast<uint32_t>( std::distance( m_secondEventGroup.begin(), hwEventPair ) );
+
+                // PEC 32-63
+                snapshotReportOffsets = m_snapshotReportOffsetStart + m_snapshotCounterSize * ( hwEventIndex + 32 );
+                deltaReportOffsets    = m_deltaReportOffsetStart + m_deltaCounterSize * ( hwEventIndex + 32 );
+
+                if( !pesProgrammed[hwEventIndex + 32] )
+                {
+                    const uint32_t pesProgrammingOffset0 = pesSecondGroup0 + sizeof( uint64_t ) * hwEventIndex;
+                    const uint32_t pesProgrammingOffset1 = pesSecondGroup1 + sizeof( uint64_t ) * hwEventIndex;
+                    const uint32_t pesProgrammingOffset2 = pesSecondGroup2 + sizeof( uint64_t ) * hwEventIndex;
+
+                    MD_CHECK_CC( m_registerManager.AddRegister( pesProgrammingOffset0, lowerPesProgramming, lowerPesProgramming ) );
+                    MD_CHECK_CC( m_registerManager.AddRegister( pesProgrammingOffset0 + 4, upperPesProgramming, upperPesProgramming ) );
+                    MD_CHECK_CC( m_registerManager.AddRegister( pesProgrammingOffset1, lowerPesProgramming, lowerPesProgramming ) );
+                    MD_CHECK_CC( m_registerManager.AddRegister( pesProgrammingOffset1 + 4, upperPesProgramming, upperPesProgramming ) );
+                    MD_CHECK_CC( m_registerManager.AddRegister( pesProgrammingOffset2, lowerPesProgramming, lowerPesProgramming ) );
+                    MD_CHECK_CC( m_registerManager.AddRegister( pesProgrammingOffset2 + 4, upperPesProgramming, upperPesProgramming ) );
+
+                    pesProgrammed[hwEventIndex + 32] = true;
+                }
+            }
+
+            hwEventPair = GetHwEventIteratorFromGroup( m_flexEventGroup, hwEvent );
+
+            if( hwEventPair != m_flexEventGroup.end() )
+            {
+                const uint32_t hwEventIndex = static_cast<uint32_t>( std::distance( m_flexEventGroup.begin(), hwEventPair ) );
+
+                // PEC 7-20
+                snapshotReportOffsets = m_snapshotReportOffsetStart + m_snapshotCounterSize * ( hwEventIndex + 7 );
+                deltaReportOffsets    = m_deltaReportOffsetStart + m_deltaCounterSize * ( hwEventIndex + 7 );
+
+                if( !pesProgrammed[hwEventIndex + 7] )
+                {
+                    const uint32_t pesProgrammingOffset = pesFirstGroup + sizeof( uint64_t ) * ( hwEventIndex + 7 );
+
+                    MD_CHECK_CC( m_registerManager.AddRegister( pesProgrammingOffset, lowerPesProgramming, lowerPesProgramming ) );
+                    MD_CHECK_CC( m_registerManager.AddRegister( pesProgrammingOffset + 4, upperPesProgramming, upperPesProgramming ) );
+
+                    // Coarse filters.
+                    if( hwEvent.m_filterValue > 0 )
+                    {
+                        if( !( hwEventIndex & 1 ) ) // 7:4 bits
+                        {
+                            flexProgramming[hwEventIndex >> 1] |= ( hwEvent.m_filterValue << 4 );
+                        }
+                        else // 19:16 bits
+                        {
+                            flexProgramming[hwEventIndex >> 1] |= ( hwEvent.m_filterValue << 16 );
+                        }
+                    }
+
+                    pesProgrammed[hwEventIndex + 7] = true;
+                }
+            }
+        }
+        else
+        {
+            auto hwEventPair = GetHwEventIteratorFromGroup( m_firstEventGroup, hwEvent );
+
+            if( hwEventPair != m_firstEventGroup.end() )
+            {
+                uint32_t hwEventIndex = static_cast<uint32_t>( std::distance( m_firstEventGroup.begin(), hwEventPair ) );
+
+                if( hwEventIndex > 13 ) // PEC 0-13 & PEC 42-63
+                {
+                    hwEventIndex += 28;
+                }
+
+                snapshotReportOffsets = m_snapshotReportOffsetStart + m_snapshotCounterSize * hwEventIndex;
+                deltaReportOffsets    = m_deltaReportOffsetStart + m_deltaCounterSize * hwEventIndex;
+
+                if( !pesProgrammed[hwEventIndex] )
+                {
+                    const uint32_t pesProgrammingOffset = pesFirstGroup + sizeof( uint32_t ) * hwEventIndex;
+
+                    uint32_t upperPesProgramming = 0;
+
+                    if( !( hwEventIndex & 1 ) )
+                    {
+                        const uint32_t lowerPesProgramming = hwEvent.m_archEvent.m_eventEncoding | hwEvent.m_disaggregationMask;
+                        MD_CHECK_CC( m_registerManager.AddRegister( pesProgrammingOffset, lowerPesProgramming, lowerPesProgramming ) );
+
+                        MD_CHECK_CC( m_registerManager.AddRegister( pesProgrammingOffset + 4, upperPesProgramming, upperPesProgramming ) );
+                    }
+                    else
+                    {
+                        upperPesProgramming = hwEvent.m_archEvent.m_eventEncoding | hwEvent.m_disaggregationMask;
+                        MD_CHECK_CC( m_registerManager.AddRegister( pesProgrammingOffset, upperPesProgramming, upperPesProgramming ) );
+                    }
+
+                    pesProgrammed[hwEventIndex] = true;
+                }
+            }
+
+            hwEventPair = GetHwEventIteratorFromGroup( m_secondEventGroup, hwEvent );
+
+            if( hwEventPair != m_secondEventGroup.end() )
+            {
+                const uint32_t hwEventIndex = static_cast<uint32_t>( std::distance( m_secondEventGroup.begin(), hwEventPair ) );
+
+                // PEC 64-127
+                snapshotReportOffsets = m_snapshotReportOffsetStart + m_snapshotCounterSize * ( hwEventIndex + 64 );
+                deltaReportOffsets    = m_deltaReportOffsetStart + m_deltaCounterSize * ( hwEventIndex + 64 );
+
+                if( !pesProgrammed[hwEventIndex + 64] )
+                {
+                    const uint32_t pesProgrammingOffset0 = pesSecondGroup0 + sizeof( uint32_t ) * hwEventIndex;
+                    const uint32_t pesProgrammingOffset1 = pesSecondGroup1 + sizeof( uint32_t ) * hwEventIndex;
+                    const uint32_t pesProgrammingOffset2 = pesSecondGroup2 + sizeof( uint32_t ) * hwEventIndex;
+
+                    uint32_t upperPesProgramming = 0;
+
+                    if( !( hwEventIndex & 1 ) )
+                    {
+                        const uint32_t lowerPesProgramming = hwEvent.m_archEvent.m_eventEncoding | hwEvent.m_disaggregationMask;
+                        MD_CHECK_CC( m_registerManager.AddRegister( pesProgrammingOffset0, lowerPesProgramming, lowerPesProgramming ) );
+                        MD_CHECK_CC( m_registerManager.AddRegister( pesProgrammingOffset1, lowerPesProgramming, lowerPesProgramming ) );
+                        MD_CHECK_CC( m_registerManager.AddRegister( pesProgrammingOffset2, lowerPesProgramming, lowerPesProgramming ) );
+
+                        MD_CHECK_CC( m_registerManager.AddRegister( pesProgrammingOffset0 + 4, upperPesProgramming, upperPesProgramming ) );
+                        MD_CHECK_CC( m_registerManager.AddRegister( pesProgrammingOffset1 + 4, upperPesProgramming, upperPesProgramming ) );
+                        MD_CHECK_CC( m_registerManager.AddRegister( pesProgrammingOffset2 + 4, upperPesProgramming, upperPesProgramming ) );
+                    }
+                    else
+                    {
+                        upperPesProgramming = hwEvent.m_archEvent.m_eventEncoding | hwEvent.m_disaggregationMask;
+                        MD_CHECK_CC( m_registerManager.AddRegister( pesProgrammingOffset0, upperPesProgramming, upperPesProgramming ) );
+                        MD_CHECK_CC( m_registerManager.AddRegister( pesProgrammingOffset1, upperPesProgramming, upperPesProgramming ) );
+                        MD_CHECK_CC( m_registerManager.AddRegister( pesProgrammingOffset2, upperPesProgramming, upperPesProgramming ) );
+                    }
+
+                    pesProgrammed[hwEventIndex + 64] = true;
+                }
+            }
+
+            hwEventPair = GetHwEventIteratorFromGroup( m_flexEventGroup, hwEvent );
+
+            if( hwEventPair != m_flexEventGroup.end() )
+            {
+                const uint32_t hwEventIndex = static_cast<uint32_t>( std::distance( m_flexEventGroup.begin(), hwEventPair ) );
+
+                // PEC 14-41
+                snapshotReportOffsets = m_snapshotReportOffsetStart + m_snapshotCounterSize * ( hwEventIndex + 14 );
+                deltaReportOffsets    = m_deltaReportOffsetStart + m_deltaCounterSize * ( hwEventIndex + 14 );
+
+                if( !pesProgrammed[hwEventIndex + 14] )
+                {
+                    const uint32_t pesProgrammingOffset = pesFirstGroup + sizeof( uint32_t ) * ( hwEventIndex + 14 );
+
+                    uint32_t upperPesProgramming = 0;
+
+                    if( !( hwEventIndex & 1 ) )
+                    {
+                        const uint32_t lowerPesProgramming = hwEvent.m_archEvent.m_eventEncoding | hwEvent.m_disaggregationMask;
+                        MD_CHECK_CC( m_registerManager.AddRegister( pesProgrammingOffset, lowerPesProgramming, lowerPesProgramming ) );
+
+                        MD_CHECK_CC( m_registerManager.AddRegister( pesProgrammingOffset + 4, upperPesProgramming, upperPesProgramming ) );
+                    }
+                    else
+                    {
+                        upperPesProgramming = hwEvent.m_archEvent.m_eventEncoding | hwEvent.m_disaggregationMask;
+                        MD_CHECK_CC( m_registerManager.AddRegister( pesProgrammingOffset, upperPesProgramming, upperPesProgramming ) );
+                    }
+
+                    // Coarse filters not supported in this mode.
+
+                    pesProgrammed[hwEventIndex + 14] = true;
+                }
             }
         }
 
@@ -1436,8 +1582,7 @@ namespace MetricsDiscoveryInternal
     //     Appends PES configuration. This is method for OAM unit.
     //
     // Input:
-    //     const THwEvent&    hwEvent               - a hw event.
-    //     const uint64_t     pesProgramming        - PES programming for the hw event.
+    //     CMetricPrototype&  prototype             - a metric prototype.
     //     std::vector<bool>& pesProgrammed         - a vector of already programmed PES-es.
     //     uint32_t           flexProgramming[]     - an array with flex programming.
     //     uint32_t&          snapshotReportOffsets - snapshot report offset for the metric.
@@ -1449,15 +1594,16 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     template <>
     TCompletionCode CMetricPrototypeManager<METRIC_PROTOTYPE_MANAGER_TYPE_OAM>::AppendPesConfiguration(
-        const THwEvent&            hwEvent,
-        const uint64_t             pesProgramming,
+        CMetricPrototype&          prototype,
         std::vector<bool>&         pesProgrammed,
         [[maybe_unused]] uint32_t  flexProgramming[],
         uint32_t&                  snapshotReportOffsets,
         [[maybe_unused]] uint32_t& deltaReportOffsets )
     {
-        const uint32_t lowerPesProgramming = static_cast<uint32_t>( pesProgramming );
-        const uint32_t upperPesProgramming = static_cast<uint32_t>( pesProgramming >> 32 );
+        const auto& hwEvent = prototype.GetHwEvent();
+
+        const uint32_t upperPesProgramming = 0;
+        const uint32_t lowerPesProgramming = hwEvent.m_archEvent.m_eventEncoding | hwEvent.m_disaggregationMask;
 
         auto hwEventPair = GetHwEventIteratorFromGroup( m_firstEventGroup, hwEvent );
 
@@ -1496,8 +1642,7 @@ namespace MetricsDiscoveryInternal
     //     Appends PES configuration. This is method for OAMERT unit.
     //
     // Input:
-    //     const THwEvent&    hwEvent               - a hw event.
-    //     const uint64_t     pesProgramming        - PES programming for the hw event.
+    //     CMetricPrototype&  prototype             - a metric prototype.
     //     std::vector<bool>& pesProgrammed         - a vector of already programmed PES-es.
     //     uint32_t           flexProgramming[]     - an array with flex programming.
     //     uint32_t&          snapshotReportOffsets - snapshot report offset for the metric.
@@ -1509,15 +1654,16 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     template <>
     TCompletionCode CMetricPrototypeManager<METRIC_PROTOTYPE_MANAGER_TYPE_OAMERT>::AppendPesConfiguration(
-        const THwEvent&            hwEvent,
-        const uint64_t             pesProgramming,
+        CMetricPrototype&          prototype,
         std::vector<bool>&         pesProgrammed,
         [[maybe_unused]] uint32_t  flexProgramming[],
         uint32_t&                  snapshotReportOffsets,
         [[maybe_unused]] uint32_t& deltaReportOffsets )
     {
-        const uint32_t lowerPesProgramming = static_cast<uint32_t>( pesProgramming );
-        const uint32_t upperPesProgramming = static_cast<uint32_t>( pesProgramming >> 32 );
+        const auto& hwEvent = prototype.GetHwEvent();
+
+        const uint32_t upperPesProgramming = 0;
+        const uint32_t lowerPesProgramming = hwEvent.m_archEvent.m_eventEncoding | hwEvent.m_disaggregationMask;
 
         auto hwEventPair = GetHwEventIteratorFromGroup( m_firstEventGroup, hwEvent );
 
@@ -1632,7 +1778,7 @@ namespace MetricsDiscoveryInternal
     template <TMetricPrototypeManagerType T>
     uint32_t CMetricPrototypeManager<T>::GetMaxPesCount()
     {
-        return m_maxPesCount;
+        return m_maxPesCount * m_pesCountMultiplier;
     }
 
     //////////////////////////////////////////////////////////////////////////////
@@ -1656,13 +1802,13 @@ namespace MetricsDiscoveryInternal
         switch( group )
         {
             case HW_EVENT_GROUP_FIRST:
-                return m_maxFirstEventGroupPesCount;
+                return m_maxFirstEventGroupPesCount * m_pesCountMultiplier;
 
             case HW_EVENT_GROUP_SECOND:
-                return m_maxSecondEventGroupPesCount;
+                return m_maxSecondEventGroupPesCount * m_pesCountMultiplier;
 
             case HW_EVENT_GROUP_FLEX:
-                return m_maxFlexEventGroupPesCount;
+                return m_maxFlexEventGroupPesCount * m_pesCountMultiplier;
 
             default:
                 MD_ASSERT( false );

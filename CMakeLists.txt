@@ -6,7 +6,7 @@
 #
 #============================ end_copyright_notice =============================
 
-cmake_minimum_required (VERSION 3.14)
+cmake_minimum_required (VERSION 3.20)
 
 # Uncomment for logs during build (during 'make' command)
 #set (CMAKE_VERBOSE_MAKEFILE ON)
@@ -23,7 +23,11 @@ set (LIB_NAME libigdmd)
 #################################################################################
 # CONFIGURE C++ STANDARD
 #################################################################################
-set (CMAKE_CXX_STANDARD 17)
+if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU" AND CMAKE_CXX_COMPILER_VERSION VERSION_LESS 10)
+    set (CMAKE_CXX_STANDARD 17)
+else ()
+    set (CMAKE_CXX_STANDARD 20)
+endif ()
 set (CMAKE_CXX_STANDARD_REQUIRED ON)
 
 # instrumentation common settings & macros
@@ -60,6 +64,7 @@ set (_SOURCES ${_SOURCES}
     ${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen/md_metrics_ARL_GT1.cpp
     ${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen/md_metrics_ARL_GT2.cpp
     ${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen/md_metrics_NVL.cpp
+    ${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen/md_metrics_NVLP.cpp
     ${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen/md_metrics_CRI.cpp
     ${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen/md_metrics.cpp
     # external events
@@ -84,6 +89,7 @@ set (_SOURCES ${_SOURCES}
     ${BS_DIR_INSTRUMENTATION}/metrics_discovery/common/internal/md_metric_set.cpp
     ${BS_DIR_INSTRUMENTATION}/metrics_discovery/common/internal/md_metrics_device.cpp
     ${BS_DIR_INSTRUMENTATION}/metrics_discovery/common/internal/md_override.cpp
+    ${BS_DIR_INSTRUMENTATION}/metrics_discovery/common/internal/md_register_manager.cpp
     ${BS_DIR_INSTRUMENTATION}/metrics_discovery/common/internal/md_register_set.cpp
     ${BS_DIR_INSTRUMENTATION}/metrics_discovery/common/internal/md_symbol_set.cpp
     ${BS_DIR_INSTRUMENTATION}/metrics_discovery/common/md_calculation.cpp
@@ -108,6 +114,7 @@ set (_SOURCES ${_SOURCES}
     ${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen/md_metric_sets_ARL_GT1.cpp
     ${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen/md_metric_sets_ARL_GT2.cpp
     ${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen/md_metric_sets_NVL.cpp
+    ${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen/md_metric_sets_NVLP.cpp
     ${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen/md_metric_sets_CRI.cpp
     ${BS_DIR_INSTRUMENTATION}/metrics_discovery/codegen/md_metric_sets_common.cpp
     # utils
@@ -367,7 +374,6 @@ if (${PLATFORM} STREQUAL Windows) # windows
             /Ot     # favor fast code
             /O2     # favor speed
             /Gy     # function-level linking
-            /GL     # whole program optimization
         >
         $<$<CONFIG:Debug>:
             ${COMMON_COMPILE_OPTIONS}

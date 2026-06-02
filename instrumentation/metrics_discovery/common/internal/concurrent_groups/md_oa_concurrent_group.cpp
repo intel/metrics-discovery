@@ -117,6 +117,7 @@ namespace MetricsDiscoveryInternal
             case GENERATION_LNL:
             case GENERATION_PTL:
             case GENERATION_NVL:
+            case GENERATION_NVLP:
             case GENERATION_CRI:
                 snapshotReportSize = snapshotReportSizePostXe2;
                 deltaReportSize    = deltaReportSizePostXe2;
@@ -303,12 +304,13 @@ namespace MetricsDiscoveryInternal
     //     uint32_t       processId     - PID of the measured app (0 is global context)
     //     uint32_t*      nsTimerPeriod - (in/out) requested/set sampling period time in nanoseconds
     //     uint32_t*      oaBufferSize  - (in/out) requested/set OA Buffer size in bytes
+    //     TIoStreamState state         - IO Stream state at open
     //
     // Output:
     //     TCompletionCode              - result of operation (*CC_OK* is OK)
     //
     //////////////////////////////////////////////////////////////////////////////
-    TCompletionCode COAConcurrentGroup::OpenIoStream( CMetricSet* metricSet, uint32_t processId, uint32_t* nsTimerPeriod, uint32_t* oaBufferSize )
+    TCompletionCode COAConcurrentGroup::OpenIoStream( CMetricSet* metricSet, uint32_t processId, uint32_t* nsTimerPeriod, uint32_t* oaBufferSize, TIoStreamState state )
     {
         const uint32_t adapterId = m_device.GetAdapter().GetAdapterId();
         MD_LOG_ENTER_A( adapterId );
@@ -328,6 +330,22 @@ namespace MetricsDiscoveryInternal
         ret                               = driverInterface.OpenIoStream( *this, processId, *nsTimerPeriod, *oaBufferSize );
         MD_CHECK_CC_RET_A( adapterId, ret );
         MD_LOG_A( adapterId, LOG_DEBUG, "Stream opened using type: %u", m_streamType );
+
+        if( state == IO_STREAM_STATE_DISABLED )
+        {
+            ret = driverInterface.ChangeIoStreamState( *this, state, *nsTimerPeriod );
+
+            if( ret != CC_OK )
+            {
+                // Close the stream if changing state failed.
+                TCompletionCode ret2 = driverInterface.CloseIoStream( *this );
+                MD_CHECK_CC_RET_A( adapterId, ret2 );
+                MD_LOG_EXIT_A( adapterId );
+                return ret;
+            }
+
+            MD_LOG_A( adapterId, LOG_DEBUG, "Stream state changed to: %u", state );
+        }
 
         m_processId            = processId;
         m_contextTagsEnabled   = m_ioMetricSet->HasInformation( "ContextId" );
@@ -368,7 +386,72 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     TCompletionCode COAConcurrentGroup::OpenIoStream( IMetricSet_1_0* metricSet, uint32_t processId, uint32_t* nsTimerPeriod, uint32_t* oaBufferSize )
     {
-        return OpenIoStream( static_cast<CMetricSet*>( metricSet ), processId, nsTimerPeriod, oaBufferSize );
+        return OpenIoStream( static_cast<CMetricSet*>( metricSet ), processId, nsTimerPeriod, oaBufferSize, IO_STREAM_STATE_ENABLED );
+    }
+
+    //////////////////////////////////////////////////////////////////////////////
+    //
+    // Class:
+    //     COAConcurrentGroup
+    //
+    // Method:
+    //     OpenIoStream
+    //
+    // Description:
+    //     Opens IO Stream for given metric set.
+    //     (Enables Timer Mode and opens Counter Stream)
+    //
+    // Input:
+    //     IMetricSet_1_13* metricSet     - metric set
+    //     uint32_t         processId     - PID of the measured app (0 is global context)
+    //     uint32_t*        nsTimerPeriod - (in/out) requested/set sampling period time in nanoseconds
+    //     uint32_t*        oaBufferSize  - (in/out) requested/set OA Buffer size in bytes
+    //     TIoStreamState   state         - IO Stream state at open
+    //
+    // Output:
+    //     TCompletionCode                - result of operation (*CC_OK* is OK)
+    //
+    //////////////////////////////////////////////////////////////////////////////
+    TCompletionCode COAConcurrentGroup::OpenIoStream( IMetricSet_1_13* metricSet, uint32_t processId, uint32_t* nsTimerPeriod, uint32_t* oaBufferSize, TIoStreamState state )
+    {
+        return OpenIoStream( static_cast<CMetricSet*>( metricSet ), processId, nsTimerPeriod, oaBufferSize, state );
+    }
+
+    //////////////////////////////////////////////////////////////////////////////
+    //
+    // Class:
+    //     COAConcurrentGroup
+    //
+    // Method:
+    //     ChangeIoStreamState
+    //
+    // Description:
+    //     Changes IO Stream state.
+    //
+    // Input:
+    //     TIoStreamState  state         - state to set
+    //     uint32_t*       nsTimerPeriod - requested sampling period in nanoseconds (if 0, current period is not changed)
+    //
+    // Output:
+    //     TCompletionCode               - result of operation (*CC_OK* is OK)
+    //
+    //////////////////////////////////////////////////////////////////////////////
+    TCompletionCode COAConcurrentGroup::ChangeIoStreamState( TIoStreamState state, uint32_t* nsTimerPeriod )
+    {
+        const uint32_t adapterId = m_device.GetAdapter().GetAdapterId();
+        MD_LOG_ENTER_A( adapterId );
+        MD_CHECK_PTR_RET_A( adapterId, nsTimerPeriod, CC_ERROR_INVALID_PARAMETER );
+
+        MD_LOG_A( adapterId, LOG_DEBUG, "Changing stream state to: %u, timer period to: %u ns", state, *nsTimerPeriod );
+
+        CDriverInterface& driverInterface = m_device.GetDriverInterface();
+        TCompletionCode   ret             = driverInterface.ChangeIoStreamState( *this, state, *nsTimerPeriod );
+        MD_CHECK_CC_RET_A( adapterId, ret );
+
+        MD_LOG_A( adapterId, LOG_DEBUG, "Stream state changed to: %u, timer period to: %u ns", state, *nsTimerPeriod );
+
+        MD_LOG_EXIT_A( adapterId );
+        return ret;
     }
 
     //////////////////////////////////////////////////////////////////////////////
@@ -588,6 +671,7 @@ namespace MetricsDiscoveryInternal
             case GENERATION_LNL:
             case GENERATION_PTL:
             case GENERATION_NVL:
+            case GENERATION_NVLP:
             case GENERATION_CRI:
                 reportType = DEFAULT_METRIC_SET_REPORT_TYPE_XE2;
                 break;

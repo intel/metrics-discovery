@@ -1070,6 +1070,39 @@ namespace MetricsDiscoveryInternal
     //     CDriverInterfaceLinuxPerf
     //
     // Method:
+    //     ChangeIoStreamState
+    //
+    // Description:
+    //     Changes the state of the IO stream (enabled / disabled).
+    //
+    // Input:
+    //     const int32_t        streamId - stream ID (file descriptor) obtained when opening the stream
+    //     const TIoStreamState state    - new stream state (enabled / disabled)
+    //
+    // Output:
+    //     TCompletionCode               - *CC_OK* means success
+    //
+    //////////////////////////////////////////////////////////////////////////////
+    TCompletionCode CDriverInterfaceLinuxPerf::ChangeIoStreamState( const int32_t streamId, const TIoStreamState state )
+    {
+        const uint32_t ioctlRequest = ( state == IO_STREAM_STATE_ENABLED ) ? I915_PERF_IOCTL_ENABLE : I915_PERF_IOCTL_DISABLE;
+        const int32_t  result       = SendIoctl( streamId, ioctlRequest, nullptr );
+
+        if( result == -1 )
+        {
+            MD_LOG_A( m_adapterId, LOG_ERROR, "ERROR: Failed to send I915_PERF_IOCTL_%s ioctl, errno: %d (%s)", ( ioctlRequest == I915_PERF_IOCTL_ENABLE ) ? "ENABLE" : "DISABLE", errno, strerror( errno ) );
+            return CC_ERROR_GENERAL;
+        }
+
+        return CC_OK;
+    }
+
+    //////////////////////////////////////////////////////////////////////////////
+    //
+    // Class:
+    //     CDriverInterfaceLinuxPerf
+    //
+    // Method:
     //     AddOaConfig
     //
     // Description:
@@ -1159,7 +1192,7 @@ namespace MetricsDiscoveryInternal
         {
             if( errno != EADDRINUSE ) // errno == 98 (EADDRINUSE) means set with the given GUID is already added
             {
-                MD_LOG_A( m_adapterId, LOG_ERROR, "ERROR: Adding i915 Perf configuration failed, errno: %s (%d)", strerror( errno ), errno );
+                MD_LOG_A( m_adapterId, LOG_ERROR, "ERROR: Adding i915 Perf configuration failed, errno: %d (%s)", errno, strerror( errno ) );
                 ret = CC_ERROR_GENERAL;
             }
             else
@@ -1369,7 +1402,7 @@ namespace MetricsDiscoveryInternal
         int32_t ioctlRet = SendIoctl( m_DrmDeviceHandle, DRM_IOCTL_I915_GETPARAM, &params );
         if( ioctlRet )
         {
-            MD_LOG_A( m_adapterId, LOG_WARNING, "ERROR: Failed to send GET_PARAM ioctl, paramId: %u, errno: %d (%s)", paramId, errno, strerror( errno ) );
+            MD_LOG_A( m_adapterId, LOG_ERROR, "ERROR: Failed to send GET_PARAM ioctl, paramId: %u, errno: %d (%s)", paramId, errno, strerror( errno ) );
             return CC_ERROR_GENERAL;
         }
 
@@ -1409,6 +1442,11 @@ namespace MetricsDiscoveryInternal
 
         const bool validCall   = SendIoctl( m_DrmDeviceHandle, DRM_IOCTL_I915_QUERY, &query ) == 0;
         const bool validLength = item.length > 0;
+
+        if( !validCall )
+        {
+            MD_LOG_A( m_adapterId, LOG_ERROR, "ERROR: Failed to send QUERY length ioctl, queryId: %u, errno: %d (%s)", queryId, errno, strerror( errno ) );
+        }
 
         return ( validCall && validLength )
             ? item.length
@@ -1487,7 +1525,7 @@ namespace MetricsDiscoveryInternal
     {
         if( SendIoctl( m_DrmDeviceHandle, DRM_IOCTL_I915_QUERY, &query ) )
         {
-            MD_LOG_A( m_adapterId, LOG_ERROR, "ERROR: invalid drm query result" );
+            MD_LOG_A( m_adapterId, LOG_ERROR, "ERROR: Failed to send QUERY ioctl, errno: %d (%s)", errno, strerror( errno ) );
             return CC_ERROR_GENERAL;
         }
 
@@ -2246,7 +2284,7 @@ namespace MetricsDiscoveryInternal
         int32_t ioctlRet = SendIoctl( m_DrmDeviceHandle, DRM_IOCTL_I915_REG_READ, &regReadParams );
         if( ioctlRet )
         {
-            MD_LOG_A( m_adapterId, LOG_ERROR, "ERROR: Failed to send DRM_IOCTL_I915_REG_READ ioctl" );
+            MD_LOG_A( m_adapterId, LOG_ERROR, "ERROR: Failed to send DRM_IOCTL_I915_REG_READ ioctl, errno: %d (%s)", errno, strerror( errno ) );
             return CC_ERROR_GENERAL;
         }
 
@@ -2291,7 +2329,7 @@ namespace MetricsDiscoveryInternal
         if( result == -1 )
         {
             oaBufferSize = 0;
-            MD_LOG_A( m_adapterId, LOG_ERROR, "ERROR: Failed to send PRELIM_I915_PERF_IOCTL_GET_OA_BUFFER_INFO ioctl" );
+            MD_LOG_A( m_adapterId, LOG_ERROR, "ERROR: Failed to send PRELIM_I915_PERF_IOCTL_GET_OA_BUFFER_INFO ioctl, errno: %d (%s)", errno, strerror( errno ) );
             return CC_ERROR_GENERAL;
         }
 

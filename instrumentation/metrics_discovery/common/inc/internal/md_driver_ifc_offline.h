@@ -99,28 +99,6 @@ namespace MetricsDiscoveryInternal
         {
             return CC_ERROR_NOT_SUPPORTED;
         };
-        virtual TCompletionCode SendGetCtxIdTagsEscape( [[maybe_unused]] TGetCtxTagsIdParams* params ) final
-        {
-            return CC_ERROR_NOT_SUPPORTED;
-        };
-        virtual bool IsOaBufferSupported( [[maybe_unused]] const GTDI_OA_BUFFER_TYPE oaBufferType, [[maybe_unused]] CMetricsDevice& metricsDevice ) final
-        {
-            return false;
-        };
-        virtual uint32_t GetAdapterId() final
-        {
-            return m_adapterId;
-        };
-
-        // Synchronization:
-        virtual TCompletionCode LockConcurrentGroup( [[maybe_unused]] const char* name, [[maybe_unused]] void** semaphore ) final
-        {
-            return CC_ERROR_NOT_SUPPORTED;
-        };
-        virtual TCompletionCode UnlockConcurrentGroup( [[maybe_unused]] const char* name, [[maybe_unused]] void** semaphore ) final
-        {
-            return CC_ERROR_NOT_SUPPORTED;
-        };
 
         // Stream:
         virtual TCompletionCode OpenIoStream( [[maybe_unused]] COAConcurrentGroup& oaConcurrentGroup, [[maybe_unused]] const uint32_t processId, [[maybe_unused]] uint32_t& nsTimerPeriod, [[maybe_unused]] uint32_t& bufferSize ) final
@@ -132,6 +110,10 @@ namespace MetricsDiscoveryInternal
             return CC_ERROR_NOT_SUPPORTED;
         };
         virtual TCompletionCode CloseIoStream( [[maybe_unused]] COAConcurrentGroup& oaConcurrentGroup ) final
+        {
+            return CC_ERROR_NOT_SUPPORTED;
+        };
+        virtual TCompletionCode ChangeIoStreamState( [[maybe_unused]] COAConcurrentGroup& oaConcurrentGroup, [[maybe_unused]] TIoStreamState state, [[maybe_unused]] uint32_t& nsTimerPeriod ) final
         {
             return CC_ERROR_NOT_SUPPORTED;
         };
@@ -157,14 +139,6 @@ namespace MetricsDiscoveryInternal
         {
             return CC_ERROR_NOT_SUPPORTED;
         };
-        virtual TCompletionCode SetQueryOverride( [[maybe_unused]] TOverrideType overrideType, [[maybe_unused]] uint32_t oaBufferSize, [[maybe_unused]] const TSetQueryOverrideParams_1_2& params ) final
-        {
-            return CC_ERROR_NOT_SUPPORTED;
-        };
-        virtual TCompletionCode SetFreqChangeReportsOverride( [[maybe_unused]] bool enable ) final
-        {
-            return CC_ERROR_NOT_SUPPORTED;
-        };
         virtual bool IsOverrideAvailable( [[maybe_unused]] TOverrideType overrideType ) final
         {
             return false;
@@ -172,10 +146,6 @@ namespace MetricsDiscoveryInternal
         virtual bool IsSubDeviceSupported() final
         {
             return false;
-        };
-        virtual TCompletionCode SetQueryModeOverride( [[maybe_unused]] const TQueryMode queryMode ) final
-        {
-            return CC_ERROR_NOT_SUPPORTED;
         };
         virtual TQueryMode GetQueryModeOverride() final
         {
