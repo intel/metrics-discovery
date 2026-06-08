@@ -75,6 +75,7 @@ set (_SOURCES ${_SOURCES}
     ${BS_DIR_INSTRUMENTATION}/metrics_discovery/common/internal/md_common.cpp
     ${BS_DIR_INSTRUMENTATION}/metrics_discovery/common/internal/md_adapter.cpp
     ${BS_DIR_INSTRUMENTATION}/metrics_discovery/common/internal/md_adapter_group.cpp
+    ${BS_DIR_INSTRUMENTATION}/metrics_discovery/common/internal/md_calculation_context.cpp
     ${BS_DIR_INSTRUMENTATION}/metrics_discovery/common/internal/concurrent_groups/md_concurrent_group.cpp
     ${BS_DIR_INSTRUMENTATION}/metrics_discovery/common/internal/concurrent_groups/md_oa_concurrent_group.cpp
     ${BS_DIR_INSTRUMENTATION}/metrics_discovery/common/internal/concurrent_groups/md_oam_concurrent_group.cpp

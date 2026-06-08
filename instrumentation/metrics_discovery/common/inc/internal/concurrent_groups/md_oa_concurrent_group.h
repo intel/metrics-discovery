@@ -36,6 +36,10 @@ namespace MetricsDiscoveryInternal
     class COAConcurrentGroup : public CConcurrentGroup
     {
     public:
+        // API 1.16:
+        virtual IMetricSet_1_16* AddMetricSet( const char* symbolName, const char* shortName, TCountersMode mode ) override;
+        virtual TCompletionCode  RemoveMetricSet( IMetricSet_1_16* metricSet ) final;
+
         // API 1.15:
         virtual TCompletionCode OpenIoStream( IMetricSet_1_13* metricSet, uint32_t processId, uint32_t* nsTimerPeriod, uint32_t* oaBufferSize, TIoStreamState state ) final;
         virtual TCompletionCode ChangeIoStreamState( TIoStreamState state, uint32_t* nsTimerPeriod ) final;

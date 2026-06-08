@@ -42,7 +42,7 @@ namespace MetricsDiscoveryInternal
         : m_device( device )
         , m_set( metricSet )
         , m_deltaCounterSize( sizeof( uint64_t ) )
-        , m_snapshotCounterSize( ( m_set.GetReportType() == OA_REPORT_TYPE_128B_MPEC8_NOA16 || m_set.GetReportType() == OA_REPORT_TYPE_320B_PEC64 || m_set.GetReportType() == OA_REPORT_TYPE_128B_MERT_PEC8 ) ? sizeof( uint32_t ) : sizeof( uint64_t ) )
+        , m_snapshotCounterSize( ( m_set.GetParams()->RawCounterSize == 32 ) ? sizeof( uint32_t ) : sizeof( uint64_t ) )
         , m_pesCountMultiplier( 1 )
     {
     }

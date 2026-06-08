@@ -89,6 +89,100 @@ namespace MetricsDiscoveryInternal
     //     Adds a metric set to the concurrent group.
     //
     // Input:
+    //     const char*   symbolName - metric set symbol name.
+    //     const char*   shortName  - metric set short name.
+    //     TCountersMode mode       - metric set counters mode.
+    //
+    // Output:
+    //     IMetricSet_1_16*         - a pointer to a created metric set.
+    //
+    //////////////////////////////////////////////////////////////////////////////
+    IMetricSet_1_16* COAConcurrentGroup::AddMetricSet( const char* symbolName, const char* shortName, TCountersMode mode )
+    {
+        const uint32_t adapterId = m_device.GetAdapter().GetAdapterId();
+
+        MD_CHECK_PTR_RET_A( adapterId, symbolName, nullptr );
+        MD_CHECK_PTR_RET_A( adapterId, shortName, nullptr );
+
+        constexpr uint32_t snapshotReportSizePostXe2 = 576;
+        constexpr uint32_t deltaReportSizePostXe2    = 880;
+
+        const uint32_t platformIndex      = m_device.GetPlatformIndex();
+        uint32_t       snapshotReportSize = 0;
+        uint32_t       deltaReportSize    = 0;
+        TReportType    reportFormat       = OA_REPORT_TYPE_LAST;
+
+        switch( platformIndex )
+        {
+            case GENERATION_BMG:
+            case GENERATION_LNL:
+            case GENERATION_PTL:
+            case GENERATION_NVL:
+            case GENERATION_NVLP:
+            case GENERATION_CRI:
+                if( mode == COUNTERS_MODE_DENSE )
+                {
+                    MD_LOG_A( adapterId, LOG_INFO, "Platform %u does not support dense mode", platformIndex );
+                    return nullptr;
+                }
+
+                else
+                {
+                    snapshotReportSize = snapshotReportSizePostXe2;
+                    deltaReportSize    = deltaReportSizePostXe2;
+                    reportFormat       = OA_REPORT_TYPE_576B_PEC64LL;
+                }
+                break;
+
+            default:
+                MD_LOG_A( adapterId, LOG_INFO, "Platform: %u not supported", platformIndex );
+                return nullptr;
+        }
+
+        uint8_t          platformMaskByteArray[MD_PLATFORM_MASK_BYTE_ARRAY_SIZE] = {};
+        TByteArrayLatest platformMask                                            = { MD_PLATFORM_MASK_BYTE_ARRAY_SIZE, platformMaskByteArray };
+
+        auto ret = SetAllBitsPlatformMask( adapterId, &platformMask );
+        if( ret != CC_OK )
+        {
+            MD_LOG_A( adapterId, LOG_ERROR, "ERROR: Cannot set platform mask!" );
+            return nullptr;
+        }
+
+        auto metricSet = CConcurrentGroup::AddMetricSet(
+            symbolName,
+            shortName,
+            MD_QUERY_API_MASK | API_TYPE_IOSTREAM,
+            GPU_RENDER | GPU_COMPUTE,
+            snapshotReportSize,
+            deltaReportSize,
+            reportFormat,
+            &platformMask,                        // platformMask
+            nullptr,                              // availabilityEquation
+            static_cast<uint32_t>( GT_TYPE_ALL ), // gtMask
+            true                                  // isCustom
+        );
+
+        MD_CHECK_PTR_RET_A( adapterId, metricSet, nullptr );
+
+        metricSet->SetApiSpecificId( DX9_FOURCC, DX9_QUERY_ID, DX10_COUNTER_QUERY_ID, OGL_QUERY_ID, OCL_QUERY_ID, HW_CONFIG_ID, DX10_COUNTER_QUERY_NAME, DX10_QUERY_ID, OGL_QUERY_NAME, OGL_QUERY_ARB_ID );
+        metricSet->SetToFlexible();
+
+        return metricSet;
+    }
+
+    //////////////////////////////////////////////////////////////////////////////
+    //
+    // Class:
+    //     COAConcurrentGroup
+    //
+    // Method:
+    //     AddMetricSet
+    //
+    // Description:
+    //     Adds a metric set to the concurrent group.
+    //
+    // Input:
     //     const char* symbolName - metric set symbol name.
     //     const char* shortName  - metric set short name.
     //
@@ -234,6 +328,29 @@ namespace MetricsDiscoveryInternal
     //
     //////////////////////////////////////////////////////////////////////////////
     TCompletionCode COAConcurrentGroup::RemoveMetricSet( IMetricSet_1_13* metricSet )
+    {
+        return RemoveMetricSetInternal( static_cast<CMetricSet*>( metricSet ) );
+    }
+
+    //////////////////////////////////////////////////////////////////////////////
+    //
+    // Class:
+    //     COAConcurrentGroup
+    //
+    // Method:
+    //     RemoveMetricSet
+    //
+    // Description:
+    //     Removes a given metric set from the concurrent group.
+    //
+    // Input:
+    //     IMetricSet_1_16* metricSet - metric set object to delete.
+    //
+    // Output:
+    //     TCompletionCode            - result of the operation.
+    //
+    //////////////////////////////////////////////////////////////////////////////
+    TCompletionCode COAConcurrentGroup::RemoveMetricSet( IMetricSet_1_16* metricSet )
     {
         return RemoveMetricSetInternal( static_cast<CMetricSet*>( metricSet ) );
     }

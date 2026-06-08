@@ -36,6 +36,9 @@ namespace MetricsDiscoveryInternal
     class CMERTConcurrentGroup : public COAConcurrentGroup
     {
     public:
+        // API 1.16:
+        virtual IMetricSet_1_16* AddMetricSet( const char* symbolName, const char* shortName, TCountersMode mode ) final;
+
         // API 1.13:
         virtual IMetricEnumerator_1_13* GetMetricEnumerator( void ) final;
 

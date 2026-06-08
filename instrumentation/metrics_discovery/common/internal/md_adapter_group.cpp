@@ -13,6 +13,7 @@ SPDX-License-Identifier: MIT
 #include "md_adapter_group.h"
 #include "md_adapter.h"
 #include "md_metrics_device.h"
+#include "md_calculation_context.h"
 
 #include "md_driver_ifc.h"
 #include "md_driver_ifc_offline.h"
@@ -350,6 +351,32 @@ namespace MetricsDiscoveryInternal
     //     CAdapterGroup
     //
     // Method:
+    //     OpenOfflineMetricsDeviceFromBuffer
+    //
+    // Description:
+    //     Opens offline metrics device object.
+    //     Multiple instances of offline metric devices may be created at once.
+    //
+    // Input:
+    //     uint8_t*              buffer        - a buffer that an offline device is created from
+    //     uint32_t              bufferSize    - the size of a buffer
+    //     IMetricsDevice_1_16** metricsDevice - [out] created / retrieved metrics device
+    //
+    // Output:
+    //     TCompletionCode                     - CC_OK or CC_ALREADY_INITIALIZED means success
+    //
+    //////////////////////////////////////////////////////////////////////////////
+    TCompletionCode CAdapterGroup::OpenOfflineMetricsDeviceFromBuffer( uint8_t* buffer, uint32_t bufferSize, IMetricsDevice_1_16** metricsDevice )
+    {
+        return OpenOfflineMetricsDeviceFromBuffer( buffer, bufferSize, reinterpret_cast<CMetricsDevice**>( metricsDevice ) );
+    }
+
+    //////////////////////////////////////////////////////////////////////////////
+    //
+    // Class:
+    //     CAdapterGroup
+    //
+    // Method:
     //     CloseOfflineMetricsDevice
     //
     // Description:
@@ -427,6 +454,29 @@ namespace MetricsDiscoveryInternal
     //
     //////////////////////////////////////////////////////////////////////////////
     TCompletionCode CAdapterGroup::CloseOfflineMetricsDevice( IMetricsDevice_1_15* metricsDevice )
+    {
+        return CloseOfflineMetricsDevice( static_cast<CMetricsDevice*>( metricsDevice ) );
+    }
+
+    //////////////////////////////////////////////////////////////////////////////
+    //
+    // Class:
+    //     CAdapterGroup
+    //
+    // Method:
+    //     CloseOfflineMetricsDevice
+    //
+    // Description:
+    //     Close offline metrics device object and free resources.
+    //
+    // Input:
+    //     IMetricsDevice_1_16* metricsDevice - a pointer to offline metrics device to close
+    //
+    // Output:
+    //     TCompletionCode                    - CC_OK means success
+    //
+    //////////////////////////////////////////////////////////////////////////////
+    TCompletionCode CAdapterGroup::CloseOfflineMetricsDevice( IMetricsDevice_1_16* metricsDevice )
     {
         return CloseOfflineMetricsDevice( static_cast<CMetricsDevice*>( metricsDevice ) );
     }
@@ -522,6 +572,114 @@ namespace MetricsDiscoveryInternal
     TCompletionCode CAdapterGroup::SaveMetricsDeviceToBuffer( IMetricsDevice_1_15* metricsDevice, IMetricSet_1_13** metricSets, uint32_t metricSetCount, uint8_t* buffer, uint32_t* bufferSize, const uint32_t minMajorApiVersion, const uint32_t minMinorApiVersion )
     {
         return SaveMetricsDeviceToBuffer( static_cast<CMetricsDevice*>( metricsDevice ), reinterpret_cast<CMetricSet**>( metricSets ), metricSetCount, buffer, bufferSize, minMajorApiVersion, minMinorApiVersion );
+    }
+
+    //////////////////////////////////////////////////////////////////////////////
+    //
+    // Class:
+    //     CAdapterGroup
+    //
+    // Method:
+    //     SaveMetricsDeviceToBuffer
+    //
+    // Description:
+    //     Saves metrics device to buffer. Then the buffer can be used for offline calculation.
+    //
+    // Input:
+    //     IMetricsDevice_1_16* metricsDevice      - a buffer that an offline device is created from
+    //     IMetricSet_1_16**    metricSets         - an array of metric sets that will be written to the buffer
+    //     uint32_t             metricSetCount     - a number of metric sets in the array
+    //     uint8_t*             buffer             - a buffer that an offline device is created from
+    //     uint32_t             bufferSize         - the size of a buffer
+    //     const uint32_t       minMajorApiVersion - required MDAPI major version to open the buffer
+    //     const uint32_t       minMinorApiVersion - required MDAPI minor version to open the buffer
+    //
+    // Output:
+    //     TCompletionCode                         - CC_OK means success
+    //
+    //////////////////////////////////////////////////////////////////////////////
+    TCompletionCode CAdapterGroup::SaveMetricsDeviceToBuffer( IMetricsDevice_1_16* metricsDevice, IMetricSet_1_16** metricSets, uint32_t metricSetCount, uint8_t* buffer, uint32_t* bufferSize, const uint32_t minMajorApiVersion, const uint32_t minMinorApiVersion )
+    {
+        return SaveMetricsDeviceToBuffer( static_cast<CMetricsDevice*>( metricsDevice ), reinterpret_cast<CMetricSet**>( metricSets ), metricSetCount, buffer, bufferSize, minMajorApiVersion, minMinorApiVersion );
+    }
+
+    //////////////////////////////////////////////////////////////////////////////
+    //
+    // Class:
+    //     CAdapterGroup
+    //
+    // Method:
+    //     CreateCalculationContext
+    //
+    // Description:
+    //     Creates calculation context based on calculation context descriptor
+    //
+    // Input:
+    //     TCalculationContextDescriptor_1_16* calculationDescriptor - pointer to the calculation context descriptor
+    //     ICalculationContext_1_16**          calculationContext    - Pointer to a pointer where the created calculation
+    //                                                                 context will be stored
+    //
+    // Output:
+    //     TCompletionCode                                           - CC_OK means success
+    //
+    //////////////////////////////////////////////////////////////////////////////
+    TCompletionCode CAdapterGroup::CreateCalculationContext( TCalculationContextDescriptor_1_16* calculationDescriptor, ICalculationContext_1_16** calculationContext )
+    {
+        MD_LOG_ENTER();
+        MD_CHECK_PTR_RET( calculationDescriptor, CC_ERROR_INVALID_PARAMETER );
+        MD_CHECK_PTR_RET( calculationContext, CC_ERROR_INVALID_PARAMETER );
+
+        auto ret = CCalculationContext::ValidateCalculationContextDescriptor( *calculationDescriptor );
+        MD_CHECK_CC_RET( ret );
+
+        CCalculationContext* context = new( std::nothrow ) CCalculationContext();
+        MD_CHECK_PTR_RET( context, CC_ERROR_NO_MEMORY );
+
+        ret = context->Initialize( *calculationDescriptor );
+        if( ret != CC_OK )
+        {
+            MD_LOG( LOG_ERROR, "Calculation context initialization failed" );
+            MD_SAFE_DELETE( context );
+            return ret;
+        }
+
+        *calculationContext = context;
+        MD_LOG_EXIT();
+        return CC_OK;
+    }
+
+    //////////////////////////////////////////////////////////////////////////////
+    //
+    // Class:
+    //     CAdapterGroup
+    //
+    // Method:
+    //     DestroyCalculationContext
+    //
+    // Description:
+    //     Destroys a calculation context previously created by CreateCalculationContext.
+    //     This method deinitializes the calculation context and releases all associated
+    //     resources. The provided pointer must be valid and non-null. After calling this
+    //     method, the calculationContext pointer is no longer valid and must not be used.
+    //
+    // Input:
+    //     ICalculationContext_1_16* calculationContext - pointer to the calculation context to destroy
+    //
+    // Output:
+    //     TCompletionCode                              - CC_OK on success,
+    //                                                    CC_ERROR_INVALID_PARAMETER if the pointer is null
+    //
+    //////////////////////////////////////////////////////////////////////////////
+    TCompletionCode CAdapterGroup::DestroyCalculationContext( ICalculationContext_1_16* calculationContext )
+    {
+        MD_LOG_ENTER();
+        MD_CHECK_PTR_RET( calculationContext, CC_ERROR_INVALID_PARAMETER );
+
+        CCalculationContext* context = static_cast<CCalculationContext*>( calculationContext );
+
+        MD_SAFE_DELETE( context );
+        MD_LOG_EXIT();
+        return CC_OK;
     }
 
     //////////////////////////////////////////////////////////////////////////////

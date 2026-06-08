@@ -91,6 +91,10 @@ namespace MetricsDiscovery
     {
         return nullptr;
     }
+    IConcurrentGroup_1_16* IMetricsDevice_1_16::GetConcurrentGroup( [[maybe_unused]] uint32_t index )
+    {
+        return nullptr;
+    }
 
     // Override interface.
     IOverride_1_2::~IOverride_1_2()
@@ -189,6 +193,18 @@ namespace MetricsDiscovery
     {
         return CC_ERROR_NOT_SUPPORTED;
     }
+    IMetricSet_1_16* IConcurrentGroup_1_16::GetMetricSet( [[maybe_unused]] uint32_t index )
+    {
+        return nullptr;
+    }
+    IMetricSet_1_16* IConcurrentGroup_1_16::AddMetricSet( [[maybe_unused]] const char* symbolName, [[maybe_unused]] const char* shortName, [[maybe_unused]] TCountersMode mode )
+    {
+        return nullptr;
+    }
+    TCompletionCode IConcurrentGroup_1_16::RemoveMetricSet( [[maybe_unused]] IMetricSet_1_16* metricSet )
+    {
+        return CC_ERROR_NOT_SUPPORTED;
+    }
 
     // Metric Set interface.
     IMetricSet_1_0::~IMetricSet_1_0()
@@ -283,6 +299,17 @@ namespace MetricsDiscovery
         return nullptr;
     }
     IMetric_1_13* IMetricSet_1_13::AddCustomMetric( [[maybe_unused]] const char* symbolName, [[maybe_unused]] const char* shortName, [[maybe_unused]] const char* groupName, [[maybe_unused]] const char* longName, [[maybe_unused]] const char* dxToOglAlias, [[maybe_unused]] uint32_t usageFlagsMask, [[maybe_unused]] uint32_t apiMask, [[maybe_unused]] TMetricResultType resultType, [[maybe_unused]] const char* resultUnits, [[maybe_unused]] TMetricType metricType, [[maybe_unused]] int64_t loWatermark, [[maybe_unused]] int64_t hiWatermark, [[maybe_unused]] THwUnitType hwType, [[maybe_unused]] const char* ioReadEquation, [[maybe_unused]] const char* deltaFunction, [[maybe_unused]] const char* queryReadEquation, [[maybe_unused]] const char* normalizationEquation, [[maybe_unused]] const char* maxValueEquation, [[maybe_unused]] const char* signalName, [[maybe_unused]] uint32_t queryModeMask )
+    {
+        return nullptr;
+    }
+    IMetricSet_1_16::~IMetricSet_1_16()
+    {
+    }
+    TCompletionCode IMetricSet_1_16::CalculateAsyncMetrics( [[maybe_unused]] const uint8_t* rawData, [[maybe_unused]] uint32_t rawDataSize, [[maybe_unused]] TTypedValue_1_0* out, [[maybe_unused]] uint32_t outSize, [[maybe_unused]] uint32_t* outReportCount, [[maybe_unused]] TTypedValue_1_0* outMaxValues, [[maybe_unused]] uint32_t outMaxValuesSize )
+    {
+        return CC_ERROR_NOT_SUPPORTED;
+    }
+    TMetricSetParams_1_16* IMetricSet_1_16::GetParams( void )
     {
         return nullptr;
     }
@@ -438,6 +465,59 @@ namespace MetricsDiscovery
     {
         return CC_ERROR_NOT_SUPPORTED;
     }
+    IAdapter_1_16* IAdapterGroup_1_16::GetAdapter( [[maybe_unused]] uint32_t index )
+    {
+        return nullptr;
+    }
+    TCompletionCode IAdapterGroup_1_16::OpenOfflineMetricsDeviceFromBuffer( [[maybe_unused]] uint8_t* buffer, [[maybe_unused]] uint32_t bufferSize, [[maybe_unused]] IMetricsDevice_1_16** metricsDevice )
+    {
+        return CC_ERROR_NOT_SUPPORTED;
+    }
+    TCompletionCode IAdapterGroup_1_16::CloseOfflineMetricsDevice( [[maybe_unused]] IMetricsDevice_1_16* metricsDevice )
+    {
+        return CC_ERROR_NOT_SUPPORTED;
+    }
+    TCompletionCode IAdapterGroup_1_16::SaveMetricsDeviceToBuffer( [[maybe_unused]] IMetricsDevice_1_16* metricsDevice, [[maybe_unused]] IMetricSet_1_16** metricSets, [[maybe_unused]] uint32_t metricSetCount, [[maybe_unused]] uint8_t* buffer, [[maybe_unused]] uint32_t* bufferSize, [[maybe_unused]] const uint32_t minMajorApiVersion, [[maybe_unused]] const uint32_t minMinorApiVersion )
+    {
+        return CC_ERROR_NOT_SUPPORTED;
+    }
+    TCompletionCode IAdapterGroup_1_16::CreateCalculationContext( [[maybe_unused]] TCalculationContextDescriptor_1_16* calculationDescriptor, [[maybe_unused]] ICalculationContext_1_16** calculationContext )
+    {
+        return CC_ERROR_NOT_SUPPORTED;
+    }
+    TCompletionCode IAdapterGroup_1_16::DestroyCalculationContext( [[maybe_unused]] ICalculationContext_1_16* calculationContext )
+    {
+        return CC_ERROR_NOT_SUPPORTED;
+    }
+
+    // Calculation Context interface.
+    ICalculationContext_1_16::~ICalculationContext_1_16()
+    {
+    }
+    const TCalculationContextParams_1_16* ICalculationContext_1_16::GetParams( void ) const
+    {
+        return nullptr;
+    }
+    IMetric_1_13* ICalculationContext_1_16::GetMetric( [[maybe_unused]] uint32_t index )
+    {
+        return nullptr;
+    }
+    IInformation_1_0* ICalculationContext_1_16::GetInformation( [[maybe_unused]] uint32_t index )
+    {
+        return nullptr;
+    }
+    TCompletionCode ICalculationContext_1_16::AggregateData( [[maybe_unused]] const uint8_t** rawData, [[maybe_unused]] const uint32_t* rawDataSizes, [[maybe_unused]] uint8_t* outAggregatedRawData, [[maybe_unused]] uint32_t* outAggregatedRawDataSize, [[maybe_unused]] bool lastDataPortion )
+    {
+        return CC_ERROR_NOT_SUPPORTED;
+    }
+    TCompletionCode ICalculationContext_1_16::CalculateMetrics( [[maybe_unused]] const uint8_t* rawData, [[maybe_unused]] uint32_t rawDataSize, [[maybe_unused]] TTypedValue_1_0* out, [[maybe_unused]] uint32_t outSize, [[maybe_unused]] uint32_t* outReportCount, [[maybe_unused]] TTypedValue_1_0* outMaxValues, [[maybe_unused]] uint32_t outMaxValuesSize )
+    {
+        return CC_ERROR_NOT_SUPPORTED;
+    }
+    TCompletionCode ICalculationContext_1_16::CalculateSingleWindowMetrics( [[maybe_unused]] const uint8_t** rawData, [[maybe_unused]] const uint32_t* rawDataSizes, [[maybe_unused]] uint32_t* outProcessedRawDataCount, [[maybe_unused]] TTypedValue_1_0* out, [[maybe_unused]] uint32_t outSize, [[maybe_unused]] TTypedValue_1_0* outMaxValues, [[maybe_unused]] uint32_t outMaxValuesSize, [[maybe_unused]] bool lastDataPortion )
+    {
+        return CC_ERROR_NOT_SUPPORTED;
+    }
 
     // Adapter interface.
     IAdapter_1_6::~IAdapter_1_6()
@@ -560,6 +640,22 @@ namespace MetricsDiscovery
         return CC_ERROR_NOT_SUPPORTED;
     }
     TCompletionCode IAdapter_1_15::OpenMetricsSubDeviceFromFile( [[maybe_unused]] const uint32_t subDeviceIndex, [[maybe_unused]] const char* fileName, [[maybe_unused]] void* openParams, [[maybe_unused]] IMetricsDevice_1_15** metricsDevice )
+    {
+        return CC_ERROR_NOT_SUPPORTED;
+    }
+    TCompletionCode IAdapter_1_16::OpenMetricsDevice( [[maybe_unused]] IMetricsDevice_1_16** metricsDevice )
+    {
+        return CC_ERROR_NOT_SUPPORTED;
+    }
+    TCompletionCode IAdapter_1_16::OpenMetricsDeviceFromFile( [[maybe_unused]] const char* fileName, [[maybe_unused]] void* openParams, [[maybe_unused]] IMetricsDevice_1_16** metricsDevice )
+    {
+        return CC_ERROR_NOT_SUPPORTED;
+    }
+    TCompletionCode IAdapter_1_16::OpenMetricsSubDevice( [[maybe_unused]] const uint32_t subDeviceIndex, [[maybe_unused]] IMetricsDevice_1_16** metricsDevice )
+    {
+        return CC_ERROR_NOT_SUPPORTED;
+    }
+    TCompletionCode IAdapter_1_16::OpenMetricsSubDeviceFromFile( [[maybe_unused]] const uint32_t subDeviceIndex, [[maybe_unused]] const char* fileName, [[maybe_unused]] void* openParams, [[maybe_unused]] IMetricsDevice_1_16** metricsDevice )
     {
         return CC_ERROR_NOT_SUPPORTED;
     }

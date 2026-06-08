@@ -55,6 +55,34 @@ namespace MetricsDiscoveryInternal
     //     Adds a metric set to the concurrent group.
     //
     // Input:
+    //     const char*   symbolName - metric set symbol name.
+    //     const char*   shortName  - metric set short name.
+    //     TCountersMode mode       - metric set counters mode.
+    //
+    // Output:
+    //     IMetricSet_1_16*         - a pointer to a created metric set.
+    //
+    //////////////////////////////////////////////////////////////////////////////
+    IMetricSet_1_16* COAMConcurrentGroup::AddMetricSet( const char* symbolName, const char* shortName, TCountersMode mode )
+    {
+        // Dense mode is not supported for OAM concurrent groups.
+        return mode == COUNTERS_MODE_NORMAL
+            ? static_cast<IMetricSet_1_16*>( AddMetricSet( symbolName, shortName ) )
+            : nullptr;
+    }
+
+    //////////////////////////////////////////////////////////////////////////////
+    //
+    // Class:
+    //     COAMConcurrentGroup
+    //
+    // Method:
+    //     AddMetricSet
+    //
+    // Description:
+    //     Adds a metric set to the concurrent group.
+    //
+    // Input:
     //     const char* symbolName - metric set symbol name.
     //     const char* shortName  - metric set short name.
     //

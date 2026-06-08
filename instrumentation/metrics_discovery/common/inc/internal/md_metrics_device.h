@@ -99,6 +99,7 @@ namespace MetricsDiscoveryInternal
         uint32_t          GetPlatformIndex();
         bool              IsOpenedFromFile();
         uint64_t          ConvertGpuTimestampToNs( const uint64_t gpuTimestampTicks, const uint64_t gpuTimestampFrequency );
+        uint64_t          ConvertNsToGpuTimestamp( const uint64_t ns, const uint64_t gpuTimestampFrequency );
 
         // Reference counter.
         uint32_t& GetReferenceCounter();

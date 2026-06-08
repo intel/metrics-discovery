@@ -1937,6 +1937,54 @@ namespace MetricsDiscoveryInternal
     //     CMetricsDevice
     //
     // Method:
+    //     ConvertNsToGpuTimestamp
+    //
+    // Description:
+    //     Converts nanoseconds to GPU timestamp ticks.
+    //
+    // Input:
+    //     const uint64_t ns                    - timestamp in nanoseconds.
+    //     const uint64_t gpuTimestampFrequency - GPU timestamp frequency.
+    //
+    // Output:
+    //     uint64_t                             - GPU timestamp in ticks.
+    //
+    //////////////////////////////////////////////////////////////////////////////
+    uint64_t CMetricsDevice::ConvertNsToGpuTimestamp( const uint64_t ns, const uint64_t gpuTimestampFrequency )
+    {
+        if( gpuTimestampFrequency == 0 )
+        {
+            return 0;
+        }
+
+        switch( m_platformIndex )
+        {
+            case GENERATION_BMG:
+            case GENERATION_LNL:
+            case GENERATION_PTL:
+            case GENERATION_NVL:
+            case GENERATION_NVLP:
+            case GENERATION_CRI:
+            {
+                // Ticks masked to 56bit to get sync with report timestamps.
+                const double oneTickNs = static_cast<double>( MD_SECOND_IN_NS ) / gpuTimestampFrequency;
+
+                // Calculate ticks from ns.
+                return static_cast<uint64_t>( static_cast<double>( ns ) / oneTickNs ) & MD_GPU_TIMESTAMP_MASK_56;
+            }
+
+            default:
+                // Ticks masked to 32bit to get sync with report timestamps.
+                return ( ns * gpuTimestampFrequency / MD_SECOND_IN_NS ) & MD_GPU_TIMESTAMP_MASK_32;
+        }
+    }
+
+    //////////////////////////////////////////////////////////////////////////////
+    //
+    // Class:
+    //     CMetricsDevice
+    //
+    // Method:
     //     GetReferenceCounter
     //
     // Description:

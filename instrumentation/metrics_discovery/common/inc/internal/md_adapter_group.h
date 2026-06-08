@@ -44,6 +44,13 @@ namespace MetricsDiscoveryInternal
     class CAdapterGroup : public IAdapterGroupLatest
     {
     public:
+        // API 1.16:
+        virtual TCompletionCode OpenOfflineMetricsDeviceFromBuffer( uint8_t* buffer, uint32_t bufferSize, IMetricsDevice_1_16** metricsDevice ) final;
+        virtual TCompletionCode CloseOfflineMetricsDevice( IMetricsDevice_1_16* metricsDevice ) final;
+        virtual TCompletionCode SaveMetricsDeviceToBuffer( IMetricsDevice_1_16* metricsDevice, IMetricSet_1_16** metricSets, uint32_t metricSetCount, uint8_t* buffer, uint32_t* bufferSize, const uint32_t minMajorApiVersion, const uint32_t minMinorApiVersion ) final;
+        virtual TCompletionCode CreateCalculationContext( TCalculationContextDescriptor_1_16* calculationDescriptor, ICalculationContext_1_16** calculationContext ) final;
+        virtual TCompletionCode DestroyCalculationContext( ICalculationContext_1_16* calculationContext ) final;
+
         // API 1.15:
         virtual TCompletionCode OpenOfflineMetricsDeviceFromBuffer( uint8_t* buffer, uint32_t bufferSize, IMetricsDevice_1_15** metricsDevice ) final;
         virtual TCompletionCode CloseOfflineMetricsDevice( IMetricsDevice_1_15* metricsDevice ) final;

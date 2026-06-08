@@ -53,6 +53,9 @@ namespace MetricsDiscoveryInternal
     class CConcurrentGroup : public IInternalConcurrentGroup
     {
     public:
+        // API 1.16:
+        using IConcurrentGroup_1_16::AddMetricSet; // To avoid hiding by non-API function
+
         // API 1.13:
         using IConcurrentGroup_1_13::AddMetricSet; // To avoid hiding by non-API function
 

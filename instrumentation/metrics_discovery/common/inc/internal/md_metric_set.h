@@ -152,6 +152,9 @@ namespace MetricsDiscoveryInternal
     class CMetricSet : public IInternalMetricSet
     {
     public:
+        // API 1.16:
+        virtual TCompletionCode CalculateAsyncMetrics( const uint8_t* rawData, uint32_t rawDataSize, TTypedValue_1_0* out, uint32_t outSize, uint32_t* outReportCount, TTypedValue_1_0* outMaxValues, uint32_t outMaxValuesSize ) final;
+
         // API 1.13:
         virtual TCompletionCode Open() final;
         virtual TCompletionCode AddMetric( IMetricPrototype_1_13* metricPrototype ) final;
@@ -324,6 +327,9 @@ namespace MetricsDiscoveryInternal
         uint32_t MetricGroupNameToId( const char* groupName );
         uint32_t GetPartialGroupId( char* groupName, uint32_t tokenNo );
         bool     GetStartRegSetHiPriority( uint32_t id, CRegisterSet** registerSet );
+
+        uint32_t GetRawCounterSize();
+        uint32_t GetRawCounterCount();
 
         // Flexible metric set methods:
         virtual TCompletionCode AddDefaultMetrics();

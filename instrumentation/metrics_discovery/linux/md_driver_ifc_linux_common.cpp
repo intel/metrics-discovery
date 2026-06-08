@@ -295,8 +295,8 @@ namespace MetricsDiscoveryInternal
 
         if( availableDevices < 0 )
         {
-            MD_LOG( LOG_ERROR, "ERROR: Failed to get the list of drm devices" );
-            return CC_ERROR_GENERAL;
+            MD_LOG( LOG_DEBUG, "Failed to get the list of drm devices, %d (%s)", -availableDevices, strerror( -availableDevices ) );
+            return CC_OK; // Return CC_OK with empty adapter list, as this is not an error for offline calculation.
         }
 
 #define IS_DRM_NODE_AVAILABLE( _nodes, _node_type ) ( ( _nodes ) & ( 1 << ( _node_type ) ) )

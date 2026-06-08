@@ -105,6 +105,8 @@ namespace MetricsDiscoveryInternal
         m_params.InformationCount = concurrentGroup->GetInformationCount();
         m_params.PlatformMask     = GetPlatformTypeFromByteArray( platformMask, adapterId );
         m_params.GtMask           = gtMask;
+        m_params.RawCounterSize   = GetRawCounterSize();
+        m_params.RawCounterCount  = GetRawCounterCount();
 
         if( COAMConcurrentGroup::IsValidSymbolName( concurrentGroup->GetParams()->SymbolName ) )
         {
@@ -1558,6 +1560,80 @@ namespace MetricsDiscoveryInternal
     //     CMetricSet
     //
     // Method:
+    //     GetRawCounterSize
+    //
+    // Description:
+    //     Returns size of a single raw counter in bits from report type.
+    //
+    // Output:
+    //     uint32_t - size of a single raw counter in bits from report type
+    //
+    //////////////////////////////////////////////////////////////////////////////
+    uint32_t CMetricSet::GetRawCounterSize()
+    {
+        switch( m_reportType )
+        {
+            case OA_REPORT_TYPE_256B_A45_NOA16:
+            case OA_REPORT_TYPE_320B_PEC64:
+            case OA_REPORT_TYPE_128B_MPEC8_NOA16:
+            case OA_REPORT_TYPE_128B_MERT_PEC8:
+                return 32;
+
+            case OA_REPORT_TYPE_576B_PEC64LL:
+            case OA_REPORT_TYPE_640B_PEC64LL_NOA16:
+            case OA_REPORT_TYPE_192B_MPEC8LL_NOA16:
+            case OA_REPORT_TYPE_192B_MERT_PEC8LL:
+                return 64;
+
+            default:
+                return 0;
+        }
+    }
+
+    //////////////////////////////////////////////////////////////////////////////
+    //
+    // Class:
+    //     CMetricSet
+    //
+    // Method:
+    //     GetRawCounterCount
+    //
+    // Description:
+    //     Returns number of raw A or PEC counters in the report from report type.
+    //
+    // Output:
+    //     uint32_t - number of raw A or PEC counters in the report from report type
+    //
+    //////////////////////////////////////////////////////////////////////////////
+    uint32_t CMetricSet::GetRawCounterCount()
+    {
+        switch( m_reportType )
+        {
+            case OA_REPORT_TYPE_256B_A45_NOA16:
+                return 38;
+
+            case OA_REPORT_TYPE_320B_PEC64:
+            case OA_REPORT_TYPE_576B_PEC64LL:
+            case OA_REPORT_TYPE_640B_PEC64LL_NOA16:
+                return 64;
+
+            case OA_REPORT_TYPE_192B_MPEC8LL_NOA16:
+            case OA_REPORT_TYPE_128B_MPEC8_NOA16:
+            case OA_REPORT_TYPE_128B_MERT_PEC8:
+            case OA_REPORT_TYPE_192B_MERT_PEC8LL:
+                return 8;
+
+            default:
+                return 0;
+        }
+    }
+
+    //////////////////////////////////////////////////////////////////////////////
+    //
+    // Class:
+    //     CMetricSet
+    //
+    // Method:
     //     GetStartConfiguration
     //
     // Description:
@@ -2604,6 +2680,44 @@ namespace MetricsDiscoveryInternal
     TCompletionCode CMetricSet::CalculateMetrics( const uint8_t* rawData, uint32_t rawDataSize, TTypedValue_1_0* out, uint32_t outSize, uint32_t* outReportCount, TTypedValue_1_0* outMaxValues, uint32_t outMaxValuesSize )
     {
         return CalculateMetrics<false>( rawData, rawDataSize, out, outSize, outReportCount, outMaxValues, outMaxValuesSize );
+    }
+
+    //////////////////////////////////////////////////////////////////////////////
+    //
+    // Class:
+    //     CMetricSet
+    //
+    // Method:
+    //     CalculateAsyncMetrics
+    //
+    // Description:
+    //     Conducts the whole process of metrics and information calculation for multiple reports.
+    //     It's API agnostic - user doesn't have to worry about API he has used.
+    //     User has to provide input buffer and its size, output buffer and its size with enough space for
+    //     all calculated metrics and information. This method supports only IoStream. Query is not supported.
+    //     Timer reports are not calculated in this method.
+    //     The amount of input reports is calculated based on rawData size and the size of single raw report.
+    //
+    //     Optional MaxValues calculation added, if MaxValueEquation isn't defined for the metric its current
+    //     normalized value is used.
+    //
+    // Input:
+    //     const uint8_t*   rawData                - raw report data
+    //     uint32_t         rawDataSize            - size of raw report data in bytes
+    //     TTypedValue_1_0* out                    - (OUT) buffer for calculated reports
+    //     uint32_t         outSize                - size of the provided output buffer in bytes
+    //     uint32_t*        outReportCount         - (OUT - optional) how much reports were calculated and are stored in the out buffer
+    //     TTypedValue_1_0* outMaxValues           - (OUT - optional) should have a memory for at least 'MetricCount * RawReportCount' values, can be nullptr. Calculated maxValues for each metric.
+    //                                               If MaxValueEquation isn't defined for the metric, MaxValue will be equal to the current, normalized metric value.
+    //     uint32_t         outMaxValuesSize       - size of the provided buffer for max values in bytes
+    //
+    // Output:
+    //     TCompletionCode - *CC_OK* means success
+    //
+    //////////////////////////////////////////////////////////////////////////////
+    TCompletionCode CMetricSet::CalculateAsyncMetrics( const uint8_t* rawData, uint32_t rawDataSize, TTypedValue_1_0* out, uint32_t outSize, uint32_t* outReportCount, TTypedValue_1_0* outMaxValues, uint32_t outMaxValuesSize )
+    {
+        return CalculateMetrics<true>( rawData, rawDataSize, out, outSize, outReportCount, outMaxValues, outMaxValuesSize );
     }
 
     //////////////////////////////////////////////////////////////////////////////
