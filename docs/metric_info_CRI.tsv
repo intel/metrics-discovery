@@ -68,6 +68,10 @@ ComputeBasic	XVE_OP_FP64	XVE Op Fp64	Vector Engine	Number of effective 64-bit fl
 ComputeBasic	TLB_INV_ATS	TLB Inv Ats	Memory	Number of ATS Invalidations
 ComputeBasic	TLB_INV_DRIVER	TLB Inv Driver	Memory	Number of TLB invalidations from Driver
 ComputeBasic	XVE_GRFBLOCK_OCCUPANCY_ALL	XVE Grfblock Occupancy All	Vector Engine	Percentage of GRF blocks occupied
+ComputeBasic	HOST_TO_GPUMEM_TRANSACTION_READ	Host To GpuMem Transaction Read	Memory	Number of host 64B reads to GPU local (HBM) memory (downstream over an interface such as pcie, cxl or an integrated fabric as applicable to the respective product segment)
+ComputeBasic	HOST_TO_GPUMEM_TRANSACTION_WRITE	Host To GpuMem Transaction Write	Memory	Number of host 64B writes to GPU local (HBM) memory (downstream over an interface such as pcie, cxl or an integrated fabric as applicable to the respective product segment)
+ComputeBasic	SYSMEM_TRANSACTION_READ	SysMem Transaction Read	Memory	Number of system memory 64B reads (upstream over an interface such as pcie, cxl or an integrated fabric as applicable to the respective product segment)
+ComputeBasic	SYSMEM_TRANSACTION_WRITE	SysMem Transaction Write	Memory	Number of system memory 64B writes (upstream over an interface such as pcie, cxl or an integrated fabric as applicable to the respective product segment)
 L1Profile	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
 L1Profile	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
 L1Profile	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
@@ -108,6 +112,10 @@ L1Profile	L3_STALL	L3 Stall	Device Cache	Percentage of time in which Device Cach
 L1Profile	LOAD_STORE_CACHE_L3_HIT	Load Store Cache L3 Hit	Device Cache	Number of Load Store Cache requests to Device Cache that are hit
 L1Profile	LOAD_STORE_CACHE_L3_READ	Load Store Cache L3 Read	Device Cache	Number of cacheline read requests from the Load Store Cache to Device Cache
 L1Profile	LOAD_STORE_CACHE_L3_WRITE	Load Store Cache L3 Write	Device Cache	Number of cacheline write requests from the Load Store Cache to Device Cache
+L1Profile	HOST_TO_GPUMEM_TRANSACTION_READ	Host To GpuMem Transaction Read	Memory	Number of host 64B reads to GPU local (HBM) memory (downstream over an interface such as pcie, cxl or an integrated fabric as applicable to the respective product segment)
+L1Profile	HOST_TO_GPUMEM_TRANSACTION_WRITE	Host To GpuMem Transaction Write	Memory	Number of host 64B writes to GPU local (HBM) memory (downstream over an interface such as pcie, cxl or an integrated fabric as applicable to the respective product segment)
+L1Profile	SYSMEM_TRANSACTION_READ	SysMem Transaction Read	Memory	Number of system memory 64B reads (upstream over an interface such as pcie, cxl or an integrated fabric as applicable to the respective product segment)
+L1Profile	SYSMEM_TRANSACTION_WRITE	SysMem Transaction Write	Memory	Number of system memory 64B writes (upstream over an interface such as pcie, cxl or an integrated fabric as applicable to the respective product segment)
 VectorEngineProfile	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
 VectorEngineProfile	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
 VectorEngineProfile	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
@@ -145,6 +153,10 @@ VectorEngineProfile	XVE_INST_EXECUTED_BF16	XVE Inst Executed Bf16	Vector Engine	
 VectorEngineProfile	XVE_INST_EXECUTED_XMX_FP4	XVE Inst Executed XMX Fp4	Vector Engine	Number of execution slots taken by FP4 XMX instruction
 VectorEngineProfile	XVE_INST_EXECUTED_XMX_FP64	XVE Inst Executed XMX Fp64	Vector Engine	Number of execution slots taken by FP64 XMX instructions
 VectorEngineProfile	XVE_INST_EXECUTED_XMX_FP8	XVE Inst Executed XMX Fp8	Vector Engine	Number of execution slots taken by FP8 XMX instructions
+VectorEngineProfile	HOST_TO_GPUMEM_TRANSACTION_READ	Host To GpuMem Transaction Read	Memory	Number of host 64B reads to GPU local (HBM) memory (downstream over an interface such as pcie, cxl or an integrated fabric as applicable to the respective product segment)
+VectorEngineProfile	HOST_TO_GPUMEM_TRANSACTION_WRITE	Host To GpuMem Transaction Write	Memory	Number of host 64B writes to GPU local (HBM) memory (downstream over an interface such as pcie, cxl or an integrated fabric as applicable to the respective product segment)
+VectorEngineProfile	SYSMEM_TRANSACTION_READ	SysMem Transaction Read	Memory	Number of system memory 64B reads (upstream over an interface such as pcie, cxl or an integrated fabric as applicable to the respective product segment)
+VectorEngineProfile	SYSMEM_TRANSACTION_WRITE	SysMem Transaction Write	Memory	Number of system memory 64B writes (upstream over an interface such as pcie, cxl or an integrated fabric as applicable to the respective product segment)
 VectorEngineStalls	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
 VectorEngineStalls	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
 VectorEngineStalls	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
@@ -175,6 +187,10 @@ VectorEngineStalls	THREAD_DISPATCH_GPGPU_COMPUTE_ENGINE	Thread Dispatch GpGpu Co
 VectorEngineStalls	THREAD_DISPATCH_INPUT_AVAILABLE	Thread Dispatch Input Available	Thread Dispatcher	Percentage of time in which Thread Dispatch input is available
 VectorEngineStalls	THREAD_DISPATCH_OTHER	Thread Dispatch Other	Thread Dispatcher	Number of threads dispatched that do not fit into any of the other identified groups. This group includes, at least, AMFS threads and may include other groups.
 VectorEngineStalls	THREADGROUP_DISPATCH_QUEUE1_INPUT_AVAILABLE	Threadgroup Dispatch Queue1 Input Available	Thread Dispatcher	Percentage of time in which Thread Spawner has input available on queue 1
+VectorEngineStalls	HOST_TO_GPUMEM_TRANSACTION_READ	Host To GpuMem Transaction Read	Memory	Number of host 64B reads to GPU local (HBM) memory (downstream over an interface such as pcie, cxl or an integrated fabric as applicable to the respective product segment)
+VectorEngineStalls	HOST_TO_GPUMEM_TRANSACTION_WRITE	Host To GpuMem Transaction Write	Memory	Number of host 64B writes to GPU local (HBM) memory (downstream over an interface such as pcie, cxl or an integrated fabric as applicable to the respective product segment)
+VectorEngineStalls	SYSMEM_TRANSACTION_READ	SysMem Transaction Read	Memory	Number of system memory 64B reads (upstream over an interface such as pcie, cxl or an integrated fabric as applicable to the respective product segment)
+VectorEngineStalls	SYSMEM_TRANSACTION_WRITE	SysMem Transaction Write	Memory	Number of system memory 64B writes (upstream over an interface such as pcie, cxl or an integrated fabric as applicable to the respective product segment)
 TestOa	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
 TestOa	GpuCoreClocks	GPU Core Clocks	GPU	The total number of GPU core clocks elapsed during the measurement.
 TestOa	AvgGpuCoreFrequencyMHz	AVG GPU Core Frequency	GPU	Average GPU Core Frequency in the measurement.
@@ -215,6 +231,10 @@ TestOa	TEST_EVENT1_CYCLES_XECORE28	Test Event1 Cycles Xecore28	Test	Number of GP
 TestOa	TEST_EVENT1_CYCLES_AVERAGE	Test Event1 Cycles Average	Test	Average number of GPU (gt) clock cycles at every clock period (per instance)
 TestOa	TEST_EVENT2	Test Event2	Test	Number of GPU (gt) clock cycles at every other clock period
 TestOa	TEST_EVENT2_CYCLES	Test Event2 Cycles	Test	Number of GPU (gt) clock cycles at every other clock period
+TestOa	HOST_TO_GPUMEM_TRANSACTION_READ	Host To GpuMem Transaction Read	Memory	Number of host 64B reads to GPU local (HBM) memory (downstream over an interface such as pcie, cxl or an integrated fabric as applicable to the respective product segment)
+TestOa	HOST_TO_GPUMEM_TRANSACTION_WRITE	Host To GpuMem Transaction Write	Memory	Number of host 64B writes to GPU local (HBM) memory (downstream over an interface such as pcie, cxl or an integrated fabric as applicable to the respective product segment)
+TestOa	SYSMEM_TRANSACTION_READ	SysMem Transaction Read	Memory	Number of system memory 64B reads (upstream over an interface such as pcie, cxl or an integrated fabric as applicable to the respective product segment)
+TestOa	SYSMEM_TRANSACTION_WRITE	SysMem Transaction Write	Memory	Number of system memory 64B writes (upstream over an interface such as pcie, cxl or an integrated fabric as applicable to the respective product segment)
 MediaSet1	GpuTime	GPU Time Elapsed	GPU	Time elapsed on the GPU during the measurement.
 MediaSet1	GpuCoreClocks	GPU Media Clocks	GPU	The total number of media slice clocks elapsed during the measurement.
 MediaSet1	AvgGpuCoreFrequencyMHz	AVG GPU Media Frequency	GPU	Average GPU Media Frequency in the measurement.

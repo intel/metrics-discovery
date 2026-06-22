@@ -827,18 +827,26 @@ namespace MetricsDiscoveryInternal
     //     const uint32_t regCount       - register count
     //     const uint32_t subDeviceIndex - sub device index
     //     const char*    requestedGuid  - [optional] GUID under which configuration will be added, if nullptr GUID will be generated
+    //     const bool     isOaMert       - true if OA MERT configuration
     //     int32_t&       addedConfigId  - (OUT) added oa configuration ID, -1 if error
     //
     // Output:
     //     TCompletionCode               - *CC_OK* means success
     //
     //////////////////////////////////////////////////////////////////////////////
-    TCompletionCode CDriverInterfaceLinuxXe::AddOaConfig( TRegister** regVector, const uint32_t regCount, const uint32_t subDeviceIndex, const char* requestedGuid, int32_t& addedConfigId )
+    TCompletionCode CDriverInterfaceLinuxXe::AddOaConfig( TRegister** regVector, const uint32_t regCount, const uint32_t subDeviceIndex, const char* requestedGuid, const bool isOaMert, int32_t& addedConfigId )
     {
         MD_LOG_ENTER_A( m_adapterId );
         MD_CHECK_PTR_RET_A( m_adapterId, regVector, CC_ERROR_INVALID_PARAMETER );
+        if( isOaMert && !m_xeObservationCapabilities.IsOaMertSupported )
+        {
+            addedConfigId = -1;
+            MD_LOG_A( m_adapterId, LOG_WARNING, "OA MERT configuration is not supported" );
+            return CC_ERROR_NOT_SUPPORTED;
+        }
         if( !regCount )
         {
+            addedConfigId = -1;
             MD_LOG_A( m_adapterId, LOG_ERROR, "ERROR: Empty configuration" );
             return CC_ERROR_GENERAL;
         }
@@ -852,16 +860,23 @@ namespace MetricsDiscoveryInternal
         MD_LOG_A( m_adapterId, LOG_DEBUG, "AddOaConfig regCount: %u", regCount );
         for( uint32_t i = 0; i < regCount; i++ )
         {
-            if( regVector[i] )
+            if( regVector[i] && ( ( regVector[i]->type != REGISTER_TYPE_MERT && !isOaMert ) || ( regVector[i]->type == REGISTER_TYPE_MERT && isOaMert ) ) )
             {
                 registers.push_back( { regVector[i]->offset, regVector[i]->value } );
                 if( !guid )
                 {
-                    regsString += regVector[i]->offset;
-                    regsString += regVector[i]->value;
+                    regsString += std::to_string( regVector[i]->offset ) + '.';
+                    regsString += std::to_string( regVector[i]->value ) + ';';
                 }
                 MD_LOG_A( m_adapterId, LOG_DEBUG, "regOffset: %#x, regValue: %#x", regVector[i]->offset, regVector[i]->value );
             }
+        }
+
+        if( registers.empty() )
+        {
+            addedConfigId = -1;
+            MD_LOG_A( m_adapterId, LOG_ERROR, "ERROR: Empty configuration" );
+            return CC_ERROR_GENERAL;
         }
 
         // 2. GENERATE CONFIG GUID (if needed) - string formatted like "%08x-%04x-%04x-%04x-%012x"

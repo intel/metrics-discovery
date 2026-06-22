@@ -499,9 +499,10 @@ namespace MetricsDiscoveryInternal
 
                             case VALUE_TYPE_BYTEARRAY:
                                 // TODO: should be improved (the array can be bigger than 64bits)
-                                if( pValue->ValueByteArray->Size == sizeof( uint64_t ) )
+                                if( pValue->ValueByteArray->Size <= sizeof( uint64_t ) )
                                 {
-                                    qwordValue = *reinterpret_cast<uint64_t*>( pValue->ValueByteArray->Data );
+                                    qwordValue = 0ULL;
+                                    iu_memcpy_s( &qwordValue, sizeof( uint64_t ), pValue->ValueByteArray->Data, pValue->ValueByteArray->Size );
                                     break;
                                 }
                                 [[fallthrough]];

@@ -102,8 +102,8 @@ SPDX-License-Identifier: MIT
 #define MD_BIT( i )                          ( 1ull << ( i ) )
 #define MD_BITMASK( n )                      ( ~( (uint64_t) ( -1 ) << ( n ) ) )
 #define MD_BITMASK_RANGE( startbit, endbit ) ( MD_BITMASK( ( endbit ) + 1 ) & ~MD_BITMASK( startbit ) )
-#define MD_BITS_PER_BYTE                     ( 8 )
-#define MD_BYTE_ARRAY_MIN_SIZE               ( 8 )
+#define MD_BITS_PER_BYTE                     ( 8U )
+#define MD_BYTE_ARRAY_MIN_SIZE               ( 8U )
 
 #define MD_SECOND_IN_NS          1000000000ULL
 #define MD_GPU_TIMESTAMP_MASK_32 MD_BITMASK( 32 )

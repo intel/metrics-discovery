@@ -861,6 +861,38 @@ namespace MetricsDiscoveryInternal::MetricSets_CRI_OA
         MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 64" ) );
         metric->SetQueryModeMask( QUERY_MODE_MASK_RENDER | QUERY_MODE_MASK_COMPUTE | QUERY_MODE_MASK_GLOBAL | QUERY_MODE_MASK_GLOBAL_EXTENDED );
 
+        metric = AddMetric( "HOST_TO_GPUMEM_TRANSACTION_READ", "Host To GpuMem Transaction Read",
+            "Number of host 64B reads to GPU local (HBM) memory (downstream over an interface such as pcie, cxl or an integrated fabric as applicable to the respective product segment)",
+            "Memory", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL,
+            METRIC_TYPE_EVENT, RESULT_UINT64, "events", 0, 0, HW_UNIT_GPU, nullptr, nullptr, nullptr, 69 );
+        MD_CHECK_PTR( metric );
+        MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x2e8" ) );
+        metric->SetQueryModeMask( QUERY_MODE_MASK_GLOBAL | QUERY_MODE_MASK_GLOBAL_EXTENDED );
+
+        metric = AddMetric( "HOST_TO_GPUMEM_TRANSACTION_WRITE", "Host To GpuMem Transaction Write",
+            "Number of host 64B writes to GPU local (HBM) memory (downstream over an interface such as pcie, cxl or an integrated fabric as applicable to the respective product segment)",
+            "Memory", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL,
+            METRIC_TYPE_EVENT, RESULT_UINT64, "events", 0, 0, HW_UNIT_GPU, nullptr, nullptr, nullptr, 70 );
+        MD_CHECK_PTR( metric );
+        MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x2f0" ) );
+        metric->SetQueryModeMask( QUERY_MODE_MASK_GLOBAL | QUERY_MODE_MASK_GLOBAL_EXTENDED );
+
+        metric = AddMetric( "SYSMEM_TRANSACTION_READ", "SysMem Transaction Read",
+            "Number of system memory 64B reads (upstream over an interface such as pcie, cxl or an integrated fabric as applicable to the respective product segment)",
+            "Memory", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL,
+            METRIC_TYPE_EVENT, RESULT_UINT64, "events", 0, 0, HW_UNIT_GPU, nullptr, nullptr, nullptr, 71 );
+        MD_CHECK_PTR( metric );
+        MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x2f8" ) );
+        metric->SetQueryModeMask( QUERY_MODE_MASK_GLOBAL | QUERY_MODE_MASK_GLOBAL_EXTENDED );
+
+        metric = AddMetric( "SYSMEM_TRANSACTION_WRITE", "SysMem Transaction Write",
+            "Number of system memory 64B writes (upstream over an interface such as pcie, cxl or an integrated fabric as applicable to the respective product segment)",
+            "Memory", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL,
+            METRIC_TYPE_EVENT, RESULT_UINT64, "events", 0, 0, HW_UNIT_GPU, nullptr, nullptr, nullptr, 72 );
+        MD_CHECK_PTR( metric );
+        MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x300" ) );
+        metric->SetQueryModeMask( QUERY_MODE_MASK_GLOBAL | QUERY_MODE_MASK_GLOBAL_EXTENDED );
+
         MD_CHECK_CC( AddStartRegisterSet( 0, 0, nullptr ) );
         MD_CHECK_CC( AddStartConfigRegister( 0x13000, 0x00001802, REGISTER_TYPE_OA ) );
         MD_CHECK_CC( AddStartConfigRegister( 0x13004, 0x00000000, REGISTER_TYPE_OA ) );
@@ -1101,6 +1133,15 @@ namespace MetricsDiscoveryInternal::MetricSets_CRI_OA
         MD_CHECK_CC( AddStartConfigRegister( 0xe45c, 0x00000000, REGISTER_TYPE_FLEX ) );
         MD_CHECK_CC( AddStartConfigRegister( 0xe55c, 0x00000000, REGISTER_TYPE_FLEX ) );
         MD_CHECK_CC( AddStartConfigRegister( 0xe65c, 0x00000000, REGISTER_TYPE_FLEX ) );
+        MD_CHECK_CC( AddStartRegisterSet( 1, 0, nullptr, CONFIG_TYPE_QUERY ) );
+        MD_CHECK_CC( AddStartConfigRegister( 0x145340, 0x00006400, REGISTER_TYPE_MERT ) );
+        MD_CHECK_CC( AddStartConfigRegister( 0x145344, 0x00000000, REGISTER_TYPE_MERT ) );
+        MD_CHECK_CC( AddStartConfigRegister( 0x145348, 0x00006401, REGISTER_TYPE_MERT ) );
+        MD_CHECK_CC( AddStartConfigRegister( 0x14534c, 0x00000000, REGISTER_TYPE_MERT ) );
+        MD_CHECK_CC( AddStartConfigRegister( 0x145350, 0x00006402, REGISTER_TYPE_MERT ) );
+        MD_CHECK_CC( AddStartConfigRegister( 0x145354, 0x00000000, REGISTER_TYPE_MERT ) );
+        MD_CHECK_CC( AddStartConfigRegister( 0x145358, 0x00006403, REGISTER_TYPE_MERT ) );
+        MD_CHECK_CC( AddStartConfigRegister( 0x14535c, 0x00000000, REGISTER_TYPE_MERT ) );
         MD_CHECK_CC( RefreshConfigRegisters() );
 
         return CC_OK;
@@ -1522,6 +1563,38 @@ namespace MetricsDiscoveryInternal::MetricSets_CRI_OA
         MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 64" ) );
         metric->SetQueryModeMask( QUERY_MODE_MASK_GLOBAL | QUERY_MODE_MASK_GLOBAL_EXTENDED );
 
+        metric = AddMetric( "HOST_TO_GPUMEM_TRANSACTION_READ", "Host To GpuMem Transaction Read",
+            "Number of host 64B reads to GPU local (HBM) memory (downstream over an interface such as pcie, cxl or an integrated fabric as applicable to the respective product segment)",
+            "Memory", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL,
+            METRIC_TYPE_EVENT, RESULT_UINT64, "events", 0, 0, HW_UNIT_GPU, nullptr, nullptr, nullptr, 40 );
+        MD_CHECK_PTR( metric );
+        MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x2e8" ) );
+        metric->SetQueryModeMask( QUERY_MODE_MASK_GLOBAL | QUERY_MODE_MASK_GLOBAL_EXTENDED );
+
+        metric = AddMetric( "HOST_TO_GPUMEM_TRANSACTION_WRITE", "Host To GpuMem Transaction Write",
+            "Number of host 64B writes to GPU local (HBM) memory (downstream over an interface such as pcie, cxl or an integrated fabric as applicable to the respective product segment)",
+            "Memory", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL,
+            METRIC_TYPE_EVENT, RESULT_UINT64, "events", 0, 0, HW_UNIT_GPU, nullptr, nullptr, nullptr, 41 );
+        MD_CHECK_PTR( metric );
+        MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x2f0" ) );
+        metric->SetQueryModeMask( QUERY_MODE_MASK_GLOBAL | QUERY_MODE_MASK_GLOBAL_EXTENDED );
+
+        metric = AddMetric( "SYSMEM_TRANSACTION_READ", "SysMem Transaction Read",
+            "Number of system memory 64B reads (upstream over an interface such as pcie, cxl or an integrated fabric as applicable to the respective product segment)",
+            "Memory", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL,
+            METRIC_TYPE_EVENT, RESULT_UINT64, "events", 0, 0, HW_UNIT_GPU, nullptr, nullptr, nullptr, 42 );
+        MD_CHECK_PTR( metric );
+        MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x2f8" ) );
+        metric->SetQueryModeMask( QUERY_MODE_MASK_GLOBAL | QUERY_MODE_MASK_GLOBAL_EXTENDED );
+
+        metric = AddMetric( "SYSMEM_TRANSACTION_WRITE", "SysMem Transaction Write",
+            "Number of system memory 64B writes (upstream over an interface such as pcie, cxl or an integrated fabric as applicable to the respective product segment)",
+            "Memory", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL,
+            METRIC_TYPE_EVENT, RESULT_UINT64, "events", 0, 0, HW_UNIT_GPU, nullptr, nullptr, nullptr, 43 );
+        MD_CHECK_PTR( metric );
+        MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x300" ) );
+        metric->SetQueryModeMask( QUERY_MODE_MASK_GLOBAL | QUERY_MODE_MASK_GLOBAL_EXTENDED );
+
         MD_CHECK_CC( AddStartRegisterSet( 0, 0, nullptr ) );
         MD_CHECK_CC( AddStartConfigRegister( 0x13000, 0x00001802, REGISTER_TYPE_OA ) );
         MD_CHECK_CC( AddStartConfigRegister( 0x13004, 0x00000000, REGISTER_TYPE_OA ) );
@@ -1642,6 +1715,15 @@ namespace MetricsDiscoveryInternal::MetricSets_CRI_OA
         MD_CHECK_CC( AddStartConfigRegister( 0xe45c, 0x00000000, REGISTER_TYPE_FLEX ) );
         MD_CHECK_CC( AddStartConfigRegister( 0xe55c, 0x00000000, REGISTER_TYPE_FLEX ) );
         MD_CHECK_CC( AddStartConfigRegister( 0xe65c, 0x00000000, REGISTER_TYPE_FLEX ) );
+        MD_CHECK_CC( AddStartRegisterSet( 1, 0, nullptr, CONFIG_TYPE_QUERY ) );
+        MD_CHECK_CC( AddStartConfigRegister( 0x145340, 0x00006400, REGISTER_TYPE_MERT ) );
+        MD_CHECK_CC( AddStartConfigRegister( 0x145344, 0x00000000, REGISTER_TYPE_MERT ) );
+        MD_CHECK_CC( AddStartConfigRegister( 0x145348, 0x00006401, REGISTER_TYPE_MERT ) );
+        MD_CHECK_CC( AddStartConfigRegister( 0x14534c, 0x00000000, REGISTER_TYPE_MERT ) );
+        MD_CHECK_CC( AddStartConfigRegister( 0x145350, 0x00006402, REGISTER_TYPE_MERT ) );
+        MD_CHECK_CC( AddStartConfigRegister( 0x145354, 0x00000000, REGISTER_TYPE_MERT ) );
+        MD_CHECK_CC( AddStartConfigRegister( 0x145358, 0x00006403, REGISTER_TYPE_MERT ) );
+        MD_CHECK_CC( AddStartConfigRegister( 0x14535c, 0x00000000, REGISTER_TYPE_MERT ) );
         MD_CHECK_CC( RefreshConfigRegisters() );
 
         return CC_OK;
@@ -2029,6 +2111,38 @@ namespace MetricsDiscoveryInternal::MetricSets_CRI_OA
         MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 64" ) );
         metric->SetQueryModeMask( QUERY_MODE_MASK_RENDER | QUERY_MODE_MASK_COMPUTE | QUERY_MODE_MASK_GLOBAL | QUERY_MODE_MASK_GLOBAL_EXTENDED );
 
+        metric = AddMetric( "HOST_TO_GPUMEM_TRANSACTION_READ", "Host To GpuMem Transaction Read",
+            "Number of host 64B reads to GPU local (HBM) memory (downstream over an interface such as pcie, cxl or an integrated fabric as applicable to the respective product segment)",
+            "Memory", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL,
+            METRIC_TYPE_EVENT, RESULT_UINT64, "events", 0, 0, HW_UNIT_GPU, nullptr, nullptr, nullptr, 37 );
+        MD_CHECK_PTR( metric );
+        MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x2e8" ) );
+        metric->SetQueryModeMask( QUERY_MODE_MASK_GLOBAL | QUERY_MODE_MASK_GLOBAL_EXTENDED );
+
+        metric = AddMetric( "HOST_TO_GPUMEM_TRANSACTION_WRITE", "Host To GpuMem Transaction Write",
+            "Number of host 64B writes to GPU local (HBM) memory (downstream over an interface such as pcie, cxl or an integrated fabric as applicable to the respective product segment)",
+            "Memory", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL,
+            METRIC_TYPE_EVENT, RESULT_UINT64, "events", 0, 0, HW_UNIT_GPU, nullptr, nullptr, nullptr, 38 );
+        MD_CHECK_PTR( metric );
+        MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x2f0" ) );
+        metric->SetQueryModeMask( QUERY_MODE_MASK_GLOBAL | QUERY_MODE_MASK_GLOBAL_EXTENDED );
+
+        metric = AddMetric( "SYSMEM_TRANSACTION_READ", "SysMem Transaction Read",
+            "Number of system memory 64B reads (upstream over an interface such as pcie, cxl or an integrated fabric as applicable to the respective product segment)",
+            "Memory", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL,
+            METRIC_TYPE_EVENT, RESULT_UINT64, "events", 0, 0, HW_UNIT_GPU, nullptr, nullptr, nullptr, 39 );
+        MD_CHECK_PTR( metric );
+        MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x2f8" ) );
+        metric->SetQueryModeMask( QUERY_MODE_MASK_GLOBAL | QUERY_MODE_MASK_GLOBAL_EXTENDED );
+
+        metric = AddMetric( "SYSMEM_TRANSACTION_WRITE", "SysMem Transaction Write",
+            "Number of system memory 64B writes (upstream over an interface such as pcie, cxl or an integrated fabric as applicable to the respective product segment)",
+            "Memory", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL,
+            METRIC_TYPE_EVENT, RESULT_UINT64, "events", 0, 0, HW_UNIT_GPU, nullptr, nullptr, nullptr, 40 );
+        MD_CHECK_PTR( metric );
+        MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x300" ) );
+        metric->SetQueryModeMask( QUERY_MODE_MASK_GLOBAL | QUERY_MODE_MASK_GLOBAL_EXTENDED );
+
         MD_CHECK_CC( AddStartRegisterSet( 0, 0, nullptr ) );
         MD_CHECK_CC( AddStartConfigRegister( 0x13000, 0x00001802, REGISTER_TYPE_OA ) );
         MD_CHECK_CC( AddStartConfigRegister( 0x13004, 0x00000000, REGISTER_TYPE_OA ) );
@@ -2115,6 +2229,15 @@ namespace MetricsDiscoveryInternal::MetricSets_CRI_OA
         MD_CHECK_CC( AddStartConfigRegister( 0xe45c, 0x00000000, REGISTER_TYPE_FLEX ) );
         MD_CHECK_CC( AddStartConfigRegister( 0xe55c, 0x00000000, REGISTER_TYPE_FLEX ) );
         MD_CHECK_CC( AddStartConfigRegister( 0xe65c, 0x00000000, REGISTER_TYPE_FLEX ) );
+        MD_CHECK_CC( AddStartRegisterSet( 1, 0, nullptr, CONFIG_TYPE_QUERY ) );
+        MD_CHECK_CC( AddStartConfigRegister( 0x145340, 0x00006400, REGISTER_TYPE_MERT ) );
+        MD_CHECK_CC( AddStartConfigRegister( 0x145344, 0x00000000, REGISTER_TYPE_MERT ) );
+        MD_CHECK_CC( AddStartConfigRegister( 0x145348, 0x00006401, REGISTER_TYPE_MERT ) );
+        MD_CHECK_CC( AddStartConfigRegister( 0x14534c, 0x00000000, REGISTER_TYPE_MERT ) );
+        MD_CHECK_CC( AddStartConfigRegister( 0x145350, 0x00006402, REGISTER_TYPE_MERT ) );
+        MD_CHECK_CC( AddStartConfigRegister( 0x145354, 0x00000000, REGISTER_TYPE_MERT ) );
+        MD_CHECK_CC( AddStartConfigRegister( 0x145358, 0x00006403, REGISTER_TYPE_MERT ) );
+        MD_CHECK_CC( AddStartConfigRegister( 0x14535c, 0x00000000, REGISTER_TYPE_MERT ) );
         MD_CHECK_CC( RefreshConfigRegisters() );
 
         return CC_OK;
@@ -2450,6 +2573,38 @@ namespace MetricsDiscoveryInternal::MetricSets_CRI_OA
         MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 64" ) );
         metric->SetQueryModeMask( QUERY_MODE_MASK_COMPUTE | QUERY_MODE_MASK_GLOBAL | QUERY_MODE_MASK_GLOBAL_EXTENDED );
 
+        metric = AddMetric( "HOST_TO_GPUMEM_TRANSACTION_READ", "Host To GpuMem Transaction Read",
+            "Number of host 64B reads to GPU local (HBM) memory (downstream over an interface such as pcie, cxl or an integrated fabric as applicable to the respective product segment)",
+            "Memory", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL,
+            METRIC_TYPE_EVENT, RESULT_UINT64, "events", 0, 0, HW_UNIT_GPU, nullptr, nullptr, nullptr, 30 );
+        MD_CHECK_PTR( metric );
+        MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x2e8" ) );
+        metric->SetQueryModeMask( QUERY_MODE_MASK_GLOBAL | QUERY_MODE_MASK_GLOBAL_EXTENDED );
+
+        metric = AddMetric( "HOST_TO_GPUMEM_TRANSACTION_WRITE", "Host To GpuMem Transaction Write",
+            "Number of host 64B writes to GPU local (HBM) memory (downstream over an interface such as pcie, cxl or an integrated fabric as applicable to the respective product segment)",
+            "Memory", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL,
+            METRIC_TYPE_EVENT, RESULT_UINT64, "events", 0, 0, HW_UNIT_GPU, nullptr, nullptr, nullptr, 31 );
+        MD_CHECK_PTR( metric );
+        MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x2f0" ) );
+        metric->SetQueryModeMask( QUERY_MODE_MASK_GLOBAL | QUERY_MODE_MASK_GLOBAL_EXTENDED );
+
+        metric = AddMetric( "SYSMEM_TRANSACTION_READ", "SysMem Transaction Read",
+            "Number of system memory 64B reads (upstream over an interface such as pcie, cxl or an integrated fabric as applicable to the respective product segment)",
+            "Memory", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL,
+            METRIC_TYPE_EVENT, RESULT_UINT64, "events", 0, 0, HW_UNIT_GPU, nullptr, nullptr, nullptr, 32 );
+        MD_CHECK_PTR( metric );
+        MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x2f8" ) );
+        metric->SetQueryModeMask( QUERY_MODE_MASK_GLOBAL | QUERY_MODE_MASK_GLOBAL_EXTENDED );
+
+        metric = AddMetric( "SYSMEM_TRANSACTION_WRITE", "SysMem Transaction Write",
+            "Number of system memory 64B writes (upstream over an interface such as pcie, cxl or an integrated fabric as applicable to the respective product segment)",
+            "Memory", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL,
+            METRIC_TYPE_EVENT, RESULT_UINT64, "events", 0, 0, HW_UNIT_GPU, nullptr, nullptr, nullptr, 33 );
+        MD_CHECK_PTR( metric );
+        MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x300" ) );
+        metric->SetQueryModeMask( QUERY_MODE_MASK_GLOBAL | QUERY_MODE_MASK_GLOBAL_EXTENDED );
+
         MD_CHECK_CC( AddStartRegisterSet( 0, 0, nullptr ) );
         MD_CHECK_CC( AddStartConfigRegister( 0x13000, 0x00001802, REGISTER_TYPE_OA ) );
         MD_CHECK_CC( AddStartConfigRegister( 0x13004, 0x00000000, REGISTER_TYPE_OA ) );
@@ -2514,6 +2669,15 @@ namespace MetricsDiscoveryInternal::MetricSets_CRI_OA
         MD_CHECK_CC( AddStartConfigRegister( 0xe45c, 0x00000000, REGISTER_TYPE_FLEX ) );
         MD_CHECK_CC( AddStartConfigRegister( 0xe55c, 0x00000000, REGISTER_TYPE_FLEX ) );
         MD_CHECK_CC( AddStartConfigRegister( 0xe65c, 0x00000000, REGISTER_TYPE_FLEX ) );
+        MD_CHECK_CC( AddStartRegisterSet( 1, 0, nullptr, CONFIG_TYPE_QUERY ) );
+        MD_CHECK_CC( AddStartConfigRegister( 0x145340, 0x00006400, REGISTER_TYPE_MERT ) );
+        MD_CHECK_CC( AddStartConfigRegister( 0x145344, 0x00000000, REGISTER_TYPE_MERT ) );
+        MD_CHECK_CC( AddStartConfigRegister( 0x145348, 0x00006401, REGISTER_TYPE_MERT ) );
+        MD_CHECK_CC( AddStartConfigRegister( 0x14534c, 0x00000000, REGISTER_TYPE_MERT ) );
+        MD_CHECK_CC( AddStartConfigRegister( 0x145350, 0x00006402, REGISTER_TYPE_MERT ) );
+        MD_CHECK_CC( AddStartConfigRegister( 0x145354, 0x00000000, REGISTER_TYPE_MERT ) );
+        MD_CHECK_CC( AddStartConfigRegister( 0x145358, 0x00006403, REGISTER_TYPE_MERT ) );
+        MD_CHECK_CC( AddStartConfigRegister( 0x14535c, 0x00000000, REGISTER_TYPE_MERT ) );
         MD_CHECK_CC( RefreshConfigRegisters() );
 
         return CC_OK;
@@ -2931,6 +3095,38 @@ namespace MetricsDiscoveryInternal::MetricSets_CRI_OA
         MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 64" ) );
         metric->SetQueryModeMask( QUERY_MODE_MASK_GLOBAL | QUERY_MODE_MASK_GLOBAL_EXTENDED );
 
+        metric = AddMetric( "HOST_TO_GPUMEM_TRANSACTION_READ", "Host To GpuMem Transaction Read",
+            "Number of host 64B reads to GPU local (HBM) memory (downstream over an interface such as pcie, cxl or an integrated fabric as applicable to the respective product segment)",
+            "Memory", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL,
+            METRIC_TYPE_EVENT, RESULT_UINT64, "events", 0, 0, HW_UNIT_GPU, nullptr, nullptr, nullptr, 40 );
+        MD_CHECK_PTR( metric );
+        MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x2e8" ) );
+        metric->SetQueryModeMask( QUERY_MODE_MASK_GLOBAL | QUERY_MODE_MASK_GLOBAL_EXTENDED );
+
+        metric = AddMetric( "HOST_TO_GPUMEM_TRANSACTION_WRITE", "Host To GpuMem Transaction Write",
+            "Number of host 64B writes to GPU local (HBM) memory (downstream over an interface such as pcie, cxl or an integrated fabric as applicable to the respective product segment)",
+            "Memory", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL,
+            METRIC_TYPE_EVENT, RESULT_UINT64, "events", 0, 0, HW_UNIT_GPU, nullptr, nullptr, nullptr, 41 );
+        MD_CHECK_PTR( metric );
+        MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x2f0" ) );
+        metric->SetQueryModeMask( QUERY_MODE_MASK_GLOBAL | QUERY_MODE_MASK_GLOBAL_EXTENDED );
+
+        metric = AddMetric( "SYSMEM_TRANSACTION_READ", "SysMem Transaction Read",
+            "Number of system memory 64B reads (upstream over an interface such as pcie, cxl or an integrated fabric as applicable to the respective product segment)",
+            "Memory", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL,
+            METRIC_TYPE_EVENT, RESULT_UINT64, "events", 0, 0, HW_UNIT_GPU, nullptr, nullptr, nullptr, 42 );
+        MD_CHECK_PTR( metric );
+        MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x2f8" ) );
+        metric->SetQueryModeMask( QUERY_MODE_MASK_GLOBAL | QUERY_MODE_MASK_GLOBAL_EXTENDED );
+
+        metric = AddMetric( "SYSMEM_TRANSACTION_WRITE", "SysMem Transaction Write",
+            "Number of system memory 64B writes (upstream over an interface such as pcie, cxl or an integrated fabric as applicable to the respective product segment)",
+            "Memory", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL,
+            METRIC_TYPE_EVENT, RESULT_UINT64, "events", 0, 0, HW_UNIT_GPU, nullptr, nullptr, nullptr, 43 );
+        MD_CHECK_PTR( metric );
+        MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x300" ) );
+        metric->SetQueryModeMask( QUERY_MODE_MASK_GLOBAL | QUERY_MODE_MASK_GLOBAL_EXTENDED );
+
         MD_CHECK_CC( AddStartRegisterSet( 0, 0, nullptr ) );
         MD_CHECK_CC( AddStartConfigRegister( 0x13000, 0x00001802, REGISTER_TYPE_OA ) );
         MD_CHECK_CC( AddStartConfigRegister( 0x13004, 0x00000000, REGISTER_TYPE_OA ) );
@@ -3013,6 +3209,15 @@ namespace MetricsDiscoveryInternal::MetricSets_CRI_OA
         MD_CHECK_CC( AddStartConfigRegister( 0xe45c, 0x00000000, REGISTER_TYPE_FLEX ) );
         MD_CHECK_CC( AddStartConfigRegister( 0xe55c, 0x00000000, REGISTER_TYPE_FLEX ) );
         MD_CHECK_CC( AddStartConfigRegister( 0xe65c, 0x00000000, REGISTER_TYPE_FLEX ) );
+        MD_CHECK_CC( AddStartRegisterSet( 1, 0, nullptr, CONFIG_TYPE_QUERY ) );
+        MD_CHECK_CC( AddStartConfigRegister( 0x145340, 0x00006400, REGISTER_TYPE_MERT ) );
+        MD_CHECK_CC( AddStartConfigRegister( 0x145344, 0x00000000, REGISTER_TYPE_MERT ) );
+        MD_CHECK_CC( AddStartConfigRegister( 0x145348, 0x00006401, REGISTER_TYPE_MERT ) );
+        MD_CHECK_CC( AddStartConfigRegister( 0x14534c, 0x00000000, REGISTER_TYPE_MERT ) );
+        MD_CHECK_CC( AddStartConfigRegister( 0x145350, 0x00006402, REGISTER_TYPE_MERT ) );
+        MD_CHECK_CC( AddStartConfigRegister( 0x145354, 0x00000000, REGISTER_TYPE_MERT ) );
+        MD_CHECK_CC( AddStartConfigRegister( 0x145358, 0x00006403, REGISTER_TYPE_MERT ) );
+        MD_CHECK_CC( AddStartConfigRegister( 0x14535c, 0x00000000, REGISTER_TYPE_MERT ) );
         MD_CHECK_CC( RefreshConfigRegisters() );
 
         return CC_OK;
@@ -3780,14 +3985,14 @@ namespace MetricsDiscoveryInternal::MetricSets_CRI_OAMERT
         metric->SetQueryModeMask( QUERY_MODE_MASK_GLOBAL | QUERY_MODE_MASK_GLOBAL_EXTENDED );
 
         MD_CHECK_CC( AddStartRegisterSet( 0, 0, nullptr ) );
-        MD_CHECK_CC( AddStartConfigRegister( 0x145340, 0x00006400, REGISTER_TYPE_OA ) );
-        MD_CHECK_CC( AddStartConfigRegister( 0x145344, 0x00000000, REGISTER_TYPE_OA ) );
-        MD_CHECK_CC( AddStartConfigRegister( 0x145348, 0x00006401, REGISTER_TYPE_OA ) );
-        MD_CHECK_CC( AddStartConfigRegister( 0x14534c, 0x00000000, REGISTER_TYPE_OA ) );
-        MD_CHECK_CC( AddStartConfigRegister( 0x145350, 0x00006402, REGISTER_TYPE_OA ) );
-        MD_CHECK_CC( AddStartConfigRegister( 0x145354, 0x00000000, REGISTER_TYPE_OA ) );
-        MD_CHECK_CC( AddStartConfigRegister( 0x145358, 0x00006403, REGISTER_TYPE_OA ) );
-        MD_CHECK_CC( AddStartConfigRegister( 0x14535c, 0x00000000, REGISTER_TYPE_OA ) );
+        MD_CHECK_CC( AddStartConfigRegister( 0x145340, 0x00006400, REGISTER_TYPE_MERT ) );
+        MD_CHECK_CC( AddStartConfigRegister( 0x145344, 0x00000000, REGISTER_TYPE_MERT ) );
+        MD_CHECK_CC( AddStartConfigRegister( 0x145348, 0x00006401, REGISTER_TYPE_MERT ) );
+        MD_CHECK_CC( AddStartConfigRegister( 0x14534c, 0x00000000, REGISTER_TYPE_MERT ) );
+        MD_CHECK_CC( AddStartConfigRegister( 0x145350, 0x00006402, REGISTER_TYPE_MERT ) );
+        MD_CHECK_CC( AddStartConfigRegister( 0x145354, 0x00000000, REGISTER_TYPE_MERT ) );
+        MD_CHECK_CC( AddStartConfigRegister( 0x145358, 0x00006403, REGISTER_TYPE_MERT ) );
+        MD_CHECK_CC( AddStartConfigRegister( 0x14535c, 0x00000000, REGISTER_TYPE_MERT ) );
         MD_CHECK_CC( RefreshConfigRegisters() );
 
         return CC_OK;

@@ -1191,7 +1191,7 @@ namespace MetricsDiscoveryInternal
         TCompletionCode ret = CC_OK;
 
         int32_t     addedConfigId = -1;
-        std::string guid          = GenerateQueryGuid( subDeviceIndex, reportType );
+        std::string guid          = GenerateQueryGuid( subDeviceIndex, reportType, false );
 
         MD_LOG_A( m_adapterId, LOG_DEBUG, "Generated guid: %s", guid.c_str() );
 
@@ -1208,21 +1208,76 @@ namespace MetricsDiscoveryInternal
         RemoveOaConfigQuery( guid.c_str() );
 
         // 2. ADD CONFIG
-        ret = AddOaConfig( pmRegs.data(), static_cast<uint32_t>( pmRegs.size() ), subDeviceIndex, guid.c_str(), addedConfigId );
-        MD_ASSERT_A( m_adapterId, addedConfigId != -1 );
+        ret = AddOaConfig( pmRegs.data(), static_cast<uint32_t>( pmRegs.size() ), subDeviceIndex, guid.c_str(), false, addedConfigId );
 
         // 3. REMEMBER ADDED CONFIG
         if( ret == CC_OK )
         {
+            MD_ASSERT_A( m_adapterId, addedConfigId != -1 );
             if( std::find( m_AddedOaConfigs.begin(), m_AddedOaConfigs.end(), addedConfigId ) == m_AddedOaConfigs.end() )
             {
                 m_AddedOaConfigs.push_back( addedConfigId ); // Remember configId for later removal, only if it wasn't added before - may happen when
                                                              // the config is already added and ID is reused.
             }
         }
-        else
+        else if( addedConfigId != -1 )
         {
             RemoveOaConfig( addedConfigId );
+        }
+
+        const bool hasMertRegs = std::any_of( pmRegs.begin(), pmRegs.end(), []( const TRegister* reg )
+            {
+                return ( reg != nullptr ) && ( reg->type == REGISTER_TYPE_MERT );
+            } );
+
+        if( ret == CC_OK && hasMertRegs )
+        {
+            int32_t addedMertConfigId = -1;
+
+            guid = GenerateQueryGuid( subDeviceIndex, reportType, true );
+
+            MD_LOG_A( m_adapterId, LOG_DEBUG, "Generated guid: %s", guid.c_str() );
+
+            // Validate query config GUID
+            static_assert( sizeof( MD_PERF_GUID_FOR_QUERY_MERT ) == MD_PERF_GUID_LENGTH, "MD_PERF_GUID_FOR_QUERY_MERT must be of size MD_PERF_GUID_LENGTH" );
+            if( guid.size() != MD_PERF_GUID_LENGTH - 1 )
+            {
+                MD_LOG_A( m_adapterId, LOG_ERROR, "ERROR: incorrect guid size. Expected: %d, actual: %d", MD_PERF_GUID_LENGTH - 1, guid.size() );
+                return CC_ERROR_GENERAL;
+            }
+
+            // 4. REMOVE PREVIOUS MERT CONFIG IF exists
+            //    WARNING: Mert config from the latest Activate() call will always be used!
+            RemoveOaConfigQuery( guid.c_str() );
+
+            // 5. ADD MERT CONFIG
+            ret = AddOaConfig( pmRegs.data(), static_cast<uint32_t>( pmRegs.size() ), subDeviceIndex, guid.c_str(), true, addedMertConfigId );
+
+            // 6. REMEMBER ADDED MERT CONFIG
+            if( ret == CC_OK )
+            {
+                MD_ASSERT_A( m_adapterId, addedMertConfigId != -1 );
+                if( std::find( m_AddedOaConfigs.begin(), m_AddedOaConfigs.end(), addedMertConfigId ) == m_AddedOaConfigs.end() )
+                {
+                    m_AddedOaConfigs.push_back( addedMertConfigId ); // Remember configId for later removal, only if it wasn't added before - may happen when
+                                                                     // the config is already added and ID is reused.
+                }
+            }
+            else if( ret == CC_ERROR_NOT_SUPPORTED )
+            {
+                // MERT not supported, return success anyway, as OA config is added successfully and MERT config is optional
+                ret = CC_OK;
+            }
+            else
+            {
+                if( addedMertConfigId != -1 )
+                {
+                    RemoveOaConfig( addedMertConfigId );
+                }
+                RemoveOaConfig( addedConfigId );
+
+                m_AddedOaConfigs.erase( std::remove( m_AddedOaConfigs.begin(), m_AddedOaConfigs.end(), addedConfigId ), m_AddedOaConfigs.end() );
+            }
         }
 
         MD_LOG_EXIT_A( m_adapterId );
@@ -1479,6 +1534,7 @@ namespace MetricsDiscoveryInternal
         const uint32_t timerPeriodExponent = GetTimerPeriodExponent( nsTimerPeriod );
         const uint32_t oaReportType        = GetOaReportType( metricSet->GetReportType() );
         const uint32_t oaReportSize        = metricSet->GetParams()->RawReportSize;
+        const auto     oaBufferType        = oaConcurrentGroup.GetOaBufferType();
         int32_t        oaMetricSetId       = -1;
         uint32_t       regCount            = 0;
         TRegister**    regVector           = metricSet->GetStartConfiguration( regCount );
@@ -1490,7 +1546,7 @@ namespace MetricsDiscoveryInternal
         }
 
         // 3. ADD HW CONFIG
-        ret = AddOaConfig( regVector, regCount, metricsDevice.GetSubDeviceIndex(), nullptr, oaMetricSetId );
+        ret = AddOaConfig( regVector, regCount, metricsDevice.GetSubDeviceIndex(), nullptr, ( oaBufferType == GTDI_OA_BUFFER_TYPE_MERT ), oaMetricSetId );
         if( ret != CC_OK )
         {
             goto deactivate;
@@ -1498,7 +1554,7 @@ namespace MetricsDiscoveryInternal
         MD_ASSERT_A( m_adapterId, oaMetricSetId != -1 );
 
         // 4. OPEN STREAM
-        ret = OpenOaStream( metricsDevice, oaMetricSetId, oaReportType, oaReportSize, timerPeriodExponent, bufferSize, oaConcurrentGroup.GetOaBufferType() );
+        ret = OpenOaStream( metricsDevice, oaMetricSetId, oaReportType, oaReportSize, timerPeriodExponent, bufferSize, oaBufferType );
         if( ret != CC_OK )
         {
             goto remove_config;
@@ -2025,14 +2081,15 @@ namespace MetricsDiscoveryInternal
     //     Generates query oa guid for given subDeviceIndex.
     //
     // Input:
-    //     const uint32_t subDeviceIndex - sub device index
-    //     const TReportType reportType   - report type
+    //     const uint32_t    subDeviceIndex - sub device index
+    //     const TReportType reportType     - report type
+    //     const bool        isOaMert       - true if OA MERT report
     //
     // Output:
-    //     std::string                   - generated guid
+    //     std::string                      - generated guid
     //
     //////////////////////////////////////////////////////////////////////////////
-    std::string CDriverInterfaceLinuxCommon::GenerateQueryGuid( const uint32_t subDeviceIndex, [[maybe_unused]] const TReportType reportType )
+    std::string CDriverInterfaceLinuxCommon::GenerateQueryGuid( const uint32_t subDeviceIndex, [[maybe_unused]] const TReportType reportType, const bool isOaMert )
     {
         const std::string subDeviceValueToReplace = "42a7";
         const uint32_t    maxSubDeviceIndex       = std::pow( 2, subDeviceValueToReplace.length() * 4 ) - 1;
@@ -2043,7 +2100,7 @@ namespace MetricsDiscoveryInternal
             return "";
         }
 
-        std::string defaultGuid( MD_PERF_GUID_FOR_QUERY );
+        std::string defaultGuid( isOaMert ? MD_PERF_GUID_FOR_QUERY_MERT : MD_PERF_GUID_FOR_QUERY );
 
         if( subDeviceIndex == 0 || subDeviceIndex == MD_ROOT_DEVICE_INDEX )
         {

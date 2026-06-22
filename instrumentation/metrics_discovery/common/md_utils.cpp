@@ -156,7 +156,7 @@ namespace MetricsDiscoveryInternal
     // Input:
     //     CMetricsDevice& device         - metric device
     //     CEquation*&     equation       - pointer to the equation to be set
-    //     const char*     equationString - euqation string, could be empty or null
+    //     const char*     equationString - equation string, could be empty or null
     //
     // Output:
     //     TCompletionCode            - result of the operation
@@ -200,7 +200,7 @@ namespace MetricsDiscoveryInternal
     //
     // Input:
     //     const char*    semaphoreName - semaphore name
-    //     void**         semaphorePtr  - (out) pointer to the newly created sempahore
+    //     void**         semaphorePtr  - (out) pointer to the newly created semaphore
     //     const uint32_t adapterId     - adapter id for purpose of logging
     //
     // Output:
@@ -349,16 +349,16 @@ namespace MetricsDiscoveryInternal
         TByteArrayLatest* copiedByteArray = new( std::nothrow ) TByteArrayLatest();
         MD_CHECK_PTR_RET_A( adapterId, copiedByteArray, nullptr );
 
-        uint32_t copiedByteArraySize = 0;
-        for( uint32_t i = byteArray->Size; i > 0; i -= sizeof( uint64_t ) )
+        uint32_t copiedByteArraySize = MD_BYTE_ARRAY_MIN_SIZE;
+        if( byteArray->Size > MD_BYTE_ARRAY_MIN_SIZE ) // Truncate trailing zeros for sizes greater than minimum size of byte array
         {
-            const uint8_t* currentQword = byteArray->Data + ( i - sizeof( uint64_t ) );
-            const uint64_t qwordValue   = *reinterpret_cast<const uint64_t*>( currentQword );
-
-            if( qwordValue != 0 )
+            for( uint32_t i = byteArray->Size; i > MD_BYTE_ARRAY_MIN_SIZE; --i )
             {
-                copiedByteArraySize = i;
-                break;
+                if( byteArray->Data[i - 1] != 0 )
+                {
+                    copiedByteArraySize = i;
+                    break;
+                }
             }
         }
 
@@ -372,7 +372,8 @@ namespace MetricsDiscoveryInternal
             return nullptr;
         }
 
-        const bool result = iu_memcpy_s( copiedByteArray->Data, copiedByteArray->Size, byteArray->Data, copiedByteArray->Size );
+        const uint32_t bytesToCopy = ( std::min )( byteArray->Size, copiedByteArray->Size );
+        const bool     result      = iu_memcpy_s( copiedByteArray->Data, copiedByteArray->Size, byteArray->Data, bytesToCopy );
 
         if( !result )
         {
@@ -488,7 +489,7 @@ namespace MetricsDiscoveryInternal
         auto platformMaskByteArray = new( std::nothrow ) TByteArrayLatest();
         MD_CHECK_PTR_RET_A( adapterId, platformMaskByteArray, nullptr );
 
-        platformMaskByteArray->Size = byteArraySize;
+        platformMaskByteArray->Size = ( std::max )( byteArraySize, MD_BYTE_ARRAY_MIN_SIZE );
         platformMaskByteArray->Data = new( std::nothrow ) uint8_t[platformMaskByteArray->Size]();
 
         if( platformMaskByteArray->Data == nullptr )
@@ -867,32 +868,31 @@ namespace MetricsDiscoveryInternal
         MD_CHECK_PTR_RET_A( adapterId, buffer, CC_ERROR_INVALID_PARAMETER );
         MD_CHECK_PTR_RET_A( adapterId, bufferBeginOffset, CC_ERROR_INVALID_PARAMETER );
 
+        MD_CHECK_BUFFER_A( adapterId, buffer, bufferBeginOffset, sizeof( uint32_t ), bufferSize );
         const uint32_t magicNumber = *( (uint32_t*) buffer );
         if( magicNumber != MD_BYTE_ARRAY_MAGIC_NUMBER )
         {
             MD_LOG_A( adapterId, LOG_WARNING, "WARNING: Incorrect magic number or ByteArray is not present in buffer" );
             return CC_ERROR_GENERAL;
         }
+        buffer += sizeof( uint32_t );
 
         MD_CHECK_BUFFER_A( adapterId, buffer, bufferBeginOffset, sizeof( uint32_t ), bufferSize );
-        buffer += sizeof( uint32_t );
         const uint32_t byteArraySize = *( (uint32_t*) buffer );
-
-        MD_CHECK_BUFFER_A( adapterId, buffer, bufferBeginOffset, sizeof( uint32_t ), bufferSize );
         buffer += sizeof( uint32_t );
+
+        if( byteArraySize == 0 )
+        {
+            MD_LOG_A( adapterId, LOG_WARNING, "WARNING: Read ByteArray has size 0" );
+            return CC_ERROR_GENERAL;
+        }
+
+        MD_CHECK_BUFFER_A( adapterId, buffer, bufferBeginOffset, byteArraySize, bufferSize );
 
         byteArray = new( std::nothrow ) TByteArrayLatest();
         MD_CHECK_PTR_RET_A( adapterId, byteArray, CC_ERROR_NO_MEMORY );
 
-        byteArray->Size = byteArraySize;
-        if( byteArray->Size == 0 )
-        {
-            MD_LOG_A( adapterId, LOG_WARNING, "WARNING: Read ByteArray has size 0" );
-            byteArray->Data = nullptr;
-            MD_SAFE_DELETE( byteArray );
-            return CC_ERROR_GENERAL;
-        }
-
+        byteArray->Size = ( std::max )( byteArraySize, MD_BYTE_ARRAY_MIN_SIZE );
         byteArray->Data = new( std::nothrow ) uint8_t[byteArray->Size]();
         if( byteArray->Data == nullptr )
         {
@@ -903,8 +903,8 @@ namespace MetricsDiscoveryInternal
             return CC_ERROR_GENERAL;
         }
 
-        iu_memcpy_s( byteArray->Data, byteArray->Size, buffer, byteArray->Size );
-        buffer += byteArray->Size;
+        iu_memcpy_s( byteArray->Data, byteArray->Size, buffer, byteArraySize );
+        buffer += byteArraySize;
 
         return CC_OK;
     }
@@ -937,8 +937,22 @@ namespace MetricsDiscoveryInternal
         MD_CHECK_PTR_RET_A( adapterId, buffer, CC_ERROR_INVALID_PARAMETER );
         MD_CHECK_PTR_RET_A( adapterId, bufferBeginOffset, CC_ERROR_INVALID_PARAMETER );
 
-        cstring                    = (char*) buffer;
-        const size_t cstringLength = iu_strnlen_s( cstring, bufferSize - ( buffer - bufferBeginOffset ) );
+        const auto offset = buffer - bufferBeginOffset;
+        if( offset < 0 || offset >= static_cast<ptrdiff_t>( bufferSize ) )
+        {
+            MD_LOG_A( adapterId, LOG_ERROR, "ERROR: Invalid buffer offset" );
+            return CC_ERROR_GENERAL;
+        }
+
+        cstring                      = (char*) buffer;
+        const size_t maxStringLength = bufferSize - static_cast<size_t>( offset );
+        const size_t cstringLength   = iu_strnlen_s( cstring, maxStringLength );
+
+        if( ( cstringLength == 0 && cstring[0] != '\0' ) || ( cstringLength == maxStringLength ) )
+        {
+            MD_LOG_A( adapterId, LOG_ERROR, "ERROR: String is not null-terminated in buffer" );
+            return CC_ERROR_GENERAL;
+        }
 
         if( cstringLength == 0 )
         {
@@ -978,7 +992,6 @@ namespace MetricsDiscoveryInternal
         MD_CHECK_PTR_RET_A( adapterId, bufferBeginOffset, CC_ERROR_INVALID_PARAMETER );
 
         MD_CHECK_BUFFER_A( adapterId, buffer, bufferBeginOffset, sizeof( uint32_t ), bufferSize );
-
         value = *( (uint32_t*) buffer );
         buffer += sizeof( uint32_t );
 
@@ -997,7 +1010,7 @@ namespace MetricsDiscoveryInternal
     //     Reads int64_t from buffer.
     //
     // Input:
-    //     uint8_t*&       bufferuffer       - pointer to the binary buffer array
+    //     uint8_t*&       buffer            - pointer to the binary buffer array
     //     const uint8_t*  bufferBeginOffset - buffer begin offset
     //     const uint32_t  bufferSize        - buffer size
     //     int64_t&        value             - given value
@@ -1138,11 +1151,12 @@ namespace MetricsDiscoveryInternal
         MD_CHECK_PTR_RET_A( adapterId, buffer, CC_ERROR_INVALID_PARAMETER );
         MD_CHECK_PTR_RET_A( adapterId, bufferBeginOffset, CC_ERROR_INVALID_PARAMETER );
 
+        MD_CHECK_BUFFER_A( adapterId, buffer, bufferBeginOffset, sizeof( char ), bufferSize );
+
         cstring = nullptr;
 
         if( ( *buffer ) == 0xFF )
         {
-            MD_CHECK_BUFFER_A( adapterId, buffer, bufferBeginOffset, sizeof( char ), bufferSize );
             cstring = (char*) "";
             buffer++;
         }

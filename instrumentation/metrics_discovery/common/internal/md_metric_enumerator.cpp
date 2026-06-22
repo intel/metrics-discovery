@@ -504,7 +504,10 @@ namespace MetricsDiscoveryInternal
                     {
                         archEvent->m_projectName = archEventValueString;
 
-                        DeleteByteArray( archEvent->m_platformMask, adapterId );
+                        if( archEvent->m_platformMask )
+                        {
+                            DeleteByteArray( archEvent->m_platformMask, adapterId );
+                        }
                         archEvent->m_platformMask = CStrToPlatformMask( archEventValueString );
                     }
                     else if( archEventHeader[j].m_name == "Group Name" )
@@ -1252,46 +1255,34 @@ namespace MetricsDiscoveryInternal
         {
             return GENERATION_MTL;
         }
-#if MD_INCLUDE_BMG_METRICS
         if( platform == "BMG" )
         {
             return GENERATION_BMG;
         }
-#endif // MD_INCLUDE_BMG_METRICS
-#if MD_INCLUDE_LNL_METRICS
         if( platform == "LNL" )
         {
             return GENERATION_LNL;
         }
-#endif // MD_INCLUDE_LNL_METRICS
-#if MD_INCLUDE_PTL_METRICS
         if( platform == "PTL" )
         {
             return GENERATION_PTL;
         }
-#endif // MD_INCLUDE_PTL_METRICS
         if( platform == "ARL" )
         {
             return GENERATION_ARL;
         }
-#if MD_INCLUDE_NVL_METRICS
         if( platform == "NVL" )
         {
             return GENERATION_NVL;
         }
-#endif // MD_INCLUDE_NVL_METRICS
-#if MD_INCLUDE_NVLP_METRICS
         if( platform == "NVLP" )
         {
             return GENERATION_NVLP;
         }
-#endif // MD_INCLUDE_NVLP_METRICS
-#if MD_INCLUDE_CRI_METRICS
         if( platform == "CRI" )
         {
             return GENERATION_CRI;
         }
-#endif // MD_INCLUDE_CRI_METRICS
 
         return GTDI_PLATFORM_MAX;
     }

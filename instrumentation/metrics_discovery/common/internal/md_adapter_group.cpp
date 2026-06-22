@@ -282,6 +282,8 @@ namespace MetricsDiscoveryInternal
         return result;
 
     exception:
+        const bool memoryAllocationFailed = ( !offlineDevice || !m_offlineDriverInterface || !m_offlineAdapter );
+
         MD_SAFE_DELETE( offlineDevice );
 
         if( m_offlineDevicesVector.size() == 0 )
@@ -290,7 +292,7 @@ namespace MetricsDiscoveryInternal
             MD_SAFE_DELETE( m_offlineAdapter );
         }
 
-        return CC_ERROR_NO_MEMORY;
+        return memoryAllocationFailed ? CC_ERROR_NO_MEMORY : result;
     }
 
     //////////////////////////////////////////////////////////////////////////////

@@ -1002,11 +1002,6 @@ namespace MetricsDiscoveryInternal
         ClearVector( m_ioMeasurementInfoVector );
         ClearVector( m_ioGpuContextInfoVector );
         ClearVector( m_metricEnumeratorVector );
-
-        for( uint32_t i = 0; i < m_archEventVector.size(); ++i )
-        {
-            DeleteByteArray( m_archEventVector[i]->m_platformMask, m_device.GetAdapter().GetAdapterId() );
-        }
         ClearVector( m_archEventVector );
     }
 

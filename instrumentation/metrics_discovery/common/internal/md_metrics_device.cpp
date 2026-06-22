@@ -783,7 +783,7 @@ namespace MetricsDiscoveryInternal
                 globalSymbol.symbol.SymbolTypedValue,
                 globalSymbol.symbolType );
 
-            if( ret != CC_OK && isValidByteArray( globalSymbol.symbol ) )
+            if( ( ret != CC_OK || globalSymbol.symbolType == SYMBOL_TYPE_IMMEDIATE ) && isValidByteArray( globalSymbol.symbol ) )
             {
                 DeleteByteArray( globalSymbol.symbol.SymbolTypedValue.ValueByteArray, adapterId );
             }
@@ -1417,13 +1417,13 @@ namespace MetricsDiscoveryInternal
             MD_CHECK_CC_RET_A( adapterId, ret );
             for( uint32_t j = 0; j < regCount; j++ )
             {
+                MD_CHECK_BUFFER_A( adapterId, bufferPtr, bufferBeginOffset, sizeof( TRegister ), bufferSize );
                 if( !skip )
                 {
                     reg = *( (TRegister*) ( bufferPtr ) );
                     ret = set->AddStartConfigRegister( reg.offset, reg.value, reg.type );
                     MD_CHECK_CC_RET_A( adapterId, ret );
                 }
-                MD_CHECK_BUFFER_A( adapterId, bufferPtr, bufferBeginOffset, sizeof( TRegister ), bufferSize );
                 bufferPtr += sizeof( TRegister );
             }
         }

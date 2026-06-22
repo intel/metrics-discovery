@@ -121,7 +121,7 @@ namespace MetricsDiscoveryInternal
         virtual TCompletionCode OpenOaStream( CMetricsDevice& metricsDevice, uint32_t oaMetricSetId, uint32_t oaReportType, uint32_t oaReportSize, uint32_t timerPeriodExponent, uint32_t bufferSize, const GTDI_OA_BUFFER_TYPE oaBufferType ) final;
         virtual TCompletionCode ReadOaStream( CMetricsDevice& metricsDevice, uint32_t reportSize, uint32_t reportsToRead, char* reportData, uint32_t& readBytes, GTDIReadCounterStreamExceptions& exceptions ) final;
         virtual TCompletionCode ChangeIoStreamState( const int32_t streamId, const TIoStreamState state ) final;
-        virtual TCompletionCode AddOaConfig( TRegister** regVector, const uint32_t regCount, const uint32_t subDeviceIndex, const char* requestedGuid, int32_t& addedConfigId ) final;
+        virtual TCompletionCode AddOaConfig( TRegister** regVector, const uint32_t regCount, const uint32_t subDeviceIndex, const char* requestedGuid, const bool isOaMert, int32_t& addedConfigId ) final;
         virtual TCompletionCode RemoveOaConfig( int32_t oaConfigId ) final;
         virtual uint32_t        GetOaReportType( const TReportType reportType ) final;
         virtual TCompletionCode GetOaTimestampFrequency( uint64_t& frequency ) final;

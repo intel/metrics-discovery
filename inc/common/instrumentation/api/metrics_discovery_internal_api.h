@@ -85,6 +85,7 @@ namespace MetricsDiscovery
         REGISTER_TYPE_FLEX,
         REGISTER_TYPE_PM,
         REGISTER_TYPE_MMIO,
+        REGISTER_TYPE_MERT,
         REGISTER_TYPE_LAST,
     } TRegisterType;
 

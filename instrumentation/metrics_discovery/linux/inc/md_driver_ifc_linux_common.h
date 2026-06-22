@@ -25,9 +25,10 @@ SPDX-License-Identifier: MIT
 //     General defines used by Perf driver interface.
 //
 //////////////////////////////////////////////////////////////////////////////
-#define MD_MAX_PATH_LENGTH     128
-#define MD_PERF_GUID_LENGTH    37                                     // GUID is a string formatted like "%08x-%04x-%04x-%04x-%012x"
-#define MD_PERF_GUID_FOR_QUERY "2f01b241-7014-42a7-9eb6-a925cad3daba" // static GUID for storing Query configuration
+#define MD_MAX_PATH_LENGTH          128
+#define MD_PERF_GUID_LENGTH         37                                     // GUID is a string formatted like "%08x-%04x-%04x-%04x-%012x"
+#define MD_PERF_GUID_FOR_QUERY      "2f01b241-7014-42a7-9eb6-a925cad3daba" // static GUID for storing Query configuration
+#define MD_PERF_GUID_FOR_QUERY_MERT "8c3d5e9a-4b62-42a7-bd71-3e6a9f2c8d14" // static GUID for storing Query Mert configuration
 
 //////////////////////////////////////////////////////////////////////////////
 //
@@ -356,9 +357,9 @@ namespace MetricsDiscoveryInternal
         TCompletionCode         CloseOaStream( CMetricsDevice& metricsDevice );
         TCompletionCode         WaitForOaStreamReports( CMetricsDevice& metricsDevice, uint32_t timeoutMs );
         virtual TCompletionCode ChangeIoStreamState( const int32_t streamId, const TIoStreamState state ) = 0;
-        std::string             GenerateQueryGuid( const uint32_t subDeviceIndex, const TReportType reportType );
-        virtual TCompletionCode AddOaConfig( TRegister** regVector, const uint32_t regCount, const uint32_t subDeviceIndex, const char* requestedGuid, int32_t& addedConfigId ) = 0;
-        virtual TCompletionCode RemoveOaConfig( int32_t oaConfigId )                                                                                                            = 0;
+        std::string             GenerateQueryGuid( const uint32_t subDeviceIndex, const TReportType reportType, const bool isOaMert );
+        virtual TCompletionCode AddOaConfig( TRegister** regVector, const uint32_t regCount, const uint32_t subDeviceIndex, const char* requestedGuid, const bool isOaMert, int32_t& addedConfigId ) = 0;
+        virtual TCompletionCode RemoveOaConfig( int32_t oaConfigId )                                                                                                                                 = 0;
         TCompletionCode         RemoveOaConfigQuery( const char* guid );
         TCompletionCode         GetOaMetricSetId( const char* guid, int32_t& oaMetricSetId );
         bool                    OaMetricSetExists( const char* guid );
