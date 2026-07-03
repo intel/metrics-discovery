@@ -588,7 +588,7 @@ namespace MetricsDiscoveryInternal
             ++currentIndex;
         };
 
-        if( oaBufferType != GTDI_OA_BUFFER_TYPE_OAG && oaBufferType != GTDI_OA_BUFFER_TYPE_MERT )
+        if( isOamRequested )
         {
             if( m_xeObservationCapabilities.IsOamSagSupported && oaBufferType == GTDI_OA_BUFFER_TYPE_OAM_SAG )
             {
@@ -618,6 +618,10 @@ namespace MetricsDiscoveryInternal
 
                 requiredEngineInstance = baseEngineInstance + oamBufferSlice;
             }
+        }
+        else if( m_xeObservationCapabilities.IsOaMertSupported && oaBufferType == GTDI_OA_BUFFER_TYPE_MERT )
+        {
+            requiredEngineInstance = DRM_XE_ENGINE_INSTANCE_MERT;
         }
 
         ret = subDevices.GetTbsEngineParams( subDeviceIndex, engine, requiredEngineInstance, isOamRequested );
