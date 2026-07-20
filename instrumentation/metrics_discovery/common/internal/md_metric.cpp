@@ -219,15 +219,16 @@ namespace MetricsDiscoveryInternal
     //     Sets the snapshot (IO) read equation in the metric.
     //
     // Input:
-    //     const char * equationString - euqation string, could be empty
+    //     const char*    equationString - equation string, could be empty
+    //     const uint32_t reportSize     - size of the report the equation reads from
     //
     // Output:
-    //     TCompletionCode             - result of the operation
+    //     TCompletionCode               - result of the operation
     //
     //////////////////////////////////////////////////////////////////////////////
-    TCompletionCode CMetric::SetSnapshotReportReadEquation( const char* equationString )
+    TCompletionCode CMetric::SetSnapshotReportReadEquation( const char* equationString, const uint32_t reportSize )
     {
-        const auto ret          = SetEquation( m_device, m_ioReadEquation, equationString );
+        const auto ret          = SetEquation( m_device, m_ioReadEquation, equationString, reportSize );
         m_params.IoReadEquation = static_cast<IEquation_1_0*>( m_ioReadEquation );
 
         return ret;
@@ -245,15 +246,16 @@ namespace MetricsDiscoveryInternal
     //     Sets the delta (query) read equation in the metric.
     //
     // Input:
-    //     const char * equationString - equation string, could be empty
+    //     const char*    equationString - equation string, could be empty
+    //     const uint32_t reportSize     - size of the report the equation reads from
     //
     // Output:
-    //     TCompletionCode             - result of the operation
+    //     TCompletionCode               - result of the operation
     //
     //////////////////////////////////////////////////////////////////////////////
-    TCompletionCode CMetric::SetDeltaReportReadEquation( const char* equationString )
+    TCompletionCode CMetric::SetDeltaReportReadEquation( const char* equationString, const uint32_t reportSize )
     {
-        const auto ret             = SetEquation( m_device, m_queryReadEquation, equationString );
+        const auto ret             = SetEquation( m_device, m_queryReadEquation, equationString, reportSize );
         m_params.QueryReadEquation = static_cast<IEquation_1_0*>( m_queryReadEquation );
 
         return ret;
@@ -279,7 +281,7 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     TCompletionCode CMetric::SetNormalizationEquation( const char* equationString )
     {
-        const auto ret        = SetEquation( m_device, m_normEquation, equationString );
+        const auto ret        = SetEquation( m_device, m_normEquation, equationString, 0 );
         m_params.NormEquation = static_cast<IEquation_1_0*>( m_normEquation );
 
         return ret;
@@ -305,7 +307,7 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     TCompletionCode CMetric::SetMaxValueEquation( const char* equationString )
     {
-        const auto ret            = SetEquation( m_device, m_maxValueEquation, equationString );
+        const auto ret            = SetEquation( m_device, m_maxValueEquation, equationString, 0 );
         m_params.MaxValueEquation = static_cast<IEquation_1_0*>( m_maxValueEquation );
 
         return ret;
@@ -426,7 +428,7 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     TCompletionCode CMetric::SetAvailabilityEquation( const char* equationString )
     {
-        return SetEquation( m_device, m_availabilityEquation, equationString );
+        return SetEquation( m_device, m_availabilityEquation, equationString, 0 );
     }
 
     //////////////////////////////////////////////////////////////////////////////

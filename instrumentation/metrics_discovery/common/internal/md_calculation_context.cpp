@@ -34,7 +34,8 @@ namespace MetricsDiscoveryInternal
     //
     //////////////////////////////////////////////////////////////////////////////
     CCalculationContext::CCalculationContext()
-        : m_calculationManager( nullptr )
+        : m_metricsCalculator( nullptr )
+        , m_calculationManager( nullptr )
         , m_calculationContext{}
         , m_aggregationContext{}
         , m_metricSet( nullptr )
@@ -69,6 +70,7 @@ namespace MetricsDiscoveryInternal
 
         MD_SAFE_DELETE_ARRAY( m_timeOffsets );
         MD_SAFE_DELETE( m_calculationManager );
+        MD_SAFE_DELETE( m_metricsCalculator );
         MD_SAFE_DELETE( m_metricSet );
 
         MD_LOG_EXIT();
@@ -92,6 +94,66 @@ namespace MetricsDiscoveryInternal
     const TCalculationContextParamsLatest* CCalculationContext::GetParams( void ) const
     {
         return &m_params;
+    }
+
+    //////////////////////////////////////////////////////////////////////////////
+    //
+    // Class:
+    //     CCalculationContext
+    //
+    // Method:
+    //     GetMetricsCalculator
+    //
+    // Description:
+    //     Returns metrics calculator.
+    //
+    // Output:
+    //     CMetricsCalculator* - metrics calculator or *nullptr* if error
+    //
+    //////////////////////////////////////////////////////////////////////////////
+    CMetricsCalculator* CCalculationContext::GetMetricsCalculator()
+    {
+        return m_metricsCalculator;
+    }
+
+    //////////////////////////////////////////////////////////////////////////////
+    //
+    // Class:
+    //     CCalculationContext
+    //
+    // Method:
+    //     GetApiMask
+    //
+    // Description:
+    //     Returns the filtered API mask the context was built with.
+    //
+    // Output:
+    //     uint32_t - filtered API mask
+    //
+    //////////////////////////////////////////////////////////////////////////////
+    uint32_t CCalculationContext::GetApiMask() const
+    {
+        return m_metricSet ? m_metricSet->GetParams()->ApiMask : 0;
+    }
+
+    //////////////////////////////////////////////////////////////////////////////
+    //
+    // Class:
+    //     CCalculationContext
+    //
+    // Method:
+    //     GetType
+    //
+    // Description:
+    //     Returns the calculation context type the context was built with.
+    //
+    // Output:
+    //     TCalculationContextType - calculation context type
+    //
+    //////////////////////////////////////////////////////////////////////////////
+    TCalculationContextType CCalculationContext::GetType() const
+    {
+        return m_type;
     }
 
     //////////////////////////////////////////////////////////////////////////////
@@ -262,7 +324,7 @@ namespace MetricsDiscoveryInternal
             devices.push_back( device );
         }
 
-        ret = m_metricSet->InitializeMetricsCalculator( devices );
+        ret = InitializeMetricsCalculator( devices );
         MD_CHECK_CC_RET( ret );
 
         InitializeCalculationManager( true );
@@ -294,7 +356,8 @@ namespace MetricsDiscoveryInternal
 
         TStreamAggregationContext& sa = m_aggregationContext.StreamAggregationContext;
 
-        if( m_type == CALCULATION_CONTEXT_TYPE_IO_STREAM )
+        if( m_type == CALCULATION_CONTEXT_TYPE_IO_STREAM &&
+            ( calculationContextDescriptor.IoStreamDescriptor.TimeWindowCount > 0 || m_aggregationEnabled ) )
         {
             sa.TimeWindowCount = calculationContextDescriptor.IoStreamDescriptor.TimeWindowCount;
 
@@ -339,6 +402,77 @@ namespace MetricsDiscoveryInternal
 
         MD_LOG_EXIT();
         return ret;
+    }
+
+    //////////////////////////////////////////////////////////////////////////////
+    //
+    // Class:
+    //     CCalculationContext
+    //
+    // Method:
+    //     Reinitialize
+    //
+    // Description:
+    //     Reinitializes the calculation context for metrics calculations.
+    //     This method destroys any existing calculation context and then
+    //     initializes a new calculation context based on the provided
+    //     calculation context descriptor. It ensures proper cleanup of
+    //     allocated resources before reinitialization.
+    //
+    // Input:
+    //     TCalculationContextDescriptorLatest& calculationContextDescriptor - Reference to the calculation context descriptor
+    //                                                                         containing metric sets and configuration information.
+    //
+    // Output:
+    //     TCompletionCode - *CC_OK* on success, or an appropriate error code on failure.
+    //
+    //////////////////////////////////////////////////////////////////////////////
+    TCompletionCode CCalculationContext::Reinitialize( TCalculationContextDescriptorLatest& calculationContextDescriptor )
+    {
+        DestroyContexts();
+
+        MD_SAFE_DELETE_ARRAY( m_timeOffsets );
+        MD_SAFE_DELETE( m_calculationManager );
+        MD_SAFE_DELETE( m_metricsCalculator );
+        MD_SAFE_DELETE( m_metricSet );
+
+        return Initialize( calculationContextDescriptor );
+    }
+
+    //////////////////////////////////////////////////////////////////////////////
+    //
+    // Class:
+    //     CCalculationContext
+    //
+    // Method:
+    //     InitializeMetricsCalculator
+    //
+    // Description:
+    //     Initializes metrics calculator if not already initialized.
+    //
+    // Input:
+    //    std::vector<std::reference_wrapper<CMetricsDevice>>& devices - vector of metrics devices, used to get symbols
+    //
+    // Output:
+    //     TCompletionCode - *CC_OK* if metrics calculator has been initialized successfully, *CC_ERROR_NO_MEMORY* if memory allocation failed.
+    //
+    //////////////////////////////////////////////////////////////////////////////
+    TCompletionCode CCalculationContext::InitializeMetricsCalculator( std::vector<std::reference_wrapper<CMetricsDevice>>& devices )
+    {
+        if( m_metricsCalculator == nullptr )
+        {
+            m_metricsCalculator = ( devices.size() == 1 )
+                ? new( std::nothrow ) CMetricsCalculator( devices[0].get() )
+                : new( std::nothrow ) CMetricsCalculator( devices );
+
+            if( m_metricsCalculator == nullptr )
+            {
+                MD_LOG_A( devices[0].get().GetAdapter().GetAdapterId(), LOG_ERROR, "ERROR: Cannot allocate memory for CMetricsCalculator" );
+                return CC_ERROR_NO_MEMORY;
+            }
+        }
+
+        return CC_OK;
     }
 
     //////////////////////////////////////////////////////////////////////////////
@@ -421,7 +555,7 @@ namespace MetricsDiscoveryInternal
         m_calculationManager->ResetContext( m_calculationContext );
         m_calculationContext.CommonCalculationContext.DeltaValues = new( std::nothrow ) TTypedValue_1_0[m_metricSet->GetParams()->MetricsCount];
         MD_CHECK_PTR_RET( m_calculationContext.CommonCalculationContext.DeltaValues, CC_ERROR_NO_MEMORY );
-        m_calculationContext.CommonCalculationContext.Calculator         = m_metricSet->GetMetricsCalculator();
+        m_calculationContext.CommonCalculationContext.Calculator         = m_metricsCalculator;
         m_calculationContext.CommonCalculationContext.MetricSet          = m_metricSet;
         m_calculationContext.CommonCalculationContext.AggregationEnabled = m_aggregationEnabled;
         m_calculationContext.CommonCalculationContext.ConcurrentGroup    = m_metricSet->GetConcurrentGroup();
@@ -479,7 +613,7 @@ namespace MetricsDiscoveryInternal
             {
                 TStreamAggregationContext& sa = m_aggregationContext.StreamAggregationContext;
 
-                sa.Calculator                  = m_metricSet->GetMetricsCalculator();
+                sa.Calculator                  = m_metricsCalculator;
                 sa.TimeOffsets                 = m_timeOffsets;
                 sa.MaxAggregationWindowInTicks = 0;
                 sa.CalculationWindowIndex      = 0;
@@ -1649,7 +1783,53 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     TCompletionCode CCalculationContext::CalculateMetrics( const uint8_t* rawData, uint32_t rawDataSize, TTypedValue_1_0* out, uint32_t outSize, uint32_t* outReportCount, TTypedValue_1_0* outMaxValues, uint32_t outMaxValuesSize )
     {
+        return CalculateMetricsInternal<false>( rawData, rawDataSize, out, outSize, outReportCount, outMaxValues, outMaxValuesSize );
+    }
+
+    //////////////////////////////////////////////////////////////////////////////
+    //
+    // Class:
+    //     CCalculationContext
+    //
+    // Method:
+    //     CalculateMetricsInternal
+    //
+    // Description:
+    //     This method processes the provided raw data buffer and calculates metric values
+    //     according to the current calculation context and metric set configuration.
+    //     It supports both IO stream and delta query measurement types, validates input
+    //     parameters, and fills the output buffer with calculated metric values.
+    //     Optionally, it can also compute maximum values for each metric if the
+    //     corresponding buffer is provided.
+    //
+    // Input:
+    //     const uint8_t*   rawData          - Pointer to the buffer containing raw report data.
+    //     uint32_t         rawDataSize      - Size (in bytes) of the raw report data buffer.
+    //     TTypedValue_1_0* out              - Pointer to the buffer where calculated metric values will be stored.
+    //     uint32_t         outSize          - Size (in bytes) of the output buffer.
+    //     uint32_t*        outReportCount   - Pointer to a variable that will receive the number of calculated reports (can be nullptr).
+    //     TTypedValue_1_0* outMaxValues     - Pointer to the buffer where maximum metric values will be stored (can be nullptr).
+    //     uint32_t         outMaxValuesSize - Size (in bytes) of the max values output buffer.
+    //
+    // Output:
+    //     TCompletionCode - *CC_OK* on success, or an appropriate error code on failure.
+    //
+    //////////////////////////////////////////////////////////////////////////////
+    template <bool async>
+    TCompletionCode CCalculationContext::CalculateMetricsInternal( const uint8_t* rawData, uint32_t rawDataSize, TTypedValue_1_0* out, uint32_t outSize, uint32_t* outReportCount, TTypedValue_1_0* outMaxValues, uint32_t outMaxValuesSize )
+    {
         MD_LOG_ENTER();
+
+        if constexpr( async )
+        {
+            if( m_type != CALCULATION_CONTEXT_TYPE_IO_STREAM )
+            {
+                MD_LOG( LOG_ERROR, "Async metrics calculation is only supported for IoStream measurements" );
+                MD_LOG_EXIT();
+                return CC_ERROR_NOT_SUPPORTED;
+            }
+        }
+
         MD_CHECK_PTR_RET( m_calculationContext.CommonCalculationContext.Calculator, CC_ERROR_INVALID_PARAMETER );
         MD_CHECK_PTR_RET( m_calculationContext.CommonCalculationContext.MetricSet, CC_ERROR_INVALID_PARAMETER );
         MD_CHECK_PTR_RET( rawData, CC_ERROR_INVALID_PARAMETER );
@@ -1692,7 +1872,7 @@ namespace MetricsDiscoveryInternal
         const uint32_t rawReportCount = rawDataSize / rawReportSize;
 
         // Validation
-        auto ret = ValidateCalculateMetricsParams( params, rawDataSize, rawReportSize, outSize, rawReportCount, outMaxValuesSize );
+        auto ret = ValidateCalculateMetricsParams( params, rawDataSize, rawReportSize, rawReportCount, outSize, outMaxValuesSize );
         MD_CHECK_CC_RET( ret );
 
         m_calculationContext.CommonCalculationContext.Out            = out;
@@ -1714,8 +1894,17 @@ namespace MetricsDiscoveryInternal
         MD_LOG( LOG_DEBUG, "about to calculate %u raw reports", rawReportCount );
 
         // CALCULATE METRICS
-        while( m_calculationManager->CalculateNextReport( m_calculationContext ) )
-        { // void
+        if constexpr( async )
+        {
+            while( m_calculationManager->CalculateNextAsyncReport( m_calculationContext ) )
+            { // void
+            }
+        }
+        else
+        {
+            while( m_calculationManager->CalculateNextReport( m_calculationContext ) )
+            { // void
+            }
         }
 
         MD_LOG( LOG_DEBUG, "calculated %u out reports", m_calculationContext.CommonCalculationContext.OutReportCount );
@@ -1809,15 +1998,15 @@ namespace MetricsDiscoveryInternal
     //     TMetricSetParamsLatest* params           - Pointer to the metric set parameters structure.
     //     uint32_t                rawDataSize      - Size (in bytes) of the raw report data buffer.
     //     uint32_t                rawReportSize    - Size (in bytes) of a single raw report.
-    //     uint32_t                outSize          - Size (in bytes) of the output buffer.
     //     uint32_t                rawReportCount   - Number of raw reports in the input buffer.
+    //     uint32_t                outSize          - Size (in bytes) of the output buffer.
     //     uint32_t                outMaxValuesSize - Size (in bytes) of the output buffer for max values
     //
     // Output:
     //     TCompletionCode - *CC_OK* if all parameters are valid, or an appropriate error code if validation fails.
     //
     //////////////////////////////////////////////////////////////////////////////
-    TCompletionCode CCalculationContext::ValidateCalculateMetricsParams( TMetricSetParamsLatest* params, uint32_t rawDataSize, uint32_t rawReportSize, uint32_t outSize, uint32_t rawReportCount, uint32_t outMaxValuesSize )
+    TCompletionCode CCalculationContext::ValidateCalculateMetricsParams( TMetricSetParamsLatest* params, uint32_t rawDataSize, uint32_t rawReportSize, uint32_t rawReportCount, uint32_t outSize, uint32_t outMaxValuesSize )
     {
         // Size of one individual calculated report in bytes
         uint32_t outReportSize = ( params->MetricsCount + params->InformationCount ) * sizeof( TTypedValue_1_0 );
@@ -1843,16 +2032,22 @@ namespace MetricsDiscoveryInternal
             MD_LOG( LOG_DEBUG, "outSize: %u, outReportSize: %u", outSize, outReportSize );
             return CC_ERROR_INVALID_PARAMETER;
         }
-        if( ( m_calculationContext.StreamCalculationContext.Calculator->SavedReportPresent() && ( rawReportCount > ( outSize / outReportSize ) ) ) ||
-            ( !m_calculationContext.StreamCalculationContext.Calculator->SavedReportPresent() && ( rawReportCount > ( ( outSize / outReportSize ) + 1 ) ) ) )
+
+        // IO stream calculates one less report when no saved report is present yet.
+        const bool     noReportPresent      = ( m_type == CALCULATION_CONTEXT_TYPE_IO_STREAM ) && !m_calculationContext.StreamCalculationContext.Calculator->SavedReportPresent();
+        const uint32_t outReportCapacity    = ( noReportPresent ) ? ( outSize / outReportSize ) + 1 : ( outSize / outReportSize );
+        const uint32_t outMaxValuesCapacity = ( maxValuesReportSize == 0 ) ? 0 : ( noReportPresent ) ? ( outMaxValuesSize / maxValuesReportSize ) + 1
+                                                                                                     : ( outMaxValuesSize / maxValuesReportSize );
+
+        if( rawReportCount > outReportCapacity )
         {
-            MD_LOG( LOG_ERROR, "error: output buffer to small" );
+            MD_LOG( LOG_ERROR, "error: output buffer too small" );
             MD_LOG( LOG_DEBUG, "rawReportCount: %u, outSize: %u, outReportSize: %u", rawReportCount, outSize, outReportSize );
             return CC_ERROR_INVALID_PARAMETER;
         }
-        if( outMaxValuesSize && maxValuesReportSize && rawReportCount > ( outMaxValuesSize / maxValuesReportSize ) )
+        if( outMaxValuesSize && maxValuesReportSize && rawReportCount > outMaxValuesCapacity )
         {
-            MD_LOG( LOG_ERROR, "error: maxValues buffer to small" );
+            MD_LOG( LOG_ERROR, "error: maxValues buffer too small" );
             MD_LOG( LOG_DEBUG, "rawReportCount: %u, outMaxValuesSize: %u, maxValueReportSize: %u", rawReportCount, outMaxValuesSize, maxValuesReportSize );
             return CC_ERROR_INVALID_PARAMETER;
         }
@@ -3005,4 +3200,13 @@ namespace MetricsDiscoveryInternal
 
         return CC_OK;
     }
+
+    //////////////////////////////////////////////////////////////////////////////
+    // Explicit template instantiations of CalculateMetricsInternal so that other
+    // translation units (e.g. md_metric_set.cpp) can link against the async (<true>)
+    // and sync (<false>) specializations defined in this file.
+    //////////////////////////////////////////////////////////////////////////////
+    template TCompletionCode CCalculationContext::CalculateMetricsInternal<false>( const uint8_t* rawData, uint32_t rawDataSize, TTypedValue_1_0* out, uint32_t outSize, uint32_t* outReportCount, TTypedValue_1_0* outMaxValues, uint32_t outMaxValuesSize );
+    template TCompletionCode CCalculationContext::CalculateMetricsInternal<true>( const uint8_t* rawData, uint32_t rawDataSize, TTypedValue_1_0* out, uint32_t outSize, uint32_t* outReportCount, TTypedValue_1_0* outMaxValues, uint32_t outMaxValuesSize );
+
 } // namespace MetricsDiscoveryInternal

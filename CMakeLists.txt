@@ -196,7 +196,7 @@ if (${PLATFORM} STREQUAL Windows) # windows
 
     set (_WINDOWS_HEADERS ${_WINDOWS_HEADERS}
         ${BS_DIR_D3D12}/PCH/D3D12PerformanceAPI.H
-        ${BS_DIR_VULKAN}/Core/PCH/vulkan/vk_intel_performance_query.h
+        ${BS_DIR_VULKAN}/Core/PCH/vulkan/ext/vk_intel_performance_query.h
         )
 
     set (_HEADERS ${_HEADERS} ${_WINDOWS_HEADERS})
@@ -245,7 +245,7 @@ if (${PLATFORM} STREQUAL Windows) # windows
     source_group ("Header Files"                            "(${BS_DIR_INSTRUMENTATION}/metrics_discovery/common/inc/.*.h)|(${BS_DIR_INSTRUMENTATION}/metrics_discovery/windows/inc/.*.h)")
     source_group ("Header Files\\iu"                        "(${BS_DIR_INSTRUMENTATION}/utils/common/inc/.*.h)|(${BS_DIR_INSTRUMENTATION}/utils/windows/inc/.*.h)")
     source_group ("Header Files\\performance_api"           FILES              "${BS_DIR_D3D12}/PCH/D3D12PerformanceAPI.H"
-                                                                               "${BS_DIR_VULKAN}/Core/PCH/vulkan/vk_intel_performance_query.h"
+                                                                               "${BS_DIR_VULKAN}/Core/PCH/vulkan/ext/vk_intel_performance_query.h"
                                                             REGULAR_EXPRESSION "(${BS_DIR_INSTRUMENTATION}/metrics_discovery/windows/inc/.*performance.*.h)")
 
     source_group ("Source Files"                            "(${BS_DIR_INSTRUMENTATION}/metrics_discovery/common/.*.cpp)|(${BS_DIR_INSTRUMENTATION}/metrics_discovery/.*.rc)|(${BS_DIR_INSTRUMENTATION}/metrics_discovery/windows/.*.cpp)")
@@ -324,6 +324,7 @@ if (${PLATFORM} STREQUAL Windows) # windows
         ${BS_DIR_D3D12}/PCH
         # vulkan
         ${BS_DIR_VULKAN}/Core/PCH/vulkan
+        ${BS_DIR_VULKAN}/Core/PCH/vulkan/ext
         )
 elseif (${PLATFORM} STREQUAL linux) # linux
     target_include_directories (${PROJECT_NAME} PUBLIC
@@ -449,7 +450,7 @@ elseif (${PLATFORM} STREQUAL linux) # linux
             -O3                 # optimize for speed with conforming optimizations
             -Werror             # treats warning as errors
             -fvisibility=hidden # hides non-exported symbols
-            -flto               # enables Link-Time Optimization (LTO)
+            -flto               # enables Link-Time Optimization (LTO) at compile-time; must be consistent with LTO at link-time
             -fPIC               # generates position-independent code during the compilation phase
             )
     endif ()
@@ -510,6 +511,15 @@ elseif (${PLATFORM} STREQUAL linux) # linux
             LINKER:-m64 # to enable x64 build on x86 host
             )
     endif ()
+
+    if ("${BUILD_TYPE}" STREQUAL "release" OR
+        "${BUILD_TYPE}" STREQUAL "release-internal" OR
+        "${BUILD_TYPE}" STREQUAL "releaseinternal")
+        set (COMMON_LINK_OPTIONS ${COMMON_LINK_OPTIONS}
+            -flto # enables Link-Time Optimization (LTO) at link-time (no "LINKER:" prefix required); must be consistent with LTO at compile-time
+            )
+    endif ()
+
     target_link_options (
         ${PROJECT_NAME} PRIVATE
         ${COMMON_LINK_OPTIONS}

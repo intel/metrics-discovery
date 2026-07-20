@@ -94,7 +94,7 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     TCompletionCode SetDeltaFunction( const char* equationString, TDeltaFunction_1_0* deltaFunction, const uint32_t adapterId )
     {
-        if( equationString == nullptr || strcmp( equationString, "" ) == 0 )
+        if( IsNullOrEmpty( equationString ) )
         {
             deltaFunction->FunctionType = DELTA_FUNCTION_NULL;
             return CC_OK;
@@ -157,12 +157,13 @@ namespace MetricsDiscoveryInternal
     //     CMetricsDevice& device         - metric device
     //     CEquation*&     equation       - pointer to the equation to be set
     //     const char*     equationString - equation string, could be empty or null
+    //     const uint32_t  reportSize     - size of the report the equation reads from
     //
     // Output:
     //     TCompletionCode            - result of the operation
     //
     //////////////////////////////////////////////////////////////////////////////
-    TCompletionCode SetEquation( CMetricsDevice& device, CEquation*& equation, const char* equationString )
+    TCompletionCode SetEquation( CMetricsDevice& device, CEquation*& equation, const char* equationString, const uint32_t reportSize )
     {
         TCompletionCode ret = CC_OK;
 
@@ -177,7 +178,7 @@ namespace MetricsDiscoveryInternal
             {
                 ret = CC_ERROR_NO_MEMORY;
             }
-            else if( !equation->ParseEquationString( equationString ) )
+            else if( !equation->ParseEquationString( equationString, reportSize ) )
             {
                 MD_SAFE_DELETE( equation );
                 ret = CC_ERROR_GENERAL;
@@ -1112,6 +1113,13 @@ namespace MetricsDiscoveryInternal
                 else
                 {
                     MD_LOG_A( adapterId, LOG_DEBUG, "Reading ByteArray is not supported in buffer version %u", bufferVersion );
+
+                    // Copy empty byte array
+                    uint8_t          byteArrayData[MD_BYTE_ARRAY_MIN_SIZE] = {};
+                    TByteArrayLatest byteArray                             = { MD_BYTE_ARRAY_MIN_SIZE, byteArrayData };
+
+                    typedValue.ValueByteArray = GetCopiedByteArray( &byteArray, adapterId );
+                    MD_CHECK_PTR_RET_A( adapterId, typedValue.ValueByteArray, CC_ERROR_NO_MEMORY );
                 }
                 break;
             default:

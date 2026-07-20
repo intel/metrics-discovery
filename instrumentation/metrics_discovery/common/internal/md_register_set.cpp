@@ -107,7 +107,7 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     TCompletionCode CRegisterSet::SetAvailabilityEquation( const char* equationString )
     {
-        TCompletionCode ret = SetEquation( m_device, m_availabilityEquation, equationString );
+        TCompletionCode ret = SetEquation( m_device, m_availabilityEquation, equationString, 0 );
         if( ret == CC_OK )
         {
             m_isAvailable = !m_availabilityEquation || m_availabilityEquation->SolveBooleanEquation();

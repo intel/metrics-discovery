@@ -123,7 +123,7 @@ namespace MetricsDiscoveryInternal
 
     TCompletionCode WriteEquationToBuffer( CEquation* equation, uint8_t* buffer, uint32_t& bufferSize, uint32_t& bufferOffset, const uint32_t adapterId );
     TCompletionCode SetDeltaFunction( const char* equationString, TDeltaFunction_1_0* deltaFunction, const uint32_t adapterId );
-    TCompletionCode SetEquation( CMetricsDevice& device, CEquation*& equation, const char* equationString );
+    TCompletionCode SetEquation( CMetricsDevice& device, CEquation*& equation, const char* equationString, const uint32_t reportSize );
 
     TCompletionCode GetNamedSemaphore( const char* semaphoreName, void** semaphorePtr, const uint32_t adapterId );
     TCompletionCode ReleaseNamedSemaphore( void** semaphorePtr, const uint32_t adapterId );
@@ -183,6 +183,29 @@ namespace MetricsDiscoveryInternal
         return ( multiple != 0 )
             ? ( ( ( number ? number : 1 ) + multiple - 1 ) / multiple ) * multiple
             : 0;
+    }
+
+    //////////////////////////////////////////////////////////////////////////////
+    //
+    // Group:
+    //     Metrics Discovery Utils
+    //
+    // Function:
+    //     IsNullOrEmpty
+    //
+    // Description:
+    //     Checks if the given string is null or empty.
+    //
+    // Input:
+    //     const char* string - a string to check
+    //
+    // Output:
+    //     bool               - true if the string is null or empty, false otherwise
+    //
+    //////////////////////////////////////////////////////////////////////////////
+    inline bool IsNullOrEmpty( const char* string )
+    {
+        return ( !string ) || ( string[0] == '\0' );
     }
 
     //////////////////////////////////////////////////////////////////////////////

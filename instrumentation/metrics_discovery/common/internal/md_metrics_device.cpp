@@ -1200,7 +1200,7 @@ namespace MetricsDiscoveryInternal
             MD_CHECK_CC_RET_A( adapterId, ret );
             if( metric )
             {
-                ret = metric->SetSnapshotReportReadEquation( equationString );
+                ret = metric->SetSnapshotReportReadEquation( equationString, set->GetParams()->RawReportSize );
                 MD_CHECK_CC_RET_A( adapterId, ret );
             }
 
@@ -1209,7 +1209,7 @@ namespace MetricsDiscoveryInternal
             MD_CHECK_CC_RET_A( adapterId, ret );
             if( metric )
             {
-                ret = metric->SetDeltaReportReadEquation( equationString );
+                ret = metric->SetDeltaReportReadEquation( equationString, set->GetParams()->QueryReportSize );
                 MD_CHECK_CC_RET_A( adapterId, ret );
             }
 
@@ -1332,7 +1332,7 @@ namespace MetricsDiscoveryInternal
             MD_CHECK_CC_RET_A( adapterId, ret );
             if( aInformation )
             {
-                ret = aInformation->SetSnapshotReportReadEquation( equationString );
+                ret = aInformation->SetSnapshotReportReadEquation( equationString, set->GetParams()->RawReportSize );
                 MD_CHECK_CC_RET_A( adapterId, ret );
             }
 
@@ -1341,7 +1341,7 @@ namespace MetricsDiscoveryInternal
             MD_CHECK_CC_RET_A( adapterId, ret );
             if( aInformation )
             {
-                ret = aInformation->SetDeltaReportReadEquation( equationString );
+                ret = aInformation->SetDeltaReportReadEquation( equationString, set->GetParams()->QueryReportSize );
                 MD_CHECK_CC_RET_A( adapterId, ret );
             }
         }

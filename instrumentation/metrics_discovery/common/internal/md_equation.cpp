@@ -18,6 +18,7 @@ SPDX-License-Identifier: MIT
 
 #include <cstring>
 #include <array>
+#include <limits>
 
 namespace MetricsDiscoveryInternal
 {
@@ -644,15 +645,16 @@ namespace MetricsDiscoveryInternal
     //     Parses the equation string.
     //
     // Input:
-    //     const char * equationString - equation string to parse
+    //     const char*    equationString - equation string to parse
+    //     const uint32_t reportSize     - size of the report the equation reads from
     //
     // Output:
-    //     bool                        - result of the operation
+    //     bool                          - result of the operation
     //
     //////////////////////////////////////////////////////////////////////////////
-    bool CEquation::ParseEquationString( const char* equationString )
+    bool CEquation::ParseEquationString( const char* equationString, const uint32_t reportSize )
     {
-        if( equationString == nullptr || ( strcmp( equationString, "" ) == 0 ) )
+        if( IsNullOrEmpty( equationString ) )
         {
             m_equationString = nullptr;
             return false;
@@ -668,7 +670,7 @@ namespace MetricsDiscoveryInternal
         char* token = iu_strtok_s( string, " ", &tokenNext );
         while( token != nullptr )
         {
-            if( !ParseEquationElement( token ) )
+            if( !ParseEquationElement( token, reportSize ) )
             {
                 MD_SAFE_DELETE_ARRAY( string );
                 return false;
@@ -693,14 +695,15 @@ namespace MetricsDiscoveryInternal
     //     Parses and adds the element to the equation list.
     //
     // Input:
-    //     const char* equationString - equation element string to parse;
-    //                                  expected to be nullptr-terminated
+    //     const char*    equationString - equation element string to parse;
+    //                                     expected to be nullptr-terminated
+    //     const uint32_t reportSize     - size of the report the equation reads from
     //
     // Output:
-    //     bool                       - result of the operation
+    //     bool                          - result of the operation
     //
     //////////////////////////////////////////////////////////////////////////////
-    bool CEquation::ParseEquationElement( const char* equationString )
+    bool CEquation::ParseEquationElement( const char* equationString, const uint32_t reportSize )
     {
         const uint32_t adapterId = m_device.GetAdapter().GetAdapterId();
 
@@ -720,10 +723,10 @@ namespace MetricsDiscoveryInternal
                 case GENERATION_NVL:
                 case GENERATION_NVLP:
                 case GENERATION_CRI:
-                    return ParseEquationString( "$Self $GpuSliceClocksCount $VectorEngineTotalCount UMUL FDIV 100 FMUL" );
+                    return ParseEquationString( "$Self $GpuSliceClocksCount $VectorEngineTotalCount UMUL FDIV 100 FMUL", reportSize );
 
                 default:
-                    return ParseEquationString( "$Self $GpuSliceClocksCount $EuCoresTotalCount UMUL FDIV 100 FMUL" );
+                    return ParseEquationString( "$Self $GpuSliceClocksCount $EuCoresTotalCount UMUL FDIV 100 FMUL", reportSize );
             }
         }
         else if( strcmp( equationString, "EuAggrDuration" ) == 0 )
@@ -732,7 +735,7 @@ namespace MetricsDiscoveryInternal
         }
         else if( strcmp( equationString, "GpuDurationSlice" ) == 0 )
         {
-            return ParseEquationString( "$Self $GpuSliceClocksCount FDIV 100 FMUL" );
+            return ParseEquationString( "$Self $GpuSliceClocksCount FDIV 100 FMUL", reportSize );
         }
         else if( strcmp( equationString, "GpuDuration" ) == 0 )
         {
@@ -882,25 +885,66 @@ namespace MetricsDiscoveryInternal
         {
             element.Type                  = EQUATION_ELEM_RD_UINT32;
             element.ReadParams.ByteOffset = strtoul( &equationString[3], nullptr, 0 );
+
+            const uint64_t requiredReportSize = static_cast<uint64_t>( element.ReadParams.ByteOffset ) + sizeof( uint32_t );
+
+            if( ( reportSize == 0 && requiredReportSize > std::numeric_limits<uint32_t>::max() ) || ( reportSize != 0 && requiredReportSize > reportSize ) )
+            {
+                MD_LOG_A( adapterId, LOG_ERROR, "Equation element read offset out of report range: %s (report size: %u)", equationString, reportSize );
+                return false;
+            }
         }
         else if( strncmp( equationString, "fl@", sizeof( "fl@" ) - 1 ) == 0 )
         {
-            element.Type = EQUATION_ELEM_RD_FLOAT;
+            element.Type                  = EQUATION_ELEM_RD_FLOAT;
+            element.ReadParams.ByteOffset = strtoul( &equationString[3], nullptr, 0 );
+
+            const uint64_t requiredReportSize = static_cast<uint64_t>( element.ReadParams.ByteOffset ) + sizeof( float );
+
+            if( ( reportSize == 0 && requiredReportSize > std::numeric_limits<uint32_t>::max() ) || ( reportSize != 0 && requiredReportSize > reportSize ) )
+            {
+                MD_LOG_A( adapterId, LOG_ERROR, "Equation element read offset out of report range: %s (report size: %u)", equationString, reportSize );
+                return false;
+            }
         }
         else if( strncmp( equationString, "qw@", sizeof( "qw@" ) - 1 ) == 0 )
         {
             element.Type                  = EQUATION_ELEM_RD_UINT64;
             element.ReadParams.ByteOffset = strtoul( &equationString[3], nullptr, 0 );
+
+            const uint64_t requiredReportSize = static_cast<uint64_t>( element.ReadParams.ByteOffset ) + sizeof( uint64_t );
+
+            if( ( reportSize == 0 && requiredReportSize > std::numeric_limits<uint32_t>::max() ) || ( reportSize != 0 && requiredReportSize > reportSize ) )
+            {
+                MD_LOG_A( adapterId, LOG_ERROR, "Equation element read offset out of report range: %s (report size: %u)", equationString, reportSize );
+                return false;
+            }
         }
         else if( strncmp( equationString, "rd8@", sizeof( "rd8@" ) - 1 ) == 0 )
         {
             element.Type                  = EQUATION_ELEM_RD_UINT8;
             element.ReadParams.ByteOffset = strtoul( &equationString[4], nullptr, 0 );
+
+            const uint64_t requiredReportSize = static_cast<uint64_t>( element.ReadParams.ByteOffset ) + sizeof( uint8_t );
+
+            if( ( reportSize == 0 && requiredReportSize > std::numeric_limits<uint32_t>::max() ) || ( reportSize != 0 && requiredReportSize > reportSize ) )
+            {
+                MD_LOG_A( adapterId, LOG_ERROR, "Equation element read offset out of report range: %s (report size: %u)", equationString, reportSize );
+                return false;
+            }
         }
         else if( strncmp( equationString, "rd16@", sizeof( "rd16@" ) - 1 ) == 0 )
         {
             element.Type                  = EQUATION_ELEM_RD_UINT16;
             element.ReadParams.ByteOffset = strtoul( &equationString[5], nullptr, 0 );
+
+            const uint64_t requiredReportSize = static_cast<uint64_t>( element.ReadParams.ByteOffset ) + sizeof( uint16_t );
+
+            if( ( reportSize == 0 && requiredReportSize > std::numeric_limits<uint32_t>::max() ) || ( reportSize != 0 && requiredReportSize > reportSize ) )
+            {
+                MD_LOG_A( adapterId, LOG_ERROR, "Equation element read offset out of report range: %s (report size: %u)", equationString, reportSize );
+                return false;
+            }
         }
         else if( strncmp( equationString, "rd40@", sizeof( "rd40@" ) - 1 ) == 0 )
         {
@@ -912,6 +956,16 @@ namespace MetricsDiscoveryInternal
                 return false;
             }
             element.ReadParams.ByteOffsetExt = strtoul( ++pEnd, &pEnd, 0 );
+
+            const uint64_t byteRangeEnd       = static_cast<uint64_t>( element.ReadParams.ByteOffset ) + sizeof( uint32_t );
+            const uint64_t byteRangeEndExt    = static_cast<uint64_t>( element.ReadParams.ByteOffsetExt ) + sizeof( uint8_t );
+            const uint64_t requiredReportSize = ( byteRangeEnd > byteRangeEndExt ) ? byteRangeEnd : byteRangeEndExt;
+
+            if( ( reportSize == 0 && requiredReportSize > std::numeric_limits<uint32_t>::max() ) || ( reportSize != 0 && requiredReportSize > reportSize ) )
+            {
+                MD_LOG_A( adapterId, LOG_ERROR, "Equation element read offset out of report range: %s (report size: %u)", equationString, reportSize );
+                return false;
+            }
         }
         else if( strncmp( equationString, "bm@", sizeof( "bm@" ) - 1 ) == 0 )
         {
@@ -928,6 +982,21 @@ namespace MetricsDiscoveryInternal
                 return false;
             }
             element.ReadParams.BitsCount = strtoul( ++pEnd, &pEnd, 10 );
+
+            const uint64_t requiredReportSize = static_cast<uint64_t>( element.ReadParams.ByteOffset ) + sizeof( uint32_t );
+
+            if( ( reportSize == 0 && requiredReportSize > std::numeric_limits<uint32_t>::max() ) || ( reportSize != 0 && requiredReportSize > reportSize ) )
+            {
+                MD_LOG_A( adapterId, LOG_ERROR, "Equation element read offset out of report range: %s (report size: %u)", equationString, reportSize );
+                return false;
+            }
+
+            // The bitfield is read from a single 32-bit word, so bits must fit within it.
+            if( element.ReadParams.BitsCount == 0 || element.ReadParams.BitsCount > 32 || static_cast<uint64_t>( element.ReadParams.BitOffset ) + element.ReadParams.BitsCount > 32 )
+            {
+                MD_LOG_A( adapterId, LOG_ERROR, "Equation element bitfield out of range: %s (bit offset: %u, bits count: %u)", equationString, element.ReadParams.BitOffset, element.ReadParams.BitsCount );
+                return false;
+            }
         }
         else if( strcmp( equationString, "$Self" ) == 0 )
         {

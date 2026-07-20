@@ -59,8 +59,8 @@ namespace MetricsDiscoveryInternal
         CInformation& operator=( const CInformation& ) = delete; // Delete assignment operator
 
         // Non-API:
-        TCompletionCode SetSnapshotReportReadEquation( const char* equationString );
-        TCompletionCode SetDeltaReportReadEquation( const char* equationString );
+        TCompletionCode SetSnapshotReportReadEquation( const char* equationString, const uint32_t reportSize = 0 );
+        TCompletionCode SetDeltaReportReadEquation( const char* equationString, const uint32_t reportSize = 0 );
         TCompletionCode SetAvailabilityEquation( const char* equationString );
         bool            IsAvailabilityEquationTrue();
         bool            IsAggregatable() const;

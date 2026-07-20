@@ -29,6 +29,7 @@ namespace MetricsDiscoveryInternal
     ///////////////////////////////////////////////////////////////////////////////
     // Forward declarations:                                                     //
     ///////////////////////////////////////////////////////////////////////////////
+    class CCalculationContext;
     class CCalculationManager;
     class CConcurrentGroup;
     class CEquation;
@@ -36,12 +37,11 @@ namespace MetricsDiscoveryInternal
     class CMetric;
     class CMetricsCalculator;
     class CMetricsDevice;
+    class CPrototypeManager;
     class CRegisterSet;
 
     union SCalculationContext;
     using TCalculationContext = SCalculationContext;
-
-    class CPrototypeManager;
 
     ///////////////////////////////////////////////////////////////////////////////
     // Metric group id levels:                                                   //
@@ -280,8 +280,6 @@ namespace MetricsDiscoveryInternal
         CMetricsDevice&     GetMetricsDevice();
         TByteArrayLatest*   GetPlatformMask();
 
-        TCompletionCode InitializeMetricsCalculator( std::vector<std::reference_wrapper<CMetricsDevice>>& devices );
-
         TCompletionCode SetAvailabilityEquation( const char* equationString );
         bool            IsAvailabilityEquationTrue();
 
@@ -311,15 +309,12 @@ namespace MetricsDiscoveryInternal
 
     private:
         // API filtering:
-        bool            IsApiFilteringMaskValid( const uint32_t apiMask );
-        void            EnableApiFiltering( const uint32_t apiMask, const bool enable );
-        void            UpdateMetricIndicesInEquations();
-        void            UseApiFilteredVariables( bool enable );
-        void            RefreshCachedMetricsAndInformation();
-        void            ClearCachedMetricsAndInformation();
-        TCompletionCode ValidateCalculateMetricsParams( uint32_t rawDataSize, uint32_t rawReportSize, uint32_t outSize, uint32_t rawReportCount, uint32_t outMaxValuesSize );
-        void            InitializeCalculationManager( TMeasurementType measurementType, CCalculationManager** calculationManager, bool init );
-        TCompletionCode InitializeCalculationContext( TCalculationContext& context, CCalculationManager* calculationManager, TMeasurementType measurementType, TTypedValue_1_0* out, TTypedValue_1_0* outMaxValues, const uint8_t* rawData, uint32_t rawReportCount, bool init );
+        bool IsApiFilteringMaskValid( const uint32_t apiMask );
+        void EnableApiFiltering( const uint32_t apiMask, const bool enable );
+        void UpdateMetricIndicesInEquations();
+        void UseApiFilteredVariables( bool enable );
+        void RefreshCachedMetricsAndInformation();
+        void ClearCachedMetricsAndInformation();
 
         bool AreMetricParamsValid( const char* symbolName, const char* shortName, const char* description, const char* groupName, TMetricType metricType, TMetricResultType resultType, const char* units, THwUnitType hwType, const char* alias );
         bool IsCustomApiMaskValid( const uint32_t apiMask );
@@ -367,12 +362,12 @@ namespace MetricsDiscoveryInternal
         std::vector<CInformation*> m_filteredInformationVector; // Stores only references
 
         // Runtime state:
-        bool                m_isFiltered;         // if true then 'filtered' variables are used
-        bool                m_isCustom;           // if true then it has custom metrics or it's a custom set
-        bool                m_aggregationEnabled; // if true then non-aggregatable informations are filtered out from the set
-        bool                m_isReadRegsCfgSet;   // if true then read regs config will be cleared on Deactivate; determined during Activate
-        TPmRegsConfigInfo   m_pmRegsConfigInfo;
-        CMetricsCalculator* m_metricsCalculator;
+        bool                 m_isFiltered;         // if true then 'filtered' variables are used
+        bool                 m_isCustom;           // if true then it has custom metrics or it's a custom set
+        bool                 m_aggregationEnabled; // if true then non-aggregatable informations are filtered out from the set
+        bool                 m_isReadRegsCfgSet;   // if true then read regs config will be cleared on Deactivate; determined during Activate
+        TPmRegsConfigInfo    m_pmRegsConfigInfo;
+        CCalculationContext* m_calculationContext;
 
         // Flexible metric set members:
         TMetricPrototypeManagerType m_prototypeManagerType;

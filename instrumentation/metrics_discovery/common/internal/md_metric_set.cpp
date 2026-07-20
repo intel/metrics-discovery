@@ -25,6 +25,7 @@ SPDX-License-Identifier: MIT
 #include "md_metrics_calculator.h"
 
 #include "md_calculation.h"
+#include "md_calculation_context.h"
 #include "md_driver_ifc.h"
 #include "md_utils.h"
 
@@ -88,7 +89,7 @@ namespace MetricsDiscoveryInternal
         , m_aggregationEnabled( aggregationEnabled )
         , m_isReadRegsCfgSet( false )
         , m_pmRegsConfigInfo{}
-        , m_metricsCalculator( nullptr )
+        , m_calculationContext( nullptr )
         , m_prototypeManagerType( METRIC_PROTOTYPE_MANAGER_TYPE_OA )
         , m_isFlexible( false )
         , m_isOpened( false )
@@ -154,7 +155,7 @@ namespace MetricsDiscoveryInternal
 
         ClearVector( m_otherMetricsVector );
         ClearVector( m_otherInformationVector );
-        MD_SAFE_DELETE( m_metricsCalculator );
+        MD_SAFE_DELETE( m_calculationContext );
 
         MD_SAFE_DELETE( m_availabilityEquation );
         MD_SAFE_DELETE( m_prototypeManager );
@@ -640,7 +641,12 @@ namespace MetricsDiscoveryInternal
 
         metric->SetQueryModeMask( queryModeMask );
 
-        if( metric->SetAvailabilityEquation( availabilityEquation ) != CC_OK || metric->SetSnapshotReportReadEquation( ioReadEquation ) != CC_OK || metric->SetDeltaReportReadEquation( queryReadEquation ) != CC_OK || metric->SetNormalizationEquation( normalizationEquation ) != CC_OK || metric->SetSnapshotReportDeltaFunction( deltaFunction ) != CC_OK || metric->SetMaxValueEquation( maxValueEquation ) != CC_OK )
+        if( metric->SetAvailabilityEquation( availabilityEquation ) != CC_OK ||
+            metric->SetSnapshotReportReadEquation( ioReadEquation, m_params.RawReportSize ) != CC_OK ||
+            metric->SetDeltaReportReadEquation( queryReadEquation, m_params.QueryReportSize ) != CC_OK ||
+            metric->SetNormalizationEquation( normalizationEquation ) != CC_OK ||
+            metric->SetSnapshotReportDeltaFunction( deltaFunction ) != CC_OK ||
+            metric->SetMaxValueEquation( maxValueEquation ) != CC_OK )
         {
             MD_LOG_A( adapterId, LOG_ERROR, "error setting custom metric equations" );
             MD_SAFE_DELETE( metric );
@@ -1283,7 +1289,7 @@ namespace MetricsDiscoveryInternal
 
         MD_CHECK_PTR_RET_A( adapterId, complementaryMetricSetSymbolicName, CC_ERROR_INVALID_PARAMETER );
 
-        if( strcmp( complementaryMetricSetSymbolicName, "" ) == 0 )
+        if( IsNullOrEmpty( complementaryMetricSetSymbolicName ) )
         {
             return CC_OK; // 0 is fine condition for "" name
         }
@@ -2340,7 +2346,7 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     //
     // Class:
-    //    CMetricSet
+    //     CMetricSet
     //
     // Method:
     //     EnableApiFiltering
@@ -2393,7 +2399,7 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     //
     // Class:
-    //    CMetricSet
+    //     CMetricSet
     //
     // Method:
     //     UpdateMetricIndicesInEquations
@@ -2763,102 +2769,57 @@ namespace MetricsDiscoveryInternal
 
         MD_LOG_ENTER_A( adapterId );
 
-        constexpr uint32_t streamMask = API_TYPE_IOSTREAM;
-
-        const auto measurementType = ( m_currentParams->ApiMask & streamMask )
-            ? MEASUREMENT_TYPE_SNAPSHOT_IO
-            : MEASUREMENT_TYPE_DELTA_QUERY;
-
-        if constexpr( async )
-        {
-            if( measurementType != MEASUREMENT_TYPE_SNAPSHOT_IO )
-            {
-                MD_LOG_A( adapterId, LOG_ERROR, "Async metrics calculation is only supported for IoStream measurements" );
-                MD_LOG_EXIT_A( adapterId );
-                return CC_ERROR_NOT_SUPPORTED;
-            }
-        }
-
-        MD_CHECK_PTR_RET_A( adapterId, rawData, CC_ERROR_INVALID_PARAMETER );
-        MD_CHECK_PTR_RET_A( adapterId, out, CC_ERROR_INVALID_PARAMETER );
-
-        if( !rawDataSize )
-        {
-            MD_LOG_A( adapterId, LOG_DEBUG, "nothing to calculate, rawDataSize: 0" );
-            MD_LOG_EXIT_A( adapterId );
-            return CC_OK;
-        }
-        if( !outMaxValues || !outMaxValuesSize )
-        {
-            MD_LOG_A( adapterId, LOG_DEBUG, "max values won't be calculated, outMaxValues: %p, outMaxValuesSize: %u", outMaxValues, outMaxValuesSize );
-            outMaxValues     = nullptr;
-            outMaxValuesSize = 0;
-        }
-
+        // Preserve the public API contract: API filtering must be enabled first.
         if( !m_isFiltered )
         {
             MD_LOG_A( adapterId, LOG_ERROR, "error: API filtering must be enabled first" );
             MD_LOG_EXIT_A( adapterId );
             return CC_ERROR_GENERAL;
         }
-        if( ( m_currentParams->MetricsCount + m_currentParams->InformationCount ) == 0 )
+
+        // Delegate the actual calculation to CCalculationContext to avoid duplicating the implementation.
+        if( !m_calculationContext )
         {
-            // May happen when unsupported API is used in MetricSet filtering
-            MD_LOG_A( adapterId, LOG_WARNING, "nothing to calculate, empty MetricSet" );
-            MD_LOG_EXIT_A( adapterId );
-            return CC_OK;
-        }
+            m_calculationContext = new( std::nothrow ) CCalculationContext();
 
-        const uint32_t rawReportSize = ( measurementType == MEASUREMENT_TYPE_SNAPSHOT_IO )
-            ? m_currentParams->RawReportSize
-            : m_currentParams->QueryReportSize;
-
-        const uint32_t rawReportCount = rawDataSize / rawReportSize;
-
-        // Validation
-        auto ret = ValidateCalculateMetricsParams( rawDataSize, rawReportSize, outSize, rawReportCount, outMaxValuesSize );
-        MD_CHECK_CC_RET_A( adapterId, ret );
-
-        // Initialize manager and context
-        TCalculationContext  calculationContext = {};
-        CCalculationManager* calculationManager = nullptr;
-
-        InitializeCalculationManager( measurementType, &calculationManager, true );
-        MD_CHECK_PTR_RET_A( adapterId, calculationManager, CC_ERROR_NO_MEMORY );
-
-        ret = InitializeCalculationContext( calculationContext, calculationManager, measurementType, out, outMaxValues, rawData, rawReportCount, true );
-        if( ret != CC_OK )
-        {
-            goto deinitialize_manager;
-        }
-
-        MD_LOG_A( adapterId, LOG_DEBUG, "about to calculate %u raw reports", rawReportCount );
-
-        // CALCULATE METRICS
-        if constexpr( async )
-        {
-            while( calculationManager->CalculateNextAsyncReport( calculationContext ) )
-            { // void
-            }
-        }
-        else
-        {
-            while( calculationManager->CalculateNextReport( calculationContext ) )
-            { // void
+            if( !m_calculationContext )
+            {
+                MD_LOG_A( adapterId, LOG_ERROR, "error: failed to allocate calculation context" );
+                MD_LOG_EXIT_A( adapterId );
+                return CC_ERROR_NO_MEMORY;
             }
         }
 
-        MD_LOG_A( adapterId, LOG_DEBUG, "calculated %u out reports", calculationContext.CommonCalculationContext.OutReportCount );
-        MD_LOG_A( adapterId, LOG_DEBUG, "max values%s calculated", outMaxValues ? "" : " not" );
+        TCompletionCode               ret                      = CC_OK;
+        constexpr uint32_t            streamMask               = API_TYPE_IOSTREAM;
+        auto                          calculationContextParams = m_calculationContext->GetParams();
+        const TCalculationContextType descriptorType           = ( m_currentParams->ApiMask & streamMask )
+                      ? CALCULATION_CONTEXT_TYPE_IO_STREAM
+                      : CALCULATION_CONTEXT_TYPE_QUERY;
 
-        if( outReportCount )
+        // Reinitialize the cached context when the metrics/information counts change, or when the
+        // filtered ApiMask or the descriptor Type change. The latter can happen when switching
+        // between different query APIs without changing the counts; otherwise the cached internal
+        // MetricSet would keep the old ApiMask and use the wrong equations/availability.
+        if( calculationContextParams->MetricsCount != m_currentParams->MetricsCount ||
+            calculationContextParams->InformationCount != m_currentParams->InformationCount ||
+            m_calculationContext->GetApiMask() != m_currentParams->ApiMask ||
+            m_calculationContext->GetType() != descriptorType )
         {
-            *outReportCount = calculationContext.CommonCalculationContext.OutReportCount;
+            TCalculationContextDescriptorLatest descriptor = {};
+            descriptor.Type                                = descriptorType;
+            descriptor.DataSetCount                        = 1;
+
+            IMetricSet_1_16* metricSets[1] = { this };
+            descriptor.MetricSets          = metricSets;
+
+            ret = m_calculationContext->Reinitialize( descriptor );
         }
 
-        InitializeCalculationContext( calculationContext, nullptr, measurementType, nullptr, nullptr, nullptr, 0, false );
-    deinitialize_manager:
-        InitializeCalculationManager( measurementType, &calculationManager, false );
+        if( ret == CC_OK )
+        {
+            ret = m_calculationContext->CalculateMetricsInternal<async>( rawData, rawDataSize, out, outSize, outReportCount, outMaxValues, outMaxValuesSize );
+        }
 
         MD_LOG_EXIT_A( adapterId );
         return ret;
@@ -2901,199 +2862,56 @@ namespace MetricsDiscoveryInternal
             return CC_ERROR_INVALID_PARAMETER;
         }
 
-        auto metricsCalculator = GetMetricsCalculator();
-        MD_CHECK_PTR_RET_A( adapterId, metricsCalculator, CC_ERROR_GENERAL );
+        // Delegate the actual calculation to CCalculationContext to avoid duplicating the implementation.
+        if( !m_calculationContext )
+        {
+            m_calculationContext = new( std::nothrow ) CCalculationContext();
 
-        metricsCalculator->ReadIoMeasurementInformation( *m_concurrentGroup, out );
-        MD_LOG_A( adapterId, LOG_DEBUG, "calculated %u out io information", m_concurrentGroup->GetParams()->IoMeasurementInformationCount );
+            if( !m_calculationContext )
+            {
+                MD_LOG_A( adapterId, LOG_ERROR, "error: failed to allocate calculation context" );
+                MD_LOG_EXIT_A( adapterId );
+                return CC_ERROR_NO_MEMORY;
+            }
+        }
+
+        TCompletionCode               ret                      = CC_OK;
+        constexpr uint32_t            streamMask               = API_TYPE_IOSTREAM;
+        auto                          calculationContextParams = m_calculationContext->GetParams();
+        const TCalculationContextType descriptorType           = ( m_currentParams->ApiMask & streamMask )
+                      ? CALCULATION_CONTEXT_TYPE_IO_STREAM
+                      : CALCULATION_CONTEXT_TYPE_QUERY;
+
+        // Reinitialize the cached context when the metrics/information counts change, or when the
+        // filtered ApiMask or the descriptor Type change. The latter can happen when switching
+        // between different query APIs without changing the counts; otherwise the cached internal
+        // MetricSet would keep the old ApiMask and use the wrong equations/availability.
+        if( calculationContextParams->MetricsCount != m_currentParams->MetricsCount ||
+            calculationContextParams->InformationCount != m_currentParams->InformationCount ||
+            m_calculationContext->GetApiMask() != m_currentParams->ApiMask ||
+            m_calculationContext->GetType() != descriptorType )
+        {
+            TCalculationContextDescriptorLatest descriptor = {};
+            descriptor.Type                                = descriptorType;
+            descriptor.DataSetCount                        = 1;
+
+            IMetricSet_1_16* metricSets[1] = { this };
+            descriptor.MetricSets          = metricSets;
+
+            ret = m_calculationContext->Reinitialize( descriptor );
+        }
+
+        if( ret == CC_OK )
+        {
+            auto metricsCalculator = m_calculationContext->GetMetricsCalculator();
+            MD_CHECK_PTR_RET_A( adapterId, metricsCalculator, CC_ERROR_GENERAL );
+
+            metricsCalculator->ReadIoMeasurementInformation( *m_concurrentGroup, out );
+            MD_LOG_A( adapterId, LOG_DEBUG, "calculated %u out io information", m_concurrentGroup->GetParams()->IoMeasurementInformationCount );
+        }
 
         MD_LOG_EXIT_A( adapterId );
-        return CC_OK;
-    }
-
-    //////////////////////////////////////////////////////////////////////////////
-    //
-    // Class:
-    //     CMetricSet
-    //
-    // Method:
-    //     ValidateCalculateMetricsParams
-    //
-    // Description:
-    //     Validates parameters passed to CalculateMetrics.
-    //     Subjects of validation: i.a. input and output buffer alignments, output buffer size.
-    //
-    // Input:
-    //     uint32_t rawDataSize      - raw report data size
-    //     uint32_t rawReportSize    - size of one individual raw report
-    //     uint32_t outSize          - size of out buffer in bytes
-    //     uint32_t rawReportCount   - raw report count
-    //     uint32_t outMaxValuesSize - size of max values buffer in bytes
-    //
-    // Output:
-    //     TCompletionCode - *CC_OK* means success
-    //
-    //////////////////////////////////////////////////////////////////////////////
-    TCompletionCode CMetricSet::ValidateCalculateMetricsParams( uint32_t rawDataSize, uint32_t rawReportSize, uint32_t outSize, uint32_t rawReportCount, uint32_t outMaxValuesSize )
-    {
-        // Size of one individual calculated report in bytes
-        uint32_t outReportSize = ( m_currentParams->MetricsCount + m_currentParams->InformationCount ) * sizeof( TTypedValue_1_0 );
-        // Size of one individual calculated max values report in bytes
-        uint32_t maxValuesReportSize = m_currentParams->MetricsCount * sizeof( TTypedValue_1_0 );
-
-        const uint32_t adapterId = m_device.GetAdapter().GetAdapterId();
-
-        MD_ASSERT_A( adapterId, rawReportSize != 0 );
-
-        if( rawDataSize % rawReportSize != 0 )
-        {
-            MD_LOG_A( adapterId, LOG_ERROR, "error: input buffer has incorrect size" );
-            MD_LOG_A( adapterId, LOG_DEBUG, "rawDataSize: %u, rawReportSize: %u", rawDataSize, rawReportSize );
-            return CC_ERROR_INVALID_PARAMETER;
-        }
-        if( outReportSize == 0 )
-        {
-            MD_LOG_A( adapterId, LOG_DEBUG, "outReportSize: 0. Nothing to calculate." );
-            return CC_OK;
-        }
-        if( outSize % outReportSize != 0 )
-        {
-            MD_LOG_A( adapterId, LOG_ERROR, "error: output buffer has incorrect size" );
-            MD_LOG_A( adapterId, LOG_DEBUG, "outSize: %u, outReportSize: %u", outSize, outReportSize );
-            return CC_ERROR_INVALID_PARAMETER;
-        }
-        if( rawReportCount > ( outSize / outReportSize ) )
-        {
-            MD_LOG_A( adapterId, LOG_ERROR, "error: output buffer to small" );
-            MD_LOG_A( adapterId, LOG_DEBUG, "rawReportCount: %u, outSize: %u, outReportSize: %u", rawReportCount, outSize, outReportSize );
-            return CC_ERROR_INVALID_PARAMETER;
-        }
-        if( outMaxValuesSize && maxValuesReportSize && rawReportCount > ( outMaxValuesSize / maxValuesReportSize ) )
-        {
-            MD_LOG_A( adapterId, LOG_ERROR, "error: maxValues buffer to small" );
-            MD_LOG_A( adapterId, LOG_DEBUG, "rawReportCount: %u, outMaxValuesSize: %u, maxValueReportSize: %u", rawReportCount, outMaxValuesSize, maxValuesReportSize );
-            return CC_ERROR_INVALID_PARAMETER;
-        }
-
-        return CC_OK;
-    }
-
-    //////////////////////////////////////////////////////////////////////////////
-    //
-    // Class:
-    //     CMetricSet
-    //
-    // Method:
-    //     InitializeCalculationManager
-    //
-    // Description:
-    //     Creates or destroys CalculationManager adequate to the given measurement type.
-    //
-    // Input:
-    //     TMeasurementType      measurementType     - type of measurement for which manager will be created
-    //     CCalculationManager** calculationManager  - (OUT) pointer to the newly created CalculationManager, null if error
-    //     bool                  init                - if true initialization,
-    //                                                 if false deinitialization
-    //
-    //////////////////////////////////////////////////////////////////////////////
-    void CMetricSet::InitializeCalculationManager( TMeasurementType measurementType, CCalculationManager** calculationManager, bool init )
-    {
-        const uint32_t adapterId = m_device.GetAdapter().GetAdapterId();
-
-        if( !init )
-        {
-            MD_SAFE_DELETE( *calculationManager );
-            MD_LOG_A( adapterId, LOG_DEBUG, "calculation manager deinitialization" );
-            return;
-        }
-
-        MD_ASSERT_A( adapterId, *calculationManager == nullptr );
-        switch( measurementType )
-        {
-            case MEASUREMENT_TYPE_DELTA_QUERY:
-                *calculationManager = new( std::nothrow ) CMetricsCalculationManager<MEASUREMENT_TYPE_DELTA_QUERY>();
-                MD_LOG_A( adapterId, LOG_DEBUG, "query calculation manager created" );
-                return;
-
-            case MEASUREMENT_TYPE_SNAPSHOT_IO:
-                *calculationManager = new( std::nothrow ) CMetricsCalculationManager<MEASUREMENT_TYPE_SNAPSHOT_IO>();
-                MD_LOG_A( adapterId, LOG_DEBUG, "ioStream calculation manager created" );
-                return;
-
-            default:
-                *calculationManager = nullptr;
-                MD_LOG_A( adapterId, LOG_ERROR, "not supported measurement type" );
-                return;
-        }
-    }
-
-    //////////////////////////////////////////////////////////////////////////////
-    //
-    // Class:
-    //     CMetricSet
-    //
-    // Method:
-    //     InitializeCalculationContext
-    //
-    // Description:
-    //     Resets calculation context and initializes it with user provided data.
-    //     After execution the context is ready for metrics calculations.
-    //
-    // Input:
-    //     TCalculationContext& context            - (OUT) calculation context
-    //     CalcManager*         calculationManager - already initialized calculation manager
-    //     TMeasurementType     measurementType    - type of measurements
-    //     TTypedValue_1_0*     out                - output buffer
-    //     TTypedValue_1_0*     outMaxValues       - output buffer for MaxValues, can be nullptr
-    //     const uint8_t*       rawData            - input buffer with raw report data
-    //     uint32_t             rawReportCount     - raw report count
-    //     bool                 init               - if true initialization,
-    //                                               if false deinitialization
-    //
-    // Output:
-    //     TCompletionCode - *CC_OK* means success
-    //
-    //////////////////////////////////////////////////////////////////////////////
-    TCompletionCode CMetricSet::InitializeCalculationContext( TCalculationContext& context, CCalculationManager* calculationManager, TMeasurementType measurementType, TTypedValue_1_0* out, TTypedValue_1_0* outMaxValues, const uint8_t* rawData, uint32_t rawReportCount, bool init )
-    {
-        const uint32_t adapterId = m_device.GetAdapter().GetAdapterId();
-
-        MD_LOG_ENTER_A( adapterId );
-        if( !init )
-        {
-            MD_SAFE_DELETE_ARRAY( context.CommonCalculationContext.DeltaValues );
-            MD_LOG_A( adapterId, LOG_DEBUG, "calculation context deinitialization" );
-            MD_LOG_EXIT_A( adapterId );
-            return CC_OK;
-        }
-
-        // Initialize context
-        calculationManager->ResetContext( context );
-        context.CommonCalculationContext.DeltaValues = new( std::nothrow ) TTypedValue_1_0[m_currentParams->MetricsCount];
-        MD_CHECK_PTR_RET_A( adapterId, context.CommonCalculationContext.DeltaValues, CC_ERROR_NO_MEMORY );
-        context.CommonCalculationContext.Calculator      = GetMetricsCalculator();
-        context.CommonCalculationContext.MetricSet       = this;
-        context.CommonCalculationContext.ConcurrentGroup = m_concurrentGroup;
-        context.CommonCalculationContext.Out             = out;
-        context.CommonCalculationContext.OutMaxValues    = outMaxValues;
-        context.CommonCalculationContext.RawData         = rawData;
-        context.CommonCalculationContext.RawReportCount  = rawReportCount;
-        if( measurementType == MEASUREMENT_TYPE_SNAPSHOT_IO )
-        {
-            context.StreamCalculationContext.DoContextFiltering = false;
-        }
-        if( calculationManager->PrepareContext( context ) != CC_OK )
-        {
-            // Deinitialize and return error
-            InitializeCalculationContext( context, nullptr, measurementType, nullptr, nullptr, nullptr, 0, false );
-            MD_LOG_EXIT_A( adapterId );
-            return CC_ERROR_GENERAL;
-        }
-
-        MD_LOG_A( adapterId, LOG_DEBUG, "calculation context initialized" );
-        MD_LOG_A( adapterId, LOG_DEBUG, "metricSet: %s", context.CommonCalculationContext.MetricSet->GetParams()->ShortName );
-        MD_LOG_EXIT_A( adapterId );
-        return CC_OK;
+        return ret;
     }
 
     //////////////////////////////////////////////////////////////////////////////
@@ -3108,7 +2926,7 @@ namespace MetricsDiscoveryInternal
     //     Checks the correctness of the given metric parameters.
     //
     // Input:
-    //     const char* symbolicName     -
+    //     const char* symbolName       -
     //     const char* shortName        -
     //     const char* longName         -
     //     const char* groupName        -
@@ -3126,22 +2944,22 @@ namespace MetricsDiscoveryInternal
     {
         const uint32_t adapterId = m_device.GetAdapter().GetAdapterId();
 
-        if( ( symbolName == nullptr ) || ( strcmp( symbolName, "" ) == 0 ) )
+        if( IsNullOrEmpty( symbolName ) )
         {
             MD_LOG_INVALID_PARAMETER_A( adapterId, LOG_ERROR, symbolName );
             return false;
         }
-        if( ( shortName == nullptr ) || ( strcmp( shortName, "" ) == 0 ) )
+        if( IsNullOrEmpty( shortName ) )
         {
             MD_LOG_INVALID_PARAMETER_A( adapterId, LOG_ERROR, shortName );
             return false;
         }
-        if( ( longName == nullptr ) || ( strcmp( longName, "" ) == 0 ) )
+        if( IsNullOrEmpty( longName ) )
         {
             MD_LOG_INVALID_PARAMETER_A( adapterId, LOG_ERROR, longName );
             return false;
         }
-        if( ( groupName == nullptr ) || ( strcmp( groupName, "" ) == 0 ) )
+        if( IsNullOrEmpty( groupName ) )
         {
             MD_LOG_INVALID_PARAMETER_A( adapterId, LOG_ERROR, groupName );
             return false;
@@ -3156,7 +2974,7 @@ namespace MetricsDiscoveryInternal
             MD_LOG_INVALID_PARAMETER_A( adapterId, LOG_ERROR, resultType );
             return false;
         }
-        if( ( units == nullptr ) || ( strcmp( units, "" ) == 0 ) )
+        if( IsNullOrEmpty( units ) )
         {
             MD_LOG_INVALID_PARAMETER_A( adapterId, LOG_ERROR, units );
             return false;
@@ -3264,14 +3082,7 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     CMetricsCalculator* CMetricSet::GetMetricsCalculator()
     {
-        if( m_metricsCalculator == nullptr )
-        {
-            std::vector<std::reference_wrapper<CMetricsDevice>> devices = { m_device };
-
-            InitializeMetricsCalculator( devices );
-        }
-
-        return m_metricsCalculator;
+        return m_calculationContext ? m_calculationContext->GetMetricsCalculator() : nullptr;
     }
 
     //////////////////////////////////////////////////////////////////////////////
@@ -3320,44 +3131,6 @@ namespace MetricsDiscoveryInternal
     //     CMetricSet
     //
     // Method:
-    //     InitializeMetricsCalculator
-    //
-    // Description:
-    //     Initializes metrics calculator if not already initialized.
-    //
-    // Input:
-    //    std::vector<std::reference_wrapper<CMetricsDevice>>& devices - vector of metrics devices, used to get symbols
-    //
-    // Output:
-    //     TCompletionCode - *CC_OK* if metrics calculator has been initialized successfully, *CC_ERROR_NO_MEMORY* if memory allocation failed.
-    //
-    //////////////////////////////////////////////////////////////////////////////
-    TCompletionCode CMetricSet::InitializeMetricsCalculator( std::vector<std::reference_wrapper<CMetricsDevice>>& devices )
-    {
-        if( m_metricsCalculator == nullptr )
-        {
-            const uint32_t adapterId = m_device.GetAdapter().GetAdapterId();
-
-            m_metricsCalculator = ( devices.size() == 1 )
-                ? new( std::nothrow ) CMetricsCalculator( devices[0].get() )
-                : new( std::nothrow ) CMetricsCalculator( devices );
-
-            if( m_metricsCalculator == nullptr )
-            {
-                MD_LOG_A( adapterId, LOG_ERROR, "ERROR: Cannot allocate memory for CMetricsCalculator" );
-                return CC_ERROR_NO_MEMORY;
-            }
-        }
-
-        return CC_OK;
-    }
-
-    //////////////////////////////////////////////////////////////////////////////
-    //
-    // Class:
-    //     CMetricSet
-    //
-    // Method:
     //     SetAvailabilityEquation
     //
     // Description:
@@ -3373,7 +3146,7 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     TCompletionCode CMetricSet::SetAvailabilityEquation( const char* equationString )
     {
-        TCompletionCode ret       = SetEquation( m_device, m_availabilityEquation, equationString );
+        TCompletionCode ret       = SetEquation( m_device, m_availabilityEquation, equationString, 0 );
         const uint32_t  adapterId = m_device.GetAdapter().GetAdapterId();
 
         if( ret == CC_OK )
@@ -3566,15 +3339,15 @@ namespace MetricsDiscoveryInternal
 
         if( isXe2PlusPlatform )
         {
-            MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "qw@0x08 10000 UMUL $GpuTimestampFrequency 100000 UDIV UDIV" ) );
+            MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "qw@0x08 10000 UMUL $GpuTimestampFrequency 100000 UDIV UDIV", m_params.RawReportSize ) );
         }
         else
         {
-            MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "dw@0x08 1000000000 UMUL $GpuTimestampFrequency UDIV" ) );
+            MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "dw@0x08 1000000000 UMUL $GpuTimestampFrequency UDIV", m_params.RawReportSize ) );
         }
         if( m_prototypeManagerType == METRIC_PROTOTYPE_MANAGER_TYPE_OA )
         {
-            MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x00" ) );
+            MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0x00", m_params.QueryReportSize ) );
         }
 
         MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "NS_TIME" ) );

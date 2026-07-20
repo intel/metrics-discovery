@@ -464,13 +464,13 @@ namespace MetricsDiscoveryInternal
             MD_LOG_A( adapterId, LOG_DEBUG, "Stream state changed to: %u", state );
         }
 
-        m_processId            = processId;
-        m_contextTagsEnabled   = m_ioMetricSet->HasInformation( "ContextId" );
-        CMetricsCalculator* mc = m_ioMetricSet->GetMetricsCalculator();
+        m_processId          = processId;
+        m_contextTagsEnabled = m_ioMetricSet->HasInformation( "ContextId" );
         // In case of stream reopen
         ClearVector( m_ioGpuContextInfoVector );
         m_params.IoGpuContextInformationCount = 0;
-        if( mc != nullptr )
+        if( CMetricsCalculator* mc = m_ioMetricSet->GetMetricsCalculator();
+            mc != nullptr )
         {
             mc->DiscardSavedReport();
         }

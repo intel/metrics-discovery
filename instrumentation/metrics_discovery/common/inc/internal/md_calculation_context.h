@@ -15,7 +15,9 @@ SPDX-License-Identifier: MIT
 #include "metrics_discovery_internal_api.h"
 #include "md_calculation.h"
 
+#include <functional>
 #include <string_view>
+#include <vector>
 
 using namespace MetricsDiscovery;
 
@@ -52,6 +54,14 @@ namespace MetricsDiscoveryInternal
         virtual ~CCalculationContext();
 
         TCompletionCode Initialize( TCalculationContextDescriptorLatest& calculationContextDescriptor );
+        TCompletionCode Reinitialize( TCalculationContextDescriptorLatest& calculationContextDescriptor );
+
+        CMetricsCalculator*     GetMetricsCalculator();
+        uint32_t                GetApiMask() const;
+        TCalculationContextType GetType() const;
+
+        template <bool async>
+        TCompletionCode CalculateMetricsInternal( const uint8_t* rawData, uint32_t rawDataSize, TTypedValue_1_0* out, uint32_t outSize, uint32_t* outReportCount, TTypedValue_1_0* outMaxValues, uint32_t outMaxValuesSize );
 
         static TCompletionCode ValidateCalculationContextDescriptor( TCalculationContextDescriptorLatest& calculationContextDescriptor );
 
@@ -61,12 +71,13 @@ namespace MetricsDiscoveryInternal
 
         TCompletionCode        AggregateSingleWindow( const uint8_t** rawData, const uint32_t* rawDataSizes, uint8_t* outAggregatedRawData, uint32_t* outProcessedRawDataCount, bool lastDataPortion );
         TCompletionCode        AggregateStreamData( const uint8_t** rawData, const uint32_t* rawDataSizes, uint8_t* outAggregatedRawData, uint32_t* outAggregatedRawDataSize, bool lastDataPortion );
+        TCompletionCode        InitializeMetricsCalculator( std::vector<std::reference_wrapper<CMetricsDevice>>& devices );
         void                   InitializeCalculationManager( const bool init );
         TCompletionCode        InitializeCalculationContext( const bool init );
         TCompletionCode        InitializeAggregationContext( const bool init );
         void                   DestroyContexts();
         TCompletionCode        CreateInternalMetricSet( CMetricSet* baseMetricSet );
-        TCompletionCode        ValidateCalculateMetricsParams( TMetricSetParamsLatest* params, uint32_t rawDataSize, uint32_t rawReportSize, uint32_t outSize, uint32_t rawReportCount, uint32_t outMaxValuesSize );
+        TCompletionCode        ValidateCalculateMetricsParams( TMetricSetParamsLatest* params, uint32_t rawDataSize, uint32_t rawReportSize, uint32_t rawReportCount, uint32_t outSize, uint32_t outMaxValuesSize );
         static TCompletionCode AreMetricsEqual( TMetricParamsLatest* baseParams, TMetricParamsLatest* metricParams, TCalculationContextType calculationContextType );
         static TCompletionCode ValidateApiMask( TCalculationContextType calculationContextType, uint32_t apiMask );
         static TCompletionCode ValidateTimeWindows( TCalculationContextDescriptorLatest& calculationContextDescriptor );
@@ -86,6 +97,7 @@ namespace MetricsDiscoveryInternal
 
     private:
         // Members:
+        CMetricsCalculator*               m_metricsCalculator;
         CCalculationManager*              m_calculationManager;
         TCalculationContext               m_calculationContext;
         TAggregationContext               m_aggregationContext;

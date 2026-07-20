@@ -988,12 +988,12 @@ namespace MetricsDiscoveryInternal
         const uint32_t    platformIndex   = m_device.GetPlatformIndex();
         const uint32_t    adapterId       = m_device.GetAdapter().GetAdapterId();
 
-        if( ( symbolName == nullptr ) || ( strcmp( symbolName, "" ) == 0 ) )
+        if( IsNullOrEmpty( symbolName ) )
         {
             MD_LOG_INVALID_PARAMETER_A( adapterId, LOG_ERROR, symbolName );
             return false;
         }
-        if( ( shortName == nullptr ) || ( strcmp( shortName, "" ) == 0 ) )
+        if( IsNullOrEmpty( shortName ) )
         {
             MD_LOG_INVALID_PARAMETER_A( adapterId, LOG_ERROR, shortName );
             return false;

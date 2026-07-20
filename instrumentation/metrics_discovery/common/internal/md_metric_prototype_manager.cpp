@@ -621,10 +621,10 @@ namespace MetricsDiscoveryInternal
         MD_CHECK_CC_RET_A( adapterId, ret );
 
         // Set snapshot and delta report read equations.
-        ret = metric.SetSnapshotReportReadEquation( ( snapshotReportOffset != 0 ) ? snapshotReportReadEquation.str().c_str() : "" );
+        ret = metric.SetSnapshotReportReadEquation( ( snapshotReportOffset != 0 ) ? snapshotReportReadEquation.str().c_str() : "", m_set.GetParams()->RawReportSize );
         MD_CHECK_CC_RET_A( adapterId, ret );
 
-        ret = metric.SetDeltaReportReadEquation( ( deltaReportOffset != 0 ) ? deltaReportReadEquation.str().c_str() : "" );
+        ret = metric.SetDeltaReportReadEquation( ( deltaReportOffset != 0 ) ? deltaReportReadEquation.str().c_str() : "", m_set.GetParams()->QueryReportSize );
         MD_CHECK_CC_RET_A( adapterId, ret );
 
         return CC_OK;
