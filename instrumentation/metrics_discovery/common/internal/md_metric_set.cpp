@@ -2090,55 +2090,49 @@ namespace MetricsDiscoveryInternal
 
         MD_CHECK_PTR_RET_A( adapterId, referenceMetricSet, CC_ERROR_INVALID_PARAMETER );
 
-        CMetric*      metric               = nullptr;
-        CMetric*      referenceMetric      = nullptr;
-        CInformation* information          = nullptr;
-        CInformation* referenceInformation = nullptr;
-        const char*   metricSignalName     = nullptr;
-        uint32_t      count                = 0;
-
         // Copy metrics with signal name containing signalName
         if( !copyInformationOnly )
         {
-            count = referenceMetricSet->GetParams()->MetricsCount;
-            for( uint32_t i = 0; i < count; i++ )
+            for( auto referenceMetric : referenceMetricSet->m_metricsVector )
             {
-                referenceMetric = referenceMetricSet->GetMetricExplicit( i );
                 if( referenceMetric == nullptr )
                 {
-                    MD_ASSERT_A( m_device.GetAdapter().GetAdapterId(), false );
+                    MD_ASSERT_A( adapterId, false );
                     return CC_ERROR_GENERAL;
                 }
-                metricSignalName = referenceMetric->GetSignalName();
+
+                const char* metricSignalName = referenceMetric->GetSignalName();
+
                 if( signalName == nullptr || ( metricSignalName != nullptr && strstr( metricSignalName, signalName ) != nullptr ) )
                 {
-                    metric = new( std::nothrow ) CMetric( *referenceMetric );
+                    CMetric* metric = new( std::nothrow ) CMetric( *referenceMetric );
                     if( !metric )
                     {
-                        MD_LOG_A( m_device.GetAdapter().GetAdapterId(), LOG_DEBUG, "error copying metrics" );
+                        MD_LOG_A( adapterId, LOG_DEBUG, "error copying metrics" );
                         return CC_ERROR_GENERAL;
                     }
+
                     AddMetric( metric );
                 }
             }
         }
 
         // Copy information from metric set. Not from concurrent group
-        count = referenceMetricSet->GetParams()->InformationCount;
-        for( uint32_t i = m_concurrentGroup->GetInformationCount(); i < count; i++ )
+        for( auto referenceInformation : referenceMetricSet->m_informationVector )
         {
-            referenceInformation = static_cast<CInformation*>( referenceMetricSet->GetInformation( i ) );
             if( referenceInformation == nullptr )
             {
-                MD_ASSERT_A( m_device.GetAdapter().GetAdapterId(), false );
+                MD_ASSERT_A( adapterId, false );
                 return CC_ERROR_GENERAL;
             }
-            information = new( std::nothrow ) CInformation( *referenceInformation );
+
+            CInformation* information = new( std::nothrow ) CInformation( *referenceInformation );
             if( !information )
             {
-                MD_LOG_A( m_device.GetAdapter().GetAdapterId(), LOG_DEBUG, "error copying information" );
+                MD_LOG_A( adapterId, LOG_DEBUG, "error copying information" );
                 return CC_ERROR_GENERAL;
             }
+
             AddInformation( information );
         }
 
