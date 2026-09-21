@@ -16,6 +16,7 @@ SPDX-License-Identifier: MIT
 #include "md_metrics_device.h"
 #include "md_register_manager.h"
 
+#include <sstream>
 #include <vector>
 
 using namespace MetricsDiscovery;
