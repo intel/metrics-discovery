@@ -508,7 +508,7 @@ namespace MetricsDiscoveryInternal
         auto hwEventIterator = std::find_if(
             group.begin(),
             group.end(),
-            [&]( const THwEventPair& pair )
+            [&]( const THwEventPair& pair ) -> bool
             {
                 auto& event = *pair.first;
 

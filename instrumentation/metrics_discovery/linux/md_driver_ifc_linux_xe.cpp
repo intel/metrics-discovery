@@ -577,7 +577,7 @@ namespace MetricsDiscoveryInternal
 
         drm_xe_ext_set_property properties[DRM_XE_OA_PROPERTY_WAIT_NUM_REPORTS - DRM_XE_OA_EXTENSION_SET_PROPERTY] = {};
 
-        auto addProperty = [&]( const uint64_t key, const uint64_t value )
+        auto addProperty = [&]( const uint64_t key, const uint64_t value ) -> void
         {
             auto& property     = properties[currentIndex];
             property           = {};
@@ -1705,7 +1705,7 @@ namespace MetricsDiscoveryInternal
         drm_xe_ext_set_property properties[DRM_XE_EU_STALL_PROP_WAIT_NUM_REPORTS - DRM_XE_EU_STALL_EXTENSION_SET_PROPERTY] = {};
 
         uint32_t currentIndex = 0;
-        auto     addProperty  = [&]( const uint64_t key, const uint64_t value )
+        auto     addProperty  = [&]( const uint64_t key, const uint64_t value ) -> void
         {
             auto& property     = properties[currentIndex];
             property           = {};

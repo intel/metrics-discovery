@@ -1242,7 +1242,7 @@ namespace MetricsDiscoveryInternal
             RemoveOaConfig( addedConfigId );
         }
 
-        const bool hasMertRegs = std::any_of( pmRegs.begin(), pmRegs.end(), []( const TRegister* reg )
+        const bool hasMertRegs = std::any_of( pmRegs.begin(), pmRegs.end(), []( const TRegister* reg ) -> bool
             {
                 return ( reg != nullptr ) && ( reg->type == REGISTER_TYPE_MERT );
             } );

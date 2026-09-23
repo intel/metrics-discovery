@@ -616,7 +616,7 @@ namespace MetricsDiscoveryInternal
                 auto archEventIterator = std::find_if(
                     archEvents.begin(),
                     archEvents.end(),
-                    [&]( const TArchEvent* archEvent )
+                    [&]( const TArchEvent* archEvent ) -> bool
                     {
                         return ( archEvent->m_name == archEventName ) &&
                             ( archEvent->m_projectName == hwEventProjectName );
@@ -888,7 +888,7 @@ namespace MetricsDiscoveryInternal
                                 auto archEventIterator = std::find_if(
                                     archEvents.begin(),
                                     archEvents.end(),
-                                    [&]( const TArchEvent* archEventElement )
+                                    [&]( const TArchEvent* archEventElement ) -> bool
                                     {
                                         return ( archEventElement->m_name == eventMatch.suffix() ) &&
                                             IsPlatformPresentInMask( archEventElement->m_platformMask, m_device.GetPlatformIndex(), adapterId );
@@ -908,7 +908,7 @@ namespace MetricsDiscoveryInternal
                                 auto prototypeIterator = std::find_if(
                                     m_metricPrototypes.begin(),
                                     m_metricPrototypes.end(),
-                                    [&]( CMetricPrototype* prototype )
+                                    [&]( CMetricPrototype* prototype ) -> bool
                                     {
                                         auto& prototypeHwEvent = prototype->GetHwEvent();
 

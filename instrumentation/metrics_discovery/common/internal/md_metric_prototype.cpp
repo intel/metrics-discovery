@@ -1021,12 +1021,12 @@ namespace MetricsDiscoveryInternal
     {
         const uint32_t adapterId = m_metricEnumerator.GetMetricsDevice().GetAdapter().GetAdapterId();
 
-        auto toLower = []( char character )
+        auto toLower = []( char character ) -> char
         {
             return static_cast<char>( std::tolower( character ) );
         };
 
-        auto toUpper = []( char character )
+        auto toUpper = []( char character ) -> char
         {
             return static_cast<char>( std::toupper( character ) );
         };
@@ -1213,12 +1213,12 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     void CMetricPrototype::UpdateNames( std::string& symbolName, std::string& shortName, const TOptionDescriptorType optionType ) const
     {
-        auto toLower = []( char character )
+        auto toLower = []( char character ) -> char
         {
             return static_cast<char>( std::tolower( character ) );
         };
 
-        auto toUpper = []( char character )
+        auto toUpper = []( char character ) -> char
         {
             return static_cast<char>( std::toupper( character ) );
         };
@@ -1260,7 +1260,7 @@ namespace MetricsDiscoveryInternal
         std::transform( eventShortName.begin(), eventShortName.end(), shortNameLowerCase.begin(), toLower );
 
         // All suffixes must be lowercased for short name.
-        auto convertToShortNameFormat = [&]( std::string& suffix )
+        auto convertToShortNameFormat = [&]( std::string& suffix ) -> void
         {
             if( suffix.length() > 2 )
             {
@@ -1439,7 +1439,7 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     std::string CMetricPrototype::GetSuffix( std::string& suffix ) const
     {
-        auto toUpper = []( char character )
+        auto toUpper = []( char character ) -> char
         {
             return static_cast<char>( std::toupper( character ) );
         };

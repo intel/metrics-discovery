@@ -517,7 +517,7 @@ namespace MetricsDiscoveryInternal
         std::vector<drm_i915_memory_region_info>& regions )
     {
         // Check supported memory classes. Prefer device local memory.
-        auto getPreferredMemoryClass = [&]( drm_i915_query_memory_regions* regionsData )
+        auto getPreferredMemoryClass = [&]( drm_i915_query_memory_regions* regionsData ) -> drm_i915_gem_memory_class
         {
             for( uint32_t i = 0; i < regionsData->num_regions; ++i )
             {
@@ -773,7 +773,7 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     void CDriverInterfaceLinuxPerf::PrintPerfCapabilities()
     {
-        [[maybe_unused]] auto getSupportedString = []( bool supported )
+        [[maybe_unused]] auto getSupportedString = []( bool supported ) -> const char*
         {
             return supported ? "supported"
                              : "not supported";
@@ -823,7 +823,7 @@ namespace MetricsDiscoveryInternal
         auto                  param                  = drm_i915_perf_open_param{};
         std::vector<uint64_t> properties             = {};
 
-        auto addProperty = [&]( const uint64_t key, const uint64_t value )
+        auto addProperty = [&]( const uint64_t key, const uint64_t value ) -> void
         {
             properties.push_back( key );
             properties.push_back( value );
@@ -1971,7 +1971,7 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     TCompletionCode CDriverInterfaceLinuxPerf::UpdateTbsEngineParams( CMetricsDevice& metricsDevice, std::vector<uint64_t>& properties )
     {
-        auto findProperty = [&]( const uint64_t key )
+        auto findProperty = [&]( const uint64_t key ) -> uint64_t
         {
             auto propertyIterator = std::find( properties.begin(), properties.end(), key );
             if( propertyIterator != properties.end() )
@@ -1982,7 +1982,7 @@ namespace MetricsDiscoveryInternal
             return 0ul;
         };
 
-        auto incrementProperty = [&]( const uint64_t key )
+        auto incrementProperty = [&]( const uint64_t key ) -> uint64_t
         {
             auto propertyIterator = std::find( properties.begin(), properties.end(), key );
             if( propertyIterator != properties.end() )

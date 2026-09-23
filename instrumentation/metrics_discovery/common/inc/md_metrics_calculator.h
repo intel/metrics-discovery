@@ -149,7 +149,7 @@ namespace MetricsDiscoveryInternal
                     if( auto symbol = device.get().GetGlobalSymbol( i );
                         symbol )
                     {
-                        auto isSymbolNameEqual = [&]( const std::pair<const char*, bool>& element )
+                        auto isSymbolNameEqual = [&]( const std::pair<const char*, bool>& element ) -> bool
                         {
                             return element.first == symbol->SymbolName;
                         };

@@ -104,7 +104,7 @@ namespace MetricsDiscoveryInternal
         switch( platformIndex )
         {
             case GENERATION_CRI:
-                reportFormat = OA_REPORT_TYPE_192B_MERT_PEC8LL;
+                reportFormat = OA_REPORT_TYPE_128B_MERT_PEC8;
                 break;
 
             default:

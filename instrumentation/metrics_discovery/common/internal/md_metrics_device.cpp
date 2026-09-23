@@ -752,7 +752,7 @@ namespace MetricsDiscoveryInternal
         MD_CHECK_PTR_RET_A( adapterId, bufferPtr, CC_ERROR_INVALID_PARAMETER );
         MD_CHECK_PTR_RET_A( adapterId, bufferBeginOffset, CC_ERROR_INVALID_PARAMETER );
 
-        auto isValidByteArray = []( const TGlobalSymbolLatest& globalSymbol )
+        auto isValidByteArray = []( const TGlobalSymbolLatest& globalSymbol ) -> bool
         {
             return globalSymbol.SymbolTypedValue.ValueType == VALUE_TYPE_BYTEARRAY && globalSymbol.SymbolTypedValue.ValueByteArray != nullptr;
         };

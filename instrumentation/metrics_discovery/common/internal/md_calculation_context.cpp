@@ -2710,7 +2710,7 @@ namespace MetricsDiscoveryInternal
         uint64_t                   reportReason = 0;
 
         // Helper lambda to advance to next report
-        auto advanceReport = [&]()
+        auto advanceReport = [&]() -> bool
         {
             if( sa.IsCachedReport[dataSetIdx] )
             {

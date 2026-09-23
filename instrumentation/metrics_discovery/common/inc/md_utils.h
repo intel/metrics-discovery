@@ -234,12 +234,12 @@ namespace MetricsDiscoveryInternal
     inline TCompletionCode SetPlatformMask( const uint32_t adapterId, TByteArrayLatest* platformMask, uint32_t* platformMaskLegacy, const bool appendToMask, PlatformIndices... platformIndices )
     {
         TCompletionCode ret                      = CC_ERROR_INVALID_PARAMETER;
-        auto            setPlatformMaskByteArray = [&]( const uint32_t platformIndex )
+        auto            setPlatformMaskByteArray = [&]( const uint32_t platformIndex ) -> TCompletionCode
         {
             MD_CHECK_CC_RET_A( adapterId, ret );
             return SetBitInByteArray( platformMask, platformIndex, adapterId );
         };
-        auto setPlatformMaskLegacy = [&]( const uint32_t platformIndex )
+        auto setPlatformMaskLegacy = [&]( const uint32_t platformIndex ) -> void
         {
             *platformMaskLegacy |= ( platformIndex > GENERATION_ADLN )
                 ? static_cast<uint32_t>( PLATFORM_FUTURE )
