@@ -241,7 +241,7 @@ typedef enum
     GTDI_IFC_VERSION_3_65    = GTDI_MAKE_IFC_VER( GTDI_IFC_VERSION_3, 65 ), // New device param - OA buffers mask
     GTDI_IFC_VERSION_3_66    = GTDI_MAKE_IFC_VER( GTDI_IFC_VERSION_3, 66 ), // New escape: GTDI_FNC_CHANGE_COUNTER_STREAM_STATE_BY_TYPE
     GTDI_IFC_VERSION_3_67    = GTDI_MAKE_IFC_VER( GTDI_IFC_VERSION_3, 67 ), // New device params: sqidi mask, sqidi max, lnep to cc scaling
-    GTDI_IFC_VERSION_3_68    = GTDI_MAKE_IFC_VER( GTDI_IFC_VERSION_3, 68 ),
+    GTDI_IFC_VERSION_3_68    = GTDI_MAKE_IFC_VER( GTDI_IFC_VERSION_3, 68 ), // New device params: cxl total count, Gt cxl mask, cxl max count
     GTDI_IFC_VERSION_3_69    = GTDI_MAKE_IFC_VER( GTDI_IFC_VERSION_3, 69 ), // New escape: GTDI_FNC_CHANGE_EU_STALL_SAMPLING_STREAM_STATE
     GTDI_IFC_VERSION_CURRENT = GTDI_IFC_VERSION_3_69,
     GTDI_IFC_VERSION_MAX     = 0xFFFFFFFF
@@ -641,6 +641,8 @@ typedef enum GTDI_DEVICE_PARAM_ENUM
     GTDI_DEVICE_PARAM_OA_BUFFERS_MASK                    = 67,
     GTDI_DEVICE_PARAM_SQIDI_MASK                         = 68,
     GTDI_DEVICE_PARAM_LNEP_CC_SCALING                    = 69,
+    GTDI_DEVICE_PARAM_CXL_TOTAL_COUNT                    = 70,
+    GTDI_DEVICE_PARAM_CXL_MASK                           = 71,
 
     // Maximums which bound all supported GT. The values will change as needed with new GT.
     // For Xe2+, the values are maximums for a given device.
@@ -653,6 +655,7 @@ typedef enum GTDI_DEVICE_PARAM_ENUM
     GTDI_DEVICE_PARAM_MAX_L3_BANK_PER_L3_NODE    = 1005,
     GTDI_DEVICE_PARAM_MAX_COPY_ENGINE            = 1006,
     GTDI_DEVICE_PARAM_MAX_SQIDI                  = 1007,
+    GTDI_DEVICE_PARAM_MAX_CXL                    = 1008,
 
     GTDI_DEVICE_PARAM_MAX = 0xFFFFFFFF
 } GTDI_DEVICE_PARAM;
