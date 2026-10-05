@@ -169,7 +169,7 @@ namespace MetricsDiscoveryInternal
         };
         virtual TQueryMode GetQueryModeOverride() final
         {
-            return QUERY_MODE_RENDER;
+            return QUERY_MODE_GLOBAL_EXTENDED;
         };
 
         // Adapter enumeration static:

@@ -665,18 +665,14 @@ namespace MetricsDiscoveryInternal
         if( metricSets == nullptr || metricSetCount == 0 )
         {
             // Custom metric sets
-            const uint32_t count = GetCustomSetCount();
-
-            result = WriteDataToBuffer( (void*) &count, sizeof( count ), buffer, bufferSize, bufferOffset, adapterId );
-            MD_CHECK_CC_RET_A( adapterId, result );
+            std::vector<CMetricSet*> foundMetricSets;
 
             // m_setsVector & m_otherSetsList
             for( auto& metricSet : m_setsVector )
             {
                 if( metricSet->IsCustom() )
                 {
-                    result = metricSet->WriteCMetricSetToBuffer( buffer, bufferSize, bufferOffset, false );
-                    MD_CHECK_CC_RET_A( adapterId, result );
+                    foundMetricSets.push_back( metricSet );
                 }
             }
 
@@ -684,9 +680,20 @@ namespace MetricsDiscoveryInternal
             {
                 if( otherMetricSet->IsCustom() )
                 {
-                    result = otherMetricSet->WriteCMetricSetToBuffer( buffer, bufferSize, bufferOffset, false );
-                    MD_CHECK_CC_RET_A( adapterId, result );
+                    foundMetricSets.push_back( otherMetricSet );
                 }
+            }
+
+            // Custom metric sets in the current concurrent group
+            const uint32_t count = static_cast<uint32_t>( foundMetricSets.size() );
+
+            result = WriteDataToBuffer( (void*) &count, sizeof( count ), buffer, bufferSize, bufferOffset, adapterId );
+            MD_CHECK_CC_RET_A( adapterId, result );
+
+            for( auto& foundMetricSet : foundMetricSets )
+            {
+                result = foundMetricSet->WriteCMetricSetToBuffer( buffer, bufferSize, bufferOffset, false );
+                MD_CHECK_CC_RET_A( adapterId, result );
             }
         }
         else
@@ -1041,44 +1048,6 @@ namespace MetricsDiscoveryInternal
         }
 
         return true;
-    }
-
-    //////////////////////////////////////////////////////////////////////////////
-    //
-    // Class:
-    //     CConcurrentGroup
-    //
-    // Method:
-    //     GetCustomSetCount
-    //
-    // Description:
-    //     Returns number of custom sets + default sets with custom metrics.
-    //
-    // Output:
-    //     uint32_t - custom set count
-    //
-    //////////////////////////////////////////////////////////////////////////////
-    uint32_t CConcurrentGroup::GetCustomSetCount()
-    {
-        uint32_t customSetCount = 0;
-
-        for( auto& metricSet : m_setsVector )
-        {
-            if( metricSet->IsCustom() )
-            {
-                customSetCount++;
-            }
-        }
-
-        for( auto& metricSet : m_otherSetsList )
-        {
-            if( metricSet->IsCustom() )
-            {
-                customSetCount++;
-            }
-        }
-
-        return customSetCount;
     }
 
     //////////////////////////////////////////////////////////////////////////////

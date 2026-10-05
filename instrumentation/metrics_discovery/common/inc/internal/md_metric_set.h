@@ -270,7 +270,7 @@ namespace MetricsDiscoveryInternal
 
         TReportType     GetReportType();
         TCompletionCode InheritFromMetricSet( CMetricSet* referenceMetricSet, const char* signalName, bool copyInformationOnly );
-        TCompletionCode WriteCMetricSetToBuffer( uint8_t* buffer, uint32_t& bufferSize, uint32_t& bufferOffset, bool copyInformationFromGroup );
+        TCompletionCode WriteCMetricSetToBuffer( uint8_t* buffer, uint32_t& bufferSize, uint32_t& bufferOffset, bool offlineDevice );
         bool            IsMetricAlreadyAdded( const char* symbolName );
         bool            IsCustom();
         bool            IsFiltered();

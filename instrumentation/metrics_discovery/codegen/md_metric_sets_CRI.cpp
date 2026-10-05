@@ -4061,7 +4061,7 @@ namespace MetricsDiscoveryInternal::MetricSets_CRI_OAMERT
 
         metric = AddMetric( "GpuTime", "GPU Time Elapsed",
             "Time elapsed on the GPU during the measurement.",
-            "GPU", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_1 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_BATCH, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+            "GPU", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_1 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_BATCH, API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "ns", 0, 0, HW_UNIT_GPU, nullptr, nullptr, nullptr, 0 );
         MD_CHECK_PTR( metric );
         MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "qw@0x08 10000 UMUL $GpuTimestampFrequency 100000 UDIV UDIV" ) );
@@ -4071,7 +4071,7 @@ namespace MetricsDiscoveryInternal::MetricSets_CRI_OAMERT
 
         metric = AddMetric( "GpuCoreClocks", "GPU Mert Clocks",
             "The total number of Mert slice clocks elapsed during the measurement.",
-            "GPU", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_1 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_BATCH, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+            "GPU", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_1 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_BATCH, API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "cycles", 0, 0, HW_UNIT_GPU, nullptr, nullptr, nullptr, 1 );
         MD_CHECK_PTR( metric );
         MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "qw@0x18" ) );
@@ -4080,7 +4080,7 @@ namespace MetricsDiscoveryInternal::MetricSets_CRI_OAMERT
 
         metric = AddMetric( "AvgGpuCoreFrequencyMHz", "AVG GPU Mert Frequency",
             "Average GPU Mert Frequency in the measurement.",
-            "GPU", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_1 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_BATCH, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+            "GPU", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_1 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_BATCH, API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "MHz", 0, 0, HW_UNIT_GPU, nullptr, nullptr, nullptr, 2 );
         MD_CHECK_PTR( metric );
         MD_CHECK_CC( metric->SetNormalizationEquation( "$GpuCoreClocks 1000 UMUL $$GpuTime UDIV" ) );
@@ -4088,14 +4088,14 @@ namespace MetricsDiscoveryInternal::MetricSets_CRI_OAMERT
 
         metric = AddMetric( "ResultUncertainty", "Result Uncertainty",
             "Result uncertainty indicator",
-            "GPU", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_1 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_BATCH, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+            "GPU", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_1 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_BATCH, API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "percent", 0, 0, HW_UNIT_GPU, nullptr, nullptr, nullptr, 3 );
         MD_CHECK_PTR( metric );
         MD_CHECK_CC( metric->SetNormalizationEquation( "100 $GpuCoreClocks 500 UMAX 5000 UMIN 500 USUB 45 UDIV USUB" ) );
 
         metric = AddMetric( "HOST_TO_GPUMEM_TRANSACTION_READ", "Host To GpuMem Transaction Read",
             "Number of host 64B reads to GPU local (HBM) memory (downstream over an interface such as pcie, cxl or an integrated fabric as applicable to the respective product segment)",
-            "Memory", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+            "Memory", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "events", 0, 0, HW_UNIT_GPU, nullptr, nullptr, nullptr, 4 );
         MD_CHECK_PTR( metric );
         MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "dw@0x20" ) );
@@ -4104,7 +4104,7 @@ namespace MetricsDiscoveryInternal::MetricSets_CRI_OAMERT
 
         metric = AddMetric( "HOST_TO_GPUMEM_TRANSACTION_WRITE", "Host To GpuMem Transaction Write",
             "Number of host 64B writes to GPU local (HBM) memory (downstream over an interface such as pcie, cxl or an integrated fabric as applicable to the respective product segment)",
-            "Memory", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+            "Memory", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "events", 0, 0, HW_UNIT_GPU, nullptr, nullptr, nullptr, 5 );
         MD_CHECK_PTR( metric );
         MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "dw@0x24" ) );
@@ -4113,7 +4113,7 @@ namespace MetricsDiscoveryInternal::MetricSets_CRI_OAMERT
 
         metric = AddMetric( "SYSMEM_TRANSACTION_READ", "SysMem Transaction Read",
             "Number of system memory 64B reads (upstream over an interface such as pcie, cxl or an integrated fabric as applicable to the respective product segment)",
-            "Memory", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+            "Memory", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "events", 0, 0, HW_UNIT_GPU, nullptr, nullptr, nullptr, 6 );
         MD_CHECK_PTR( metric );
         MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "dw@0x28" ) );
@@ -4122,7 +4122,7 @@ namespace MetricsDiscoveryInternal::MetricSets_CRI_OAMERT
 
         metric = AddMetric( "SYSMEM_TRANSACTION_WRITE", "SysMem Transaction Write",
             "Number of system memory 64B writes (upstream over an interface such as pcie, cxl or an integrated fabric as applicable to the respective product segment)",
-            "Memory", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+            "Memory", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "events", 0, 0, HW_UNIT_GPU, nullptr, nullptr, nullptr, 7 );
         MD_CHECK_PTR( metric );
         MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "dw@0x2c" ) );

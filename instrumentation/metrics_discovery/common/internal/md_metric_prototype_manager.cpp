@@ -1676,8 +1676,8 @@ namespace MetricsDiscoveryInternal
 
             if( !pesProgrammed[hwEventIndex] )
             {
-                MD_CHECK_CC( m_set.AddStartConfigRegister( pesProgrammingOffset, lowerPesProgramming, REGISTER_TYPE_OA ) );
-                MD_CHECK_CC( m_set.AddStartConfigRegister( pesProgrammingOffset + 4, upperPesProgramming, REGISTER_TYPE_OA ) );
+                MD_CHECK_CC( m_set.AddStartConfigRegister( pesProgrammingOffset, lowerPesProgramming, REGISTER_TYPE_MERT ) );
+                MD_CHECK_CC( m_set.AddStartConfigRegister( pesProgrammingOffset + 4, upperPesProgramming, REGISTER_TYPE_MERT ) );
 
                 pesProgrammed[hwEventIndex] = true;
             }

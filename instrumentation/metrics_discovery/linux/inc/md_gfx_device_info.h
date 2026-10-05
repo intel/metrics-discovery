@@ -212,6 +212,7 @@ namespace MetricsDiscoveryInternal
         { 0x674E, TPlatformIndexGt( GENERATION_CRI, GFX_GTTYPE_UNDEFINED ) },
         { 0x674F, TPlatformIndexGt( GENERATION_CRI, GFX_GTTYPE_UNDEFINED ) },
         { 0x6750, TPlatformIndexGt( GENERATION_CRI, GFX_GTTYPE_UNDEFINED ) },
+        { 0x6751, TPlatformIndexGt( GENERATION_CRI, GFX_GTTYPE_UNDEFINED ) },
     };
 
     const std::map<GTDI_PLATFORM_INDEX, uint32_t> threadsPerEuMap{

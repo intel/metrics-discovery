@@ -81,12 +81,12 @@ SPDX-License-Identifier: MIT
         return ( object );                                                 \
     }
 
-#define MD_CHECK_BUFFER_A( adapterId, bufferPtr, bufferBeginOffset, valueSize, size )                                                           \
-    if( const bool bufferOverflow = ( ( static_cast<uint32_t>( bufferPtr - bufferBeginOffset ) + static_cast<uint32_t>( valueSize ) ) > size ); \
-        bufferOverflow )                                                                                                                        \
-    {                                                                                                                                           \
-        MD_ASSERT_A( adapterId, !bufferOverflow );                                                                                              \
-        return CC_ERROR_GENERAL;                                                                                                                \
+#define MD_CHECK_BUFFER_A( adapterId, bufferPtr, bufferBeginOffset, valueSize, size )                                                                                    \
+    if( const bool bufferOverflow = ( ( static_cast<uint64_t>( bufferPtr - bufferBeginOffset ) + static_cast<uint64_t>( valueSize ) ) > static_cast<uint64_t>( size ) ); \
+        bufferOverflow )                                                                                                                                                 \
+    {                                                                                                                                                                    \
+        MD_ASSERT_A( adapterId, !bufferOverflow );                                                                                                                       \
+        return CC_ERROR_GENERAL;                                                                                                                                         \
     }
 
 #define MD_CHECK_CC_RET( object ) MD_CHECK_CC_RET_A( IU_ADAPTER_ID_UNKNOWN, object )

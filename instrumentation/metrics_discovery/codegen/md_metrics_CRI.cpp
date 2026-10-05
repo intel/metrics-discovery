@@ -232,7 +232,7 @@ TCompletionCode CreateMetricTreeCRI_OAMERT( CMetricsDevice* metricsDevice, CConc
     {
         MD_CHECK_CC( MetricSets_CRI_OAMERT::AddInformationSet( concurrentGroup ) );
 
-        metricSet = concurrentGroup->AddMetricSetExplicit<MetricSets_CRI_OAMERT::CMertExtSetMetricSet>( "MertExtSet", "MertExtSet", API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
+        metricSet = concurrentGroup->AddMetricSetExplicit<MetricSets_CRI_OAMERT::CMertExtSetMetricSet>( "MertExtSet", "MertExtSet", API_TYPE_IOSTREAM,
             GPU_RENDER | GPU_COMPUTE | GPU_GENERIC, 128, 0, OA_REPORT_TYPE_128B_MERT_PEC8, &platformMask, nullptr );
         MD_CHECK_PTR( metricSet );
     }

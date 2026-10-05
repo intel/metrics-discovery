@@ -1843,16 +1843,16 @@ namespace MetricsDiscoveryInternal
     //     Writes metric set to buffer.
     //
     // Input:
-    //     uint8_t*  buffer                   - pointer to a buffer
-    //     uint32_t& bufferSize               - size of the buffer
-    //     uint32_t& bufferOffset             - the current offset of the buffer
-    //     bool      copyInformationFromGroup - true if information should be copied from the group
+    //     uint8_t*  buffer        - pointer to a buffer
+    //     uint32_t& bufferSize    - size of the buffer
+    //     uint32_t& bufferOffset  - the current offset of the buffer
+    //     bool      offlineDevice - if true then filtered metrics are saved and informations are copied from the group
     //
     // Output:
-    //     TCompletionCode                    - result of the operation
+    //     TCompletionCode         - result of the operation
     //
     //////////////////////////////////////////////////////////////////////////////
-    TCompletionCode CMetricSet::WriteCMetricSetToBuffer( uint8_t* buffer, uint32_t& bufferSize, uint32_t& bufferOffset, bool copyInformationFromGroup )
+    TCompletionCode CMetricSet::WriteCMetricSetToBuffer( uint8_t* buffer, uint32_t& bufferSize, uint32_t& bufferOffset, bool offlineDevice )
     {
         const uint32_t  adapterId = m_device.GetAdapter().GetAdapterId();
         TCompletionCode result    = CC_OK;
@@ -1923,114 +1923,136 @@ namespace MetricsDiscoveryInternal
         MD_CHECK_CC_RET_A( adapterId, result );
 
         // m_metricsVector & m_otherMetricsVector
-        uint32_t count = static_cast<uint32_t>( m_metricsVector.size() + m_otherMetricsVector.size() );
+        const uint32_t metricsCount = offlineDevice
+            ? static_cast<uint32_t>( m_currentMetricsVector->size() )
+            : static_cast<uint32_t>( m_metricsVector.size() + m_otherMetricsVector.size() );
 
-        result = WriteDataToBuffer( (void*) &count, sizeof( count ), buffer, bufferSize, bufferOffset, adapterId );
+        result = WriteDataToBuffer( (void*) &metricsCount, sizeof( metricsCount ), buffer, bufferSize, bufferOffset, adapterId );
         MD_CHECK_CC_RET_A( adapterId, result );
 
-        uint32_t i = 0;
-        uint32_t j = 0;
-        while( i < m_metricsVector.size() || j < m_otherMetricsVector.size() )
+        if( offlineDevice )
         {
-            // Define which vector is not finished and write remaining available metrics
-            if( i == m_metricsVector.size() )
+            for( uint32_t i = 0; i < metricsCount; ++i )
             {
-                for( uint32_t k = j; k < m_otherMetricsVector.size(); ++k )
-                {
-                    result = m_otherMetricsVector[k]->WriteCMetricToBuffer( buffer, bufferSize, bufferOffset );
-                    MD_CHECK_CC_RET_A( adapterId, result );
-                }
-                break;
+                result = ( *m_currentMetricsVector )[i]->WriteCMetricToBuffer( buffer, bufferSize, bufferOffset );
+                MD_CHECK_CC_RET_A( adapterId, result );
             }
-            if( j == m_otherMetricsVector.size() )
+        }
+        else
+        {
+            uint32_t i = 0;
+            uint32_t j = 0;
+            while( i < m_metricsVector.size() || j < m_otherMetricsVector.size() )
             {
-                for( uint32_t k = i; k < m_metricsVector.size(); ++k )
+                // Define which vector is not finished and write remaining available metrics
+                if( i == m_metricsVector.size() )
                 {
-                    result = m_metricsVector[k]->WriteCMetricToBuffer( buffer, bufferSize, bufferOffset );
-                    MD_CHECK_CC_RET_A( adapterId, result );
+                    for( uint32_t k = j; k < m_otherMetricsVector.size(); ++k )
+                    {
+                        result = m_otherMetricsVector[k]->WriteCMetricToBuffer( buffer, bufferSize, bufferOffset );
+                        MD_CHECK_CC_RET_A( adapterId, result );
+                    }
+                    break;
                 }
-                break;
-            }
+                if( j == m_otherMetricsVector.size() )
+                {
+                    for( uint32_t k = i; k < m_metricsVector.size(); ++k )
+                    {
+                        result = m_metricsVector[k]->WriteCMetricToBuffer( buffer, bufferSize, bufferOffset );
+                        MD_CHECK_CC_RET_A( adapterId, result );
+                    }
+                    break;
+                }
 
-            // Write in the correct order
-            if( m_metricsVector[i]->GetId() < m_otherMetricsVector[j]->GetId() )
-            {
-                result = m_metricsVector[i++]->WriteCMetricToBuffer( buffer, bufferSize, bufferOffset );
-                MD_CHECK_CC_RET_A( adapterId, result );
-            }
-            else
-            {
-                result = m_otherMetricsVector[j++]->WriteCMetricToBuffer( buffer, bufferSize, bufferOffset );
-                MD_CHECK_CC_RET_A( adapterId, result );
+                // Write in the correct order
+                if( m_metricsVector[i]->GetId() < m_otherMetricsVector[j]->GetId() )
+                {
+                    result = m_metricsVector[i++]->WriteCMetricToBuffer( buffer, bufferSize, bufferOffset );
+                    MD_CHECK_CC_RET_A( adapterId, result );
+                }
+                else
+                {
+                    result = m_otherMetricsVector[j++]->WriteCMetricToBuffer( buffer, bufferSize, bufferOffset );
+                    MD_CHECK_CC_RET_A( adapterId, result );
+                }
             }
         }
 
         // m_informationVector & m_otherInformationVector
-        if( m_concurrentGroup && copyInformationFromGroup )
-        {
-            count = static_cast<uint32_t>( m_concurrentGroup->GetInformationCount() + m_informationVector.size() + m_otherInformationVector.size() );
-        }
-        else
-        {
-            count = static_cast<uint32_t>( m_informationVector.size() + m_otherInformationVector.size() );
-        }
+        const uint32_t informationCount = offlineDevice
+            ? static_cast<uint32_t>( ( !m_isFiltered ? m_concurrentGroup->GetInformationCount() : 0 ) + m_currentInformationVector->size() ) // All filtered informations (also from a concurrent group) are in m_currentInformationVector
+            : static_cast<uint32_t>( m_informationVector.size() + m_otherInformationVector.size() );
 
-        result = WriteDataToBuffer( &count, sizeof( count ), buffer, bufferSize, bufferOffset, adapterId );
+        result = WriteDataToBuffer( (void*) &informationCount, sizeof( informationCount ), buffer, bufferSize, bufferOffset, adapterId );
         MD_CHECK_CC_RET_A( adapterId, result );
 
         // Write informations from concurrent group
-        if( m_concurrentGroup && copyInformationFromGroup )
+        if( offlineDevice )
         {
-            for( i = 0; i < m_concurrentGroup->GetInformationCount(); ++i )
+            // First save informations from the concurrent group if filtering is not applied
+            if( !m_isFiltered && m_concurrentGroup )
             {
-                CInformation* information = static_cast<CInformation*>( m_concurrentGroup->GetInformation( i ) );
+                for( uint32_t i = 0; i < m_concurrentGroup->GetInformationCount(); ++i )
+                {
+                    CInformation* information = static_cast<CInformation*>( m_concurrentGroup->GetInformation( i ) );
 
+                    result = information
+                        ? information->WriteCInformationToBuffer( buffer, bufferSize, bufferOffset )
+                        : CC_ERROR_GENERAL;
+                    MD_CHECK_CC_RET_A( adapterId, result );
+                }
+            }
+
+            for( auto& information : *m_currentInformationVector )
+            {
                 result = information
                     ? information->WriteCInformationToBuffer( buffer, bufferSize, bufferOffset )
                     : CC_ERROR_GENERAL;
                 MD_CHECK_CC_RET_A( adapterId, result );
             }
         }
-
-        i = 0;
-        j = 0;
-        while( i < m_informationVector.size() || j < m_otherInformationVector.size() )
+        else
         {
-            // Define which vector is not finished and write remaining available informations
-            if( i == m_informationVector.size() )
+            uint32_t i = 0;
+            uint32_t j = 0;
+            while( i < m_informationVector.size() || j < m_otherInformationVector.size() )
             {
-                for( uint32_t k = j; k < m_otherInformationVector.size(); ++k )
+                // Define which vector is not finished and write remaining available informations
+                if( i == m_informationVector.size() )
                 {
-                    result = m_otherInformationVector[k]->WriteCInformationToBuffer( buffer, bufferSize, bufferOffset );
-                    MD_CHECK_CC_RET_A( adapterId, result );
+                    for( uint32_t k = j; k < m_otherInformationVector.size(); ++k )
+                    {
+                        result = m_otherInformationVector[k]->WriteCInformationToBuffer( buffer, bufferSize, bufferOffset );
+                        MD_CHECK_CC_RET_A( adapterId, result );
+                    }
+                    break;
                 }
-                break;
-            }
-            if( j == m_otherInformationVector.size() )
-            {
-                for( uint32_t k = i; k < m_informationVector.size(); ++k )
+                if( j == m_otherInformationVector.size() )
                 {
-                    result = m_informationVector[k]->WriteCInformationToBuffer( buffer, bufferSize, bufferOffset );
-                    MD_CHECK_CC_RET_A( adapterId, result );
+                    for( uint32_t k = i; k < m_informationVector.size(); ++k )
+                    {
+                        result = m_informationVector[k]->WriteCInformationToBuffer( buffer, bufferSize, bufferOffset );
+                        MD_CHECK_CC_RET_A( adapterId, result );
+                    }
+                    break;
                 }
-                break;
-            }
 
-            // Write in the correct order
-            if( m_informationVector[i]->GetId() < m_otherInformationVector[j]->GetId() )
-            {
-                result = m_informationVector[i++]->WriteCInformationToBuffer( buffer, bufferSize, bufferOffset );
-                MD_CHECK_CC_RET_A( adapterId, result );
-            }
-            else
-            {
-                result = m_otherInformationVector[j++]->WriteCInformationToBuffer( buffer, bufferSize, bufferOffset );
-                MD_CHECK_CC_RET_A( adapterId, result );
+                // Write in the correct order
+                if( m_informationVector[i]->GetId() < m_otherInformationVector[j]->GetId() )
+                {
+                    result = m_informationVector[i++]->WriteCInformationToBuffer( buffer, bufferSize, bufferOffset );
+                    MD_CHECK_CC_RET_A( adapterId, result );
+                }
+                else
+                {
+                    result = m_otherInformationVector[j++]->WriteCInformationToBuffer( buffer, bufferSize, bufferOffset );
+                    MD_CHECK_CC_RET_A( adapterId, result );
+                }
             }
         }
 
         // m_startRegisterSetList
-        count = static_cast<uint32_t>( m_startRegisterSetList.size() );
+        uint32_t count = static_cast<uint32_t>( m_startRegisterSetList.size() );
 
         result = WriteDataToBuffer( &count, sizeof( count ), buffer, bufferSize, bufferOffset, adapterId );
         MD_CHECK_CC_RET_A( adapterId, result );
@@ -2053,7 +2075,7 @@ namespace MetricsDiscoveryInternal
         result = WriteDataToBuffer( &count, sizeof( count ), buffer, bufferSize, bufferOffset, adapterId );
         MD_CHECK_CC_RET_A( adapterId, result );
 
-        for( i = 0; i < count; ++i )
+        for( uint32_t i = 0; i < count; ++i )
         {
             result = WriteCStringToBuffer( m_complementarySetsVector[i], buffer, bufferSize, bufferOffset, adapterId );
             MD_CHECK_CC_RET_A( adapterId, result );
