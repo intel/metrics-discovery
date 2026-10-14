@@ -1019,8 +1019,6 @@ namespace MetricsDiscoveryInternal
     //////////////////////////////////////////////////////////////////////////////
     void CMetricPrototype::UpdateDescription( std::string& longName, std::string& suffix, const TOptionDescriptorType optionType ) const
     {
-        const uint32_t adapterId = m_metricEnumerator.GetMetricsDevice().GetAdapter().GetAdapterId();
-
         auto toLower = []( char character ) -> char
         {
             return static_cast<char>( std::tolower( character ) );
@@ -1034,35 +1032,58 @@ namespace MetricsDiscoveryInternal
         std::string hwEventNameLowerCase( m_hwEvent.m_name.size(), 0 );
         std::transform( m_hwEvent.m_name.begin(), m_hwEvent.m_name.end(), hwEventNameLowerCase.begin(), toLower );
 
+        // In every pattern below group 1 is the optional "Average " prefix. It is copied as is,
+        // the first letter of the final description is capitalized at the end of this function.
+
         // Check if the original hw event name contained "cycles" and the option is utilization normalization.
         if( optionType == OPTION_DESCRIPTOR_TYPE_NORMALIZATION_UTILIZATION &&
             hwEventNameLowerCase.find( "cycles" ) != std::string::npos )
         {
-            if( std::smatch cyclesMatch;
-                std::regex_search( longName, cyclesMatch, std::regex( "(Average )?(Number|number) of( SIF| copy read data| copy write data)? (active |stall |starve )?(cycles|thread slots)( when| at the| on the)?([^\\.]*)(\\.)?" ) ) )
+            const bool isOam = ( m_hwEvent.m_archEvent.m_oaReportingType & OA_REPORTING_MEDIA );
+
+            if( !isOam )
             {
-                MD_ASSERT_A( adapterId, cyclesMatch.size() == 9 );
+                // e.g. "Number of cycles when GPU is not idle", "Number of SIF stall cycles at the ...".
+                const std::regex cyclesRegex( R"((Average )?[Nn]umber of( SIF| copy read data| copy write data| read data| write data| atomic data)? (active |stall |starve )?(cycles|thread slots|GRF register blocks)(?: when| at the| on the)?([^.]*)(\.)?)" );
 
-                const char* prefix = ( cyclesMatch[1].matched )
-                    ? "Average percentage of "
-                    : "Percentage of ";
-
-                const char* suffixCycles = ( cyclesMatch[4] == "active " )
-                    ? " is active"
-                    : ( cyclesMatch[4] == "stall " )
-                    ? " stalled"
-                    : ( cyclesMatch[4] == "starve " )
-                    ? " starved"
-                    : "";
-
-                if( cyclesMatch[5].str() == "cycles" )
+                if( std::smatch match;
+                    std::regex_search( longName, match, cyclesRegex ) )
                 {
-                    longName = prefix + ( "time in which" + cyclesMatch[3].str() + cyclesMatch[7].str() + suffixCycles + cyclesMatch[8].str() + cyclesMatch.suffix().str() );
+                    const std::string average = match[1].str();
+                    const std::string type    = match[2].str();
+                    const std::string state   = match[3].str();
+                    const std::string event   = match[4].str();
+                    const std::string subject = match[5].str();
+                    const std::string period  = match[6].str();
+
+                    const char* stateSuffix = ( state == "active " )
+                        ? " is active"
+                        : ( state == "stall " )
+                        ? " stalled"
+                        : ( state == "starve " )
+                        ? " starved"
+                        : "";
+
+                    if( event == "cycles" )
+                    {
+                        longName = average + "percentage of time in which" + type + subject + stateSuffix + period + match.suffix().str();
+                    }
+                    else
+                    {
+                        // Exception for XVE_THREADS_OCCUPANCY_*_CYCLES and XVE_GRFBLOCK_OCCUPANCY_*_CYCLES
+                        longName = average + "percentage of " + event + subject + stateSuffix + period + match.suffix().str();
+                    }
                 }
-                else
+            }
+            else
+            {
+                // e.g. "Number of VDBox activities."
+                const std::regex activitiesRegex( R"((Average )?[Nn]umber of ([^.]*) activities\.?)" );
+
+                if( std::smatch match;
+                    std::regex_search( longName, match, activitiesRegex ) )
                 {
-                    // Exception for XVE_THREADS_OCCUPANCY_*_CYCLES
-                    longName = prefix + ( cyclesMatch[5].str() + cyclesMatch.suffix().str() + suffixCycles );
+                    longName = match[1].str() + "percentage of " + match[2].str() + " activities" + match.suffix().str();
                 }
             }
         }
@@ -1074,22 +1095,22 @@ namespace MetricsDiscoveryInternal
             switch( optionType )
             {
                 case OPTION_DESCRIPTOR_TYPE_NORMALIZATION_UTILIZATION:
-                    if( std::smatch cyclesMatch;
-                        std::regex_search( longName, cyclesMatch, std::regex( "(Average )?(Number|number) (of)( execution slots)?" ) ) )
+                {
+                    // e.g. "Number of execution slots taken by FP32 ALU instructions", "Number of thread slots occupied by VS threads",
+                    // "Number of read messages sent by EUs".
+                    const std::regex countRegex( R"((Average )?[Nn]umber of( execution slots| thread slots)?)" );
+
+                    if( std::smatch match;
+                        std::regex_search( longName, match, countRegex ) )
                     {
-                        MD_ASSERT_A( adapterId, cyclesMatch.size() == 5 );
+                        const std::string counted = match[2].matched
+                            ? match[2].str()
+                            : " time taken by";
 
-                        const char* prefix = ( cyclesMatch[1].matched )
-                            ? "Average percentage of time"
-                            : "Percentage of time";
-
-                        const char* prefixUtilization = ( !cyclesMatch[4].matched )
-                            ? " taken by"
-                            : "";
-
-                        longName = prefix + ( prefixUtilization + cyclesMatch.suffix().str() );
+                        longName = match[1].str() + "percentage of" + counted + match.suffix().str();
                     }
                     break;
+                }
 
                 case OPTION_DESCRIPTOR_TYPE_NORMALIZATION_AVERAGE:
                     std::transform( longName.begin(), longName.begin() + 1, longName.begin(), toLower );
@@ -1099,99 +1120,87 @@ namespace MetricsDiscoveryInternal
                     break;
 
                 case OPTION_DESCRIPTOR_TYPE_NORMALIZATION_RATE:
-                    if( std::smatch bytesMatch; // TODO: "(, excluding SLM accesses)?" match is not working
-                        std::regex_search( longName, bytesMatch, std::regex( "(Average )?(Number|number) of bytes (read|written|transfered) (out of the|to the|from|to) (.+)(, excluding SLM accesses)?" ) ) )
+                {
+                    // e.g. "Number of bytes read out of the Load Store Cache, excluding SLM accesses".
+                    const std::regex bytesTransferredRegex( R"((Average )?[Nn]umber of bytes (read|written|transfered) (?:out of the|to the|from|to) (.+?)(, excluding SLM accesses)?\.?$)" );
+                    // e.g. "Number of device local memory (HBM, GDDR, LPDDR, etc.) read bytes".
+                    const std::regex readWriteBytesRegex( R"((Average )?[Nn]umber of (.+)( read| write) bytes)" );
+                    // e.g. "Number of valid bytes ...".
+                    const std::regex validBytesRegex( R"((Average )?[Nn]umber of valid bytes)" );
+
+                    if( std::smatch match;
+                        std::regex_search( longName, match, bytesTransferredRegex ) )
                     {
-                        MD_ASSERT_A( adapterId, bytesMatch.size() == 7 );
-
-                        const char* prefix = ( bytesMatch[1].matched )
-                            ? "Average "
-                            : "";
-
-                        const char* infix = ( bytesMatch[3] == "written" )
+                        const char* bandwidth = ( match[2] == "written" )
                             ? " write bandwidth"
-                            : ( bytesMatch[3] == "read" )
+                            : ( match[2] == "read" )
                             ? " read bandwidth"
                             : " bandwidth";
 
-                        longName = prefix + bytesMatch[5].str() + infix + bytesMatch[6].str();
+                        longName = match[1].str() + match[3].str() + bandwidth + match[4].str();
                     }
-                    else if( std::smatch localMemoryMatch;
-                        std::regex_search( longName, localMemoryMatch, std::regex( "(Average )?(Number|number) of device(.+)( read| write) (bytes)" ) ) )
+                    else if( std::regex_search( longName, match, readWriteBytesRegex ) )
                     {
-                        MD_ASSERT_A( adapterId, localMemoryMatch.size() == 6 );
-
-                        const char* prefix = ( localMemoryMatch[1].matched )
-                            ? "Average device"
-                            : "Device";
-
-                        longName = prefix + localMemoryMatch[3].str() + localMemoryMatch[4].str() + " bandwidth";
+                        longName = match[1].str() + match[2].str() + match[3].str() + " bandwidth";
                     }
-
+                    else if( std::regex_search( longName, match, validBytesRegex ) )
+                    {
+                        longName = match[1].str() + "valid" + match.suffix().str() + " bandwidth";
+                    }
                     break;
+                }
 
                 case OPTION_DESCRIPTOR_TYPE_NORMALIZATION_BYTE:
-                    if( std::smatch l3BytesMatch;
-                        std::regex_search( longName, l3BytesMatch, std::regex( "(Average )?(Number|number) of (Device Cache 64B) (read requests|write requests)" ) ) )
+                {
+                    // e.g. "Number of Device Cache 64B read requests".
+                    const std::regex deviceCacheRequestsRegex( R"((Average )?([Nn]umber) of Device Cache 64B (read|write) requests)" );
+                    // e.g. "Number of cacheline read requests from ...", "Number of system memory 64B reads (upstream ...)".
+                    const std::regex accessesRegex( R"((Average )?([Nn]umber) of (Device Cache|cacheline|system memory 64B) (read|write)( requests|s)? (.+))" );
+                    // e.g. "Number of host 64B reads to GPU local (HBM) memory".
+                    const std::regex hostAccessesRegex( R"((Average )?([Nn]umber) of host 64B (reads|writes) to (.+))" );
+
+                    if( std::smatch match;
+                        std::regex_search( longName, match, deviceCacheRequestsRegex ) )
                     {
-                        MD_ASSERT_A( adapterId, l3BytesMatch.size() == 5 );
+                        const char* access = ( match[3] == "read" )
+                            ? "read from Device Cache"
+                            : "written to Device Cache";
 
-                        const char* prefix = ( l3BytesMatch[1].matched )
-                            ? "Average "
-                            : "";
-
-                        const char* infix = ( l3BytesMatch[4] == "read requests" )
-                            ? "read from Device Cache "
-                            : "written to Device Cache ";
-
-                        longName = prefix + l3BytesMatch[2].str() + " of bytes " + infix;
+                        longName = match[1].str() + match[2].str() + " of bytes " + access + match.suffix().str();
                     }
-                    else if( std::smatch bytesMatch;
-                        std::regex_search( longName, bytesMatch, std::regex( "(Average )?(Number|number) of (|Device Cache|cacheline|system memory 64B) (read requests|write requests|read|write|reads|writes) (.+)" ) ) )
+                    else if( std::regex_search( longName, match, accessesRegex ) )
                     {
-                        MD_ASSERT_A( adapterId, bytesMatch.size() == 6 );
+                        const bool isRead    = ( match[4] == "read" );
+                        const bool isRequest = ( match[5] == " requests" );
 
-                        const char* prefix = ( bytesMatch[1].matched )
-                            ? "Average "
-                            : "";
-
-                        const char* infix = ( bytesMatch[3] == "system memory 64B" )
+                        const char* bytes = ( match[3] == "system memory 64B" )
                             ? "system memory bytes "
                             : "bytes ";
 
-                        const char* infix2 = ( bytesMatch[4] == "read requests" )
-                            ? "read from Device Cache "
-                            : bytesMatch[4] == "write requests"
-                            ? "written to Device Cache "
-                            : bytesMatch[4] == "reads"
-                            ? "read "
-                            : "written ";
+                        const char* access = isRequest
+                            ? ( isRead ? "read from Device Cache " : "written to Device Cache " )
+                            : ( isRead ? "read " : "written " );
 
-                        longName = prefix + bytesMatch[2].str() + " of " + infix + infix2 + bytesMatch[5].str();
+                        longName = match[1].str() + match[2].str() + " of " + bytes + access + match[6].str();
                     }
-                    else if( std::smatch gpuMemBytesMatch;
-                        std::regex_search( longName, gpuMemBytesMatch, std::regex( "(Average )?(Number|number) of host 64B (reads to|writes to) (.+)" ) ) )
+                    else if( std::regex_search( longName, match, hostAccessesRegex ) )
                     {
-                        MD_ASSERT_A( adapterId, gpuMemBytesMatch.size() == 5 );
-
-                        const char* prefix = ( gpuMemBytesMatch[1].matched )
-                            ? "Average "
-                            : "";
-
-                        const char* infix = ( gpuMemBytesMatch[3] == "reads to" )
+                        const char* access = ( match[3] == "reads" )
                             ? " read by host from "
                             : " written by host to ";
 
-                        longName = prefix + gpuMemBytesMatch[2].str() + " of bytes" + infix + gpuMemBytesMatch[4].str();
+                        longName = match[1].str() + match[2].str() + " of bytes" + access + match[4].str();
                     }
-
                     break;
+                }
 
                 default:
                     longName += " (" + suffix + ')';
                     break;
             }
         }
+
+        std::transform( longName.begin(), longName.begin() + 1, longName.begin(), toUpper );
     }
 
     //////////////////////////////////////////////////////////////////////////////

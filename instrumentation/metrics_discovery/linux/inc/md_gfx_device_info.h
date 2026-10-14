@@ -185,6 +185,7 @@ namespace MetricsDiscoveryInternal
 
         { 0xB090, TPlatformIndexGt( GENERATION_PTL, GFX_GTTYPE_UNDEFINED, 2 ) }, // PTL-U
         { 0xB0A0, TPlatformIndexGt( GENERATION_PTL, GFX_GTTYPE_UNDEFINED, 2 ) },
+        { 0xB0A1, TPlatformIndexGt( GENERATION_PTL, GFX_GTTYPE_UNDEFINED, 2 ) },
 
         { 0xB0B0, TPlatformIndexGt( GENERATION_PTL, GFX_GTTYPE_UNDEFINED, 1 ) },
 
