@@ -48,7 +48,7 @@ struct ExternalEventsMert
 
 struct ExternalEventsWorkarounds
 {
-    static const char workarounds[563];
+    static const char workarounds[559];
 };
 
 #endif

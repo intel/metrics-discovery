@@ -252,9 +252,9 @@ namespace MetricsDiscoveryInternal
     {
     public:
         CSemaphore();
-        void     Notify();
+        bool     Notify();
         void     Wait();
-        bool     WaitFor( uint64_t timeoutNs );
+        bool     WaitFor( const uint64_t timeoutMs );
         bool     TryWait();
         uint32_t GetValue();
 

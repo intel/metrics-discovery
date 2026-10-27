@@ -1060,8 +1060,9 @@ namespace MetricsDiscoveryInternal
     //
     // Description:
     //     Creates semaphore name for the need of lock / unlock concurrent group
-    //     calls. Adapter BDF numbers are added to the name so different adapters
-    //     won't block each other.
+    //     calls. Adapter BDF (Domain) numbers are added to the name so different
+    //     adapters won't block each other. Also sub device index is added to the
+    //     name to avoid semaphore name collisions on multi sub device platforms.
     //
     // Input:
     //     char*  name     - buffer for the name
@@ -1076,14 +1077,14 @@ namespace MetricsDiscoveryInternal
         const uint32_t adapterId = m_device.GetAdapter().GetAdapterId();
         MD_ASSERT_A( adapterId, name != nullptr );
 
-        // Create a semaphore name: "<CcgSymbolName>_<BusNumber>_<DeviceNumber>_<FunctionNumber>"
-        const TAdapterParams_1_9* adapterParams = m_device.GetAdapter().GetParams();
+        // Create a semaphore name: "<CcgSymbolName>_<BusNumber>_<DeviceNumber>_<FunctionNumber>_<DomainNumber>_<SubDeviceIndex>"
+        const uint32_t            subDeviceIndex = m_device.GetSubDeviceIndex();
+        const TAdapterParams_1_9* adapterParams  = m_device.GetAdapter().GetParams();
         MD_CHECK_PTR_RET_A( adapterId, adapterParams, CC_ERROR_GENERAL );
 
-        int32_t neededSize = snprintf( name, size, "%s_%u_%u_%u", m_params.SymbolName, adapterParams->BusNumber, adapterParams->DeviceNumber, adapterParams->FunctionNumber );
-
+        const int32_t neededSize = snprintf( name, size, "%s_%u_%u_%u_%u_%u", m_params.SymbolName, adapterParams->BusNumber, adapterParams->DeviceNumber, adapterParams->FunctionNumber, adapterParams->DomainNumber, subDeviceIndex );
         // If snprintf failed or buffer size was too small
-        if( neededSize < 0 || neededSize >= (int32_t) size )
+        if( neededSize < 0 || neededSize >= static_cast<int32_t>( size ) )
         {
             return CC_ERROR_INVALID_PARAMETER;
         }

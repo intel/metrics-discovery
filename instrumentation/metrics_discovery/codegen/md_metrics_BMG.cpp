@@ -151,11 +151,11 @@ TCompletionCode CreateMetricTreeBMG_OAM0( CMetricsDevice* metricsDevice, CConcur
         MD_CHECK_CC( MetricSets_BMG_OAM0::AddInformationSet( concurrentGroup ) );
 
         metricSet = concurrentGroup->AddMetricSetExplicit<MetricSets_BMG_OAM0::CMediaSet1MetricSet>( "MediaSet1", "MediaSet1", API_TYPE_IOSTREAM,
-            GPU_MEDIA | GPU_GENERIC, 192, 0, OA_REPORT_TYPE_192B_MPEC8LL_NOA16, &platformMask, nullptr );
+            GPU_MEDIA | GPU_GENERIC, 128, 0, OA_REPORT_TYPE_128B_MPEC8_NOA16, &platformMask, nullptr );
         MD_CHECK_PTR( metricSet );
 
         metricSet = concurrentGroup->AddMetricSetExplicit<MetricSets_BMG_OAM0::CMediaSet2MetricSet>( "MediaSet2", "MediaSet2", API_TYPE_IOSTREAM,
-            GPU_MEDIA | GPU_GENERIC, 192, 0, OA_REPORT_TYPE_192B_MPEC8LL_NOA16, &platformMask, nullptr );
+            GPU_MEDIA | GPU_GENERIC, 128, 0, OA_REPORT_TYPE_128B_MPEC8_NOA16, &platformMask, nullptr );
         MD_CHECK_PTR( metricSet );
     }
 
@@ -189,11 +189,11 @@ TCompletionCode CreateMetricTreeBMG_OAM1( CMetricsDevice* metricsDevice, CConcur
         MD_CHECK_CC( MetricSets_BMG_OAM1::AddInformationSet( concurrentGroup ) );
 
         metricSet = concurrentGroup->AddMetricSetExplicit<MetricSets_BMG_OAM1::CMediaSet1MetricSet>( "MediaSet1", "MediaSet1", API_TYPE_IOSTREAM,
-            GPU_MEDIA | GPU_GENERIC, 192, 0, OA_REPORT_TYPE_192B_MPEC8LL_NOA16, &platformMask, nullptr );
+            GPU_MEDIA | GPU_GENERIC, 128, 0, OA_REPORT_TYPE_128B_MPEC8_NOA16, &platformMask, nullptr );
         MD_CHECK_PTR( metricSet );
 
         metricSet = concurrentGroup->AddMetricSetExplicit<MetricSets_BMG_OAM1::CMediaSet2MetricSet>( "MediaSet2", "MediaSet2", API_TYPE_IOSTREAM,
-            GPU_MEDIA | GPU_GENERIC, 192, 0, OA_REPORT_TYPE_192B_MPEC8LL_NOA16, &platformMask, nullptr );
+            GPU_MEDIA | GPU_GENERIC, 128, 0, OA_REPORT_TYPE_128B_MPEC8_NOA16, &platformMask, nullptr );
         MD_CHECK_PTR( metricSet );
     }
 
@@ -227,7 +227,7 @@ TCompletionCode CreateMetricTreeBMG_OAMG( CMetricsDevice* metricsDevice, CConcur
         MD_CHECK_CC( MetricSets_BMG_OAMG::AddInformationSet( concurrentGroup ) );
 
         metricSet = concurrentGroup->AddMetricSetExplicit<MetricSets_BMG_OAMG::CMediaSet1MetricSet>( "MediaSet1", "MediaSet1", API_TYPE_IOSTREAM,
-            GPU_MEDIA | GPU_GENERIC, 192, 0, OA_REPORT_TYPE_192B_MPEC8LL_NOA16, &platformMask, nullptr );
+            GPU_MEDIA | GPU_GENERIC, 128, 0, OA_REPORT_TYPE_128B_MPEC8_NOA16, &platformMask, nullptr );
         MD_CHECK_PTR( metricSet );
     }
 

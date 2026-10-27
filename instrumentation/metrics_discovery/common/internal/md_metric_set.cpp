@@ -3354,7 +3354,14 @@ namespace MetricsDiscoveryInternal
 
         if( isXe2PlusPlatform )
         {
-            MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "qw@0x08 10000 UMUL $GpuTimestampFrequency 100000 UDIV UDIV", m_params.RawReportSize ) );
+            if( m_reportType == OA_REPORT_TYPE_128B_MERT_PEC8 || m_reportType == OA_REPORT_TYPE_192B_MERT_PEC8LL )
+            {
+                MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "qw@0x08 10000 UMUL $GpuTimestampFrequency 50000 UDIV UDIV", m_params.RawReportSize ) );
+            }
+            else
+            {
+                MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "qw@0x08 10000 UMUL $GpuTimestampFrequency 100000 UDIV UDIV", m_params.RawReportSize ) );
+            }
         }
         else
         {

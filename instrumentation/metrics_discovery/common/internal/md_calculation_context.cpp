@@ -368,7 +368,11 @@ namespace MetricsDiscoveryInternal
 
             MD_CHECK_PTR_RET( freqValue, CC_ERROR_INVALID_PARAMETER );
 
-            const uint64_t gpuTimestampFrequency = freqValue->ValueUInt32;
+            // OAMERT report timestamps tick at twice GpuTimestampFrequency (see OAMERT GpuTime equations).
+            const TReportType reportType            = m_metricSet->GetReportType();
+            const uint64_t    gpuTimestampFrequency = ( reportType == OA_REPORT_TYPE_128B_MERT_PEC8 || reportType == OA_REPORT_TYPE_192B_MERT_PEC8LL )
+                   ? freqValue->ValueUInt32 * 2ull
+                   : freqValue->ValueUInt32;
 
             if( sa.TimeWindowCount > 0 )
             {

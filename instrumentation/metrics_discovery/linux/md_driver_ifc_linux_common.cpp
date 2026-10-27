@@ -31,6 +31,8 @@ SPDX-License-Identifier: MIT
 #include <iomanip>
 #include <sstream>
 #include <regex>
+#include <limits>
+#include <unordered_map>
 
 #include <sys/stat.h>
 #include <sys/sysmacros.h> // for major, minor
@@ -72,14 +74,22 @@ namespace MetricsDiscoveryInternal
     //     Notify
     //
     // Description:
-    //     Unlocks semaphore.
+    //     Unlocks semaphore. Fails if the semaphore is already at its maximum count (1).
+    //
+    // Output:
+    //     bool - true if semaphore was unlocked, false if it was not locked
     //
     //////////////////////////////////////////////////////////////////////////////
-    void CSemaphore::Notify()
+    bool CSemaphore::Notify()
     {
         std::unique_lock<std::mutex> lock( m_mutex );
+        if( m_count >= 1 )
+        {
+            return false;
+        }
         ++m_count;
         m_conditionVariable.notify_one();
+        return true;
     }
 
     //////////////////////////////////////////////////////////////////////////////
@@ -117,33 +127,26 @@ namespace MetricsDiscoveryInternal
     //     free resources.
     //
     // Input:
-    //     uint64_t timeoutMs - maximal time to wait for free semaphore resources
+    //     const uint64_t timeoutMs - maximal time to wait for free semaphore resources
     //
     // Output:
     //     bool - true if semaphore was acquired successfully, false otherwise
     //
     //////////////////////////////////////////////////////////////////////////////
-    bool CSemaphore::WaitFor( uint64_t timeoutMs )
+    bool CSemaphore::WaitFor( const uint64_t timeoutMs )
     {
         std::unique_lock<std::mutex> lock( m_mutex );
 
-        bool semLocking = false;
-        if( m_count == 0 )
+        if( !m_conditionVariable.wait_for( lock, std::chrono::milliseconds( timeoutMs ), [this]
+                {
+                    return m_count > 0;
+                } ) )
         {
-            auto result = m_conditionVariable.wait_for( lock, std::chrono::milliseconds( timeoutMs ) );
-            if( ( result == std::cv_status::no_timeout ) && ( m_count > 0 ) )
-            {
-                --m_count;
-                semLocking = true;
-            }
-        }
-        else // (m_count > 0)
-        {
-            --m_count;
-            semLocking = true;
+            return false;
         }
 
-        return semLocking;
+        --m_count;
+        return true;
     }
 
     //////////////////////////////////////////////////////////////////////////////
@@ -1371,10 +1374,11 @@ namespace MetricsDiscoveryInternal
     //     SemaphoreCreate
     //
     // Description:
-    //     Creates the unnamed semaphore, initial count and max count equal to 1.
+    //     Opens the process-wide semaphore with the given name, creating it if needed.
+    //     Initial count and max count are equal to 1.
     //
     // Input:
-    //     char*          name      - *NOT USED ON LINUX* name of a semaphore
+    //     const char*    name      - name of a semaphore
     //     void**         semaphore - (OUT) pointer to the memory where the semaphore handle will be stored
     //     const uint32_t adapterId - adapter id for the purpose of logging
     //
@@ -1382,20 +1386,33 @@ namespace MetricsDiscoveryInternal
     //     TCompletionCode     - *CC_OK* means succeess
     //
     //////////////////////////////////////////////////////////////////////////////
-    TCompletionCode CDriverInterface::SemaphoreCreate( [[maybe_unused]] const char* name, void** semaphore, const uint32_t adapterId )
+    TCompletionCode CDriverInterface::SemaphoreCreate( const char* name, void** semaphore, const uint32_t adapterId )
     {
         MD_LOG_ENTER_A( adapterId );
-        if( semaphore == nullptr )
+        if( semaphore == nullptr || name == nullptr )
         {
-            MD_ASSERT_A( adapterId, semaphore != nullptr );
+            MD_ASSERT_A( adapterId, false );
+            MD_LOG_EXIT_A( adapterId );
             return CC_ERROR_INVALID_PARAMETER;
         }
         *semaphore = nullptr;
 
-        CSemaphore* _sem = new( std::nothrow ) CSemaphore;
-        MD_CHECK_PTR_RET_A( adapterId, _sem, CC_ERROR_NO_MEMORY );
+        // Semaphores are intentionally never freed, so threads still waiting on them can't use freed memory.
+        static std::mutex                                   semaphoresMutex;
+        static std::unordered_map<std::string, CSemaphore*> semaphores;
 
-        *semaphore = (void*) _sem;
+        std::lock_guard<std::mutex> lock( semaphoresMutex );
+
+        auto iterator = semaphores.find( name );
+        if( iterator == semaphores.end() )
+        {
+            CSemaphore* _sem = new( std::nothrow ) CSemaphore;
+            MD_CHECK_PTR_RET_A( adapterId, _sem, CC_ERROR_NO_MEMORY );
+
+            iterator = semaphores.emplace( name, _sem ).first;
+        }
+
+        *semaphore = static_cast<void*>( iterator->second );
 
         MD_LOG_EXIT_A( adapterId );
         return CC_OK;
@@ -1451,7 +1468,7 @@ namespace MetricsDiscoveryInternal
     //     SemaphoreRelease
     //
     // Description:
-    //     Releases earlier created semaphore.
+    //     Releases earlier acquired semaphore. The semaphore handle stays valid.
     //
     // Input:
     //     void**         semaphore - pointer to the semaphore handle
@@ -1466,23 +1483,16 @@ namespace MetricsDiscoveryInternal
         MD_LOG_ENTER_A( adapterId );
         if( semaphore == nullptr || ( *semaphore ) == nullptr )
         {
-            MD_ASSERT_A( adapterId, semaphore != nullptr );
-            MD_ASSERT_A( adapterId, ( *semaphore ) != nullptr );
+            MD_ASSERT_A( adapterId, false );
             MD_LOG_EXIT_A( adapterId );
             return CC_ERROR_INVALID_PARAMETER;
         }
 
-        CSemaphore* _sem     = *( reinterpret_cast<CSemaphore**>( semaphore ) );
-        int32_t     semValue = 0;
-
-        _sem->Notify();
-        semValue = _sem->GetValue();
-
-        if( semValue > 0 )
+        if( !static_cast<CSemaphore*>( *semaphore )->Notify() )
         {
-            MD_LOG_A( adapterId, LOG_DEBUG, "destroying semaphore" );
-            MD_SAFE_DELETE( _sem );
-            *semaphore = nullptr;
+            MD_LOG_A( adapterId, LOG_ERROR, "ERROR: Semaphore is not locked" );
+            MD_LOG_EXIT_A( adapterId );
+            return CC_ERROR_GENERAL;
         }
 
         MD_LOG_EXIT_A( adapterId );
@@ -1531,9 +1541,11 @@ namespace MetricsDiscoveryInternal
         MD_ASSERT_A( m_adapterId, oaConcurrentGroup.GetStreamConfigId() == -1 ); // Should be -1, which means stream is closed
 
         // 2. SET PARAMS
+        const auto     oaBufferType        = oaConcurrentGroup.GetOaBufferType();
+        const uint32_t timerPeriodShift    = ( oaBufferType == GTDI_OA_BUFFER_TYPE_MERT ) ? 1 : 0; // Mert timestamp is 2x faster than OA timestamp, so we need to double the timer period to get the same sampling rate.
         const uint32_t timerPeriodExponent = GetTimerPeriodExponent( nsTimerPeriod );
         const auto     reportType          = metricSet->GetReportType();
-        const auto     configType          = ( oaConcurrentGroup.GetOaBufferType() == GTDI_OA_BUFFER_TYPE_MERT ) ? CONFIGURATION_TYPE_STREAM_OA_MERT : CONFIGURATION_TYPE_STREAM_OA;
+        const auto     configType          = ( oaBufferType == GTDI_OA_BUFFER_TYPE_MERT ) ? CONFIGURATION_TYPE_STREAM_OA_MERT : CONFIGURATION_TYPE_STREAM_OA;
         int32_t        oaMetricSetId       = -1;
         uint32_t       regCount            = 0;
         TRegister**    regVector           = metricSet->GetStartConfiguration( regCount );
@@ -1548,7 +1560,7 @@ namespace MetricsDiscoveryInternal
         MD_ASSERT_A( m_adapterId, oaMetricSetId != -1 );
 
         // 4. OPEN STREAM
-        ret = OpenOaStream( oaConcurrentGroup, oaMetricSetId, timerPeriodExponent, bufferSize );
+        ret = OpenOaStream( oaConcurrentGroup, oaMetricSetId, timerPeriodExponent + timerPeriodShift, bufferSize );
         if( ret != CC_OK )
         {
             RemoveOaConfig( oaMetricSetId );
@@ -2649,16 +2661,15 @@ namespace MetricsDiscoveryInternal
 
         if( platformIndexMapIterator != platformIndexMap.end() )
         {
-            gfxDeviceInfo.PlatformIndex   = platformIndexMapIterator->second.PlatformIndex;
-            gfxDeviceInfo.GtType          = platformIndexMapIterator->second.GtType;
-            gfxDeviceInfo.PlatformVersion = platformIndexMapIterator->second.PlatformVersion;
-
-            const auto threadsPerEuMapIterator = threadsPerEuMap.find( gfxDeviceInfo.PlatformIndex );
+            const auto threadsPerEuMapIterator = threadsPerEuMap.find( platformIndexMapIterator->second.PlatformIndex );
 
             if( threadsPerEuMapIterator != threadsPerEuMap.end() )
             {
-                gfxDeviceInfo.ThreadsPerEu = threadsPerEuMapIterator->second;
-                ret                        = CC_OK;
+                gfxDeviceInfo.PlatformIndex   = platformIndexMapIterator->second.PlatformIndex;
+                gfxDeviceInfo.GtType          = platformIndexMapIterator->second.GtType;
+                gfxDeviceInfo.PlatformVersion = platformIndexMapIterator->second.PlatformVersion;
+                gfxDeviceInfo.ThreadsPerEu    = threadsPerEuMapIterator->second;
+                ret                           = CC_OK;
             }
         }
 
@@ -2919,7 +2930,9 @@ namespace MetricsDiscoveryInternal
 
                 if( csTimestampFrequency != 0 )
                 {
-                    oaTimestamp = csTimestamp * oaTimestampFrequency / csTimestampFrequency;
+                    // Split into whole and partial seconds to avoid 64-bit overflow of csTimestamp * oaTimestampFrequency
+                    oaTimestamp = ( csTimestamp / csTimestampFrequency ) * oaTimestampFrequency +
+                        ( csTimestamp % csTimestampFrequency ) * oaTimestampFrequency / csTimestampFrequency;
                 }
                 else
                 {
@@ -3566,6 +3579,8 @@ namespace MetricsDiscoveryInternal
             {
                 gtType = GFX_GTTYPE_GT1;
             }
+
+            drmFreeDevice( &drmDevice );
         }
 
         m_CachedGfxDeviceInfo.GtType = gtType;
@@ -3604,8 +3619,12 @@ namespace MetricsDiscoveryInternal
             return 0;
         }
 
-        // 2. Compute timer exponent
-        return log2( nsTimerPeriod / timestampPeriodNs ) - 1;
+        // 2. Compute timer exponent, the shortest possible period (exponent 0) is 2 * timestampPeriodNs
+        const uint64_t periodRatio = nsTimerPeriod / timestampPeriodNs;
+
+        return ( periodRatio < 2 )
+            ? 0
+            : static_cast<uint32_t>( std::log2( periodRatio ) ) - 1;
     }
 
     //////////////////////////////////////////////////////////////////////////////
@@ -3637,8 +3656,15 @@ namespace MetricsDiscoveryInternal
             return 0;
         }
 
-        // 2. Compute timer period (StrobePeriod = MinimumTimeStampPeriod * 2^( TimerExponent + 1 ))
-        return timestampPeriodNs * ( 1 << ( timerPeriodExponent + 1 ) );
+        // 2. Compute timer period (StrobePeriod = MinimumTimeStampPeriod * 2^( TimerExponent + 1 )), saturated to uint32_t
+        const uint64_t maxPeriodNs = std::numeric_limits<uint32_t>::max();
+
+        if( timerPeriodExponent >= 32 )
+        {
+            return maxPeriodNs;
+        }
+
+        return static_cast<uint32_t>( std::min( timestampPeriodNs * ( uint64_t{ 1 } << ( timerPeriodExponent + 1 ) ), maxPeriodNs ) );
     }
 
     //////////////////////////////////////////////////////////////////////////////

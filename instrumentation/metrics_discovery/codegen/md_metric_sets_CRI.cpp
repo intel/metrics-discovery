@@ -529,8 +529,8 @@ namespace MetricsDiscoveryInternal::MetricSets_CRI_OA
             "Vector Engine", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_FRAME | USAGE_FLAG_BATCH | USAGE_FLAG_DRAW, API_TYPE_DX9 | API_TYPE_DX10 | API_TYPE_DX11 | API_TYPE_DX12 | API_TYPE_VULKAN | API_TYPE_OGL | API_TYPE_OGL4_X | API_TYPE_OCL | API_TYPE_IOSTREAM,
             METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, nullptr, nullptr, nullptr, 36 );
         MD_CHECK_PTR( metric );
-        MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "qw@0xe8 2 UMUL" ) );
-        MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0xd8 2 UMUL" ) );
+        MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "qw@0xe8" ) );
+        MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0xd8" ) );
         MD_CHECK_CC( metric->SetNormalizationEquation( "EuAggrDuration" ) );
         MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 64" ) );
         metric->SetQueryModeMask( QUERY_MODE_MASK_RENDER | QUERY_MODE_MASK_COMPUTE | QUERY_MODE_MASK_GLOBAL | QUERY_MODE_MASK_GLOBAL_EXTENDED );
@@ -4035,7 +4035,7 @@ namespace MetricsDiscoveryInternal::MetricSets_CRI_OAMERT
 
         information = concurrentGroup->AddInformation( "QueryBeginTime", "Query Begin Time", "The measurement begin time.", "Report Meta Data", API_TYPE_IOSTREAM, INFORMATION_TYPE_TIMESTAMP, "ns", nullptr, 0 );
         MD_CHECK_PTR( information );
-        MD_CHECK_CC( information->SetSnapshotReportReadEquation( "qw@0x08 625 UMUL $GpuTimestampFrequency 1600000 UDIV UDIV" ) );
+        MD_CHECK_CC( information->SetSnapshotReportReadEquation( "qw@0x08 625 UMUL $GpuTimestampFrequency 800000 UDIV UDIV" ) );
         MD_CHECK_CC( information->SetOverflowFunction( "NS_TIME" ) );
 
         information = concurrentGroup->AddInformation( "ReportReason", "Report Reason", "The reason of the report.", "Report Meta Data", API_TYPE_IOSTREAM, INFORMATION_TYPE_REPORT_REASON, nullptr, nullptr, 1 );
@@ -4064,7 +4064,7 @@ namespace MetricsDiscoveryInternal::MetricSets_CRI_OAMERT
             "GPU", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_TIER_1 | USAGE_FLAG_OVERVIEW | USAGE_FLAG_SYSTEM | USAGE_FLAG_BATCH, API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "ns", 0, 0, HW_UNIT_GPU, nullptr, nullptr, nullptr, 0 );
         MD_CHECK_PTR( metric );
-        MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "qw@0x08 10000 UMUL $GpuTimestampFrequency 100000 UDIV UDIV" ) );
+        MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "qw@0x08 10000 UMUL $GpuTimestampFrequency 50000 UDIV UDIV" ) );
         MD_CHECK_CC( metric->SetDeltaReportReadEquation( "qw@0" ) );
         MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "NS_TIME" ) );
         metric->SetQueryModeMask( QUERY_MODE_MASK_RENDER | QUERY_MODE_MASK_COMPUTE | QUERY_MODE_MASK_GLOBAL | QUERY_MODE_MASK_GLOBAL_EXTENDED );

@@ -1043,8 +1043,10 @@ namespace MetricsDiscoveryInternal
 
             if( !isOam )
             {
-                // e.g. "Number of cycles when GPU is not idle", "Number of SIF stall cycles at the ...".
-                const std::regex cyclesRegex( R"((Average )?[Nn]umber of( SIF| copy read data| copy write data| read data| write data| atomic data)? (active |stall |starve )?(cycles|thread slots|GRF register blocks)(?: when| at the| on the)?([^.]*)(\.)?)" );
+                // e.g. "Number of cycles when GPU is not idle", "Number of SIF stall cycles at the ...", "Number of cycle core is stalled ...".
+                const std::regex cyclesRegex( R"((Average )?[Nn]umber of( SIF| copy read data| copy write data| read data| write data| partial write data| atomic data)? (active |stall |starve )?(cycles?|thread slots|GRF register blocks)(?: when| at the| on the)?([^.]*)(\.)?)" );
+                // e.g. "Cycles copy command Streamer stalled ...".
+                const std::regex leadingCyclesRegex( R"(^(Average )?[Cc]ycles (.*))" );
 
                 if( std::smatch match;
                     std::regex_search( longName, match, cyclesRegex ) )
@@ -1064,7 +1066,7 @@ namespace MetricsDiscoveryInternal
                         ? " starved"
                         : "";
 
-                    if( event == "cycles" )
+                    if( event == "cycles" || event == "cycle" )
                     {
                         longName = average + "percentage of time in which" + type + subject + stateSuffix + period + match.suffix().str();
                     }
@@ -1073,6 +1075,10 @@ namespace MetricsDiscoveryInternal
                         // Exception for XVE_THREADS_OCCUPANCY_*_CYCLES and XVE_GRFBLOCK_OCCUPANCY_*_CYCLES
                         longName = average + "percentage of " + event + subject + stateSuffix + period + match.suffix().str();
                     }
+                }
+                else if( std::regex_search( longName, match, leadingCyclesRegex ) )
+                {
+                    longName = match[1].str() + "percentage of time in which " + match[2].str();
                 }
             }
             else

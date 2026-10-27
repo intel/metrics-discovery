@@ -7627,66 +7627,66 @@ namespace MetricsDiscoveryInternal::MetricSets_LNL_OAM0
             "Media", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_BATCH, API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "events", 0, 0, HW_UNIT_GPU, nullptr, nullptr, nullptr, 4 );
         MD_CHECK_PTR( metric );
-        MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "qw@0x20" ) );
-        MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 64" ) );
+        MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "dw@0x20" ) );
+        MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ) );
 
         metric = AddMetric( "MEDIA_WRITE_REQUEST", "Media Write Request",
             "Number of write requests from stand alone media",
             "Media", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_BATCH, API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "events", 0, 0, HW_UNIT_GPU, nullptr, nullptr, nullptr, 5 );
         MD_CHECK_PTR( metric );
-        MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "qw@0x28" ) );
-        MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 64" ) );
+        MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "dw@0x24" ) );
+        MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ) );
 
         metric = AddMetric( "COMMAND_PARSER_VIDEO_DECODE_ENGINE0_BUSY", "Command Parser Video Decode Engine0 Busy",
             "Number of VCS0 (VDBOX0) activities",
             "Media", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_BATCH, API_TYPE_IOSTREAM,
             METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, nullptr, nullptr, nullptr, 6 );
         MD_CHECK_PTR( metric );
-        MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "qw@0x30" ) );
+        MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "dw@0x28" ) );
         MD_CHECK_CC( metric->SetNormalizationEquation( "GpuDuration" ) );
-        MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 64" ) );
+        MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ) );
 
         metric = AddMetric( "VIDEO_DECODE_BOX0_READ_REQUEST", "Video Decode Box0 Read Request",
             "Number of VDBOX0 read requests",
             "Media", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_BATCH, API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "events", 0, 0, HW_UNIT_GPU, nullptr, nullptr, nullptr, 7 );
         MD_CHECK_PTR( metric );
-        MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "qw@0x38" ) );
-        MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 64" ) );
+        MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "dw@0x2c" ) );
+        MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ) );
 
         metric = AddMetric( "VIDEO_DECODE_BOX0_WRITE_REQUEST", "Video Decode Box0 Write Request",
             "Number of VDBOX0 write requests",
             "Media", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_BATCH, API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "events", 0, 0, HW_UNIT_GPU, nullptr, nullptr, nullptr, 8 );
         MD_CHECK_PTR( metric );
-        MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "qw@0x40" ) );
-        MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 64" ) );
+        MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "dw@0x30" ) );
+        MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ) );
 
         metric = AddMetric( "COMMAND_PARSER_VIDEO_DECODE_ENGINE1_BUSY", "Command Parser Video Decode Engine1 Busy",
             "Number of VCS1 (VDBOX1) activities",
             "Media", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_BATCH, API_TYPE_IOSTREAM,
             METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, nullptr, nullptr, nullptr, 9 );
         MD_CHECK_PTR( metric );
-        MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "qw@0x48" ) );
+        MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "dw@0x34" ) );
         MD_CHECK_CC( metric->SetNormalizationEquation( "GpuDuration" ) );
-        MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 64" ) );
+        MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ) );
 
         metric = AddMetric( "VIDEO_DECODE_BOX1_READ_REQUEST", "Video Decode Box1 Read Request",
             "Number of VDBOX1 read requests",
             "Media", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_BATCH, API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "events", 0, 0, HW_UNIT_GPU, nullptr, nullptr, nullptr, 10 );
         MD_CHECK_PTR( metric );
-        MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "qw@0x50" ) );
-        MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 64" ) );
+        MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "dw@0x38" ) );
+        MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ) );
 
         metric = AddMetric( "VIDEO_DECODE_BOX1_WRITE_REQUEST", "Video Decode Box1 Write Request",
             "Number of VDBOX1 write requests",
             "Media", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_BATCH, API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "events", 0, 0, HW_UNIT_GPU, nullptr, nullptr, nullptr, 11 );
         MD_CHECK_PTR( metric );
-        MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "qw@0x58" ) );
-        MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 64" ) );
+        MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "dw@0x3c" ) );
+        MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ) );
 
         MD_CHECK_CC( AddStartRegisterSet( 0, 0, nullptr ) );
         MD_CHECK_CC( AddStartConfigRegister( 0x394200, 0x00000001, REGISTER_TYPE_OA ) );
@@ -7759,50 +7759,50 @@ namespace MetricsDiscoveryInternal::MetricSets_LNL_OAM0
             "Media", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_BATCH, API_TYPE_IOSTREAM,
             METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, nullptr, nullptr, nullptr, 4 );
         MD_CHECK_PTR( metric );
-        MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "qw@0x20" ) );
+        MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "dw@0x20" ) );
         MD_CHECK_CC( metric->SetNormalizationEquation( "GpuDuration" ) );
-        MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 64" ) );
+        MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ) );
 
         metric = AddMetric( "VIDEO_ENHANCEMENT_BOX0_READ_REQUEST", "Video Enhancement Box0 Read Request",
             "Number of VEBOX0 read requests",
             "Media", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_BATCH, API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "events", 0, 0, HW_UNIT_GPU, nullptr, nullptr, nullptr, 5 );
         MD_CHECK_PTR( metric );
-        MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "qw@0x28" ) );
-        MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 64" ) );
+        MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "dw@0x24" ) );
+        MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ) );
 
         metric = AddMetric( "VIDEO_ENHANCEMENT_BOX0_WRITE_REQUEST", "Video Enhancement Box0 Write Request",
             "Number of VEBOX0 write requests",
             "Media", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_BATCH, API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "events", 0, 0, HW_UNIT_GPU, nullptr, nullptr, nullptr, 6 );
         MD_CHECK_PTR( metric );
-        MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "qw@0x30" ) );
-        MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 64" ) );
+        MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "dw@0x28" ) );
+        MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ) );
 
         metric = AddMetric( "COMMAND_PARSER_VIDEO_ENHANCEMENT_ENGINE1_BUSY", "Command Parser Video Enhancement Engine1 Busy",
             "Number of VECS1 (VEBOX1) activities",
             "Media", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_BATCH, API_TYPE_IOSTREAM,
             METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, nullptr, nullptr, nullptr, 7 );
         MD_CHECK_PTR( metric );
-        MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "qw@0x38" ) );
+        MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "dw@0x2c" ) );
         MD_CHECK_CC( metric->SetNormalizationEquation( "GpuDuration" ) );
-        MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 64" ) );
+        MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ) );
 
         metric = AddMetric( "VIDEO_ENHANCEMENT_BOX1_READ_REQUEST", "Video Enhancement Box1 Read Request",
             "Number of VEBOX1 read requests",
             "Media", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_BATCH, API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "events", 0, 0, HW_UNIT_GPU, nullptr, nullptr, nullptr, 8 );
         MD_CHECK_PTR( metric );
-        MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "qw@0x40" ) );
-        MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 64" ) );
+        MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "dw@0x30" ) );
+        MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ) );
 
         metric = AddMetric( "VIDEO_ENHANCEMENT_BOX1_WRITE_REQUEST", "Video Enhancement Box1 Write Request",
             "Number of VEBOX1 write requests",
             "Media", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_BATCH, API_TYPE_IOSTREAM,
             METRIC_TYPE_EVENT, RESULT_UINT64, "events", 0, 0, HW_UNIT_GPU, nullptr, nullptr, nullptr, 9 );
         MD_CHECK_PTR( metric );
-        MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "qw@0x48" ) );
-        MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 64" ) );
+        MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "dw@0x34" ) );
+        MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ) );
 
         MD_CHECK_CC( AddStartRegisterSet( 0, 0, nullptr ) );
         MD_CHECK_CC( AddStartConfigRegister( 0x394200, 0x00002200, REGISTER_TYPE_OA ) );
@@ -7906,9 +7906,9 @@ namespace MetricsDiscoveryInternal::MetricSets_LNL_OAMG
             "Media", ( METRIC_GROUP_NAME_ID_GPU * 0x1000000 ), USAGE_FLAG_BATCH, API_TYPE_IOSTREAM,
             METRIC_TYPE_DURATION, RESULT_FLOAT, "percent", 0, 0, HW_UNIT_GPU, nullptr, nullptr, nullptr, 4 );
         MD_CHECK_PTR( metric );
-        MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "qw@0x20" ) );
+        MD_CHECK_CC( metric->SetSnapshotReportReadEquation( "dw@0x20" ) );
         MD_CHECK_CC( metric->SetNormalizationEquation( "GpuDuration" ) );
-        MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 64" ) );
+        MD_CHECK_CC( metric->SetSnapshotReportDeltaFunction( "DELTA 32" ) );
 
         MD_CHECK_CC( AddStartRegisterSet( 0, 0, nullptr ) );
         MD_CHECK_CC( AddStartConfigRegister( 0x393200, 0x00000003, REGISTER_TYPE_OA ) );
